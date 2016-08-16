@@ -2,6 +2,7 @@
   <dictionary name="soren">
     <words>
       <w>adsense</w>
+      <w>amiunique</w>
       <w>androidversion</w>
       <w>anonymized</w>
       <w>appbarlayout</w>
@@ -12,6 +13,7 @@
       <w>buildapi</w>
       <w>buildversion</w>
       <w>checkedtextview</w>
+      <w>chromebooks</w>
       <w>chromeversion</w>
       <w>commitdiff</w>
       <w>coordinatorlayout</w>
@@ -20,8 +22,6 @@
       <w>edittext</w>
       <w>exynos</w>
       <w>favoriteicon</w>
-      <w>imbedded</w>
-      <w>imbedding</w>
       <w>intl</w>
       <w>isfolder</w>
       <w>khtml</w>

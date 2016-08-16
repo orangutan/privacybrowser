@@ -28,6 +28,10 @@
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 
 
+    <!-- Support Chromebooks that don't have a touch screen. -->
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+
+
     <!-- For API >= 23, app data is automatically backed up to Google cloud servers unless `android:allowBackup="false"` and `android:fullBackupContent="false"` is set. -->
     <application
         android:label="@string/privacy_browser"
