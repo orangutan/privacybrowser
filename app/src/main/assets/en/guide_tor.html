@@ -39,11 +39,12 @@
 
 <p>VPN services can mask a device's IP address from a web server.  When a VPN service is engaged, all traffic is encrypted and routed
     through the VPN server.  The web server only sees the IP address of the VPN server.  This is sufficient for maintaining anonymity
-    from web server operators and advertisers, but it isn't sufficient for maintaining anonymity from oppressive regimes which might
+    from web server operators and advertisers, as well as accessing websites (like some music and video streaming services) that
+    intentionally block access from particular countries, but it isn't sufficient for maintaining anonymity from oppressive regimes which might
     be able to lean on VPN operators to turn over their logs showing the original IP addresses.  Those looking for safety from such
     regimes or desiring to blow the whistle on government agencies need something more.</p>
 
-<p>The Tor (The Onion Router) network was designed for just such purposes.  It bounces encrypted web traffic through at least three independent servers
+<p>The TOR (The Onion Router) network was designed for just such purposes.  It bounces encrypted web traffic through at least three independent servers
     that volunteer bandwidth to the project.  None of the servers have enough information to identify both the IP address of the original computer
     and the final destination.  Therefore, any government agency wanting to access the information would have to compromise all the machines in the
     link, which are dispersed over the globe.  This doesn't provide perfect privacy, but it gets pretty close.</p>
@@ -64,6 +65,6 @@
 <p>Currently, Privacy Browser works with Orbot in transparent proxy and VPN modes. Support for the standard proxy mode will be added in a
     <a href="https://redmine.stoutner.com/issues/26">future release</a>.</p>
 
-<p>Because traffic is being routed through several Tor nodes, using Tor is often much slower than going straight to the internet.</p>
+<p>Because traffic is being routed through several Tor nodes, using Tor is often much slower than connecting straight to the internet.</p>
 </body>
 </html>

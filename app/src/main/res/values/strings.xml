@@ -111,7 +111,7 @@
     <string name="overview">Overview</string>
     <string name="local_storage">Local Storage</string>
     <string name="tor">Tor</string>
-    <string name="tracking_uids">Tracking UIDs</string>
+    <string name="tracking_ids">Tracking IDs</string>
     <string name="planned_features">Planned Features</string>
 
     <!-- Preferences. -->

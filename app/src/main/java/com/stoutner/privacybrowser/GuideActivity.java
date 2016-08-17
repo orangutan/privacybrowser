@@ -86,7 +86,7 @@ public class GuideActivity extends AppCompatActivity {
                     return getString(R.string.tor);
 
                 case 5:
-                    return getString(R.string.tracking_uids);
+                    return getString(R.string.tracking_ids);
 
                 case 6:
                     return getString(R.string.clear_and_exit);
