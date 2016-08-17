@@ -111,9 +111,9 @@ public class EditBookmarkFolder extends DialogFragment {
         currentIconImageView.setImageBitmap(currentIconBitmap);
 
         // Get a `Bitmap` of the favorite icon from `MainWebViewActivity` and display it in `edit_folder_web_page_favorite_icon`.
-        ImageView webPageFavoriteIcon = (ImageView) alertDialog.findViewById(R.id.edit_folder_web_page_favorite_icon);
-        assert webPageFavoriteIcon != null;  // Remove the warning below that `webPageFavoriteIcon` might be null.
-        webPageFavoriteIcon.setImageBitmap(MainWebViewActivity.favoriteIcon);
+        ImageView webPageFavoriteIconImageView = (ImageView) alertDialog.findViewById(R.id.edit_folder_web_page_favorite_icon);
+        assert webPageFavoriteIconImageView != null;  // Remove the warning below that `webPageFavoriteIcon` might be null.
+        webPageFavoriteIconImageView.setImageBitmap(MainWebViewActivity.favoriteIcon);
 
         // Load the text for `edit_folder_name_edittext`.
         EditText folderNameEditText = (EditText) alertDialog.findViewById(R.id.edit_folder_name_edittext);

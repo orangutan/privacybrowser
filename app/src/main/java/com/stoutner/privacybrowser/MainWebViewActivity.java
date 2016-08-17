@@ -27,12 +27,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -412,6 +415,14 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
         // Load the initial website.
         mainWebView.loadUrl(formattedUrlString);
+
+        // Load the default favorite icon if it is null.
+        if (favoriteIcon == null) {
+            // We have to use `ContextCompat` until API >= 21.
+            Drawable favoriteIconDrawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.world);
+            BitmapDrawable favoriteIconBitmapDrawable = (BitmapDrawable) favoriteIconDrawable;
+            favoriteIcon = favoriteIconBitmapDrawable.getBitmap();
+        }
 
         // Initialize AdView for the free flavor and request an ad.  If this is not the free flavor BannerAd.requestAd() does nothing.
         adView = findViewById(R.id.adView);
