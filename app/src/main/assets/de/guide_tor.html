@@ -1,0 +1,74 @@
+<!--
+  Copyright 2016 Soren Stoutner <soren@stoutner.com>.
+
+  Translation 2016 Aaron Gerlach <aaron@gerlach.com>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+
+  Diese Datei ist Teil von Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser ist eine kostenlose Software: Sie können sie
+  unter den Bedingungen der GNU General Public License weiterverteilen
+  mit Berufung auf die veröffentlichte Fassung der Free Software
+  Foundation, entweder Version 3 der Lizenz oder (nach Ihrer
+  Möglichkeit) jede neuere Version.
+
+  Privacy Browser wird in der Hoffnung vertrieben nützlich zu sein,
+  jedoch OHNE JEGLICHE GARANTIE; auch ohne die implizierte
+  Garantie auf MARKTGÄNGLICHKEIT oder BEREITSCHAFT FÜR
+  BESTIMMTE ANWENDUNGEN. Nutzen Sie die GNU General Public
+  License für mehr Details.
+
+  Sie sollten eine Kopie der GNU General Public License zusammen mit
+  Privacy Browser erhalten haben. Wenn nicht, besuchen Sie
+  <http://www.gnu.org/licenses/>. -->
+
+<html>
+<head>
+    <style>
+        h3 {
+        color: 0D4781;
+        }
+
+        strong {
+        color: BF360C;
+        }
+    </style>
+</head>
+
+<body>
+<h3>Maskieren von IP-Adressen</h3>
+
+<p>Obwohl es keine perfekte Wissenschaft ist; IP-Adressen können in physikalische Adressen mit steigender Genauigkeit gewandelt werden.
+    Es gibt <a href="https://www.whatismyip.com/">öffentliche Datenbanken</a>, die zeigen, welche ISP welche IP-Adresse besitzt mit einer guten
+    Einschätzung, in welcher Region sie genutzt wird. Es gibt private Datenbanken mit noch genaueren Informationen. Und natürlich
+    weiß die ISP die exakte Serviceadresse jeder einzelnen IP-Adresse.</p>
+
+<p>VPN-Dienste können die IP-Adresse des Geräts vor einem Server verstecken. Wenn ein VPN-Dienst zwischengeschaltet ist wird sämtlicher Datenverkehr verschlüsselt und über
+    den VPN-Server umgeleitet. Der Webserver sieht lediglich die IP-Adresse des VPN-Servers. Das ist zwar ausreichend, um die Anonymität vor
+    Webserver- und Werbebetreibern zu wahren, aber es reicht nicht aus, um die Anonymität vor unterdrückenden Regimen zu schützen,
+    welche womöglich fähig sind die VPN-Betreiber zur Herausgabe der Logs über die IP-Adressen zu bewegen. Diejenigen, die nach Sicherheit vor solchen
+    Regimen suchen oder staatlichen Behörden den Laufpass geben wollen brauchen noch etwas mehr.</p>
+
+<p>Das Tor (The Onion Router) Netzwerk wurde für genau diese Zwecke entwickelt. Es leitet verschlüsselten Datenverkehr durch mindestens drei verschiedene unabhängige Server,
+    die dem Projekt ihre Bandbreite spenden. Keiner der Server hat genügend Informationen, sodass er weder die IP-Adresse des sendenden Computers als auch
+    dem Ankunftsort hat. Daher müsste die jeweils gemiedene Behörde, die Zugriff auf diesen Inhalt möchte, all diese Maschinen in dieser Verbindung mit einbeziehen,
+    welche alle über den Globus verteilt sind. Das bietet nicht die ultimative Privatsphäre, kommt aber nahe dran.</p>
+
+<p>Das Tor Projekt hat eine Android-App namens Orbot, welche auf <a href="https://f-droid.org/repository/browse/?fdfilter=orbot&fdid=org.torproject.android">F-Droid</a> verfügbar ist
+    und überall sonst, wo Privacy Browser auch bezogen werde kann. Orbot kann in drei Modi arbeiten.</p>
+
+<ul>
+    <li><strong>Proxy-Modus</strong> Apps müssen das Weiterleiten ihres Datenverkehrs anfragen, sprich müssen einen Code beinhalten, den der jeweilige Entwickler einbinden
+        muss, damit es funktioniert.</li>
+    <li><strong>Transparenter Proxy-Modus</strong> Orbot greift bei jedem Datenverkehr von anderen Apps ein und leitet es weiter an
+        das Tor Netzwerk. Apps müssen nicht von ihrem Entwickler modifiziert werden um mit dem transparenten Proxy zu funktionieren, jedoch braucht Orbot dazu
+        Root-Zugriff auf dem Gerät.</li>
+    <li><strong>VPN-Modus</strong> Orbot registriert sich als VPN auf dem Gerät.  Apps benötigen keine vorherige Modifizierung durch den Entwickler
+        und Root wird nicht benötigt.</li>
+</ul>
+
+<p>Momentsn funktioniert Privacy Browser mit Orbot im transparenten Proxying und im VPN-Modus. Unterstützung für den Standard-Proxymodus wird zu einem
+    <a href="https://redmine.stoutner.com/issues/26">späteren Zeitpunkt</a> hinzugefügt.</p>
+
+<p>Weil der Datenverkehr durch mehrere verschiedene Tor-Ports geleitet wird ist das Surfen mit aktiviertem Tor oft langsamer als beim normalen Surfen.</p>
+</body>
+</html>

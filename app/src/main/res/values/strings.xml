@@ -22,6 +22,7 @@
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser</string>
     <string name="privacy_browser_settings">Privacy Browser Settings</string>
+    <string name="android_asset_path">en</string>  <!-- For translations, this should be the localization abbreviation.  For example, German is `de`. -->
 
     <!-- MainWebViewActivity. -->
     <string name="download_started">Download started</string>
@@ -140,7 +141,7 @@
         <item>Edge 13 on Windows 10</item>
         <item>Custom</item>
     </string-array>
-    <string-array name="user_agent_entry_values">  <!-- None of the items in this string-array should be translated. -->
+    <string-array name="user_agent_entry_values" translatable="false">  <!-- None of the items in this string-array should be translated. -->
         <item>Default user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
         <item>PrivacyBrowser/1.0</item>
         <item>Mozilla/5.0 (Android 6.0.1; Mobile; rv:46.0) Gecko/46.0 Firefox/46.0</item>
@@ -164,7 +165,7 @@
         <item>Yahoo</item>
         <item>Custom</item>
     </string-array>
-    <string-array name="javascript_disabled_search_entry_values">  <!-- None of the items in this string-array should be translated. -->
+    <string-array name="javascript_disabled_search_entry_values" translatable="false">  <!-- None of the items in this string-array should be translated. -->
         <item>https://duckduckgo.com/html/?q=</item>
         <item>https://www.google.com/search?q=</item>
         <item>https://www.bing.com/search?q=</item>
@@ -180,7 +181,7 @@
         <item>Yahoo</item>
         <item>Custom</item>
     </string-array>
-    <string-array name="javascript_enabled_search_entry_values">  <!-- None of the items in this string-array should be translated. -->
+    <string-array name="javascript_enabled_search_entry_values" translatable="false">  <!-- None of the items in this string-array should be translated. -->
         <item>https://duckduckgo.com/?q=</item>
         <item>https://www.google.com/search?q=</item>
         <item>https://www.bing.com/search?q=</item>
@@ -221,5 +222,5 @@
     <string name="links">Links</string>
 
     <!-- Ad Control. -->
-    <string name="ad_id">Null</string>  <!-- There are no ads in the standard flavor, but this string must exist because it is referenced in the code. -->
+    <string name="ad_id" translatable="false">Null</string>  <!-- There are no ads in the standard flavor, but this string must exist because it is referenced in the code. -->
 </resources>

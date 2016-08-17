@@ -57,35 +57,35 @@ public class GuideTabFragment extends Fragment {
         // Tab numbers start at 0.
         switch (tabNumber) {
             case 0:
-                tabWebView.loadUrl("file:///android_asset/guide_overview.html");
+                tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_overview.html");
                 break;
 
             case 1:
-                tabWebView.loadUrl("file:///android_asset/guide_javascript.html");
+                tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_javascript.html");
                 break;
 
             case 2:
-                tabWebView.loadUrl("file:///android_asset/guide_local_storage.html");
+                tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_local_storage.html");
                 break;
 
             case 3:
-                tabWebView.loadUrl("file:///android_asset/guide_user_agent.html");
+                tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_user_agent.html");
                 break;
 
             case 4:
-                tabWebView.loadUrl("file:///android_asset/guide_tor.html");
+                tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_tor.html");
                 break;
 
             case 5:
-                tabWebView.loadUrl("file:///android_asset/guide_tracking_uids.html");
+                tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_tracking_uids.html");
                 break;
 
             case 6:
-                tabWebView.loadUrl("file:///android_asset/guide_clear_and_exit.html");
+                tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_clear_and_exit.html");
                 break;
 
             case 7:
-                tabWebView.loadUrl("file:///android_asset/guide_planned_features.html");
+                tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_planned_features.html");
                 break;
 
             default:

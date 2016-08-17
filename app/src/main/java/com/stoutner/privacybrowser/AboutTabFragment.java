@@ -139,27 +139,27 @@ public class AboutTabFragment extends Fragment {
 
             switch (tabNumber) {
                 case 1:
-                    tabWebView.loadUrl("file:///android_asset/about_permissions.html");
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_permissions.html");
                     break;
 
                 case 2:
-                    tabWebView.loadUrl("file:///android_asset/about_privacy_policy.html");
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_privacy_policy.html");
                     break;
 
                 case 3:
-                    tabWebView.loadUrl("file:///android_asset/about_changelog.html");
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_changelog.html");
                     break;
 
                 case 4:
-                    tabWebView.loadUrl("file:///android_asset/about_licenses.html");
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_licenses.html");
                     break;
 
                 case 5:
-                    tabWebView.loadUrl("file:///android_asset/about_contributors.html");
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_contributors.html");
                     break;
 
                 case 6:
-                    tabWebView.loadUrl("file:///android_asset/about_links.html");
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_links.html");
                     break;
 
                 default:

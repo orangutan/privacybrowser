@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  Copyright 2015-2016 Soren Stoutner <soren@stoutner.com>.
+
+  Translation 2016 Aaron Gerlach <aaron@gerlach.com>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+
+  Diese Datei ist Teil von Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser ist eine kostenlose Software: Sie können sie
+  unter den Bedingungen der GNU General Public License weiterverteilen
+  mit Berufung auf die veröffentlichte Fassung der Free Software
+  Foundation, entweder Version 3 der Lizenz oder (nach Ihrer
+  Möglichkeit) jede neuere Version.
+
+  Privacy Browser wird in der Hoffnung vertrieben nützlich zu sein,
+  jedoch OHNE JEGLICHE GARANTIE; auch ohne die implizierte
+  Garantie auf MARKTGÄNGLICHKEIT oder BEREITSCHAFT FÜR
+  BESTIMMTE ANWENDUNGEN. Nutzen Sie die GNU General Public
+  License für mehr Details.
+
+  Sie sollten eine Kopie der GNU General Public License zusammen mit
+  Privacy Browser erhalten haben. Wenn nicht, besuchen Sie
+  <http://www.gnu.org/licenses/>. -->
+
+<resources>
+    <!-- Activities. -->
+    <string name="privacy_browser">Privacy Browser Free</string>
+</resources>

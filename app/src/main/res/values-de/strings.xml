@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  Copyright 2016 Soren Stoutner <soren@stoutner.com>.
+
+  Translation 2016 Aaron Gerlach <aaron@gerlach.com>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+
+  Diese Datei ist Teil von Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser ist eine kostenlose Software: Sie können sie
+  unter den Bedingungen der GNU General Public License weiterverteilen
+  mit Berufung auf die veröffentlichte Fassung der Free Software
+  Foundation, entweder Version 3 der Lizenz oder (nach Ihrer
+  Möglichkeit) jede neuere Version.
+
+  Privacy Browser wird in der Hoffnung vertrieben nützlich zu sein,
+  jedoch OHNE JEGLICHE GARANTIE; auch ohne die implizierte
+  Garantie auf MARKTGÄNGLICHKEIT oder BEREITSCHAFT FÜR
+  BESTIMMTE ANWENDUNGEN. Nutzen Sie die GNU General Public
+  License für mehr Details.
+
+  Sie sollten eine Kopie der GNU General Public License zusammen mit
+  Privacy Browser erhalten haben. Wenn nicht, besuchen Sie
+  <http://www.gnu.org/licenses/>. -->
+
+<resources>
+    <!-- Activities. -->
+    <string name="privacy_browser">Privacy Browser</string>
+    <string name="privacy_browser_settings">Privacy Browser Einstellungen</string>
+    <string name="android_asset_path">de</string>  <!-- For translations, this should be the localization abbreviation.  For example, German is `de`. -->
+
+    <!-- MainWebViewActivity. -->
+    <string name="download_started">Download gestartet</string>
+    <string name="privacy_mode">Privatsphäre-Modus</string>
+    <string name="javascript_enabled">JavaScript aktiviert</string>
+    <string name="javascript_disabled">JavaScript deaktiviert</string>
+    <string name="cookies_deleted">Cookies gelöscht</string>
+    <string name="dom_storage_deleted">DOM-Speicher gelöscht</string>
+    <string name="open_navigation">Navigationspanel öffnen</string>
+    <string name="close_navigation">Navigationspanel schließen</string>
+
+    <!-- Custom App Bar. -->
+    <string name="favorite_icon">Website-Icon</string>
+    <string name="url_or_search_terms">URL oder Suchbegriff</string>
+
+    <!-- Main WebView Navigation Drawer. -->
+    <string name="navigation_drawer">Navigationspanel</string>
+    <string name="navigation">Navigation</string>
+    <string name="home">Startseite</string>
+    <string name="back">Zurück</string>
+    <string name="forward">Vorwärts</string>
+    <string name="bookmarks">lesezeichen</string>
+    <string name="downloads">Downloads</string>
+    <string name="settings">Einstellungen</string>
+    <string name="guide">Handbuch</string>
+    <string name="about">Infos</string>
+    <string name="clear_and_exit">Leeren und verlassen</string>
+
+    <!-- Main WebView Options Menu. -->
+    <string name="javascript">JavaScript</string>
+    <string name="first_party_cookies">Erstanbieter-Cookies</string>
+    <string name="third_party_cookies">Drittanbieter-Cookies</string>
+    <string name="dom_storage">DOM-Speicher</string>
+    <string name="form_data">Formulardaten</string>
+    <string name="clear_cookies">Cookies leeren</string>
+    <string name="clear_dom_storage">DOM-Speicher leeren</string>
+    <string name="clear_form_data">Formulardaten leeren</string>
+    <string name="share">Teilen</string>
+    <string name="add_to_home_screen">Zur Startseite hinzufügen</string>
+    <string name="refresh">Aktualisieren</string>
+
+    <!-- Create Home Screen Shortcut Alert Dialog. -->
+    <string name="create_shortcut">Verknüpfung erstellen</string>
+    <string name="shortcut_name">Name der Verknüpfung</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="create">Erstellen</string>
+
+    <!-- Bookmarks. -->
+    <string name="database_view">Lesezeichen-Übersicht</string>
+    <string name="create_bookmark">Lesezeichen erstellen</string>
+    <string name="create_folder">Ordner erstellen</string>
+    <string name="current_folder_icon">Aktuelles Ordnersymbol</string>
+    <string name="default_folder_icon">Standard-Ordnersymbol</string>
+    <string name="web_page_favorite_icon">Icon der Website</string>
+    <string name="folder_name">Name des Ordners</string>
+    <string name="folder_names_must_be_unique">Ordnernamen müssen einmalig sein</string>
+    <string name="cannot_create_folder">Kann diesen Ordner nicht erstellen, da der Name bereits existiert:</string>
+    <string name="cannot_rename_folder">Kann diesen Ordner nicht umbenennen, da der neue Name bereits existiert:</string>
+    <string name="cannot_move_bookmarks">Kann die markierten Lesezeichen nicht verschieben, da kein neuer Ordner ausgewählt wurde.</string>
+    <string name="edit_bookmark">Lesezeichen bearbeiten</string>
+    <string name="edit_folder">Ordner bearbeiten</string>
+    <string name="move_to_folder">In Ordner verschieben</string>
+    <string name="move">Verschieben</string>
+    <string name="save">Speichern</string>
+    <string name="bookmark_name">Name des Lesezeichens</string>
+    <string name="bookmark_url">URL für das Lesezeichen</string>
+    <string name="current_bookmark_icon">Symbol für das aktuelle Lesezeichen</string>
+
+    <!-- Bookmarks Contextual App Bar. -->
+    <string name="selected">Ausgewählt</string>
+    <string name="move_up">Nach oben schieben</string>
+    <string name="move_down">Nach unten schieben</string>
+    <string name="edit">Bearbeiten</string>
+    <string name="delete">Löschen</string>
+    <string name="select_all">Alle auswählen</string>
+    <string name="one_bookmark_deleted">1 Lesezeichen gelöscht</string>
+    <string name="bookmarks_deleted">Lesezeichen gelöscht</string>
+    <string name="undo">Rückgängig</string>
+
+    <!-- Bookmarks Database View. -->
+    <string name="bookmarks_database_view">Lesezeichen-Übersicht</string>
+    <string name="home_folder">Standard-Ordner</string>
+
+    <!-- Guide. -->
+    <string name="privacy_browser_guide">Privacy Browser Handbuch</string>
+    <string name="overview">Übersicht</string>
+    <string name="local_storage">Lokale Speicherung</string>
+    <string name="tor">Tor</string>
+    <string name="tracking_uids">Verolgungs-UIDs</string>
+    <string name="planned_features">Geplante Features</string>
+
+    <!-- Preferences. -->
+    <string name="privacy">Privatsphäre</string>
+    <string name="javascript_preference">JavaScript standardmäßig aktivieren</string>
+    <string name="javascript_preference_summary">JavaScript ermöglicht es Websites, Programme (Scripts) auf Ihrem Gerät auszuführen.</string>
+    <string name="first_party_cookies_preference">Erstanbieter-Cookies standardmäßig aktivieren</string>
+    <string name="first_party_cookies_preference_summary">Auf Geräten mit älterer Android-Version als Lollipop (Version 5.0) wird zusammen mit dieser auch die Option für Drittanbieter-Cookies aktiviert.</string>
+    <string name="third_party_cookies_preference">Drittanbieter-Cookies standardmäßig aktivieren</string>
+    <string name="third_party_cookies_summary">Diese Option benötigt Android Lollipop (Version 5.0) oder höher. Sie hat keine Auswirkungen, wenn Erstanbieter-Cookies deaktiviert sind.</string>
+    <string name="dom_storage_preference">DOM-Speicher standardmäßig aktivieren</string>
+    <string name="dom_storage_preference_summary">JavaScript muss für die Funktionalität des DOM-Speichers aktiviert sein.</string>
+    <string name="save_form_data_preference">Formulardaten standardmäßig speichern</string>
+    <string name="save_form_data_preference_summary">Mit gespeicherten Formulardaten können Formularfelder auf Websites automatisch ausgefüllt werden.</string>
+    <string name="user_agent">User Agent</string>
+    <string-array name="user_agent_entries">
+        <item>WebView-Standard</item>
+        <item>Privacy Browser 1.0</item>
+        <item>Firefox 46 auf Android 6.0.1</item>
+        <item>Chrome 50 auf Android 6.0.1</item>
+        <item>Firefox 46 auf Linux</item>
+        <item>Chromium 50 auf Linux</item>
+        <item>Konqueror 4.14 auf Linux</item>
+        <item>Firefox 46 auf Windows 10</item>
+        <item>Chrome 50 auf Windows 10</item>
+        <item>Internet Explorer 11 auf Windows 10</item>
+        <item>Edge 13 auf Windows 10</item>
+        <item>Eigener</item>
+    </string-array>
+    <string name="custom_user_agent">Eigener User Agent</string>
+    <string name="search">Suche</string>
+    <string name="javascript_disabled_search">Suchmaschine bei deaktiviertem JavaScript</string>
+    <string-array name="javascript_disabled_search_entries">
+        <item>DuckDuckGo</item>
+        <item>Google</item>
+        <item>Bing</item>
+        <item>Yahoo</item>
+        <item>Eigene</item>
+    </string-array>
+    <string name="javascript_disabled_search_custom_url">Suchmaschinen-URL bei deaktiviertem JavaScript</string>
+    <string name="javascript_enabled_search">Suchmaschine bei aktiviertem JavaScript</string>
+    <string-array name="javascript_enabled_search_entries">
+        <item>DuckDuckGo</item>
+        <item>Google</item>
+        <item>Bing</item>
+        <item>Yahoo</item>
+        <item>Eigene</item>
+    </string-array>
+    <string name="javascript_enabled_search_custom_url">Suchmaschinen-URL bei aktivertem JavaScript</string>
+    <string name="custom_url">Eigene URL</string>
+    <string name="general">Allgemein</string>
+    <string name="homepage_preference">Startseite</string>
+    <string name="swipe_to_refresh_enabled">Herunterziehen zum Aktualisieren</string>
+    <string name="swipe_to_refresh_enabled_summary">Einige Websites funktionieren nicht, wenn "Herunterziehen zum Aktualisieren" eingeschaltet ist.</string>
+
+    <!-- About Activity. -->
+    <string name="about_privacy_browser">Über Privacy Browser</string>
+    <string name="version">Version</string>
+    <string name="version_code">Versions-Code</string>
+    <string name="hardware">Hardware</string>
+    <!-- Blank spaces at the end of strings are stripped out, so you have to replace them with the Unicode literal \u00A0. -->
+    <string name="brand">Marke:\u00A0</string>
+    <string name="manufacturer">Hersteller:\u00A0</string>
+    <string name="model">Modell:\u00A0</string>
+    <string name="device">Gerät:\u00A0</string>
+    <string name="bootloader">Bootloader:\u00A0</string>
+    <string name="radio">Radio:\u00A0</string>
+    <string name="software">Software</string>
+    <string name="android">Android:\u00A0</string>
+    <string name="api">API</string>
+    <string name="build">Build:\u00A0</string>
+    <string name="security_patch">Sicherheits-Patch:\u00A0</string>
+    <string name="webkit">WebKit:\u00A0</string>
+    <string name="chrome">Chrome:\u00A0</string>
+    <string name="permissions">Berechtigungen</string>
+    <string name="privacy_policy">Datenschutzrichtlinie</string>
+    <string name="changelog">Changelog</string>
+    <string name="licenses">Lizenzen</string>
+    <string name="contributors">Mitwirkende</string>
+    <string name="links">Links</string>
+</resources>
