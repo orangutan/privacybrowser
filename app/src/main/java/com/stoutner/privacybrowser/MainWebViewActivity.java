@@ -29,6 +29,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.MailTo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -204,11 +205,27 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, supportAppBar, R.string.open_navigation, R.string.close_navigation);
 
         mainWebView.setWebViewClient(new WebViewClient() {
-            // shouldOverrideUrlLoading makes this WebView the default handler for URLs inside the app, so that links are not kicked out to other apps.
+            // shouldOverrideUrlLoading makes this `WebView` the default handler for URLs inside the app, so that links are not kicked out to other apps.
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                mainWebView.loadUrl(url);
-                return true;
+                // Use an external email program if the link begins with "mailto:".
+                if (url.startsWith("mailto:")) {
+                    // We use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+
+                    // Parse the url and set it as the data for the `Intent`.
+                    emailIntent.setData(Uri.parse(url));
+
+                    // `FLAG_ACTIVITY_NEW_TASK` opens the email program in a new task instead as part of Privacy Browser.
+                    emailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                    // Make it so.
+                    startActivity(emailIntent);
+                    return true;
+                } else {  // Load the URL in Privacy Browser.
+                    mainWebView.loadUrl(url);
+                    return true;
+                }
             }
 
             // Update the URL in urlTextBox when the page starts to load.
