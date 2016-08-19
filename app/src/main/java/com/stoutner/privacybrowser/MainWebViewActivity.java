@@ -29,7 +29,6 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.MailTo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;

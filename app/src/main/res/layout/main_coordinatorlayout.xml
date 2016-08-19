@@ -26,8 +26,8 @@
     android:layout_width="match_parent">
 
     <!-- android:fitsSystemWindows="true" moves rootCoordinatorLayout below the system status bar.
-      When it is specified the theme should include <item name="android:windowTranslucentStatus">true</item>.
-      Setting the layout root to be focusableInTouchMode prevents urlTextBox from stealing focus on launch and opening the keyboard. -->
+        When it is specified the theme should include <item name="android:windowTranslucentStatus">true</item>.
+        Setting the layout root to be focusableInTouchMode prevents urlTextBox from stealing focus on launch and opening the keyboard. -->
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/rootCoordinatorLayout"
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -64,6 +64,15 @@
         </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
 
+    <!-- `fullScreenVideoFrameLayout` is used to display full screen videos.  It is initially `android:visibility="gone"` to hide it from view.
+        The `FrameLayout` needs to be before the `NavigationView` or touches on the navigation drawer will not work after exiting full screen video using the back button.-->
+    <FrameLayout
+        android:id="@+id/fullScreenVideoFrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="@color/black" />
+
     <!-- The navigation drawer. -->
     <android.support.design.widget.NavigationView
         android:id="@+id/navigationView"
@@ -73,12 +82,4 @@
         app:headerLayout="@layout/navigation_header"
         app:menu="@menu/webview_navigation_menu"
         app:itemIconTint="@color/blue_grey" />
-
-    <!-- fullScreenVideoFrameLayout is used to display full screen videos.  It is initially android:visibility="gone" to hide it from view. -->
-    <FrameLayout
-        android:id="@+id/fullScreenVideoFrameLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:background="@color/black" />
 </android.support.v4.widget.DrawerLayout>
