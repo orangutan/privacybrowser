@@ -65,6 +65,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 // We need to use AppCompatActivity from android.support.v7.app.AppCompatActivity to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CreateHomeScreenShortcut.CreateHomeScreenSchortcutListener {
@@ -72,67 +74,70 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // It is also used in `onCreate()` and `onCreateHomeScreenShortcutCreate()`.
     public static Bitmap favoriteIcon;
 
-    // mainWebView is public static so it can be accessed from SettingsFragment.
-    // It is also used in onCreate(), onOptionsItemSelected(), onNavigationItemSelected(), and loadUrlFromTextBox().
+    // `mainWebView` is public static so it can be accessed from `SettingsFragment`.
+    // It is also used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, and `loadUrlFromTextBox()`.
     public static WebView mainWebView;
 
-    // formattedUrlString is public static so it can be accessed from BookmarksActivity.
-    // It is also used in onCreate(), onOptionsItemSelected(), onCreateHomeScreenShortcutCreate(), and loadUrlFromTextBox().
+    // `formattedUrlString` is public static so it can be accessed from `BookmarksActivity`.
+    // It is also used in `onCreate()`, `onOptionsItemSelected()`, `onCreateHomeScreenShortcutCreate()`, and `loadUrlFromTextBox()`.
     public static String formattedUrlString;
 
-    // mainMenu is public static so it can be accessed from SettingsFragment.  It is also used in onCreateOptionsMenu() and onOptionsItemSelected().
+    // `mainMenu` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onCreateOptionsMenu()` and `onOptionsItemSelected()`.
     public static Menu mainMenu;
 
-    // cookieManager is public static so it can be accessed from SettingsFragment.  It is also used in onCreate(), onOptionsItemSelected(), and onNavigationItemSelected().
+    // `cookieManager` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onCreate()`, `onOptionsItemSelected()`, and `onNavigationItemSelected()`.
     public static CookieManager cookieManager;
 
-    // javaScriptEnabled is public static so it can be accessed from SettingsFragment.
-    // It is also used in onCreate(), onCreateOptionsMenu(), onOptionsItemSelected(), and loadUrlFromTextBox().
+    // `javaScriptEnabled` is public static so it can be accessed from `SettingsFragment`.
+    // It is also used in `onCreate()`, `onCreateOptionsMenu()`, `onOptionsItemSelected()`, and `loadUrlFromTextBox()`.
     public static boolean javaScriptEnabled;
 
-    // firstPartyCookiesEnabled is public static so it can be accessed from SettingsFragment.
-    // It is also used in onCreate(), onCreateOptionsMenu(), onPrepareOptionsMenu(), and onOptionsItemSelected().
+    // `firstPartyCookiesEnabled` is public static so it can be accessed from `SettingsFragment`.
+    // It is also used in `onCreate()`, `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, and `onOptionsItemSelected()`.
     public static boolean firstPartyCookiesEnabled;
 
-    // thirdPartyCookiesEnabled is used in onCreate(), onCreateOptionsMenu(), onPrepareOptionsMenu(), and onOptionsItemSelected().
+    // `thirdPartyCookiesEnabled` is used in `onCreate()`, `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, and `onOptionsItemSelected()`.
     public static boolean thirdPartyCookiesEnabled;
 
-    // domStorageEnabled is public static so it can be accessed from SettingsFragment.  It is also used in onCreate(), onCreateOptionsMenu(), and onOptionsItemSelected().
+    // `domStorageEnabled` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onCreate()`, `onCreateOptionsMenu()`, and `onOptionsItemSelected()`.
     public static boolean domStorageEnabled;
 
-    // saveFormDataEnabled is public static so it can be accessed from SettingsFragment.  It is also used in onCreate(), onCreateOptionsMenu(), and onOptionsItemSelected().
+    // `saveFormDataEnabled` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onCreate()`, `onCreateOptionsMenu()`, and `onOptionsItemSelected()`.
     public static boolean saveFormDataEnabled;
 
-    // javaScriptDisabledSearchURL is public static so it can be accessed from SettingsFragment.  It is also used in onCreate() and loadURLFromTextBox().
+    // `javaScriptDisabledSearchURL` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onCreate()` and `loadURLFromTextBox()`.
     public static String javaScriptDisabledSearchURL;
 
-    // javaScriptEnabledSearchURL is public static so it can be accessed from SettingsFragment.  It is also used in onCreate() and loadURLFromTextBox().
+    // `javaScriptEnabledSearchURL` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onCreate()` and `loadURLFromTextBox()`.
     public static String javaScriptEnabledSearchURL;
 
-    // homepage is public static so it can be accessed from  SettingsFragment.  It is also used in onCreate() and onOptionsItemSelected().
+    // `homepage` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onCreate()` and `onOptionsItemSelected()`.
     public static String homepage;
 
-    // swipeToRefresh is public static so it can be accessed from SettingsFragment.  It is also used in onCreate().
+    // `swipeToRefresh` is public static so it can be accessed from SettingsFragment.  It is also used in onCreate().
     public static SwipeRefreshLayout swipeToRefresh;
 
-    // swipeToRefreshEnabled is public static so it can be accessed from SettingsFragment.  It is also used in onCreate().
+    // `swipeToRefreshEnabled` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onCreate()`.
     public static boolean swipeToRefreshEnabled;
 
+    // `customHeader` is public static so it can be accessed from `BookmarksActivity`.  It is also used in `onCreate()` and `loadUrlFromTextBox()`.
+    public static Map<String, String> customHeaders = new HashMap<String, String>();
 
 
-    // drawerToggle is used in onCreate(), onPostCreate(), onConfigurationChanged(), onNewIntent(), and onNavigationItemSelected().
+
+    // `drawerToggle` is used in `onCreate()`, `onPostCreate()`, `onConfigurationChanged()`, `onNewIntent()`, and `onNavigationItemSelected()`.
     private ActionBarDrawerToggle drawerToggle;
 
-    // drawerLayout is used in onCreate(), onNewIntent(), and onBackPressed().
+    // `drawerLayout` is used in `onCreate()`, `onNewIntent()`, and `onBackPressed()`.
     private DrawerLayout drawerLayout;
 
-    // privacyIcon is used in onCreateOptionsMenu() and updatePrivacyIcon().
+    // `privacyIcon` is used in `onCreateOptionsMenu()` and `updatePrivacyIcon()`.
     private MenuItem privacyIcon;
 
-    // urlTextBox is used in onCreate(), onOptionsItemSelected(), and loadUrlFromTextBox().
+    // `urlTextBox` is used in `onCreate()`, `onOptionsItemSelected()`, and `loadUrlFromTextBox()`.
     private EditText urlTextBox;
 
-    // adView is used in onCreate() and onConfigurationChanged().
+    // `adView` is used in `onCreate()` and `onConfigurationChanged()`.
     private View adView;
 
     @Override
@@ -203,6 +208,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // drawerToggle creates the hamburger icon at the start of the AppBar.
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, supportAppBar, R.string.open_navigation, R.string.close_navigation);
 
+        // Replace the header that `WebView` creates for `X-Requested-With` with a null value.  The default value is the application ID (com.stoutner.privacybrowser.standard).
+        customHeaders.put("X-Requested-With", "");
+
         mainWebView.setWebViewClient(new WebViewClient() {
             // shouldOverrideUrlLoading makes this `WebView` the default handler for URLs inside the app, so that links are not kicked out to other apps.
             @Override
@@ -222,7 +230,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     startActivity(emailIntent);
                     return true;
                 } else {  // Load the URL in Privacy Browser.
-                    mainWebView.loadUrl(url);
+                    mainWebView.loadUrl(url, customHeaders);
                     return true;
                 }
             }
@@ -430,9 +438,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         }
 
         // Load the initial website.
-        mainWebView.loadUrl(formattedUrlString);
+        mainWebView.loadUrl(formattedUrlString, customHeaders);
 
-        // Load the default favorite icon if it is null.
+        // If the favorite icon is null, load the default.
         if (favoriteIcon == null) {
             // We have to use `ContextCompat` until API >= 21.
             Drawable favoriteIconDrawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.world);
@@ -448,7 +456,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
     @Override
     protected void onNewIntent(Intent intent) {
-        // Sets the new intent as the activity intent, so that any future getIntent()s pick up this one instead of creating a new activity.
+        // Sets the new intent as the activity intent, so that any future `getIntent()`s pick up this one instead of creating a new activity.
         setIntent(intent);
 
         if (intent.getData() != null) {
@@ -463,7 +471,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         }
 
         // Load the website.
-        mainWebView.loadUrl(formattedUrlString);
+        mainWebView.loadUrl(formattedUrlString, customHeaders);
 
         // Clear the keyboard if displayed and remove the focus on the urlTextBar if it has it.
         mainWebView.requestFocus();
@@ -679,7 +687,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
         switch (menuItemId) {
             case R.id.home:
-                mainWebView.loadUrl(homepage);
+                mainWebView.loadUrl(homepage, customHeaders);
                 break;
 
             case R.id.back:
@@ -893,7 +901,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             }
         }
 
-        mainWebView.loadUrl(formattedUrlString);
+        mainWebView.loadUrl(formattedUrlString, customHeaders);
 
         // Hides the keyboard so we can see the webpage.
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);

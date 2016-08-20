@@ -135,7 +135,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                     MainWebViewActivity.formattedUrlString = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHandler.BOOKMARK_URL));
 
                     //  Load formattedUrlString and return to the main activity.
-                    MainWebViewActivity.mainWebView.loadUrl(MainWebViewActivity.formattedUrlString);
+                    MainWebViewActivity.mainWebView.loadUrl(MainWebViewActivity.formattedUrlString, MainWebViewActivity.customHeaders);
                     NavUtils.navigateUpFromSameTask(bookmarksActivity);
                 }
 

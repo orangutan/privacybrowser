@@ -49,7 +49,7 @@
     <string name="home">Startseite</string>
     <string name="back">Zurück</string>
     <string name="forward">Vorwärts</string>
-    <string name="bookmarks">lesezeichen</string>
+    <string name="bookmarks">Lesezeichen</string>
     <string name="downloads">Downloads</string>
     <string name="settings">Einstellungen</string>
     <string name="guide">Handbuch</string>
@@ -175,22 +175,22 @@
     <!-- About Activity. -->
     <string name="about_privacy_browser">Über Privacy Browser</string>
     <string name="version">Version</string>
-    <string name="version_code">Versions-Code</string>
-    <string name="hardware">Hardware</string>
-    <!-- Blank spaces at the end of strings are stripped out, so you have to replace them with the Unicode literal \u00A0. -->
-    <string name="brand">Marke:\u00A0</string>
-    <string name="manufacturer">Hersteller:\u00A0</string>
-    <string name="model">Modell:\u00A0</string>
-    <string name="device">Gerät:\u00A0</string>
-    <string name="bootloader">Bootloader:\u00A0</string>
-    <string name="radio">Radio:\u00A0</string>
-    <string name="software">Software</string>
-    <string name="android">Android:\u00A0</string>
-    <string name="api">API</string>
-    <string name="build">Build:\u00A0</string>
-    <string name="security_patch">Sicherheits-Patch:\u00A0</string>
-    <string name="webkit">WebKit:\u00A0</string>
-    <string name="chrome">Chrome:\u00A0</string>
+        <string name="version_code">Versions-Code</string>
+        <string name="hardware">Hardware</string>
+            <!-- Blank spaces at the end of strings are stripped out, so you have to replace them with the Unicode literal \u00A0. -->
+            <string name="brand">Marke:\u00A0</string>
+            <string name="manufacturer">Hersteller:\u00A0</string>
+            <string name="model">Modell:\u00A0</string>
+            <string name="device">Gerät:\u00A0</string>
+            <string name="bootloader">Bootloader:\u00A0</string>
+            <string name="radio">Radio:\u00A0</string>
+        <string name="software">Software</string>
+            <string name="android">Android:\u00A0</string>
+            <string name="api">API</string>
+            <string name="build">Build:\u00A0</string>
+            <string name="security_patch">Sicherheits-Patch:\u00A0</string>
+            <string name="webkit">WebKit:\u00A0</string>
+            <string name="chrome">Chrome:\u00A0</string>
     <string name="permissions">Berechtigungen</string>
     <string name="privacy_policy">Datenschutzrichtlinie</string>
     <string name="changelog">Changelog</string>
