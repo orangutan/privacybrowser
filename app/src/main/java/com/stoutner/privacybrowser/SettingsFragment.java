@@ -109,9 +109,14 @@ public class SettingsFragment extends PreferenceFragment {
         javaScriptEnabledSearchCustomURLPreference.setEnabled(javaScriptEnabledSearchString.equals("Custom URL"));
 
 
-        // Set the homepage URL as the summary text for the Homepage preference when the preference screen is loaded.  The default is "https://www.duckduckgo.com".
+        // Set the homepage URL as the summary text for the `Homepage` preference when the preference screen is loaded.  The default is `https://www.duckduckgo.com`.
         final Preference homepagePreference = findPreference("homepage");
         homepagePreference.setSummary(savedPreferences.getString("homepage", "https://www.duckduckgo.com"));
+
+        // Set the default font size as the summary text for the `Default Font Size` preference when the preference screen is loaded.  The default is `100`.
+        final Preference defaultFontSizePreference = findPreference("default_font_size");
+        String defaultFontSizeString = savedPreferences.getString("default_font_size", "100");
+        defaultFontSizePreference.setSummary(defaultFontSizeString + "%%");
 
 
         // Listen for preference changes.
@@ -302,11 +307,21 @@ public class SettingsFragment extends PreferenceFragment {
                         MainWebViewActivity.homepage = sharedPreferences.getString("homepage", "https://www.duckduckgo.com");
                         break;
 
+                    case "default_font_size":
+                        // Get the default font size as a string.  The default is `100`.
+                        String newDefaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
+
+                        // Update the font size on `mainWebView`.  The default is `100`.
+                        MainWebViewActivity.mainWebView.getSettings().setTextZoom(Integer.valueOf(newDefaultFontSizeString));
+
+                        // Update the summary text of `default_font_size`.
+                        defaultFontSizePreference.setSummary(newDefaultFontSizeString + "%%");
+
                     case "swipe_to_refresh_enabled":
-                        // Set swipeToRefreshEnabled to the new state.  The default is true.
+                        // Set `swipeToRefreshEnabled` to the new state.  The default is `true`.
                         MainWebViewActivity.swipeToRefreshEnabled = sharedPreferences.getBoolean("swipe_to_refresh_enabled", true);
 
-                        // Update swipeRefreshLayout to match the new state.
+                        // Update `swipeRefreshLayout` to match the new state.
                         MainWebViewActivity.swipeToRefresh.setEnabled(MainWebViewActivity.swipeToRefreshEnabled);
                         break;
 

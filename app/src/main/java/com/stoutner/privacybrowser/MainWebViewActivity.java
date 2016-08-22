@@ -415,10 +415,14 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         }
 
 
-        // Set homepage initial status.  The default value is "https://www.duckduckgo.com".
+        // Set the homepage initial status.  The default value is `https://www.duckduckgo.com`.
         homepage = savedPreferences.getString("homepage", "https://www.duckduckgo.com");
 
-        // Set swipe to refresh initial status.  The default is true.
+        // Set the font size initial status.  the default value is `100`.
+        String defaultFontSizeString = savedPreferences.getString("default_font_size", "100");
+        mainWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
+
+        // Set the swipe to refresh initial status.  The default is `true`.
         swipeToRefreshEnabled = savedPreferences.getBoolean("swipe_to_refresh_enabled", true);
         swipeToRefresh.setEnabled(swipeToRefreshEnabled);
 
@@ -488,14 +492,14 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Initialize privacyIcon
         privacyIcon = menu.findItem(R.id.toggleJavaScript);
 
+        // Set the initial status of the privacy icon.
+        updatePrivacyIcon();
+
         // Get MenuItems for checkable menu items.
         MenuItem toggleFirstPartyCookies = menu.findItem(R.id.toggleFirstPartyCookies);
         MenuItem toggleThirdPartyCookies = menu.findItem(R.id.toggleThirdPartyCookies);
         MenuItem toggleDomStorage = menu.findItem(R.id.toggleDomStorage);
         MenuItem toggleSaveFormData = menu.findItem(R.id.toggleSaveFormData);
-
-        // Set the initial status of the privacy icon.
-        updatePrivacyIcon();
 
         // Set the initial status of the menu item checkboxes.
         toggleFirstPartyCookies.setChecked(firstPartyCookiesEnabled);
@@ -528,6 +532,56 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         MenuItem clearFormData = menu.findItem(R.id.clearFormData);
         WebViewDatabase mainWebViewDatabase = WebViewDatabase.getInstance(this);
         clearFormData.setEnabled(mainWebViewDatabase.hasFormData());
+
+        // Select the current font size.
+        int fontSize = mainWebView.getSettings().getTextZoom();
+        MenuItem fontSizeMenuItem = menu.findItem(R.id.fontSize);
+        MenuItem selectedFontSizeMenuItem;
+        switch (fontSize) {
+            case 50:
+                fontSizeMenuItem.setTitle(R.string.font_size_fifty_percent);
+                selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeFiftyPercent);
+                break;
+
+            case 75:
+                fontSizeMenuItem.setTitle(R.string.font_size_seventy_five_percent);
+                selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeSeventyFivePercent);
+                break;
+
+            case 100:
+                fontSizeMenuItem.setTitle(R.string.font_size_one_hundred_percent);
+                selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeOneHundredPercent);
+                break;
+
+            case 125:
+                fontSizeMenuItem.setTitle(R.string.font_size_one_hundred_twenty_five_percent);
+                selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeOneHundredTwentyFivePercent);
+                break;
+
+            case 150:
+                fontSizeMenuItem.setTitle(R.string.font_size_one_hundred_fifty_percent);
+                selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeOneHundredFiftyPercent);
+                break;
+
+            case 175:
+                fontSizeMenuItem.setTitle(R.string.font_size_one_hundred_seventy_five_percent);
+                selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeOneHundredSeventyFivePercent);
+                break;
+
+            case 200:
+                fontSizeMenuItem.setTitle(R.string.font_size_two_hundred_percent);
+                selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeTwoHundredPercent);
+                break;
+
+            default:
+                selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeOneHundredPercent);
+                break;
+        }
+        selectedFontSizeMenuItem.setChecked(true);
+
+        // Only show `Refresh` if `swipeToRefresh` is disabled.
+        MenuItem refreshMenuItem = menu.findItem(R.id.refresh);
+        refreshMenuItem.setVisible(!swipeToRefreshEnabled);
 
         // Run all the other default commands.
         super.onPrepareOptionsMenu(menu);
@@ -651,6 +705,34 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 WebViewDatabase mainWebViewDatabase = WebViewDatabase.getInstance(this);
                 mainWebViewDatabase.clearFormData();
                 mainWebView.reload();
+                return true;
+
+            case R.id.fontSizeFiftyPercent:
+                mainWebView.getSettings().setTextZoom(50);
+                return true;
+
+            case R.id.fontSizeSeventyFivePercent:
+                mainWebView.getSettings().setTextZoom(75);
+                return true;
+
+            case R.id.fontSizeOneHundredPercent:
+                mainWebView.getSettings().setTextZoom(100);
+                return true;
+
+            case R.id.fontSizeOneHundredTwentyFivePercent:
+                mainWebView.getSettings().setTextZoom(125);
+                return true;
+
+            case R.id.fontSizeOneHundredFiftyPercent:
+                mainWebView.getSettings().setTextZoom(150);
+                return true;
+
+            case R.id.fontSizeOneHundredSeventyFivePercent:
+                mainWebView.getSettings().setTextZoom(175);
+                return true;
+
+            case R.id.fontSizeTwoHundredPercent:
+                mainWebView.getSettings().setTextZoom(200);
                 return true;
 
             case R.id.share:

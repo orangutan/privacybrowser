@@ -77,20 +77,73 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/fontSize"
+        android:title="@string/font_size_one_hundred_percent"
+        android:orderInCategory="90"
+        app:showAsAction="never" >
+
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/fontSizeFiftyPercent"
+                    android:title="@string/font_size_fifty_percent"
+                    android:orderInCategory="91"
+                    app:showAsAction="never" />
+
+                <item
+                    android:id="@+id/fontSizeSeventyFivePercent"
+                    android:title="@string/font_size_seventy_five_percent"
+                    android:orderInCategory="92"
+                    app:showAsAction="never" />
+
+                <item
+                    android:id="@+id/fontSizeOneHundredPercent"
+                    android:title="@string/font_size_one_hundred_percent"
+                    android:orderInCategory="93"
+                    app:showAsAction="never" />
+
+                <item
+                    android:id="@+id/fontSizeOneHundredTwentyFivePercent"
+                    android:title="@string/font_size_one_hundred_twenty_five_percent"
+                    android:orderInCategory="94"
+                    app:showAsAction="never" />
+
+                <item
+                    android:id="@+id/fontSizeOneHundredFiftyPercent"
+                    android:title="@string/font_size_one_hundred_fifty_percent"
+                    android:orderInCategory="95"
+                    app:showAsAction="never" />
+
+                <item
+                    android:id="@+id/fontSizeOneHundredSeventyFivePercent"
+                    android:title="@string/font_size_one_hundred_seventy_five_percent"
+                    android:orderInCategory="96"
+                    app:showAsAction="never" />
+
+                <item
+                    android:id="@+id/fontSizeTwoHundredPercent"
+                    android:title="@string/font_size_two_hundred_percent"
+                    android:orderInCategory="97"
+                    app:showAsAction="never" />
+            </group>
+        </menu>
+    </item>
+
+    <item
         android:id="@+id/share"
         android:title="@string/share"
-        android:orderInCategory="90"
+        android:orderInCategory="100"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/addToHomescreen"
         android:title="@string/add_to_home_screen"
-        android:orderInCategory="100"
+        android:orderInCategory="110"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/refresh"
         android:title="@string/refresh"
-        android:orderInCategory="110"
+        android:orderInCategory="120"
         app:showAsAction="never" />
 </menu>

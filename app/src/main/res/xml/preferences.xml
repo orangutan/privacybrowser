@@ -119,6 +119,13 @@
             android:defaultValue="https://www.duckduckgo.com"
             android:inputType="textUri" />
 
+        <ListPreference
+            android:key="default_font_size"
+            android:title="@string/default_font_size"
+            android:entries="@array/default_font_size_entries"
+            android:entryValues="@array/default_font_size_entry_values"
+            android:defaultValue="100" />
+
         <SwitchPreference
             android:key="swipe_to_refresh_enabled"
             android:title="@string/swipe_to_refresh_enabled"

@@ -38,7 +38,7 @@
     <string name="favorite_icon">Favorite Icon</string>
     <string name="url_or_search_terms">URL or Search Terms</string>
 
-    <!-- Main WebView Navigation Drawer. -->
+    <!-- Main `WebView` Navigation Drawer. -->
     <string name="navigation_drawer">Navigation Drawer</string>
     <string name="navigation">Navigation</string>
     <string name="home">Home</string>
@@ -51,7 +51,7 @@
     <string name="about">About</string>
     <string name="clear_and_exit">Clear and Exit</string>
 
-    <!-- Main WebView Options Menu. -->
+    <!-- Main `WebView` Options Menu. -->
     <string name="javascript">JavaScript</string>
     <string name="first_party_cookies">First-Party Cookies</string>
     <string name="third_party_cookies">Third-Party Cookies</string>
@@ -60,6 +60,13 @@
     <string name="clear_cookies">Clear Cookies</string>
     <string name="clear_dom_storage">Clear DOM Storage</string>
     <string name="clear_form_data">Clear Form Data</string>
+        <string name="font_size_fifty_percent">Font Size 50%</string>
+        <string name="font_size_seventy_five_percent">Font Size 75%</string>
+        <string name="font_size_one_hundred_percent">Font Size 100%</string>
+        <string name="font_size_one_hundred_twenty_five_percent">Font Size 125%</string>
+        <string name="font_size_one_hundred_fifty_percent">Font Size 150%</string>
+        <string name="font_size_one_hundred_seventy_five_percent">Font Size 175%</string>
+        <string name="font_size_two_hundred_percent">Font Size 200%</string>
     <string name="share">Share</string>
     <string name="add_to_home_screen">Add to Home Screen</string>
     <string name="refresh">Refresh</string>
@@ -192,6 +199,25 @@
     <string name="custom_url">Custom URL</string>
     <string name="general">General</string>
     <string name="homepage_preference">Homepage</string>
+    <string name="default_font_size">Default Font Size</string>
+    <string-array name="default_font_size_entries">
+        <item>50%</item>
+        <item>75%</item>
+        <item>100%</item>
+        <item>125%</item>
+        <item>150%</item>
+        <item>175%</item>
+        <item>200%</item>
+    </string-array>
+    <string-array name="default_font_size_entry_values" translatable="false">  <!-- None of the items in this string-array should be translated. -->
+        <item>50</item>
+        <item>75</item>
+        <item>100</item>
+        <item>125</item>
+        <item>150</item>
+        <item>175</item>
+        <item>200</item>
+    </string-array>
     <string name="swipe_to_refresh_enabled">Swipe to refresh</string>
     <string name="swipe_to_refresh_enabled_summary">Some websites don\'t work well if swipe to refresh is enabled.</string>
 
