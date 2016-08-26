@@ -15,9 +15,11 @@
       <w>checkedtextview</w>
       <w>chromebooks</w>
       <w>chromeversion</w>
+      <w>cname</w>
       <w>commitdiff</w>
       <w>coordinatorlayout</w>
       <w>displayorder</w>
+      <w>dname</w>
       <w>eadd</w>
       <w>edittext</w>
       <w>exynos</w>
@@ -33,6 +35,7 @@
       <w>lossless</w>
       <w>mozilla</w>
       <w>nojs</w>
+      <w>oname</w>
       <w>orbot</w>
       <w>panopticlick</w>
       <w>parentfolder</w>
@@ -54,6 +57,7 @@
       <w>techrepublic</w>
       <w>textview</w>
       <w>uids</w>
+      <w>uname</w>
       <w>webkay</w>
       <w>webkitversion</w>
       <w>whatismyip</w>

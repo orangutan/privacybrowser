@@ -38,6 +38,33 @@
     <string name="favorite_icon">Favorite Icon</string>
     <string name="url_or_search_terms">URL or Search Terms</string>
 
+    <!-- View SSL Certificate. -->
+    <string name="view_ssl_certificate">View SSL Certificate</string>
+    <string name="unencrypted_website">Unencrypted Website</string>
+    <string name="no_ssl_certificate">Communicated with this website is not encrypted by an SSL certificate.</string>
+    <string name="ssl_certificate">SSL Certificate</string>
+    <string name="close">Close</string>
+    <string name="issued_to">Issued To</string>
+    <string name="issued_by">Issued By</string>
+    <string name="common_name">Common Name (CN):</string>
+    <string name="organization">Organization (O):</string>
+    <string name="organizational_unit">Organizational Unit (OU):</string>
+    <string name="valid_dates">Valid Dates</string>
+    <string name="start_date">Start Date:</string>
+    <string name="end_date">End Date:</string>
+
+    <!-- SSL Certificate Error. -->
+    <string name="ssl_certificate_error">SSL Certificate Error</string>
+    <string name="proceed">Proceed</string>
+    <string name="future_certificate">The certificate start date is in the future</string>
+    <string name="expired_certificate">The certificate is expired</string>
+    <string name="cn_mismatch">The Common Name does not match the hostname</string>
+    <string name="untrusted">The certificate authority is not trusted</string>
+    <string name="invalid_date">The date on the certificate is invalid</string>
+    <string name="invalid_certificate">The certificate is invalid</string>
+    <string name="url">URL</string>
+    <string name="url_label">URL:</string>
+
     <!-- Main `WebView` Navigation Drawer. -->
     <string name="navigation_drawer">Navigation Drawer</string>
     <string name="navigation">Navigation</string>
@@ -60,13 +87,14 @@
     <string name="clear_cookies">Clear Cookies</string>
     <string name="clear_dom_storage">Clear DOM Storage</string>
     <string name="clear_form_data">Clear Form Data</string>
-        <string name="font_size_fifty_percent">Font Size 50%</string>
-        <string name="font_size_seventy_five_percent">Font Size 75%</string>
-        <string name="font_size_one_hundred_percent">Font Size 100%</string>
-        <string name="font_size_one_hundred_twenty_five_percent">Font Size 125%</string>
-        <string name="font_size_one_hundred_fifty_percent">Font Size 150%</string>
-        <string name="font_size_one_hundred_seventy_five_percent">Font Size 175%</string>
-        <string name="font_size_two_hundred_percent">Font Size 200%</string>
+    <string name="font_size">Font Size</string>
+        <string name="fifty_percent">50%</string>
+        <string name="seventy_five_percent">75%</string>
+        <string name="one_hundred_percent">100%</string>
+        <string name="one_hundred_twenty_five_percent">125%</string>
+        <string name="one_hundred_fifty_percent">150%</string>
+        <string name="one_hundred_seventy_five_percent">175%</string>
+        <string name="two_hundred_percent">200%</string>
     <string name="share">Share</string>
     <string name="add_to_home_screen">Add to Home Screen</string>
     <string name="refresh">Refresh</string>

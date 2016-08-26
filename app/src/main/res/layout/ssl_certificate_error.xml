@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  Copyright 2016 Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content" >
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:padding="10dp"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/primary_error"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textColor="@color/red"
+            android:textStyle="bold"/>
+
+        <!-- URL. -->
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/url"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textColor="@color/dark_blue" />
+
+        <TextView
+            android:id="@+id/url_error_dialog"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+        <!-- Issued To. -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/issued_to"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textColor="@color/dark_blue" />
+
+        <TextView
+            android:id="@+id/issued_to_cname_error_dialog"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+        <TextView
+            android:id="@+id/issued_to_oname_error_dialog"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+        <TextView
+            android:id="@+id/issued_to_uname_error_dialog"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"/>
+
+
+        <!-- Issued By. -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/issued_by"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textColor="@color/dark_blue"/>
+
+        <TextView
+            android:id="@+id/issued_by_cname_error_dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/issued_by_oname_error_dialog"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+        <TextView
+            android:id="@+id/issued_by_uname_error_dialog"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+
+        <!-- Valid Dates. -->
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/valid_dates"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textColor="@color/dark_blue"/>
+
+        <TextView
+            android:id="@+id/start_date_error_dialog"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+        <TextView
+            android:id="@+id/end_date_error_dialog"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+    </LinearLayout>
+</ScrollView>

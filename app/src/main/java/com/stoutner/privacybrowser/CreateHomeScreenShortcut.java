@@ -42,7 +42,7 @@ public class CreateHomeScreenShortcut extends DialogFragment {
         void onCreateHomeScreenShortcut(DialogFragment dialogFragment);
     }
 
-    //createHomeScreenShortcutListener is used in onAttach and and onCreateDialog.
+    //createHomeScreenShortcutListener is used in `onAttach` and and `onCreateDialog`.
     private CreateHomeScreenSchortcutListener createHomeScreenShortcutListener;
 
     // Check to make sure that the parent activity implements the listener.
@@ -57,20 +57,20 @@ public class CreateHomeScreenShortcut extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Get the activity's layout inflater.
+        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+
         // Create a drawable version of the favorite icon.
         Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), MainWebViewActivity.favoriteIcon);
 
-        // Get the activity's layout inflater.
-        LayoutInflater customDialogInflater = getActivity().getLayoutInflater();
-
-        // Use AlertDialog.Builder to create the AlertDialog.  The style formats the color of the button text.
+        // Use `AlertDialog.Builder` to create the `AlertDialog`.  `R.style.LightAlertDialog` formats the color of the button text.
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.LightAlertDialog);
         dialogBuilder.setTitle(R.string.create_shortcut);
         dialogBuilder.setIcon(favoriteIconDrawable);
-        // The parent view is "null" because it will be assigned by AlertDialog.
-        dialogBuilder.setView(customDialogInflater.inflate(R.layout.create_home_screen_shortcut_dialog, null));
+        // The parent view is `null` because it will be assigned by `AlertDialog`.
+        dialogBuilder.setView(layoutInflater.inflate(R.layout.create_home_screen_shortcut_dialog, null));
 
-        // Set an onClick listener on the negative button.
+        // Set an `onClick` listener on the negative button.
         dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -78,7 +78,7 @@ public class CreateHomeScreenShortcut extends DialogFragment {
             }
         });
 
-        // Set an onClick listener on the positive button.
+        // Set an `onClick` listener on the positive button.
         dialogBuilder.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -87,13 +87,13 @@ public class CreateHomeScreenShortcut extends DialogFragment {
         });
 
 
-        // Create an AlertDialog from the AlertDialogBuilder.
+        // Create an `AlertDialog` from the `AlertDialog.Builder`.
         final AlertDialog alertDialog = dialogBuilder.create();
 
         // Show the keyboard when the Dialog is displayed on the screen.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
-        // We need to show the AlertDialog before we can call setOnKeyListener() below.
+        // We need to show the `AlertDialog` before we can call setOnKeyListener() below.
         alertDialog.show();
 
         // Allow the "enter" key on the keyboard to create the shortcut.
@@ -117,7 +117,7 @@ public class CreateHomeScreenShortcut extends DialogFragment {
             }
         });
 
-        // onCreateDialog requires the return of an AlertDialog.
+        // `onCreateDialog` requires the return of an `AlertDialog`.
         return alertDialog;
     }
 }

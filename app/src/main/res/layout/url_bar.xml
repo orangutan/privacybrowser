@@ -39,7 +39,8 @@
             android:layout_height="26dp"
             android:layout_width="26dp"
             android:layout_centerVertical="true"
-            android:contentDescription="@string/favorite_icon"/>
+            android:onClick="viewSslCertificate"
+            android:contentDescription="@string/favorite_icon" />
 
         <!-- `android:imeOptions="actionGo"` sets the keyboard to have a "go" key instead of a "new line" key.
             `android:inputType="textUri"` disables spell check in the EditText.

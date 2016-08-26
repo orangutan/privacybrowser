@@ -78,7 +78,7 @@
 
     <item
         android:id="@+id/fontSize"
-        android:title="@string/font_size_one_hundred_percent"
+        android:title="@string/font_size"
         android:orderInCategory="90"
         app:showAsAction="never" >
 
@@ -86,43 +86,43 @@
             <group android:checkableBehavior="single">
                 <item
                     android:id="@+id/fontSizeFiftyPercent"
-                    android:title="@string/font_size_fifty_percent"
+                    android:title="@string/fifty_percent"
                     android:orderInCategory="91"
                     app:showAsAction="never" />
 
                 <item
                     android:id="@+id/fontSizeSeventyFivePercent"
-                    android:title="@string/font_size_seventy_five_percent"
+                    android:title="@string/seventy_five_percent"
                     android:orderInCategory="92"
                     app:showAsAction="never" />
 
                 <item
                     android:id="@+id/fontSizeOneHundredPercent"
-                    android:title="@string/font_size_one_hundred_percent"
+                    android:title="@string/one_hundred_percent"
                     android:orderInCategory="93"
                     app:showAsAction="never" />
 
                 <item
                     android:id="@+id/fontSizeOneHundredTwentyFivePercent"
-                    android:title="@string/font_size_one_hundred_twenty_five_percent"
+                    android:title="@string/one_hundred_twenty_five_percent"
                     android:orderInCategory="94"
                     app:showAsAction="never" />
 
                 <item
                     android:id="@+id/fontSizeOneHundredFiftyPercent"
-                    android:title="@string/font_size_one_hundred_fifty_percent"
+                    android:title="@string/one_hundred_fifty_percent"
                     android:orderInCategory="95"
                     app:showAsAction="never" />
 
                 <item
                     android:id="@+id/fontSizeOneHundredSeventyFivePercent"
-                    android:title="@string/font_size_one_hundred_seventy_five_percent"
+                    android:title="@string/one_hundred_seventy_five_percent"
                     android:orderInCategory="96"
                     app:showAsAction="never" />
 
                 <item
                     android:id="@+id/fontSizeTwoHundredPercent"
-                    android:title="@string/font_size_two_hundred_percent"
+                    android:title="@string/two_hundred_percent"
                     android:orderInCategory="97"
                     app:showAsAction="never" />
             </group>

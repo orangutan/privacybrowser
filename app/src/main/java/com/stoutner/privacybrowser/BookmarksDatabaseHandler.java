@@ -25,9 +25,6 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.provider.ContactsContract;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 
 public class BookmarksDatabaseHandler extends SQLiteOpenHelper {
     private static final int SCHEMA_VERSION = 1;

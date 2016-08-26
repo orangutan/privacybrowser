@@ -30,6 +30,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -51,6 +52,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.CookieManager;
 import android.webkit.DownloadListener;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
@@ -69,7 +71,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 // We need to use AppCompatActivity from android.support.v7.app.AppCompatActivity to have access to the SupportActionBar until the minimum API is >= 21.
-public class MainWebViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CreateHomeScreenShortcut.CreateHomeScreenSchortcutListener {
+public class MainWebViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CreateHomeScreenShortcut.CreateHomeScreenSchortcutListener, SslCertificateError.SslCertificateErrorListener {
     // `favoriteIcon` is public static so it can be accessed from `CreateHomeScreenShortcut`, `BookmarksActivity`, `CreateBookmark`, `CreateBookmarkFolder`, and `EditBookmark`.
     // It is also used in `onCreate()` and `onCreateHomeScreenShortcutCreate()`.
     public static Bitmap favoriteIcon;
@@ -139,6 +141,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
     // `adView` is used in `onCreate()` and `onConfigurationChanged()`.
     private View adView;
+
+    // `sslErrorHandler` is used in `onCreate()`, `onSslErrorCancel()`, and `onSslErrorProceed`.
+    private SslErrorHandler sslErrorHandler;
 
     @Override
     // Remove Android Studio's warning about the dangers of using SetJavaScriptEnabled.  The whole premise of Privacy Browser is built around an understanding of these dangers.
@@ -250,6 +255,17 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 if (!urlTextBox.hasFocus()) {
                     urlTextBox.setText(formattedUrlString);
                 }
+            }
+
+            // Handle SSL Certificate errors.
+            @Override
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                // Store `handler` so it can be accesses from `onSslErrorCancel()` and `onSslErrorProceed()`.
+                sslErrorHandler = handler;
+
+                // Display the SSL error `AlertDialog`.
+                DialogFragment sslCertificateErrorDialogFragment = SslCertificateError.displayDialog(error);
+                sslCertificateErrorDialogFragment.show(getFragmentManager(), getResources().getString(R.string.ssl_certificate_error));
             }
         });
 
@@ -533,50 +549,57 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         WebViewDatabase mainWebViewDatabase = WebViewDatabase.getInstance(this);
         clearFormData.setEnabled(mainWebViewDatabase.hasFormData());
 
-        // Select the current font size.
+        // Initialize font size variables.
         int fontSize = mainWebView.getSettings().getTextZoom();
-        MenuItem fontSizeMenuItem = menu.findItem(R.id.fontSize);
+        String fontSizeTitle;
         MenuItem selectedFontSizeMenuItem;
+
+        // Prepare the font size title and current size menu item.
         switch (fontSize) {
             case 50:
-                fontSizeMenuItem.setTitle(R.string.font_size_fifty_percent);
+                fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.fifty_percent);
                 selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeFiftyPercent);
                 break;
 
             case 75:
-                fontSizeMenuItem.setTitle(R.string.font_size_seventy_five_percent);
+                fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.seventy_five_percent);
                 selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeSeventyFivePercent);
                 break;
 
             case 100:
-                fontSizeMenuItem.setTitle(R.string.font_size_one_hundred_percent);
+                fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.one_hundred_percent);
                 selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeOneHundredPercent);
                 break;
 
             case 125:
-                fontSizeMenuItem.setTitle(R.string.font_size_one_hundred_twenty_five_percent);
+                fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.one_hundred_twenty_five_percent);
                 selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeOneHundredTwentyFivePercent);
                 break;
 
             case 150:
-                fontSizeMenuItem.setTitle(R.string.font_size_one_hundred_fifty_percent);
+                fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.one_hundred_fifty_percent);
                 selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeOneHundredFiftyPercent);
                 break;
 
             case 175:
-                fontSizeMenuItem.setTitle(R.string.font_size_one_hundred_seventy_five_percent);
+                fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.one_hundred_seventy_five_percent);
                 selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeOneHundredSeventyFivePercent);
                 break;
 
             case 200:
-                fontSizeMenuItem.setTitle(R.string.font_size_two_hundred_percent);
+                fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.two_hundred_percent);
                 selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeTwoHundredPercent);
                 break;
 
             default:
+                fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.one_hundred_percent);
                 selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeOneHundredPercent);
                 break;
         }
+
+        // Set the font size title and select the current size menu item.
+        MenuItem fontSizeMenuItem = menu.findItem(R.id.fontSize);
+        fontSizeMenuItem.setTitle(fontSizeTitle);
         selectedFontSizeMenuItem.setChecked(true);
 
         // Only show `Refresh` if `swipeToRefresh` is disabled.
@@ -744,7 +767,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 return true;
 
             case R.id.addToHomescreen:
-                // Show the CreateHomeScreenShortcut AlertDialog and name this instance "@string/create_shortcut".
+                // Show the `CreateHomeScreenShortcut` `AlertDialog` and name this instance `@string/create_shortcut`.
                 DialogFragment createHomeScreenShortcutDialogFragment = new CreateHomeScreenShortcut();
                 createHomeScreenShortcutDialogFragment.show(getFragmentManager(), getResources().getString(R.string.create_shortcut));
 
@@ -840,6 +863,10 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 // Clear the back/forward history.
                 mainWebView.clearHistory();
 
+                // Clear any SSL certificate preferences.
+                MainWebViewActivity.mainWebView.clearSslPreferences();
+
+                // Clear `formattedUrlString`.
                 formattedUrlString = null;
 
                 // Destroy the internal state of the webview.
@@ -903,6 +930,22 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         placeBookmarkShortcut.putExtra("android.intent.extra.shortcut.ICON", favoriteIcon);
         placeBookmarkShortcut.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
         sendBroadcast(placeBookmarkShortcut);
+    }
+
+    public void viewSslCertificate(View view) {
+        // Show the `ViewSslCertificate` `AlertDialog` and name this instance `@string/view_ssl_certificate`.
+        DialogFragment viewSslCertificateDialogFragment = new ViewSslCertificate();
+        viewSslCertificateDialogFragment.show(getFragmentManager(), getResources().getString(R.string.view_ssl_certificate));
+    }
+
+    @Override
+    public void onSslErrorCancel() {
+        sslErrorHandler.cancel();
+    }
+
+    @Override
+    public void onSslErrorProceed() {
+        sslErrorHandler.proceed();
     }
 
     // Override onBackPressed to handle the navigation drawer and mainWebView.
