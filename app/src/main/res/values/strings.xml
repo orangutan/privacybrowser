@@ -41,7 +41,7 @@
     <!-- View SSL Certificate. -->
     <string name="view_ssl_certificate">View SSL Certificate</string>
     <string name="unencrypted_website">Unencrypted Website</string>
-    <string name="no_ssl_certificate">Communicated with this website is not encrypted by an SSL certificate.</string>
+    <string name="no_ssl_certificate">Communication with this website is not encrypted by an SSL certificate.</string>
     <string name="ssl_certificate">SSL Certificate</string>
     <string name="close">Close</string>
     <string name="issued_to">Issued To</string>
@@ -176,7 +176,7 @@
         <item>Edge 13 on Windows 10</item>
         <item>Custom</item>
     </string-array>
-    <string-array name="user_agent_entry_values" translatable="false">  <!-- None of the items in this string-array should be translated. -->
+    <string-array name="user_agent_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
         <item>Default user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
         <item>PrivacyBrowser/1.0</item>
         <item>Mozilla/5.0 (Android 6.0.1; Mobile; rv:46.0) Gecko/46.0 Firefox/46.0</item>
@@ -200,7 +200,7 @@
         <item>Yahoo</item>
         <item>Custom</item>
     </string-array>
-    <string-array name="javascript_disabled_search_entry_values" translatable="false">  <!-- None of the items in this string-array should be translated. -->
+    <string-array name="javascript_disabled_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
         <item>https://duckduckgo.com/html/?q=</item>
         <item>https://www.google.com/search?q=</item>
         <item>https://www.bing.com/search?q=</item>
@@ -216,7 +216,7 @@
         <item>Yahoo</item>
         <item>Custom</item>
     </string-array>
-    <string-array name="javascript_enabled_search_entry_values" translatable="false">  <!-- None of the items in this string-array should be translated. -->
+    <string-array name="javascript_enabled_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
         <item>https://duckduckgo.com/?q=</item>
         <item>https://www.google.com/search?q=</item>
         <item>https://www.bing.com/search?q=</item>
@@ -237,7 +237,7 @@
         <item>175%</item>
         <item>200%</item>
     </string-array>
-    <string-array name="default_font_size_entry_values" translatable="false">  <!-- None of the items in this string-array should be translated. -->
+    <string-array name="default_font_size_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
         <item>50</item>
         <item>75</item>
         <item>100</item>
@@ -254,20 +254,19 @@
     <string name="version">Version</string>
         <string name="version_code">version code</string>
         <string name="hardware">Hardware</string>
-            <!-- Blank spaces at the end of strings are stripped out, so you have to replace them with the Unicode literal \u00A0. -->
-            <string name="brand">Brand:\u00A0</string>
-            <string name="manufacturer">Manufacturer:\u00A0</string>
-            <string name="model">Model:\u00A0</string>
-            <string name="device">Device:\u00A0</string>
-            <string name="bootloader">Bootloader:\u00A0</string>
-            <string name="radio">Radio:\u00A0</string>
+            <string name="brand">Brand:</string>
+            <string name="manufacturer">Manufacturer:</string>
+            <string name="model">Model:</string>
+            <string name="device">Device:</string>
+            <string name="bootloader">Bootloader:</string>
+            <string name="radio">Radio:</string>
         <string name="software">Software</string>
-            <string name="android">Android:\u00A0</string>
+            <string name="android">Android:</string>
             <string name="api">API</string>
-            <string name="build">Build:\u00A0</string>
-            <string name="security_patch">Security Patch:\u00A0</string>
-            <string name="webkit">WebKit:\u00A0</string>
-            <string name="chrome">Chrome:\u00A0</string>
+            <string name="build">Build:</string>
+            <string name="security_patch">Security Patch:</string>
+            <string name="webkit">WebKit:</string>
+            <string name="chrome">Chrome:</string>
     <string name="permissions">Permissions</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="changelog">Changelog</string>

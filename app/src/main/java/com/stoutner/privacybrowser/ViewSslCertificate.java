@@ -112,7 +112,7 @@ public class ViewSslCertificate extends DialogFragment {
             Date startDate = sslCertificate.getValidNotBeforeDate();
             Date endDate = sslCertificate.getValidNotAfterDate();
 
-            // Create a `SpannableStringBuilder` for each item.
+            // Create a `SpannableStringBuilder` for each `TextView` that needs multiple colors of text.
             SpannableStringBuilder issuedToCNameStringBuilder = new SpannableStringBuilder(cNameLabel + issuedToCNameString);
             SpannableStringBuilder issuedToONameStringBuilder = new SpannableStringBuilder(oNameLabel + issuedToONameString);
             SpannableStringBuilder issuedToUNameStringBuilder = new SpannableStringBuilder(uNameLabel + issuedToUNameString);
@@ -125,8 +125,7 @@ public class ViewSslCertificate extends DialogFragment {
             // Create a blue `ForegroundColorSpan`.  We have to use the deprecated `getColor` until API >= 23.
             ForegroundColorSpan blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue));
 
-            // Setup the spans to display the certificate information in blue.
-            // `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
+            // Setup the spans to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
             issuedToCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), issuedToCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             issuedToONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length(), issuedToONameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             issuedToUNameStringBuilder.setSpan(blueColorSpan, uNameLabel.length(), issuedToUNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);

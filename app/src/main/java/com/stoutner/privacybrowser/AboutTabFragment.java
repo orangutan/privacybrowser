@@ -22,6 +22,9 @@ package com.stoutner.privacybrowser;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,84 +56,114 @@ public class AboutTabFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View tabLayout;
 
-        // Load the about tab layout.  Tab numbers start at 0.
-        if (tabNumber == 0) {
+        // Load the tabs.  Tab numbers start at 0.
+        if (tabNumber == 0) {  // Load the about tab.
             // Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.
             // The fragment will take care of attaching the root automatically.
             tabLayout = inflater.inflate(R.layout.about_tab_version, container, false);
 
-            // Version.
-            TextView versionNumberText = (TextView) tabLayout.findViewById(R.id.about_version_number_text);
+            // Get handles for the `TextViews`.
+            TextView versionNumberTextView = (TextView) tabLayout.findViewById(R.id.about_version_number);
+            TextView versionBrandTextView = (TextView) tabLayout.findViewById(R.id.about_version_brand);
+            TextView versionManufacturerTextView = (TextView) tabLayout.findViewById(R.id.about_version_manufacturer);
+            TextView versionModelTextView = (TextView) tabLayout.findViewById(R.id.about_version_model);
+            TextView versionDeviceTextView = (TextView) tabLayout.findViewById(R.id.about_version_device);
+            TextView versionBootloaderTextView = (TextView) tabLayout.findViewById(R.id.about_version_bootloader);
+            TextView versionRadioTextView = (TextView) tabLayout.findViewById(R.id.about_version_radio);
+            TextView versionAndroidTextView = (TextView) tabLayout.findViewById(R.id.about_version_android);
+            TextView versionBuildTextView = (TextView) tabLayout.findViewById(R.id.about_version_build);
+            TextView versionSecurityPatchTextView = (TextView) tabLayout.findViewById(R.id.about_version_securitypatch);
+            TextView versionWebKitTextView = (TextView) tabLayout.findViewById(R.id.about_version_webkit);
+            TextView versionChromeText = (TextView) tabLayout.findViewById(R.id.about_version_chrome);
+
+            // Setup the labels.
             String version = getString(R.string.version) + " " + BuildConfig.VERSION_NAME + " (" + getString(R.string.version_code) + " " + Integer.toString(BuildConfig.VERSION_CODE) + ")";
-            versionNumberText.setText(version);
+            String brandLabel = getString(R.string.brand) + "  ";
+            String manufacturerLabel = getString(R.string.manufacturer) + "  ";
+            String modelLabel = getString(R.string.model) + "  ";
+            String deviceLabel = getString(R.string.device) + "  ";
+            String bootloaderLabel = getString(R.string.bootloader) + "  ";
+            String androidLabel = getString(R.string.android) + "  ";
+            String buildLabel = getString(R.string.build) + "  ";
+            String webKitLabel = getString(R.string.webkit) + "  ";
+            String chromeLabel = getString(R.string.chrome) + "  ";
 
-            // Brand.
-            TextView versionBrandText = (TextView) tabLayout.findViewById(R.id.about_version_brand_text);
-            versionBrandText.setText(Build.BRAND);
-
-            // Manufacturer.
-            TextView versionManufacturerText = (TextView) tabLayout.findViewById(R.id.about_version_manufacturer_text);
-            versionManufacturerText.setText(Build.MANUFACTURER);
-
-            // Model.
-            TextView versionModelText = (TextView) tabLayout.findViewById(R.id.about_version_model_text);
-            versionModelText.setText(Build.MODEL);
-
-            // Device.
-            TextView versionDeviceText = (TextView) tabLayout.findViewById(R.id.about_version_device_text);
-            versionDeviceText.setText(Build.DEVICE);
-
-            // Bootloader.
-            TextView versionBootloaderText = (TextView) tabLayout.findViewById(R.id.about_version_bootloader_text);
-            versionBootloaderText.setText(Build.BOOTLOADER);
-
-            // Radio.
-            TextView versionRadioText = (TextView) tabLayout.findViewById(R.id.about_version_radio_text);
-            // Hide versionRadioTextView if there is no radio.
-            if (Build.getRadioVersion().equals("")) {
-                TextView versionRadioTitle = (TextView) tabLayout.findViewById(R.id.about_version_radio_title);
-                versionRadioTitle.setVisibility(View.GONE);
-                versionRadioText.setVisibility(View.GONE);
-            } else { // Else, set the text.
-                versionRadioText.setText(Build.getRadioVersion());
-            }
-
-            // Android.
-            TextView versionAndroidText = (TextView) tabLayout.findViewById(R.id.about_version_android_text);
-            String android = Build.VERSION.RELEASE + " (" + getString(R.string.api) + " " + Integer.toString(Build.VERSION.SDK_INT) + ")";
-            versionAndroidText.setText(android);
-
-            // Build.
-            TextView versionBuildText = (TextView) tabLayout.findViewById(R.id.about_version_build_text);
-            versionBuildText.setText(Build.DISPLAY);
-
-            // Security Patch.
-            TextView versionSecurityPatchText = (TextView) tabLayout.findViewById(R.id.about_version_securitypatch_text);
-            // Build.VERSION.SECURITY_PATCH is only available for SDK_INT >= 23.
-            if (Build.VERSION.SDK_INT >= 23) {
-                versionSecurityPatchText.setText(Build.VERSION.SECURITY_PATCH);
-            } else { // Hide versionSecurityPatchTextView.
-                TextView versionSecurityPatchTitle = (TextView) tabLayout.findViewById(R.id.about_version_securitypatch_title);
-                versionSecurityPatchTitle.setVisibility(View.GONE);
-                versionSecurityPatchText.setVisibility(View.GONE);
-            }
-
-            // webViewLayout is only used to get the default user agent from about_tab_webview.  It is not used to render content on the screen.
+            // `webViewLayout` is only used to get the default user agent from `about_tab_webview`.  It is not used to render content on the screen.
             View webViewLayout = inflater.inflate(R.layout.about_tab_webview, container, false);
             WebView tabLayoutWebView = (WebView) webViewLayout.findViewById(R.id.about_tab_webview);
             String userAgentString =  tabLayoutWebView.getSettings().getUserAgentString();
 
-            // WebKit.
-            TextView versionWebKitText = (TextView) tabLayout.findViewById(R.id.about_version_webkit_text);
+            // Get the device's information and store it in strings.
+            String brand = Build.BRAND;
+            String manufacturer = Build.MANUFACTURER;
+            String model = Build.MODEL;
+            String device = Build.DEVICE;
+            String bootloader = Build.BOOTLOADER;
+            String radio = Build.getRadioVersion();
+            String android = Build.VERSION.RELEASE + " (" + getString(R.string.api) + " " + Integer.toString(Build.VERSION.SDK_INT) + ")";
+            String build = Build.DISPLAY;
             // Select the substring that begins after "Safari/" and goes to the end of the string.
-            String webkitVersion = userAgentString.substring(userAgentString.indexOf("Safari/") + 7);
-            versionWebKitText.setText(webkitVersion);
-
-            // Chrome.
-            TextView versionChromeText = (TextView) tabLayout.findViewById(R.id.about_version_chrome_text);
+            String webKit = userAgentString.substring(userAgentString.indexOf("Safari/") + 7);
             // Select the substring that begins after "Chrome/" and goes until the next " ".
-            String chromeVersion = userAgentString.substring(userAgentString.indexOf("Chrome/") + 7, userAgentString.indexOf(" ", userAgentString.indexOf("Chrome/")));
-            versionChromeText.setText(chromeVersion);
+            String chrome = userAgentString.substring(userAgentString.indexOf("Chrome/") + 7, userAgentString.indexOf(" ", userAgentString.indexOf("Chrome/")));
+
+            // Create a `SpannableStringBuilder` for each `TextView` that needs multiple colors of text.
+            SpannableStringBuilder brandStringBuilder = new SpannableStringBuilder(brandLabel + brand);
+            SpannableStringBuilder manufacturerStringBuilder = new SpannableStringBuilder(manufacturerLabel + manufacturer);
+            SpannableStringBuilder modelStringBuilder = new SpannableStringBuilder(modelLabel + model);
+            SpannableStringBuilder deviceStringBuilder = new SpannableStringBuilder(deviceLabel + device);
+            SpannableStringBuilder bootloaderStringBuilder = new SpannableStringBuilder(bootloaderLabel + bootloader);
+            SpannableStringBuilder androidStringBuilder = new SpannableStringBuilder(androidLabel + android);
+            SpannableStringBuilder buildStringBuilder = new SpannableStringBuilder(buildLabel + build);
+            SpannableStringBuilder webKitStringBuilder = new SpannableStringBuilder(webKitLabel + webKit);
+            SpannableStringBuilder chromeStringBuilder = new SpannableStringBuilder(chromeLabel + chrome);
+
+            // Create a blue `ForegroundColorSpan`.  We have to use the deprecated `getColor` until API >= 23.
+            ForegroundColorSpan blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue));
+
+            // Setup the spans to display the device information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
+            brandStringBuilder.setSpan(blueColorSpan, brandLabel.length(), brandStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            manufacturerStringBuilder.setSpan(blueColorSpan, manufacturerLabel.length(), manufacturerStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            modelStringBuilder.setSpan(blueColorSpan, modelLabel.length(), modelStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            deviceStringBuilder.setSpan(blueColorSpan, deviceLabel.length(), deviceStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            bootloaderStringBuilder.setSpan(blueColorSpan, bootloaderLabel.length(), bootloaderStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            androidStringBuilder.setSpan(blueColorSpan, androidLabel.length(), androidStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            buildStringBuilder.setSpan(blueColorSpan, buildLabel.length(), buildStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            webKitStringBuilder.setSpan(blueColorSpan, webKitLabel.length(), webKitStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            chromeStringBuilder.setSpan(blueColorSpan, chromeLabel.length(), chromeStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+            // Display the strings.
+            versionNumberTextView.setText(version);
+            versionBrandTextView.setText(buildStringBuilder);
+            versionManufacturerTextView.setText(manufacturerStringBuilder);
+            versionModelTextView.setText(modelStringBuilder);
+            versionDeviceTextView.setText(deviceStringBuilder);
+            versionBootloaderTextView.setText(bootloaderStringBuilder);
+            versionAndroidTextView.setText(androidStringBuilder);
+            versionBuildTextView.setText(buildStringBuilder);
+            versionWebKitTextView.setText(webKitStringBuilder);
+            versionChromeText.setText(chromeStringBuilder);
+
+            // Build.VERSION.SECURITY_PATCH is only available for SDK_INT >= 23.
+            if (Build.VERSION.SDK_INT >= 23) {
+                String securityPatchLabel = getString(R.string.security_patch) + "  ";
+                String securityPatch = Build.VERSION.SECURITY_PATCH;
+                SpannableStringBuilder securityPatchStringBuilder = new SpannableStringBuilder(securityPatchLabel + securityPatch);
+                securityPatchStringBuilder.setSpan(blueColorSpan, securityPatchLabel.length(), securityPatchStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                versionSecurityPatchTextView.setText(securityPatchStringBuilder);
+            } else { // Hide `versionSecurityPatchTextView`.
+                versionSecurityPatchTextView.setVisibility(View.GONE);
+            }
+
+            // Only populate `versionRadioTextView` if there is a radio in the device.
+            if (!radio.equals("")) {
+                String radioLabel = getString(R.string.radio) + "  ";
+                SpannableStringBuilder radioStringBuilder = new SpannableStringBuilder(radioLabel + radio);
+                radioStringBuilder.setSpan(blueColorSpan, radioLabel.length(), radioStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                versionRadioTextView.setText(radioStringBuilder);
+            } else { // Hide `versionRadioTextView`.
+                versionRadioTextView.setVisibility(View.GONE);
+            }
         } else { // load a WebView for all the other tabs.  Tab numbers start at 0.
             // Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.
             // The fragment will take care of attaching the root automatically.
