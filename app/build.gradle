@@ -29,8 +29,8 @@ android {
         applicationId "com.stoutner.privacybrowser"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 10
-        versionName "1.9"
+        versionCode 11
+        versionName "1.9.1"
     }
 
     buildTypes {
