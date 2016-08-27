@@ -18,7 +18,11 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<resources>
+<!-- `tools:ignore="MissingTranslation"` allows release APKs to be built if translation strings are missing.  The missing strings will fall back to English. -->
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation" >
+
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser</string>
     <string name="privacy_browser_settings">Privacy Browser Settings</string>
