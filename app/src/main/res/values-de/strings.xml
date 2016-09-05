@@ -189,6 +189,8 @@
         <item>Google</item>
         <item>Bing</item>
         <item>Yahoo</item>
+        <item>StartPage</item>
+        <item>Qwant</item>
         <item>Eigene</item>
     </string-array>
     <string name="javascript_disabled_search_custom_url">Suchmaschinen-URL bei deaktiviertem JavaScript</string>
@@ -198,6 +200,8 @@
         <item>Google</item>
         <item>Bing</item>
         <item>Yahoo</item>
+        <item>StartPage</item>
+        <item>Qwant</item>
         <item>Eigene</item>
     </string-array>
     <string name="javascript_enabled_search_custom_url">Suchmaschinen-URL bei aktivertem JavaScript</string>

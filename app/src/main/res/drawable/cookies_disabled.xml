@@ -1,11 +1,13 @@
-<!-- cookies_disabled.xml was created by Google and downloaded from https://materialdesignicons.com/icon/cookie. -->
+<!-- cookies_disabled.xml was created by Google and downloaded from https://materialdesignicons.com/icon/cookie.
+    It is released under the Apache License 2.0. -->
 
 <vector
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:height="26dp"
     android:width="26dp"
     android:viewportHeight="24.0"
-    android:viewportWidth="24.0" >
+    android:viewportWidth="24.0"
+    android:autoMirrored="true" >
 
     <!-- We have to use a hard coded color code until API >= 21.  Then we can use`@color`. -->
     <path

@@ -210,6 +210,8 @@
         <item>Google</item>
         <item>Bing</item>
         <item>Yahoo</item>
+        <item>StartPage</item>
+        <item>Qwant</item>
         <item>Custom</item>
     </string-array>
     <string-array name="javascript_disabled_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
@@ -217,6 +219,8 @@
         <item>https://www.google.com/search?q=</item>
         <item>https://www.bing.com/search?q=</item>
         <item>https://search.yahoo.com/mobile/s?nojs=1&amp;p=</item>
+        <item>https://www.startpage.com/do/search?q=</item>
+        <item>https://lite.qwant.com/?q=</item>
         <item>Custom URL</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
     </string-array>
     <string name="javascript_disabled_search_custom_url">JavaScript-disabled search custom URL</string>
@@ -226,6 +230,8 @@
         <item>Google</item>
         <item>Bing</item>
         <item>Yahoo</item>
+        <item>StartPage</item>
+        <item>Qwant</item>
         <item>Custom</item>
     </string-array>
     <string-array name="javascript_enabled_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
@@ -233,6 +239,8 @@
         <item>https://www.google.com/search?q=</item>
         <item>https://www.bing.com/search?q=</item>
         <item>https://search.yahoo.com/mobile/s?p=</item>
+        <item>https://www.startpage.com/do/search?q=</item>
+        <item>https://www.qwant.com/?q=</item>
         <item>Custom URL</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
     </string-array>
     <string name="javascript_enabled_search_custom_url">JavaScript-enabled search custom URL</string>
