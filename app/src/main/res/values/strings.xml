@@ -177,29 +177,31 @@
     <string-array name="user_agent_entries">
         <item>WebView Default</item>
         <item>Privacy Browser 1.0</item>
-        <item>Firefox 46 on Android 6.0.1</item>
-        <item>Chrome 50 on Android 6.0.1</item>
-        <item>Firefox 46 on Linux</item>
-        <item>Chromium 50 on Linux</item>
-        <item>Konqueror 4.14 on Linux</item>
-        <item>Firefox 46 on Windows 10</item>
-        <item>Chrome 50 on Windows 10</item>
+        <item>Firefox 48 on Android 6.0.1</item>
+        <item>Chrome 52 on Android 6.0.1</item>
+        <item>Safari on iOS 10</item>
+        <item>Firefox 45 on Linux</item>
+        <item>Chromium 52 on Linux</item>
+        <item>Konqueror 4.14.23 on Linux</item>
+        <item>Firefox 48 on Windows 10</item>
+        <item>Chrome 52 on Windows 10</item>
         <item>Internet Explorer 11 on Windows 10</item>
-        <item>Edge 13 on Windows 10</item>
+        <item>Edge 14 on Windows 10</item>
         <item>Custom</item>
     </string-array>
     <string-array name="user_agent_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
         <item>Default user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
         <item>PrivacyBrowser/1.0</item>
-        <item>Mozilla/5.0 (Android 6.0.1; Mobile; rv:46.0) Gecko/46.0 Firefox/46.0</item>
-        <item>Mozilla/5.0 (Linux; Android 6.0.1; Nexus 6P Build/MHC19Q) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.89 Mobile Safari/537.36</item>
-        <item>Mozilla/5.0 (X11; Linux x86_64; rv:46.0) Gecko/20100101 Firefox/46.0</item>
-        <item>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.94 Safari/537.36</item>
-        <item>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.21 (KHTML, like Gecko) konqueror/4.14.14 Safari/537.21</item>
-        <item>Mozilla/5.0 (Windows NT 10.0; WOW64; rv:46.0) Gecko/20100101 Firefox/46.0</item>
-        <item>Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36</item>
+        <item>Mozilla/5.0 (Android 6.0.1; Mobile; rv:48.0) Gecko/48.0 Firefox/48.0</item>
+        <item>Mozilla/5.0 (Linux; Android 6.0.1; Nexus 6P Build/MTC20F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36</item>
+        <item>Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) Version/10.0 Mobile/14A5345a Safari/602.1</item>
+        <item>Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101 Firefox/45.0</item>
+        <item>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36</item>
+        <item>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.21 (KHTML, like Gecko) konqueror/4.14.23 Safari/537.21</item>
+        <item>Mozilla/5.0 (Windows NT 10.0; WOW64; rv:48.0) Gecko/20100101 Firefox/48.0</item>
+        <item>Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36</item>
         <item>Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko</item>
-        <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586</item>
+        <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.79 Safari/537.36 Edge/14.14393</item>
         <item>Custom user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
     </string-array>
     <string name="custom_user_agent">Custom user agent</string>
