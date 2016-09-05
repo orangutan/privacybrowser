@@ -43,7 +43,34 @@
     <string name="favorite_icon">Website-Icon</string>
     <string name="url_or_search_terms">URL oder Suchbegriff</string>
 
-    <!-- Main WebView Navigation Drawer. -->
+    <!-- View SSL Certificate. -->
+    <string name="view_ssl_certificate">SSL-Zertifikat ansehen</string>
+    <string name="unencrypted_website">Unverschlüsselte Website</string>
+    <string name="no_ssl_certificate">Die Kommunikation mit dieser Website wird nicht durch ein SSL-Zertifikat verschlüsselt.</string>
+    <string name="ssl_certificate">SSL-Zertifikat</string>
+    <string name="close">Schließen</string>
+    <string name="issued_to">Ausgestellt für</string>
+    <string name="issued_by">Ausgestellt von</string>
+    <string name="common_name">Allgemeiner Name (CN):</string>
+    <string name="organization">Organisation (O):</string>
+    <string name="organizational_unit">Organisierende Einheit (OU):</string>
+    <string name="valid_dates">Gültige Daten</string>
+    <string name="start_date">Startdatum:</string>
+    <string name="end_date">Enddatum:</string>
+
+    <!-- SSL Certificate Error. -->
+    <string name="ssl_certificate_error">SSL-Zertifikatsfehler</string>
+    <string name="proceed">Fortfahren</string>
+    <string name="future_certificate">Das Startdatum des SSL-Zertifikats liegt in der Zukunft</string>
+    <string name="expired_certificate">ŽDas Zertifikat ist abgelaufen</string>
+    <string name="cn_mismatch">Der allgemeine Name entspricht nicht dem Hostnamen</string>
+    <string name="untrusted">Der Zertifikatsbehörde wird nicht vertraut</string>
+    <string name="invalid_date">Das Datum des Zertifikats ist ungültig</string>
+    <string name="invalid_certificate">Das Zertifikat ist ungültig</string>
+    <string name="url">URL</string>
+    <string name="url_label">URL:</string>
+
+    <!-- Main `WebView` Navigation Drawer. -->
     <string name="navigation_drawer">Navigationspanel</string>
     <string name="navigation">Navigation</string>
     <string name="home">Startseite</string>
@@ -56,7 +83,7 @@
     <string name="about">Infos</string>
     <string name="clear_and_exit">Leeren und verlassen</string>
 
-    <!-- Main WebView Options Menu. -->
+    <!-- Main `WebView` Options Menu. -->
     <string name="javascript">JavaScript</string>
     <string name="first_party_cookies">Erstanbieter-Cookies</string>
     <string name="third_party_cookies">Drittanbieter-Cookies</string>
@@ -65,6 +92,14 @@
     <string name="clear_cookies">Cookies leeren</string>
     <string name="clear_dom_storage">DOM-Speicher leeren</string>
     <string name="clear_form_data">Formulardaten leeren</string>
+        <string name="font_size">Schriftgröße</string>
+        <string name="fifty_percent">50%</string>
+        <string name="seventy_five_percent">75%</string>
+        <string name="one_hundred_percent">100%</string>
+        <string name="one_hundred_twenty_five_percent">125%</string>
+        <string name="one_hundred_fifty_percent">150%</string>
+        <string name="one_hundred_seventy_five_percent">175%</string>
+        <string name="two_hundred_percent">200%</string>
     <string name="share">Teilen</string>
     <string name="add_to_home_screen">Zur Startseite hinzufügen</string>
     <string name="refresh">Aktualisieren</string>
@@ -169,6 +204,16 @@
     <string name="custom_url">Eigene URL</string>
     <string name="general">Allgemein</string>
     <string name="homepage_preference">Startseite</string>
+    <string name="default_font_size">Standard-Schriftgröße</string>
+    <string-array name="default_font_size_entries">
+        <item>50%</item>
+        <item>75%</item>
+        <item>100%</item>
+        <item>125%</item>
+        <item>150%</item>
+        <item>175%</item>
+        <item>200%</item>
+    </string-array>
     <string name="swipe_to_refresh_enabled">Herunterziehen zum Aktualisieren</string>
     <string name="swipe_to_refresh_enabled_summary">Einige Websites funktionieren nicht, wenn "Herunterziehen zum Aktualisieren" eingeschaltet ist.</string>
 

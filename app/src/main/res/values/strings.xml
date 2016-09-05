@@ -239,7 +239,7 @@
     <string name="custom_url">Custom URL</string>
     <string name="general">General</string>
     <string name="homepage_preference">Homepage</string>
-    <string name="default_font_size">Default Font Size</string>
+    <string name="default_font_size">Default font size</string>
     <string-array name="default_font_size_entries">
         <item>50%</item>
         <item>75%</item>
@@ -260,6 +260,8 @@
     </string-array>
     <string name="swipe_to_refresh_enabled">Swipe to refresh</string>
     <string name="swipe_to_refresh_enabled_summary">Some websites don\'t work well if swipe to refresh is enabled.</string>
+    <string name="display_additional_app_bar_icons">Display additional app bar icons</string>
+    <string name="display_additional_app_bar_icons_summary">Display icons for toggling cookies, DOM storage, and form data in the app bar if there is room.</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">About Privacy Browser</string>

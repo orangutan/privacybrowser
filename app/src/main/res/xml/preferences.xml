@@ -131,5 +131,11 @@
             android:title="@string/swipe_to_refresh_enabled"
             android:summary="@string/swipe_to_refresh_enabled_summary"
             android:defaultValue="true" />
+
+        <SwitchPreference
+            android:key="display_additional_app_bar_icons"
+            android:title="@string/display_additional_app_bar_icons"
+            android:summary="@string/display_additional_app_bar_icons_summary"
+            android:defaultValue="false" />
     </PreferenceCategory>
 </PreferenceScreen>

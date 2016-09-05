@@ -148,6 +148,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `sslErrorHandler` is used in `onCreate()`, `onSslErrorCancel()`, and `onSslErrorProceed`.
     private SslErrorHandler sslErrorHandler;
 
+    // `sharedPreferences` is used in `onCreate()` and `onCreateOptionsMenu()`.
+    SharedPreferences sharedPreferences;
+
     @Override
     // Remove Android Studio's warning about the dangers of using SetJavaScriptEnabled.  The whole premise of Privacy Browser is built around an understanding of these dangers.
     @SuppressLint("SetJavaScriptEnabled")
@@ -373,35 +376,35 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         // Get the shared preference values.
-        SharedPreferences savedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Set JavaScript initial status.  The default value is false.
-        javaScriptEnabled = savedPreferences.getBoolean("javascript_enabled", false);
+        javaScriptEnabled = sharedPreferences.getBoolean("javascript_enabled", false);
         mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
 
         // Initialize cookieManager.
         cookieManager = CookieManager.getInstance();
 
         // Set cookies initial status.  The default value is false.
-        firstPartyCookiesEnabled = savedPreferences.getBoolean("first_party_cookies_enabled", false);
+        firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies_enabled", false);
         cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
 
         // Set third-party cookies initial status if API >= 21.  The default value is false.
         if (Build.VERSION.SDK_INT >= 21) {
-            thirdPartyCookiesEnabled = savedPreferences.getBoolean("third_party_cookies_enabled", false);
+            thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies_enabled", false);
             cookieManager.setAcceptThirdPartyCookies(mainWebView, thirdPartyCookiesEnabled);
         }
 
         // Set DOM storage initial status.  The default value is false.
-        domStorageEnabled = savedPreferences.getBoolean("dom_storage_enabled", false);
+        domStorageEnabled = sharedPreferences.getBoolean("dom_storage_enabled", false);
         mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
 
         // Set the saved form data initial status.  The default is false.
-        saveFormDataEnabled = savedPreferences.getBoolean("save_form_data_enabled", false);
+        saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data_enabled", false);
         mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
 
         // Set the user agent initial status.
-        String userAgentString = savedPreferences.getString("user_agent", "Default user agent");
+        String userAgentString = sharedPreferences.getString("user_agent", "Default user agent");
         switch (userAgentString) {
             case "Default user agent":
                 // Do nothing.
@@ -409,43 +412,43 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
             case "Custom user agent":
                 // Set the custom user agent on mainWebView,  The default is "PrivacyBrowser/1.0".
-                mainWebView.getSettings().setUserAgentString(savedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0"));
+                mainWebView.getSettings().setUserAgentString(sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0"));
                 break;
 
             default:
                 // Set the selected user agent on mainWebView.  The default is "PrivacyBrowser/1.0".
-                mainWebView.getSettings().setUserAgentString(savedPreferences.getString("user_agent", "PrivacyBrowser/1.0"));
+                mainWebView.getSettings().setUserAgentString(sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0"));
                 break;
         }
 
         // Set the initial string for JavaScript disabled search.
-        if (savedPreferences.getString("javascript_disabled_search", "https://duckduckgo.com/html/?q=").equals("Custom URL")) {
+        if (sharedPreferences.getString("javascript_disabled_search", "https://duckduckgo.com/html/?q=").equals("Custom URL")) {
             // Get the custom URL string.  The default is "".
-            javaScriptDisabledSearchURL = savedPreferences.getString("javascript_disabled_search_custom_url", "");
+            javaScriptDisabledSearchURL = sharedPreferences.getString("javascript_disabled_search_custom_url", "");
         } else {
             // Use the string from javascript_disabled_search.
-            javaScriptDisabledSearchURL = savedPreferences.getString("javascript_disabled_search", "https://duckduckgo.com/html/?q=");
+            javaScriptDisabledSearchURL = sharedPreferences.getString("javascript_disabled_search", "https://duckduckgo.com/html/?q=");
         }
 
         // Set the initial string for JavaScript enabled search.
-        if (savedPreferences.getString("javascript_enabled_search", "https://duckduckgo.com/?q=").equals("Custom URL")) {
+        if (sharedPreferences.getString("javascript_enabled_search", "https://duckduckgo.com/?q=").equals("Custom URL")) {
             // Get the custom URL string.  The default is "".
-            javaScriptEnabledSearchURL = savedPreferences.getString("javascript_enabled_search_custom_url", "");
+            javaScriptEnabledSearchURL = sharedPreferences.getString("javascript_enabled_search_custom_url", "");
         } else {
             // Use the string from javascript_enabled_search.
-            javaScriptEnabledSearchURL = savedPreferences.getString("javascript_enabled_search", "https://duckduckgo.com/?q=");
+            javaScriptEnabledSearchURL = sharedPreferences.getString("javascript_enabled_search", "https://duckduckgo.com/?q=");
         }
 
 
         // Set the homepage initial status.  The default value is `https://www.duckduckgo.com`.
-        homepage = savedPreferences.getString("homepage", "https://www.duckduckgo.com");
+        homepage = sharedPreferences.getString("homepage", "https://www.duckduckgo.com");
 
         // Set the font size initial status.  the default value is `100`.
-        String defaultFontSizeString = savedPreferences.getString("default_font_size", "100");
+        String defaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
         mainWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
 
         // Set the swipe to refresh initial status.  The default is `true`.
-        swipeToRefreshEnabled = savedPreferences.getBoolean("swipe_to_refresh_enabled", true);
+        swipeToRefreshEnabled = sharedPreferences.getBoolean("swipe_to_refresh_enabled", true);
         swipeToRefresh.setEnabled(swipeToRefreshEnabled);
 
 
@@ -514,7 +517,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Set the initial status of the privacy icon.
         updatePrivacyIcons(privacyBrowserActivity);
 
-        // Get MenuItems for checkable menu items.
+        // Get handles for the menu items.
         MenuItem toggleFirstPartyCookies = menu.findItem(R.id.toggleFirstPartyCookies);
         MenuItem toggleThirdPartyCookies = menu.findItem(R.id.toggleThirdPartyCookies);
         MenuItem toggleDomStorage = menu.findItem(R.id.toggleDomStorage);
@@ -525,6 +528,19 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         toggleThirdPartyCookies.setChecked(thirdPartyCookiesEnabled);
         toggleDomStorage.setChecked(domStorageEnabled);
         toggleSaveFormData.setChecked(saveFormDataEnabled);
+
+        // Set the status of the additional app bar icons.  The default is `false`.
+        if (sharedPreferences.getBoolean("display_additional_app_bar_icons", false)) {
+            toggleFirstPartyCookies.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            toggleThirdPartyCookies.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            toggleDomStorage.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            toggleSaveFormData.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        } else { //Do not display the additional icons.
+            toggleFirstPartyCookies.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            toggleThirdPartyCookies.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            toggleDomStorage.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            toggleSaveFormData.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        }
 
         return true;
     }
