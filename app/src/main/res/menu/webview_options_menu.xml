@@ -35,28 +35,28 @@
         android:title="@string/first_party_cookies"
         android:orderInCategory="20"
         android:checkable="true"
-        app:showAsAction="never" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/toggleThirdPartyCookies"
         android:title="@string/third_party_cookies"
         android:orderInCategory="30"
         android:checkable="true"
-        app:showAsAction="never" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/toggleDomStorage"
         android:title="@string/dom_storage"
         android:orderInCategory="40"
         android:checkable="true"
-        app:showAsAction="never" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/toggleSaveFormData"
         android:title="@string/form_data"
         android:orderInCategory="50"
         android:checkable="true"
-        app:showAsAction="never" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/clearCookies"

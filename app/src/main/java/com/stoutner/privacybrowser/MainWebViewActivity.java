@@ -36,6 +36,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -76,6 +77,10 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // It is also used in `onCreate()` and `onCreateHomeScreenShortcutCreate()`.
     public static Bitmap favoriteIcon;
 
+    // `privacyBrowserActivity` is public static so it can be accessed from `SettingsFragment`.
+    // It is also used in `onCreate()`, `onCreateOptionsMenu()`, and `onOptionsItemSelected()`,
+    public static Activity privacyBrowserActivity;
+
     // `mainWebView` is public static so it can be accessed from `SettingsFragment`.
     // It is also used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, and `loadUrlFromTextBox()`.
     public static WebView mainWebView;
@@ -98,7 +103,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // It is also used in `onCreate()`, `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, and `onOptionsItemSelected()`.
     public static boolean firstPartyCookiesEnabled;
 
-    // `thirdPartyCookiesEnabled` is used in `onCreate()`, `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, and `onOptionsItemSelected()`.
+    // `thridPartyCookiesEnables` is public static so it can be accessed from `SettingsFragment`.
+    // It is also used in `onCreate()`, `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, and `onOptionsItemSelected()`.
     public static boolean thirdPartyCookiesEnabled;
 
     // `domStorageEnabled` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onCreate()`, `onCreateOptionsMenu()`, and `onOptionsItemSelected()`.
@@ -133,9 +139,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `drawerLayout` is used in `onCreate()`, `onNewIntent()`, and `onBackPressed()`.
     private DrawerLayout drawerLayout;
 
-    // `privacyIcon` is used in `onCreateOptionsMenu()` and `updatePrivacyIcon()`.
-    private MenuItem privacyIcon;
-
     // `urlTextBox` is used in `onCreate()`, `onOptionsItemSelected()`, and `loadUrlFromTextBox()`.
     private EditText urlTextBox;
 
@@ -151,6 +154,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_coordinatorlayout);
+
+        // We need a handle for the activity, which is accessed from `SettingsFragment` and fed into `updatePrivacyIcons()`.
+        privacyBrowserActivity = this;
 
         // We need to use the SupportActionBar from android.support.v7.app.ActionBar until the minimum API is >= 21.
         Toolbar supportAppBar = (Toolbar) findViewById(R.id.appBar);
@@ -505,11 +511,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Set mainMenu so it can be used by onOptionsItemSelected.
         mainMenu = menu;
 
-        // Initialize privacyIcon
-        privacyIcon = menu.findItem(R.id.toggleJavaScript);
-
         // Set the initial status of the privacy icon.
-        updatePrivacyIcon();
+        updatePrivacyIcons(privacyBrowserActivity);
 
         // Get MenuItems for checkable menu items.
         MenuItem toggleFirstPartyCookies = menu.findItem(R.id.toggleFirstPartyCookies);
@@ -631,9 +634,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
 
                 // Update the privacy icon.
-                updatePrivacyIcon();
+                updatePrivacyIcons(privacyBrowserActivity);
 
-                // Display a Snackbar.
+                // Display a `Snackbar`.
                 if (javaScriptEnabled) {
                     Snackbar.make(findViewById(R.id.mainWebView), R.string.javascript_enabled, Snackbar.LENGTH_SHORT).show();
                 } else {
@@ -659,7 +662,18 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
 
                 // Update the privacy icon.
-                updatePrivacyIcon();
+                updatePrivacyIcons(privacyBrowserActivity);
+
+                // Display a `Snackbar`.
+                if (firstPartyCookiesEnabled) {
+                    Snackbar.make(findViewById(R.id.mainWebView), R.string.first_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
+                } else {
+                    if (javaScriptEnabled) {
+                        Snackbar.make(findViewById(R.id.mainWebView), R.string.first_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
+                    } else {
+                        Snackbar.make(findViewById(R.id.mainWebView), R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
+                    }
+                }
 
                 // Reload the WebView.
                 mainWebView.reload();
@@ -676,6 +690,13 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     // Apply the new cookie status.
                     cookieManager.setAcceptThirdPartyCookies(mainWebView, thirdPartyCookiesEnabled);
 
+                    // Display a `Snackbar`.
+                    if (thirdPartyCookiesEnabled) {
+                        Snackbar.make(findViewById(R.id.mainWebView), R.string.third_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
+                    } else {
+                        Snackbar.make(findViewById(R.id.mainWebView), R.string.third_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
+                    }
+
                     // Reload the WebView.
                     mainWebView.reload();
                 } // Else do nothing because SDK < 21.
@@ -691,6 +712,13 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 // Apply the new DOM Storage status.
                 mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
 
+                // Display a `Snackbar`.
+                if (domStorageEnabled) {
+                    Snackbar.make(findViewById(R.id.mainWebView), R.string.dom_storage_enabled, Snackbar.LENGTH_SHORT).show();
+                } else {
+                    Snackbar.make(findViewById(R.id.mainWebView), R.string.dom_storage_disabled, Snackbar.LENGTH_SHORT).show();
+                }
+
                 // Reload the WebView.
                 mainWebView.reload();
                 return true;
@@ -704,6 +732,13 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
                 // Apply the new form data status.
                 mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
+
+                // Display a `Snackbar`.
+                if (saveFormDataEnabled) {
+                    Snackbar.make(findViewById(R.id.mainWebView), R.string.form_data_enabled, Snackbar.LENGTH_SHORT).show();
+                } else {
+                    Snackbar.make(findViewById(R.id.mainWebView), R.string.form_data_disabled, Snackbar.LENGTH_SHORT).show();
+                }
 
                 // Reload the WebView.
                 mainWebView.reload();
@@ -906,6 +941,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
         // Reinitialize the adView variable, as the View will have been removed and re-added in the free flavor by BannerAd.reloadAfterRotate().
         adView = findViewById(R.id.adView);
+
+        // `invalidateOptionsMenu` should recalculate the number of action buttons from the menu to display on the app bar, but it doesn't because of the this bug:  https://code.google.com/p/android/issues/detail?id=20493#c8
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -1033,15 +1071,70 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
     }
 
-    private void updatePrivacyIcon() {
+    public static void updatePrivacyIcons(Activity activity) {
+        // Get handles for the icons.
+        MenuItem privacyIcon = mainMenu.findItem(R.id.toggleJavaScript);
+        MenuItem firstPartyCookiesIcon = mainMenu.findItem(R.id.toggleFirstPartyCookies);
+        MenuItem thirdPartyCookiesIcon = mainMenu.findItem(R.id.toggleThirdPartyCookies);
+        MenuItem domStorageIcon = mainMenu.findItem(R.id.toggleDomStorage);
+        MenuItem formDataIcon = mainMenu.findItem(R.id.toggleSaveFormData);
+
+        // Update `privacyIcon`.
         if (javaScriptEnabled) {
+            // `JavaScript` is enabled.
             privacyIcon.setIcon(R.drawable.javascript_enabled);
         } else {
             if (firstPartyCookiesEnabled) {
+                // `JavaScript` is disabled but cookies are enabled.
                 privacyIcon.setIcon(R.drawable.warning);
             } else {
+                // All the dangerous features are disabled.
                 privacyIcon.setIcon(R.drawable.privacy_mode);
             }
         }
+
+        // Update `firstPartyCookiesIcon`.
+        if (firstPartyCookiesEnabled) {
+            // First-party cookies are enabled.
+            firstPartyCookiesIcon.setIcon(R.drawable.cookies_warning);
+        } else {
+            // First-party cookies are disabled.
+            firstPartyCookiesIcon.setIcon(R.drawable.cookies_disabled);
+        }
+
+        // Update `thirdPartyCookiesIcon`.
+        if (firstPartyCookiesEnabled) {
+            if (thirdPartyCookiesEnabled) {
+                //  Third-party cookies are enabled.  Bad!
+                thirdPartyCookiesIcon.setIcon(R.drawable.cookies_critical);
+            } else {
+                // Third-party cookies are disabled.
+                thirdPartyCookiesIcon.setIcon(R.drawable.cookies_disabled);
+            }
+        } else {
+            // First-party cookies are disabled, so third-party cookies are ghosted.
+            thirdPartyCookiesIcon.setIcon(R.drawable.cookies_ghosted);
+        }
+
+        // Update `domStorageIcon`.
+        if (javaScriptEnabled) {
+            if (domStorageEnabled) {
+                domStorageIcon.setIcon(R.drawable.dom_storage_enabled);
+            } else {
+                domStorageIcon.setIcon(R.drawable.dom_storage_disabled);
+            }
+        } else {
+            domStorageIcon.setIcon(R.drawable.dom_storage_ghosted);
+        }
+
+        // Update `formDataIcon`.
+        if (saveFormDataEnabled) {
+            formDataIcon.setIcon(R.drawable.form_data_enabled);
+        } else {
+            formDataIcon.setIcon(R.drawable.form_data_disabled);
+        }
+
+        // `invalidateOptionsMenu` calls `onPrepareOptionsMenu()` and redraws the icons in the `AppBar`.
+        ActivityCompat.invalidateOptionsMenu(activity);
     }
 }

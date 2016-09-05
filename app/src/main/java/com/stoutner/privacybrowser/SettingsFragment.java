@@ -139,8 +139,8 @@ public class SettingsFragment extends PreferenceFragment {
                         MainWebViewActivity.mainWebView.getSettings().setJavaScriptEnabled(MainWebViewActivity.javaScriptEnabled);
                         MainWebViewActivity.mainWebView.reload();
 
-                        // Update the privacy icon.
-                        updatePrivacyIcon();
+                        // Update the privacy icons.
+                        MainWebViewActivity.updatePrivacyIcons(MainWebViewActivity.privacyBrowserActivity);
                         break;
 
                     case "first_party_cookies_enabled":
@@ -159,8 +159,8 @@ public class SettingsFragment extends PreferenceFragment {
                         MenuItem firstPartyCookiesMenuItem = MainWebViewActivity.mainMenu.findItem(R.id.toggleFirstPartyCookies);
                         firstPartyCookiesMenuItem.setChecked(MainWebViewActivity.firstPartyCookiesEnabled);
 
-                        // Update the privacy icon.
-                        updatePrivacyIcon();
+                        // Update the privacy icons.
+                        MainWebViewActivity.updatePrivacyIcons(MainWebViewActivity.privacyBrowserActivity);
                         break;
 
                     case "third_party_cookies_enabled":
@@ -176,6 +176,9 @@ public class SettingsFragment extends PreferenceFragment {
                             MainWebViewActivity.cookieManager.setAcceptThirdPartyCookies(MainWebViewActivity.mainWebView, MainWebViewActivity.thirdPartyCookiesEnabled);
                             MainWebViewActivity.mainWebView.reload();
                         }
+
+                        // Update the privacy icons.
+                        MainWebViewActivity.updatePrivacyIcons(MainWebViewActivity.privacyBrowserActivity);
                         break;
 
                     case "dom_storage_enabled":
@@ -190,8 +193,8 @@ public class SettingsFragment extends PreferenceFragment {
                         MainWebViewActivity.mainWebView.getSettings().setDomStorageEnabled(MainWebViewActivity.domStorageEnabled);
                         MainWebViewActivity.mainWebView.reload();
 
-                        // Update the privacy icon.
-                        updatePrivacyIcon();
+                        // Update the privacy icons.
+                        MainWebViewActivity.updatePrivacyIcons(MainWebViewActivity.privacyBrowserActivity);
                         break;
 
                     case "save_form_data_enabled":
@@ -205,6 +208,9 @@ public class SettingsFragment extends PreferenceFragment {
                         // Update mainWebView and reload the website.
                         MainWebViewActivity.mainWebView.getSettings().setSaveFormData(MainWebViewActivity.saveFormDataEnabled);
                         MainWebViewActivity.mainWebView.reload();
+
+                        // Update the privacy icons.
+                        MainWebViewActivity.updatePrivacyIcons(MainWebViewActivity.privacyBrowserActivity);
                         break;
 
                     case "user_agent":
@@ -348,20 +354,5 @@ public class SettingsFragment extends PreferenceFragment {
     public void onResume() {
         super.onResume();
         savedPreferences.registerOnSharedPreferenceChangeListener(preferencesListener);
-    }
-
-    private void updatePrivacyIcon() {
-        // Define a reference to the toggleJavaScript icon.
-        MenuItem toggleJavaScript = MainWebViewActivity.mainMenu.findItem(R.id.toggleJavaScript);
-
-        if (MainWebViewActivity.javaScriptEnabled) {
-            toggleJavaScript.setIcon(R.drawable.javascript_enabled);
-        } else {
-            if (MainWebViewActivity.firstPartyCookiesEnabled) {
-                toggleJavaScript.setIcon(R.drawable.warning);
-            } else {
-                toggleJavaScript.setIcon(R.drawable.privacy_mode);
-            }
-        }
     }
 }

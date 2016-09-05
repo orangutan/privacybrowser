@@ -8,16 +8,19 @@
     android:viewportHeight="256.0"
     android:viewportWidth="256.0" >
 
+    <!-- We have to use a hard coded color code until API >= 21.  Then we can use`@color`. -->
     <path
         android:fillAlpha="1"
         android:fillColor="#b71c1c"
         android:pathData="m128,12.8 l-94.25,41.89 0,62.84c0,58.12 40.22,112.48 94.25,125.67 54.04,-13.2 94.25,-67.55 94.25,-125.67l0,-62.84z" android:strokeColor="#00000000" />
 
+    <!-- We have to use a hard coded color code until API >= 21.  Then we can use`@color`. -->
     <path
         android:fillAlpha="1"
         android:fillColor="#d32f2f"
         android:pathData="m128,0 l-104.73,46.55 0,69.82C23.27,180.95 67.96,241.34 128,256 188.04,241.34 232.73,180.95 232.73,116.36l0,-69.82L128,0ZM128,127.88 L209.45,127.88C203.29,175.83 171.29,218.53 128,231.91l0,-103.91 -81.45,0 0,-66.33L128,25.48l0,102.4z" android:strokeColor="#00000000" />
 
+    <!-- We have to use a hard coded color code until API >= 21.  Then we can use`@color`. -->
     <path
         android:fillAlpha="1"
         android:fillColor="#ffffff"

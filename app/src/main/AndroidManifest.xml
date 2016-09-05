@@ -40,7 +40,7 @@
         android:allowBackup="false"
         android:fullBackupContent="false" >
 
-        <!-- If `android:name="android.webkit.WebView.MetricsOptOut"` is not `true` then WebViews will upload metrics to Google.
+        <!-- If `android:name="android.webkit.WebView.MetricsOptOut"` is not `true` then `WebViews` will upload metrics to Google.
             https://developer.android.com/reference/android/webkit/WebView.html -->
         <meta-data
             android:name="android.webkit.WebView.MetricsOptOut"
@@ -55,6 +55,7 @@
             android:label="@string/privacy_browser"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTask"
+            android:screenOrientation="fullUser"
             android:persistableMode="persistNever" >
 
             <intent-filter>
@@ -81,6 +82,7 @@
             android:theme="@style/PrivacyBrowser.SecondaryActivity"
             android:parentActivityName=".MainWebViewActivity"
             android:configChanges="orientation|screenSize"
+            android:screenOrientation="fullUser"
             android:persistableMode="persistNever" />
 
         <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
@@ -91,6 +93,7 @@
             android:theme="@style/PrivacyBrowser.SecondaryActivity"
             android:parentActivityName=".BookmarksActivity"
             android:configChanges="orientation|screenSize"
+            android:screenOrientation="fullUser"
             android:persistableMode="persistNever" />
 
         <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
@@ -101,6 +104,7 @@
             android:theme="@style/Settings"
             android:parentActivityName=".MainWebViewActivity"
             android:configChanges="orientation|screenSize"
+            android:screenOrientation="fullUser"
             android:persistableMode="persistNever" />
 
         <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
@@ -111,6 +115,7 @@
             android:theme="@style/PrivacyBrowser.SecondaryActivity"
             android:parentActivityName=".MainWebViewActivity"
             android:configChanges="orientation|screenSize"
+            android:screenOrientation="fullUser"
             android:persistableMode="persistNever" />
 
         <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
@@ -121,6 +126,7 @@
             android:theme="@style/PrivacyBrowser.SecondaryActivity"
             android:parentActivityName=".MainWebViewActivity"
             android:configChanges="orientation|screenSize"
+            android:screenOrientation="fullUser"
             android:persistableMode="persistNever" />
     </application>
 </manifest>
