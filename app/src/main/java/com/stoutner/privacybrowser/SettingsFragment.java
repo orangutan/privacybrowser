@@ -128,32 +128,30 @@ public class SettingsFragment extends PreferenceFragment {
 
                 switch (key) {
                     case "javascript_enabled":
-                        // Set javaScriptEnabled to the new state.  The default is false.
+                        // Set `javaScriptEnabled` to the new state.  The default is `false`.
                         MainWebViewActivity.javaScriptEnabled = sharedPreferences.getBoolean("javascript_enabled", false);
 
-                        // Toggle the state of the "dom_storage_enabled" preference.  The default is false.
+                        // Toggle the state of the `dom_storage_enabled` preference.  The default is `false`.
                         final Preference domStorageEnabled = findPreference("dom_storage_enabled");
                         domStorageEnabled.setEnabled(sharedPreferences.getBoolean("javascript_enabled", false));
 
-                        // Update mainWebView and reload the website.
+                        // Update `mainWebView`.
                         MainWebViewActivity.mainWebView.getSettings().setJavaScriptEnabled(MainWebViewActivity.javaScriptEnabled);
-                        MainWebViewActivity.mainWebView.reload();
 
                         // Update the privacy icons.
                         MainWebViewActivity.updatePrivacyIcons(MainWebViewActivity.privacyBrowserActivity);
                         break;
 
                     case "first_party_cookies_enabled":
-                        // Set firstPartyCookiesEnabled to the new state.  The default is false.
+                        // Set `firstPartyCookiesEnabled` to the new state.  The default is `false`.
                         MainWebViewActivity.firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies_enabled", false);
 
-                        // Toggle the state of the "third_party_cookies_enabled" preference.  The default is false.
+                        // Toggle the state of the `third_party_cookies_enabled` preference.  The default is `false`.
                         final Preference thirdPartyCookiesEnabled = findPreference("third_party_cookies_enabled");
                         thirdPartyCookiesEnabled.setEnabled(sharedPreferences.getBoolean("first_party_cookies_enabled", false));
 
-                        // Update mainWebView and reload the website.
+                        // Update `mainWebView`.
                         MainWebViewActivity.cookieManager.setAcceptCookie(MainWebViewActivity.firstPartyCookiesEnabled);
-                        MainWebViewActivity.mainWebView.reload();
 
                         // Update the checkbox in the options menu.
                         MenuItem firstPartyCookiesMenuItem = MainWebViewActivity.mainMenu.findItem(R.id.toggleFirstPartyCookies);
@@ -164,17 +162,16 @@ public class SettingsFragment extends PreferenceFragment {
                         break;
 
                     case "third_party_cookies_enabled":
-                        // Set thirdPartyCookiesEnabled to the new state.  The default is false.
+                        // Set `thirdPartyCookiesEnabled` to the new state.  The default is `false`.
                         MainWebViewActivity.thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies_enabled", false);
 
                         // Update the checkbox in the options menu.
                         MenuItem thirdPartyCookiesMenuItem = MainWebViewActivity.mainMenu.findItem(R.id.toggleThirdPartyCookies);
                         thirdPartyCookiesMenuItem.setChecked(MainWebViewActivity.thirdPartyCookiesEnabled);
 
-                        // Update mainWebView and reload the website if API >= 21.
+                        // Update `mainWebView` if API >= 21.
                         if (Build.VERSION.SDK_INT >= 21) {
                             MainWebViewActivity.cookieManager.setAcceptThirdPartyCookies(MainWebViewActivity.mainWebView, MainWebViewActivity.thirdPartyCookiesEnabled);
-                            MainWebViewActivity.mainWebView.reload();
                         }
 
                         // Update the privacy icons.
@@ -182,32 +179,30 @@ public class SettingsFragment extends PreferenceFragment {
                         break;
 
                     case "dom_storage_enabled":
-                        // Set domStorageEnabled to the new state.  The default is false.
+                        // Set `domStorageEnabled` to the new state.  The default is `false`.
                         MainWebViewActivity.domStorageEnabled = sharedPreferences.getBoolean("dom_storage_enabled", false);
 
                         // Update the checkbox in the options menu.
                         MenuItem domStorageMenuItem = MainWebViewActivity.mainMenu.findItem(R.id.toggleDomStorage);
                         domStorageMenuItem.setChecked(MainWebViewActivity.domStorageEnabled);
 
-                        // Update mainWebView and reload the website.
+                        // Update `mainWebView`.
                         MainWebViewActivity.mainWebView.getSettings().setDomStorageEnabled(MainWebViewActivity.domStorageEnabled);
-                        MainWebViewActivity.mainWebView.reload();
 
                         // Update the privacy icons.
                         MainWebViewActivity.updatePrivacyIcons(MainWebViewActivity.privacyBrowserActivity);
                         break;
 
                     case "save_form_data_enabled":
-                        // Set saveFormDataEnabled to the new state.  The default is false.
+                        // Set `saveFormDataEnabled` to the new state.  The default is `false`.
                         MainWebViewActivity.saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data_enabled", false);
 
                         // Update the checkbox in the options menu.
                         MenuItem saveFormDataMenuItem = MainWebViewActivity.mainMenu.findItem(R.id.toggleSaveFormData);
                         saveFormDataMenuItem.setChecked(MainWebViewActivity.saveFormDataEnabled);
 
-                        // Update mainWebView and reload the website.
+                        // Update `mainWebView`.
                         MainWebViewActivity.mainWebView.getSettings().setSaveFormData(MainWebViewActivity.saveFormDataEnabled);
-                        MainWebViewActivity.mainWebView.reload();
 
                         // Update the privacy icons.
                         MainWebViewActivity.updatePrivacyIcons(MainWebViewActivity.privacyBrowserActivity);
@@ -218,7 +213,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                         switch (userAgentString) {
                             case "Default user agent":
-                                // Set the default user agent on mainWebView, display the user agent as the summary text for userAgentPreference, and disable customUserAgent.
+                                // Set the default user agent on `mainWebView`, display the user agent as the summary text for `userAgentPreference`, and disable `customUserAgent`.
                                 // Once API >= 17 we can use getDefaultUserAgent().  For now, setUserAgentString("") sets the WebView's default user agent.
                                 MainWebViewActivity.mainWebView.getSettings().setUserAgentString("");
                                 userAgentPreference.setSummary(MainWebViewActivity.mainWebView.getSettings().getUserAgentString());
@@ -298,18 +293,26 @@ public class SettingsFragment extends PreferenceFragment {
                         break;
 
                     case "javascript_enabled_search_custom_url":
-                        // Set the new custom search URL as the summary text for "javascript_enabled_search_custom_url".  The default is "".
+                        // Set the new custom search URL as the summary text for `javascript_enabled_search_custom_url`.  The default is ``.
                         javaScriptEnabledSearchCustomURLPreference.setSummary(sharedPreferences.getString("javascript_enabled_search_custom_url", ""));
 
-                        // Update javaScriptEnabledSearchCustomURL.  The default is "".
+                        // Update javaScriptEnabledSearchCustomURL.  The default is ``.
                         MainWebViewActivity.javaScriptEnabledSearchURL = sharedPreferences.getString("javascript_enabled_search_custom_url", "");
                         break;
 
+                    case "do_not_track":
+                        // Update `customHeaders`.  The default is `true`.
+                        if (sharedPreferences.getBoolean("do_not_track", true)) {
+                            MainWebViewActivity.customHeaders.put("DNT", "1");
+                        } else {  // Remove the Do Not Track header.
+                            MainWebViewActivity.customHeaders.remove("DNT");
+                        }
+
                     case "homepage":
-                        // Set the new homepage URL as the summary text for the Homepage preference.  The default is "https://www.duckduckgo.com".
+                        // Set the new homepage URL as the summary text for the Homepage preference.  The default is `https://www.duckduckgo.com`.
                         homepagePreference.setSummary(sharedPreferences.getString("homepage", "https://www.duckduckgo.com"));
 
-                        // Update the homepage variable.  The default is "https://www.duckduckgo.com".
+                        // Update the homepage variable.  The default is `https://www.duckduckgo.com`.
                         MainWebViewActivity.homepage = sharedPreferences.getString("homepage", "https://www.duckduckgo.com");
                         break;
 

@@ -103,7 +103,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // It is also used in `onCreate()`, `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, and `onOptionsItemSelected()`.
     public static boolean firstPartyCookiesEnabled;
 
-    // `thridPartyCookiesEnables` is public static so it can be accessed from `SettingsFragment`.
+    // `thirdPartyCookiesEnables` is public static so it can be accessed from `SettingsFragment`.
     // It is also used in `onCreate()`, `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, and `onOptionsItemSelected()`.
     public static boolean thirdPartyCookiesEnabled;
 
@@ -128,7 +128,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `swipeToRefreshEnabled` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onCreate()`.
     public static boolean swipeToRefreshEnabled;
 
-    // `customHeader` is public static so it can be accessed from `BookmarksActivity`.  It is also used in `onCreate()` and `loadUrlFromTextBox()`.
+    // `customHeader` is public static so it can be accessed from `BookmarksActivity`.  It is also used in `onCreate()`, `onOptionsItemSelected()`, and `loadUrlFromTextBox()`.
     public static Map<String, String> customHeaders = new HashMap<String, String>();
 
 
@@ -221,9 +221,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
         // drawerToggle creates the hamburger icon at the start of the AppBar.
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, supportAppBar, R.string.open_navigation, R.string.close_navigation);
-
-        // Replace the header that `WebView` creates for `X-Requested-With` with a null value.  The default value is the application ID (com.stoutner.privacybrowser.standard).
-        customHeaders.put("X-Requested-With", "");
 
         mainWebView.setWebViewClient(new WebViewClient() {
             // shouldOverrideUrlLoading makes this `WebView` the default handler for URLs inside the app, so that links are not kicked out to other apps.
@@ -450,6 +447,15 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Set the swipe to refresh initial status.  The default is `true`.
         swipeToRefreshEnabled = sharedPreferences.getBoolean("swipe_to_refresh_enabled", true);
         swipeToRefresh.setEnabled(swipeToRefreshEnabled);
+
+
+        // Replace the header that `WebView` creates for `X-Requested-With` with a null value.  The default value is the application ID (com.stoutner.privacybrowser.standard).
+        customHeaders.put("X-Requested-With", "");
+
+        // Set Do Not Track.  The default is true.
+        if (sharedPreferences.getBoolean("do_not_track", true)) {
+            customHeaders.put("DNT", "1");
+        }
 
 
         // Get the intent information that started the app.
@@ -919,6 +925,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
                 // Clear `formattedUrlString`.
                 formattedUrlString = null;
+
+                // Clear `customHeaders`.
+                customHeaders.clear();
 
                 // Destroy the internal state of the webview.
                 mainWebView.destroy();

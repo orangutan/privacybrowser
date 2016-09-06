@@ -68,6 +68,12 @@
             android:defaultValue="PrivacyBrowser/1.0"
             android:inputType="textVisiblePassword|textMultiLine" />
 
+        <SwitchPreference
+            android:key="do_not_track"
+            android:title="@string/do_not_track"
+            android:summary="@string/do_not_track_summary"
+            android:defaultValue="true" />
+
     </PreferenceCategory>
 
     <PreferenceCategory
