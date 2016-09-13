@@ -1,5 +1,5 @@
 /**
- * Copyright 2015-2016 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -36,6 +36,7 @@ import android.widget.TextView;
 import java.util.Date;
 
 public class SslCertificateError extends DialogFragment{
+
     private String primaryError;
     private String urlWithError;
     private String issuedToCName;
@@ -74,12 +75,13 @@ public class SslCertificateError extends DialogFragment{
         argumentsBundle.putString("StartDate", startDateForBundle.toString());
         argumentsBundle.putString("EndDate", endDateForBundle.toString());
 
-        // Add the `Bundle` to this instance of `SslCertificateError`.
+        // Add `argumentsBundle` to this instance of `SslCertificateError`.
         SslCertificateError thisSslCertificateErrorDialog = new SslCertificateError();
         thisSslCertificateErrorDialog.setArguments(argumentsBundle);
         return thisSslCertificateErrorDialog;
     }
 
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 

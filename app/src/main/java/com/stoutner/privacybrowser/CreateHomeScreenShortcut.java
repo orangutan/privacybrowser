@@ -37,12 +37,10 @@ import android.widget.EditText;
 public class CreateHomeScreenShortcut extends DialogFragment {
     // The public interface is used to send information back to the parent activity.
     public interface CreateHomeScreenSchortcutListener {
-        void onCancelCreateHomeScreenShortcut(DialogFragment dialogFragment);
-
         void onCreateHomeScreenShortcut(DialogFragment dialogFragment);
     }
 
-    //createHomeScreenShortcutListener is used in `onAttach` and and `onCreateDialog`.
+    //`createHomeScreenShortcutListener` is used in `onAttach()` and `onCreateDialog()`.
     private CreateHomeScreenSchortcutListener createHomeScreenShortcutListener;
 
     // Check to make sure that the parent activity implements the listener.
@@ -74,7 +72,7 @@ public class CreateHomeScreenShortcut extends DialogFragment {
         dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                createHomeScreenShortcutListener.onCancelCreateHomeScreenShortcut(CreateHomeScreenShortcut.this);
+                // Do nothing if `Cancel` is clicked.
             }
         });
 
@@ -93,7 +91,7 @@ public class CreateHomeScreenShortcut extends DialogFragment {
         // Show the keyboard when the Dialog is displayed on the screen.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
-        // We need to show the `AlertDialog` before we can call setOnKeyListener() below.
+        // We need to show `alertDialog` before we can call `setOnKeyListener()` below.
         alertDialog.show();
 
         // Allow the "enter" key on the keyboard to create the shortcut.

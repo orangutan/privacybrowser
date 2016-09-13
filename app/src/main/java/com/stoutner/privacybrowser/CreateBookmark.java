@@ -36,8 +36,6 @@ import android.widget.EditText;
 public class CreateBookmark extends DialogFragment {
     // The public interface is used to send information back to the parent activity.
     public interface CreateBookmarkListener {
-        void onCancelCreateBookmark(DialogFragment dialogFragment);
-
         void onCreateBookmark(DialogFragment dialogFragment);
     }
 
@@ -72,8 +70,7 @@ public class CreateBookmark extends DialogFragment {
         dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // Return the `DialogFragment` to the parent activity on cancel.
-                createBookmarkListener.onCancelCreateBookmark(CreateBookmark.this);
+                // Do nothing.  The `AlertDialog` will close automatically.
             }
         });
 

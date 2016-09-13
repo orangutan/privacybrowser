@@ -38,8 +38,6 @@ import android.widget.ImageView;
 public class EditBookmarkFolder extends DialogFragment {
     // The public interface is used to send information back to the parent activity.
     public interface EditBookmarkFolderListener {
-        void onCancelEditBookmarkFolder(DialogFragment dialogFragment);
-
         void onSaveEditBookmarkFolder(DialogFragment dialogFragment);
     }
 
@@ -77,8 +75,7 @@ public class EditBookmarkFolder extends DialogFragment {
         dialogBuilder.setNegativeButton(R.string.cancel, new Dialog.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // Return the `DialogFragment` to the parent activity on cancel.
-                editBookmarkFolderListener.onCancelEditBookmarkFolder(EditBookmarkFolder.this);
+                // Do nothing.  The `AlertDialog` will close automatically.
             }
         });
 

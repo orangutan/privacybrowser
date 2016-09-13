@@ -91,9 +91,8 @@
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp" >
 
-        <!-- `android:imeOptions="actionGo"` sets the keyboard to have a "go" key instead of a "new line" key.
-            `android:inputType="textUri"` disables spell check in the EditText.
-            `android:singleLine="true"` is not needed in a Dialog.-->
+        <!-- `android:imeOptions="actionGo"` sets the keyboard to have a `go` key instead of a `new line` key.
+            `android:inputType="textUri"` disables spell check in the `EditText`. -->
         <android.support.design.widget.TextInputEditText
             android:id="@+id/edit_bookmark_name_edittext"
             android:layout_height="wrap_content"

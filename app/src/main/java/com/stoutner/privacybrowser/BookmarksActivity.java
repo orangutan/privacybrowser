@@ -529,11 +529,6 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     }
 
     @Override
-    public void onCancelCreateBookmark(DialogFragment dialogFragment) {
-        // Do nothing because the user selected `Cancel`.
-    }
-
-    @Override
     public void onCreateBookmark(DialogFragment dialogFragment) {
         // Get the `EditText`s from the `createBookmarkDialogFragment` and extract the strings.
         EditText createBookmarkNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.create_bookmark_name_edittext);
@@ -556,11 +551,6 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Refresh the ListView.  `setSelection` scrolls to the bottom of the list.
         updateBookmarksListView(currentFolder);
         bookmarksListView.setSelection(newBookmarkDisplayOrder);
-    }
-
-    @Override
-    public void onCancelCreateBookmarkFolder(DialogFragment dialogFragment) {
-        // Do nothing because the user selected `Cancel`.
     }
 
     @Override
@@ -610,11 +600,6 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     }
 
     @Override
-    public void onCancelEditBookmark(DialogFragment dialogFragment) {
-        // Do nothing because the user selected `Cancel`.
-    }
-
-    @Override
     public void onSaveEditBookmark(DialogFragment dialogFragment) {
         // Get a long array with the the databaseId of the selected bookmark and convert it to an `int`.
         long[] selectedBookmarksLongArray = bookmarksListView.getCheckedItemIds();
@@ -646,11 +631,6 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Refresh the `ListView`.  `setSelection` scrolls to the position of the bookmark that was edited.
         updateBookmarksListView(currentFolder);
         bookmarksListView.setSelection(selectedBookmarkPosition);
-    }
-
-    @Override
-    public void onCancelEditBookmarkFolder(DialogFragment dialogFragment) {
-        // Do nothing because the user selected `Cancel`.
     }
 
     @Override

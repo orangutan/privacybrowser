@@ -72,7 +72,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 // We need to use AppCompatActivity from android.support.v7.app.AppCompatActivity to have access to the SupportActionBar until the minimum API is >= 21.
-public class MainWebViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CreateHomeScreenShortcut.CreateHomeScreenSchortcutListener, SslCertificateError.SslCertificateErrorListener {
+public class MainWebViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CreateHomeScreenShortcut.CreateHomeScreenSchortcutListener,
+        SslCertificateError.SslCertificateErrorListener, DownloadFile.DownloadFileListener {
     // `favoriteIcon` is public static so it can be accessed from `CreateHomeScreenShortcut`, `BookmarksActivity`, `CreateBookmark`, `CreateBookmarkFolder`, and `EditBookmark`.
     // It is also used in `onCreate()` and `onCreateHomeScreenShortcutCreate()`.
     public static Bitmap favoriteIcon;
@@ -344,21 +345,11 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
         // Allow the downloading of files.
         mainWebView.setDownloadListener(new DownloadListener() {
-            // Launch the Android download manager when a link leads to a download.
             @Override
             public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
-                DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-                DownloadManager.Request requestUri = new DownloadManager.Request(Uri.parse(url));
-
-                // Add the URL as the description for the download.
-                requestUri.setDescription(url);
-
-                // Show the download notification after the download is completed.
-                requestUri.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-
-                // Initiate the download and display a Snackbar.
-                downloadManager.enqueue(requestUri);
-                Snackbar.make(findViewById(R.id.mainWebView), R.string.download_started, Snackbar.LENGTH_SHORT).show();
+                // Show the `DownloadFile` `AlertDialog` and name this instance `@string/download`.
+                DialogFragment downloadFileDialogFragment = DownloadFile.fromUrl(url, contentDisposition, contentLength);
+                downloadFileDialogFragment.show(getFragmentManager(), getResources().getString(R.string.file_download));
             }
         });
 
@@ -828,7 +819,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 DialogFragment createHomeScreenShortcutDialogFragment = new CreateHomeScreenShortcut();
                 createHomeScreenShortcutDialogFragment.show(getFragmentManager(), getResources().getString(R.string.create_shortcut));
 
-                //Everything else will be handled by CreateHomeScreenShortcut and the associated listeners below.
+                //Everything else will be handled by `CreateHomeScreenShortcut` and the associated listener below.
                 return true;
 
             case R.id.refresh:
@@ -972,11 +963,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     }
 
     @Override
-    public void onCancelCreateHomeScreenShortcut(DialogFragment dialogFragment) {
-        // Do nothing because the user selected "Cancel".
-    }
-
-    @Override
     public void onCreateHomeScreenShortcut(DialogFragment dialogFragment) {
         // Get shortcutNameEditText from the alert dialog.
         EditText shortcutNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.shortcut_name_edittext);
@@ -993,6 +979,32 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         placeBookmarkShortcut.putExtra("android.intent.extra.shortcut.ICON", favoriteIcon);
         placeBookmarkShortcut.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
         sendBroadcast(placeBookmarkShortcut);
+    }
+
+    @Override
+    public void onDownloadFile(DialogFragment dialogFragment, String downloadUrl) {
+        DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+        DownloadManager.Request downloadRequest = new DownloadManager.Request(Uri.parse(downloadUrl));
+
+        // Get the file name from `dialogFragment`.
+        EditText downloadFileNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.download_file_name);
+        String fileName = downloadFileNameEditText.getText().toString();
+
+        // Set the download save in the the `DIRECTORY_DOWNLOADS`using `fileName`.
+        // Once we have `WRITE_EXTERNAL_STORAGE` permissions we can use `setDestinationInExternalPublicDir`.
+        downloadRequest.setDestinationInExternalFilesDir(this, "/", fileName);
+
+        // Allow `MediaScanner` to index the download if it is a media file.
+        downloadRequest.allowScanningByMediaScanner();
+
+        // Add the URL as the description for the download.
+        downloadRequest.setDescription(downloadUrl);
+
+        // Show the download notification after the download is completed.
+        downloadRequest.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+        // Initiate the download and display a Snackbar.
+        downloadManager.enqueue(downloadRequest);
     }
 
     public void viewSslCertificate(View view) {

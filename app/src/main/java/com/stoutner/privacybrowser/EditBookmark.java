@@ -38,8 +38,6 @@ import android.widget.ImageView;
 public class EditBookmark extends DialogFragment {
     // The public interface is used to send information back to the parent activity.
     public interface EditBookmarkListener {
-        void onCancelEditBookmark(DialogFragment dialogFragment);
-
         void onSaveEditBookmark(DialogFragment dialogFragment);
     }
 
@@ -77,8 +75,7 @@ public class EditBookmark extends DialogFragment {
         dialogBuilder.setNegativeButton(R.string.cancel, new Dialog.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // Return the `DialogFragment` to the parent activity on cancel.
-                editBookmarkListener.onCancelEditBookmark(EditBookmark.this);
+                // Do nothing.  The `AlertDialog` will close automatically.
             }
         });
 
@@ -95,7 +92,7 @@ public class EditBookmark extends DialogFragment {
         // Create an `AlertDialog` from the `AlertDialog.Builder`.
         final AlertDialog alertDialog = dialogBuilder.create();
 
-        // Show the keyboard when the `Dialog` is displayed on the screen.
+        // Show the keyboard when `alertDialog` is displayed on the screen.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
         // We need to show the `AlertDialog` before we can modify items in the layout.
@@ -122,10 +119,11 @@ public class EditBookmark extends DialogFragment {
 
         // Allow the `enter` key on the keyboard to save the bookmark from `edit_bookmark_name_edittext`.
         bookmarkNameEditText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down on the "enter" button, select the PositiveButton `Save`.
+                // If the event is an `ACTION_DOWN` on the `enter` key, save the bookmark.
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    // Trigger `editBookmarkListener` and return the DialogFragment to the parent activity.
+                    // Trigger `onSaveEditBookmark()` and return the `DialogFragment` to the parent activity.
                     editBookmarkListener.onSaveEditBookmark(EditBookmark.this);
                     // Manually dismiss `alertDialog`.
                     alertDialog.dismiss();
