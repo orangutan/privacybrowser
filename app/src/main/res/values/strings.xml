@@ -190,6 +190,7 @@
         <item>Chrome 52 on Windows 10</item>
         <item>Internet Explorer 11 on Windows 10</item>
         <item>Edge 14 on Windows 10</item>
+        <item>Safari 9.1.2 on OS X 10.11.6</item>
         <item>Custom</item>
     </string-array>
     <string-array name="user_agent_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
@@ -205,6 +206,7 @@
         <item>Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36</item>
         <item>Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko</item>
         <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.79 Safari/537.36 Edge/14.14393</item>
+        <item>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/601.7.7 (KHTML, like Gecko) Version/9.1.2 Safari/601.7.7</item>
         <item>Custom user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
     </string-array>
     <string name="custom_user_agent">Custom user agent</string>

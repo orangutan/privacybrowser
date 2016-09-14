@@ -188,6 +188,7 @@
         <item>Chrome 52 auf Windows 10</item>
         <item>Internet Explorer 11 auf Windows 10</item>
         <item>Edge 14 auf Windows 10</item>
+        <item>Safari 9.1.2 auf OS X 10.11.6</item>
         <item>Eigener</item>
     </string-array>
     <string name="custom_user_agent">Eigener User Agent</string>
