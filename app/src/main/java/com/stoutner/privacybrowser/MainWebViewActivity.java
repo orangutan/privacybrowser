@@ -529,12 +529,10 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Set the status of the additional app bar icons.  The default is `false`.
         if (sharedPreferences.getBoolean("display_additional_app_bar_icons", false)) {
             toggleFirstPartyCookies.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-            toggleThirdPartyCookies.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             toggleDomStorage.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             toggleSaveFormData.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         } else { //Do not display the additional icons.
             toggleFirstPartyCookies.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-            toggleThirdPartyCookies.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
             toggleDomStorage.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
             toggleSaveFormData.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
@@ -1112,62 +1110,38 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Get handles for the icons.
         MenuItem privacyIcon = mainMenu.findItem(R.id.toggleJavaScript);
         MenuItem firstPartyCookiesIcon = mainMenu.findItem(R.id.toggleFirstPartyCookies);
-        MenuItem thirdPartyCookiesIcon = mainMenu.findItem(R.id.toggleThirdPartyCookies);
         MenuItem domStorageIcon = mainMenu.findItem(R.id.toggleDomStorage);
         MenuItem formDataIcon = mainMenu.findItem(R.id.toggleSaveFormData);
 
         // Update `privacyIcon`.
-        if (javaScriptEnabled) {
-            // `JavaScript` is enabled.
+        if (javaScriptEnabled) {  // JavaScript is enabled.
             privacyIcon.setIcon(R.drawable.javascript_enabled);
-        } else {
-            if (firstPartyCookiesEnabled) {
-                // `JavaScript` is disabled but cookies are enabled.
-                privacyIcon.setIcon(R.drawable.warning);
-            } else {
-                // All the dangerous features are disabled.
-                privacyIcon.setIcon(R.drawable.privacy_mode);
-            }
+        } else if (firstPartyCookiesEnabled) {  // JavaScript is disabled but cookies are enabled.
+            privacyIcon.setIcon(R.drawable.warning);
+        } else {  // All the dangerous features are disabled.
+            privacyIcon.setIcon(R.drawable.privacy_mode);
         }
 
         // Update `firstPartyCookiesIcon`.
-        if (firstPartyCookiesEnabled) {
-            // First-party cookies are enabled.
-            firstPartyCookiesIcon.setIcon(R.drawable.cookies_warning);
-        } else {
-            // First-party cookies are disabled.
+        if (firstPartyCookiesEnabled) {  // First-party cookies are enabled.
+            firstPartyCookiesIcon.setIcon(R.drawable.cookies_enabled);
+        } else {  // First-party cookies are disabled.
             firstPartyCookiesIcon.setIcon(R.drawable.cookies_disabled);
         }
 
-        // Update `thirdPartyCookiesIcon`.
-        if (firstPartyCookiesEnabled) {
-            if (thirdPartyCookiesEnabled) {
-                //  Third-party cookies are enabled.  Bad!
-                thirdPartyCookiesIcon.setIcon(R.drawable.cookies_critical);
-            } else {
-                // Third-party cookies are disabled.
-                thirdPartyCookiesIcon.setIcon(R.drawable.cookies_disabled);
-            }
-        } else {
-            // First-party cookies are disabled, so third-party cookies are ghosted.
-            thirdPartyCookiesIcon.setIcon(R.drawable.cookies_ghosted);
-        }
-
         // Update `domStorageIcon`.
-        if (javaScriptEnabled) {
-            if (domStorageEnabled) {
-                domStorageIcon.setIcon(R.drawable.dom_storage_enabled);
-            } else {
-                domStorageIcon.setIcon(R.drawable.dom_storage_disabled);
-            }
-        } else {
+        if (javaScriptEnabled && domStorageEnabled) {  // Both JavaScript and DOM storage is enabled.
+            domStorageIcon.setIcon(R.drawable.dom_storage_enabled);
+        } else if (javaScriptEnabled){  // JavaScript is enabled but DOM storage is disabled.
+            domStorageIcon.setIcon(R.drawable.dom_storage_disabled);
+        } else {  // JavaScript is disabled, so DOM storage is ghosted.
             domStorageIcon.setIcon(R.drawable.dom_storage_ghosted);
         }
 
         // Update `formDataIcon`.
-        if (saveFormDataEnabled) {
+        if (saveFormDataEnabled) {  // Form data is enabled.
             formDataIcon.setIcon(R.drawable.form_data_enabled);
-        } else {
+        } else {  // Form data is disabled.
             formDataIcon.setIcon(R.drawable.form_data_disabled);
         }
 

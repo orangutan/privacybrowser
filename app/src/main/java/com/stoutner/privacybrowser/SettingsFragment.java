@@ -91,12 +91,12 @@ public class SettingsFragment extends PreferenceFragment {
         javaScriptDisabledSearchCustomURLPreference.setEnabled(javaScriptDisabledSearchString.equals("Custom URL"));
 
 
-        // Set the JavaScript-enabed searchURL as the summary text for the JavaScript-enabled search preference when the preference screen is loaded.
+        // Set the JavaScript-enabled searchURL as the summary text for the JavaScript-enabled search preference when the preference screen is loaded.
         // The default is "https://duckduckgo.com/?q=".
         final Preference javaScriptEnabledSearchPreference = findPreference("javascript_enabled_search");
         String javaScriptEnabledSearchString = savedPreferences.getString("javascript_enabled_search", "https://duckduckgo.com/?q=");
         if (javaScriptEnabledSearchString.equals("Custom URL")) {
-            // If set to "Custom URL", use R.string.custom_url, which will be tgranslated, instead of the array value, which will not.
+            // If set to "Custom URL", use R.string.custom_url, which will be translated, instead of the array value, which will not.
             javaScriptEnabledSearchPreference.setSummary(R.string.custom_url);
         } else {
             // Set the array value as the summary text.
@@ -173,9 +173,6 @@ public class SettingsFragment extends PreferenceFragment {
                         if (Build.VERSION.SDK_INT >= 21) {
                             MainWebViewActivity.cookieManager.setAcceptThirdPartyCookies(MainWebViewActivity.mainWebView, MainWebViewActivity.thirdPartyCookiesEnabled);
                         }
-
-                        // Update the privacy icons.
-                        MainWebViewActivity.updatePrivacyIcons(MainWebViewActivity.privacyBrowserActivity);
                         break;
 
                     case "dom_storage_enabled":
