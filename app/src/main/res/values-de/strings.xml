@@ -34,6 +34,14 @@
     <string name="privacy_mode">Privatsphäre-Modus</string>
     <string name="javascript_enabled">JavaScript aktiviert</string>
     <string name="javascript_disabled">JavaScript deaktiviert</string>
+    <string name="first_party_cookies_enabled">Erstanbieter-Cookies aktiviert</string>
+    <string name="first_party_cookies_disabled">Erstanbieter-Cookies deaktiviert</string>
+    <string name="third_party_cookies_enabled">Drittanbieter-Cookies aktiviert</string>
+    <string name="third_party_cookies_disabled">Drittanbieter-Cookies deaktiviert</string>
+    <string name="dom_storage_enabled">DOM-Speicher aktiviert</string>
+    <string name="dom_storage_disabled">DOM-Speicher deaktiviert</string>
+    <string name="form_data_enabled">Formulardaten aktiviert</string>
+    <string name="form_data_disabled">Formulardaten deaktiviert</string>
     <string name="cookies_deleted">Cookies gelöscht</string>
     <string name="dom_storage_deleted">DOM-Speicher gelöscht</string>
     <string name="open_navigation">Navigationspanel öffnen</string>
