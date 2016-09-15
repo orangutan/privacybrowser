@@ -166,119 +166,124 @@
 
     <!-- Preferences. -->
     <string name="privacy">Privacy</string>
-    <string name="javascript_preference">Enable JavaScript by default</string>
-    <string name="javascript_preference_summary">JavaScript allows websites to run programs (scripts) on your device.</string>
-    <string name="first_party_cookies_preference">Enable first-party cookies by default</string>
-    <string name="first_party_cookies_preference_summary">Devices with versions of Android older than Lollipop (version 5.0) will also enable third-party cookies with this setting.</string>
-    <string name="third_party_cookies_preference">Enable third-party cookies by default</string>
-    <string name="third_party_cookies_summary">This setting requires Android Lollipop (version 5.0) or higher.  It has no effect if first-party cookies are disabled.</string>
-    <string name="dom_storage_preference">Enable DOM storage by default</string>
-    <string name="dom_storage_preference_summary">JavaScript must be enabled for DOM storage to function.</string>
-    <string name="save_form_data_preference">Enable saving of form data by default</string>
-    <string name="save_form_data_preference_summary">Saved form data can auto-populate fields on websites.</string>
-    <string name="user_agent">User agent</string>
-    <string-array name="user_agent_entries">
-        <item>WebView Default</item>
-        <item>Privacy Browser 1.0</item>
-        <item>Firefox 48 on Android 6.0.1</item>
-        <item>Chrome 52 on Android 6.0.1</item>
-        <item>Safari on iOS 10</item>
-        <item>Firefox 45 on Linux</item>
-        <item>Chromium 52 on Linux</item>
-        <item>Konqueror 4.14.23 on Linux</item>
-        <item>Firefox 48 on Windows 10</item>
-        <item>Chrome 52 on Windows 10</item>
-        <item>Internet Explorer 11 on Windows 10</item>
-        <item>Edge 14 on Windows 10</item>
-        <item>Safari 9.1.2 on OS X 10.11.6</item>
-        <item>Custom</item>
-    </string-array>
-    <string-array name="user_agent_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
-        <item>Default user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
-        <item>PrivacyBrowser/1.0</item>
-        <item>Mozilla/5.0 (Android 6.0.1; Mobile; rv:48.0) Gecko/48.0 Firefox/48.0</item>
-        <item>Mozilla/5.0 (Linux; Android 6.0.1; Nexus 6P Build/MTC20F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36</item>
-        <item>Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) Version/10.0 Mobile/14A5345a Safari/602.1</item>
-        <item>Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101 Firefox/45.0</item>
-        <item>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36</item>
-        <item>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.21 (KHTML, like Gecko) konqueror/4.14.23 Safari/537.21</item>
-        <item>Mozilla/5.0 (Windows NT 10.0; WOW64; rv:48.0) Gecko/20100101 Firefox/48.0</item>
-        <item>Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36</item>
-        <item>Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko</item>
-        <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.79 Safari/537.36 Edge/14.14393</item>
-        <item>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/601.7.7 (KHTML, like Gecko) Version/9.1.2 Safari/601.7.7</item>
-        <item>Custom user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
-    </string-array>
-    <string name="custom_user_agent">Custom user agent</string>
-    <string name="do_not_track">Do not track</string>
-    <string name="do_not_track_summary">Send the Do Not Track header which politely suggests that web servers not track this browser.</string>
+        <string name="javascript_preference">Enable JavaScript by default</string>
+        <string name="javascript_preference_summary">JavaScript allows websites to run programs (scripts) on your device.</string>
+        <string name="first_party_cookies_preference">Enable first-party cookies by default</string>
+        <string name="first_party_cookies_preference_summary">Devices with versions of Android older than Lollipop (version 5.0) will also enable third-party cookies with this setting.</string>
+        <string name="third_party_cookies_preference">Enable third-party cookies by default</string>
+        <string name="third_party_cookies_summary">This setting requires Android Lollipop (version 5.0) or higher.  It has no effect if first-party cookies are disabled.</string>
+        <string name="dom_storage_preference">Enable DOM storage by default</string>
+        <string name="dom_storage_preference_summary">JavaScript must be enabled for DOM storage to function.</string>
+        <string name="save_form_data_preference">Enable saving of form data by default</string>
+        <string name="save_form_data_preference_summary">Saved form data can auto-populate fields on websites.</string>
+        <string name="user_agent">User agent</string>
+        <string-array name="user_agent_entries">
+            <item>WebView Default</item>
+            <item>Privacy Browser 1.0</item>
+            <item>Firefox 48 on Android 6.0.1</item>
+            <item>Chrome 52 on Android 6.0.1</item>
+            <item>Safari on iOS 10</item>
+            <item>Firefox 45 on Linux</item>
+            <item>Chromium 52 on Linux</item>
+            <item>Konqueror 4.14.23 on Linux</item>
+            <item>Firefox 48 on Windows 10</item>
+            <item>Chrome 52 on Windows 10</item>
+            <item>Internet Explorer 11 on Windows 10</item>
+            <item>Edge 14 on Windows 10</item>
+            <item>Safari 9.1.2 on OS X 10.11.6</item>
+            <item>Custom</item>
+        </string-array>
+        <string-array name="user_agent_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
+            <item>Default user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
+            <item>PrivacyBrowser/1.0</item>
+            <item>Mozilla/5.0 (Android 6.0.1; Mobile; rv:48.0) Gecko/48.0 Firefox/48.0</item>
+            <item>Mozilla/5.0 (Linux; Android 6.0.1; Nexus 6P Build/MTC20F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36</item>
+            <item>Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) Version/10.0 Mobile/14A5345a Safari/602.1</item>
+            <item>Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101 Firefox/45.0</item>
+            <item>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36</item>
+            <item>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.21 (KHTML, like Gecko) konqueror/4.14.23 Safari/537.21</item>
+            <item>Mozilla/5.0 (Windows NT 10.0; WOW64; rv:48.0) Gecko/20100101 Firefox/48.0</item>
+            <item>Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36</item>
+            <item>Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko</item>
+            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.79 Safari/537.36 Edge/14.14393</item>
+            <item>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/601.7.7 (KHTML, like Gecko) Version/9.1.2 Safari/601.7.7</item>
+            <item>Custom user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
+        </string-array>
+        <string name="custom_user_agent">Custom user agent</string>
+        <string name="do_not_track">Do not track</string>
+        <string name="do_not_track_summary">Send the Do Not Track header which politely suggests that web servers not track this browser.</string>
+        <string name="proxy_through_orbot">Proxy through Orbot</string>
+        <string name="proxy_through_orbot_summary">Proxy all web traffic through Orbot on localhost:8118.</string>
     <string name="search">Search</string>
-    <string name="javascript_disabled_search">JavaScript-disabled search</string>
-    <string-array name="javascript_disabled_search_entries">
-        <item>DuckDuckGo</item>
-        <item>Google</item>
-        <item>Bing</item>
-        <item>Yahoo</item>
-        <item>StartPage</item>
-        <item>Qwant</item>
-        <item>Custom</item>
-    </string-array>
-    <string-array name="javascript_disabled_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
-        <item>https://duckduckgo.com/html/?q=</item>
-        <item>https://www.google.com/search?q=</item>
-        <item>https://www.bing.com/search?q=</item>
-        <item>https://search.yahoo.com/mobile/s?nojs=1&amp;p=</item>
-        <item>https://www.startpage.com/do/search?q=</item>
-        <item>https://lite.qwant.com/?q=</item>
-        <item>Custom URL</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
-    </string-array>
-    <string name="javascript_disabled_search_custom_url">JavaScript-disabled search custom URL</string>
-    <string name="javascript_enabled_search">JavaScript-enabled search</string>
-    <string-array name="javascript_enabled_search_entries">
-        <item>DuckDuckGo</item>
-        <item>Google</item>
-        <item>Bing</item>
-        <item>Yahoo</item>
-        <item>StartPage</item>
-        <item>Qwant</item>
-        <item>Custom</item>
-    </string-array>
-    <string-array name="javascript_enabled_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
-        <item>https://duckduckgo.com/?q=</item>
-        <item>https://www.google.com/search?q=</item>
-        <item>https://www.bing.com/search?q=</item>
-        <item>https://search.yahoo.com/mobile/s?p=</item>
-        <item>https://www.startpage.com/do/search?q=</item>
-        <item>https://www.qwant.com/?q=</item>
-        <item>Custom URL</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
-    </string-array>
-    <string name="javascript_enabled_search_custom_url">JavaScript-enabled search custom URL</string>
-    <string name="custom_url">Custom URL</string>
+        <string name="javascript_disabled_search">JavaScript-disabled search</string>
+        <string-array name="javascript_disabled_search_entries">
+            <item>DuckDuckGo</item>
+            <item>Google</item>
+            <item>Bing</item>
+            <item>Yahoo</item>
+            <item>StartPage</item>
+            <item>Qwant</item>
+            <item>Custom</item>
+        </string-array>
+        <string-array name="javascript_disabled_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
+            <item>https://duckduckgo.com/html/?q=</item>
+            <item>https://www.google.com/search?q=</item>
+            <item>https://www.bing.com/search?q=</item>
+            <item>https://search.yahoo.com/mobile/s?nojs=1&amp;p=</item>
+            <item>https://www.startpage.com/do/search?q=</item>
+            <item>https://lite.qwant.com/?q=</item>
+            <item>Custom URL</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
+        </string-array>
+        <string name="javascript_disabled_search_custom_url">JavaScript-disabled search custom URL</string>
+        <string name="javascript_enabled_search">JavaScript-enabled search</string>
+        <string-array name="javascript_enabled_search_entries">
+            <item>DuckDuckGo</item>
+            <item>Google</item>
+            <item>Bing</item>
+            <item>Yahoo</item>
+            <item>StartPage</item>
+            <item>Qwant</item>
+            <item>Custom</item>
+        </string-array>
+        <string-array name="javascript_enabled_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
+            <item>https://duckduckgo.com/?q=</item>
+            <item>https://www.google.com/search?q=</item>
+            <item>https://www.bing.com/search?q=</item>
+            <item>https://search.yahoo.com/mobile/s?p=</item>
+            <item>https://www.startpage.com/do/search?q=</item>
+            <item>https://www.qwant.com/?q=</item>
+            <item>Custom URL</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
+        </string-array>
+        <string name="javascript_enabled_search_custom_url">JavaScript-enabled search custom URL</string>
+        <string name="custom_url">Custom URL</string>
     <string name="general">General</string>
-    <string name="homepage_preference">Homepage</string>
-    <string name="default_font_size">Default font size</string>
-    <string-array name="default_font_size_entries">
-        <item>50%</item>
-        <item>75%</item>
-        <item>100%</item>
-        <item>125%</item>
-        <item>150%</item>
-        <item>175%</item>
-        <item>200%</item>
-    </string-array>
-    <string-array name="default_font_size_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
-        <item>50</item>
-        <item>75</item>
-        <item>100</item>
-        <item>125</item>
-        <item>150</item>
-        <item>175</item>
-        <item>200</item>
-    </string-array>
-    <string name="swipe_to_refresh_enabled">Swipe to refresh</string>
-    <string name="swipe_to_refresh_enabled_summary">Some websites don\'t work well if swipe to refresh is enabled.</string>
-    <string name="display_additional_app_bar_icons">Display additional app bar icons</string>
-    <string name="display_additional_app_bar_icons_summary">Display icons for toggling cookies, DOM storage, and form data in the app bar if there is room.</string>
+        <string name="homepage_preference">Homepage</string>
+        <string name="default_font_size">Default font size</string>
+        <string-array name="default_font_size_entries">
+            <item>50%</item>
+            <item>75%</item>
+            <item>100%</item>
+            <item>125%</item>
+            <item>150%</item>
+            <item>175%</item>
+            <item>200%</item>
+        </string-array>
+        <string-array name="default_font_size_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
+            <item>50</item>
+            <item>75</item>
+            <item>100</item>
+            <item>125</item>
+            <item>150</item>
+            <item>175</item>
+            <item>200</item>
+        </string-array>
+        <string name="swipe_to_refresh_enabled">Swipe to refresh</string>
+        <string name="swipe_to_refresh_enabled_summary">Some websites don\'t work well if swipe to refresh is enabled.</string>
+        <string name="display_additional_app_bar_icons">Display additional app bar icons</string>
+        <string name="display_additional_app_bar_icons_summary">Display icons for toggling cookies, DOM storage, and form data in the app bar if there is room.</string>
+
+    <!-- Orbot. -->
+    <string name="orbot_proxy_not_installed">Orbot proxy will not work unless Orbot is installed.</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">About Privacy Browser</string>

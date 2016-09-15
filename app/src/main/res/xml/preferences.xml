@@ -74,6 +74,12 @@
             android:summary="@string/do_not_track_summary"
             android:defaultValue="true" />
 
+        <SwitchPreference
+            android:key="proxy_through_orbot"
+            android:title="@string/proxy_through_orbot"
+            android:summary="@string/proxy_through_orbot_summary"
+            android:defaultValue="false" />
+
     </PreferenceCategory>
 
     <PreferenceCategory

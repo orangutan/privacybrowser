@@ -23,6 +23,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.DownloadManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -74,6 +75,14 @@ import java.util.Map;
 // We need to use AppCompatActivity from android.support.v7.app.AppCompatActivity to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CreateHomeScreenShortcut.CreateHomeScreenSchortcutListener,
         SslCertificateError.SslCertificateErrorListener, DownloadFile.DownloadFileListener {
+    // `privacyBrowserContext` is public static so it can be accessed from `SettingsFragment`.
+    // It is also used in `onCreate()` and `onConfigurationChanged()`.
+    public static Context privacyBrowserContext;
+
+    // `appBar` is public static so it can be accessed from `OrbotProxyHelper`.
+    // It is also used in `onCreate()`.
+    public static ActionBar appBar;
+
     // `favoriteIcon` is public static so it can be accessed from `CreateHomeScreenShortcut`, `BookmarksActivity`, `CreateBookmark`, `CreateBookmarkFolder`, and `EditBookmark`.
     // It is also used in `onCreate()` and `onCreateHomeScreenShortcutCreate()`.
     public static Bitmap favoriteIcon;
@@ -162,10 +171,13 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // We need a handle for the activity, which is accessed from `SettingsFragment` and fed into `updatePrivacyIcons()`.
         privacyBrowserActivity = this;
 
+        // Get a handle for the application context.
+        privacyBrowserContext = getApplicationContext();
+
         // We need to use the SupportActionBar from android.support.v7.app.ActionBar until the minimum API is >= 21.
         Toolbar supportAppBar = (Toolbar) findViewById(R.id.appBar);
         setSupportActionBar(supportAppBar);
-        final ActionBar appBar = getSupportActionBar();
+        appBar = getSupportActionBar();
 
         // This is needed to get rid of the Android Studio warning that appBar might be null.
         assert appBar != null;
@@ -200,7 +212,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Implement swipe to refresh
         swipeToRefresh = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         assert swipeToRefresh != null; //This assert removes the incorrect warning on the following line that swipeToRefresh might be null.
-        swipeToRefresh.setColorSchemeResources(R.color.blue);
+        swipeToRefresh.setColorSchemeResources(R.color.blue_700);
         swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -448,6 +460,10 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             customHeaders.put("DNT", "1");
         }
 
+        // Set Orbot proxy status.  The default is `false`.
+        if (sharedPreferences.getBoolean("proxy_through_orbot", false)) {
+            OrbotProxyHelper.setProxy(privacyBrowserContext, privacyBrowserActivity, "localhost", "8118");
+        }
 
         // Get the intent information that started the app.
         final Intent intent = getIntent();
@@ -469,7 +485,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // If the favorite icon is null, load the default.
         if (favoriteIcon == null) {
             // We have to use `ContextCompat` until API >= 21.
-            Drawable favoriteIconDrawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.world);
+            Drawable favoriteIconDrawable = ContextCompat.getDrawable(privacyBrowserContext, R.drawable.world);
             BitmapDrawable favoriteIconBitmapDrawable = (BitmapDrawable) favoriteIconDrawable;
             favoriteIcon = favoriteIconBitmapDrawable.getBitmap();
         }
@@ -951,7 +967,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         super.onConfigurationChanged(newConfig);
 
         // Reload the ad if this is the free flavor.
-        BannerAd.reloadAfterRotate(adView, getApplicationContext(), getString(R.string.ad_id));
+        BannerAd.reloadAfterRotate(adView, privacyBrowserContext, getString(R.string.ad_id));
 
         // Reinitialize the adView variable, as the View will have been removed and re-added in the free flavor by BannerAd.reloadAfterRotate().
         adView = findViewById(R.id.adView);

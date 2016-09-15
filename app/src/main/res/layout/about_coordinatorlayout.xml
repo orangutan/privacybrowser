@@ -35,12 +35,12 @@
         android:layout_width="match_parent"
         android:orientation="vertical" >
 
-        <!-- We need to set android:background="@color/blue" here or any space to the right of the TabLayout on large devices will be white. -->
+        <!-- We need to set android:background="@color/blue_700" here or any space to the right of the TabLayout on large devices will be white. -->
         <android.support.design.widget.AppBarLayout
             android:id="@+id/about_appbarlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:background="@color/blue"
+            android:background="@color/blue_700"
             android:theme="@style/AppBarOverlay" >
 
             <!-- android:theme="@style/PrivacyBrowser.DarkAppBar" makes the text and icons in the AppBar white. -->
@@ -48,7 +48,7 @@
                 android:id="@+id/about_toolbar"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:background="@color/blue"
+                android:background="@color/blue_700"
                 android:theme="@style/DarkAppBar"
                 app:popupTheme="@style/LightPopupOverlay" />
 
@@ -57,8 +57,8 @@
                 xmlns:android.support.design="http://schemas.android.com/apk/res-auto"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android.support.design:tabBackground="@color/blue"
-                android.support.design:tabTextColor="@color/light_blue"
+                android.support.design:tabBackground="@color/blue_700"
+                android.support.design:tabTextColor="@color/blue_100"
                 android.support.design:tabSelectedTextColor="@color/white"
                 android.support.design:tabIndicatorColor="@color/white"
                 android.support.design:tabMode="scrollable" />

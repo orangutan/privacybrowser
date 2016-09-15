@@ -20,6 +20,7 @@
 package com.stoutner.privacybrowser;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -240,6 +241,17 @@ public class SettingsFragment extends PreferenceFragment {
                         // Update mainWebView's user agent.  The default is "PrivacyBrowser/1.0".
                         MainWebViewActivity.mainWebView.getSettings().setUserAgentString(sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0"));
                         break;
+
+                    case "proxy_through_orbot":
+                        // Get a handle for `settingsActivity`.
+                        Activity settingsActivity = getActivity();
+
+                        // Update the proxy.  The default is `false`
+                        if (sharedPreferences.getBoolean("proxy_through_orbot", false)) {  // Orbot proxies on localhost port 8118.
+                            OrbotProxyHelper.setProxy(MainWebViewActivity.privacyBrowserContext, settingsActivity, "localhost", "8118");
+                        } else {  // Disable the proxy by setting the host to `null` and the port to `0`.
+                            OrbotProxyHelper.setProxy(MainWebViewActivity.privacyBrowserContext, settingsActivity, "", "0");
+                        }
 
                     case "javascript_disabled_search":
                         String newJavaScriptDisabledSearchString = sharedPreferences.getString("javascript_disabled_search", "https://duckduckgo.com/html/?q=");

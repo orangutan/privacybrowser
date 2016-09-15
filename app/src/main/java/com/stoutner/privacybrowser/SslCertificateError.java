@@ -212,7 +212,7 @@ public class SslCertificateError extends DialogFragment{
         SpannableStringBuilder endDateStringBuilder = new SpannableStringBuilder((endDateLabel + endDate));
 
         // Create a blue `ForegroundColorSpan`.  We have to use the deprecated `getColor` until API >= 23.
-        ForegroundColorSpan blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue));
+        ForegroundColorSpan blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
 
         // Setup the spans to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
         urlStringBuilder.setSpan(blueColorSpan, urlLabel.length(), urlStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);

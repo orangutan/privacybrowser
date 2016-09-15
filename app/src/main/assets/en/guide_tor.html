@@ -23,48 +23,71 @@
         color: 0D4781;
     }
 
-    strong {
-        color: BF360C;
+    img.center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
     }
 </style>
 </head>
 
 <body>
-<h3>Masking IP Addresses</h3>
+<h3>Tor and Its Limits</h3>
 
-<p>Although it isn't a perfect science, IP addresses can be turned into physical addresses with increasing accuracy.
-    There are <a href="https://www.whatismyip.com/">public databases</a> that show which ISP owns which IP address with a
-    good sense of which region they use it in.  There are private databases with more accurate information.  And, of course,
-    the ISP knows the exact service address of each IP address.</p>
+<p>There are two general categories of bad actors that want to infringe on the privacy of the web: malicious governments
+    with access to ISPs (Internet Service Providers) and mega corporations that run social and advertising networks.
+    TOR (The Onion Router) is useful in protecting privacy from malicious governments but not from mega corporations.</p>
 
-<p>VPN services can mask a device's IP address from a web server.  When a VPN service is engaged, all traffic is encrypted and routed
-    through the VPN server.  The web server only sees the IP address of the VPN server.  This is sufficient for maintaining anonymity
-    from web server operators and advertisers, as well as accessing websites that intentionally block access from particular countries
-    (like some music and video streaming services), but it isn't sufficient for maintaining anonymity from oppressive regimes which might
-    be able to lean on VPN operators to turn over their logs showing the original IP addresses.  Those looking for safety from such
-    regimes or desiring to blow the whistle on government agencies need something more.</p>
 
-<p>The TOR (The Onion Router) network was designed for just such purposes.  It bounces encrypted web traffic through at least three independent servers
-    that volunteer bandwidth to the project.  None of the servers have enough information to identify both the IP address of the original computer
-    and the final destination.  Therefore, any government agency wanting to access the information would have to compromise all the machines in the
-    link, which are dispersed over the globe.  This doesn't provide perfect privacy, but it gets pretty close.</p>
+<h3>Malicious Governments</h3>
 
-<p>The Tor project has an app for Android called Orbot, which is available on <a href="https://f-droid.org/repository/browse/?fdfilter=orbot&fdid=org.torproject.android">F-Droid</a>
-    and everywhere else Privacy Browser is distributed.  Orbot can operate in three modes.</p>
+<p>Malicious governments often spy on their citizens to punish dissent or human rights activity.  They commonly either
+    operate the local ISPs or they can force them to disclose information showing every IP address that is visited
+    by each user.  Tor is designed to defeat this infringement of privacy by encrypting the traffic
+    from a user's device and routing it through three separate servers on the internet before sending it on to the final destination.
+    This means that no individual ISP, server, or website, can know both the <a href="https://ipleak.net">IP address the user's device</a>
+    and the IP address of the final web server.  Malicious governments and the ISPs they control cannot tell which
+    web servers a user is accessing, although they can tell that the user is using Tor.  In some parts of
+    the world, using Tor could be construed as an evidence of illegal behavior ("if you didn't have anything
+    to hide you wouldn't be hiding your traffic from us") and users could be punished because governments
+    assume they are doing something that is prohibited. Thus, Tor can be helpful, but isn't a panacea.</p>
 
-<ul>
-    <li><strong>Proxy mode</strong> Apps have to request to proxy their traffic through Orbot, meaning that each app developer has to add code to
-        their project to make it work.</li>
-    <li><strong>Transparent proxy mode</strong> Orbot intercepts traffic from other apps as it heads out onto the network and redirects it to the
-        Tor network.  Apps do not need to be modified by their developer to work with transparent proxy mode, but it does require that Orbot have
-        root access on the device.</li>
-    <li><strong>VPN mode</strong> Orbot registers itself as a VPN using Android's builtin VPN interface.  Apps do not need to be modified by the
-        developer to work with Orbot in VPN mode and root is not required.</li>
-</ul>
 
-<p>Currently, Privacy Browser works with Orbot in transparent proxy and VPN modes. Support for the standard proxy mode will be added in a
-    <a href="https://redmine.stoutner.com/issues/26">future release</a>.</p>
+<h3>Mega Corporations</h3>
 
-<p>Because traffic is being routed through several Tor nodes, using Tor is often much slower than connecting straight to the internet.</p>
+<p>When a user connects to a web server, the web server can see the user's IP address. Although it isn't a perfect science,
+    IP addresses can be turned into physical addresses with a <a href="https://www.whatismyip.com/">fair amount of accuracy</a>.
+    Small web servers typically rely on IP addresses to identify the location of the users visiting their site.
+    Tor is a good solution to mask the user's location from these servers.  But large mega corporations
+    that own social media and advertising networks use a whole profile of information that is designed to track users
+    across devices and IP addresses.  These profiles employ a variety of techniques to identify users, including JavaScript,
+    cookies, tracking IDs, and <a href="https://panopticlick.eff.org/">browser fingerprinting</a>. Because the vast majority
+    of the websites on the internet either load an ad from one of the major networks or embed social media icons with their
+    associated JavaScript, these corporations have build profiles for almost every user online and can track their internet
+    activity across unrelated sites.</p>
+
+<p>They track every site that is visited, everything that is purchased, every credit card that is used to
+    make a purchase, every address that items are shipped to, and the GPS metadata of every picture that is
+    uploaded to the internet.  They build a profile of a user's age, gender, marital status, address, political affiliations,
+    religious affiliations, family circumstance, number of pets, and everything else they can get their hands on.
+    They even buy up databases of credit card usage at stores, so they can track the off-line purchasing patterns of the users
+    in their profiles. Because they already have much more accurate address information about a user than an IP address discloses,
+    Tor provides no real privacy protection against mega corporations.</p>
+
+<p>The single best privacy protection against mega corporations is to browse the web with JavaScript disabled, followed
+    by blocking ad networks, disabling cookies and DOM storage, and using a browser that is difficult to fingerprint.</p>
+
+
+<h3>Using Tor</h3>
+
+<p>Despite the limitations, Tor can be useful in some circumstances.  The Tor project has an app for Android called Orbot,
+    which is available on <a href="https://f-droid.org/repository/browse/?fdfilter=orbot&fdid=org.torproject.android">F-Droid</a>
+    and everywhere else that Privacy Browser is distributed.  Privacy Browser has a setting to use Orbot as
+    a proxy.  When this is turned on, Privacy Browser's app bar will have a light blue background instead of
+    the default light grey. When Privacy Browser's Orbot proxy setting is enabled, internet access
+    will not work unless Orbot is running and connected to Tor. Because traffic is being routed through several Tor nodes,
+    using Tor is often much slower than connecting straight to the internet.</p>
+
+<img class="center" src="images/tor.png" height="640" width="360">
 </body>
 </html>

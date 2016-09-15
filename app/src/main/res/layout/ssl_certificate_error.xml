@@ -33,7 +33,7 @@
             android:id="@+id/primary_error"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:textColor="@color/red"
+            android:textColor="@color/red_a700"
             android:textStyle="bold"/>
 
         <!-- URL. -->
@@ -44,7 +44,7 @@
             android:text="@string/url"
             android:textAllCaps="true"
             android:textStyle="bold"
-            android:textColor="@color/dark_blue" />
+            android:textColor="@color/blue_900" />
 
         <TextView
             android:id="@+id/url_error_dialog"
@@ -59,7 +59,7 @@
             android:text="@string/issued_to"
             android:textAllCaps="true"
             android:textStyle="bold"
-            android:textColor="@color/dark_blue" />
+            android:textColor="@color/blue_900" />
 
         <TextView
             android:id="@+id/issued_to_cname_error_dialog"
@@ -85,7 +85,7 @@
             android:text="@string/issued_by"
             android:textAllCaps="true"
             android:textStyle="bold"
-            android:textColor="@color/dark_blue"/>
+            android:textColor="@color/blue_900"/>
 
         <TextView
             android:id="@+id/issued_by_cname_error_dialog"
@@ -111,7 +111,7 @@
             android:text="@string/valid_dates"
             android:textAllCaps="true"
             android:textStyle="bold"
-            android:textColor="@color/dark_blue"/>
+            android:textColor="@color/blue_900"/>
 
         <TextView
             android:id="@+id/start_date_error_dialog"

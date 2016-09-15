@@ -122,7 +122,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity {
                 if (bookmarkParentFolder.isEmpty()) {
                     parentFolderImageView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.folder_grey));
                     bookmarkParentFolderTextView.setText(R.string.home_folder);
-                    bookmarkParentFolderTextView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.grey));
+                    bookmarkParentFolderTextView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.grey_500));
                 } else {
                     parentFolderImageView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.folder_dark_blue));
                     bookmarkParentFolderTextView.setText(bookmarkParentFolder);

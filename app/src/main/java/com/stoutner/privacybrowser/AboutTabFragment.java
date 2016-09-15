@@ -119,7 +119,7 @@ public class AboutTabFragment extends Fragment {
             SpannableStringBuilder chromeStringBuilder = new SpannableStringBuilder(chromeLabel + chrome);
 
             // Create a blue `ForegroundColorSpan`.  We have to use the deprecated `getColor` until API >= 23.
-            ForegroundColorSpan blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue));
+            ForegroundColorSpan blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
 
             // Setup the spans to display the device information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
             brandStringBuilder.setSpan(blueColorSpan, brandLabel.length(), brandStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);

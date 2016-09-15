@@ -21,15 +21,30 @@
 <!-- These color resources are hardcoded for vector drawables.  Once the minimum API is >= 22 we can remove the hardcoded colors and reference these entries. -->
 <resources>
     <color name="black">#FF000000</color>
-    <color name="blue">#FF1976D2</color>
-    <color name="dark_blue">#FF0D47A1</color>
-    <color name="blue_grey">#FF607D8B</color>
-    <color name="grey">#FF9E9E9E</color>
-    <color name="green">#FF64DD17</color>
-    <color name="light_blue">#FFBBDEFB</color>
-    <color name="medium_light_blue">#FF42A5F5</color>
-    <color name="orange">#FFF57F17</color>
-    <color name="red">#FFD50000</color>
+
+    <color name="blue_50">#FFE3F2FD</color>
+    <color name="blue_100">#FFBBDEFB</color>
+    <color name="blue_200">#FF90CAF9</color>
+    <color name="blue_300">#FF64B5F6</color>
+    <color name="blue_400">#FF42A5F5</color>
+    <color name="blue_500">#FF2196F3</color>
+    <color name="blue_600">#FF1E88E5</color>
+    <color name="blue_700">#FF1976D2</color>
+    <color name="blue_800">#FF1565C0</color>
+    <color name="blue_900">#FF0D47A1</color>
+    <color name="blue_a700">#FF2962FF</color>
+
+    <color name="blue_grey_500">#FF607D8B</color>
+
+    <color name="grey_100">#FFF5F5F5</color>
+    <color name="grey_500">#FF9E9E9E</color>
+
+    <color name="light_green_a700">#FF64DD17</color>
+
+    <color name="red_a700">#FFD50000</color>
+
     <color name="white">#FFFFFFFF</color>
-    <color name="yellow">#FFFFD600</color>
+
+    <color name="yellow_900">#FFF57F17</color>
+    <color name="yellow_a700">#FFFFD600</color>
 </resources>

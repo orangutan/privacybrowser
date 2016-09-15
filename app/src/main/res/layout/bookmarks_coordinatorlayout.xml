@@ -46,7 +46,7 @@
                 android:id="@+id/bookmarks_toolbar"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:background="@color/blue"
+                android:background="@color/blue_700"
                 android:theme="@style/DarkAppBar"
                 app:popupTheme="@style/LightPopupOverlay" />
         </android.support.design.widget.AppBarLayout>

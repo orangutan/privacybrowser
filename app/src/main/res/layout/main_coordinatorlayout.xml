@@ -56,7 +56,7 @@
                     android:id="@+id/appBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="?attr/colorPrimary"
+                    android:background="@color/grey_100"
                     app:popupTheme="@style/LightPopupOverlay" />
             </android.support.design.widget.AppBarLayout>
 
@@ -81,5 +81,5 @@
         android:layout_gravity="start"
         app:headerLayout="@layout/navigation_header"
         app:menu="@menu/webview_navigation_menu"
-        app:itemIconTint="@color/blue_grey" />
+        app:itemIconTint="@color/blue_800" />
 </android.support.v4.widget.DrawerLayout>

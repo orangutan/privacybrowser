@@ -26,14 +26,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.http.SslCertificate;
 import android.os.Bundle;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.Date;
 
@@ -123,7 +120,7 @@ public class ViewSslCertificate extends DialogFragment {
             SpannableStringBuilder endDateStringBuilder = new SpannableStringBuilder(endDateLabel + endDate.toString());
 
             // Create a blue `ForegroundColorSpan`.  We have to use the deprecated `getColor` until API >= 23.
-            ForegroundColorSpan blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue));
+            ForegroundColorSpan blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
 
             // Setup the spans to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
             issuedToCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), issuedToCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);

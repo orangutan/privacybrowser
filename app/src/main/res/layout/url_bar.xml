@@ -64,7 +64,7 @@
         android:layout_height="3dp"
         android:layout_gravity="bottom"
         android:max="100"
-        android:progressTint="@color/blue"
+        android:progressTint="@color/blue_700"
         android:progressBackgroundTint="@color/white"
         android:visibility="gone" />
 </FrameLayout>
