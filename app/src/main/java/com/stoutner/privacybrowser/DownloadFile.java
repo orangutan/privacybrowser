@@ -23,6 +23,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 // `android.support.v7.app.AlertDialog` uses more of the horizontal screen real estate versus `android.app.AlertDialog's` smaller width.
 import android.support.v7.app.AlertDialog;
@@ -45,12 +46,11 @@ public class DownloadFile extends DialogFragment {
         // Create `argumentsBundle`.
         Bundle argumentsBundle = new Bundle();
 
-        // If `contentDisposition` is empty, use Android's standard string of `downloadfile.bin`.
         String fileNameString;
-        if (contentDisposition.isEmpty()) {
-            fileNameString = "downloadfile.bin";
-        } else {
-            // Extract `fileNameString` from `contentDisposition` using the substring beginning after `filename="` and ending one character before the end of `contentDisposition`.
+        if (contentDisposition.isEmpty()) {  // If `contentDisposition` is empty, use the last path segment of the URL as the file name.
+            Uri downloadUri = Uri.parse(urlString);
+            fileNameString = downloadUri.getLastPathSegment();
+        } else {  // Extract `fileNameString` from `contentDisposition` using the substring beginning after `filename="` and ending one character before the end of `contentDisposition`.
             fileNameString = contentDisposition.substring(contentDisposition.indexOf("filename=\"") + 10, contentDisposition.length() - 1);
         }
 
@@ -103,7 +103,7 @@ public class DownloadFile extends DialogFragment {
 
         // Use `AlertDialog.Builder` to create the `AlertDialog`.  `R.style.lightAlertDialog` formats the color of the button text.
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.LightAlertDialog);
-        dialogBuilder.setTitle(R.string.file_download);
+        dialogBuilder.setTitle(R.string.save_as);
         // The parent view is `null` because it will be assigned by `AlertDialog`.
         dialogBuilder.setView(layoutInflater.inflate(R.layout.download_file_dialog, null));
 

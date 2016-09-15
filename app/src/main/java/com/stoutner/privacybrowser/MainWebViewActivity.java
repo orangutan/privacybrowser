@@ -361,7 +361,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
                 // Show the `DownloadFile` `AlertDialog` and name this instance `@string/download`.
                 DialogFragment downloadFileDialogFragment = DownloadFile.fromUrl(url, contentDisposition, contentLength);
-                downloadFileDialogFragment.show(getFragmentManager(), getResources().getString(R.string.file_download));
+                downloadFileDialogFragment.show(getFragmentManager(), getResources().getString(R.string.download));
             }
         });
 

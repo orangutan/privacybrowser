@@ -45,7 +45,7 @@
     <string name="dom_storage_deleted">DOM Storage deleted</string>
     <string name="open_navigation">Open Navigation Drawer</string>
     <string name="close_navigation">Close Navigation Drawer</string>
-    <string name="file_download">File Download</string>
+    <string name="save_as">Save as</string>
     <string name="file_name">File name</string>
     <string name="download">Download</string>
 
