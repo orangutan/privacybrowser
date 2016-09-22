@@ -29,7 +29,7 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 
 class BannerAd extends AppCompatActivity{
-    public static void requestAd(View view) {
+    static void requestAd(View view) {
         // Cast view to an AdView.
         AdView adView = (AdView) view;
 
@@ -38,7 +38,7 @@ class BannerAd extends AppCompatActivity{
         adView.loadAd(adRequest);
     }
 
-    public static void reloadAfterRotate (View view, Context applicationContext, String ad_id) {
+    static void reloadAfterRotate (View view, Context applicationContext, String ad_id) {
         // Cast view to an AdView.
         AdView adView = (AdView) view;
 
@@ -64,7 +64,7 @@ class BannerAd extends AppCompatActivity{
         adView.loadAd(adRequest);
     }
 
-    public static void hideAd(View view) {
+    static void hideAd(View view) {
         // Cast view to an AdView.
         AdView adView = (AdView) view;
 
@@ -72,7 +72,7 @@ class BannerAd extends AppCompatActivity{
         adView.setVisibility(View.GONE);
     }
 
-    public static void showAd(View view) {
+    static void showAd(View view) {
         // Cast view to an AdView.
         AdView adView = (AdView) view;
 
@@ -80,7 +80,7 @@ class BannerAd extends AppCompatActivity{
         adView.setVisibility(View.VISIBLE);
     }
 
-    public static void pauseAd(View view) {
+    static void pauseAd(View view) {
         // Cast view to an AdView.
         AdView adView = (AdView) view;
 
@@ -88,7 +88,7 @@ class BannerAd extends AppCompatActivity{
         adView.pause();
     }
 
-    public static void resumeAd(View view) {
+    static void resumeAd(View view) {
         // Cast view to an AdView.
         AdView adView = (AdView) view;
 

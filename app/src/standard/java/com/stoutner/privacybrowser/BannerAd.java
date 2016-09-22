@@ -23,27 +23,27 @@ import android.content.Context;
 import android.view.View;
 
 class BannerAd {
-    public static void requestAd(View view) {
+    static void requestAd(View view) {
         // Do nothing because this is the standard flavor.
     }
 
-    public static void reloadAfterRotate(View view, Context applicationContext, String ad_id) {
+    static void reloadAfterRotate(View view, Context applicationContext, String ad_id) {
         // Do nothing because this is the standard flavor.
     }
 
-    public static void hideAd(View view) {
+    static void hideAd(View view) {
         // Do nothing because this is the standard flavor.
     }
 
-    public static void showAd(View view) {
+    static void showAd(View view) {
         // Do nothing because this is the standard flavor.
     }
 
-    public static void pauseAd(View view) {
+    static void pauseAd(View view) {
         // Do nothing because this is the standard flavor.
     }
 
-    public static void resumeAd(View view) {
+    static void resumeAd(View view) {
         // Do nothing because this is the standard flavor.
     }
 }

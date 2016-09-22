@@ -52,8 +52,9 @@ android {
             applicationId "com.stoutner.privacybrowser.free"
         }
     }
-    // `return true` removes the lint error: `Not all execution paths return a value`.
-    return true
+
+    // `return void` removes the lint error: `Not all execution paths return a value`.
+    return void
 }
 
 dependencies {

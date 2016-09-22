@@ -19,9 +19,10 @@
 
 package com.stoutner.privacybrowser;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -44,21 +45,23 @@ public class EditBookmark extends DialogFragment {
     // `editBookmarkListener` is used in `onAttach()` and `onCreateDialog()`
     private EditBookmarkListener editBookmarkListener;
 
-    public void onAttach(Activity parentActivity) {
-        super.onAttach(parentActivity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
-        // Get a handle for `EditBookmarkListener` from `parentActivity`.
+        // Get a handle for `EditBookmarkListener` from `context`.
         try {
-            editBookmarkListener = (EditBookmarkListener) parentActivity;
+            editBookmarkListener = (EditBookmarkListener) context;
         } catch(ClassCastException exception) {
-            throw new ClassCastException(parentActivity.toString() + " must implement EditBookmarkListener.");
+            throw new ClassCastException(context.toString() + " must implement EditBookmarkListener.");
         }
     }
 
+    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
+    @SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Get a long array with the the databaseId of the selected bookmark and convert it to an `int`.
-        long[] selectedBookmarkLongArray = BookmarksActivity.bookmarksListView.getCheckedItemIds();
+        long[] selectedBookmarkLongArray = BookmarksActivity.checkedItemIds;
         int selectedBookmarkDatabaseId = (int) selectedBookmarkLongArray[0];
 
         // Get a `Cursor` with the specified bookmark and move it to the first position.
@@ -91,6 +94,9 @@ public class EditBookmark extends DialogFragment {
 
         // Create an `AlertDialog` from the `AlertDialog.Builder`.
         final AlertDialog alertDialog = dialogBuilder.create();
+
+        // Remove the warning below that `setSoftInputMode` might produce `java.lang.NullPointerException`.
+        assert alertDialog.getWindow() != null;
 
         // Show the keyboard when `alertDialog` is displayed on the screen.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);

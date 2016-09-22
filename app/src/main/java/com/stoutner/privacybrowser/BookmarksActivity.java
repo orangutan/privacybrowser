@@ -56,22 +56,27 @@ import java.io.ByteArrayOutputStream;
 public class BookmarksActivity extends AppCompatActivity implements CreateBookmark.CreateBookmarkListener,
         CreateBookmarkFolder.CreateBookmarkFolderListener, EditBookmark.EditBookmarkListener,
         EditBookmarkFolder.EditBookmarkFolderListener, MoveToFolder.MoveToFolderListener {
+
     // `bookmarksDatabaseHandler` is public static so it can be accessed from `EditBookmark` and `MoveToFolder`.  It is also used in `onCreate()`,
     // `onCreateBookmarkCreate()`, `updateBookmarksListView()`, and `updateBookmarksListViewExcept()`.
     public static BookmarksDatabaseHandler bookmarksDatabaseHandler;
-
-    // `bookmarksListView` is public static so it can be accessed from `EditBookmark`.
-    // It is also used in `onCreate()`, `updateBookmarksListView()`, and `updateBookmarksListViewExcept()`.
-    public static ListView bookmarksListView;
 
     // `currentFolder` is public static so it can be accessed from `MoveToFolder`.
     // It is used in `onCreate`, `onOptionsItemSelected()`, `onCreateBookmarkCreate`, `onCreateBookmarkFolderCreate`, and `onEditBookmarkSave`.
     public static String currentFolder;
 
+    // `checkedItemIds` is public static so it can be accessed from `EditBookmark`, `EditBookmarkFolder`, and `MoveToFolder`.
+    // It is also used in `onActionItemClicked`.
+    public static long[] checkedItemIds;
+
+
+    // `bookmarksListView` is used in `onCreate()`, `updateBookmarksListView()`, and `updateBookmarksListViewExcept()`.
+    private ListView bookmarksListView;
+
     // `contextualActionMode` is used in `onCreate()` and `onEditBookmarkSave()`.
     private ActionMode contextualActionMode;
 
-    // `selectedBookmarkPosition` is used in `onCreate()` and `onEditBookarkSave()`.
+    // `selectedBookmarkPosition` is used in `onCreate()` and `onEditBookmarkSave()`.
     private int selectedBookmarkPosition;
 
     // `appBar` is used in `onCreate()` and `updateBookmarksListView()`.
@@ -131,11 +136,9 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                     // Reload the ListView with `currentFolder`.
                     updateBookmarksListView(currentFolder);
                 } else {  // Load the URL into `mainWebView`.
-                    // Get the bookmark URL and assign it to formattedUrlString.
+                    // Get the bookmark URL and assign it to formattedUrlString.  `mainWebView` will automatically reload when `BookmarksActivity` closes.
                     MainWebViewActivity.formattedUrlString = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHandler.BOOKMARK_URL));
 
-                    //  Load formattedUrlString and return to the main activity.
-                    MainWebViewActivity.mainWebView.loadUrl(MainWebViewActivity.formattedUrlString, MainWebViewActivity.customHeaders);
                     NavUtils.navigateUpFromSameTask(bookmarksActivity);
                 }
 
@@ -338,6 +341,9 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                         break;
 
                     case R.id.move_to_folder:
+                        // Store `checkedItemIds` for use by the `AlertDialog`.
+                        checkedItemIds = bookmarksListView.getCheckedItemIds();
+
                         // Show the `MoveToFolder` `AlertDialog` and name the instance `@string/move_to_folder
                         DialogFragment moveToFolderDialog = new MoveToFolder();
                         moveToFolderDialog.show(getFragmentManager(), getResources().getString(R.string.move_to_folder));
@@ -355,6 +361,9 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                         // Move to the selected database ID and find out if it is a folder.
                         bookmarksCursor.moveToPosition(selectedBookmarkPosition);
                         boolean isFolder = (bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHandler.IS_FOLDER)) == 1);
+
+                        // Store `checkedItemIds` for use by the `AlertDialog`.
+                        checkedItemIds = bookmarksListView.getCheckedItemIds();
 
                         if (isFolder) {
                             // Save the current folder name.
@@ -407,6 +416,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                                 .setCallback(new Snackbar.Callback() {
                                     @Override
                                     public void onDismissed(Snackbar snackbar, int event) {
+                                        // Android Studio wants to see entries for every possible `Snackbar.Callback` even if they aren't used.
                                         switch (event) {
                                             // The user pushed the "Undo" button.
                                             case Snackbar.Callback.DISMISS_EVENT_ACTION:
@@ -417,6 +427,18 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                                                 bookmarksListView.setSelection(selectedBookmarkPosition - 5);
 
                                                 break;
+
+                                            case Snackbar.Callback.DISMISS_EVENT_CONSECUTIVE:
+                                                // Do nothing and let the default behavior run.
+
+                                            case Snackbar.Callback.DISMISS_EVENT_MANUAL:
+                                                // Do nothing and let the default behavior run.
+
+                                            case Snackbar.Callback.DISMISS_EVENT_SWIPE:
+                                                // Do nothing and let the default behavior run.
+
+                                            case Snackbar.Callback.DISMISS_EVENT_TIMEOUT:
+                                                // Do nothing and let the default behavior run.
 
                                             // The Snackbar was dismissed without the "Undo" button being pushed.
                                             default:
@@ -462,7 +484,6 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
         // Set a FloatingActionButton for creating new bookmarks.
         FloatingActionButton createBookmarkFAB = (FloatingActionButton) findViewById(R.id.create_bookmark_fab);
-        assert createBookmarkFAB != null;
         createBookmarkFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -773,7 +794,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
                 // Make the font bold for folders.
                 if (cursor.getInt(cursor.getColumnIndex(BookmarksDatabaseHandler.IS_FOLDER)) == 1) {
-                    // The first argument is `null` because we don't want to chage the font.
+                    // The first argument is `null` because we don't want to change the font.
                     bookmarkNameTextView.setTypeface(null, Typeface.BOLD);
                 } else {  // Reset the font to default.
                     bookmarkNameTextView.setTypeface(Typeface.DEFAULT);
@@ -824,7 +845,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
                 // Make the font bold for folders.
                 if (cursor.getInt(cursor.getColumnIndex(BookmarksDatabaseHandler.IS_FOLDER)) == 1) {
-                    // The first argument is `null` because we don't want to chage the font.
+                    // The first argument is `null` because we don't want to change the font.
                     bookmarkNameTextView.setTypeface(null, Typeface.BOLD);
                 } else {  // Reset the font to default.
                     bookmarkNameTextView.setTypeface(Typeface.DEFAULT);

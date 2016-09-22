@@ -88,9 +88,9 @@ public class AboutTabFragment extends Fragment {
             String webKitLabel = getString(R.string.webkit) + "  ";
             String chromeLabel = getString(R.string.chrome) + "  ";
 
-            // `webViewLayout` is only used to get the default user agent from `about_tab_webview`.  It is not used to render content on the screen.
-            View webViewLayout = inflater.inflate(R.layout.about_tab_webview, container, false);
-            WebView tabLayoutWebView = (WebView) webViewLayout.findViewById(R.id.about_tab_webview);
+            // `webViewLayout` is only used to get the default user agent from `bare_webview`.  It is not used to render content on the screen.
+            View webViewLayout = inflater.inflate(R.layout.bare_webview, container, false);
+            WebView tabLayoutWebView = (WebView) webViewLayout.findViewById(R.id.bare_webview);
             String userAgentString =  tabLayoutWebView.getSettings().getUserAgentString();
 
             // Get the device's information and store it in strings.
@@ -119,7 +119,7 @@ public class AboutTabFragment extends Fragment {
             SpannableStringBuilder chromeStringBuilder = new SpannableStringBuilder(chromeLabel + chrome);
 
             // Create a blue `ForegroundColorSpan`.  We have to use the deprecated `getColor` until API >= 23.
-            ForegroundColorSpan blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
+            @SuppressWarnings("deprecation") ForegroundColorSpan blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
 
             // Setup the spans to display the device information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
             brandStringBuilder.setSpan(blueColorSpan, brandLabel.length(), brandStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
@@ -167,7 +167,7 @@ public class AboutTabFragment extends Fragment {
         } else { // load a WebView for all the other tabs.  Tab numbers start at 0.
             // Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.
             // The fragment will take care of attaching the root automatically.
-            tabLayout = inflater.inflate(R.layout.about_tab_webview, container, false);
+            tabLayout = inflater.inflate(R.layout.bare_webview, container, false);
             WebView tabWebView = (WebView) tabLayout;
 
             switch (tabNumber) {

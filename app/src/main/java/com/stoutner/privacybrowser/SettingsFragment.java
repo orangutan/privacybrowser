@@ -20,13 +20,13 @@
 package com.stoutner.privacybrowser;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.webkit.WebView;
 
 public class SettingsFragment extends PreferenceFragment {
     private SharedPreferences.OnSharedPreferenceChangeListener preferencesListener;
@@ -48,13 +48,20 @@ public class SettingsFragment extends PreferenceFragment {
         final Preference thirdPartyCookiesEnabled = findPreference("third_party_cookies_enabled");
         thirdPartyCookiesEnabled.setEnabled(savedPreferences.getBoolean("first_party_cookies_enabled", false));
 
+
+        // We need an inflated `WebView` to get the default user agent.
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        // `@SuppressLint("InflateParams")` removes the warning about using `null` as the `ViewGroup`, which in this case makes sense because we don't want to display `bare_webview` on the screen.
+        // `false` does not attach the view to the root.
+        @SuppressLint("InflateParams") View bareWebViewLayout = inflater.inflate(R.layout.bare_webview, null, false);
+        final WebView bareWebView = (WebView) bareWebViewLayout.findViewById(R.id.bare_webview);
+
         // Set the current user-agent as the summary text for the "user_agent" preference when the preference screen is loaded.
         final Preference userAgentPreference = findPreference("user_agent");
         switch (savedPreferences.getString("user_agent", "Default user agent")) {
             case "Default user agent":
                 // Get the user agent text from the webview (which changes based on the version of Android and WebView installed).
-                // Once API >= 17 we can use getDefaultUserAgent() instead of getUserAgentString().
-                userAgentPreference.setSummary(MainWebViewActivity.mainWebView.getSettings().getUserAgentString());
+                userAgentPreference.setSummary(bareWebView.getSettings().getUserAgentString());
                 break;
 
             case "Custom user agent":
@@ -129,81 +136,15 @@ public class SettingsFragment extends PreferenceFragment {
 
                 switch (key) {
                     case "javascript_enabled":
-                        // Set `javaScriptEnabled` to the new state.  The default is `false`.
-                        MainWebViewActivity.javaScriptEnabled = sharedPreferences.getBoolean("javascript_enabled", false);
-
                         // Toggle the state of the `dom_storage_enabled` preference.  The default is `false`.
                         final Preference domStorageEnabled = findPreference("dom_storage_enabled");
                         domStorageEnabled.setEnabled(sharedPreferences.getBoolean("javascript_enabled", false));
-
-                        // Update `mainWebView`.
-                        MainWebViewActivity.mainWebView.getSettings().setJavaScriptEnabled(MainWebViewActivity.javaScriptEnabled);
-
-                        // Update the privacy icons.
-                        MainWebViewActivity.updatePrivacyIcons(MainWebViewActivity.privacyBrowserActivity);
                         break;
 
                     case "first_party_cookies_enabled":
-                        // Set `firstPartyCookiesEnabled` to the new state.  The default is `false`.
-                        MainWebViewActivity.firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies_enabled", false);
-
                         // Toggle the state of the `third_party_cookies_enabled` preference.  The default is `false`.
                         final Preference thirdPartyCookiesEnabled = findPreference("third_party_cookies_enabled");
                         thirdPartyCookiesEnabled.setEnabled(sharedPreferences.getBoolean("first_party_cookies_enabled", false));
-
-                        // Update `mainWebView`.
-                        MainWebViewActivity.cookieManager.setAcceptCookie(MainWebViewActivity.firstPartyCookiesEnabled);
-
-                        // Update the checkbox in the options menu.
-                        MenuItem firstPartyCookiesMenuItem = MainWebViewActivity.mainMenu.findItem(R.id.toggleFirstPartyCookies);
-                        firstPartyCookiesMenuItem.setChecked(MainWebViewActivity.firstPartyCookiesEnabled);
-
-                        // Update the privacy icons.
-                        MainWebViewActivity.updatePrivacyIcons(MainWebViewActivity.privacyBrowserActivity);
-                        break;
-
-                    case "third_party_cookies_enabled":
-                        // Set `thirdPartyCookiesEnabled` to the new state.  The default is `false`.
-                        MainWebViewActivity.thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies_enabled", false);
-
-                        // Update the checkbox in the options menu.
-                        MenuItem thirdPartyCookiesMenuItem = MainWebViewActivity.mainMenu.findItem(R.id.toggleThirdPartyCookies);
-                        thirdPartyCookiesMenuItem.setChecked(MainWebViewActivity.thirdPartyCookiesEnabled);
-
-                        // Update `mainWebView` if API >= 21.
-                        if (Build.VERSION.SDK_INT >= 21) {
-                            MainWebViewActivity.cookieManager.setAcceptThirdPartyCookies(MainWebViewActivity.mainWebView, MainWebViewActivity.thirdPartyCookiesEnabled);
-                        }
-                        break;
-
-                    case "dom_storage_enabled":
-                        // Set `domStorageEnabled` to the new state.  The default is `false`.
-                        MainWebViewActivity.domStorageEnabled = sharedPreferences.getBoolean("dom_storage_enabled", false);
-
-                        // Update the checkbox in the options menu.
-                        MenuItem domStorageMenuItem = MainWebViewActivity.mainMenu.findItem(R.id.toggleDomStorage);
-                        domStorageMenuItem.setChecked(MainWebViewActivity.domStorageEnabled);
-
-                        // Update `mainWebView`.
-                        MainWebViewActivity.mainWebView.getSettings().setDomStorageEnabled(MainWebViewActivity.domStorageEnabled);
-
-                        // Update the privacy icons.
-                        MainWebViewActivity.updatePrivacyIcons(MainWebViewActivity.privacyBrowserActivity);
-                        break;
-
-                    case "save_form_data_enabled":
-                        // Set `saveFormDataEnabled` to the new state.  The default is `false`.
-                        MainWebViewActivity.saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data_enabled", false);
-
-                        // Update the checkbox in the options menu.
-                        MenuItem saveFormDataMenuItem = MainWebViewActivity.mainMenu.findItem(R.id.toggleSaveFormData);
-                        saveFormDataMenuItem.setChecked(MainWebViewActivity.saveFormDataEnabled);
-
-                        // Update `mainWebView`.
-                        MainWebViewActivity.mainWebView.getSettings().setSaveFormData(MainWebViewActivity.saveFormDataEnabled);
-
-                        // Update the privacy icons.
-                        MainWebViewActivity.updatePrivacyIcons(MainWebViewActivity.privacyBrowserActivity);
                         break;
 
                     case "user_agent":
@@ -211,24 +152,20 @@ public class SettingsFragment extends PreferenceFragment {
 
                         switch (userAgentString) {
                             case "Default user agent":
-                                // Set the default user agent on `mainWebView`, display the user agent as the summary text for `userAgentPreference`, and disable `customUserAgent`.
-                                // Once API >= 17 we can use getDefaultUserAgent().  For now, setUserAgentString("") sets the WebView's default user agent.
-                                MainWebViewActivity.mainWebView.getSettings().setUserAgentString("");
-                                userAgentPreference.setSummary(MainWebViewActivity.mainWebView.getSettings().getUserAgentString());
+                                // Display the user agent as the summary text for `userAgentPreference`, and disable `customUserAgent`.
+                                userAgentPreference.setSummary(bareWebView.getSettings().getUserAgentString());
                                 customUserAgent.setEnabled(false);
                                 break;
 
                             case "Custom user agent":
-                                // Set the custom user agent on mainWebView, display "Custom user agent" as the summary text for userAgentPreference, and enable customUserAgent.
-                                MainWebViewActivity.mainWebView.getSettings().setUserAgentString(sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0"));
+                                // Display "Custom user agent" as the summary text for userAgentPreference, and enable customUserAgent.
                                 userAgentPreference.setSummary(R.string.custom_user_agent);
                                 customUserAgent.setEnabled(true);
                                 break;
 
                             default:
-                                // Set the user agent on mainWebView, display the user agent as the summary text for userAgentPreference, and disable customUserAgent.
-                                MainWebViewActivity.mainWebView.getSettings().setUserAgentString(sharedPreferences.getString("user_agent", "Default user agent"));
-                                userAgentPreference.setSummary(MainWebViewActivity.mainWebView.getSettings().getUserAgentString());
+                                // Display the user agent as the summary text for userAgentPreference, and disable customUserAgent.
+                                userAgentPreference.setSummary(sharedPreferences.getString("user_agent", "Default user agent"));
                                 customUserAgent.setEnabled(false);
                                 break;
                         }
@@ -237,36 +174,14 @@ public class SettingsFragment extends PreferenceFragment {
                     case "custom_user_agent":
                         // Set the new custom user agent as the summary text for "custom_user_agent".  The default is "PrivacyBrowser/1.0".
                         customUserAgent.setSummary(sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0"));
-
-                        // Update mainWebView's user agent.  The default is "PrivacyBrowser/1.0".
-                        MainWebViewActivity.mainWebView.getSettings().setUserAgentString(sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0"));
                         break;
-
-                    case "proxy_through_orbot":
-                        // Get a handle for `settingsActivity`.
-                        Activity settingsActivity = getActivity();
-
-                        // Update the proxy.  The default is `false`
-                        if (sharedPreferences.getBoolean("proxy_through_orbot", false)) {  // Orbot proxies on localhost port 8118.
-                            OrbotProxyHelper.setProxy(MainWebViewActivity.privacyBrowserContext, settingsActivity, "localhost", "8118");
-                        } else {  // Disable the proxy by setting the host to `null` and the port to `0`.
-                            OrbotProxyHelper.setProxy(MainWebViewActivity.privacyBrowserContext, settingsActivity, "", "0");
-                        }
 
                     case "javascript_disabled_search":
                         String newJavaScriptDisabledSearchString = sharedPreferences.getString("javascript_disabled_search", "https://duckduckgo.com/html/?q=");
-                        if (newJavaScriptDisabledSearchString.equals("Custom URL")) {
-                            // Set the summary text to R.string.custom_url, which will be translated.
+                        if (newJavaScriptDisabledSearchString.equals("Custom URL")) {  // Set the summary text to `R.string.custom_url`, which is translated.
                             javaScriptDisabledSearchPreference.setSummary(R.string.custom_url);
-
-                            // Update the javaScriptDisabledSearchURL variable.  The default is "".
-                            MainWebViewActivity.javaScriptDisabledSearchURL = sharedPreferences.getString("javascript_disabled_search_custom_url", "");
-                        } else {  // javascript_disabled_search is not set to Custom.
-                            // Set the new search URL as the summary text for the JavaScript-disabled search preference.  The default is "https://duckduckgo.com/html/?q=".
+                        } else {  // Set the new search URL as the summary text for the JavaScript-disabled search preference.
                             javaScriptDisabledSearchPreference.setSummary(newJavaScriptDisabledSearchString);
-
-                            // Update the javaScriptDisabledSearchURL variable.  The default is "https://duckduckgo.com/html/?q=".
-                            MainWebViewActivity.javaScriptDisabledSearchURL = newJavaScriptDisabledSearchString;
                         }
 
                         // Enable or disable javaScriptDisabledSearchCustomURLPreference.
@@ -274,27 +189,16 @@ public class SettingsFragment extends PreferenceFragment {
                         break;
 
                     case "javascript_disabled_search_custom_url":
-                        // Set the new custom search URL as the summary text for "javascript_disabled_search_custom_url".  The default is "".
+                        // Set the new custom search URL as the summary text for `javascript_disabled_search_custom_url`.  The default is `""`.
                         javaScriptDisabledSearchCustomURLPreference.setSummary(sharedPreferences.getString("javascript_disabled_search_custom_url", ""));
-
-                        // Update javaScriptDisabledSearchCustomURL.  The default is "".
-                        MainWebViewActivity.javaScriptDisabledSearchURL = sharedPreferences.getString("javascript_disabled_search_custom_url", "");
                         break;
 
                     case "javascript_enabled_search":
                         String newJavaScriptEnabledSearchString = sharedPreferences.getString("javascript_enabled_search", "https://duckduckgo.com/?q=");
-                        if (newJavaScriptEnabledSearchString.equals("Custom URL")) {
-                            // Set the summary text to R.string.custom_url, which will be translated.
+                        if (newJavaScriptEnabledSearchString.equals("Custom URL")) {  // Set the summary text to `R.string.custom_url`, which is translated.
                             javaScriptEnabledSearchPreference.setSummary(R.string.custom_url);
-
-                            // Update the javaScriptEnabledSearchURL variable.  The default is "".
-                            MainWebViewActivity.javaScriptEnabledSearchURL = sharedPreferences.getString("javascript_enabled_search_custom_url", "");
-                        } else { // javascript_enabled_search is not set to Custom.
-                            // Set the new search URL as the summary text for the JavaScript-enabled search preference.  The default is "https://duckduckgo.com/?q=".
+                        } else {  // Set the new search URL as the summary text for the JavaScript-enabled search preference..
                             javaScriptEnabledSearchPreference.setSummary(newJavaScriptEnabledSearchString);
-
-                            // Update the javaScriptEnabledSearchURL variable.  The default is "https://duckduckgo.com/?q=".
-                            MainWebViewActivity.javaScriptEnabledSearchURL = newJavaScriptEnabledSearchString;
                         }
 
                         // Enable or disable javaScriptEnabledSearchCustomURLPreference.
@@ -302,46 +206,21 @@ public class SettingsFragment extends PreferenceFragment {
                         break;
 
                     case "javascript_enabled_search_custom_url":
-                        // Set the new custom search URL as the summary text for `javascript_enabled_search_custom_url`.  The default is ``.
+                        // Set the new custom search URL as the summary text for `javascript_enabled_search_custom_url`.  The default is `""`.
                         javaScriptEnabledSearchCustomURLPreference.setSummary(sharedPreferences.getString("javascript_enabled_search_custom_url", ""));
-
-                        // Update javaScriptEnabledSearchCustomURL.  The default is ``.
-                        MainWebViewActivity.javaScriptEnabledSearchURL = sharedPreferences.getString("javascript_enabled_search_custom_url", "");
                         break;
-
-                    case "do_not_track":
-                        // Update `customHeaders`.  The default is `true`.
-                        if (sharedPreferences.getBoolean("do_not_track", true)) {
-                            MainWebViewActivity.customHeaders.put("DNT", "1");
-                        } else {  // Remove the Do Not Track header.
-                            MainWebViewActivity.customHeaders.remove("DNT");
-                        }
 
                     case "homepage":
                         // Set the new homepage URL as the summary text for the Homepage preference.  The default is `https://www.duckduckgo.com`.
                         homepagePreference.setSummary(sharedPreferences.getString("homepage", "https://www.duckduckgo.com"));
-
-                        // Update the homepage variable.  The default is `https://www.duckduckgo.com`.
-                        MainWebViewActivity.homepage = sharedPreferences.getString("homepage", "https://www.duckduckgo.com");
                         break;
 
                     case "default_font_size":
                         // Get the default font size as a string.  The default is `100`.
                         String newDefaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
 
-                        // Update the font size on `mainWebView`.  The default is `100`.
-                        MainWebViewActivity.mainWebView.getSettings().setTextZoom(Integer.valueOf(newDefaultFontSizeString));
-
                         // Update the summary text of `default_font_size`.
                         defaultFontSizePreference.setSummary(newDefaultFontSizeString + "%%");
-
-                    case "swipe_to_refresh_enabled":
-                        // Set `swipeToRefreshEnabled` to the new state.  The default is `true`.
-                        MainWebViewActivity.swipeToRefreshEnabled = sharedPreferences.getBoolean("swipe_to_refresh_enabled", true);
-
-                        // Update `swipeRefreshLayout` to match the new state.
-                        MainWebViewActivity.swipeToRefresh.setEnabled(MainWebViewActivity.swipeToRefreshEnabled);
-                        break;
 
                     default:
                         // If no match, do nothing.

@@ -56,7 +56,7 @@ public class GuideActivity extends AppCompatActivity {
     }
 
     public class guidePagerAdapter extends FragmentPagerAdapter {
-        public guidePagerAdapter(FragmentManager fm) {
+        private guidePagerAdapter(FragmentManager fm) {
             super(fm);
         }
 

@@ -103,7 +103,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity {
                 bookmarkNameTextView.setText(bookmarkNameString);
                 // Make the font bold for folders.
                 if (isFolder) {
-                    // The first argument is `null` because we don't want to chage the font.
+                    // The first argument is `null` because we don't want to change the font.
                     bookmarkNameTextView.setTypeface(null, Typeface.BOLD);
                 } else {  // Reset the font to default.
                     bookmarkNameTextView.setTypeface(Typeface.DEFAULT);

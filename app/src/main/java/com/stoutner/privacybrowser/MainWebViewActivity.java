@@ -23,7 +23,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.DownloadManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -31,10 +30,12 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.net.http.SslCertificate;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -75,9 +76,6 @@ import java.util.Map;
 // We need to use AppCompatActivity from android.support.v7.app.AppCompatActivity to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CreateHomeScreenShortcut.CreateHomeScreenSchortcutListener,
         SslCertificateError.SslCertificateErrorListener, DownloadFile.DownloadFileListener {
-    // `privacyBrowserContext` is public static so it can be accessed from `SettingsFragment`.
-    // It is also used in `onCreate()` and `onConfigurationChanged()`.
-    public static Context privacyBrowserContext;
 
     // `appBar` is public static so it can be accessed from `OrbotProxyHelper`.
     // It is also used in `onCreate()`.
@@ -87,61 +85,56 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // It is also used in `onCreate()` and `onCreateHomeScreenShortcutCreate()`.
     public static Bitmap favoriteIcon;
 
-    // `privacyBrowserActivity` is public static so it can be accessed from `SettingsFragment`.
-    // It is also used in `onCreate()`, `onCreateOptionsMenu()`, and `onOptionsItemSelected()`,
-    public static Activity privacyBrowserActivity;
-
-    // `mainWebView` is public static so it can be accessed from `SettingsFragment`.
-    // It is also used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, and `loadUrlFromTextBox()`.
-    public static WebView mainWebView;
-
     // `formattedUrlString` is public static so it can be accessed from `BookmarksActivity`.
     // It is also used in `onCreate()`, `onOptionsItemSelected()`, `onCreateHomeScreenShortcutCreate()`, and `loadUrlFromTextBox()`.
     public static String formattedUrlString;
 
-    // `mainMenu` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onCreateOptionsMenu()` and `onOptionsItemSelected()`.
-    public static Menu mainMenu;
-
-    // `cookieManager` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onCreate()`, `onOptionsItemSelected()`, and `onNavigationItemSelected()`.
-    public static CookieManager cookieManager;
-
-    // `javaScriptEnabled` is public static so it can be accessed from `SettingsFragment`.
-    // It is also used in `onCreate()`, `onCreateOptionsMenu()`, `onOptionsItemSelected()`, and `loadUrlFromTextBox()`.
-    public static boolean javaScriptEnabled;
-
-    // `firstPartyCookiesEnabled` is public static so it can be accessed from `SettingsFragment`.
-    // It is also used in `onCreate()`, `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, and `onOptionsItemSelected()`.
-    public static boolean firstPartyCookiesEnabled;
-
-    // `thirdPartyCookiesEnables` is public static so it can be accessed from `SettingsFragment`.
-    // It is also used in `onCreate()`, `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, and `onOptionsItemSelected()`.
-    public static boolean thirdPartyCookiesEnabled;
-
-    // `domStorageEnabled` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onCreate()`, `onCreateOptionsMenu()`, and `onOptionsItemSelected()`.
-    public static boolean domStorageEnabled;
-
-    // `saveFormDataEnabled` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onCreate()`, `onCreateOptionsMenu()`, and `onOptionsItemSelected()`.
-    public static boolean saveFormDataEnabled;
-
-    // `javaScriptDisabledSearchURL` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onCreate()` and `loadURLFromTextBox()`.
-    public static String javaScriptDisabledSearchURL;
-
-    // `javaScriptEnabledSearchURL` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onCreate()` and `loadURLFromTextBox()`.
-    public static String javaScriptEnabledSearchURL;
-
-    // `homepage` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onCreate()` and `onOptionsItemSelected()`.
-    public static String homepage;
-
-    // `swipeToRefresh` is public static so it can be accessed from SettingsFragment.  It is also used in onCreate().
-    public static SwipeRefreshLayout swipeToRefresh;
-
-    // `swipeToRefreshEnabled` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onCreate()`.
-    public static boolean swipeToRefreshEnabled;
-
     // `customHeader` is public static so it can be accessed from `BookmarksActivity`.  It is also used in `onCreate()`, `onOptionsItemSelected()`, and `loadUrlFromTextBox()`.
-    public static Map<String, String> customHeaders = new HashMap<String, String>();
+    public static Map<String, String> customHeaders = new HashMap<>();
+
+    // `sslCertificate` is public static so it can be accessed from `ViewSslCertificate`.  It is also used in `onCreate()`.
+    public static SslCertificate sslCertificate;
 
 
+    // 'mainWebView' is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, and `loadUrlFromTextBox()`.
+    private WebView mainWebView;
+
+    // `swipeRefreshLayout` is used in `onCreate()`, `onPrepareOptionsMenu`, and `onRestart()`.
+    private SwipeRefreshLayout swipeRefreshLayout;
+
+    // `cookieManager` is used in `onCreate()`, `onOptionsItemSelected()`, and `onNavigationItemSelected()`, and `onRestart()`.
+    private CookieManager cookieManager;
+
+    // `javaScriptEnabled` is also used in `onCreate()`, `onCreateOptionsMenu()`, `onOptionsItemSelected()`, `loadUrlFromTextBox()`, and `applySettings()`.
+    // It is `Boolean` instead of `boolean` because `applySettings()` needs to know if it is `null`.
+    private Boolean javaScriptEnabled;
+
+    // `firstPartyCookiesEnabled` is used in `onCreate()`, `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applySettings()`.
+    private boolean firstPartyCookiesEnabled;
+
+    // `thirdPartyCookiesEnabled` used in `onCreate()`, `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applySettings()`.
+    private boolean thirdPartyCookiesEnabled;
+
+    // `domStorageEnabled` is used in `onCreate()`, `onCreateOptionsMenu()`, `onOptionsItemSelected()`, and `applySettings()`.
+    private boolean domStorageEnabled;
+
+    // `saveFormDataEnabled` is used in `onCreate()`, `onCreateOptionsMenu()`, `onOptionsItemSelected()`, and `applySettings()`.
+    private boolean saveFormDataEnabled;
+
+    // `swipeToRefreshEnabled` is used in `onPrepareOptionsMenu()` and `applySettings()`.
+    private boolean swipeToRefreshEnabled;
+
+    // 'homepage' is used in `onCreate()`, `onNavigationItemSelected()`, and `applySettings()`.
+    private String homepage;
+
+    // `javaScriptDisabledSearchURL` is used in `loadURLFromTextBox()` and `applySettings()`.
+    private String javaScriptDisabledSearchURL;
+
+    // `javaScriptEnabledSearchURL` is used in `loadURLFromTextBox()` and `applySettings()`.
+    private String javaScriptEnabledSearchURL;
+
+    // `mainMenu` is used in `onCreateOptionsMenu()` and `updatePrivacyIcons()`.
+    private Menu mainMenu;
 
     // `drawerToggle` is used in `onCreate()`, `onPostCreate()`, `onConfigurationChanged()`, `onNewIntent()`, and `onNavigationItemSelected()`.
     private ActionBarDrawerToggle drawerToggle;
@@ -158,21 +151,12 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `sslErrorHandler` is used in `onCreate()`, `onSslErrorCancel()`, and `onSslErrorProceed`.
     private SslErrorHandler sslErrorHandler;
 
-    // `sharedPreferences` is used in `onCreate()` and `onCreateOptionsMenu()`.
-    SharedPreferences sharedPreferences;
-
     @Override
     // Remove Android Studio's warning about the dangers of using SetJavaScriptEnabled.  The whole premise of Privacy Browser is built around an understanding of these dangers.
     @SuppressLint("SetJavaScriptEnabled")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_coordinatorlayout);
-
-        // We need a handle for the activity, which is accessed from `SettingsFragment` and fed into `updatePrivacyIcons()`.
-        privacyBrowserActivity = this;
-
-        // Get a handle for the application context.
-        privacyBrowserContext = getApplicationContext();
 
         // We need to use the SupportActionBar from android.support.v7.app.ActionBar until the minimum API is >= 21.
         Toolbar supportAppBar = (Toolbar) findViewById(R.id.appBar);
@@ -210,10 +194,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         final FrameLayout fullScreenVideoFrameLayout = (FrameLayout) findViewById(R.id.fullScreenVideoFrameLayout);
 
         // Implement swipe to refresh
-        swipeToRefresh = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        assert swipeToRefresh != null; //This assert removes the incorrect warning on the following line that swipeToRefresh might be null.
-        swipeToRefresh.setColorSchemeResources(R.color.blue_700);
-        swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setColorSchemeResources(R.color.blue_700);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 mainWebView.reload();
@@ -229,14 +212,15 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
         // Listen for touches on the navigation menu.
         final NavigationView navigationView = (NavigationView) findViewById(R.id.navigationView);
-        assert navigationView != null; // This assert removes the incorrect warning on the following line that navigationView might be null.
         navigationView.setNavigationItemSelectedListener(this);
 
         // drawerToggle creates the hamburger icon at the start of the AppBar.
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, supportAppBar, R.string.open_navigation, R.string.close_navigation);
 
         mainWebView.setWebViewClient(new WebViewClient() {
-            // shouldOverrideUrlLoading makes this `WebView` the default handler for URLs inside the app, so that links are not kicked out to other apps.
+            // `shouldOverrideUrlLoading` makes this `WebView` the default handler for URLs inside the app, so that links are not kicked out to other apps.
+            // We have to use the deprecated `shouldOverrideUrlLoading` until API >= 24.
+            @SuppressWarnings("deprecation")
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 // Use an external email program if the link begins with "mailto:".
@@ -262,6 +246,10 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             // Update the URL in urlTextBox when the page starts to load.
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                // We need to update `formattedUrlString` at the beginning of the load, so that if the user toggles JavaScript during the load the new website is reloaded.
+                formattedUrlString = url;
+
+                // Display the loading URL is the URL text box.
                 urlTextBox.setText(url);
             }
 
@@ -274,6 +262,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 if (!urlTextBox.hasFocus()) {
                     urlTextBox.setText(formattedUrlString);
                 }
+
+                // Store the SSL certificate so it can be accessed from `ViewSslCertificate`.
+                sslCertificate = mainWebView.getCertificate();
             }
 
             // Handle SSL Certificate errors.
@@ -299,8 +290,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 } else {
                     progressBar.setVisibility(View.GONE);
 
-                    //Stop the SwipeToRefresh indicator if it is running
-                    swipeToRefresh.setRefreshing(false);
+                    //Stop the `SwipeToRefresh` indicator if it is running
+                    swipeRefreshLayout.setRefreshing(false);
                 }
             }
 
@@ -321,7 +312,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 appBar.hide();
 
                 // Show the fullScreenVideoFrameLayout.
-                assert fullScreenVideoFrameLayout != null; //This assert removes the incorrect warning on the following line that fullScreenVideoFrameLayout might be null.
                 fullScreenVideoFrameLayout.addView(view);
                 fullScreenVideoFrameLayout.setVisibility(View.VISIBLE);
 
@@ -349,7 +339,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 BannerAd.showAd(adView);
 
                 // Hide the fullScreenVideoFrameLayout.
-                assert fullScreenVideoFrameLayout != null; //This assert removes the incorrect warning on the following line that fullScreenVideoFrameLayout might be null.
                 fullScreenVideoFrameLayout.removeAllViews();
                 fullScreenVideoFrameLayout.setVisibility(View.GONE);
             }
@@ -371,99 +360,17 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Hide zoom controls.
         mainWebView.getSettings().setDisplayZoomControls(false);
 
-
-        // Initialize the default preference values the first time the program is run.
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-
-        // Get the shared preference values.
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        // Set JavaScript initial status.  The default value is false.
-        javaScriptEnabled = sharedPreferences.getBoolean("javascript_enabled", false);
-        mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
-
         // Initialize cookieManager.
         cookieManager = CookieManager.getInstance();
-
-        // Set cookies initial status.  The default value is false.
-        firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies_enabled", false);
-        cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
-
-        // Set third-party cookies initial status if API >= 21.  The default value is false.
-        if (Build.VERSION.SDK_INT >= 21) {
-            thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies_enabled", false);
-            cookieManager.setAcceptThirdPartyCookies(mainWebView, thirdPartyCookiesEnabled);
-        }
-
-        // Set DOM storage initial status.  The default value is false.
-        domStorageEnabled = sharedPreferences.getBoolean("dom_storage_enabled", false);
-        mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
-
-        // Set the saved form data initial status.  The default is false.
-        saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data_enabled", false);
-        mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
-
-        // Set the user agent initial status.
-        String userAgentString = sharedPreferences.getString("user_agent", "Default user agent");
-        switch (userAgentString) {
-            case "Default user agent":
-                // Do nothing.
-                break;
-
-            case "Custom user agent":
-                // Set the custom user agent on mainWebView,  The default is "PrivacyBrowser/1.0".
-                mainWebView.getSettings().setUserAgentString(sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0"));
-                break;
-
-            default:
-                // Set the selected user agent on mainWebView.  The default is "PrivacyBrowser/1.0".
-                mainWebView.getSettings().setUserAgentString(sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0"));
-                break;
-        }
-
-        // Set the initial string for JavaScript disabled search.
-        if (sharedPreferences.getString("javascript_disabled_search", "https://duckduckgo.com/html/?q=").equals("Custom URL")) {
-            // Get the custom URL string.  The default is "".
-            javaScriptDisabledSearchURL = sharedPreferences.getString("javascript_disabled_search_custom_url", "");
-        } else {
-            // Use the string from javascript_disabled_search.
-            javaScriptDisabledSearchURL = sharedPreferences.getString("javascript_disabled_search", "https://duckduckgo.com/html/?q=");
-        }
-
-        // Set the initial string for JavaScript enabled search.
-        if (sharedPreferences.getString("javascript_enabled_search", "https://duckduckgo.com/?q=").equals("Custom URL")) {
-            // Get the custom URL string.  The default is "".
-            javaScriptEnabledSearchURL = sharedPreferences.getString("javascript_enabled_search_custom_url", "");
-        } else {
-            // Use the string from javascript_enabled_search.
-            javaScriptEnabledSearchURL = sharedPreferences.getString("javascript_enabled_search", "https://duckduckgo.com/?q=");
-        }
-
-
-        // Set the homepage initial status.  The default value is `https://www.duckduckgo.com`.
-        homepage = sharedPreferences.getString("homepage", "https://www.duckduckgo.com");
-
-        // Set the font size initial status.  the default value is `100`.
-        String defaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
-        mainWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
-
-        // Set the swipe to refresh initial status.  The default is `true`.
-        swipeToRefreshEnabled = sharedPreferences.getBoolean("swipe_to_refresh_enabled", true);
-        swipeToRefresh.setEnabled(swipeToRefreshEnabled);
-
 
         // Replace the header that `WebView` creates for `X-Requested-With` with a null value.  The default value is the application ID (com.stoutner.privacybrowser.standard).
         customHeaders.put("X-Requested-With", "");
 
-        // Set Do Not Track.  The default is true.
-        if (sharedPreferences.getBoolean("do_not_track", true)) {
-            customHeaders.put("DNT", "1");
-        }
+        // Initialize the default preference values the first time the program is run.
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
-        // Set Orbot proxy status.  The default is `false`.
-        if (sharedPreferences.getBoolean("proxy_through_orbot", false)) {
-            OrbotProxyHelper.setProxy(privacyBrowserContext, privacyBrowserActivity, "localhost", "8118");
-        }
+        // Apply the settings from the shared preferences.
+        applySettings();
 
         // Get the intent information that started the app.
         final Intent intent = getIntent();
@@ -485,7 +392,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // If the favorite icon is null, load the default.
         if (favoriteIcon == null) {
             // We have to use `ContextCompat` until API >= 21.
-            Drawable favoriteIconDrawable = ContextCompat.getDrawable(privacyBrowserContext, R.drawable.world);
+            Drawable favoriteIconDrawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.world);
             BitmapDrawable favoriteIconBitmapDrawable = (BitmapDrawable) favoriteIconDrawable;
             favoriteIcon = favoriteIconBitmapDrawable.getBitmap();
         }
@@ -524,11 +431,11 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.webview_options_menu, menu);
 
-        // Set mainMenu so it can be used by onOptionsItemSelected.
+        // Set mainMenu so it can be used by `onOptionsItemSelected()` and `updatePrivacyIcons`.
         mainMenu = menu;
 
-        // Set the initial status of the privacy icon.
-        updatePrivacyIcons(privacyBrowserActivity);
+        // Set the initial status of the privacy icons.
+        updatePrivacyIcons();
 
         // Get handles for the menu items.
         MenuItem toggleFirstPartyCookies = menu.findItem(R.id.toggleFirstPartyCookies);
@@ -536,11 +443,11 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         MenuItem toggleDomStorage = menu.findItem(R.id.toggleDomStorage);
         MenuItem toggleSaveFormData = menu.findItem(R.id.toggleSaveFormData);
 
-        // Set the initial status of the menu item checkboxes.
-        toggleFirstPartyCookies.setChecked(firstPartyCookiesEnabled);
-        toggleThirdPartyCookies.setChecked(thirdPartyCookiesEnabled);
-        toggleDomStorage.setChecked(domStorageEnabled);
-        toggleSaveFormData.setChecked(saveFormDataEnabled);
+        // Only display third-Party Cookies if SDK >= 21
+        toggleThirdPartyCookies.setVisible(Build.VERSION.SDK_INT >= 21);
+
+        // Get the shared preference values.  `this` references the current context.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Set the status of the additional app bar icons.  The default is `false`.
         if (sharedPreferences.getBoolean("display_additional_app_bar_icons", false)) {
@@ -558,26 +465,36 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        // Only enable Third-Party Cookies if SDK >= 21 and First-Party Cookies are enabled.
+        // Get handles for the menu items.
+        MenuItem toggleFirstPartyCookies = menu.findItem(R.id.toggleFirstPartyCookies);
         MenuItem toggleThirdPartyCookies = menu.findItem(R.id.toggleThirdPartyCookies);
-        if ((Build.VERSION.SDK_INT >= 21) && firstPartyCookiesEnabled) {
-            toggleThirdPartyCookies.setEnabled(true);
-        } else {
-            toggleThirdPartyCookies.setEnabled(false);
-        }
+        MenuItem toggleDomStorage = menu.findItem(R.id.toggleDomStorage);
+        MenuItem toggleSaveFormData = menu.findItem(R.id.toggleSaveFormData);
+        MenuItem clearCookies = menu.findItem(R.id.clearCookies);
+        MenuItem clearFormData = menu.findItem(R.id.clearFormData);
+        MenuItem refreshMenuItem = menu.findItem(R.id.refresh);
+
+        // Set the status of the menu item checkboxes.
+        toggleFirstPartyCookies.setChecked(firstPartyCookiesEnabled);
+        toggleThirdPartyCookies.setChecked(thirdPartyCookiesEnabled);
+        toggleDomStorage.setChecked(domStorageEnabled);
+        toggleSaveFormData.setChecked(saveFormDataEnabled);
+
+        // Enable third-party cookies if first-party cookies are enabled.
+        toggleThirdPartyCookies.setEnabled(firstPartyCookiesEnabled);
 
         // Enable DOM Storage if JavaScript is enabled.
-        MenuItem toggleDomStorage = menu.findItem(R.id.toggleDomStorage);
         toggleDomStorage.setEnabled(javaScriptEnabled);
 
         // Enable Clear Cookies if there are any.
-        MenuItem clearCookies = menu.findItem(R.id.clearCookies);
         clearCookies.setEnabled(cookieManager.hasCookies());
 
         // Enable Clear Form Data is there is any.
-        MenuItem clearFormData = menu.findItem(R.id.clearFormData);
         WebViewDatabase mainWebViewDatabase = WebViewDatabase.getInstance(this);
         clearFormData.setEnabled(mainWebViewDatabase.hasFormData());
+
+        // Only show `Refresh` if `swipeToRefresh` is disabled.
+        refreshMenuItem.setVisible(!swipeToRefreshEnabled);
 
         // Initialize font size variables.
         int fontSize = mainWebView.getSettings().getTextZoom();
@@ -632,10 +549,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         fontSizeMenuItem.setTitle(fontSizeTitle);
         selectedFontSizeMenuItem.setChecked(true);
 
-        // Only show `Refresh` if `swipeToRefresh` is disabled.
-        MenuItem refreshMenuItem = menu.findItem(R.id.refresh);
-        refreshMenuItem.setVisible(!swipeToRefreshEnabled);
-
         // Run all the other default commands.
         super.onPrepareOptionsMenu(menu);
 
@@ -661,17 +574,15 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
 
                 // Update the privacy icon.
-                updatePrivacyIcons(privacyBrowserActivity);
+                updatePrivacyIcons();
 
                 // Display a `Snackbar`.
-                if (javaScriptEnabled) {
+                if (javaScriptEnabled) {  // JavaScrip is enabled.
                     Snackbar.make(findViewById(R.id.mainWebView), R.string.javascript_enabled, Snackbar.LENGTH_SHORT).show();
-                } else {
-                    if (firstPartyCookiesEnabled) {
-                        Snackbar.make(findViewById(R.id.mainWebView), R.string.javascript_disabled, Snackbar.LENGTH_SHORT).show();
-                    } else {
-                        Snackbar.make(findViewById(R.id.mainWebView), R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
-                    }
+                } else if (firstPartyCookiesEnabled) {  // JavaScript is disabled, but first-party cookies are enabled.
+                    Snackbar.make(findViewById(R.id.mainWebView), R.string.javascript_disabled, Snackbar.LENGTH_SHORT).show();
+                } else {  // Privacy mode.
+                    Snackbar.make(findViewById(R.id.mainWebView), R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
                 }
 
                 // Reload the WebView.
@@ -689,17 +600,15 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
 
                 // Update the privacy icon.
-                updatePrivacyIcons(privacyBrowserActivity);
+                updatePrivacyIcons();
 
                 // Display a `Snackbar`.
-                if (firstPartyCookiesEnabled) {
+                if (firstPartyCookiesEnabled) {  // First-party cookies are enabled.
                     Snackbar.make(findViewById(R.id.mainWebView), R.string.first_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
-                } else {
-                    if (javaScriptEnabled) {
-                        Snackbar.make(findViewById(R.id.mainWebView), R.string.first_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
-                    } else {
-                        Snackbar.make(findViewById(R.id.mainWebView), R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
-                    }
+                } else if (javaScriptEnabled){  // JavaScript is still enabled.
+                    Snackbar.make(findViewById(R.id.mainWebView), R.string.first_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
+                } else {  // Privacy mode.
+                    Snackbar.make(findViewById(R.id.mainWebView), R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
                 }
 
                 // Reload the WebView.
@@ -846,10 +755,10 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         }
     }
 
-    @Override
     // removeAllCookies is deprecated, but it is required for API < 21.
     @SuppressWarnings("deprecation")
-    public boolean onNavigationItemSelected(MenuItem menuItem) {
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         int menuItemId = menuItem.getItemId();
 
         switch (menuItemId) {
@@ -926,7 +835,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 mainWebView.clearHistory();
 
                 // Clear any SSL certificate preferences.
-                MainWebViewActivity.mainWebView.clearSslPreferences();
+                mainWebView.clearSslPreferences();
 
                 // Clear `formattedUrlString`.
                 formattedUrlString = null;
@@ -967,7 +876,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         super.onConfigurationChanged(newConfig);
 
         // Reload the ad if this is the free flavor.
-        BannerAd.reloadAfterRotate(adView, privacyBrowserContext, getString(R.string.ad_id));
+        BannerAd.reloadAfterRotate(adView, getApplicationContext(), getString(R.string.ad_id));
 
         // Reinitialize the adView variable, as the View will have been removed and re-added in the free flavor by BannerAd.reloadAfterRotate().
         adView = findViewById(R.id.adView);
@@ -1047,7 +956,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             // Load the previous URL if available.
-            assert mainWebView != null; //This assert removes the incorrect warning in Android Studio on the following line that mainWebView might be null.
             if (mainWebView.canGoBack()) {
                 mainWebView.goBack();
             } else {
@@ -1071,6 +979,18 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
         // We need to resume the adView for the free flavor.
         BannerAd.resumeAd(adView);
+    }
+
+    @Override
+    public void onRestart() {
+        super.onRestart();
+
+        // Apply the settings from shared preferences, which might have been changed in `SettingsActivity`.
+        applySettings();
+
+        // Update the privacy icons.
+        updatePrivacyIcons();
+
     }
 
     private void loadUrlFromTextBox() throws UnsupportedEncodingException {
@@ -1107,8 +1027,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             // Sanitize the search input and convert it to a DuckDuckGo search.
             final String encodedUrlString = URLEncoder.encode(unformattedUrlString, "UTF-8");
 
-            // Use the correct search URL based on javaScriptEnabled.
-            if (javaScriptEnabled) {
+            // Use the correct search URL.
+            if (javaScriptEnabled) {  // JavaScript is enabled.
                 formattedUrlString = javaScriptEnabledSearchURL + encodedUrlString;
             } else { // JavaScript is disabled.
                 formattedUrlString = javaScriptDisabledSearchURL + encodedUrlString;
@@ -1122,7 +1042,98 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
     }
 
-    public static void updatePrivacyIcons(Activity activity) {
+    private void applySettings() {
+        // Get the shared preference values.  `this` references the current context.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Store the values from `sharedPreferences` in variables.
+        String userAgentString = sharedPreferences.getString("user_agent", "Default user agent");
+        String customUserAgentString = sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0");
+        String javaScriptDisabledSearchString = sharedPreferences.getString("javascript_disabled_search", "https://duckduckgo.com/html/?q=");
+        String javaScriptDisabledCustomSearchString = sharedPreferences.getString("javascript_disabled_search_custom_url", "");
+        String javaScriptEnabledSearchString = sharedPreferences.getString("javascript_enabled_search", "https://duckduckgo.com/?q=");
+        String javaScriptEnabledCustomSearchString = sharedPreferences.getString("javascript_enabled_search_custom_url", "");
+        String homepageString = sharedPreferences.getString("homepage", "https://www.duckduckgo.com");
+        String defaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
+        swipeToRefreshEnabled = sharedPreferences.getBoolean("swipe_to_refresh_enabled", false);
+        boolean doNotTrackEnabled = sharedPreferences.getBoolean("do_not_track", true);
+        boolean proxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
+
+        // Because they can be modified on-the-fly by the user, these default settings are only applied when the program first runs.
+        if (javaScriptEnabled == null) {  // If `javaScriptEnabled` is null the program is just starting.
+            // Get the values from `sharedPreferences`.
+            javaScriptEnabled = sharedPreferences.getBoolean("javascript_enabled", false);
+            firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies_enabled", false);
+            thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies_enabled", false);
+            domStorageEnabled = sharedPreferences.getBoolean("dom_storage_enabled", false);
+            saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data_enabled", false);
+
+            // Apply the default settings.
+            mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
+            cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
+            mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
+            mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
+
+            // Set third-party cookies status if API >= 21.
+            if (Build.VERSION.SDK_INT >= 21) {
+                cookieManager.setAcceptThirdPartyCookies(mainWebView, thirdPartyCookiesEnabled);
+            }
+        }
+
+        // Apply the settings from `sharedPreferences`.
+        homepage = homepageString;
+        mainWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
+        swipeRefreshLayout.setEnabled(swipeToRefreshEnabled);
+
+        // Set the user agent initial status.
+        switch (userAgentString) {
+            case "Default user agent":
+                // Set the user agent to `""`, which uses the default value.
+                mainWebView.getSettings().setUserAgentString("");
+                break;
+
+            case "Custom user agent":
+                // Set the custom user agent.
+                mainWebView.getSettings().setUserAgentString(customUserAgentString);
+                break;
+
+            default:
+                // Use the selected user agent.
+                mainWebView.getSettings().setUserAgentString(userAgentString);
+                break;
+        }
+
+        // Set JavaScript disabled search.
+        if (javaScriptDisabledSearchString.equals("Custom URL")) {  // Get the custom URL string.
+            javaScriptDisabledSearchURL = javaScriptDisabledCustomSearchString;
+        } else {  // Use the string from the pre-built list.
+            javaScriptDisabledSearchURL = javaScriptDisabledSearchString;
+        }
+
+        // Set JavaScript enabled search.
+        if (javaScriptEnabledSearchString.equals("Custom URL")) {  // Get the custom URL string.
+            javaScriptEnabledSearchURL = javaScriptEnabledCustomSearchString;
+        } else {  // Use the string from the pre-built list.
+            javaScriptEnabledSearchURL = javaScriptEnabledSearchString;
+        }
+
+        // Set Do Not Track status.
+        if (doNotTrackEnabled) {
+            customHeaders.put("DNT", "1");
+        } else {
+            customHeaders.remove("DNT");
+        }
+
+        // Set Orbot proxy status.
+        if (proxyThroughOrbot) {
+            // Set the proxy.  `this` refers to the current activity where an `AlertDialog` might be displayed.
+            OrbotProxyHelper.setProxy(getApplicationContext(), this, "localhost", "8118");
+        } else {  // Reset the proxy to default.  The host is `""` and the port is `"0"`.
+            OrbotProxyHelper.setProxy(getApplicationContext(), this, "", "0");
+        }
+    }
+
+    private void updatePrivacyIcons() {
         // Get handles for the icons.
         MenuItem privacyIcon = mainMenu.findItem(R.id.toggleJavaScript);
         MenuItem firstPartyCookiesIcon = mainMenu.findItem(R.id.toggleFirstPartyCookies);
@@ -1146,7 +1157,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         }
 
         // Update `domStorageIcon`.
-        if (javaScriptEnabled && domStorageEnabled) {  // Both JavaScript and DOM storage is enabled.
+        if (javaScriptEnabled && domStorageEnabled) {  // Both JavaScript and DOM storage are enabled.
             domStorageIcon.setIcon(R.drawable.dom_storage_enabled);
         } else if (javaScriptEnabled){  // JavaScript is enabled but DOM storage is disabled.
             domStorageIcon.setIcon(R.drawable.dom_storage_disabled);
@@ -1162,6 +1173,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         }
 
         // `invalidateOptionsMenu` calls `onPrepareOptionsMenu()` and redraws the icons in the `AppBar`.
-        ActivityCompat.invalidateOptionsMenu(activity);
+        // `this` references the current activity.
+        ActivityCompat.invalidateOptionsMenu(this);
     }
 }

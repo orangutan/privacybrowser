@@ -19,9 +19,10 @@
 
 package com.stoutner.privacybrowser;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -47,11 +48,11 @@ public class DownloadFile extends DialogFragment {
         Bundle argumentsBundle = new Bundle();
 
         String fileNameString;
-        if (contentDisposition.isEmpty()) {  // If `contentDisposition` is empty, use the last path segment of the URL as the file name.
+        if (!contentDisposition.isEmpty()) {  // Extract `fileNameString` from `contentDisposition` using the substring beginning after `filename="` and ending one character before the end of `contentDisposition`.
+            fileNameString = contentDisposition.substring(contentDisposition.indexOf("filename=\"") + 10, contentDisposition.length() - 1);
+        } else {  // `contentDisposition` is empty, so use the last path segment of the URL as the file name.
             Uri downloadUri = Uri.parse(urlString);
             fileNameString = downloadUri.getLastPathSegment();
-        } else {  // Extract `fileNameString` from `contentDisposition` using the substring beginning after `filename="` and ending one character before the end of `contentDisposition`.
-            fileNameString = contentDisposition.substring(contentDisposition.indexOf("filename=\"") + 10, contentDisposition.length() - 1);
         }
 
         // Convert `contentLength` to MB and store it in `fileSizeString`.  `%.3g` displays the three most significant digits.
@@ -87,15 +88,18 @@ public class DownloadFile extends DialogFragment {
     private DownloadFileListener downloadFileListener;
 
     // Check to make sure tha the parent activity implements the listener.
-    public void onAttach(Activity parentActivity) {
-        super.onAttach(parentActivity);
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
         try {
-            downloadFileListener = (DownloadFileListener) parentActivity;
+            downloadFileListener = (DownloadFileListener) context;
         } catch (ClassCastException exception) {
-            throw new ClassCastException(parentActivity.toString() + " must implement DownloadFileListener.");
+            throw new ClassCastException(context.toString() + " must implement DownloadFileListener.");
         }
     }
 
+    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
+    @SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Get the activity's layout inflater.
@@ -128,6 +132,9 @@ public class DownloadFile extends DialogFragment {
         // Create an `AlertDialog` from the `AlertDialog.Builder`.
         final AlertDialog alertDialog = dialogBuilder.create();
 
+        // Remove the warning below that `setSoftInputMode` might produce `java.lang.NullPointerException`.
+        assert alertDialog.getWindow() != null;
+
         // Show the keyboard when `alertDialog` is displayed on the screen.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
@@ -136,12 +143,12 @@ public class DownloadFile extends DialogFragment {
 
         // Set the text for `downloadFileSizeTextView`.
         TextView downloadFileSizeTextView = (TextView) alertDialog.findViewById(R.id.download_file_size);
-        assert downloadFileSizeTextView != null;  // Remove the warning of the following line that `downloadFileSizeTextView` might be null.
+        assert downloadFileSizeTextView != null;  // Remove the warning on the following line that `downloadFileSizeTextView` might be `null`.
         downloadFileSizeTextView.setText(fileSize);
 
         // Set the text for `downloadFileNameTextView`.
         EditText downloadFileNameTextView = (EditText) alertDialog.findViewById(R.id.download_file_name);
-        assert downloadFileNameTextView != null;  // Remove the warning on the following line that `downloadFileNameTextView` might be null.
+        assert downloadFileNameTextView != null;  // Remove the warning on the following line that `downloadFileNameTextView` might be `null`.
         downloadFileNameTextView.setText(downloadFileName);
 
         // Allow the `enter` key on the keyboard to save the file from `downloadFileNameTextView`.

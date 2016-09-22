@@ -19,9 +19,10 @@
 
 package com.stoutner.privacybrowser;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 // If we don't use `android.support.v7.app.AlertDialog` instead of `android.app.AlertDialog` then the dialog will be covered by the keyboard.
@@ -41,17 +42,19 @@ public class CreateBookmarkFolder extends DialogFragment {
     // `createBookmarkFolderListener` is used in `onAttach()` and `onCreateDialog`.
     private CreateBookmarkFolderListener createBookmarkFolderListener;
 
-    public void onAttach(Activity parentActivity) {
-        super.onAttach(parentActivity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
-        // Get a handle for `createBookmarkFolderListener` from `parentActivity`.
+        // Get a handle for `createBookmarkFolderListener` from `context`.
         try {
-            createBookmarkFolderListener = (CreateBookmarkFolderListener) parentActivity;
+            createBookmarkFolderListener = (CreateBookmarkFolderListener) context;
         } catch(ClassCastException exception) {
-            throw new ClassCastException(parentActivity.toString() + " must implement CreateBookmarkFolderListener.");
+            throw new ClassCastException(context.toString() + " must implement CreateBookmarkFolderListener.");
         }
     }
 
+    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
+    @SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use `AlertDialog.Builder` to create the `AlertDialog`.  The style formats the color of the button text.
@@ -80,6 +83,9 @@ public class CreateBookmarkFolder extends DialogFragment {
 
         // Create an `AlertDialog` from the `AlertDialog.Builder`.
         final AlertDialog alertDialog = dialogBuilder.create();
+
+        // Remove the warning below that `setSoftInputMode` might produce `java.lang.NullPointerException`.
+        assert alertDialog.getWindow() != null;
 
         // Show the keyboard when the `Dialog` is displayed on the screen.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);

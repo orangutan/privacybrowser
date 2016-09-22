@@ -34,8 +34,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class OrbotProxyHelper {
-    public static void setProxy(Context privacyBrowserContext, Activity parentActivity, String proxyHost, String proxyPort) {
+class OrbotProxyHelper {
+    static void setProxy(Context privacyBrowserContext, Activity parentActivity, String proxyHost, String proxyPort) {
         // Set the proxy values
         System.setProperty("http.proxyHost", proxyHost);
         System.setProperty("http.proxyPort", proxyPort);

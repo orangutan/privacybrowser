@@ -19,6 +19,7 @@
 
 package com.stoutner.privacybrowser;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -34,6 +35,8 @@ import android.widget.TextView;
 
 import java.util.Date;
 
+// `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
+@SuppressLint("InflateParams")
 public class ViewSslCertificate extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Get the activity's layout inflater.
@@ -50,7 +53,7 @@ public class ViewSslCertificate extends DialogFragment {
         dialogBuilder.setNegativeButton(R.string.close, null);
 
         // Check to see if the website is encrypted.
-        if (MainWebViewActivity.mainWebView.getCertificate() == null) {  // The website is not encrypted.
+        if (MainWebViewActivity.sslCertificate == null) {  // The website is not encrypted.
             // Set the title.
             dialogBuilder.setTitle(R.string.unencrypted_website);
 
@@ -97,7 +100,7 @@ public class ViewSslCertificate extends DialogFragment {
             String endDateLabel = getString(R.string.end_date) + "  ";
 
             // Get the SSL certificate.
-            SslCertificate sslCertificate = MainWebViewActivity.mainWebView.getCertificate();
+            SslCertificate sslCertificate = MainWebViewActivity.sslCertificate;
 
             // Get the strings from the SSL certificate.
             String issuedToCNameString = sslCertificate.getIssuedTo().getCName();
@@ -120,7 +123,7 @@ public class ViewSslCertificate extends DialogFragment {
             SpannableStringBuilder endDateStringBuilder = new SpannableStringBuilder(endDateLabel + endDate.toString());
 
             // Create a blue `ForegroundColorSpan`.  We have to use the deprecated `getColor` until API >= 23.
-            ForegroundColorSpan blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
+            @SuppressWarnings("deprecation") ForegroundColorSpan blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
 
             // Setup the spans to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
             issuedToCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), issuedToCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);

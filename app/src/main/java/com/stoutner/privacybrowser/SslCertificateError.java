@@ -19,10 +19,11 @@
 
 package com.stoutner.privacybrowser;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.net.http.SslCertificate;
 import android.net.http.SslError;
@@ -35,7 +36,7 @@ import android.widget.TextView;
 
 import java.util.Date;
 
-public class SslCertificateError extends DialogFragment{
+public class SslCertificateError extends DialogFragment {
 
     private String primaryError;
     private String urlWithError;
@@ -136,16 +137,18 @@ public class SslCertificateError extends DialogFragment{
     private SslCertificateErrorListener sslCertificateErrorListener;
 
     // Check to make sure that the parent activity implements the listener.
-    public void onAttach(Activity parentActivity) {
-        super.onAttach(parentActivity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
         try {
-            sslCertificateErrorListener = (SslCertificateErrorListener) parentActivity;
+            sslCertificateErrorListener = (SslCertificateErrorListener) context;
         } catch(ClassCastException exception) {
-            throw new ClassCastException(parentActivity.toString() + " must implement SslCertificateErrorListener");
+            throw new ClassCastException(context.toString() + " must implement SslCertificateErrorListener");
         }
     }
 
+    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
+    @SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Get the activity's layout inflater.
@@ -212,7 +215,7 @@ public class SslCertificateError extends DialogFragment{
         SpannableStringBuilder endDateStringBuilder = new SpannableStringBuilder((endDateLabel + endDate));
 
         // Create a blue `ForegroundColorSpan`.  We have to use the deprecated `getColor` until API >= 23.
-        ForegroundColorSpan blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
+        @SuppressWarnings("deprecation") ForegroundColorSpan blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
 
         // Setup the spans to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
         urlStringBuilder.setSpan(blueColorSpan, urlLabel.length(), urlStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);

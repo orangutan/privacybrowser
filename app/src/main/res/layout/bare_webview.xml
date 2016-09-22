@@ -20,7 +20,7 @@
 
 <!-- This WebView displays inside of the tabs in AboutActivity. -->
 <WebView
-    android:id="@+id/about_tab_webview"
+    android:id="@+id/bare_webview"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />

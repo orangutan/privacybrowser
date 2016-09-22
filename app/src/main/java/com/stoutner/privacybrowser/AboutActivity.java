@@ -46,17 +46,15 @@ public class AboutActivity extends AppCompatActivity {
 
         //  Setup the ViewPager.
         ViewPager aboutViewPager = (ViewPager) findViewById(R.id.about_viewpager);
-        assert aboutViewPager != null; // This assert removes the incorrect warning in Android Studio on the following line that aboutViewPager might be null.
         aboutViewPager.setAdapter(new aboutPagerAdapter(getSupportFragmentManager()));
 
         // Setup the TabLayout and connect it to the ViewPager.
         TabLayout aboutTabLayout = (TabLayout) findViewById(R.id.about_tablayout);
-        assert aboutTabLayout != null; // This assert removes the incorrect warning in Android Studio on the following line that aboutTabLayout might be null.
         aboutTabLayout.setupWithViewPager(aboutViewPager);
     }
 
     public class aboutPagerAdapter extends FragmentPagerAdapter {
-        public aboutPagerAdapter(FragmentManager fm) {
+        private aboutPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 

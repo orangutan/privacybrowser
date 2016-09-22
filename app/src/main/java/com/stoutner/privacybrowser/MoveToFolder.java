@@ -19,7 +19,7 @@
 
 package com.stoutner.privacybrowser;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
@@ -34,7 +34,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 // If we don't use `android.support.v7.app.AlertDialog` instead of `android.app.AlertDialog` then the dialog will be covered by the keyboard.
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -57,20 +56,22 @@ public class MoveToFolder extends DialogFragment {
     // `moveToFolderListener` is used in `onAttach()` and `onCreateDialog`.
     private MoveToFolderListener moveToFolderListener;
 
-    public void onAttach(Activity parentActivity) {
-        super.onAttach(parentActivity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
         // Get a handle for `MoveToFolderListener` from `parentActivity`.
         try {
-            moveToFolderListener = (MoveToFolderListener) parentActivity;
+            moveToFolderListener = (MoveToFolderListener) context;
         } catch(ClassCastException exception) {
-            throw new ClassCastException(parentActivity.toString() + " must implement EditBookmarkFolderListener.");
+            throw new ClassCastException(context.toString() + " must implement EditBookmarkFolderListener.");
         }
     }
 
     // `exceptFolders` is used in `onCreateDialog()` and `addSubfoldersToExceptFolders()`.
     private String exceptFolders;
 
+    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
+    @SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use `AlertDialog.Builder` to create the `AlertDialog`.  The style formats the color of the button text.
@@ -113,7 +114,7 @@ public class MoveToFolder extends DialogFragment {
             exceptFolders = "";
 
             // If a folder is selected, add it and all children to the list of folders not to display.
-            long[] selectedBookmarksLongArray = BookmarksActivity.bookmarksListView.getCheckedItemIds();
+            long[] selectedBookmarksLongArray = BookmarksActivity.checkedItemIds;
             for (long databaseIdLong : selectedBookmarksLongArray) {
                 // Get `databaseIdInt` for each selected bookmark.
                 int databaseIdInt = (int) databaseIdLong;
@@ -183,7 +184,7 @@ public class MoveToFolder extends DialogFragment {
             exceptFolders = DatabaseUtils.sqlEscapeString(BookmarksActivity.currentFolder);
 
             // If a folder is selected, add it and all children to the list of folders not to display.
-            long[] selectedBookmarksLongArray = BookmarksActivity.bookmarksListView.getCheckedItemIds();
+            long[] selectedBookmarksLongArray = BookmarksActivity.checkedItemIds;
             for (long databaseIdLong : selectedBookmarksLongArray) {
                 // Get `databaseIdInt` for each selected bookmark.
                 int databaseIdInt = (int) databaseIdLong;

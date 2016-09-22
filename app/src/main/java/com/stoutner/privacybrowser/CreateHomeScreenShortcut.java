@@ -19,9 +19,10 @@
 
 package com.stoutner.privacybrowser;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -44,15 +45,17 @@ public class CreateHomeScreenShortcut extends DialogFragment {
     private CreateHomeScreenSchortcutListener createHomeScreenShortcutListener;
 
     // Check to make sure that the parent activity implements the listener.
-    public void onAttach(Activity parentActivity) {
-        super.onAttach(parentActivity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         try {
-            createHomeScreenShortcutListener = (CreateHomeScreenSchortcutListener) parentActivity;
+            createHomeScreenShortcutListener = (CreateHomeScreenSchortcutListener) context;
         } catch(ClassCastException exception) {
-            throw new ClassCastException(parentActivity.toString() + " must implement CreateHomeScreenShortcutListener.");
+            throw new ClassCastException(context.toString() + " must implement CreateHomeScreenShortcutListener.");
         }
     }
 
+    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
+    @SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Get the activity's layout inflater.
@@ -87,6 +90,9 @@ public class CreateHomeScreenShortcut extends DialogFragment {
 
         // Create an `AlertDialog` from the `AlertDialog.Builder`.
         final AlertDialog alertDialog = dialogBuilder.create();
+
+        // Remove the warning below that `setSoftInputMode` might produce `java.lang.NullPointerException`.
+        assert alertDialog.getWindow() != null;
 
         // Show the keyboard when the Dialog is displayed on the screen.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
