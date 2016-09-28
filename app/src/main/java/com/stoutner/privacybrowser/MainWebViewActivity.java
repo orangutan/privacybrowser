@@ -89,9 +89,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // It is also used in `onCreate()`, `onOptionsItemSelected()`, `onCreateHomeScreenShortcutCreate()`, and `loadUrlFromTextBox()`.
     public static String formattedUrlString;
 
-    // `customHeader` is public static so it can be accessed from `BookmarksActivity`.  It is also used in `onCreate()`, `onOptionsItemSelected()`, and `loadUrlFromTextBox()`.
-    public static Map<String, String> customHeaders = new HashMap<>();
-
     // `sslCertificate` is public static so it can be accessed from `ViewSslCertificate`.  It is also used in `onCreate()`.
     public static SslCertificate sslCertificate;
 
@@ -104,6 +101,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
     // `cookieManager` is used in `onCreate()`, `onOptionsItemSelected()`, and `onNavigationItemSelected()`, and `onRestart()`.
     private CookieManager cookieManager;
+
+    // `customHeader` is used in `onCreate()`, `onOptionsItemSelected()`, and `loadUrlFromTextBox()`.
+    private final Map<String, String> customHeaders = new HashMap<>();
 
     // `javaScriptEnabled` is also used in `onCreate()`, `onCreateOptionsMenu()`, `onOptionsItemSelected()`, `loadUrlFromTextBox()`, and `applySettings()`.
     // It is `Boolean` instead of `boolean` because `applySettings()` needs to know if it is `null`.
@@ -1073,6 +1073,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
             mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
             mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
+            mainWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
 
             // Set third-party cookies status if API >= 21.
             if (Build.VERSION.SDK_INT >= 21) {
@@ -1080,9 +1081,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             }
         }
 
-        // Apply the settings from `sharedPreferences`.
+        // Apply the other settings from `sharedPreferences`.
         homepage = homepageString;
-        mainWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
         swipeRefreshLayout.setEnabled(swipeToRefreshEnabled);
 
         // Set the user agent initial status.

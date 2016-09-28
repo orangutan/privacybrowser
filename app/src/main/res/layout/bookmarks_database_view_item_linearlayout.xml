@@ -58,7 +58,7 @@
             android:layout_width="wrap_content"
             android:textColor="@color/black"
             android:textSize="22sp"
-            android:singleLine="true" />
+            android:maxLines="1" />
     </LinearLayout>
 
     <!-- Second row. -->
@@ -94,7 +94,7 @@
             android:textColor="@color/black"
             android:textSize="22sp"
             android:textStyle="italic"
-            android:singleLine="true" />
+            android:maxLines="1" />
     </LinearLayout>
 
     <!-- Third row. -->
@@ -107,5 +107,5 @@
         android:layout_marginEnd="10dp"
         android:textColor="@color/black"
         android:textSize="22sp"
-        android:singleLine="true" />
+        android:maxLines="1" />
 </LinearLayout>

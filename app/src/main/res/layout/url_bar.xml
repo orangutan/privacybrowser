@@ -20,6 +20,7 @@
 
 <!-- FrameLayout lets the ProgressBar float on top of `urlTextBox`. -->
 <FrameLayout
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/addressBarFrameLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -56,7 +57,9 @@
     </RelativeLayout>
 
     <!-- android:max changes the maximum ProgressBar value from 10000 to 100 to match progress percentage.
-        android:layout_height="2dp" works best for API 23 "Marshmallow", but "3dp" is required for visibility on API <= 22. -->
+        android:layout_height="2dp" works best for API 23 "Marshmallow", but "3dp" is required for visibility on API <= 22.
+        `tools:ignore="UnusedAttribute"` removes the lint waring about `progressTint` and `progressBackgroundTint`
+        not applying to API < 21.-->
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
@@ -66,5 +69,6 @@
         android:max="100"
         android:progressTint="@color/blue_700"
         android:progressBackgroundTint="@color/white"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:ignore="UnusedAttribute" />
 </FrameLayout>

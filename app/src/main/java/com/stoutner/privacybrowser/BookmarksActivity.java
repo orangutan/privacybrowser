@@ -589,7 +589,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             Snackbar.make(findViewById(R.id.bookmarks_coordinatorlayout), cannotCreateFolder, Snackbar.LENGTH_INDEFINITE).show();
         } else {  // Create the folder.
             // Get the new folder icon `Bitmap`.
-            RadioButton defaultFolderIconRadioButton = (RadioButton) dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon_radiobuttion);
+            RadioButton defaultFolderIconRadioButton = (RadioButton) dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon_radiobutton);
             Bitmap folderIconBitmap;
             if (defaultFolderIconRadioButton.isChecked()) {
                 // Get the default folder icon `ImageView` from the `Dialog` and convert it to a `Bitmap`.
@@ -714,11 +714,6 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
         // Close the contextual action mode.
         contextualActionMode.finish();
-    }
-
-    @Override
-    public void onCancelMoveToFolder(DialogFragment dialogFragment) {
-        // Do nothing because the user selected `Cancel`.
     }
 
     @Override

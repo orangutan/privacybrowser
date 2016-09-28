@@ -66,10 +66,10 @@
             android:id="@+id/create_folder_radiogroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:checkedButton="@+id/create_folder_default_icon_radiobuttion">
+            android:checkedButton="@+id/create_folder_default_icon_radiobutton">
 
             <RadioButton
-                android:id="@id/create_folder_default_icon_radiobuttion"
+                android:id="@id/create_folder_default_icon_radiobutton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
@@ -78,7 +78,7 @@
                 android:textSize="18sp" />
 
             <RadioButton
-                android:id="@+id/create_folder_web_page_icon_radiobuttion"
+                android:id="@+id/create_folder_web_page_icon_radiobutton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/web_page_favorite_icon"

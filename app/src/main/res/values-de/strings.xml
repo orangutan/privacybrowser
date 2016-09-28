@@ -30,7 +30,6 @@
     <string name="android_asset_path">de</string>  <!-- For translations, this should be the localization abbreviation.  For example, German is `de`. -->
 
     <!-- MainWebViewActivity. -->
-    <string name="download_started">Download gestartet</string>
     <string name="privacy_mode">Privatsphäre-Modus</string>
     <string name="javascript_enabled">JavaScript aktiviert</string>
     <string name="javascript_disabled">JavaScript deaktiviert</string>
@@ -46,6 +45,8 @@
     <string name="dom_storage_deleted">DOM-Speicher gelöscht</string>
     <string name="open_navigation">Navigationspanel öffnen</string>
     <string name="close_navigation">Navigationspanel schließen</string>
+
+    <!-- Save As. -->
     <string name="save_as">Speichern unter</string>
     <string name="file_name">Dateiname</string>
     <string name="download">Download</string>

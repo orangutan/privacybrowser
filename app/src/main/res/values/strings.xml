@@ -29,7 +29,6 @@
     <string name="android_asset_path">en</string>  <!-- For translations, this should be the localization abbreviation.  For example, German is `de`. -->
 
     <!-- MainWebViewActivity. -->
-    <string name="download_started">Download started</string>
     <string name="privacy_mode">Privacy Mode</string>
     <string name="javascript_enabled">JavaScript enabled</string>
     <string name="javascript_disabled">JavaScript disabled</string>
@@ -45,8 +44,11 @@
     <string name="dom_storage_deleted">DOM Storage deleted</string>
     <string name="open_navigation">Open Navigation Drawer</string>
     <string name="close_navigation">Close Navigation Drawer</string>
+
+    <!-- Save As. -->
     <string name="save_as">Save as</string>
     <string name="file_name">File name</string>
+    <string name="unknown_size">unknown size</string>
     <string name="download">Download</string>
 
     <!-- Custom App Bar. -->

@@ -38,10 +38,10 @@ import android.widget.TextView;
 
 public class BookmarksDatabaseViewActivity extends AppCompatActivity {
     // `bookmarksDatabaseHandler` is used in `onCreate()` and `updateBookmarksListView()`.
-    BookmarksDatabaseHandler bookmarksDatabaseHandler;
+    private BookmarksDatabaseHandler bookmarksDatabaseHandler;
 
     // `bookmarksListView` is used in `onCreate()` and `updateBookmarksListView()`.
-    ListView bookmarksListView;
+    private ListView bookmarksListView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -48,8 +48,6 @@ import java.io.ByteArrayOutputStream;
 public class MoveToFolder extends DialogFragment {
     // The public interface is used to send information back to the parent activity.
     public interface MoveToFolderListener {
-        void onCancelMoveToFolder(DialogFragment dialogFragment);
-
         void onMoveToFolder(DialogFragment dialogFragment);
     }
 
@@ -84,8 +82,7 @@ public class MoveToFolder extends DialogFragment {
         dialogBuilder.setNegativeButton(R.string.cancel, new Dialog.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // Return the `DialogFragment` to the parent activity on cancel.
-                moveToFolderListener.onCancelMoveToFolder(MoveToFolder.this);
+                // Do nothing.  The `AlertDialog` will close automatically.
             }
         });
 
@@ -244,7 +241,7 @@ public class MoveToFolder extends DialogFragment {
         return alertDialog;
     }
 
-    public void addSubfoldersToExceptFolders(String folderName) {
+    private void addSubfoldersToExceptFolders(String folderName) {
         // Get a `Cursor` will all the immediate subfolders.
         Cursor subfoldersCursor = BookmarksActivity.bookmarksDatabaseHandler.getSubfoldersCursor(folderName);
 

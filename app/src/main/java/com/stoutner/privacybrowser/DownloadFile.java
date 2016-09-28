@@ -27,6 +27,7 @@ import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 // `android.support.v7.app.AlertDialog` uses more of the horizontal screen real estate versus `android.app.AlertDialog's` smaller width.
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -55,13 +56,10 @@ public class DownloadFile extends DialogFragment {
             fileNameString = downloadUri.getLastPathSegment();
         }
 
-        // Convert `contentLength` to MB and store it in `fileSizeString`.  `%.3g` displays the three most significant digits.
-        String fileSizeString = String.format(Locale.getDefault(), "%.3g", (float) contentLength / 1048576) + " MB";
-
         // Store the variables in the `Bundle`.
         argumentsBundle.putString("URL", urlString);
         argumentsBundle.putString("File_Name", fileNameString);
-        argumentsBundle.putString("File_Size", fileSizeString);
+        argumentsBundle.putLong("File_Size", contentLength);
 
         // Add `argumentsBundle` to this instance of `DownloadFile`.
         DownloadFile thisDownloadFileDialog = new DownloadFile();
@@ -76,7 +74,16 @@ public class DownloadFile extends DialogFragment {
         // Store the strings in the local class variables.
         downloadUrl = getArguments().getString("URL");
         downloadFileName = getArguments().getString("File_Name");
-        fileSize = getArguments().getString("File_Size");
+
+        // Get the `File_Size`.
+        long fileSizeLong = getArguments().getLong("File_Size");
+
+        // Convert `fileSizeLong` to a String.
+        if (fileSizeLong == -1) {  // We don't know the file size.
+            fileSize = getString(R.string.unknown_size);
+        } else {  // Convert `fileSize` to MB and store it in `fileSizeString`.  `%.3g` displays the three most significant digits.
+            fileSize = String.format(Locale.getDefault(), "%.3g", (float) fileSizeLong / 1048576) + " MB";
+        }
     }
 
     // The public interface is used to send information back to the parent activity.
