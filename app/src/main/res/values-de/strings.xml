@@ -46,6 +46,9 @@
     <string name="dom_storage_deleted">DOM-Speicher gelöscht</string>
     <string name="open_navigation">Navigationspanel öffnen</string>
     <string name="close_navigation">Navigationspanel schließen</string>
+    <string name="save_as">Speichern unter</string>
+    <string name="file_name">Dateiname</string>
+    <string name="download">Download</string>
 
     <!-- Custom App Bar. -->
     <string name="favorite_icon">Website-Icon</string>
@@ -192,6 +195,10 @@
         <item>Eigener</item>
     </string-array>
     <string name="custom_user_agent">Eigener User Agent</string>
+    <string name="do_not_track">Nicht verfolgen (Do not track)</string>
+    <string name="do_not_track_summary">Einen "Do Not Track-Header" senden, der freundlich anfragt, dass Webserver diesen Browser nicht nachverfolgen sollen.</string>
+    <string name="proxy_through_orbot">Proxy durch Orbot</string>
+    <string name="proxy_through_orbot_summary">Sämtlichen Web-Verkehr durch Orbot mittels localhost:8118 leiten.</string>
     <string name="search">Suche</string>
     <string name="javascript_disabled_search">Suchmaschine bei deaktiviertem JavaScript</string>
     <string-array name="javascript_disabled_search_entries">
@@ -230,6 +237,9 @@
     </string-array>
     <string name="swipe_to_refresh_enabled">Herunterziehen zum Aktualisieren</string>
     <string name="swipe_to_refresh_enabled_summary">Einige Websites funktionieren nicht, wenn "Herunterziehen zum Aktualisieren" eingeschaltet ist.</string>
+
+    <!-- Orbot. -->
+    <string name="orbot_proxy_not_installed">Orbot-Proxy wird nicht funktionieren, solange Orbot nicht installiert ist.</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">Über Privacy Browser</string>

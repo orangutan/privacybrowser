@@ -28,47 +28,71 @@
         color: 0D4781;
         }
 
-        strong {
-        color: BF360C;
-        }
+    img.center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
     </style>
 </head>
 
 <body>
-<h3>Maskieren von IP-Adressen</h3>
+<h3>Tor und seine Grenzen</h3>
 
-<p>Obwohl es keine perfekte Wissenschaft ist; IP-Adressen k&ouml;nnen in physikalische Adressen mit steigender Genauigkeit gewandelt werden.
-    Es gibt <a href="https://www.whatismyip.com/">&ouml;ffentliche Datenbanken</a>, die zeigen, welche ISP welche IP-Adresse besitzt mit einer guten
-    Einsch&auml;tzung, in welcher Region sie genutzt wird. Es gibt private Datenbanken mit noch genaueren Informationen. Und nat&uuml;rlich
-    wei&szlig; die ISP die exakte Serviceadresse jeder einzelnen IP-Adresse.</p>
+<p>Faktoren, die in die Privatsph&auml;re im Web eindringen wollen lassen sich haupts&auml;chlich in zwei verschiedene Kategorien unterteilen: Neugierige Beh&ouml;rden
+    mit Zugriff auf Internetprovider und Megafirmen, die Soziale und Werbenetzwerke betreiben.
+    TOR (The Onion Router) ist n&uuml;tzlich, wenn es auf den Schutz der Privatsph&auml;re vor neugierigen Beh&ouml;rden ankommt, aber nicht bei den Megafirmen.</p>
 
-<p>VPN-Dienste k&ouml;nnen die IP-Adresse des Ger&auml;ts vor einem Server verstecken. Wenn ein VPN-Dienst zwischengeschaltet ist wird s&auml;mtlicher Datenverkehr verschl&uuml;sselt und &uuml;ber
-    den VPN-Server umgeleitet. Der Webserver sieht lediglich die IP-Adresse des VPN-Servers. Das ist zwar ausreichend, um die Anonymit&auml;t vor
-    Webserver- und Werbebetreibern zu wahren, aber es reicht nicht aus, um die Anonymit&auml;t vor unterdr&uuml;ckenden Regimen zu sch&uuml;tzen,
-    welche wom&ouml;glich f&auml;hig sind die VPN-Betreiber zur Herausgabe der Logs &uuml;ber die IP-Adressen zu bewegen. Diejenigen, die nach Sicherheit vor solchen
-    Regimen suchen oder staatlichen Beh&ouml;rden den Laufpass geben wollen brauchen noch etwas mehr.</p>
 
-<p>Das Tor (The Onion Router) Netzwerk wurde f&uuml;r genau diese Zwecke entwickelt. Es leitet verschl&uuml;sselten Datenverkehr durch mindestens drei verschiedene unabh&auml;ngige Server,
-    die dem Projekt ihre Bandbreite spenden. Keiner der Server hat gen&uuml;gend Informationen, sodass er weder die IP-Adresse des sendenden Computers als auch
-    dem Ankunftsort hat. Daher m&uuml;sste die jeweils gemiedene Beh&ouml;rde, die Zugriff auf diesen Inhalt m&ouml;chte, all diese Maschinen in dieser Verbindung mit einbeziehen,
-    welche alle &uuml;ber den Globus verteilt sind. Das bietet nicht die ultimative Privatsph&auml;re, kommt aber nahe dran.</p>
+<h3>Neugierige Beh&ouml;rden</h3>
 
-<p>Das Tor Projekt hat eine Android-App namens Orbot, welche auf <a href="https://f-droid.org/repository/browse/?fdfilter=orbot&fdid=org.torproject.android">F-Droid</a> verf&uuml;gbar ist
-    und &uuml;berall sonst, wo Privacy Browser auch bezogen werde kann. Orbot kann in drei Modi arbeiten.</p>
+<p>Oft sp&auml;hen neugierige Beh&ouml;rden die B&uuml;rger aus, um Fehlverhalten und Menschenrechtsaktivit&auml;ten zu bestrafen. &Uuml;blicherweise betreiben sie entweder die Internetprovider selber
+    oder sie k&ouml;nnen die Provider dazu zwingen, Informationen &uuml;ber jede besuchte IP-Adresse und die zugeh&ouml;rigen Benutzer herauszugeben.
+    TOR wurde entwickelt, um diese Eingriffe in die Privatsph&auml;re zu bek&auml;mpfen, indem es die Daten verschl&uuml;sselt,
+    die ein Nutzer sendet und sie durch viele verschiedene Server schleust, bevor sie die Zieladresse erreichen.
+    Das bedeutet, dass kein individueller Internetprovider, Server oder Website sowohl die <a href="https://ipleak.net">IP-Adresse des Nutzers</a>
+    als auch die IP-Adresse des letztendlich besuchten Webservers erf&auml;hrt. Neugierige Beh&ouml;rden und die von ihnen kontrollierten Internetprovider k&ouml;nnen nur vermuten, welche
+    Webserver ein Benutzer besucht, da sie letztendlich nur sehen, dass er TOR benutzt. In einigen Teilen
+    der Welt k&ouml;nnte das Benutzen von TOR als illegale Aktivit&auml;t ausgelegt werden ("wenn Du nichts zu verstecken h&auml;ttest,
+    würdest Du nicht Deinen Traffic vor uns verstecken") und Benutzer k&ouml;nnten bestraft werden, da die Regierung vermutet,
+    sie w&uuml;rden etwas Untersagtes tun.  Also kann TOR hilfreich sein, ist jedoch kein Allheilmittel.</p>
 
-<ul>
-    <li><strong>Proxy-Modus</strong> Apps m&uuml;ssen das Weiterleiten ihres Datenverkehrs anfragen, sprich m&uuml;ssen einen Code beinhalten, den der jeweilige Entwickler einbinden
-        muss, damit es funktioniert.</li>
-    <li><strong>Transparenter Proxy-Modus</strong> Orbot greift bei jedem Datenverkehr von anderen Apps ein und leitet es weiter an
-        das Tor Netzwerk. Apps m&uuml;ssen nicht von ihrem Entwickler modifiziert werden um mit dem transparenten Proxy zu funktionieren, jedoch braucht Orbot dazu
-        Root-Zugriff auf dem Ger&auml;t.</li>
-    <li><strong>VPN-Modus</strong> Orbot registriert sich als VPN auf dem Ger&auml;t.  Apps ben&ouml;tigen keine vorherige Modifizierung durch den Entwickler
-        und Root wird nicht ben&ouml;tigt.</li>
-</ul>
 
-<p>Momentsn funktioniert Privacy Browser mit Orbot im transparenten Proxying und im VPN-Modus. Unterst&uuml;tzung f&uuml;r den Standard-Proxymodus wird zu einem
-    <a href="https://redmine.stoutner.com/issues/26">sp&auml;teren Zeitpunkt</a> hinzugef&uuml;gt.</p>
+<h3>Megafirmen</h3>
 
-<p>Weil der Datenverkehr durch mehrere verschiedene Tor-Ports geleitet wird ist das Surfen mit aktiviertem Tor oft langsamer als beim normalen Surfen.</p>
+<p>Wenn ein Benutzer sich mit einem Webserver verbindet, kann der Webserver seine IP-Adresse sehen. Obwohl es keine ausgereifte Methode ist,
+    k&ouml;nnen IP-Adressen in physische Adressen umgewandelt werden -  <a href="https://www.whatismyip.com/">mit erstaunlicher Genauigkeit</a>.
+    Kleine Webserver nutzen normalerweise die IP-Adresse, um festzulegen, woher der Benutzer die Seite besucht.
+    TOR ist eine gute L&ouml;sung, wenn man seinen Standort vor diesen Servern verstecken m&ouml;chte.  Gro&szlig;e Megafirmen, die Soziale Netzwerke und Werbenetzwerke betreiben
+    nutzen jedoch richtige Profile an Informationen, um Benutzer &uuml;ber ihre Ger&auml;te und IP-Adressen hinaus zu tracken.
+    Diese Profile nutzen verschiedene M&ouml;glichkeiten an Techniken um Benutzer ausfindig zu machen, inklusive JavaScript, Cookies,
+    Tracking-IDs und ein <a href="https://panopticlick.eff.org/">"Browser-Fingerabdruck" (fingerprinting)</a>. Weil die gro&szlig;e Mehrheit
+    der Websites im Internet eine Werbung entweder von den gro&szlig;en Werbenetzwerken oder von eingebetteten Social-Media-Buttons mit ihrem zugewiesenen JavaScript
+    l&auml;dt, haben diese gro&szlig;en Megafirmen Profile von so gut wie jedem Internetnutzer angefertigt und verfolgen ihre
+    Aktivit&auml;ten &uuml;ber zueinander unabh&auml;ngige Seiten.</p>
+
+<p>Sie verfolgen jede besuchte Seite, alles online Gekaufte, jede f&uuml;r Eink&auml;ufe genutzte Kreditkarte,
+    jede Adresse, an die Waren verschickt werden und die GPS-Metadaten von jedem ins Internet hochgeladene Foto.
+    Sie fertigen Profile an von Alter, Geschlecht, Beziehungsstatus, Adresse, politischen Ansichten,
+    religi&ouml;sen Ansichten, famili&auml;ren Zust&auml;nden, Anzahl der Haustiere und allem anderen was sie &uuml;ber einen Nutzer herausfinden k&ouml;nnen.
+    Sie kaufen sogar ganze Datenbanken mit Informationen &uuml;ber Kreditkartennutzungen in Gesch&auml;ften auf, damit sie Offline-Einkaufsverhalten von Nutzern in ihren Profilen nachverfolgen k&ouml;nnen.
+    Weil sie bereits weitaus genauere Adressinformationen &uuml;ber einen Nutzer haben als eine IP-Adresse aussagt,
+    bietet TOR keinen echten Schutz der Privatsphäre gegen Megafirmen.</p>
+
+<p>Der einzige und beste Schutz der Privatsph&auml;re gegen Megafirmen ist es, mit deaktivieren JavaScript durchs Web zu surfen, gefolgt
+    von geblockten Werbenetzwerken, deaktivieren Cookies und DOM-Speicher und das Benutzen eines Browsers, der schwierig zu "fingerprinten" ist.</p>
+
+
+<h3>Benutzen von TOR</h3>
+
+<p>Neben den Einschr&auml;nkungen kann TOR in bestimmten Situationen hilfreich sein. Das TOR Project hat eine App f&uuml;r Android namens Orbot,
+    die auf <a href="https://f-droid.org/repository/browse/?fdfilter=orbot&fdid=org.torproject.android">F-Droid</a> verf&uuml;gbar ist
+    und &uuml;berall sonst wo Privacy Browser angeboten wird. Privacy Browser hat eine Option um Orbot als
+    Proxy zu benutzen. Wenn diese aktiviert wird, hat Privacy Browser einen hellblauen Hintergrund bei der Adresszeile statt
+    dem standardm&auml;&szlig;igen Hellgrau. Wenn Privacy Browsers Orbot-Proxy-Einstellung aktiviert ist, wird das Internet ausschlie&szlig;lich
+    funktionieren, solange Orbot ausgef&uuml;hrt und mit dem TOR-Netzwerk verbunden wird. Weil die Daten durch verschiedene Anlaufstellen geleitet werden
+    ist das Nutzen von TOR oft weitaus langsamer als das direkte Verbinden mit dem Internet. </p>
+
+<img class="center" src="images/tor.png" height="640" width="360">
 </body>
 </html>
