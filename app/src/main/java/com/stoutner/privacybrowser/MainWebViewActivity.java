@@ -23,6 +23,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.DownloadManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -35,6 +36,8 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.print.PrintDocumentAdapter;
+import android.print.PrintManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -743,6 +746,17 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 createHomeScreenShortcutDialogFragment.show(getFragmentManager(), getResources().getString(R.string.create_shortcut));
 
                 //Everything else will be handled by `CreateHomeScreenShortcut` and the associated listener below.
+                return true;
+
+            case R.id.print:
+                // Get a `PrintManager` instance.
+                PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
+
+                // Convert `mainWebView` to `printDocumentAdapter`.
+                PrintDocumentAdapter printDocumentAdapter = mainWebView.createPrintDocumentAdapter();
+
+                // Print the document.  The print attributes are `null`.
+                printManager.print(getResources().getString(R.string.privacy_browser_web_page), printDocumentAdapter, null);
                 return true;
 
             case R.id.refresh:
