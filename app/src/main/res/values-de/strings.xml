@@ -49,6 +49,7 @@
     <!-- Save As. -->
     <string name="save_as">Speichern unter</string>
     <string name="file_name">Dateiname</string>
+    <string name="unknown_size">Unbekannte Größe</string>
     <string name="download">Download</string>
 
     <!-- Custom App Bar. -->
@@ -238,6 +239,8 @@
     </string-array>
     <string name="swipe_to_refresh_enabled">Herunterziehen zum Aktualisieren</string>
     <string name="swipe_to_refresh_enabled_summary">Einige Websites funktionieren nicht, wenn "Herunterziehen zum Aktualisieren" eingeschaltet ist.</string>
+    <string name="display_additional_app_bar_icons">Weitere Icons in der Titelleiste</string>
+    <string name="display_additional_app_bar_icons_summary">Icons zum Umschalten von Cookies, DOM-Speicher und Formulardaten neben der Adresszeile anzeigen, wenn noch Platz dafür da ist.</string>
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Orbot-Proxy wird nicht funktionieren, solange Orbot nicht installiert ist.</string>

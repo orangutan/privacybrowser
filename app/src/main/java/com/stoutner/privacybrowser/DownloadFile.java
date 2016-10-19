@@ -27,7 +27,6 @@ import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 // `android.support.v7.app.AlertDialog` uses more of the horizontal screen real estate versus `android.app.AlertDialog's` smaller width.
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -49,8 +48,8 @@ public class DownloadFile extends DialogFragment {
         Bundle argumentsBundle = new Bundle();
 
         String fileNameString;
-        if (!contentDisposition.isEmpty()) {  // Extract `fileNameString` from `contentDisposition` using the substring beginning after `filename="` and ending one character before the end of `contentDisposition`.
-            fileNameString = contentDisposition.substring(contentDisposition.indexOf("filename=\"") + 10, contentDisposition.length() - 1);
+        if (!contentDisposition.isEmpty()) {  // Extract `fileNameString` from `contentDisposition` using the substring beginning after `filename="` and ending with the next `"`.
+            fileNameString = contentDisposition.substring(contentDisposition.indexOf("filename=\"") + 10, contentDisposition.indexOf("\"", contentDisposition.indexOf("filename=\"") + 10));
         } else {  // `contentDisposition` is empty, so use the last path segment of the URL as the file name.
             Uri downloadUri = Uri.parse(urlString);
             fileNameString = downloadUri.getLastPathSegment();
