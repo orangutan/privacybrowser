@@ -129,11 +129,13 @@
         </menu>
     </item>
 
+    <!--
     <item
         android:id="@+id/find_on_page"
         android:title="@string/find_on_page"
         android:orderInCategory="100"
         app:showAsAction="never|collapseActionView" />
+        -->
 
     <item
         android:id="@+id/share"

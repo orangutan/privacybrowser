@@ -742,11 +742,13 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 mainWebView.getSettings().setTextZoom(200);
                 return true;
 
+            /*
             case R.id.find_on_page:
                 appBar.setCustomView(R.layout.find_on_page_app_bar);
                 toggleJavaScript.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 appBar.invalidateOptionsMenu();
                 return true;
+                */
 
             case R.id.share:
                 Intent shareIntent = new Intent();
