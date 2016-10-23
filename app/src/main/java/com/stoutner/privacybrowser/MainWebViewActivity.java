@@ -440,8 +440,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Set mainMenu so it can be used by `onOptionsItemSelected()` and `updatePrivacyIcons`.
         mainMenu = menu;
 
-        // Set the initial status of the privacy icons.
-        updatePrivacyIcons();
+        // Set the initial status of the privacy icons.  `false` does not call `invalidateOptionsMenu` as the last step.
+        updatePrivacyIcons(false);
 
         // Get handles for the menu items.
         toggleJavaScript = menu.findItem(R.id.toggleJavaScript);
@@ -580,8 +580,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 // Apply the new JavaScript status.
                 mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
 
-                // Update the privacy icon.
-                updatePrivacyIcons();
+                // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
+                updatePrivacyIcons(true);
 
                 // Display a `Snackbar`.
                 if (javaScriptEnabled) {  // JavaScrip is enabled.
@@ -606,8 +606,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 // Apply the new cookie status.
                 cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
 
-                // Update the privacy icon.
-                updatePrivacyIcons();
+                // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
+                updatePrivacyIcons(true);
 
                 // Display a `Snackbar`.
                 if (firstPartyCookiesEnabled) {  // First-party cookies are enabled.
@@ -655,6 +655,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 // Apply the new DOM Storage status.
                 mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
 
+                // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
+                updatePrivacyIcons(true);
+
                 // Display a `Snackbar`.
                 if (domStorageEnabled) {
                     Snackbar.make(findViewById(R.id.mainWebView), R.string.dom_storage_enabled, Snackbar.LENGTH_SHORT).show();
@@ -682,6 +685,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 } else {
                     Snackbar.make(findViewById(R.id.mainWebView), R.string.form_data_disabled, Snackbar.LENGTH_SHORT).show();
                 }
+
+                // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
+                updatePrivacyIcons(true);
 
                 // Reload the WebView.
                 mainWebView.reload();
@@ -906,7 +912,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         adView = findViewById(R.id.adView);
 
         // `invalidateOptionsMenu` should recalculate the number of action buttons from the menu to display on the app bar, but it doesn't because of the this bug:  https://code.google.com/p/android/issues/detail?id=20493#c8
-        // invalidateOptionsMenu();
+        // ActivityCompat.invalidateOptionsMenu(this);
     }
 
     @Override
@@ -1015,8 +1021,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Apply the settings from shared preferences, which might have been changed in `SettingsActivity`.
         applySettings();
 
-        // Update the privacy icons.
-        updatePrivacyIcons();
+        // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
+        updatePrivacyIcons(true);
 
     }
 
@@ -1160,7 +1166,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         }
     }
 
-    private void updatePrivacyIcons() {
+    private void updatePrivacyIcons(boolean runInvalidateOptionsMenu) {
         // Get handles for the icons.
         MenuItem privacyIcon = mainMenu.findItem(R.id.toggleJavaScript);
         MenuItem firstPartyCookiesIcon = mainMenu.findItem(R.id.toggleFirstPartyCookies);
@@ -1186,7 +1192,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Update `domStorageIcon`.
         if (javaScriptEnabled && domStorageEnabled) {  // Both JavaScript and DOM storage are enabled.
             domStorageIcon.setIcon(R.drawable.dom_storage_enabled);
-        } else if (javaScriptEnabled){  // JavaScript is enabled but DOM storage is disabled.
+        } else if (javaScriptEnabled) {  // JavaScript is enabled but DOM storage is disabled.
             domStorageIcon.setIcon(R.drawable.dom_storage_disabled);
         } else {  // JavaScript is disabled, so DOM storage is ghosted.
             domStorageIcon.setIcon(R.drawable.dom_storage_ghosted);
@@ -1199,8 +1205,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             formDataIcon.setIcon(R.drawable.form_data_disabled);
         }
 
-        // `invalidateOptionsMenu` calls `onPrepareOptionsMenu()` and redraws the icons in the `AppBar`.
-        // `this` references the current activity.
-        ActivityCompat.invalidateOptionsMenu(this);
+        // `invalidateOptionsMenu` calls `onPrepareOptionsMenu()` and redraws the icons in the `AppBar`.  `this` references the current activity.
+        if (runInvalidateOptionsMenu) {
+            ActivityCompat.invalidateOptionsMenu(this);
+        }
     }
 }
