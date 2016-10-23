@@ -130,26 +130,32 @@
     </item>
 
     <item
+        android:id="@+id/find_on_page"
+        android:title="@string/find_on_page"
+        android:orderInCategory="100"
+        app:showAsAction="never|collapseActionView" />
+
+    <item
         android:id="@+id/share"
         android:title="@string/share"
-        android:orderInCategory="100"
+        android:orderInCategory="110"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/addToHomescreen"
         android:title="@string/add_to_home_screen"
-        android:orderInCategory="110"
+        android:orderInCategory="120"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/print"
         android:title="@string/print"
-        android:orderInCategory="120"
+        android:orderInCategory="130"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/refresh"
         android:title="@string/refresh"
-        android:orderInCategory="120"
+        android:orderInCategory="140"
         app:showAsAction="never" />
 </menu>

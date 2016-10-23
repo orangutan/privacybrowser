@@ -81,7 +81,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         SslCertificateError.SslCertificateErrorListener, DownloadFile.DownloadFileListener {
 
     // `appBar` is public static so it can be accessed from `OrbotProxyHelper`.
-    // It is also used in `onCreate()`.
+    // It is also used in `onCreate()` and `onOptionsItemSelected()`.
     public static ActionBar appBar;
 
     // `favoriteIcon` is public static so it can be accessed from `CreateHomeScreenShortcut`, `BookmarksActivity`, `CreateBookmark`, `CreateBookmarkFolder`, and `EditBookmark`.
@@ -154,6 +154,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `sslErrorHandler` is used in `onCreate()`, `onSslErrorCancel()`, and `onSslErrorProceed`.
     private SslErrorHandler sslErrorHandler;
 
+    private MenuItem toggleJavaScript;
+
     @Override
     // Remove Android Studio's warning about the dangers of using SetJavaScriptEnabled.  The whole premise of Privacy Browser is built around an understanding of these dangers.
     @SuppressLint("SetJavaScriptEnabled")
@@ -169,8 +171,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // This is needed to get rid of the Android Studio warning that appBar might be null.
         assert appBar != null;
 
-        // Add the custom url_bar layout, which shows the favoriteIcon, urlTextBar, and progressBar.
-        appBar.setCustomView(R.layout.url_bar);
+        // Add the custom url_app_bar layout, which shows the favoriteIcon, urlTextBar, and progressBar.
+        appBar.setCustomView(R.layout.url_app_bar);
         appBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 
         // Set the "go" button on the keyboard to load the URL in urlTextBox.
@@ -441,6 +443,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         updatePrivacyIcons();
 
         // Get handles for the menu items.
+        toggleJavaScript = menu.findItem(R.id.toggleJavaScript);
         MenuItem toggleFirstPartyCookies = menu.findItem(R.id.toggleFirstPartyCookies);
         MenuItem toggleThirdPartyCookies = menu.findItem(R.id.toggleThirdPartyCookies);
         MenuItem toggleDomStorage = menu.findItem(R.id.toggleDomStorage);
@@ -732,6 +735,12 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 mainWebView.getSettings().setTextZoom(200);
                 return true;
 
+            case R.id.find_on_page:
+                appBar.setCustomView(R.layout.find_on_page_app_bar);
+                toggleJavaScript.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+                appBar.invalidateOptionsMenu();
+                return true;
+
             case R.id.share:
                 Intent shareIntent = new Intent();
                 shareIntent.setAction(Intent.ACTION_SEND);
@@ -896,7 +905,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         adView = findViewById(R.id.adView);
 
         // `invalidateOptionsMenu` should recalculate the number of action buttons from the menu to display on the app bar, but it doesn't because of the this bug:  https://code.google.com/p/android/issues/detail?id=20493#c8
-        invalidateOptionsMenu();
+        // invalidateOptionsMenu();
     }
 
     @Override

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  Copyright 2016 Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/find_on_page_relativelayout"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent" >
+
+    <ImageView
+        android:id="@+id/close_find"
+        android:src="@drawable/close"
+        android:layout_alignParentEnd="true"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:contentDescription="@string/close" />
+
+    <ImageView
+        android:id="@+id/find_next"
+        android:src="@drawable/next"
+        android:layout_toStartOf="@id/close_find"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:contentDescription="@string/next" />
+
+    <ImageView
+        android:id="@+id/find_previous"
+        android:src="@drawable/previous"
+        android:layout_toStartOf="@id/find_next"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:contentDescription="@string/previous" />
+
+    <!-- `android:imeOptions="actionGo"` sets the keyboard to have a `go` key instead of a `new line` key. -->
+    <EditText
+        android:id="@+id/find_on_page_edittext"
+        android:layout_toStartOf="@id/find_previous"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:hint="@string/find_on_page"
+        android:imeOptions="actionGo" />
+
+
+</RelativeLayout>

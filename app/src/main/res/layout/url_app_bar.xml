@@ -18,22 +18,20 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<!-- FrameLayout lets the ProgressBar float on top of `urlTextBox`. -->
+<!-- `FrameLayout` lets the `ProgressBar` float on top of `urlTextBox`. -->
 <FrameLayout
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/addressBarFrameLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent" >
 
-    <!-- RelativeLayout is used instead of a LinearLayout because supportAppBar does not let android:layout_weight="1" to cause urlTextBox to fill all the available space. -->
+    <!-- `RelativeLayout` is used instead of a `LinearLayout` because `supportAppBar` does not let `android:layout_weight="1"` cause `urlTextBox` to fill all the available space. -->
     <RelativeLayout
-        android:id="@+id/addressBarRelativeLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent" >
 
-        <!-- Set the program icon as the initial favoriteIcon.
-            `layout_height` and `layout_width` and of 26dp matches the AppBar icons. -->
+        <!-- Set the program icon as the initial `favoriteIcon`.
+            `layout_height` and `layout_width` of 26dp matches the `AppBar` icons. -->
         <ImageView
             android:id="@+id/favoriteIcon"
             android:src="@drawable/world"
@@ -43,23 +41,21 @@
             android:onClick="viewSslCertificate"
             android:contentDescription="@string/favorite_icon" />
 
-        <!-- `android:imeOptions="actionGo"` sets the keyboard to have a "go" key instead of a "new line" key.
-            `android:inputType="textUri"` disables spell check in the EditText.
-            We can't use `android:imeOptions=flagNoExtractUi"` because it disables tapping to select in landscape orientation on small devices. -->
+        <!-- `android:imeOptions="actionGo"` sets the keyboard to have a `go` key instead of a `new line` key.
+            `android:inputType="textUri"` disables spell check in the `EditText`. -->
         <EditText
             android:id="@+id/urlTextBox"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_width="match_parent"
             android:layout_toEndOf="@id/favoriteIcon"
             android:hint="@string/url_or_search_terms"
             android:imeOptions="actionGo"
             android:inputType="textUri" />
     </RelativeLayout>
 
-    <!-- android:max changes the maximum ProgressBar value from 10000 to 100 to match progress percentage.
-        android:layout_height="2dp" works best for API 23 "Marshmallow", but "3dp" is required for visibility on API <= 22.
-        `tools:ignore="UnusedAttribute"` removes the lint waring about `progressTint` and `progressBackgroundTint`
-        not applying to API < 21.-->
+    <!-- `android:max` changes the maximum `ProgressBar` value from 10000 to 100 to match progress percentage.
+        `android:layout_height="2dp"` works best for API 23 Marshmallow, but `3dp` is required for visibility on API <= 22.
+        `tools:ignore="UnusedAttribute"` removes the lint waring about `progressTint` and `progressBackgroundTint` not applying to API < 21. -->
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
