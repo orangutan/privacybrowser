@@ -21,22 +21,24 @@ package com.stoutner.privacybrowser;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 // If we don't use `android.support.v7.app.AlertDialog` instead of `android.app.AlertDialog` then the dialog will be covered by the keyboard.
 import android.support.v7.app.AlertDialog;
+// We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <=22.
+import android.support.v7.app.AppCompatDialogFragment;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-public class CreateBookmarkFolder extends DialogFragment {
+public class CreateBookmarkFolder extends AppCompatDialogFragment {
     // The public interface is used to send information back to the parent activity.
     public interface CreateBookmarkFolderListener {
-        void onCreateBookmarkFolder(DialogFragment dialogFragment);
+        void onCreateBookmarkFolder(AppCompatDialogFragment dialogFragment);
     }
 
     // `createBookmarkFolderListener` is used in `onAttach()` and `onCreateDialog`.
@@ -56,6 +58,7 @@ public class CreateBookmarkFolder extends DialogFragment {
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
     @Override
+    @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use `AlertDialog.Builder` to create the `AlertDialog`.  The style formats the color of the button text.
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.LightAlertDialog);

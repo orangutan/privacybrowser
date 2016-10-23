@@ -49,6 +49,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.Toolbar;
 import android.util.Patterns;
 import android.view.KeyEvent;
@@ -354,8 +355,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             @Override
             public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
                 // Show the `DownloadFile` `AlertDialog` and name this instance `@string/download`.
-                DialogFragment downloadFileDialogFragment = DownloadFile.fromUrl(url, contentDisposition, contentLength);
-                downloadFileDialogFragment.show(getFragmentManager(), getResources().getString(R.string.download));
+                AppCompatDialogFragment downloadFileDialogFragment = DownloadFile.fromUrl(url, contentDisposition, contentLength);
+                downloadFileDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.download));
             }
         });
 
@@ -751,8 +752,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
             case R.id.addToHomescreen:
                 // Show the `CreateHomeScreenShortcut` `AlertDialog` and name this instance `@string/create_shortcut`.
-                DialogFragment createHomeScreenShortcutDialogFragment = new CreateHomeScreenShortcut();
-                createHomeScreenShortcutDialogFragment.show(getFragmentManager(), getResources().getString(R.string.create_shortcut));
+                AppCompatDialogFragment createHomeScreenShortcutDialogFragment = new CreateHomeScreenShortcut();
+                createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.create_shortcut));
 
                 //Everything else will be handled by `CreateHomeScreenShortcut` and the associated listener below.
                 return true;
@@ -909,7 +910,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     }
 
     @Override
-    public void onCreateHomeScreenShortcut(DialogFragment dialogFragment) {
+    public void onCreateHomeScreenShortcut(AppCompatDialogFragment dialogFragment) {
         // Get shortcutNameEditText from the alert dialog.
         EditText shortcutNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.shortcut_name_edittext);
 
@@ -928,7 +929,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     }
 
     @Override
-    public void onDownloadFile(DialogFragment dialogFragment, String downloadUrl) {
+    public void onDownloadFile(AppCompatDialogFragment dialogFragment, String downloadUrl) {
         DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
         DownloadManager.Request downloadRequest = new DownloadManager.Request(Uri.parse(downloadUrl));
 
@@ -936,9 +937,12 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         EditText downloadFileNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.download_file_name);
         String fileName = downloadFileNameEditText.getText().toString();
 
-        // Set the download save in the the `DIRECTORY_DOWNLOADS`using `fileName`.
         // Once we have `WRITE_EXTERNAL_STORAGE` permissions we can use `setDestinationInExternalPublicDir`.
-        downloadRequest.setDestinationInExternalFilesDir(this, "/", fileName);
+        if (Build.VERSION.SDK_INT >= 23) { // If API >= 23, set the download save in the the `DIRECTORY_DOWNLOADS` using `fileName`.
+            downloadRequest.setDestinationInExternalFilesDir(this, "/", fileName);
+        } else { // Only set the title using `fileName`.
+            downloadRequest.setTitle(fileName);
+        }
 
         // Allow `MediaScanner` to index the download if it is a media file.
         downloadRequest.allowScanningByMediaScanner();

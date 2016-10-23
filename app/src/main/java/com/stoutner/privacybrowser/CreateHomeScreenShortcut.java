@@ -21,24 +21,26 @@ package com.stoutner.privacybrowser;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 // If we don't use android.support.v7.app.AlertDialog instead of android.app.AlertDialog then the dialog will be covered by the keyboard.
 import android.support.v7.app.AlertDialog;
+// We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <=22.
+import android.support.v7.app.AppCompatDialogFragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 
-public class CreateHomeScreenShortcut extends DialogFragment {
+public class CreateHomeScreenShortcut extends AppCompatDialogFragment {
     // The public interface is used to send information back to the parent activity.
     public interface CreateHomeScreenSchortcutListener {
-        void onCreateHomeScreenShortcut(DialogFragment dialogFragment);
+        void onCreateHomeScreenShortcut(AppCompatDialogFragment dialogFragment);
     }
 
     //`createHomeScreenShortcutListener` is used in `onAttach()` and `onCreateDialog()`.
@@ -57,6 +59,7 @@ public class CreateHomeScreenShortcut extends DialogFragment {
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
     @Override
+    @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Get the activity's layout inflater.
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();

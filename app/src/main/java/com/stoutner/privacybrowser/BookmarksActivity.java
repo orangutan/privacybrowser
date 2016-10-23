@@ -20,7 +20,6 @@
 package com.stoutner.privacybrowser;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -35,6 +34,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
@@ -345,8 +345,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                         checkedItemIds = bookmarksListView.getCheckedItemIds();
 
                         // Show the `MoveToFolder` `AlertDialog` and name the instance `@string/move_to_folder
-                        DialogFragment moveToFolderDialog = new MoveToFolder();
-                        moveToFolderDialog.show(getFragmentManager(), getResources().getString(R.string.move_to_folder));
+                        AppCompatDialogFragment moveToFolderDialog = new MoveToFolder();
+                        moveToFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.move_to_folder));
                         break;
 
                     case R.id.edit_bookmark:
@@ -370,12 +370,12 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                             oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHandler.BOOKMARK_NAME));
 
                             // Show the `EditBookmarkFolder` `AlertDialog` and name the instance `@string/edit_folder`.
-                            DialogFragment editFolderDialog = new EditBookmarkFolder();
-                            editFolderDialog.show(getFragmentManager(), getResources().getString(R.string.edit_folder));
+                            AppCompatDialogFragment editFolderDialog = new EditBookmarkFolder();
+                            editFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_folder));
                         } else {
                             // Show the `EditBookmark` `AlertDialog` and name the instance `@string/edit_bookmark`.
-                            DialogFragment editBookmarkDialog = new EditBookmark();
-                            editBookmarkDialog.show(getFragmentManager(), getResources().getString(R.string.edit_bookmark));
+                            AppCompatDialogFragment editBookmarkDialog = new EditBookmark();
+                            editBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_bookmark));
                         }
                         break;
 
@@ -488,8 +488,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             @Override
             public void onClick(View view) {
                 // Show the `CreateBookmark` `AlertDialog` and name the instance `@string/create_bookmark`.
-                DialogFragment createBookmarkDialog = new CreateBookmark();
-                createBookmarkDialog.show(getFragmentManager(), getResources().getString(R.string.create_bookmark));
+                AppCompatDialogFragment createBookmarkDialog = new CreateBookmark();
+                createBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_bookmark));
             }
         });
     }
@@ -528,8 +528,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
             case R.id.create_folder:
                 // Show the `CreateBookmarkFolder` `AlertDialog` and name the instance `@string/create_folder`.
-                DialogFragment createBookmarkFolderDialog = new CreateBookmarkFolder();
-                createBookmarkFolderDialog.show(getFragmentManager(), getResources().getString(R.string.create_folder));
+                AppCompatDialogFragment createBookmarkFolderDialog = new CreateBookmarkFolder();
+                createBookmarkFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_folder));
                 break;
 
             case R.id.options_menu_select_all_bookmarks:
@@ -550,7 +550,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     }
 
     @Override
-    public void onCreateBookmark(DialogFragment dialogFragment) {
+    public void onCreateBookmark(AppCompatDialogFragment dialogFragment) {
         // Get the `EditText`s from the `createBookmarkDialogFragment` and extract the strings.
         EditText createBookmarkNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.create_bookmark_name_edittext);
         String bookmarkNameString = createBookmarkNameEditText.getText().toString();
@@ -575,7 +575,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     }
 
     @Override
-    public void onCreateBookmarkFolder(DialogFragment dialogFragment) {
+    public void onCreateBookmarkFolder(AppCompatDialogFragment dialogFragment) {
         // Get `create_folder_name_edit_text` and extract the string.
         EditText createFolderNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.create_folder_name_edittext);
         String folderNameString = createFolderNameEditText.getText().toString();
@@ -621,7 +621,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     }
 
     @Override
-    public void onSaveEditBookmark(DialogFragment dialogFragment) {
+    public void onSaveEditBookmark(AppCompatDialogFragment dialogFragment) {
         // Get a long array with the the databaseId of the selected bookmark and convert it to an `int`.
         long[] selectedBookmarksLongArray = bookmarksListView.getCheckedItemIds();
         int selectedBookmarkDatabaseId = (int) selectedBookmarksLongArray[0];
@@ -655,7 +655,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     }
 
     @Override
-    public void onSaveEditBookmarkFolder(DialogFragment dialogFragment) {
+    public void onSaveEditBookmarkFolder(AppCompatDialogFragment dialogFragment) {
         // Get the new folder name.
         EditText editFolderNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.edit_folder_name_edittext);
         String newFolderNameString = editFolderNameEditText.getText().toString();
@@ -717,7 +717,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     }
 
     @Override
-    public void onMoveToFolder(DialogFragment dialogFragment) {
+    public void onMoveToFolder(AppCompatDialogFragment dialogFragment) {
         // Get the new folder database id.
         ListView folderListView = (ListView) dialogFragment.getDialog().findViewById(R.id.move_to_folder_listview);
         long[] newFolderLongArray = folderListView.getCheckedItemIds();

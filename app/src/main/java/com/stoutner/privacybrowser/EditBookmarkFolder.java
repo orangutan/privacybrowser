@@ -21,25 +21,27 @@ package com.stoutner.privacybrowser;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 // If we don't use `android.support.v7.app.AlertDialog` instead of `android.app.AlertDialog` then the dialog will be covered by the keyboard.
 import android.support.v7.app.AlertDialog;
+// We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <=22.
+import android.support.v7.app.AppCompatDialogFragment;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-public class EditBookmarkFolder extends DialogFragment {
+public class EditBookmarkFolder extends AppCompatDialogFragment {
     // The public interface is used to send information back to the parent activity.
     public interface EditBookmarkFolderListener {
-        void onSaveEditBookmarkFolder(DialogFragment dialogFragment);
+        void onSaveEditBookmarkFolder(AppCompatDialogFragment dialogFragment);
     }
 
     // `editFolderListener` is used in `onAttach()` and `onCreateDialog`.
@@ -59,6 +61,7 @@ public class EditBookmarkFolder extends DialogFragment {
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
     @Override
+    @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Get a long array with the the databaseId of the selected bookmark and convert it to an `int`.
         long[] selectedBookmarkLongArray = BookmarksActivity.checkedItemIds;

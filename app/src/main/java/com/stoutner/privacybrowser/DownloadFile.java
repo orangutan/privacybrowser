@@ -21,13 +21,15 @@ package com.stoutner.privacybrowser;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 // `android.support.v7.app.AlertDialog` uses more of the horizontal screen real estate versus `android.app.AlertDialog's` smaller width.
 import android.support.v7.app.AlertDialog;
+// We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <=22.
+import android.support.v7.app.AppCompatDialogFragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +39,7 @@ import android.widget.TextView;
 
 import java.util.Locale;
 
-public class DownloadFile extends DialogFragment {
+public class DownloadFile extends AppCompatDialogFragment {
 
     private String downloadUrl;
     private String downloadFileName;
@@ -87,7 +89,7 @@ public class DownloadFile extends DialogFragment {
 
     // The public interface is used to send information back to the parent activity.
     public interface DownloadFileListener {
-        void onDownloadFile(DialogFragment dialogFragment, String downloadUrl);
+        void onDownloadFile(AppCompatDialogFragment dialogFragment, String downloadUrl);
     }
 
     // `downloadFileListener` is used in `onAttach()` and `onCreateDialog()`.
@@ -107,6 +109,7 @@ public class DownloadFile extends DialogFragment {
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
     @Override
+    @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Get the activity's layout inflater.
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
