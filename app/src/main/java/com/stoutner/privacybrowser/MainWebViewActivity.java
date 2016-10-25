@@ -878,12 +878,15 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 // Destroy the internal state of the webview.
                 mainWebView.destroy();
 
-                // Close Privacy Browser.  finishAndRemoveTask also removes Privacy Browser from the recent app list.
+                // Close Privacy Browser.  `finishAndRemoveTask` also removes Privacy Browser from the recent app list.
                 if (Build.VERSION.SDK_INT >= 21) {
                     finishAndRemoveTask();
                 } else {
                     finish();
                 }
+
+                // Remove the terminated program from RAM.  The status code is `0`.
+                System.exit(0);
                 break;
 
             default:
