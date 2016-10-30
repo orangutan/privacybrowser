@@ -22,12 +22,13 @@ package com.stoutner.privacybrowser;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.http.SslCertificate;
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatDialogFragment;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -36,7 +37,7 @@ import android.widget.TextView;
 
 import java.util.Date;
 
-public class SslCertificateError extends DialogFragment {
+public class SslCertificateError extends AppCompatDialogFragment {
 
     private String primaryError;
     private String urlWithError;
@@ -150,6 +151,7 @@ public class SslCertificateError extends DialogFragment {
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
     @Override
+    @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Get the activity's layout inflater.
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();

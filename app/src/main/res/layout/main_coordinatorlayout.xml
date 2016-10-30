@@ -34,30 +34,38 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         tools:context="com.stoutner.privacybrowser.MainWebViewActivity"
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_width="match_parent"
         android:fitsSystemWindows="true"
         android:focusable="true"
         android:focusableInTouchMode="true" >
 
         <!-- The purpose of the LinearLayout is to place the included main_webview below appBarLayout. -->
         <LinearLayout
-            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:orientation="vertical" >
 
             <android.support.design.widget.AppBarLayout
                 android:id="@+id/appBarLayout"
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_width="match_parent"
                 android:theme="@style/AppBarOverlay" >
 
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/appBar"
-                    android:layout_width="match_parent"
+                <!-- The `FrameLayout` allows `appBar` and `find_on_page_app_bar` to occupy the same space. -->
+                <FrameLayout
                     android:layout_height="wrap_content"
-                    android:background="@color/grey_100"
-                    app:popupTheme="@style/LightPopupOverlay" />
+                    android:layout_width="match_parent" >
+
+                    <android.support.v7.widget.Toolbar
+                        android:id="@+id/appBar"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:background="@color/grey_100"
+                        app:popupTheme="@style/LightPopupOverlay" />
+
+                    <include layout="@layout/find_on_page_app_bar" />
+                </FrameLayout>
             </android.support.design.widget.AppBarLayout>
 
             <include layout="@layout/main_webview" />
@@ -68,16 +76,16 @@
         The `FrameLayout` needs to be before the `NavigationView` or touches on the navigation drawer will not work after exiting full screen video using the back button.-->
     <FrameLayout
         android:id="@+id/fullScreenVideoFrameLayout"
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_width="match_parent"
         android:visibility="gone"
         android:background="@color/black" />
 
     <!-- The navigation drawer. -->
     <android.support.design.widget.NavigationView
         android:id="@+id/navigationView"
-        android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_width="wrap_content"
         android:layout_gravity="start"
         app:headerLayout="@layout/navigation_header"
         app:menu="@menu/webview_navigation_menu"

@@ -18,47 +18,56 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<RelativeLayout
+<!-- `LinearLayout` is initially `visibility="gone"` so the `url_app_bar` is visible. -->
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/find_on_page_relativelayout"
+    android:id="@+id/find_on_page_linearlayout"
     android:layout_height="wrap_content"
-    android:layout_width="match_parent" >
-
-    <ImageView
-        android:id="@+id/close_find"
-        android:src="@drawable/close"
-        android:layout_alignParentEnd="true"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_centerVertical="true"
-        android:contentDescription="@string/close" />
-
-    <ImageView
-        android:id="@+id/find_next"
-        android:src="@drawable/next"
-        android:layout_toStartOf="@id/close_find"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_centerVertical="true"
-        android:contentDescription="@string/next" />
-
-    <ImageView
-        android:id="@+id/find_previous"
-        android:src="@drawable/previous"
-        android:layout_toStartOf="@id/find_next"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_centerVertical="true"
-        android:contentDescription="@string/previous" />
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:visibility="gone" >
 
     <!-- `android:imeOptions="actionGo"` sets the keyboard to have a `go` key instead of a `new line` key. -->
     <EditText
         android:id="@+id/find_on_page_edittext"
-        android:layout_toStartOf="@id/find_previous"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="4dp"
         android:hint="@string/find_on_page"
-        android:imeOptions="actionGo" />
+        android:lines="1"
+        android:imeOptions="actionGo"
+        android:inputType="text" />
 
+    <ImageView
+        android:id="@+id/find_previous"
+        android:src="@drawable/previous"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_gravity="center_vertical"
+        android:contentDescription="@string/previous" />
 
-</RelativeLayout>
+    <ImageView
+        android:id="@+id/find_next"
+        android:src="@drawable/next"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_gravity="center_vertical"
+        android:contentDescription="@string/next" />
+
+    <ImageView
+        android:id="@+id/close_find"
+        android:src="@drawable/close"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_gravity="center_vertical"
+        android:contentDescription="@string/close"
+        android:onClick="closeFindOnPage" />
+</LinearLayout>

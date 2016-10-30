@@ -20,7 +20,6 @@
 package com.stoutner.privacybrowser;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.DownloadManager;
 import android.content.Context;
@@ -68,6 +67,7 @@ import android.webkit.WebViewDatabase;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import java.io.UnsupportedEncodingException;
@@ -82,7 +82,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         SslCertificateError.SslCertificateErrorListener, DownloadFile.DownloadFileListener {
 
     // `appBar` is public static so it can be accessed from `OrbotProxyHelper`.
-    // It is also used in `onCreate()` and `onOptionsItemSelected()`.
+    // It is also used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
     public static ActionBar appBar;
 
     // `favoriteIcon` is public static so it can be accessed from `CreateHomeScreenShortcut`, `BookmarksActivity`, `CreateBookmark`, `CreateBookmarkFolder`, and `EditBookmark`.
@@ -155,7 +155,11 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `sslErrorHandler` is used in `onCreate()`, `onSslErrorCancel()`, and `onSslErrorProceed`.
     private SslErrorHandler sslErrorHandler;
 
-    private MenuItem toggleJavaScript;
+    // `findOnPageEditText` is used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
+    private EditText findOnPageEditText;
+
+    // `inputMethodManager` is used in `onOptionsItemSelected()`, `loadUrlFromTextBox()`, and `closeFindOnPage()`.
+    private InputMethodManager inputMethodManager;
 
     @Override
     // Remove Android Studio's warning about the dangers of using SetJavaScriptEnabled.  The whole premise of Privacy Browser is built around an understanding of these dangers.
@@ -163,6 +167,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_coordinatorlayout);
+
+        // Get a handle for `inputMethodManager`.
+        inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         // We need to use the SupportActionBar from android.support.v7.app.ActionBar until the minimum API is >= 21.
         Toolbar supportAppBar = (Toolbar) findViewById(R.id.appBar);
@@ -179,8 +186,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Set the "go" button on the keyboard to load the URL in urlTextBox.
         urlTextBox = (EditText) appBar.getCustomView().findViewById(R.id.urlTextBox);
         urlTextBox.setOnKeyListener(new View.OnKeyListener() {
+            @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down event on the "enter" button, load the URL.
+                // If the event is a key-down event on the `enter` button, load the URL.
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     // Load the URL into the mainWebView and consume the event.
                     try {
@@ -192,6 +200,27 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     return true;
                 } else {
                     // If any other key was pressed, do not consume the event.
+                    return false;
+                }
+            }
+        });
+
+        // Get a handle for `find_on_page_edittext`.
+        findOnPageEditText = (EditText) findViewById(R.id.find_on_page_edittext);
+
+        // Set the `go` button on the keyboard to search for the phrase in `find_on_page_edittext`
+        findOnPageEditText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // If the event is a key-down event on the `enter` button, search for the phrase.
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    // Search for the phrase.
+                    mainWebView.findAllAsync(findOnPageEditText.getText().toString());
+
+                    // Consume the event.
+                    return true;
+                } else {
+                    // Do not consume the event.
                     return false;
                 }
             }
@@ -280,8 +309,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 sslErrorHandler = handler;
 
                 // Display the SSL error `AlertDialog`.
-                DialogFragment sslCertificateErrorDialogFragment = SslCertificateError.displayDialog(error);
-                sslCertificateErrorDialogFragment.show(getFragmentManager(), getResources().getString(R.string.ssl_certificate_error));
+                AppCompatDialogFragment sslCertificateErrorDialogFragment = SslCertificateError.displayDialog(error);
+                sslCertificateErrorDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.ssl_certificate_error));
             }
         });
 
@@ -444,7 +473,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         updatePrivacyIcons(false);
 
         // Get handles for the menu items.
-        toggleJavaScript = menu.findItem(R.id.toggleJavaScript);
         MenuItem toggleFirstPartyCookies = menu.findItem(R.id.toggleFirstPartyCookies);
         MenuItem toggleThirdPartyCookies = menu.findItem(R.id.toggleThirdPartyCookies);
         MenuItem toggleDomStorage = menu.findItem(R.id.toggleDomStorage);
@@ -742,13 +770,29 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 mainWebView.getSettings().setTextZoom(200);
                 return true;
 
-            /*
             case R.id.find_on_page:
-                appBar.setCustomView(R.layout.find_on_page_app_bar);
-                toggleJavaScript.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-                appBar.invalidateOptionsMenu();
+                // Hide the URL app bar.
+                Toolbar appBarToolbar = (Toolbar) findViewById(R.id.appBar);
+                appBarToolbar.setVisibility(View.GONE);
+
+                // Show the Find on Page `RelativeLayout`.
+                LinearLayout findOnPageLinearLayout = (LinearLayout) findViewById(R.id.find_on_page_linearlayout);
+                findOnPageLinearLayout.setVisibility(View.VISIBLE);
+
+                // Display the keyboard.  We have to wait 200 ms before running the command to work around a bug in Android.
+                findOnPageEditText.postDelayed(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        // Set the focus on `findOnPageEditText`.
+                        findOnPageEditText.requestFocus();
+
+                        // Display the keyboard.
+                        inputMethodManager.showSoftInput(findOnPageEditText, 0);
+                    }
+                }, 200);
                 return true;
-                */
 
             case R.id.share:
                 Intent shareIntent = new Intent();
@@ -1075,8 +1119,23 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
         mainWebView.loadUrl(formattedUrlString, customHeaders);
 
-        // Hides the keyboard so we can see the webpage.
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        // Hides the keyboard so we can see the webpage.  `0` indicates no additional flags.
+        inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
+    }
+
+    public void closeFindOnPage(View view) {
+        // Delete the contents of `find_on_page_edittext`.
+        findOnPageEditText.setText(null);
+
+        // Hide the Find on Page `RelativeLayout`.
+        LinearLayout findOnPageLinearLayout = (LinearLayout) findViewById(R.id.find_on_page_linearlayout);
+        findOnPageLinearLayout.setVisibility(View.GONE);
+
+        // Show the URL app bar.
+        Toolbar appBarToolbar = (Toolbar) findViewById(R.id.appBar);
+        appBarToolbar.setVisibility(View.VISIBLE);
+
+        // Hides the keyboard so we can see the webpage.  `0` indicates no additional flags.
         inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
     }
 
