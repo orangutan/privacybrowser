@@ -60,5 +60,9 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:design:24.2.1'
     // Only compile `com.google.android.gms:play-services-ads` for the free flavor.
-    freeCompile 'com.google.android.gms:play-services-ads:9.8.00'
+    freeCompile 'com.google.firebase:firebase-ads:9.8.0'
 }
+
+// Google's documentation says the following line is required for `firebase-ads` but things work correctly without it.  I have no interest in including Google Mobile Services if I don't have to.
+// https://firebase.google.com/docs/admob/android/quick-start
+// apply plugin: 'com.google.gms.google-services'
