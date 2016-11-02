@@ -50,9 +50,15 @@ public class DownloadFile extends AppCompatDialogFragment {
         Bundle argumentsBundle = new Bundle();
 
         String fileNameString;
-        if (!contentDisposition.isEmpty()) {  // Extract `fileNameString` from `contentDisposition` using the substring beginning after `filename="` and ending with the next `"`.
+
+        // Parse `filename` from `contentDisposition`.
+        if (contentDisposition.contains("filename=\"")) {  // The file name is contained in a string surrounded by `""`.
             fileNameString = contentDisposition.substring(contentDisposition.indexOf("filename=\"") + 10, contentDisposition.indexOf("\"", contentDisposition.indexOf("filename=\"") + 10));
-        } else {  // `contentDisposition` is empty, so use the last path segment of the URL as the file name.
+        } else if (contentDisposition.contains("filename=") && ((contentDisposition.indexOf(";", contentDisposition.indexOf("filename=") + 9)) > 0 )) {  // The file name is contained in a string beginning with `filename=` and ending with `;`.
+            fileNameString = contentDisposition.substring(contentDisposition.indexOf("filename=") + 9, contentDisposition.indexOf(";", contentDisposition.indexOf("filename=") + 9));
+        } else if (contentDisposition.contains("filename=")) {  // The file name is contained in a string beginning with `filename=` and proceeding to the end of `contentDisposition`.
+            fileNameString = contentDisposition.substring(contentDisposition.indexOf("filename=") + 9, contentDisposition.length());
+        } else {  // `contentDisposition` does not contain the filename, so use the last path segment of the URL.
             Uri downloadUri = Uri.parse(urlString);
             fileNameString = downloadUri.getLastPathSegment();
         }
