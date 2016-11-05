@@ -50,6 +50,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -69,6 +71,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -97,7 +101,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     public static SslCertificate sslCertificate;
 
 
-    // 'mainWebView' is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, and `loadUrlFromTextBox()`.
+    // 'mainWebView' is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `findPreviousOnPage()`, `findNextOnPage()`, `closeFindOnPage`, and `loadUrlFromTextBox()`.
     private WebView mainWebView;
 
     // `swipeRefreshLayout` is used in `onCreate()`, `onPrepareOptionsMenu`, and `onRestart()`.
@@ -205,28 +209,66 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             }
         });
 
-        // Get a handle for `find_on_page_edittext`.
+        // Get handles for `fullScreenVideoFrameLayout`, `mainWebView`, and `find_on_page_edittext`.
+        final FrameLayout fullScreenVideoFrameLayout = (FrameLayout) findViewById(R.id.fullScreenVideoFrameLayout);
+        mainWebView = (WebView) findViewById(R.id.mainWebView);
         findOnPageEditText = (EditText) findViewById(R.id.find_on_page_edittext);
 
-        // Set the `go` button on the keyboard to search for the phrase in `find_on_page_edittext`
+        // Update `findOnPageCountTextView`.
+        mainWebView.setFindListener(new WebView.FindListener() {
+            // Get a handle for `findOnPageCountTextView`.
+            TextView findOnPageCountTextView = (TextView) findViewById(R.id.find_on_page_count_textview);
+
+            @Override
+            public void onFindResultReceived(int activeMatchOrdinal, int numberOfMatches, boolean isDoneCounting) {
+                if ((isDoneCounting) && (numberOfMatches == 0)) {  // There are no matches.
+                    // Set `findOnPageCountTextView` to `0/0`.
+                    findOnPageCountTextView.setText(R.string.zero_of_zero);
+                } else if (isDoneCounting) {  // There are matches.
+                    // `activeMatchOrdinal` is zero-based.
+                    int activeMatch = activeMatchOrdinal + 1;
+
+                    // Set `findOnPageCountTextView`.
+                    findOnPageCountTextView.setText(activeMatch + "/" + numberOfMatches);
+                }
+            }
+        });
+
+        // Search for the string on the page whenever a character changes in the `findOnPageEditText`.
+        findOnPageEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing.
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Do nothing.
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Search for the text in `mainWebView`.
+                mainWebView.findAllAsync(findOnPageEditText.getText().toString());
+            }
+        });
+
+        // Set the `check mark` button for the `findOnPageEditText` keyboard to close the soft keyboard.
         findOnPageEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down event on the `enter` button, search for the phrase.
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    // Search for the phrase.
-                    mainWebView.findAllAsync(findOnPageEditText.getText().toString());
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {  // The `enter` key was pressed.
+                    // Hide the soft keyboard.  `0` indicates no additional flags.
+                    inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
 
                     // Consume the event.
                     return true;
-                } else {
+                } else {  // A different key was pressed.
                     // Do not consume the event.
                     return false;
                 }
             }
         });
-
-        final FrameLayout fullScreenVideoFrameLayout = (FrameLayout) findViewById(R.id.fullScreenVideoFrameLayout);
 
         // Implement swipe to refresh
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
@@ -237,8 +279,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 mainWebView.reload();
             }
         });
-
-        mainWebView = (WebView) findViewById(R.id.mainWebView);
 
         // Create the navigation drawer.
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
@@ -780,6 +820,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 findOnPageLinearLayout.setVisibility(View.VISIBLE);
 
                 // Display the keyboard.  We have to wait 200 ms before running the command to work around a bug in Android.
+                // http://stackoverflow.com/questions/5520085/android-show-softkeyboard-with-showsoftinput-is-not-working
                 findOnPageEditText.postDelayed(new Runnable()
                 {
                     @Override
@@ -919,7 +960,11 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 // Clear `customHeaders`.
                 customHeaders.clear();
 
-                // Destroy the internal state of the webview.
+                // Detach all views from `mainWebViewRelativeLayout`.
+                RelativeLayout mainWebViewRelativeLayout = (RelativeLayout) findViewById(R.id.mainWebViewRelativeLayout);
+                mainWebViewRelativeLayout.removeAllViews();
+
+                // Destroy the internal state of `mainWebView`.
                 mainWebView.destroy();
 
                 // Close Privacy Browser.  `finishAndRemoveTask` also removes Privacy Browser from the recent app list.
@@ -1123,9 +1168,22 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
     }
 
+    public void findPreviousOnPage(View view) {
+        // Go to the previous highlighted phrase on the page.  `false` goes backwards instead of forwards.
+        mainWebView.findNext(false);
+    }
+
+    public void findNextOnPage(View view) {
+        // Go to the next highlighted phrase on the page. `true` goes forwards instead of backwards.
+        mainWebView.findNext(true);
+    }
+
     public void closeFindOnPage(View view) {
         // Delete the contents of `find_on_page_edittext`.
         findOnPageEditText.setText(null);
+
+        // Clear the highlighted phrases.
+        mainWebView.clearMatches();
 
         // Hide the Find on Page `RelativeLayout`.
         LinearLayout findOnPageLinearLayout = (LinearLayout) findViewById(R.id.find_on_page_linearlayout);

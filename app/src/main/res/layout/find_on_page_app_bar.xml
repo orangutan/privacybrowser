@@ -27,7 +27,7 @@
     android:orientation="horizontal"
     android:visibility="gone" >
 
-    <!-- `android:imeOptions="actionGo"` sets the keyboard to have a `go` key instead of a `new line` key. -->
+    <!-- `android:imeOptions="actionDone"` sets the keyboard to have a `check mark` key instead of a `new line` key. -->
     <EditText
         android:id="@+id/find_on_page_edittext"
         android:layout_height="wrap_content"
@@ -37,8 +37,17 @@
         android:layout_marginEnd="4dp"
         android:hint="@string/find_on_page"
         android:lines="1"
-        android:imeOptions="actionGo"
+        android:imeOptions="actionDone"
         android:inputType="text" />
+
+    <TextView
+        android:id="@+id/find_on_page_count_textview"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:text="@string/zero_of_zero"
+        />
 
     <ImageView
         android:id="@+id/find_previous"
@@ -48,7 +57,8 @@
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
         android:layout_gravity="center_vertical"
-        android:contentDescription="@string/previous" />
+        android:contentDescription="@string/previous"
+        android:onClick="findPreviousOnPage"/>
 
     <ImageView
         android:id="@+id/find_next"
@@ -58,7 +68,8 @@
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
         android:layout_gravity="center_vertical"
-        android:contentDescription="@string/next" />
+        android:contentDescription="@string/next"
+        android:onClick="findNextOnPage"/>
 
     <ImageView
         android:id="@+id/close_find"

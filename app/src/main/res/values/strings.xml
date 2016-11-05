@@ -120,6 +120,7 @@
     <string name="refresh">Refresh</string>
 
     <!-- Find on Page. -->
+    <string name="zero_of_zero" translatable="false">0/0</string>
     <string name="previous">Previous</string>
     <string name="next">Next</string>
 
