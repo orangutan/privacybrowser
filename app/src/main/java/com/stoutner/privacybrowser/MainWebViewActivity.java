@@ -53,6 +53,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Patterns;
+import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -83,7 +84,7 @@ import java.util.Map;
 
 // We need to use AppCompatActivity from android.support.v7.app.AppCompatActivity to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CreateHomeScreenShortcut.CreateHomeScreenSchortcutListener,
-        SslCertificateError.SslCertificateErrorListener, DownloadFile.DownloadFileListener {
+        SslCertificateError.SslCertificateErrorListener, DownloadFile.DownloadFileListener, DownloadImage.DownloadImageListener {
 
     // `appBar` is public static so it can be accessed from `OrbotProxyHelper`.
     // It is also used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
@@ -101,7 +102,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     public static SslCertificate sslCertificate;
 
 
-    // 'mainWebView' is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `findPreviousOnPage()`, `findNextOnPage()`, `closeFindOnPage`, and `loadUrlFromTextBox()`.
+    // 'mainWebView' is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`, `findNextOnPage()`, `closeFindOnPage()`, and `loadUrlFromTextBox()`.
     private WebView mainWebView;
 
     // `swipeRefreshLayout` is used in `onCreate()`, `onPrepareOptionsMenu`, and `onRestart()`.
@@ -110,7 +111,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `cookieManager` is used in `onCreate()`, `onOptionsItemSelected()`, and `onNavigationItemSelected()`, and `onRestart()`.
     private CookieManager cookieManager;
 
-    // `customHeader` is used in `onCreate()`, `onOptionsItemSelected()`, and `loadUrlFromTextBox()`.
+    // `customHeader` is used in `onCreate()`, `onOptionsItemSelected()`, `onCreateContextMenu()`, and `loadUrlFromTextBox()`.
     private final Map<String, String> customHeaders = new HashMap<>();
 
     // `javaScriptEnabled` is also used in `onCreate()`, `onCreateOptionsMenu()`, `onOptionsItemSelected()`, `loadUrlFromTextBox()`, and `applySettings()`.
@@ -418,6 +419,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 fullScreenVideoFrameLayout.setVisibility(View.GONE);
             }
         });
+
+        // Register `mainWebView` for a context menu.  This is used to see link targets and download images.
+        registerForContextMenu(mainWebView);
 
         // Allow the downloading of files.
         mainWebView.setDownloadListener(new DownloadListener() {
@@ -1010,6 +1014,134 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     }
 
     @Override
+    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
+        // Store the `HitTestResult`.
+        final WebView.HitTestResult hitTestResult = mainWebView.getHitTestResult();
+
+        // Create strings.
+        final String imageUrl;
+        final String linkUrl;
+
+        switch (hitTestResult.getType()) {
+            // `SRC_ANCHOR_TYPE` is a link.
+            case WebView.HitTestResult.SRC_ANCHOR_TYPE:
+                // Get the target URL.
+                linkUrl = hitTestResult.getExtra();
+
+                // Set the target URL as the title of the `ContextMenu`.
+                menu.setHeaderTitle(linkUrl);
+
+                // Add a `Load URL` button.
+                menu.add(R.string.load_url).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        mainWebView.loadUrl(linkUrl, customHeaders);
+                        return false;
+                    }
+                });
+
+                // Add a `Cancel` button, which by default closes the `ContextMenu`.
+                menu.add(R.string.cancel);
+                break;
+
+            case WebView.HitTestResult.EMAIL_TYPE:
+                // Get the target URL.
+                linkUrl = hitTestResult.getExtra();
+
+                // Set the target URL as the title of the `ContextMenu`.
+                menu.setHeaderTitle(linkUrl);
+
+                // Add a `Write Email` button.
+                menu.add(R.string.write_email).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        // We use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
+                        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+
+                        // Parse the url and set it as the data for the `Intent`.
+                        emailIntent.setData(Uri.parse("mailto:" + linkUrl));
+
+                        // `FLAG_ACTIVITY_NEW_TASK` opens the email program in a new task instead as part of Privacy Browser.
+                        emailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                        // Make it so.
+                        startActivity(emailIntent);
+                        return false;
+                    }
+                });
+
+                // Add a `Cancel` button, which by default closes the `ContextMenu`.
+                menu.add(R.string.cancel);
+                break;
+
+            // `IMAGE_TYPE` is an image.
+            case WebView.HitTestResult.IMAGE_TYPE:
+                // Get the image URL.
+                imageUrl = hitTestResult.getExtra();
+
+                // Set the image URL as the title of the `ContextMenu`.
+                menu.setHeaderTitle(imageUrl);
+
+                // Add a `View Image` button.
+                menu.add(R.string.view_image).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        mainWebView.loadUrl(imageUrl, customHeaders);
+                        return false;
+                    }
+                });
+
+                // Add a `Download Image` button.
+                menu.add(R.string.download_image).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        // Show the `DownloadImage` `AlertDialog` and name this instance `@string/download`.
+                        AppCompatDialogFragment downloadImageDialogFragment = DownloadImage.imageUrl(imageUrl);
+                        downloadImageDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.download));
+                        return false;
+                    }
+                });
+
+                // Add a `Cancel` button, which by default closes the `ContextMenu`.
+                menu.add(R.string.cancel);
+                break;
+
+
+            // `SRC_IMAGE_ANCHOR_TYPE` is an image that is also a link.
+            case WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE:
+                // Get the image URL.
+                imageUrl = hitTestResult.getExtra();
+
+                // Set the image URL as the title of the `ContextMenu`.
+                menu.setHeaderTitle(imageUrl);
+
+                // Add a `View Image` button.
+                menu.add(R.string.view_image).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        mainWebView.loadUrl(imageUrl, customHeaders);
+                        return false;
+                    }
+                });
+
+                // Add a `Download Image` button.
+                menu.add(R.string.download_image).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        // Show the `DownloadImage` `AlertDialog` and name this instance `@string/download`.
+                        AppCompatDialogFragment downloadImageDialogFragment = DownloadImage.imageUrl(imageUrl);
+                        downloadImageDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.download));
+                        return false;
+                    }
+                });
+
+                // Add a `Cancel` button, which by default closes the `ContextMenu`.
+                menu.add(R.string.cancel);
+                break;
+        }
+    }
+
+    @Override
     public void onCreateHomeScreenShortcut(AppCompatDialogFragment dialogFragment) {
         // Get shortcutNameEditText from the alert dialog.
         EditText shortcutNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.shortcut_name_edittext);
@@ -1029,8 +1161,43 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     }
 
     @Override
-    public void onDownloadFile(AppCompatDialogFragment dialogFragment, String downloadUrl) {
+    public void onDownloadImage(AppCompatDialogFragment dialogFragment, String imageUrl) {
+        // Get a handle for the system `DOWNLOAD_SERVICE`.
         DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+
+        // Parse `imageUrl`.
+        DownloadManager.Request downloadRequest = new DownloadManager.Request(Uri.parse(imageUrl));
+
+        // Get the file name from `dialogFragment`.
+        EditText downloadImageNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.download_image_name);
+        String imageName = downloadImageNameEditText.getText().toString();
+
+        // Once we have `WRITE_EXTERNAL_STORAGE` permissions we can use `setDestinationInExternalPublicDir`.
+        if (Build.VERSION.SDK_INT >= 23) { // If API >= 23, set the download save in the the `DIRECTORY_DOWNLOADS` using `imageName`.
+            downloadRequest.setDestinationInExternalFilesDir(this, "/", imageName);
+        } else { // Only set the title using `imageName`.
+            downloadRequest.setTitle(imageName);
+        }
+
+        // Allow `MediaScanner` to index the download if it is a media file.
+        downloadRequest.allowScanningByMediaScanner();
+
+        // Add the URL as the description for the download.
+        downloadRequest.setDescription(imageUrl);
+
+        // Show the download notification after the download is completed.
+        downloadRequest.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+        // Initiate the download.
+        downloadManager.enqueue(downloadRequest);
+    }
+
+    @Override
+    public void onDownloadFile(AppCompatDialogFragment dialogFragment, String downloadUrl) {
+        // Get a handle for the system `DOWNLOAD_SERVICE`.
+        DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+
+        // Parse `downloadUrl`.
         DownloadManager.Request downloadRequest = new DownloadManager.Request(Uri.parse(downloadUrl));
 
         // Get the file name from `dialogFragment`.
@@ -1053,7 +1220,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Show the download notification after the download is completed.
         downloadRequest.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 
-        // Initiate the download and display a Snackbar.
+        // Initiate the download.
         downloadManager.enqueue(downloadRequest);
     }
 

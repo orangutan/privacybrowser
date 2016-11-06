@@ -47,7 +47,9 @@
 
     <!-- Save As. -->
     <string name="save_as">Save as</string>
+    <string name="save_image_as">Save image as</string>
     <string name="file_name">File name</string>
+    <string name="image_name">Image name</string>
     <string name="unknown_size">unknown size</string>
     <string name="download">Download</string>
 
@@ -118,6 +120,12 @@
     <string name="print">Print</string>
         <string name="privacy_browser_web_page">Privacy Browser Web Page</string>
     <string name="refresh">Refresh</string>
+
+    <!-- Context Menus. -->
+    <string name="load_url">Load URL</string>
+    <string name="write_email">Write Email</string>
+    <string name="view_image">View Image</string>
+    <string name="download_image">Download Image</string>
 
     <!-- Find on Page. -->
     <string name="zero_of_zero" translatable="false">0/0</string>
