@@ -48,7 +48,9 @@
 
     <!-- Save As. -->
     <string name="save_as">Speichern unter</string>
+    <string name="save_image_as">Bild speichern unter</string>
     <string name="file_name">Dateiname</string>
+    <string name="image_name">Name des Bildes</string>
     <string name="unknown_size">Unbekannte Größe</string>
     <string name="download">Download</string>
 
@@ -119,6 +121,12 @@
     <string name="print">Drucken</string>
         <string name="privacy_browser_web_page">Privacy Browser-Website</string>
     <string name="refresh">Aktualisieren</string>
+
+    <!-- Context Menus. -->
+    <string name="load_url">URL laden</string>
+    <string name="write_email">E-Mail senden</string>
+    <string name="view_image">Bild anzeigen</string>
+    <string name="download_image">Bild herunterladen</string>
 
     <!-- Find on Page. -->
     <string name="previous">Vorheriges</string>
