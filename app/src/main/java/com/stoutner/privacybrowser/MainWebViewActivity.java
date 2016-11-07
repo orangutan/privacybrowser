@@ -283,12 +283,39 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
         // Create the navigation drawer.
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        // The DrawerTitle identifies the drawer in accessibility mode.
+        // The `DrawerTitle` identifies the drawer in accessibility mode.
         drawerLayout.setDrawerTitle(GravityCompat.START, getString(R.string.navigation_drawer));
 
         // Listen for touches on the navigation menu.
         final NavigationView navigationView = (NavigationView) findViewById(R.id.navigationView);
         navigationView.setNavigationItemSelectedListener(this);
+
+        // Get handles for `navigationMenu` and the back and forward menu items.  The menu is zero-based, so item 1 and 2 and the second and third items in the menu.
+        final Menu navigationMenu = navigationView.getMenu();
+        final MenuItem navigationBackMenuItem = navigationMenu.getItem(1);
+        final MenuItem navigationForwardMenuItem = navigationMenu.getItem(2);
+
+        // The `DrawerListener` allows us to update the Navigation Menu.
+        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+                // Update the back and forward menu items every time the drawer opens.
+                navigationBackMenuItem.setEnabled(mainWebView.canGoBack());
+                navigationForwardMenuItem.setEnabled(mainWebView.canGoForward());
+            }
+        });
 
         // drawerToggle creates the hamburger icon at the start of the AppBar.
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, supportAppBar, R.string.open_navigation, R.string.close_navigation);
