@@ -283,7 +283,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
         // Create the navigation drawer.
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        // The `DrawerTitle` identifies the drawer in accessibility mode.
+        // `DrawerTitle` identifies the drawer in accessibility mode.
         drawerLayout.setDrawerTitle(GravityCompat.START, getString(R.string.navigation_drawer));
 
         // Listen for touches on the navigation menu.
@@ -314,6 +314,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 // Update the back and forward menu items every time the drawer opens.
                 navigationBackMenuItem.setEnabled(mainWebView.canGoBack());
                 navigationForwardMenuItem.setEnabled(mainWebView.canGoForward());
+
+                // Hide the keyboard so we can see the navigation menu.  `0` indicates no additional flags.
+                inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
             }
         });
 
@@ -1358,7 +1361,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
         mainWebView.loadUrl(formattedUrlString, customHeaders);
 
-        // Hides the keyboard so we can see the webpage.  `0` indicates no additional flags.
+        // Hide the keyboard so we can see the webpage.  `0` indicates no additional flags.
         inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
     }
 
@@ -1387,7 +1390,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         Toolbar appBarToolbar = (Toolbar) findViewById(R.id.appBar);
         appBarToolbar.setVisibility(View.VISIBLE);
 
-        // Hides the keyboard so we can see the webpage.  `0` indicates no additional flags.
+        // Hide the keyboard so we can see the webpage.  `0` indicates no additional flags.
         inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
     }
 
