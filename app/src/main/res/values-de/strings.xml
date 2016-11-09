@@ -91,6 +91,7 @@
     <string name="home">Startseite</string>
     <string name="back">Zurück</string>
     <string name="forward">Vorwärts</string>
+    <string name="history">Verlauf</string>
     <string name="bookmarks">Lesezeichen</string>
     <string name="downloads">Downloads</string>
     <string name="settings">Einstellungen</string>

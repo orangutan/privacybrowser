@@ -90,6 +90,7 @@
     <string name="home">Home</string>
     <string name="back">Back</string>
     <string name="forward">Forward</string>
+    <string name="history">History</string>
     <string name="bookmarks">Bookmarks</string>
     <string name="downloads">Downloads</string>
     <string name="settings">Settings</string>

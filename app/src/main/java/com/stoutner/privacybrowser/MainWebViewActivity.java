@@ -62,6 +62,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.CookieManager;
 import android.webkit.DownloadListener;
 import android.webkit.SslErrorHandler;
+import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
@@ -84,7 +85,7 @@ import java.util.Map;
 
 // We need to use AppCompatActivity from android.support.v7.app.AppCompatActivity to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CreateHomeScreenShortcut.CreateHomeScreenSchortcutListener,
-        SslCertificateError.SslCertificateErrorListener, DownloadFile.DownloadFileListener, DownloadImage.DownloadImageListener {
+        SslCertificateError.SslCertificateErrorListener, DownloadFile.DownloadFileListener, DownloadImage.DownloadImageListener, UrlHistory.UrlHistoryListener {
 
     // `appBar` is public static so it can be accessed from `OrbotProxyHelper`.
     // It is also used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
@@ -294,6 +295,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         final Menu navigationMenu = navigationView.getMenu();
         final MenuItem navigationBackMenuItem = navigationMenu.getItem(1);
         final MenuItem navigationForwardMenuItem = navigationMenu.getItem(2);
+        final MenuItem navigationHistoryMenuItem = navigationMenu.getItem(3);
 
         // The `DrawerListener` allows us to update the Navigation Menu.
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
@@ -311,9 +313,10 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
             @Override
             public void onDrawerStateChanged(int newState) {
-                // Update the back and forward menu items every time the drawer opens.
+                // Update the `Back`, `Forward`, and `History` menu items every time the drawer opens.
                 navigationBackMenuItem.setEnabled(mainWebView.canGoBack());
                 navigationForwardMenuItem.setEnabled(mainWebView.canGoForward());
+                navigationHistoryMenuItem.setEnabled((mainWebView.canGoBack() || mainWebView.canGoForward()));
 
                 // Hide the keyboard so we can see the navigation menu.  `0` indicates no additional flags.
                 inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
@@ -878,7 +881,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 return true;
 
             case R.id.addToHomescreen:
-                // Show the `CreateHomeScreenShortcut` `AlertDialog` and name this instance `@string/create_shortcut`.
+                // Show the `CreateHomeScreenShortcut` `AlertDialog` and name this instance `R.string.create_shortcut`.
                 AppCompatDialogFragment createHomeScreenShortcutDialogFragment = new CreateHomeScreenShortcut();
                 createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.create_shortcut));
 
@@ -927,6 +930,15 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 if (mainWebView.canGoForward()) {
                     mainWebView.goForward();
                 }
+                break;
+
+            case R.id.history:
+                // Gte the `WebBackForwardList`.
+                WebBackForwardList webBackForwardList = mainWebView.copyBackForwardList();
+
+                // Show the `UrlHistory` `AlertDialog` and name this instance `R.string.history`.  `this` is the `Context`.
+                AppCompatDialogFragment urlHistoryDialogFragment = UrlHistory.loadBackForwardList(this, webBackForwardList);
+                urlHistoryDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.history));
                 break;
 
             case R.id.bookmarks:
@@ -1268,6 +1280,12 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     @Override
     public void onSslErrorProceed() {
         sslErrorHandler.proceed();
+    }
+
+    @Override
+    public void onUrlHistoryEntrySelected(int moveBackOrForwardSteps) {
+        // Load the history entry.
+        mainWebView.goBackOrForward(moveBackOrForwardSteps);
     }
 
     // Override onBackPressed to handle the navigation drawer and mainWebView.

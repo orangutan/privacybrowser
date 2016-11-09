@@ -101,10 +101,11 @@ public class DownloadFile extends AppCompatDialogFragment {
     // `downloadFileListener` is used in `onAttach()` and `onCreateDialog()`.
     private DownloadFileListener downloadFileListener;
 
-    // Check to make sure tha the parent activity implements the listener.
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
+        // Check to make sure the parent activity implements the listener.
         try {
             downloadFileListener = (DownloadFileListener) context;
         } catch (ClassCastException exception) {
@@ -112,25 +113,28 @@ public class DownloadFile extends AppCompatDialogFragment {
         }
     }
 
-    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
-    @SuppressLint("InflateParams")
     @Override
     @NonNull
+    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
+    @SuppressLint("InflateParams")
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Get the activity's layout inflater.
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
 
         // Use `AlertDialog.Builder` to create the `AlertDialog`.  `R.style.lightAlertDialog` formats the color of the button text.
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.LightAlertDialog);
+
+        // Set the title.
         dialogBuilder.setTitle(R.string.save_as);
-        // The parent view is `null` because it will be assigned by `AlertDialog`.
+
+        // Set the view.  The parent view is `null` because it will be assigned by `AlertDialog`.
         dialogBuilder.setView(layoutInflater.inflate(R.layout.download_file_dialog, null));
 
         // Set an `onClick()` listener on the negative button.
         dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // Do nothing if `Cancel` is clicked.
+                // Do nothing if `Cancel` is clicked.  The `Dialog` will automatically close.
             }
         });
 
@@ -142,7 +146,6 @@ public class DownloadFile extends AppCompatDialogFragment {
                 downloadFileListener.onDownloadFile(DownloadFile.this, downloadUrl);
             }
         });
-
 
         // Create an `AlertDialog` from the `AlertDialog.Builder`.
         final AlertDialog alertDialog = dialogBuilder.create();
@@ -183,7 +186,6 @@ public class DownloadFile extends AppCompatDialogFragment {
                 }
             }
         });
-
 
         // `onCreateDialog` requires the return of an `AlertDialog`.
         return alertDialog;
