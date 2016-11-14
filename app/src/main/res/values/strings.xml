@@ -91,6 +91,7 @@
     <string name="back">Back</string>
     <string name="forward">Forward</string>
     <string name="history">History</string>
+        <string name="clear_history">Clear History</string>
     <string name="bookmarks">Bookmarks</string>
     <string name="downloads">Downloads</string>
     <string name="settings">Settings</string>
@@ -237,19 +238,19 @@
         <string name="javascript_disabled_search">JavaScript-disabled search</string>
         <string-array name="javascript_disabled_search_entries">
             <item>DuckDuckGo</item>
+            <item>StartPage</item>
             <item>Google</item>
             <item>Bing</item>
             <item>Yahoo</item>
-            <item>StartPage</item>
             <item>Qwant</item>
             <item>Custom</item>
         </string-array>
         <string-array name="javascript_disabled_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
             <item>https://duckduckgo.com/html/?q=</item>
+            <item>https://www.startpage.com/do/search?q=</item>
             <item>https://www.google.com/search?q=</item>
             <item>https://www.bing.com/search?q=</item>
             <item>https://search.yahoo.com/mobile/s?nojs=1&amp;p=</item>
-            <item>https://www.startpage.com/do/search?q=</item>
             <item>https://lite.qwant.com/?q=</item>
             <item>Custom URL</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
         </string-array>
@@ -257,19 +258,19 @@
         <string name="javascript_enabled_search">JavaScript-enabled search</string>
         <string-array name="javascript_enabled_search_entries">
             <item>DuckDuckGo</item>
+            <item>StartPage</item>
             <item>Google</item>
             <item>Bing</item>
             <item>Yahoo</item>
-            <item>StartPage</item>
             <item>Qwant</item>
             <item>Custom</item>
         </string-array>
         <string-array name="javascript_enabled_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
             <item>https://duckduckgo.com/?q=</item>
+            <item>https://www.startpage.com/do/search?q=</item>
             <item>https://www.google.com/search?q=</item>
             <item>https://www.bing.com/search?q=</item>
             <item>https://search.yahoo.com/mobile/s?p=</item>
-            <item>https://www.startpage.com/do/search?q=</item>
             <item>https://www.qwant.com/?q=</item>
             <item>Custom URL</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
         </string-array>

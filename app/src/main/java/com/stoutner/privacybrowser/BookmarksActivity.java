@@ -789,9 +789,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
                 // Make the font bold for folders.
                 if (cursor.getInt(cursor.getColumnIndex(BookmarksDatabaseHandler.IS_FOLDER)) == 1) {
-                    // The first argument is `null` because we don't want to change the font.
-                    bookmarkNameTextView.setTypeface(null, Typeface.BOLD);
-                } else {  // Reset the font to default.
+                    bookmarkNameTextView.setTypeface(Typeface.DEFAULT_BOLD);
+                } else {  // Reset the font to default for normal bookmarks.
                     bookmarkNameTextView.setTypeface(Typeface.DEFAULT);
                 }
             }

@@ -92,6 +92,7 @@
     <string name="back">Zurück</string>
     <string name="forward">Vorwärts</string>
     <string name="history">Verlauf</string>
+        <string name="clear_history">Verlauf löschen</string>
     <string name="bookmarks">Lesezeichen</string>
     <string name="downloads">Downloads</string>
     <string name="settings">Einstellungen</string>
@@ -221,10 +222,10 @@
     <string name="javascript_disabled_search">Suchmaschine bei deaktiviertem JavaScript</string>
     <string-array name="javascript_disabled_search_entries">
         <item>DuckDuckGo</item>
+        <item>StartPage</item>
         <item>Google</item>
         <item>Bing</item>
         <item>Yahoo</item>
-        <item>StartPage</item>
         <item>Qwant</item>
         <item>Eigene</item>
     </string-array>
@@ -232,10 +233,10 @@
     <string name="javascript_enabled_search">Suchmaschine bei aktiviertem JavaScript</string>
     <string-array name="javascript_enabled_search_entries">
         <item>DuckDuckGo</item>
+        <item>StartPage</item>
         <item>Google</item>
         <item>Bing</item>
         <item>Yahoo</item>
-        <item>StartPage</item>
         <item>Qwant</item>
         <item>Eigene</item>
     </string-array>

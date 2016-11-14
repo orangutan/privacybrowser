@@ -20,8 +20,8 @@
 package com.stoutner.privacybrowser;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,11 +67,11 @@ class HistoryArrayAdapter extends ArrayAdapter<History> {
         favoriteIconImageView.setImageBitmap(history.entryFavoriteIcon);
         urlTextView.setText(history.entryUrl);
 
-        // Set the URL text for `currentPage` to be grey.
+        // Set the URL text for `currentPage` to be bold.
         if (position == currentPage) {
-            urlTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.grey_500));
-        } else {
-            urlTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+            urlTextView.setTypeface(Typeface.DEFAULT_BOLD);
+        } else {  // Set the default typeface for all the other entries.
+            urlTextView.setTypeface(Typeface.DEFAULT);
         }
 
         // Return the modified `convertView`.

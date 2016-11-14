@@ -150,6 +150,9 @@ public class UrlHistory extends AppCompatDialogFragment{
     public interface UrlHistoryListener {
         // Send back the number of steps to move forward or back.
         void onUrlHistoryEntrySelected(int moveBackOrForwardSteps);
+
+        // Clear the history.
+        void onClearHistory();
     }
 
     // `urlHistoryListener` is used in `onAttach()` and `onCreateDialog()`.
@@ -185,7 +188,16 @@ public class UrlHistory extends AppCompatDialogFragment{
         dialogBuilder.setView(layoutInflater.inflate(R.layout.url_history_dialog, null));
 
         // Set an `onClick()` listener on the negative button.
-        dialogBuilder.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
+        dialogBuilder.setNegativeButton(R.string.clear_history, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Clear the history.
+                urlHistoryListener.onClearHistory();
+            }
+        });
+
+        // Set an `onClick()` listener on the positive button.
+        dialogBuilder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // Do nothing if `Close` is clicked.  The `Dialog` will automatically close.

@@ -1288,6 +1288,12 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         mainWebView.goBackOrForward(moveBackOrForwardSteps);
     }
 
+    @Override
+    public void onClearHistory() {
+        // Clear the history.
+        mainWebView.clearHistory();
+    }
+
     // Override onBackPressed to handle the navigation drawer and mainWebView.
     @Override
     public void onBackPressed() {
@@ -1309,6 +1315,10 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
     @Override
     public void onPause() {
+        // Pause `mainWebView`.
+        mainWebView.onPause();
+        mainWebView.pauseTimers();
+
         // We need to pause the adView or it will continue to consume resources in the background on the free flavor.
         BannerAd.pauseAd(adView);
 
@@ -1318,6 +1328,10 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     @Override
     public void onResume() {
         super.onResume();
+
+        // Resume `mainWebView`.
+        mainWebView.resumeTimers();
+        mainWebView.onResume();
 
         // We need to resume the adView for the free flavor.
         BannerAd.resumeAd(adView);
