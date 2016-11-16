@@ -17,12 +17,14 @@
  * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.stoutner.privacybrowser;
+package com.stoutner.privacybrowser.dialogs;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 // If we don't use `android.support.v7.app.AlertDialog` instead of `android.app.AlertDialog` then the dialog will be covered by the keyboard.
@@ -33,25 +35,28 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.ImageView;
 
-public class CreateBookmarkFolder extends AppCompatDialogFragment {
+import com.stoutner.privacybrowser.activities.MainWebView;
+import com.stoutner.privacybrowser.R;
+
+public class CreateBookmark extends AppCompatDialogFragment {
     // The public interface is used to send information back to the parent activity.
-    public interface CreateBookmarkFolderListener {
-        void onCreateBookmarkFolder(AppCompatDialogFragment dialogFragment);
+    public interface CreateBookmarkListener {
+        void onCreateBookmark(AppCompatDialogFragment dialogFragment);
     }
 
-    // `createBookmarkFolderListener` is used in `onAttach()` and `onCreateDialog`.
-    private CreateBookmarkFolderListener createBookmarkFolderListener;
+    // `createBookmarkListener` is used in `onAttach()` and `onCreateDialog()`
+    private CreateBookmarkListener createBookmarkListener;
+
 
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        // Get a handle for `createBookmarkFolderListener` from `context`.
+        // Get a handle for `CreateBookmarkListener` from `context`.
         try {
-            createBookmarkFolderListener = (CreateBookmarkFolderListener) context;
+            createBookmarkListener = (CreateBookmarkListener) context;
         } catch(ClassCastException exception) {
-            throw new ClassCastException(context.toString() + " must implement CreateBookmarkFolderListener.");
+            throw new ClassCastException(context.toString() + " must implement CreateBookmarkListener.");
         }
     }
 
@@ -60,11 +65,15 @@ public class CreateBookmarkFolder extends AppCompatDialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Create a drawable version of the favorite icon.
+        Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), MainWebView.favoriteIcon);
+
         // Use `AlertDialog.Builder` to create the `AlertDialog`.  The style formats the color of the button text.
-        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.LightAlertDialog);
-        dialogBuilder.setTitle(R.string.create_folder);
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.LightAlertDialog);
+        dialogBuilder.setTitle(R.string.create_bookmark);
+        dialogBuilder.setIcon(favoriteIconDrawable);
         // The parent view is `null` because it will be assigned by the `AlertDialog`.
-        dialogBuilder.setView(getActivity().getLayoutInflater().inflate(R.layout.create_bookmark_folder_dialog, null));
+        dialogBuilder.setView(getActivity().getLayoutInflater().inflate(R.layout.create_bookmark_dialog, null));
 
         // Set an `onClick()` listener for the negative button.
         dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -74,12 +83,12 @@ public class CreateBookmarkFolder extends AppCompatDialogFragment {
             }
         });
 
-        // Set an `onClick()` listener fo the positive button.
+        // Set an `onClick()` listener for the positive button.
         dialogBuilder.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // Return the `DialogFragment` to the parent activity on create.
-                createBookmarkFolderListener.onCreateBookmarkFolder(CreateBookmarkFolder.this);
+                createBookmarkListener.onCreateBookmark(CreateBookmark.this);
             }
         });
 
@@ -96,29 +105,46 @@ public class CreateBookmarkFolder extends AppCompatDialogFragment {
         // We need to show the `AlertDialog` before we can call `setOnKeyListener()` below.
         alertDialog.show();
 
-        // Allow the `enter` key on the keyboard to create the folder from `create_folder_name_edittext`.
-        EditText createFolderNameEditText = (EditText) alertDialog.findViewById(R.id.create_folder_name_edittext);
-        assert createFolderNameEditText != null;  // Remove the warning below that `createFolderNameEditText` might be `null`.
-        createFolderNameEditText.setOnKeyListener(new View.OnKeyListener() {
+        // Allow the `enter` key on the keyboard to create the bookmark from `create_bookmark_name_edittext`.
+        EditText createBookmarkNameEditText = (EditText) alertDialog.findViewById(R.id.create_bookmark_name_edittext);
+        assert createBookmarkNameEditText != null;  // Remove the warning below that `createBookmarkNameEditText` might be `null`.
+        createBookmarkNameEditText.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down on the `enter` key, select the `PositiveButton` `Create`.
+                // If the event is a key-down on the `enter` button, select the `PositiveButton` `Create`.
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    // Trigger `createBookmarkFolderListener` and return the `DialogFragment` to the parent activity.
-                    createBookmarkFolderListener.onCreateBookmarkFolder(CreateBookmarkFolder.this);
+                    // Trigger `createBookmarkListener` and return the `DialogFragment` to the parent activity.
+                    createBookmarkListener.onCreateBookmark(CreateBookmark.this);
                     // Manually dismiss the `AlertDialog`.
                     alertDialog.dismiss();
                     // Consume the event.
                     return true;
-                } else {  // If any other key was pressed do not consume the event.
+                } else {  // If any other key was pressed, do not consume the event.
                     return false;
                 }
             }
         });
 
-        // Display the current favorite icon.
-        ImageView webPageIconImageView = (ImageView) alertDialog.findViewById(R.id.create_folder_web_page_icon);
-        assert webPageIconImageView != null;  // Remove the warning that `webPageIconImageView` may be null.
-        webPageIconImageView.setImageBitmap(MainWebViewActivity.favoriteIcon);
+        // Set the formattedUrlString as the initial text of `create_bookmark_url_edittext`.
+        EditText createBookmarkUrlEditText = (EditText) alertDialog.findViewById(R.id.create_bookmark_url_edittext);
+        assert createBookmarkUrlEditText != null;// Remove the warning below that `createBookmarkUrlEditText` might be `null`.
+        createBookmarkUrlEditText.setText(MainWebView.formattedUrlString);
+
+        // Allow the `enter` key on the keyboard to create the bookmark from `create_bookmark_url_edittext`.
+        createBookmarkUrlEditText.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // If the event is a key-down on the "enter" button, select the PositiveButton "Create".
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    // Trigger `createBookmarkListener` and return the DialogFragment to the parent activity.
+                    createBookmarkListener.onCreateBookmark(CreateBookmark.this);
+                    // Manually dismiss the `AlertDialog`.
+                    alertDialog.dismiss();
+                    // Consume the event.
+                    return true;
+                } else { // If any other key was pressed, do not consume the event.
+                    return false;
+                }
+            }
+        });
 
         // `onCreateDialog()` requires the return of an `AlertDialog`.
         return alertDialog;

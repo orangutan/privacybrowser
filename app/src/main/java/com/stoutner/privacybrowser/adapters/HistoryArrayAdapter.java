@@ -17,7 +17,7 @@
  * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.stoutner.privacybrowser;
+package com.stoutner.privacybrowser.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -29,14 +29,17 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.definitions.History;
+
 import java.util.ArrayList;
 
-class HistoryArrayAdapter extends ArrayAdapter<History> {
+public class HistoryArrayAdapter extends ArrayAdapter<History> {
 
     // `currentPage` is used in `HistoryArrayAdapter` and `getView()`.
     private int currentPage;
 
-    HistoryArrayAdapter(Context context, ArrayList<History> historyArrayList, int currentPageId) {
+    public HistoryArrayAdapter(Context context, ArrayList<History> historyArrayList, int currentPageId) {
         // We need to call `super` from the base `ArrayAdapter`.  `0` is the `textViewResourceId`.
         super(context, 0, historyArrayList);
 

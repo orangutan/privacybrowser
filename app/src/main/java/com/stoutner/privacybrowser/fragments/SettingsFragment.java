@@ -17,7 +17,7 @@
  * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.stoutner.privacybrowser;
+package com.stoutner.privacybrowser.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
@@ -27,6 +27,8 @@ import android.preference.PreferenceFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.WebView;
+
+import com.stoutner.privacybrowser.R;
 
 public class SettingsFragment extends PreferenceFragment {
     private SharedPreferences.OnSharedPreferenceChangeListener preferencesListener;

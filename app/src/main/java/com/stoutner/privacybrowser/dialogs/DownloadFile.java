@@ -17,7 +17,7 @@
  * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.stoutner.privacybrowser;
+package com.stoutner.privacybrowser.dialogs;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -36,6 +36,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.stoutner.privacybrowser.R;
 
 import java.util.Locale;
 

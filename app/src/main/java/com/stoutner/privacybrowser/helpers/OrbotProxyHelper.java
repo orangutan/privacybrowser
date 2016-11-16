@@ -17,7 +17,7 @@
  * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.stoutner.privacybrowser;
+package com.stoutner.privacybrowser.helpers;
 
 import android.app.Activity;
 import android.content.Context;
@@ -30,12 +30,15 @@ import android.support.v7.app.AlertDialog;
 import android.util.ArrayMap;
 import android.util.Log;
 
+import com.stoutner.privacybrowser.activities.MainWebView;
+import com.stoutner.privacybrowser.R;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-class OrbotProxyHelper {
-    static void setProxy(Context privacyBrowserContext, Activity parentActivity, String proxyHost, String proxyPort) {
+public class OrbotProxyHelper {
+    public static void setProxy(Context privacyBrowserContext, Activity parentActivity, String proxyHost, String proxyPort) {
         // Set the proxy values
         System.setProperty("http.proxyHost", proxyHost);
         System.setProperty("http.proxyPort", proxyPort);
@@ -74,7 +77,7 @@ class OrbotProxyHelper {
 
         if (proxyPort.equals("8118")) {  // Orbot proxy was turned on.
             // Set the `appBar` background to be light blue if Orbot proxy support is enabled.
-            MainWebViewActivity.appBar.setBackgroundDrawable(ContextCompat.getDrawable(privacyBrowserContext, R.color.blue_50));
+            MainWebView.appBar.setBackgroundDrawable(ContextCompat.getDrawable(privacyBrowserContext, R.color.blue_50));
 
             try {  // Check to see if Orbot is installed.
                 PackageManager packageManager = privacyBrowserContext.getPackageManager();
@@ -95,7 +98,7 @@ class OrbotProxyHelper {
                 alertDialog.show();
             }
         } else {  // Otherwise set the default grey `appBar` background.
-            MainWebViewActivity.appBar.setBackgroundDrawable(ContextCompat.getDrawable(privacyBrowserContext, R.color.grey_100));
+            MainWebView.appBar.setBackgroundDrawable(ContextCompat.getDrawable(privacyBrowserContext, R.color.grey_100));
         }
     }
 }

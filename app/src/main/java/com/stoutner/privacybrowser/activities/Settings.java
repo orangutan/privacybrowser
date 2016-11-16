@@ -17,19 +17,22 @@
  * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.stoutner.privacybrowser;
+package com.stoutner.privacybrowser.activities;
 
-import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.preference.PreferenceFragment;
+import android.support.v7.app.AppCompatActivity;
 
-// Create a `History` object.
-class History {
-    // Create the `History` package-local variables.
-    Bitmap entryFavoriteIcon;
-    String entryUrl;
+import com.stoutner.privacybrowser.fragments.SettingsFragment;
 
-    History(Bitmap entryFavoriteIcon, String entryUrl){
-        // Populate the package-local variables.
-        this.entryFavoriteIcon = entryFavoriteIcon;
-        this.entryUrl = entryUrl;
+public class Settings extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Display SettingsFragment.
+        PreferenceFragment settingsFragment = new SettingsFragment();
+        getFragmentManager().beginTransaction().replace(android.R.id.content, settingsFragment).commit();
     }
 }

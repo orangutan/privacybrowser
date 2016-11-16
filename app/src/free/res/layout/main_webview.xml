@@ -28,7 +28,7 @@
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_weight="1"
-    tools:context="com.stoutner.privacybrowser.MainWebViewActivity"
+    tools:context="com.stoutner.privacybrowser.activities.MainWebView"
     tools:showIn="@layout/coordinator_layout">
 
     <com.google.android.gms.ads.AdView

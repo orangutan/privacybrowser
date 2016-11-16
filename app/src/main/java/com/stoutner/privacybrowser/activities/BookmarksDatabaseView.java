@@ -17,7 +17,7 @@
  * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.stoutner.privacybrowser;
+package com.stoutner.privacybrowser.activities;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -36,9 +36,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class BookmarksDatabaseViewActivity extends AppCompatActivity {
-    // `bookmarksDatabaseHandler` is used in `onCreate()` and `updateBookmarksListView()`.
-    private BookmarksDatabaseHandler bookmarksDatabaseHandler;
+import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
+
+public class BookmarksDatabaseView extends AppCompatActivity {
+    // `bookmarksDatabaseHelper` is used in `onCreate()` and `updateBookmarksListView()`.
+    private BookmarksDatabaseHelper bookmarksDatabaseHelper;
 
     // `bookmarksListView` is used in `onCreate()` and `updateBookmarksListView()`.
     private ListView bookmarksListView;
@@ -59,8 +62,8 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity {
 
         // Initialize the database handler and the ListView.
         // `this` specifies the context.  The two `null`s do not specify the database name or a `CursorFactory`.
-        // The `0` is to specify a database version, but that is set instead using a constant in `BookmarksDatabaseHandler`.
-        bookmarksDatabaseHandler = new BookmarksDatabaseHandler(this, null, null, 0);
+        // The `0` is to specify a database version, but that is set instead using a constant in `BookmarksDatabaseHelper`.
+        bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this, null, null, 0);
         bookmarksListView = (ListView) findViewById(R.id.bookmarks_database_view_listview);
 
         // Display the bookmarks in the ListView.
@@ -70,7 +73,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity {
 
     private void updateBookmarksListView() {
         // Get a `Cursor` with the current contents of the bookmarks database.
-        final Cursor bookmarksCursor = bookmarksDatabaseHandler.getAllBookmarksCursor();
+        final Cursor bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursor();
 
         // Setup `bookmarksCursorAdapter` with `this` context.  The `false` disables autoRequery.
         CursorAdapter bookmarksCursorAdapter = new CursorAdapter(this, bookmarksCursor, false) {
@@ -82,15 +85,15 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity {
 
             @Override
             public void bindView(View view, Context context, Cursor cursor) {
-                boolean isFolder = (cursor.getInt(cursor.getColumnIndex(BookmarksDatabaseHandler.IS_FOLDER)) == 1);
+                boolean isFolder = (cursor.getInt(cursor.getColumnIndex(BookmarksDatabaseHelper.IS_FOLDER)) == 1);
 
                 // Get the database ID from the `Cursor` and display it in `bookmarkDatabaseIdTextView`.
-                int bookmarkDatabaseId = cursor.getInt(cursor.getColumnIndex(BookmarksDatabaseHandler._ID));
+                int bookmarkDatabaseId = cursor.getInt(cursor.getColumnIndex(BookmarksDatabaseHelper._ID));
                 TextView bookmarkDatabaseIdTextView = (TextView) view.findViewById(R.id.bookmarks_database_view_database_id);
                 bookmarkDatabaseIdTextView.setText(String.valueOf(bookmarkDatabaseId));
 
                 // Get the favorite icon byte array from the `Cursor`.
-                byte[] favoriteIconByteArray = cursor.getBlob(cursor.getColumnIndex(BookmarksDatabaseHandler.FAVORITE_ICON));
+                byte[] favoriteIconByteArray = cursor.getBlob(cursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON));
                 // Convert the byte array to a `Bitmap` beginning at the beginning at the first byte and ending at the last.
                 Bitmap favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.length);
                 // Display the bitmap in `bookmarkFavoriteIcon`.
@@ -98,7 +101,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity {
                 bookmarkFavoriteIcon.setImageBitmap(favoriteIconBitmap);
 
                 // Get the bookmark name from the `Cursor` and display it in `bookmarkNameTextView`.
-                String bookmarkNameString = cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHandler.BOOKMARK_NAME));
+                String bookmarkNameString = cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
                 TextView bookmarkNameTextView = (TextView) view.findViewById(R.id.bookmarks_database_view_bookmark_name);
                 bookmarkNameTextView.setText(bookmarkNameString);
                 // Make the font bold for folders.
@@ -110,12 +113,12 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity {
                 }
 
                 // Get the display order from the `Cursor` and display it in `bookmarkDisplayOrderTextView`.
-                int bookmarkDisplayOrder = cursor.getInt(cursor.getColumnIndex(BookmarksDatabaseHandler.DISPLAY_ORDER));
+                int bookmarkDisplayOrder = cursor.getInt(cursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER));
                 TextView bookmarkDisplayOrderTextView = (TextView) view.findViewById(R.id.bookmarks_database_view_display_order);
                 bookmarkDisplayOrderTextView.setText(String.valueOf(bookmarkDisplayOrder));
 
                 // Get the parent folder from the `Cursor` and display it in `bookmarkParentFolder`.
-                String bookmarkParentFolder = cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHandler.PARENT_FOLDER));
+                String bookmarkParentFolder = cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHelper.PARENT_FOLDER));
                 ImageView parentFolderImageView = (ImageView) view.findViewById(R.id.bookmarks_database_view_parent_folder_icon);
                 TextView bookmarkParentFolderTextView = (TextView) view.findViewById(R.id.bookmarks_database_view_parent_folder);
                 // Make the folder name gray if it is the home folder.
@@ -130,7 +133,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity {
                 }
 
                 // Get the bookmark URL form the `Cursor` and display it in `bookmarkUrlTextView`.
-                String bookmarkUrlString = cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHandler.BOOKMARK_URL));
+                String bookmarkUrlString = cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL));
                 TextView bookmarkUrlTextView = (TextView) view.findViewById(R.id.bookmarks_database_view_bookmark_url);
                 bookmarkUrlTextView.setText(bookmarkUrlString);
                 if (isFolder) {

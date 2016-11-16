@@ -54,7 +54,7 @@
             `android:persistableMode="persistNever"` removes Privacy Browser from the recents screen on a device reboot.
             `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
-            android:name=".MainWebViewActivity"
+            android:name=".activities.MainWebView"
             android:label="@string/privacy_browser"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTask"
@@ -82,10 +82,10 @@
             `android:persistableMode="persistNever"` removes Privacy Browser from the recents screen on a device reboot.
             `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
-            android:name=".BookmarksActivity"
+            android:name=".activities.Bookmarks"
             android:label="@string/bookmarks"
             android:theme="@style/PrivacyBrowser.SecondaryActivity"
-            android:parentActivityName=".MainWebViewActivity"
+            android:parentActivityName=".activities.MainWebView"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullUser"
             android:persistableMode="persistNever"
@@ -95,10 +95,10 @@
             `android:persistableMode="persistNever"` removes Privacy Browser from the recents screen on a device reboot.
             `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
-            android:name=".BookmarksDatabaseViewActivity"
+            android:name=".activities.BookmarksDatabaseView"
             android:label="@string/bookmarks_database_view"
             android:theme="@style/PrivacyBrowser.SecondaryActivity"
-            android:parentActivityName=".BookmarksActivity"
+            android:parentActivityName=".activities.Bookmarks"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullUser"
             android:persistableMode="persistNever"
@@ -108,10 +108,10 @@
             `android:persistableMode="persistNever"` removes Privacy Browser from the recents screen on a device reboot.
             `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activities.Settings"
             android:label="@string/privacy_browser_settings"
             android:theme="@style/Settings"
-            android:parentActivityName=".MainWebViewActivity"
+            android:parentActivityName=".activities.MainWebView"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullUser"
             android:persistableMode="persistNever"
@@ -121,10 +121,10 @@
             `android:persistableMode="persistNever"` removes Privacy Browser from the recents screen on a device reboot.
             `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
-            android:name=".GuideActivity"
+            android:name=".activities.Guide"
             android:label="@string/privacy_browser_guide"
             android:theme="@style/PrivacyBrowser.SecondaryActivity"
-            android:parentActivityName=".MainWebViewActivity"
+            android:parentActivityName=".activities.MainWebView"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullUser"
             android:persistableMode="persistNever"
@@ -134,10 +134,10 @@
             `android:persistableMode="persistNever"` removes Privacy Browser from the recents screen on a device reboot.
             `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
-            android:name=".AboutActivity"
+            android:name=".activities.About"
             android:label="@string/about_privacy_browser"
             android:theme="@style/PrivacyBrowser.SecondaryActivity"
-            android:parentActivityName=".MainWebViewActivity"
+            android:parentActivityName=".activities.MainWebView"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullUser"
             android:persistableMode="persistNever"

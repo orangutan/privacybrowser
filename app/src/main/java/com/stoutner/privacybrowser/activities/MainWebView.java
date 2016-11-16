@@ -17,7 +17,7 @@
  * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.stoutner.privacybrowser;
+package com.stoutner.privacybrowser.activities;
 
 import android.annotation.SuppressLint;
 import android.app.DialogFragment;
@@ -76,6 +76,16 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.stoutner.privacybrowser.BannerAd;
+import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.helpers.OrbotProxyHelper;
+import com.stoutner.privacybrowser.dialogs.CreateHomeScreenShortcut;
+import com.stoutner.privacybrowser.dialogs.DownloadFile;
+import com.stoutner.privacybrowser.dialogs.DownloadImage;
+import com.stoutner.privacybrowser.dialogs.SslCertificateError;
+import com.stoutner.privacybrowser.dialogs.UrlHistory;
+import com.stoutner.privacybrowser.dialogs.ViewSslCertificate;
+
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -84,18 +94,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 // We need to use AppCompatActivity from android.support.v7.app.AppCompatActivity to have access to the SupportActionBar until the minimum API is >= 21.
-public class MainWebViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CreateHomeScreenShortcut.CreateHomeScreenSchortcutListener,
+public class MainWebView extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CreateHomeScreenShortcut.CreateHomeScreenSchortcutListener,
         SslCertificateError.SslCertificateErrorListener, DownloadFile.DownloadFileListener, DownloadImage.DownloadImageListener, UrlHistory.UrlHistoryListener {
 
     // `appBar` is public static so it can be accessed from `OrbotProxyHelper`.
     // It is also used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
     public static ActionBar appBar;
 
-    // `favoriteIcon` is public static so it can be accessed from `CreateHomeScreenShortcut`, `BookmarksActivity`, `CreateBookmark`, `CreateBookmarkFolder`, and `EditBookmark`.
+    // `favoriteIcon` is public static so it can be accessed from `CreateHomeScreenShortcut`, `Bookmarks`, `CreateBookmark`, `CreateBookmarkFolder`, and `EditBookmark`.
     // It is also used in `onCreate()` and `onCreateHomeScreenShortcutCreate()`.
     public static Bitmap favoriteIcon;
 
-    // `formattedUrlString` is public static so it can be accessed from `BookmarksActivity`.
+    // `formattedUrlString` is public static so it can be accessed from `Bookmarks`.
     // It is also used in `onCreate()`, `onOptionsItemSelected()`, `onCreateHomeScreenShortcutCreate()`, and `loadUrlFromTextBox()`.
     public static String formattedUrlString;
 
@@ -942,8 +952,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 break;
 
             case R.id.bookmarks:
-                // Launch BookmarksActivity.
-                Intent bookmarksIntent = new Intent(this, BookmarksActivity.class);
+                // Launch Bookmarks.
+                Intent bookmarksIntent = new Intent(this, Bookmarks.class);
                 startActivity(bookmarksIntent);
                 break;
 
@@ -958,20 +968,20 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 break;
 
             case R.id.settings:
-                // Launch `SettingsActivity`.
-                Intent settingsIntent = new Intent(this, SettingsActivity.class);
+                // Launch `Settings`.
+                Intent settingsIntent = new Intent(this, Settings.class);
                 startActivity(settingsIntent);
                 break;
 
             case R.id.guide:
-                // Launch `GuideActivity`.
-                Intent guideIntent = new Intent(this, GuideActivity.class);
+                // Launch `Guide`.
+                Intent guideIntent = new Intent(this, Guide.class);
                 startActivity(guideIntent);
                 break;
 
             case R.id.about:
-                // Launch `AboutActivity`.
-                Intent aboutIntent = new Intent(this, AboutActivity.class);
+                // Launch `About`.
+                Intent aboutIntent = new Intent(this, About.class);
                 startActivity(aboutIntent);
                 break;
 
@@ -1341,7 +1351,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     public void onRestart() {
         super.onRestart();
 
-        // Apply the settings from shared preferences, which might have been changed in `SettingsActivity`.
+        // Apply the settings from shared preferences, which might have been changed in `Settings`.
         applySettings();
 
         // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.

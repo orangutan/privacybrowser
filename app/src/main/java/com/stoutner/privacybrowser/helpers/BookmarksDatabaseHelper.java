@@ -17,7 +17,7 @@
  * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.stoutner.privacybrowser;
+package com.stoutner.privacybrowser.helpers;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -26,21 +26,21 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-class BookmarksDatabaseHandler extends SQLiteOpenHelper {
+public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
     private static final int SCHEMA_VERSION = 1;
     private static final String BOOKMARKS_DATABASE = "bookmarks.db";
     private static final String BOOKMARKS_TABLE = "bookmarks";
 
-    static final String _ID = "_id";
-    static final String DISPLAY_ORDER = "displayorder";
-    static final String BOOKMARK_NAME = "bookmarkname";
-    static final String BOOKMARK_URL = "bookmarkurl";
-    static final String PARENT_FOLDER = "parentfolder";
-    static final String IS_FOLDER = "isfolder";
-    static final String FAVORITE_ICON = "favoriteicon";
+    public static final String _ID = "_id";
+    public static final String DISPLAY_ORDER = "displayorder";
+    public static final String BOOKMARK_NAME = "bookmarkname";
+    public static final String BOOKMARK_URL = "bookmarkurl";
+    public static final String PARENT_FOLDER = "parentfolder";
+    public static final String IS_FOLDER = "isfolder";
+    public static final String FAVORITE_ICON = "favoriteicon";
 
     // Initialize the database.  The lint warnings for the unused parameters are suppressed.
-    BookmarksDatabaseHandler(Context context, @SuppressWarnings("UnusedParameters") String name, SQLiteDatabase.CursorFactory factory, @SuppressWarnings("UnusedParameters") int version) {
+    public BookmarksDatabaseHelper(Context context, @SuppressWarnings("UnusedParameters") String name, SQLiteDatabase.CursorFactory factory, @SuppressWarnings("UnusedParameters") int version) {
         super(context, BOOKMARKS_DATABASE, factory, SCHEMA_VERSION);
     }
 
@@ -64,7 +64,7 @@ class BookmarksDatabaseHandler extends SQLiteOpenHelper {
         // Code for upgrading the database will be added here when the schema version > 1.
     }
 
-    void createBookmark(String bookmarkName, String bookmarkURL, int displayOrder, String parentFolder, byte[] favoriteIcon) {
+    public void createBookmark(String bookmarkName, String bookmarkURL, int displayOrder, String parentFolder, byte[] favoriteIcon) {
         ContentValues bookmarkContentValues = new ContentValues();
 
         // ID is created automatically.
@@ -85,7 +85,7 @@ class BookmarksDatabaseHandler extends SQLiteOpenHelper {
         bookmarksDatabase.close();
     }
 
-    void createFolder(String folderName, int displayOrder, String parentFolder, byte[] favoriteIcon) {
+    public void createFolder(String folderName, int displayOrder, String parentFolder, byte[] favoriteIcon) {
         ContentValues bookmarkContentValues = new ContentValues();
 
         // ID is created automatically.
@@ -105,7 +105,7 @@ class BookmarksDatabaseHandler extends SQLiteOpenHelper {
         bookmarksDatabase.close();
     }
 
-    Cursor getBookmarkCursor(int databaseId) {
+    public Cursor getBookmarkCursor(int databaseId) {
         // Get a readable database handle.
         SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
 
@@ -118,7 +118,7 @@ class BookmarksDatabaseHandler extends SQLiteOpenHelper {
         return bookmarksDatabase.rawQuery(GET_ONE_BOOKMARK, null);
     }
 
-    String getFolderName (int databaseId) {
+    public String getFolderName (int databaseId) {
         // Get a readable database handle.
         SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
 
@@ -141,7 +141,7 @@ class BookmarksDatabaseHandler extends SQLiteOpenHelper {
         return folderName;
     }
 
-    Cursor getFolderCursor(String folderName) {
+    public Cursor getFolderCursor(String folderName) {
         // Get a readable database handle.
         SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
 
@@ -158,7 +158,7 @@ class BookmarksDatabaseHandler extends SQLiteOpenHelper {
         return bookmarksDatabase.rawQuery(GET_FOLDER, null);
     }
 
-    Cursor getFoldersCursorExcept(String exceptFolders) {
+    public Cursor getFoldersCursorExcept(String exceptFolders) {
         // Get a readable database handle.
         SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
 
@@ -173,7 +173,7 @@ class BookmarksDatabaseHandler extends SQLiteOpenHelper {
         return bookmarksDatabase.rawQuery(GET_FOLDERS_EXCEPT, null);
     }
 
-    Cursor getSubfoldersCursor(String currentFolder) {
+    public Cursor getSubfoldersCursor(String currentFolder) {
         // Get a readable database handle.
         SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
 
@@ -190,7 +190,7 @@ class BookmarksDatabaseHandler extends SQLiteOpenHelper {
         return bookmarksDatabase.rawQuery(GET_SUBFOLDERS, null);
     }
 
-    String getParentFolder(String currentFolder) {
+    public String getParentFolder(String currentFolder) {
         // Get a readable database handle.
         SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
 
@@ -215,7 +215,7 @@ class BookmarksDatabaseHandler extends SQLiteOpenHelper {
         return parentFolder;
     }
 
-    Cursor getAllBookmarksCursor() {
+    public Cursor getAllBookmarksCursor() {
         // Get a readable database handle.
         SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
 
@@ -227,7 +227,7 @@ class BookmarksDatabaseHandler extends SQLiteOpenHelper {
         return bookmarksDatabase.rawQuery(GET_ALL_BOOKMARKS, null);
     }
 
-    Cursor getAllBookmarksCursorByDisplayOrder(String folderName) {
+    public Cursor getAllBookmarksCursorByDisplayOrder(String folderName) {
         // Get a readable database handle.
         SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
 
@@ -244,7 +244,7 @@ class BookmarksDatabaseHandler extends SQLiteOpenHelper {
         return bookmarksDatabase.rawQuery(GET_ALL_BOOKMARKS, null);
     }
 
-    Cursor getBookmarksCursorExcept(long[] exceptIdLongArray, String folderName) {
+    public Cursor getBookmarksCursorExcept(long[] exceptIdLongArray, String folderName) {
         // Get a readable database handle.
         SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
 
@@ -274,7 +274,7 @@ class BookmarksDatabaseHandler extends SQLiteOpenHelper {
         return bookmarksDatabase.rawQuery(GET_All_BOOKMARKS_EXCEPT_SPECIFIED, null);
     }
 
-    boolean isFolder(int databaseId) {
+    public boolean isFolder(int databaseId) {
         // Get a readable database handle.
         SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
 
@@ -296,7 +296,7 @@ class BookmarksDatabaseHandler extends SQLiteOpenHelper {
         return isFolder;
     }
 
-    void updateBookmark(int databaseId, String bookmarkName, String bookmarkUrl) {
+    public void updateBookmark(int databaseId, String bookmarkName, String bookmarkUrl) {
         // Store the updated values in `bookmarkContentValues`.
         ContentValues bookmarkContentValues = new ContentValues();
 
@@ -313,7 +313,7 @@ class BookmarksDatabaseHandler extends SQLiteOpenHelper {
         bookmarksDatabase.close();
     }
 
-    void updateBookmark(int databaseId, String bookmarkName, String bookmarkUrl, byte[] favoriteIcon) {
+    public void updateBookmark(int databaseId, String bookmarkName, String bookmarkUrl, byte[] favoriteIcon) {
         // Store the updated values in `bookmarkContentValues`.
         ContentValues bookmarkContentValues = new ContentValues();
 
@@ -331,7 +331,7 @@ class BookmarksDatabaseHandler extends SQLiteOpenHelper {
         bookmarksDatabase.close();
     }
 
-    void updateFolder(int databaseId, String oldFolderName, String newFolderName) {
+    public void updateFolder(int databaseId, String oldFolderName, String newFolderName) {
         // Get a writable database handle.
         SQLiteDatabase bookmarksDatabase = this.getWritableDatabase();
 
@@ -359,7 +359,7 @@ class BookmarksDatabaseHandler extends SQLiteOpenHelper {
         bookmarksDatabase.close();
     }
 
-    void updateFolder(int databaseId, String oldFolderName, String newFolderName, byte[] folderIcon) {
+    public void updateFolder(int databaseId, String oldFolderName, String newFolderName, byte[] folderIcon) {
         // Get a writable database handle.
         SQLiteDatabase bookmarksDatabase = this.getWritableDatabase();
 
@@ -388,7 +388,7 @@ class BookmarksDatabaseHandler extends SQLiteOpenHelper {
         bookmarksDatabase.close();
     }
 
-    void updateBookmarkDisplayOrder(int databaseId, int displayOrder) {
+    public void updateBookmarkDisplayOrder(int databaseId, int displayOrder) {
         // Get a writable database handle.
         SQLiteDatabase bookmarksDatabase = this.getWritableDatabase();
 
@@ -403,7 +403,7 @@ class BookmarksDatabaseHandler extends SQLiteOpenHelper {
         bookmarksDatabase.close();
     }
 
-    void moveToFolder(int databaseId, String newFolder) {
+    public void moveToFolder(int databaseId, String newFolder) {
         // Get a writable database handle.
         SQLiteDatabase bookmarksDatabase = this.getWritableDatabase();
 
@@ -435,7 +435,7 @@ class BookmarksDatabaseHandler extends SQLiteOpenHelper {
         bookmarksDatabase.close();
     }
 
-    void deleteBookmark(int databaseId) {
+    public void deleteBookmark(int databaseId) {
         // Get a writable database handle.
         SQLiteDatabase bookmarksDatabase = this.getWritableDatabase();
 

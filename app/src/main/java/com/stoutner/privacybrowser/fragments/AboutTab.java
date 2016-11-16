@@ -17,7 +17,7 @@
  * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.stoutner.privacybrowser;
+package com.stoutner.privacybrowser.fragments;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -31,15 +31,18 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
 
-public class AboutTabFragment extends Fragment {
+import com.stoutner.privacybrowser.BuildConfig;
+import com.stoutner.privacybrowser.R;
+
+public class AboutTab extends Fragment {
     private int tabNumber;
 
-    // AboutTabFragment.createTab stores the tab number in the bundle arguments so it can be referenced from onCreate().
-    public static AboutTabFragment createTab(int tab) {
+    // AboutTab.createTab stores the tab number in the bundle arguments so it can be referenced from onCreate().
+    public static AboutTab createTab(int tab) {
         Bundle thisTabArguments = new Bundle();
         thisTabArguments.putInt("Tab", tab);
 
-        AboutTabFragment thisTab = new AboutTabFragment();
+        AboutTab thisTab = new AboutTab();
         thisTab.setArguments(thisTabArguments);
         return thisTab;
     }

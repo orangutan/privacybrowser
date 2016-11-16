@@ -17,7 +17,7 @@
  * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.stoutner.privacybrowser;
+package com.stoutner.privacybrowser.dialogs;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -39,6 +39,10 @@ import android.view.View;
 import android.webkit.WebBackForwardList;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
+import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.adapters.HistoryArrayAdapter;
+import com.stoutner.privacybrowser.definitions.History;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;

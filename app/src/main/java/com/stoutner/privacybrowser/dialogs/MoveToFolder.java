@@ -17,7 +17,7 @@
  * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.stoutner.privacybrowser;
+package com.stoutner.privacybrowser.dialogs;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -44,6 +44,10 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.activities.Bookmarks;
+import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 
 import java.io.ByteArrayOutputStream;
 
@@ -109,20 +113,20 @@ public class MoveToFolder extends AppCompatDialogFragment {
         CursorAdapter foldersCursorAdapter;
 
         // Check to see if we are in the `Home Folder`.
-        if (BookmarksActivity.currentFolder.isEmpty()) {  // Don't display `Home Folder` at the top of the `ListView`.
+        if (Bookmarks.currentFolder.isEmpty()) {  // Don't display `Home Folder` at the top of the `ListView`.
             // Initialize `exceptFolders`.
             exceptFolders = "";
 
             // If a folder is selected, add it and all children to the list of folders not to display.
-            long[] selectedBookmarksLongArray = BookmarksActivity.checkedItemIds;
+            long[] selectedBookmarksLongArray = Bookmarks.checkedItemIds;
             for (long databaseIdLong : selectedBookmarksLongArray) {
                 // Get `databaseIdInt` for each selected bookmark.
                 int databaseIdInt = (int) databaseIdLong;
 
                 // If `databaseIdInt` is a folder.
-                if (BookmarksActivity.bookmarksDatabaseHandler.isFolder(databaseIdInt)) {
+                if (Bookmarks.bookmarksDatabaseHelper.isFolder(databaseIdInt)) {
                     // Get the name of the selected folder.
-                    String folderName = BookmarksActivity.bookmarksDatabaseHandler.getFolderName(databaseIdInt);
+                    String folderName = Bookmarks.bookmarksDatabaseHelper.getFolderName(databaseIdInt);
 
                     if (exceptFolders.isEmpty()){
                         // Add the selected folder to the list of folders not to display.
@@ -138,7 +142,7 @@ public class MoveToFolder extends AppCompatDialogFragment {
             }
 
             // Get a `Cursor` containing the folders to display.
-            foldersCursor = BookmarksActivity.bookmarksDatabaseHandler.getFoldersCursorExcept(exceptFolders);
+            foldersCursor = Bookmarks.bookmarksDatabaseHelper.getFoldersCursorExcept(exceptFolders);
 
             // Setup `foldersCursorAdaptor` with `this` context.  `false` disables autoRequery.
             foldersCursorAdapter = new CursorAdapter(alertDialog.getContext(), foldersCursor, false) {
@@ -151,7 +155,7 @@ public class MoveToFolder extends AppCompatDialogFragment {
                 @Override
                 public void bindView(View view, Context context, Cursor cursor) {
                     // Get the folder icon from `cursor`.
-                    byte[] folderIconByteArray = cursor.getBlob(cursor.getColumnIndex(BookmarksDatabaseHandler.FAVORITE_ICON));
+                    byte[] folderIconByteArray = cursor.getBlob(cursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON));
                     // Convert the byte array to a `Bitmap` beginning at the first byte and ending at the last.
                     Bitmap folderIconBitmap = BitmapFactory.decodeByteArray(folderIconByteArray, 0, folderIconByteArray.length);
                     // Display `folderIconBitmap` in `move_to_folder_icon`.
@@ -160,7 +164,7 @@ public class MoveToFolder extends AppCompatDialogFragment {
                     folderIconImageView.setImageBitmap(folderIconBitmap);
 
                     // Get the folder name from `cursor` and display it in `move_to_folder_name_textview`.
-                    String folderName = cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHandler.BOOKMARK_NAME));
+                    String folderName = cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
                     TextView folderNameTextView = (TextView) view.findViewById(R.id.move_to_folder_name_textview);
                     folderNameTextView.setText(folderName);
                 }
@@ -176,23 +180,23 @@ public class MoveToFolder extends AppCompatDialogFragment {
             byte[] homeFolderIconByteArray = homeFolderIconByteArrayOutputStream.toByteArray();
 
             // Setup a `MatrixCursor` for the `Home Folder`.
-            String[] homeFolderMatrixCursorColumnNames = {BookmarksDatabaseHandler._ID, BookmarksDatabaseHandler.BOOKMARK_NAME, BookmarksDatabaseHandler.FAVORITE_ICON};
+            String[] homeFolderMatrixCursorColumnNames = {BookmarksDatabaseHelper._ID, BookmarksDatabaseHelper.BOOKMARK_NAME, BookmarksDatabaseHelper.FAVORITE_ICON};
             MatrixCursor homeFolderMatrixCursor = new MatrixCursor(homeFolderMatrixCursorColumnNames);
             homeFolderMatrixCursor.addRow(new Object[]{0, getString(R.string.home_folder), homeFolderIconByteArray});
 
             // Add the parent folder to the list of folders not to display.
-            exceptFolders = DatabaseUtils.sqlEscapeString(BookmarksActivity.currentFolder);
+            exceptFolders = DatabaseUtils.sqlEscapeString(Bookmarks.currentFolder);
 
             // If a folder is selected, add it and all children to the list of folders not to display.
-            long[] selectedBookmarksLongArray = BookmarksActivity.checkedItemIds;
+            long[] selectedBookmarksLongArray = Bookmarks.checkedItemIds;
             for (long databaseIdLong : selectedBookmarksLongArray) {
                 // Get `databaseIdInt` for each selected bookmark.
                 int databaseIdInt = (int) databaseIdLong;
 
                 // If `databaseIdInt` is a folder.
-                if (BookmarksActivity.bookmarksDatabaseHandler.isFolder(databaseIdInt)) {
+                if (Bookmarks.bookmarksDatabaseHelper.isFolder(databaseIdInt)) {
                     // Get the name of the selected folder.
-                    String folderName = BookmarksActivity.bookmarksDatabaseHandler.getFolderName(databaseIdInt);
+                    String folderName = Bookmarks.bookmarksDatabaseHelper.getFolderName(databaseIdInt);
 
                     // Add the selected folder to the end of the list of folders not to display.
                     exceptFolders = exceptFolders + "," + DatabaseUtils.sqlEscapeString(folderName);
@@ -203,7 +207,7 @@ public class MoveToFolder extends AppCompatDialogFragment {
             }
 
             // Get a `foldersCursor`.
-            foldersCursor = BookmarksActivity.bookmarksDatabaseHandler.getFoldersCursorExcept(exceptFolders);
+            foldersCursor = Bookmarks.bookmarksDatabaseHelper.getFoldersCursorExcept(exceptFolders);
 
             // Combine `homeFolderMatrixCursor` and `foldersCursor`.
             MergeCursor foldersMergeCursor = new MergeCursor(new Cursor[]{homeFolderMatrixCursor, foldersCursor});
@@ -219,7 +223,7 @@ public class MoveToFolder extends AppCompatDialogFragment {
                 @Override
                 public void bindView(View view, Context context, Cursor cursor) {
                     // Get the folder icon from `cursor`.
-                    byte[] folderIconByteArray = cursor.getBlob(cursor.getColumnIndex(BookmarksDatabaseHandler.FAVORITE_ICON));
+                    byte[] folderIconByteArray = cursor.getBlob(cursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON));
                     // Convert the byte array to a `Bitmap` beginning at the first byte and ending at the last.
                     Bitmap folderIconBitmap = BitmapFactory.decodeByteArray(folderIconByteArray, 0, folderIconByteArray.length);
                     // Display `folderIconBitmap` in `move_to_folder_icon`.
@@ -228,7 +232,7 @@ public class MoveToFolder extends AppCompatDialogFragment {
                     folderIconImageView.setImageBitmap(folderIconBitmap);
 
                     // Get the folder name from `cursor` and display it in `move_to_folder_name_textview`.
-                    String folderName = cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHandler.BOOKMARK_NAME));
+                    String folderName = cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
                     TextView folderNameTextView = (TextView) view.findViewById(R.id.move_to_folder_name_textview);
                     folderNameTextView.setText(folderName);
                 }
@@ -246,14 +250,14 @@ public class MoveToFolder extends AppCompatDialogFragment {
 
     private void addSubfoldersToExceptFolders(String folderName) {
         // Get a `Cursor` will all the immediate subfolders.
-        Cursor subfoldersCursor = BookmarksActivity.bookmarksDatabaseHandler.getSubfoldersCursor(folderName);
+        Cursor subfoldersCursor = Bookmarks.bookmarksDatabaseHelper.getSubfoldersCursor(folderName);
 
         for (int i = 0; i < subfoldersCursor.getCount(); i++) {
             // Move `subfolderCursor` to the current item.
             subfoldersCursor.moveToPosition(i);
 
             // Get the name of the subfolder.
-            String subfolderName = subfoldersCursor.getString(subfoldersCursor.getColumnIndex(BookmarksDatabaseHandler.BOOKMARK_NAME));
+            String subfolderName = subfoldersCursor.getString(subfoldersCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
             // Run the same tasks for any subfolders of the subfolder.
             addSubfoldersToExceptFolders(subfolderName);
