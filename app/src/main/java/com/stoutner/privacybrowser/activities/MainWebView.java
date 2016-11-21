@@ -52,7 +52,6 @@ import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
@@ -76,11 +75,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-// These three GMS (Google Mobile Services) lines need to be removed for F-Droid to build correctly.
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.security.ProviderInstaller;
 
 import com.stoutner.privacybrowser.BannerAd;
 import com.stoutner.privacybrowser.R;
@@ -190,27 +184,15 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_coordinatorlayout);
 
-        // API 19 uses an old version of OpenSSL, which exposes users to man-in-the-middle attacks.
-        if (Build.VERSION.SDK_INT == 19) {
-            try {
-                // Update OpenSSL using Google Play Services.  This command must be removed for the build to succeed on F-Droid.
-                ProviderInstaller.installIfNeeded(this);
-            } catch (GooglePlayServicesRepairableException exception) {
-                Log.i("Privacy Browser", "OpenSSL needs to be updated");
-            } catch (GooglePlayServicesNotAvailableException exception) {
-                Log.i("Privacy Browser", "OpenSSL cannot be updated because Google Play Services are not available");
-            }
-        }
-
         // Get a handle for `inputMethodManager`.
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        // We need to use the SupportActionBar from android.support.v7.app.ActionBar until the minimum API is >= 21.
+        // We need to use the `SupportActionBar` from `android.support.v7.app.ActionBar` until the minimum API is >= 21.
         Toolbar supportAppBar = (Toolbar) findViewById(R.id.appBar);
         setSupportActionBar(supportAppBar);
         appBar = getSupportActionBar();
 
-        // This is needed to get rid of the Android Studio warning that appBar might be null.
+        // This is needed to get rid of the Android Studio warning that `appBar` might be null.
         assert appBar != null;
 
         // Add the custom url_app_bar layout, which shows the favoriteIcon, urlTextBar, and progressBar.
