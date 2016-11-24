@@ -19,19 +19,17 @@
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
 <android.support.v4.widget.DrawerLayout
+    android:id="@+id/drawerlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/drawerLayout"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent" >
 
     <!-- android:fitsSystemWindows="true" moves rootCoordinatorLayout below the system status bar.
         When it is specified the theme should include <item name="android:windowTranslucentStatus">true</item>.
         Setting the layout root to be focusableInTouchMode prevents urlTextBox from stealing focus on launch and opening the keyboard. -->
     <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/rootCoordinatorLayout"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/root_coordinatorlayout"
         xmlns:tools="http://schemas.android.com/tools"
         tools:context="com.stoutner.privacybrowser.activities.MainWebView"
         android:layout_height="match_parent"
@@ -47,7 +45,7 @@
             android:orientation="vertical" >
 
             <android.support.design.widget.AppBarLayout
-                android:id="@+id/appBarLayout"
+                android:id="@+id/app_bar_layout"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:theme="@style/AppBarOverlay" >
@@ -58,7 +56,7 @@
                     android:layout_width="match_parent" >
 
                     <android.support.v7.widget.Toolbar
-                        android:id="@+id/appBar"
+                        android:id="@+id/app_bar"
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
                         android:background="@color/grey_100"
@@ -75,7 +73,7 @@
     <!-- `fullScreenVideoFrameLayout` is used to display full screen videos.  It is initially `android:visibility="gone"` to hide it from view.
         The `FrameLayout` needs to be before the `NavigationView` or touches on the navigation drawer will not work after exiting full screen video using the back button.-->
     <FrameLayout
-        android:id="@+id/fullScreenVideoFrameLayout"
+        android:id="@+id/full_screen_video_framelayout"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:visibility="gone"
@@ -83,7 +81,7 @@
 
     <!-- The navigation drawer. -->
     <android.support.design.widget.NavigationView
-        android:id="@+id/navigationView"
+        android:id="@+id/navigationview"
         android:layout_height="match_parent"
         android:layout_width="wrap_content"
         android:layout_gravity="start"

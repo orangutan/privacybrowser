@@ -38,6 +38,7 @@ import android.preference.PreferenceManager;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -54,10 +55,13 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.ContextMenu;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.CookieManager;
 import android.webkit.DownloadListener;
@@ -77,6 +81,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.stoutner.privacybrowser.BannerAd;
+import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.helpers.OrbotProxyHelper;
 import com.stoutner.privacybrowser.dialogs.CreateHomeScreenShortcut;
@@ -112,6 +117,13 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
     // `sslCertificate` is public static so it can be accessed from `ViewSslCertificate`.  It is also used in `onCreate()`.
     public static SslCertificate sslCertificate;
 
+
+
+    // `drawerLayout` is used in `onCreate()`, `onNewIntent()`, and `onBackPressed()`.
+    private DrawerLayout drawerLayout;
+
+    // `rootCoordinatorLayout` is used in `onCreate()` and `applySettings()`.
+    private CoordinatorLayout rootCoordinatorLayout;
 
     // 'mainWebView' is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`, `findNextOnPage()`, `closeFindOnPage()`, and `loadUrlFromTextBox()`.
     private WebView mainWebView;
@@ -153,14 +165,17 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
     // `javaScriptEnabledSearchURL` is used in `loadURLFromTextBox()` and `applySettings()`.
     private String javaScriptEnabledSearchURL;
 
+    // `hideSystemBarsOnFullscreen` is used in `onCreate()` and `applySettings()`.
+    private boolean hideSystemBarsOnFullscreen;
+
+    // `translucentNavigationBarOnFullscreen` is used in `onCreate()` and `applySettings()`.
+    private boolean translucentNavigationBarOnFullscreen;
+
     // `mainMenu` is used in `onCreateOptionsMenu()` and `updatePrivacyIcons()`.
     private Menu mainMenu;
 
     // `drawerToggle` is used in `onCreate()`, `onPostCreate()`, `onConfigurationChanged()`, `onNewIntent()`, and `onNavigationItemSelected()`.
     private ActionBarDrawerToggle drawerToggle;
-
-    // `drawerLayout` is used in `onCreate()`, `onNewIntent()`, and `onBackPressed()`.
-    private DrawerLayout drawerLayout;
 
     // `urlTextBox` is used in `onCreate()`, `onOptionsItemSelected()`, and `loadUrlFromTextBox()`.
     private EditText urlTextBox;
@@ -182,13 +197,13 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
     @SuppressLint("SetJavaScriptEnabled")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_coordinatorlayout);
+        setContentView(R.layout.drawerlayout);
 
         // Get a handle for `inputMethodManager`.
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         // We need to use the `SupportActionBar` from `android.support.v7.app.ActionBar` until the minimum API is >= 21.
-        Toolbar supportAppBar = (Toolbar) findViewById(R.id.appBar);
+        Toolbar supportAppBar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(supportAppBar);
         appBar = getSupportActionBar();
 
@@ -221,15 +236,96 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
             }
         });
 
-        // Get handles for `fullScreenVideoFrameLayout`, `mainWebView`, and `find_on_page_edittext`.
-        final FrameLayout fullScreenVideoFrameLayout = (FrameLayout) findViewById(R.id.fullScreenVideoFrameLayout);
+        // Get handles for views that need to be accessed.
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawerlayout);
+        rootCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.root_coordinatorlayout);
         mainWebView = (WebView) findViewById(R.id.mainWebView);
         findOnPageEditText = (EditText) findViewById(R.id.find_on_page_edittext);
+        final FrameLayout fullScreenVideoFrameLayout = (FrameLayout) findViewById(R.id.full_screen_video_framelayout);
+
+        // Create a double-tap listener to toggle full-screen mode.
+        final GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+            // Override `onDoubleTap()`.  All other events are handled using the default settings.
+            @Override
+            public boolean onDoubleTap(MotionEvent event) {
+                if (appBar.isShowing()) {  // If `appBar` is visible, switch to full screen mode.
+                    // Hide the `appBar`.
+                    appBar.hide();
+
+                    // Hide the `BannerAd` in the free flavor.
+                    if (BuildConfig.FLAVOR.contentEquals("free")) {
+                        BannerAd.hideAd(adView);
+                    }
+
+                    // Modify the system bars.
+                    if (hideSystemBarsOnFullscreen) {  // Hide everything.
+                        // Remove the translucent overlays.
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                        // Remove the translucent status bar overlay on the `Drawer Layout`, which is special and needs its own command.
+                        drawerLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
+                        /* SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                         * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                         * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically rehides them after they are shown.
+                         */
+                        rootCoordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+                        // Set `rootCoordinatorLayout` to fill the whole screen.
+                        rootCoordinatorLayout.setFitsSystemWindows(false);
+                    } else {  // Hide everything except the status and navigation bars.
+                        // Set `rootCoordinatorLayout` to fit under the status and navigation bars.
+                        rootCoordinatorLayout.setFitsSystemWindows(false);
+
+                        if (translucentNavigationBarOnFullscreen) {  // There is an Android Support Library bug that causes an ugly scrim to print on the `Drawer Layout` when the navigation bar is displayed on the right of the screen.
+                            // Set the navigation bar to be translucent.
+                            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+                        }
+                    }
+                } else {  // Switch to normal viewing mode.
+                    // Show the `appBar`.
+                    appBar.show();
+
+                    // Show the `BannerAd` in the free flavor.
+                    if (BuildConfig.FLAVOR.contentEquals("free")) {
+                        // Reload the ad.  Because the screen may have rotated, we need to use `reloadAfterRotate`.
+                        BannerAd.reloadAfterRotate(adView, getApplicationContext(), getString(R.string.ad_id));
+
+                        // Reinitialize the `adView` variable, as the `View` will have been removed and re-added by `BannerAd.reloadAfterRotate()`.
+                        adView = findViewById(R.id.adView);
+                    }
+
+                    // Remove the translucent navigation bar flag if it is set.
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+
+                    // Add the translucent status flag if it is unset.  This also resets `drawerLayout's` `View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN`.
+                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                    // Remove any `SYSTEM_UI` flags from `rootCoordinatorLayout`.
+                    rootCoordinatorLayout.setSystemUiVisibility(0);
+
+                    // Constrain `rootCoordinatorLayout` inside the status and navigation bars.
+                    rootCoordinatorLayout.setFitsSystemWindows(true);
+                }
+
+                // Consume the double-tap.
+                return true;
+            }
+        });
+
+        // Pass all touch events on `mainWebView` through `gestureDetector` to check for double-taps.
+        mainWebView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // Send the `event` to `gestureDetector`.
+                return gestureDetector.onTouchEvent(event);
+            }
+        });
 
         // Update `findOnPageCountTextView`.
         mainWebView.setFindListener(new WebView.FindListener() {
             // Get a handle for `findOnPageCountTextView`.
-            TextView findOnPageCountTextView = (TextView) findViewById(R.id.find_on_page_count_textview);
+            final TextView findOnPageCountTextView = (TextView) findViewById(R.id.find_on_page_count_textview);
 
             @Override
             public void onFindResultReceived(int activeMatchOrdinal, int numberOfMatches, boolean isDoneCounting) {
@@ -292,16 +388,14 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
             }
         });
 
-        // Create the navigation drawer.
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        // `DrawerTitle` identifies the drawer in accessibility mode.
+        // `DrawerTitle` identifies the `DrawerLayout` in accessibility mode.
         drawerLayout.setDrawerTitle(GravityCompat.START, getString(R.string.navigation_drawer));
 
         // Listen for touches on the navigation menu.
-        final NavigationView navigationView = (NavigationView) findViewById(R.id.navigationView);
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.navigationview);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Get handles for `navigationMenu` and the back and forward menu items.  The menu is zero-based, so item 1 and 2 and the second and third items in the menu.
+        // Get handles for `navigationMenu` and the back and forward menu items.  The menu is zero-based, so items 1, 2, and 3 are the second, third, and fourth entries in the menu.
         final Menu navigationMenu = navigationView.getMenu();
         final MenuItem navigationBackMenuItem = navigationMenu.getItem(1);
         final MenuItem navigationForwardMenuItem = navigationMenu.getItem(2);
@@ -438,13 +532,15 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                 mainWebView.setVisibility(View.GONE);
 
                 // Hide the ad if this is the free flavor.
-                BannerAd.hideAd(adView);
+                if (BuildConfig.FLAVOR.contentEquals("free")) {
+                    BannerAd.hideAd(adView);
+                }
 
-                /* SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bars on the bottom or right of the screen.
-                 * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar across the top of the screen.
-                 * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the navigation and status bars ghosted overlays and automatically rehides them.
+                /* SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                 * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                 * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically rehides them after they are shown.
                  */
-                view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
             }
 
             // Exit full screen video
@@ -455,7 +551,9 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                 mainWebView.setVisibility(View.VISIBLE);
 
                 // Show the ad if this is the free flavor.
-                BannerAd.showAd(adView);
+                if (BuildConfig.FLAVOR.contentEquals("free")) {
+                    BannerAd.showAd(adView);
+                }
 
                 // Hide the fullScreenVideoFrameLayout.
                 fullScreenVideoFrameLayout.removeAllViews();
@@ -859,7 +957,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
 
             case R.id.find_on_page:
                 // Hide the URL app bar.
-                Toolbar appBarToolbar = (Toolbar) findViewById(R.id.appBar);
+                Toolbar appBarToolbar = (Toolbar) findViewById(R.id.app_bar);
                 appBarToolbar.setVisibility(View.GONE);
 
                 // Show the Find on Page `RelativeLayout`.
@@ -1055,11 +1153,17 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        // Reload the ad if this is the free flavor.
-        BannerAd.reloadAfterRotate(adView, getApplicationContext(), getString(R.string.ad_id));
+        // Handle the `adView` for the free version.
+        if (BuildConfig.FLAVOR.contentEquals("free")) {
+            // Reload the add if we are not in full screen mode.
+            if (adView.isShown()) {
+                // Reload the ad.
+                BannerAd.reloadAfterRotate(adView, getApplicationContext(), getString(R.string.ad_id));
 
-        // Reinitialize the adView variable, as the View will have been removed and re-added in the free flavor by BannerAd.reloadAfterRotate().
-        adView = findViewById(R.id.adView);
+                // Reinitialize the `adView` variable, as the `View` will have been removed and re-added by `BannerAd.reloadAfterRotate()`.
+                adView = findViewById(R.id.adView);
+            }
+        }
 
         // `invalidateOptionsMenu` should recalculate the number of action buttons from the menu to display on the app bar, but it doesn't because of the this bug:  https://code.google.com/p/android/issues/detail?id=20493#c8
         // ActivityCompat.invalidateOptionsMenu(this);
@@ -1327,10 +1431,14 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
     public void onPause() {
         // Pause `mainWebView`.
         mainWebView.onPause();
+
+        // Stop all JavaScript.
         mainWebView.pauseTimers();
 
-        // We need to pause the adView or it will continue to consume resources in the background on the free flavor.
-        BannerAd.pauseAd(adView);
+        // Pause the adView or it will continue to consume resources in the background on the free flavor.
+        if (BuildConfig.FLAVOR.contentEquals("free")) {
+            BannerAd.pauseAd(adView);
+        }
 
         super.onPause();
     }
@@ -1339,12 +1447,16 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
     public void onResume() {
         super.onResume();
 
-        // Resume `mainWebView`.
+        // Resume JavaScript (if enabled).
         mainWebView.resumeTimers();
+
+        // Resume `mainWebView`.
         mainWebView.onResume();
 
-        // We need to resume the adView for the free flavor.
-        BannerAd.resumeAd(adView);
+        // Resume the adView for the free flavor.
+        if (BuildConfig.FLAVOR.contentEquals("free")) {
+            BannerAd.resumeAd(adView);
+        }
     }
 
     @Override
@@ -1429,7 +1541,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         findOnPageLinearLayout.setVisibility(View.GONE);
 
         // Show the URL app bar.
-        Toolbar appBarToolbar = (Toolbar) findViewById(R.id.appBar);
+        Toolbar appBarToolbar = (Toolbar) findViewById(R.id.app_bar);
         appBarToolbar.setVisibility(View.VISIBLE);
 
         // Hide the keyboard so we can see the webpage.  `0` indicates no additional flags.
@@ -1452,6 +1564,8 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         swipeToRefreshEnabled = sharedPreferences.getBoolean("swipe_to_refresh_enabled", false);
         boolean doNotTrackEnabled = sharedPreferences.getBoolean("do_not_track", true);
         boolean proxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
+        hideSystemBarsOnFullscreen = sharedPreferences.getBoolean("hide_system_bars", false);
+        translucentNavigationBarOnFullscreen = sharedPreferences.getBoolean("translucent_navigation_bar", true);
 
         // Because they can be modified on-the-fly by the user, these default settings are only applied when the program first runs.
         if (javaScriptEnabled == null) {  // If `javaScriptEnabled` is null the program is just starting.
@@ -1524,6 +1638,37 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
             OrbotProxyHelper.setProxy(getApplicationContext(), this, "localhost", "8118");
         } else {  // Reset the proxy to default.  The host is `""` and the port is `"0"`.
             OrbotProxyHelper.setProxy(getApplicationContext(), this, "", "0");
+        }
+
+        // If we are in full screen mode update the `SYSTEM_UI` flags.
+        if (!appBar.isShowing()) {
+            if (hideSystemBarsOnFullscreen) {  // Hide everything.
+                // Remove the translucent navigation setting if it is currently flagged.
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+
+                // Remove the translucent status bar overlay.
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                // Remove the translucent status bar overlay on the `Drawer Layout`, which is special and needs its own command.
+                drawerLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
+                /* SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                 * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                 * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically rehides them after they are shown.
+                 */
+                rootCoordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            } else {  // Hide everything except the status and navigation bars.
+                // Add the translucent status flag if it is unset.
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                if (translucentNavigationBarOnFullscreen) {
+                    // Set the navigation bar to be translucent.
+                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+                } else {
+                    // Set the navigation bar to be black.
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+                }
+            }
         }
     }
 

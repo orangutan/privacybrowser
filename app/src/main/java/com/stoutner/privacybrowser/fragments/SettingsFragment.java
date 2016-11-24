@@ -128,6 +128,10 @@ public class SettingsFragment extends PreferenceFragment {
         String defaultFontSizeString = savedPreferences.getString("default_font_size", "100");
         defaultFontSizePreference.setSummary(defaultFontSizeString + "%%");
 
+        // Disable `transparent_navigation_bar` if `hide_system_bars` is enabled.
+        final Preference translucentNavigationBarPreference = findPreference("translucent_navigation_bar");
+        translucentNavigationBarPreference.setEnabled(!savedPreferences.getBoolean("hide_system_bars", false));
+
 
         // Listen for preference changes.
         preferencesListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
@@ -223,6 +227,12 @@ public class SettingsFragment extends PreferenceFragment {
 
                         // Update the summary text of `default_font_size`.
                         defaultFontSizePreference.setSummary(newDefaultFontSizeString + "%%");
+                        break;
+
+                    case "hide_system_bars":
+                        // Enable `translucentNavigationBarPreference` if `hide_system_bars` is disabled.
+                        translucentNavigationBarPreference.setEnabled(!sharedPreferences.getBoolean("hide_system_bars", false));
+                        break;
 
                     default:
                         // If no match, do nothing.

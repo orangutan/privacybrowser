@@ -23,6 +23,7 @@
       <w>displayorder</w>
       <w>dname</w>
       <w>downloadfile</w>
+      <w>drawerlayout</w>
       <w>dwallach</w>
       <w>eadd</w>
       <w>edittext</w>
@@ -30,6 +31,7 @@
       <w>favoriteicon</w>
       <w>fbee</w>
       <w>firebase</w>
+      <w>framelayout</w>
       <w>gerlach</w>
       <w>intl</w>
       <w>isfolder</w>

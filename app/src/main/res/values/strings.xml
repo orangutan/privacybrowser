@@ -276,6 +276,11 @@
         </string-array>
         <string name="javascript_enabled_search_custom_url">JavaScript-enabled search custom URL</string>
         <string name="custom_url">Custom URL</string>
+    <string name="fullscreen">Full Screen</string>
+        <string name="hide_system_bars">Hide system bars</string>
+        <string name="hide_system_bars_summary">Hide the status and navigation bars in full screen mode.</string>
+        <string name="translucent_navigation_bar">Translucent navigation bar</string>
+        <string name="translucent_navigation_bar_summary">Make the navigation bar translucent in full screen mode.</string>
     <string name="general">General</string>
         <string name="homepage_preference">Homepage</string>
         <string name="default_font_size">Default font size</string>
