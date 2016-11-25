@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  Copyright 2016 Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<!-- `tools:ignore="MissingTranslation"` allows release APKs to be built if translation strings are missing.  The missing strings will fall back to English. -->
+
+<resources>
+    <!-- Activities. -->
+    <string name="privacy_browser">Navegador Privado</string>
+    <string name="privacy_browser_settings">Navegador Privado Configuración</string>
+    <!-- <string name="android_asset_path">es</string>  -->  <!-- For translations, this should be the localization abbreviation.  For example, Spanish is `es`. -->
+
+    <!-- MainWebView. -->
+    <string name="privacy_mode">Modo Privado</string>
+    <string name="javascript_enabled">JavaScript habilitado</string>
+    <string name="javascript_disabled">JavaScript deshabilitado</string>
+    <string name="first_party_cookies_enabled">Cookies de primeras partes habilitadas</string>
+    <string name="first_party_cookies_disabled">Cookies de primeras partes deshabilitadas</string>
+    <string name="third_party_cookies_enabled">Cookies de terceras partes habilitadas</string>
+    <string name="third_party_cookies_disabled">Cookies de terceras partes deshabilitadas</string>
+    <string name="dom_storage_enabled">Almacén de DOM habilitado</string>
+    <string name="dom_storage_disabled">Almacén de DOM deshabilitado</string>
+    <string name="form_data_enabled">Datos del formulario habilitado</string>
+    <string name="form_data_disabled">Datos del fromulario deshabilitado</string>
+    <string name="cookies_deleted">Cookies borradas</string>
+    <string name="dom_storage_deleted">Almacén de DOM borrado</string>
+    <string name="open_navigation_drawer">Abrir el Cajón de Navigación</string>
+    <string name="close_navigation_drawer">Cerrar el Cajón de Navigación</string>
+</resources>

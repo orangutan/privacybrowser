@@ -42,8 +42,8 @@
     <string name="form_data_disabled">Form Data disabled</string>
     <string name="cookies_deleted">Cookies deleted</string>
     <string name="dom_storage_deleted">DOM Storage deleted</string>
-    <string name="open_navigation">Open Navigation Drawer</string>
-    <string name="close_navigation">Close Navigation Drawer</string>
+    <string name="open_navigation_drawer">Open Navigation Drawer</string>
+    <string name="close_navigation_drawer">Close Navigation Drawer</string>
 
     <!-- Save As. -->
     <string name="save_as">Save as</string>

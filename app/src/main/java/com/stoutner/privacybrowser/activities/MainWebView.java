@@ -431,7 +431,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         });
 
         // drawerToggle creates the hamburger icon at the start of the AppBar.
-        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, supportAppBar, R.string.open_navigation, R.string.close_navigation);
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, supportAppBar, R.string.open_navigation_drawer, R.string.close_navigation_drawer);
 
         mainWebView.setWebViewClient(new WebViewClient() {
             // `shouldOverrideUrlLoading` makes this `WebView` the default handler for URLs inside the app, so that links are not kicked out to other apps.
@@ -439,7 +439,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
             @SuppressWarnings("deprecation")
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                // Use an external email program if the link begins with "mailto:".
+                // Use an external email program if the link begins with `mailto:`.
                 if (url.startsWith("mailto:")) {
                     // We use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
@@ -1165,16 +1165,13 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        // Handle the `adView` for the free version.
-        if (BuildConfig.FLAVOR.contentEquals("free")) {
-            // Reload the ad if we are not in full screen mode.
-            if (adView.isShown() && !fullScreenVideoFrameLayout.isShown()) {
-                // Reload the ad.
-                BannerAd.reloadAfterRotate(adView, getApplicationContext(), getString(R.string.ad_id));
+        // Reload the ad for the free flavor if we are not in full screen mode.
+        if (BuildConfig.FLAVOR.contentEquals("free") && adView.isShown() && !fullScreenVideoFrameLayout.isShown()) {
+            // Reload the ad.
+            BannerAd.reloadAfterRotate(adView, getApplicationContext(), getString(R.string.ad_id));
 
-                // Reinitialize the `adView` variable, as the `View` will have been removed and re-added by `BannerAd.reloadAfterRotate()`.
-                adView = findViewById(R.id.adView);
-            }
+            // Reinitialize the `adView` variable, as the `View` will have been removed and re-added by `BannerAd.reloadAfterRotate()`.
+            adView = findViewById(R.id.adView);
         }
 
         // `invalidateOptionsMenu` should recalculate the number of action buttons from the menu to display on the app bar, but it doesn't because of the this bug:  https://code.google.com/p/android/issues/detail?id=20493#c8

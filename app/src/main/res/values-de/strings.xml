@@ -43,8 +43,8 @@
     <string name="form_data_disabled">Formulardaten deaktiviert</string>
     <string name="cookies_deleted">Cookies gelöscht</string>
     <string name="dom_storage_deleted">DOM-Speicher gelöscht</string>
-    <string name="open_navigation">Navigationspanel öffnen</string>
-    <string name="close_navigation">Navigationspanel schließen</string>
+    <string name="open_navigation_drawer">Navigationspanel öffnen</string>
+    <string name="close_navigation_drawer">Navigationspanel schließen</string>
 
     <!-- Save As. -->
     <string name="save_as">Speichern unter</string>
