@@ -1417,11 +1417,9 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         mainWebView.clearHistory();
     }
 
-    // Override onBackPressed to handle the navigation drawer and mainWebView.
+    // Override `onBackPressed` to handle the navigation drawer and `mainWebView`.
     @Override
     public void onBackPressed() {
-        final WebView mainWebView = (WebView) findViewById(R.id.mainWebView);
-
         // Close the navigation drawer if it is available.  GravityCompat.START is the drawer on the left on Left-to-Right layout text.
         if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
@@ -1430,7 +1428,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
             if (mainWebView.canGoBack()) {
                 mainWebView.goBack();
             } else {
-                // Pass onBackPressed to the system.
+                // Pass `onBackPressed()` to the system.
                 super.onBackPressed();
             }
         }

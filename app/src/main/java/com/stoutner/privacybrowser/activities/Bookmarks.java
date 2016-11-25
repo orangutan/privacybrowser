@@ -107,12 +107,11 @@ public class Bookmarks extends AppCompatActivity implements CreateBookmark.Creat
 
         // Display the home arrow on `SupportActionBar`.
         appBar = getSupportActionBar();
-        assert appBar != null;// This assert removes the incorrect warning in Android Studio on the following line that appBar might be null.
+        assert appBar != null;// This assert removes the incorrect warning in Android Studio on the following line that `appBar` might be null.
         appBar.setDisplayHomeAsUpEnabled(true);
 
 
-        // Initialize the database handler and the ListView.
-        // `this` specifies the context.  The two `null`s do not specify the database name or a `CursorFactory`.
+        // Initialize the database handler and the ListView.  `this` specifies the context.  The two `null`s do not specify the database name or a `CursorFactory`.
         // The `0` is to specify a database version, but that is set instead using a constant in `BookmarksDatabaseHelper`.
         bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this, null, null, 0);
         bookmarksListView = (ListView) findViewById(R.id.bookmarks_listview);
@@ -123,8 +122,7 @@ public class Bookmarks extends AppCompatActivity implements CreateBookmark.Creat
         // Display the bookmarks in the ListView.
         updateBookmarksListView(currentFolder);
 
-        // Set a listener so that tapping a list item loads the URL.  We need to store the activity
-        // in a variable so that we can return to the parent activity after loading the URL.
+        // Set a listener so that tapping a list item loads the URL.  We need to store the activity in a variable so that we can return to the parent activity after loading the URL.
         final Activity bookmarksActivity = this;
         bookmarksListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -523,13 +521,13 @@ public class Bookmarks extends AppCompatActivity implements CreateBookmark.Creat
 
         switch (menuItemId) {
             case android.R.id.home:
-                // Exit Bookmarks if currently at the home folder.
-                if (currentFolder.isEmpty()) {
+                if (currentFolder.isEmpty()) {  // Exit Bookmarks if currently in the home folder.
                     NavUtils.navigateUpFromSameTask(this);
                 } else {  // Navigate up one folder.
                     // Place the former parent folder in `currentFolder`.
                     currentFolder = bookmarksDatabaseHelper.getParentFolder(currentFolder);
 
+                    // Exit Bookmarks if currently in the home folder.
                     updateBookmarksListView(currentFolder);
                 }
                 break;
@@ -555,6 +553,19 @@ public class Bookmarks extends AppCompatActivity implements CreateBookmark.Creat
                 break;
         }
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (currentFolder.isEmpty()) {  // Exit Bookmarks if currently in the home folder.
+            super.onBackPressed();
+        } else {  // Navigate up one folder.
+            // Place the former parent folder in `currentFolder`.
+            currentFolder = bookmarksDatabaseHelper.getParentFolder(currentFolder);
+
+            // Reload the `ListView`.
+            updateBookmarksListView(currentFolder);
+        }
     }
 
     @Override
