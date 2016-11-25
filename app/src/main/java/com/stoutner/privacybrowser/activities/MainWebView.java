@@ -128,6 +128,12 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
     // 'mainWebView' is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`, `findNextOnPage()`, `closeFindOnPage()`, and `loadUrlFromTextBox()`.
     private WebView mainWebView;
 
+    // `findOnPageEditText` is used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
+    private EditText findOnPageEditText;
+
+    // `fullScreenVideoFrameLayout` is used in `onCreate()` and `onConfigurationChanged()`.
+    private FrameLayout fullScreenVideoFrameLayout;
+
     // `swipeRefreshLayout` is used in `onCreate()`, `onPrepareOptionsMenu`, and `onRestart()`.
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -186,9 +192,6 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
     // `sslErrorHandler` is used in `onCreate()`, `onSslErrorCancel()`, and `onSslErrorProceed`.
     private SslErrorHandler sslErrorHandler;
 
-    // `findOnPageEditText` is used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
-    private EditText findOnPageEditText;
-
     // `inputMethodManager` is used in `onOptionsItemSelected()`, `loadUrlFromTextBox()`, and `closeFindOnPage()`.
     private InputMethodManager inputMethodManager;
 
@@ -241,7 +244,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         rootCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.root_coordinatorlayout);
         mainWebView = (WebView) findViewById(R.id.mainWebView);
         findOnPageEditText = (EditText) findViewById(R.id.find_on_page_edittext);
-        final FrameLayout fullScreenVideoFrameLayout = (FrameLayout) findViewById(R.id.full_screen_video_framelayout);
+        fullScreenVideoFrameLayout = (FrameLayout) findViewById(R.id.full_screen_video_framelayout);
 
         // Create a double-tap listener to toggle full-screen mode.
         final GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
@@ -277,7 +280,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                         // Set `rootCoordinatorLayout` to fit under the status and navigation bars.
                         rootCoordinatorLayout.setFitsSystemWindows(false);
 
-                        if (translucentNavigationBarOnFullscreen) {  // There is an Android Support Library bug that causes an ugly scrim to print on the `Drawer Layout` when the navigation bar is displayed on the right of the screen.
+                        if (translucentNavigationBarOnFullscreen) {  // There is an Android Support Library bug that causes a scrim to print on the right side of the `Drawer Layout` when the navigation bar is displayed on the right of the screen.
                             // Set the navigation bar to be translucent.
                             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
                         }
@@ -522,42 +525,51 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
             // Enter full screen video
             @Override
             public void onShowCustomView(View view, CustomViewCallback callback) {
-                appBar.hide();
-
-                // Show the fullScreenVideoFrameLayout.
-                fullScreenVideoFrameLayout.addView(view);
-                fullScreenVideoFrameLayout.setVisibility(View.VISIBLE);
-
-                // Hide the mainWebView.
-                mainWebView.setVisibility(View.GONE);
-
-                // Hide the ad if this is the free flavor.
+                // Pause the ad if this is the free flavor.
                 if (BuildConfig.FLAVOR.contentEquals("free")) {
-                    BannerAd.hideAd(adView);
+                    BannerAd.pauseAd(adView);
                 }
+
+                // Remove the translucent overlays.
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                // Remove the translucent status bar overlay on the `Drawer Layout`, which is special and needs its own command.
+                drawerLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
                 /* SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
                  * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
                  * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically rehides them after they are shown.
                  */
-                view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                rootCoordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+                // Set `rootCoordinatorLayout` to fill the entire screen.
+                rootCoordinatorLayout.setFitsSystemWindows(false);
+
+                // Add `view` to `fullScreenVideoFrameLayout` and display it on the screen.
+                fullScreenVideoFrameLayout.addView(view);
+                fullScreenVideoFrameLayout.setVisibility(View.VISIBLE);
             }
 
             // Exit full screen video
             public void onHideCustomView() {
-                appBar.show();
+                // Hide `fullScreenVideoFrameLayout`.
+                fullScreenVideoFrameLayout.removeAllViews();
+                fullScreenVideoFrameLayout.setVisibility(View.GONE);
 
-                // Show the mainWebView.
-                mainWebView.setVisibility(View.VISIBLE);
+                // Add the translucent status flag.  This also resets `drawerLayout's` `View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN`.
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                // Set `rootCoordinatorLayout` to fit inside the status and navigation bars.  This also clears the `SYSTEM_UI` flags.
+                rootCoordinatorLayout.setFitsSystemWindows(true);
 
                 // Show the ad if this is the free flavor.
                 if (BuildConfig.FLAVOR.contentEquals("free")) {
-                    BannerAd.showAd(adView);
-                }
+                    // Reload the ad.  Because the screen may have rotated, we need to use `reloadAfterRotate`.
+                    BannerAd.reloadAfterRotate(adView, getApplicationContext(), getString(R.string.ad_id));
 
-                // Hide the fullScreenVideoFrameLayout.
-                fullScreenVideoFrameLayout.removeAllViews();
-                fullScreenVideoFrameLayout.setVisibility(View.GONE);
+                    // Reinitialize the `adView` variable, as the `View` will have been removed and re-added by `BannerAd.reloadAfterRotate()`.
+                    adView = findViewById(R.id.adView);
+                }
             }
         });
 
@@ -1155,8 +1167,8 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
 
         // Handle the `adView` for the free version.
         if (BuildConfig.FLAVOR.contentEquals("free")) {
-            // Reload the add if we are not in full screen mode.
-            if (adView.isShown()) {
+            // Reload the ad if we are not in full screen mode.
+            if (adView.isShown() && !fullScreenVideoFrameLayout.isShown()) {
                 // Reload the ad.
                 BannerAd.reloadAfterRotate(adView, getApplicationContext(), getString(R.string.ad_id));
 

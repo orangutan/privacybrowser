@@ -68,16 +68,16 @@
 
             <include layout="@layout/main_webview" />
         </LinearLayout>
-    </android.support.design.widget.CoordinatorLayout>
 
-    <!-- `fullScreenVideoFrameLayout` is used to display full screen videos.  It is initially `android:visibility="gone"` to hide it from view.
-        The `FrameLayout` needs to be before the `NavigationView` or touches on the navigation drawer will not work after exiting full screen video using the back button.-->
-    <FrameLayout
-        android:id="@+id/full_screen_video_framelayout"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:background="@color/black" />
+        <!-- `fullScreenVideoFrameLayout` is used to display full screen videos.  It is initially `android:visibility="gone"` to hide it from view.
+    The `FrameLayout` needs to be before the `NavigationView` or touches on the navigation drawer will not work after exiting full screen video using the back button.-->
+        <FrameLayout
+            android:id="@+id/full_screen_video_framelayout"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:background="@color/black" />
+    </android.support.design.widget.CoordinatorLayout>
 
     <!-- The navigation drawer. -->
     <android.support.design.widget.NavigationView
