@@ -42,4 +42,16 @@
     <string name="dom_storage_deleted">Almacén de DOM borrado</string>
     <string name="open_navigation_drawer">Abrir el Cajón de Navigación</string>
     <string name="close_navigation_drawer">Cerrar el Cajón de Navigación</string>
+
+    <!-- Save As. -->
+    <string name="save_as">Guardar como</string>
+    <string name="save_image_as">Guardar imagen como</string>
+    <string name="file_name">Nombre del archivo</string>
+    <string name="image_name">Nombre de la imagen</string>
+    <string name="unknown_size">Tamaño desconocido</string>
+    <string name="download">Descargar</string>
+
+    <!-- Custom App Bar. -->
+    <string name="favorite_icon">Ícono Favorito</string>
+    <string name="url_or_search_terms">URL o Búsqueda</string>
 </resources>
