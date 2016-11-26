@@ -198,8 +198,8 @@
     <string name="save_form_data_preference_summary">Mit gespeicherten Formulardaten können Formularfelder auf Websites automatisch ausgefüllt werden.</string>
     <string name="user_agent">User Agent</string>
     <string-array name="user_agent_entries">
-        <item>WebView-Standard</item>
         <item>Privacy Browser 1.0</item>
+        <item>WebView-Standard</item>
         <item>Firefox 48 auf Android 6.0.1</item>
         <item>Chrome 52 auf Android 6.0.1</item>
         <item>Safari auf iOS 10</item>

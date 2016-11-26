@@ -60,7 +60,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the current user-agent as the summary text for the "user_agent" preference when the preference screen is loaded.
         final Preference userAgentPreference = findPreference("user_agent");
-        switch (savedPreferences.getString("user_agent", "Default user agent")) {
+        switch (savedPreferences.getString("user_agent", "PrivacyBrowser/1.0")) {
             case "Default user agent":
                 // Get the user agent text from the webview (which changes based on the version of Android and WebView installed).
                 userAgentPreference.setSummary(bareWebView.getSettings().getUserAgentString());
@@ -73,7 +73,7 @@ public class SettingsFragment extends PreferenceFragment {
 
             default:
                 // Display the user agent from the preference as the summary text.
-                userAgentPreference.setSummary(savedPreferences.getString("user_agent", "Default user agent"));
+                userAgentPreference.setSummary(savedPreferences.getString("user_agent", "PrivacyBrowser/1.0"));
                 break;
         }
 
@@ -84,7 +84,7 @@ public class SettingsFragment extends PreferenceFragment {
 
 
         // Set the JavaScript-disabled search URL as the summary text for the JavaScript-disabled search preference when the preference screen is loaded.
-        // The default is "https://duckduckgo.com/html/?q=".
+        // The default is `https://duckduckgo.com/html/?q=`.
         final Preference javaScriptDisabledSearchPreference = findPreference("javascript_disabled_search");
         String javaScriptDisabledSearchString = savedPreferences.getString("javascript_disabled_search", "https://duckduckgo.com/html/?q=");
         if (javaScriptDisabledSearchString.equals("Custom URL")) {
@@ -95,14 +95,14 @@ public class SettingsFragment extends PreferenceFragment {
             javaScriptDisabledSearchPreference.setSummary(javaScriptDisabledSearchString);
         }
 
-        // Set the summary text for "javascript_disabled_search_custom_url" (the default is "") and enable it if "javascript_disabled_search" is set to "Custom URL".
+        // Set the summary text for `javascript_disabled_search_custom_url` (the default is `""`) and enable it if `javascript_disabled_search` is set to `Custom URL`.
         final Preference javaScriptDisabledSearchCustomURLPreference = findPreference("javascript_disabled_search_custom_url");
         javaScriptDisabledSearchCustomURLPreference.setSummary(savedPreferences.getString("javascript_disabled_search_custom_url", ""));
         javaScriptDisabledSearchCustomURLPreference.setEnabled(javaScriptDisabledSearchString.equals("Custom URL"));
 
 
         // Set the JavaScript-enabled searchURL as the summary text for the JavaScript-enabled search preference when the preference screen is loaded.
-        // The default is "https://duckduckgo.com/?q=".
+        // The default is `https://duckduckgo.com/?q=`.
         final Preference javaScriptEnabledSearchPreference = findPreference("javascript_enabled_search");
         String javaScriptEnabledSearchString = savedPreferences.getString("javascript_enabled_search", "https://duckduckgo.com/?q=");
         if (javaScriptEnabledSearchString.equals("Custom URL")) {
@@ -113,7 +113,7 @@ public class SettingsFragment extends PreferenceFragment {
             javaScriptEnabledSearchPreference.setSummary(javaScriptEnabledSearchString);
         }
 
-        // Set the summary text for "javascript_enabled_search_custom_url" (the default is "") and enable it if "javascript_enabled_search" is set to "Custom URL".
+        // Set the summary text for `javascript_enabled_search_custom_url` (the default is `""`) and enable it if `javascript_enabled_search` is set to `Custom URL`.
         final Preference javaScriptEnabledSearchCustomURLPreference = findPreference("javascript_enabled_search_custom_url");
         javaScriptEnabledSearchCustomURLPreference.setSummary(savedPreferences.getString("javascript_enabled_search_custom_url", ""));
         javaScriptEnabledSearchCustomURLPreference.setEnabled(javaScriptEnabledSearchString.equals("Custom URL"));
@@ -154,7 +154,7 @@ public class SettingsFragment extends PreferenceFragment {
                         break;
 
                     case "user_agent":
-                        String userAgentString = sharedPreferences.getString("user_agent", "Default user agent");
+                        String userAgentString = sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0");
 
                         switch (userAgentString) {
                             case "Default user agent":
@@ -171,14 +171,14 @@ public class SettingsFragment extends PreferenceFragment {
 
                             default:
                                 // Display the user agent as the summary text for userAgentPreference, and disable customUserAgent.
-                                userAgentPreference.setSummary(sharedPreferences.getString("user_agent", "Default user agent"));
+                                userAgentPreference.setSummary(sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0"));
                                 customUserAgent.setEnabled(false);
                                 break;
                         }
                         break;
 
                     case "custom_user_agent":
-                        // Set the new custom user agent as the summary text for "custom_user_agent".  The default is "PrivacyBrowser/1.0".
+                        // Set the new custom user agent as the summary text for `custom_user_agent`.  The default is `PrivacyBrowser/1.0`.
                         customUserAgent.setSummary(sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0"));
                         break;
 

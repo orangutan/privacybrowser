@@ -1560,7 +1560,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Store the values from `sharedPreferences` in variables.
-        String userAgentString = sharedPreferences.getString("user_agent", "Default user agent");
+        String userAgentString = sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0");
         String customUserAgentString = sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0");
         String javaScriptDisabledSearchString = sharedPreferences.getString("javascript_disabled_search", "https://duckduckgo.com/html/?q=");
         String javaScriptDisabledCustomSearchString = sharedPreferences.getString("javascript_disabled_search_custom_url", "");
