@@ -936,7 +936,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
             case R.id.clearFormData:
                 WebViewDatabase mainWebViewDatabase = WebViewDatabase.getInstance(this);
                 mainWebViewDatabase.clearFormData();
-                mainWebView.reload();
+                Snackbar.make(findViewById(R.id.mainWebView), R.string.form_data_deleted, Snackbar.LENGTH_SHORT).show();
                 return true;
 
             case R.id.fontSizeFiftyPercent:
@@ -1108,8 +1108,8 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                 domStorage.deleteAllData();
 
                 // Clear form data.
-                WebViewDatabase formData = WebViewDatabase.getInstance(this);
-                formData.clearFormData();
+                WebViewDatabase webViewDatabase = WebViewDatabase.getInstance(this);
+                webViewDatabase.clearFormData();
 
                 // Clear cache.  The argument of "true" includes disk files.
                 mainWebView.clearCache(true);

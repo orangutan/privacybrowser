@@ -85,7 +85,7 @@
     <string name="url">URL</string>
     <string name="url_label">URL:</string>
 
-    <!-- Main `WebView` Navigation Drawer. -->
+    <!-- MainWebView Navigation Drawer. -->
     <string name="navigation_drawer">Navigationspanel</string>
     <string name="navigation">Navigation</string>
     <string name="home">Startseite</string>
@@ -100,7 +100,7 @@
     <string name="about">Infos</string>
     <string name="clear_and_exit">Leeren und verlassen</string>
 
-    <!-- Main `WebView` Options Menu. -->
+    <!-- MainWebView Options Menu. -->
     <string name="javascript">JavaScript</string>
     <string name="first_party_cookies">Erstanbieter-Cookies</string>
     <string name="third_party_cookies">Drittanbieter-Cookies</string>
@@ -142,24 +142,24 @@
 
     <!-- Bookmarks. -->
     <string name="database_view">Lesezeichen-Übersicht</string>
-    <string name="create_bookmark">Lesezeichen erstellen</string>
-    <string name="create_folder">Ordner erstellen</string>
+    <string name="create_bookmark">Lesezeichen Erstellen</string>
+    <string name="create_folder">Ordner Erstellen</string>
+    <string name="current_bookmark_icon">Symbol für das aktuelle Lesezeichen</string>
     <string name="current_folder_icon">Aktuelles Ordnersymbol</string>
     <string name="default_folder_icon">Standard-Ordnersymbol</string>
     <string name="web_page_favorite_icon">Icon der Website</string>
+    <string name="bookmark_name">Name des Lesezeichens</string>
     <string name="folder_name">Name des Ordners</string>
+    <string name="bookmark_url">URL für das Lesezeichen</string>
     <string name="folder_names_must_be_unique">Ordnernamen müssen einmalig sein</string>
     <string name="cannot_create_folder">Kann diesen Ordner nicht erstellen, da der Name bereits existiert:</string>
-    <string name="cannot_rename_folder">Kann diesen Ordner nicht umbenennen, da der neue Name bereits existiert:</string>
+    <string name="cannot_save_folder">Kann diesen Ordner nicht umbenennen, da der neue Name bereits existiert:</string>
     <string name="cannot_move_bookmarks">Kann die markierten Lesezeichen nicht verschieben, da kein neuer Ordner ausgewählt wurde.</string>
-    <string name="edit_bookmark">Lesezeichen bearbeiten</string>
-    <string name="edit_folder">Ordner bearbeiten</string>
+    <string name="edit_bookmark">Lesezeichen Bearbeiten</string>
+    <string name="edit_folder">Ordner Bearbeiten</string>
     <string name="move_to_folder">In Ordner verschieben</string>
     <string name="move">Verschieben</string>
     <string name="save">Speichern</string>
-    <string name="bookmark_name">Name des Lesezeichens</string>
-    <string name="bookmark_url">URL für das Lesezeichen</string>
-    <string name="current_bookmark_icon">Symbol für das aktuelle Lesezeichen</string>
 
     <!-- Bookmarks Contextual App Bar. -->
     <string name="selected">Ausgewählt</string>
@@ -186,78 +186,78 @@
 
     <!-- Preferences. -->
     <string name="privacy">Privatsphäre</string>
-    <string name="javascript_preference">JavaScript standardmäßig aktivieren</string>
-    <string name="javascript_preference_summary">JavaScript ermöglicht es Websites, Programme (Scripts) auf Ihrem Gerät auszuführen.</string>
-    <string name="first_party_cookies_preference">Erstanbieter-Cookies standardmäßig aktivieren</string>
-    <string name="first_party_cookies_preference_summary">Auf Geräten mit älterer Android-Version als Lollipop (Version 5.0) wird zusammen mit dieser auch die Option für Drittanbieter-Cookies aktiviert.</string>
-    <string name="third_party_cookies_preference">Drittanbieter-Cookies standardmäßig aktivieren</string>
-    <string name="third_party_cookies_summary">Diese Option benötigt Android Lollipop (Version 5.0) oder höher. Sie hat keine Auswirkungen, wenn Erstanbieter-Cookies deaktiviert sind.</string>
-    <string name="dom_storage_preference">DOM-Speicher standardmäßig aktivieren</string>
-    <string name="dom_storage_preference_summary">JavaScript muss für die Funktionalität des DOM-Speichers aktiviert sein.</string>
-    <string name="save_form_data_preference">Formulardaten standardmäßig speichern</string>
-    <string name="save_form_data_preference_summary">Mit gespeicherten Formulardaten können Formularfelder auf Websites automatisch ausgefüllt werden.</string>
-    <string name="user_agent">User Agent</string>
-    <string-array name="user_agent_entries">
-        <item>Privacy Browser 1.0</item>
-        <item>WebView-Standard</item>
-        <item>Firefox 48 auf Android 6.0.1</item>
-        <item>Chrome 52 auf Android 6.0.1</item>
-        <item>Safari auf iOS 10</item>
-        <item>Firefox 45 auf Linux</item>
-        <item>Chromium 52 auf Linux</item>
-        <item>Konqueror 4.14.23 auf Linux</item>
-        <item>Firefox 48 auf Windows 10</item>
-        <item>Chrome 52 auf Windows 10</item>
-        <item>Internet Explorer 11 auf Windows 10</item>
-        <item>Edge 14 auf Windows 10</item>
-        <item>Safari 9.1.2 auf OS X 10.11.6</item>
-        <item>Eigener</item>
-    </string-array>
-    <string name="custom_user_agent">Eigener User Agent</string>
-    <string name="do_not_track">Nicht verfolgen (Do not track)</string>
-    <string name="do_not_track_summary">Einen "Do Not Track-Header" senden, der freundlich anfragt, dass Webserver diesen Browser nicht nachverfolgen sollen.</string>
-    <string name="proxy_through_orbot">Proxy durch Orbot</string>
-    <string name="proxy_through_orbot_summary">Sämtlichen Web-Verkehr durch Orbot mittels localhost:8118 leiten.</string>
+        <string name="javascript_preference">JavaScript standardmäßig aktivieren</string>
+        <string name="javascript_preference_summary">JavaScript ermöglicht es Websites, Programme (Scripts) auf Ihrem Gerät auszuführen.</string>
+        <string name="first_party_cookies_preference">Erstanbieter-Cookies standardmäßig aktivieren</string>
+        <string name="first_party_cookies_preference_summary">Auf Geräten mit älterer Android-Version als Lollipop (Version 5.0) wird zusammen mit dieser auch die Option für Drittanbieter-Cookies aktiviert.</string>
+        <string name="third_party_cookies_preference">Drittanbieter-Cookies standardmäßig aktivieren</string>
+        <string name="third_party_cookies_summary">Diese Option benötigt Android Lollipop (Version 5.0) oder höher. Sie hat keine Auswirkungen, wenn Erstanbieter-Cookies deaktiviert sind.</string>
+        <string name="dom_storage_preference">DOM-Speicher standardmäßig aktivieren</string>
+        <string name="dom_storage_preference_summary">JavaScript muss für die Funktionalität des DOM-Speichers aktiviert sein.</string>
+        <string name="save_form_data_preference">Formulardaten standardmäßig speichern</string>
+        <string name="save_form_data_preference_summary">Mit gespeicherten Formulardaten können Formularfelder auf Websites automatisch ausgefüllt werden.</string>
+        <string name="user_agent">User Agent</string>
+        <string-array name="user_agent_entries">
+            <item>Privacy Browser 1.0</item>
+            <item>WebView-Standard</item>
+            <item>Firefox 48 auf Android 6.0.1</item>
+            <item>Chrome 52 auf Android 6.0.1</item>
+            <item>Safari auf iOS 10</item>
+            <item>Firefox 45 auf Linux</item>
+            <item>Chromium 52 auf Linux</item>
+            <item>Konqueror 4.14.23 auf Linux</item>
+            <item>Firefox 48 auf Windows 10</item>
+            <item>Chrome 52 auf Windows 10</item>
+            <item>Internet Explorer 11 auf Windows 10</item>
+            <item>Edge 14 auf Windows 10</item>
+            <item>Safari 9.1.2 auf OS X 10.11.6</item>
+            <item>Eigener</item>
+        </string-array>
+        <string name="custom_user_agent">Eigener User Agent</string>
+        <string name="do_not_track">Nicht verfolgen (Do not track)</string>
+        <string name="do_not_track_summary">Einen "Do Not Track-Header" senden, der freundlich anfragt, dass Webserver diesen Browser nicht nachverfolgen sollen.</string>
+        <string name="proxy_through_orbot">Proxy durch Orbot</string>
+        <string name="proxy_through_orbot_summary">Sämtlichen Web-Verkehr durch Orbot mittels localhost:8118 leiten.</string>
     <string name="search">Suche</string>
-    <string name="javascript_disabled_search">Suchmaschine bei deaktiviertem JavaScript</string>
-    <string-array name="javascript_disabled_search_entries">
-        <item>DuckDuckGo</item>
-        <item>StartPage</item>
-        <item>Google</item>
-        <item>Bing</item>
-        <item>Yahoo</item>
-        <item>Qwant</item>
-        <item>Eigene</item>
-    </string-array>
-    <string name="javascript_disabled_search_custom_url">Suchmaschinen-URL bei deaktiviertem JavaScript</string>
-    <string name="javascript_enabled_search">Suchmaschine bei aktiviertem JavaScript</string>
-    <string-array name="javascript_enabled_search_entries">
-        <item>DuckDuckGo</item>
-        <item>StartPage</item>
-        <item>Google</item>
-        <item>Bing</item>
-        <item>Yahoo</item>
-        <item>Qwant</item>
-        <item>Eigene</item>
-    </string-array>
-    <string name="javascript_enabled_search_custom_url">Suchmaschinen-URL bei aktivertem JavaScript</string>
-    <string name="custom_url">Eigene URL</string>
+        <string name="javascript_disabled_search">Suchmaschine bei deaktiviertem JavaScript</string>
+        <string-array name="javascript_disabled_search_entries">
+            <item>DuckDuckGo</item>
+            <item>StartPage</item>
+            <item>Google</item>
+            <item>Bing</item>
+            <item>Yahoo</item>
+            <item>Qwant</item>
+            <item>Eigene</item>
+        </string-array>
+        <string name="javascript_disabled_search_custom_url">Suchmaschinen-URL bei deaktiviertem JavaScript</string>
+        <string name="javascript_enabled_search">Suchmaschine bei aktiviertem JavaScript</string>
+        <string-array name="javascript_enabled_search_entries">
+            <item>DuckDuckGo</item>
+            <item>StartPage</item>
+            <item>Google</item>
+            <item>Bing</item>
+            <item>Yahoo</item>
+            <item>Qwant</item>
+            <item>Eigene</item>
+        </string-array>
+        <string name="javascript_enabled_search_custom_url">Suchmaschinen-URL bei aktivertem JavaScript</string>
+        <string name="custom_url">Eigene URL</string>
     <string name="general">Allgemein</string>
     <string name="homepage_preference">Startseite</string>
-    <string name="default_font_size">Standard-Schriftgröße</string>
-    <string-array name="default_font_size_entries">
-        <item>50%</item>
-        <item>75%</item>
-        <item>100%</item>
-        <item>125%</item>
-        <item>150%</item>
-        <item>175%</item>
-        <item>200%</item>
-    </string-array>
-    <string name="swipe_to_refresh_enabled">Herunterziehen zum Aktualisieren</string>
-    <string name="swipe_to_refresh_enabled_summary">Einige Websites funktionieren nicht, wenn "Herunterziehen zum Aktualisieren" eingeschaltet ist.</string>
-    <string name="display_additional_app_bar_icons">Weitere Icons in der Titelleiste</string>
-    <string name="display_additional_app_bar_icons_summary">Icons zum Umschalten von Cookies, DOM-Speicher und Formulardaten neben der Adresszeile anzeigen, wenn noch Platz dafür da ist.</string>
+        <string name="default_font_size">Standard-Schriftgröße</string>
+        <string-array name="default_font_size_entries">
+            <item>50%</item>
+            <item>75%</item>
+            <item>100%</item>
+            <item>125%</item>
+            <item>150%</item>
+            <item>175%</item>
+            <item>200%</item>
+        </string-array>
+        <string name="swipe_to_refresh_enabled">Herunterziehen zum Aktualisieren</string>
+        <string name="swipe_to_refresh_enabled_summary">Einige Websites funktionieren nicht, wenn "Herunterziehen zum Aktualisieren" eingeschaltet ist.</string>
+        <string name="display_additional_app_bar_icons">Weitere Icons in der Titelleiste</string>
+        <string name="display_additional_app_bar_icons_summary">Icons zum Umschalten von Cookies, DOM-Speicher und Formulardaten neben der Adresszeile anzeigen, wenn noch Platz dafür da ist.</string>
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Orbot-Proxy wird nicht funktionieren, solange Orbot nicht installiert ist.</string>
@@ -275,7 +275,7 @@
             <string name="radio">Radio:</string>
         <string name="software">Software</string>
             <string name="android">Android:</string>
-            <string name="api">API</string>
+                <string name="api">API</string>
             <string name="build">Build:</string>
             <string name="security_patch">Sicherheits-Patch:</string>
             <string name="webkit">WebKit:</string>

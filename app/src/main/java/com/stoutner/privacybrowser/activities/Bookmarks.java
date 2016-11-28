@@ -205,16 +205,14 @@ public class Bookmarks extends AppCompatActivity implements CreateBookmark.Creat
                 // Calculate the number of selected bookmarks.
                 int numberOfSelectedBookmarks = selectedBookmarksLongArray.length;
 
-                // Sometimes Android forgets to close the contextual app bar when all the items are deselected.
+                // Adjust the `mode` and the menu for the number of selected bookmarks.
                 if (numberOfSelectedBookmarks == 0) {
                     mode.finish();
-                }
+                } else if (numberOfSelectedBookmarks == 1) {
+                    // List the number of selected bookmarks in the subtitle.
+                    mode.setSubtitle(getString(R.string.one_selected));
 
-                // List the number of selected bookmarks in the subtitle.
-                mode.setSubtitle(numberOfSelectedBookmarks + " " + getString(R.string.selected));
-
-                if (numberOfSelectedBookmarks == 1) {
-                    // Show the `Move Up`, `Move Down`, and  `Edit` option only if 1 bookmark is selected.
+                    // Show the `Move Up`, `Move Down`, and  `Edit` options.
                     moveBookmarkUpMenuItem.setVisible(true);
                     moveBookmarkDownMenuItem.setVisible(true);
                     editBookmarkMenuItem.setVisible(true);
@@ -242,7 +240,11 @@ public class Bookmarks extends AppCompatActivity implements CreateBookmark.Creat
                         moveBookmarkDownMenuItem.setEnabled(true);
                         moveBookmarkDownMenuItem.setIcon(R.drawable.move_bookmark_down_enabled);
                     }
-                } else {  // Hide the MenuItems because more than one bookmark is selected.
+                } else {  // More than one bookmark is selected.
+                    // List the number of selected bookmarks in the subtitle.
+                    mode.setSubtitle(numberOfSelectedBookmarks + " " + getString(R.string.selected));
+
+                    // Hide non-applicable `MenuItems`.
                     moveBookmarkUpMenuItem.setVisible(false);
                     moveBookmarkDownMenuItem.setVisible(false);
                     editBookmarkMenuItem.setVisible(false);
@@ -727,7 +729,7 @@ public class Bookmarks extends AppCompatActivity implements CreateBookmark.Creat
                 bookmarksListView.setSelection(selectedBookmarkPosition);
             }
         } else {  // Don't edit the folder because the new name is not unique.
-            String cannot_rename_folder = getResources().getString(R.string.cannot_rename_folder) + " \"" + newFolderNameString + "\"";
+            String cannot_rename_folder = getResources().getString(R.string.cannot_save_folder) + " \"" + newFolderNameString + "\"";
             Snackbar.make(findViewById(R.id.bookmarks_coordinatorlayout), cannot_rename_folder, Snackbar.LENGTH_INDEFINITE).show();
         }
 
@@ -742,7 +744,7 @@ public class Bookmarks extends AppCompatActivity implements CreateBookmark.Creat
         long[] newFolderLongArray = folderListView.getCheckedItemIds();
 
         if (newFolderLongArray.length == 0) {  // No new folder was selected.
-            Snackbar.make(findViewById(R.id.bookmarks_coordinatorlayout), getString(R.string.cannot_move_bookmarks), Snackbar.LENGTH_LONG).show();
+            Snackbar.make(findViewById(R.id.bookmarks_coordinatorlayout), getString(R.string.cannot_move_bookmarks), Snackbar.LENGTH_INDEFINITE).show();
         } else {  // Move the selected bookmarks.
             // Get the new folder database ID.
             int newFolderDatabaseId = (int) newFolderLongArray[0];

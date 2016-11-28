@@ -34,14 +34,15 @@
     <string name="first_party_cookies_disabled">Cookies de primeras partes deshabilitadas</string>
     <string name="third_party_cookies_enabled">Cookies de terceras partes habilitadas</string>
     <string name="third_party_cookies_disabled">Cookies de terceras partes deshabilitadas</string>
-    <string name="dom_storage_enabled">Almacén de DOM habilitado</string>
-    <string name="dom_storage_disabled">Almacén de DOM deshabilitado</string>
-    <string name="form_data_enabled">Datos del formulario habilitado</string>
-    <string name="form_data_disabled">Datos del fromulario deshabilitado</string>
+    <string name="dom_storage_enabled">Almacenamiento DOM habilitado</string>
+    <string name="dom_storage_disabled">Almacenamiento DOM deshabilitado</string>
+    <string name="form_data_enabled">Datos de formularios habilitado</string>
+    <string name="form_data_disabled">Datos de fromularios deshabilitado</string>
     <string name="cookies_deleted">Cookies borradas</string>
-    <string name="dom_storage_deleted">Almacén de DOM borrado</string>
-    <string name="open_navigation_drawer">Abrir el Cajón de Navigación</string>
-    <string name="close_navigation_drawer">Cerrar el Cajón de Navigación</string>
+    <string name="dom_storage_deleted">Almacenamiento DOM borrado</string>
+    <string name="form_data_deleted">Datos de formularios borrados</string>
+    <string name="open_navigation_drawer">Abrir el Cajón de Navegación</string>
+    <string name="close_navigation_drawer">Cerrar el Cajón de Navegación</string>
 
     <!-- Save As. -->
     <string name="save_as">Guardar como</string>
@@ -54,4 +55,239 @@
     <!-- Custom App Bar. -->
     <string name="favorite_icon">Ícono Favorito</string>
     <string name="url_or_search_terms">URL o Búsqueda</string>
+
+    <!-- View SSL Certificate. -->
+    <string name="view_ssl_certificate">Ver Certificado SSL</string>
+    <string name="unencrypted_website">Sitio Web No Cifrado</string>
+    <string name="no_ssl_certificate">Communicación con este sitio web no está cifrado con un certificado SSL.</string>
+    <string name="ssl_certificate">Certificado SSL</string>
+    <string name="close">Cerrar</string>
+    <string name="issued_to">Emitido A</string>
+    <string name="issued_by">Emitido Por</string>
+    <string name="common_name">Nombre Común (CN):</string>
+    <string name="organization">Organización (O):</string>
+    <string name="organizational_unit">Unidad Organizativa (OU):</string>
+    <string name="valid_dates">Fechas Válidas</string>
+    <string name="start_date">Fecha Inicial:</string>
+    <string name="end_date">Fecha Final:</string>
+
+    <!-- SSL Certificate Error. -->
+    <string name="ssl_certificate_error">Error del Certificado SSL</string>
+    <string name="proceed">Proceder</string>
+    <string name="future_certificate">La fecha iniciál del certificado está en el futuro</string>
+    <string name="expired_certificate">El certificado se ha vencido.</string>
+    <string name="cn_mismatch">El nombre común no es iguál al nombre del host</string>
+    <string name="untrusted">No se confía la autoridad del certificado</string>
+    <string name="invalid_date">La fecha del certificado es inválido</string>
+    <string name="invalid_certificate">El certificado es inválido</string>
+    <string name="url">URL</string>
+    <string name="url_label">URL:</string>
+
+    <!-- MainWebView Navigation Drawer. -->
+    <string name="navigation_drawer">Cajón de Navegación</string>
+    <string name="navigation">Navegación</string>
+    <string name="home">Página Principal</string>
+    <string name="back">Atrás</string>
+    <string name="forward">Adelante</string>
+    <string name="history">Historia</string>
+        <string name="clear_history">Borrar Historia</string>
+    <string name="bookmarks">Marcadores</string>
+    <string name="downloads">Descargas</string>
+    <string name="settings">Configuración</string>
+    <string name="guide">Guía</string>
+    <string name="about">Información</string>
+    <string name="clear_and_exit">Borrar y Salir</string>
+
+    <!-- MainWebView Options Menu. -->
+    <string name="javascript">JavaScript</string>
+    <string name="first_party_cookies">Cookies de Primeras Partes</string>
+    <string name="third_party_cookies">Cookies de Terceras Partes</string>
+    <string name="dom_storage">Almacenamiento DOM</string>
+    <string name="form_data">Datos de Formularios</string>
+    <string name="clear_cookies">Borrar Cookies</string>
+    <string name="clear_dom_storage">Borrar Almacenamiento DOM</string>
+    <string name="clear_form_data">Borrar Datos de Formularios</string>
+    <string name="font_size">Tamaño del Texto</string>
+        <string name="fifty_percent">50%</string>
+        <string name="seventy_five_percent">75%</string>
+        <string name="one_hundred_percent">100%</string>
+        <string name="one_hundred_twenty_five_percent">125%</string>
+        <string name="one_hundred_fifty_percent">150%</string>
+        <string name="one_hundred_seventy_five_percent">175%</string>
+        <string name="two_hundred_percent">200%</string>
+    <string name="find_on_page">Buscar en Página</string>
+    <string name="share">Compartir</string>
+    <string name="add_to_home_screen">Añadir a la Pantalla de Inicio</string>
+    <string name="print">Imprimir</string>
+        <string name="privacy_browser_web_page">Navegador Privado Página Web</string>
+    <string name="refresh">Actualizar</string>
+
+    <!-- Context Menus. -->
+    <string name="load_url">Cargar URL</string>
+    <string name="write_email">Escribir Correo Electrónico</string>
+    <string name="view_image">Ver Imagen</string>
+    <string name="download_image">Descargar Imagen</string>
+
+    <!-- Find on Page. -->
+    <string name="previous">Anterior</string>
+    <string name="next">Siguiente</string>
+
+    <!-- Create Home Screen Shortcut Alert Dialog. -->
+    <string name="create_shortcut">Crear acceso directo</string>
+    <string name="shortcut_name">Nombre del acceso directo</string>
+    <string name="cancel">Cancelar</string>
+    <string name="create">Crear</string>
+
+    <!-- Bookmarks. -->
+    <string name="database_view">Vista de Base de Datos</string>
+    <string name="create_bookmark">Crear Marcador</string>
+    <string name="create_folder">Crear Carpeta</string>
+    <string name="current_bookmark_icon">Ícono de marcador actual</string>
+    <string name="current_folder_icon">Ícono de carpeta actual</string>
+    <string name="default_folder_icon">Ícono de carpeta por defecto</string>
+    <string name="web_page_favorite_icon">Ícono favorito de la página web</string>
+    <string name="bookmark_name">Nombre de la marcador</string>
+    <string name="folder_name">Nombre de la carpeta</string>
+    <string name="bookmark_url">Marcador URL</string>
+    <string name="folder_names_must_be_unique">Los nombres de carpetas deben ser únicos</string>
+    <string name="cannot_create_folder">No se creó la carpeta porque el nombre no fue único:</string>
+    <string name="cannot_save_folder">No se guardó la carpeta porque el nuevo nombre no fue único:</string>
+    <string name="cannot_move_bookmarks">No se movió las marcadores selectionadas porque no se escogió una nueva carpeta.</string>
+    <string name="edit_bookmark">Editar Marcador</string>
+    <string name="edit_folder">Editar Carpeta</string>
+    <string name="move_to_folder">Mover a Carpeta</string>
+    <string name="move">Mover</string>
+    <string name="save">Guardar</string>
+
+    <!-- Bookmarks Contextual App Bar. -->
+    <string name="one_selected">1 Selectionada</string>
+    <string name="selected">Selectionadas</string>
+    <string name="move_up">Subir</string>
+    <string name="move_down">Bajar</string>
+    <string name="edit">Editar</string>
+    <string name="delete">Borrar</string>
+    <string name="select_all">Selectionar Todas</string>
+    <string name="one_bookmark_deleted">1 Marcador Borrada</string>
+    <string name="bookmarks_deleted">Marcadores Borradas</string>
+    <string name="undo">Deshacer</string>
+
+    <!-- Bookmarks Database View. -->
+    <string name="bookmarks_database_view">Vista de Base de Datos de las Marcadores</string>
+    <string name="home_folder">Carpeta de Inicio</string>
+
+    <!-- Guide. -->
+    <string name="privacy_browser_guide">Navegador Privado Guía</string>
+    <string name="overview">General</string>
+    <string name="local_storage">Almacenamiento Local</string>
+    <string name="tor">Tor</string>
+    <string name="tracking_ids">IDs de Seguimiento</string>
+    <string name="planned_features">Funciones Futuras</string>
+
+    <!-- Preferences. -->
+    <string name="privacy">Privacidad</string>
+        <string name="javascript_preference">Habilitar JavaScript por defecto</string>
+        <string name="javascript_preference_summary">JavaScript permite las páginas web ejecutar programas (scriptos) en el depositivo.</string>
+        <string name="first_party_cookies_preference">Habilitar cookies de primeras partes por defecto</string>
+        <string name="first_party_cookies_preference_summary">Depositivos con Android más viejo que Lollipop (versión 5.0) también habilitarán cookies de terceras partes con esta opción.</string>
+        <string name="third_party_cookies_preference">Habilar cookies de terceras partes por defecto</string>
+        <string name="third_party_cookies_summary">Esta opción requiere Android Lollipop (versión 5.0) o más nuevo.  No tiene efecto si las cookies de primeras partes están deshabilitadas.</string>
+        <string name="dom_storage_preference">Habilitar almacenamiento DOM por defecto</string>
+        <string name="dom_storage_preference_summary">JavaScript tiene que ser habilitado para functionar el almacenamiento DOM.</string>
+        <string name="save_form_data_preference">Habilitar el guardar los datos de formularios por defecto</string>
+        <string name="save_form_data_preference_summary">Los datos de formularios guardados pueden rellenar campos en páginas de web.</string>
+        <string name="user_agent">Agente de usario</string>
+        <string-array name="user_agent_entries">
+            <item>Navegador Privado 1.0</item>
+            <item>WebView Defecto</item>
+            <item>Firefox 48 en Android 6.0.1</item>
+            <item>Chrome 52 en Android 6.0.1</item>
+            <item>Safari en iOS 10</item>
+            <item>Firefox 45 en Linux</item>
+            <item>Chromium 52 en Linux</item>
+            <item>Konqueror 4.14.23 en Linux</item>
+            <item>Firefox 48 en Windows 10</item>
+            <item>Chrome 52 en Windows 10</item>
+            <item>Internet Explorer 11 en Windows 10</item>
+            <item>Edge 14 en Windows 10</item>
+            <item>Safari 9.1.2 en OS X 10.11.6</item>
+            <item>Personalizar</item>
+        </string-array>
+        <string name="custom_user_agent">Agente de usario personalizado</string>
+        <string name="do_not_track">No Seguir</string>
+        <string name="do_not_track_summary">Mandar la cabecera de No Seguir que sugiere cortésmente que las páginas web no siguan este navegador.</string>
+        <string name="proxy_through_orbot">Usar Orbot</string>
+        <string name="proxy_through_orbot_summary">Mandar todo el tráfico de la red por Orbot en localhost:8118.</string>
+    <string name="search">Buscar</string>
+        <string name="javascript_disabled_search">Búsquedas de JavaScript deshabilitado</string>
+        <string-array name="javascript_disabled_search_entries">
+            <item>DuckDuckGo</item>
+            <item>StartPage</item>
+            <item>Google</item>
+            <item>Bing</item>
+            <item>Yahoo</item>
+            <item>Qwant</item>
+            <item>Personalizar</item>
+        </string-array>
+        <string name="javascript_disabled_search_custom_url">URL personalizado de búsquedas de JavaScript deshabilitado</string>
+        <string name="javascript_enabled_search">Búsquedas de JavaScript habilitado</string>
+        <string-array name="javascript_enabled_search_entries">
+            <item>DuckDuckGo</item>
+            <item>StartPage</item>
+            <item>Google</item>
+            <item>Bing</item>
+            <item>Yahoo</item>
+            <item>Qwant</item>
+            <item>Personalizar</item>
+        </string-array>
+        <string name="javascript_enabled_search_custom_url">URL personalizado de búsquedas de JavaScript habilitado</string>
+        <string name="custom_url">URL personalizado</string>
+    <string name="fullscreen">Pantalla Completa</string>
+        <string name="hide_system_bars">Esconder las barras del systema</string>
+        <string name="hide_system_bars_summary">Esconder las barras de estado y de navegación en el modo de pantalla completa.</string>
+        <string name="translucent_navigation_bar">Barra de navegación translúcida</string>
+        <string name="translucent_navigation_bar_summary">Hacer la barra de navegación translúcida en el modo de pantalla completa.</string>
+    <string name="general">General</string>
+        <string name="homepage_preference">Página principal</string>
+        <string name="default_font_size">Tamaño del texto por defecto</string>
+        <string-array name="default_font_size_entries">
+            <item>50%</item>
+            <item>75%</item>
+            <item>100%</item>
+            <item>125%</item>
+            <item>150%</item>
+            <item>175%</item>
+            <item>200%</item>
+        </string-array>
+        <string name="swipe_to_refresh_enabled">Pasar para actualizar</string>
+        <string name="swipe_to_refresh_enabled_summary">Algunas páginas de web no funcionan bien si pasar para actualizar está habilitado.</string>
+        <string name="display_additional_app_bar_icons">Mostrar íconos adicionales en la barra de aplicación</string>
+        <string name="display_additional_app_bar_icons_summary">Mostrar íconos adicionales de cookies, almacenamiento DOM, y datos de formularios en la barra de aplicación si hay espacio.</string>
+
+    <!-- Orbot. -->
+    <string name="orbot_proxy_not_installed">No se puede usar Orbot porque no está installado.</string>
+
+    <!-- About Activity. -->
+    <string name="about_privacy_browser">Navegador Privado Información</string>
+    <string name="version">Versión</string>
+        <string name="version_code">código de versión</string>
+        <string name="hardware">Hardware</string>
+            <string name="brand">Marca:</string>
+            <string name="manufacturer">Fabricante:</string>
+            <string name="model">Modelo:</string>
+            <string name="device">Depositivo:</string>
+            <string name="bootloader">Gestor de Arranque:</string>
+            <string name="radio">Radio:</string>
+        <string name="software">Software</string>
+            <string name="android">Android:</string>
+                <string name="api">API</string>
+            <string name="build">Build:</string>
+            <string name="security_patch">Parche de seguridad:</string>
+            <string name="webkit">WebKit:</string>
+            <string name="chrome">Chrome:</string>
+    <string name="permissions">Permisiones</string>
+    <string name="privacy_policy">Política de Privacidad</string>
+    <string name="changelog">Registro de Cambios</string>
+    <string name="licenses">Licencias</string>
+    <string name="contributors">Colaboradores</string>
+    <string name="links">Enlaces</string>
 </resources>

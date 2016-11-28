@@ -53,7 +53,7 @@
                 android:text="@string/privacy_browser"
                 android:textStyle="bold"
                 android:textSize="22sp"
-                android:textColor="@color/black"
+                android:textColor="@color/blue_900"
                 android:layout_toEndOf="@id/about_version_icon" />
 
             <TextView

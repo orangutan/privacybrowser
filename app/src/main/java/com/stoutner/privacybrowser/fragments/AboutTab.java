@@ -137,7 +137,7 @@ public class AboutTab extends Fragment {
 
             // Display the strings.
             versionNumberTextView.setText(version);
-            versionBrandTextView.setText(buildStringBuilder);
+            versionBrandTextView.setText(brandStringBuilder);
             versionManufacturerTextView.setText(manufacturerStringBuilder);
             versionModelTextView.setText(modelStringBuilder);
             versionDeviceTextView.setText(deviceStringBuilder);
