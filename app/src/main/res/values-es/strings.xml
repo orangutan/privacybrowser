@@ -124,6 +124,9 @@
 
     <!-- Context Menus. -->
     <string name="load_url">Cargar URL</string>
+    <string name="copy_url">Copiar URL</string>
+    <string name="email_address">Correo Electrónico</string>
+    <string name="copy_email_address">Copiar Correo Electrónico</string>
     <string name="write_email">Escribir Correo Electrónico</string>
     <string name="view_image">Ver Imagen</string>
     <string name="download_image">Descargar Imagen</string>

@@ -22,6 +22,8 @@ package com.stoutner.privacybrowser.activities;
 import android.annotation.SuppressLint;
 import android.app.DialogFragment;
 import android.app.DownloadManager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -1187,6 +1189,9 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         final String imageUrl;
         final String linkUrl;
 
+        // Get a handle for the `ClipboardManager`.
+        final ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+
         switch (hitTestResult.getType()) {
             // `SRC_ANCHOR_TYPE` is a link.
             case WebView.HitTestResult.SRC_ANCHOR_TYPE:
@@ -1196,7 +1201,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                 // Set the target URL as the title of the `ContextMenu`.
                 menu.setHeaderTitle(linkUrl);
 
-                // Add a `Load URL` button.
+                // Add a `Load URL` entry.
                 menu.add(R.string.load_url).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -1205,7 +1210,20 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                     }
                 });
 
-                // Add a `Cancel` button, which by default closes the `ContextMenu`.
+                // Add a `Copy URL` entry.
+                menu.add(R.string.copy_url).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        // Save the link URL in a `ClipData`.
+                        ClipData srcAnchorTypeClipData = ClipData.newPlainText(getResources().getString(R.string.url), linkUrl);
+
+                        // Set the `ClipData` as the clipboard's primary clip.
+                        clipboardManager.setPrimaryClip(srcAnchorTypeClipData);
+                        return false;
+                    }
+                });
+
+                // Add a `Cancel` entry, which by default closes the `ContextMenu`.
                 menu.add(R.string.cancel);
                 break;
 
@@ -1216,7 +1234,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                 // Set the target URL as the title of the `ContextMenu`.
                 menu.setHeaderTitle(linkUrl);
 
-                // Add a `Write Email` button.
+                // Add a `Write Email` entry.
                 menu.add(R.string.write_email).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -1235,7 +1253,20 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                     }
                 });
 
-                // Add a `Cancel` button, which by default closes the `ContextMenu`.
+                // Add a `Copy Email Address` entry.
+                menu.add(R.string.copy_email_address).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        // Save the email address in a `ClipData`.
+                        ClipData srcEmailTypeClipData = ClipData.newPlainText(getResources().getString(R.string.email_address), linkUrl);
+
+                        // Set the `ClipData` as the clipboard's primary clip.
+                        clipboardManager.setPrimaryClip(srcEmailTypeClipData);
+                        return false;
+                    }
+                });
+
+                // Add a `Cancel` entry, which by default closes the `ContextMenu`.
                 menu.add(R.string.cancel);
                 break;
 
@@ -1247,7 +1278,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                 // Set the image URL as the title of the `ContextMenu`.
                 menu.setHeaderTitle(imageUrl);
 
-                // Add a `View Image` button.
+                // Add a `View Image` entry.
                 menu.add(R.string.view_image).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -1256,7 +1287,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                     }
                 });
 
-                // Add a `Download Image` button.
+                // Add a `Download Image` entry.
                 menu.add(R.string.download_image).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -1267,7 +1298,20 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                     }
                 });
 
-                // Add a `Cancel` button, which by default closes the `ContextMenu`.
+                // Add a `Copy URL` entry.
+                menu.add(R.string.copy_url).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        // Save the image URL in a `ClipData`.
+                        ClipData srcImageTypeClipData = ClipData.newPlainText(getResources().getString(R.string.url), imageUrl);
+
+                        // Set the `ClipData` as the clipboard's primary clip.
+                        clipboardManager.setPrimaryClip(srcImageTypeClipData);
+                        return false;
+                    }
+                });
+
+                // Add a `Cancel` entry, which by default closes the `ContextMenu`.
                 menu.add(R.string.cancel);
                 break;
 
@@ -1280,7 +1324,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                 // Set the image URL as the title of the `ContextMenu`.
                 menu.setHeaderTitle(imageUrl);
 
-                // Add a `View Image` button.
+                // Add a `View Image` entry.
                 menu.add(R.string.view_image).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -1289,7 +1333,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                     }
                 });
 
-                // Add a `Download Image` button.
+                // Add a `Download Image` entry.
                 menu.add(R.string.download_image).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -1300,7 +1344,20 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                     }
                 });
 
-                // Add a `Cancel` button, which by default closes the `ContextMenu`.
+                // Add a `Copy URL` entry.
+                menu.add(R.string.copy_url).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        // Save the image URL in a `ClipData`.
+                        ClipData srcImageAnchorTypeClipData = ClipData.newPlainText(getResources().getString(R.string.url), imageUrl);
+
+                        // Set the `ClipData` as the clipboard's primary clip.
+                        clipboardManager.setPrimaryClip(srcImageAnchorTypeClipData);
+                        return false;
+                    }
+                });
+
+                // Add a `Cancel` entry, which by default closes the `ContextMenu`.
                 menu.add(R.string.cancel);
                 break;
         }
