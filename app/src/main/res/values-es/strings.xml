@@ -198,7 +198,7 @@
         <string name="dom_storage_preference_summary">JavaScript tiene que ser habilitado para functionar el almacenamiento DOM.</string>
         <string name="save_form_data_preference">Habilitar el guardar los datos de formularios por defecto</string>
         <string name="save_form_data_preference_summary">Los datos de formularios guardados pueden rellenar campos en páginas de web.</string>
-        <string name="user_agent">Agente de usario</string>
+        <string name="user_agent">Agente de usuario</string>
         <string-array name="user_agent_entries">
             <item>Navegador Privado 1.0</item>
             <item>WebView Defecto</item>
@@ -215,7 +215,7 @@
             <item>Safari 9.1.2 en OS X 10.11.6</item>
             <item>Personalizar</item>
         </string-array>
-        <string name="custom_user_agent">Agente de usario personalizado</string>
+        <string name="custom_user_agent">Agente de usuario personalizado</string>
         <string name="do_not_track">No Seguir</string>
         <string name="do_not_track_summary">Mandar la cabecera de No Seguir que sugiere cortésmente que las páginas web no siguan este navegador.</string>
         <string name="proxy_through_orbot">Usar Orbot</string>

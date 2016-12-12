@@ -69,7 +69,7 @@
             <include layout="@layout/main_webview" />
         </LinearLayout>
 
-        <!-- `fullScreenVideoFrameLayout` is used to display full screen videos.  It is initially `android:visibility="gone"` to hide it from view. -->
+        <!-- `full_screen_video_framelayout` is used to display full screen videos.  It is initially `android:visibility="gone"` to hide it from view. -->
         <FrameLayout
             android:id="@+id/full_screen_video_framelayout"
             android:layout_height="match_parent"
