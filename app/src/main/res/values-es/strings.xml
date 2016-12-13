@@ -189,9 +189,9 @@
     <!-- Preferences. -->
     <string name="privacy">Privacidad</string>
         <string name="javascript_preference">Habilitar JavaScript por defecto</string>
-        <string name="javascript_preference_summary">JavaScript permite las páginas web ejecutar programas (scriptos) en el depositivo.</string>
+        <string name="javascript_preference_summary">JavaScript permite las páginas web ejecutar programas (scriptos) en el dispositivo.</string>
         <string name="first_party_cookies_preference">Habilitar cookies de primeras partes por defecto</string>
-        <string name="first_party_cookies_preference_summary">Depositivos con Android más viejo que Lollipop (versión 5.0) también habilitarán cookies de terceras partes con esta opción.</string>
+        <string name="first_party_cookies_preference_summary">Dispositivos con Android más viejo que Lollipop (versión 5.0) también habilitarán cookies de terceras partes con esta opción.</string>
         <string name="third_party_cookies_preference">Habilar cookies de terceras partes por defecto</string>
         <string name="third_party_cookies_summary">Esta opción requiere Android Lollipop (versión 5.0) o más nuevo.  No tiene efecto si las cookies de primeras partes están deshabilitadas.</string>
         <string name="dom_storage_preference">Habilitar almacenamiento DOM por defecto</string>
@@ -277,7 +277,7 @@
             <string name="brand">Marca:</string>
             <string name="manufacturer">Fabricante:</string>
             <string name="model">Modelo:</string>
-            <string name="device">Depositivo:</string>
+            <string name="device">Dispositivo:</string>
             <string name="bootloader">Gestor de Arranque:</string>
             <string name="radio">Radio:</string>
         <string name="software">Software</string>
