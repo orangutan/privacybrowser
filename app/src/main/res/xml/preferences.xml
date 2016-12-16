@@ -58,7 +58,7 @@
             android:title="@string/user_agent"
             android:entries="@array/user_agent_entries"
             android:entryValues="@array/user_agent_entry_values"
-            android:defaultValue="Default user agent" />
+            android:defaultValue="PrivacyBrowser/1.0" />
 
         <!-- android:inputType="textVisiblePassword" sets the keyboard to have a dedicated number row.-->
         <EditTextPreference
