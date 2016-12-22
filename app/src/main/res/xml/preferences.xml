@@ -113,8 +113,14 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="fullscreen"
-        android:title="@string/fullscreen">
+        android:key="full_screen"
+        android:title="@string/full_screen">
+
+        <SwitchPreference
+            android:key="enable_full_screen_browsing_mode"
+            android:title="@string/enable_full_screen_browsing_mode"
+            android:summary="@string/enable_full_screen_browsing_mode_summary"
+            android:defaultValue="false" />
 
         <SwitchPreference
             android:key="hide_system_bars"

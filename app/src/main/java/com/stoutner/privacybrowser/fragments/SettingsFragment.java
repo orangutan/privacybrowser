@@ -119,6 +119,20 @@ public class SettingsFragment extends PreferenceFragment {
         javaScriptEnabledSearchCustomURLPreference.setEnabled(javaScriptEnabledSearchString.equals("Custom URL"));
 
 
+        // Enable the full screen options if full screen browsing mode is enabled.
+        final Preference hideSystemBarsPreference = findPreference("hide_system_bars");
+        final Preference translucentNavigationBarPreference = findPreference("translucent_navigation_bar");
+        final boolean fullScreenBrowsingModeEnabled = savedPreferences.getBoolean("enable_full_screen_browsing_mode", false);
+        if (!fullScreenBrowsingModeEnabled) {
+            // Disable the full screen options.
+            hideSystemBarsPreference.setEnabled(false);
+            translucentNavigationBarPreference.setEnabled(false);
+        } else {
+            // Disable `transparent_navigation_bar` if `hide_system_bars` is `true`.
+            translucentNavigationBarPreference.setEnabled(!savedPreferences.getBoolean("hide_system_bars", false));
+        }
+
+
         // Set the homepage URL as the summary text for the `Homepage` preference when the preference screen is loaded.  The default is `https://www.duckduckgo.com`.
         final Preference homepagePreference = findPreference("homepage");
         homepagePreference.setSummary(savedPreferences.getString("homepage", "https://www.duckduckgo.com"));
@@ -127,10 +141,6 @@ public class SettingsFragment extends PreferenceFragment {
         final Preference defaultFontSizePreference = findPreference("default_font_size");
         String defaultFontSizeString = savedPreferences.getString("default_font_size", "100");
         defaultFontSizePreference.setSummary(defaultFontSizeString + "%%");
-
-        // Disable `transparent_navigation_bar` if `hide_system_bars` is enabled.
-        final Preference translucentNavigationBarPreference = findPreference("translucent_navigation_bar");
-        translucentNavigationBarPreference.setEnabled(!savedPreferences.getBoolean("hide_system_bars", false));
 
 
         // Listen for preference changes.
@@ -214,6 +224,21 @@ public class SettingsFragment extends PreferenceFragment {
                     case "javascript_enabled_search_custom_url":
                         // Set the new custom search URL as the summary text for `javascript_enabled_search_custom_url`.  The default is `""`.
                         javaScriptEnabledSearchCustomURLPreference.setSummary(sharedPreferences.getString("javascript_enabled_search_custom_url", ""));
+                        break;
+
+                    case "enable_full_screen_browsing_mode":
+                        boolean newFullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("enable_full_screen_browsing_mode", false);
+                        if (newFullScreenBrowsingModeEnabled) {
+                            // Enable `hideSystemBarsPreference`.
+                            hideSystemBarsPreference.setEnabled(true);
+
+                            // Only enable `transparent_navigation_bar` if `hide_system_bars` is `false`.
+                            translucentNavigationBarPreference.setEnabled(!sharedPreferences.getBoolean("hide_system_bars", false));
+                        } else {
+                            // Disable the full screen options.
+                            hideSystemBarsPreference.setEnabled(false);
+                            translucentNavigationBarPreference.setEnabled(false);
+                        }
                         break;
 
                     case "homepage":

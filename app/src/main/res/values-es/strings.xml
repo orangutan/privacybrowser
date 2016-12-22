@@ -244,7 +244,9 @@
         </string-array>
         <string name="javascript_enabled_search_custom_url">URL personalizado de búsquedas de JavaScript habilitado</string>
         <string name="custom_url">URL personalizado</string>
-    <string name="fullscreen">Pantalla Completa</string>
+    <string name="full_screen">Pantalla Completa</string>
+        <string name="enable_full_screen_browsing_mode">Habilitar pantalla completa</string>
+        <string name="enable_full_screen_browsing_mode_summary">Doble toque para pantalla completa.</string>
         <string name="hide_system_bars">Esconder las barras del systema</string>
         <string name="hide_system_bars_summary">Esconder las barras de estado y de navegación en el modo de pantalla completa.</string>
         <string name="translucent_navigation_bar">Barra de navegación translúcida</string>

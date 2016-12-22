@@ -173,6 +173,9 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
     // `javaScriptEnabledSearchURL` is used in `loadURLFromTextBox()` and `applySettings()`.
     private String javaScriptEnabledSearchURL;
 
+    // `fullScreenBrowsingModeEnabled` is used in `onCreate()` and `applySettings()`.
+    private boolean fullScreenBrowsingModeEnabled;
+
     // `hideSystemBarsOnFullscreen` is used in `onCreate()` and `applySettings()`.
     private boolean hideSystemBarsOnFullscreen;
 
@@ -253,68 +256,72 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
             // Override `onDoubleTap()`.  All other events are handled using the default settings.
             @Override
             public boolean onDoubleTap(MotionEvent event) {
-                if (appBar.isShowing()) {  // If `appBar` is visible, switch to full screen mode.
-                    // Hide the `appBar`.
-                    appBar.hide();
+                if (fullScreenBrowsingModeEnabled) {  // Only process the double-tap if full screen browsing mode is enabled.
+                    if (appBar.isShowing()) {  // If `appBar` is visible, switch to full screen mode.
+                        // Hide the `appBar`.
+                        appBar.hide();
 
-                    // Hide the `BannerAd` in the free flavor.
-                    if (BuildConfig.FLAVOR.contentEquals("free")) {
-                        BannerAd.hideAd(adView);
-                    }
+                        // Hide the `BannerAd` in the free flavor.
+                        if (BuildConfig.FLAVOR.contentEquals("free")) {
+                            BannerAd.hideAd(adView);
+                        }
 
-                    // Modify the system bars.
-                    if (hideSystemBarsOnFullscreen) {  // Hide everything.
-                        // Remove the translucent overlays.
-                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                        // Modify the system bars.
+                        if (hideSystemBarsOnFullscreen) {  // Hide everything.
+                            // Remove the translucent overlays.
+                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-                        // Remove the translucent status bar overlay on the `Drawer Layout`, which is special and needs its own command.
-                        drawerLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+                            // Remove the translucent status bar overlay on the `Drawer Layout`, which is special and needs its own command.
+                            drawerLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
                         /* SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
                          * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
                          * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically rehides them after they are shown.
                          */
-                        rootCoordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                            rootCoordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-                        // Set `rootCoordinatorLayout` to fill the whole screen.
-                        rootCoordinatorLayout.setFitsSystemWindows(false);
-                    } else {  // Hide everything except the status and navigation bars.
-                        // Set `rootCoordinatorLayout` to fit under the status and navigation bars.
-                        rootCoordinatorLayout.setFitsSystemWindows(false);
+                            // Set `rootCoordinatorLayout` to fill the whole screen.
+                            rootCoordinatorLayout.setFitsSystemWindows(false);
+                        } else {  // Hide everything except the status and navigation bars.
+                            // Set `rootCoordinatorLayout` to fit under the status and navigation bars.
+                            rootCoordinatorLayout.setFitsSystemWindows(false);
 
-                        if (translucentNavigationBarOnFullscreen) {  // There is an Android Support Library bug that causes a scrim to print on the right side of the `Drawer Layout` when the navigation bar is displayed on the right of the screen.
-                            // Set the navigation bar to be translucent.
-                            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+                            if (translucentNavigationBarOnFullscreen) {  // There is an Android Support Library bug that causes a scrim to print on the right side of the `Drawer Layout` when the navigation bar is displayed on the right of the screen.
+                                // Set the navigation bar to be translucent.
+                                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+                            }
                         }
+                    } else {  // Switch to normal viewing mode.
+                        // Show the `appBar`.
+                        appBar.show();
+
+                        // Show the `BannerAd` in the free flavor.
+                        if (BuildConfig.FLAVOR.contentEquals("free")) {
+                            // Reload the ad.  Because the screen may have rotated, we need to use `reloadAfterRotate`.
+                            BannerAd.reloadAfterRotate(adView, getApplicationContext(), getString(R.string.ad_id));
+
+                            // Reinitialize the `adView` variable, as the `View` will have been removed and re-added by `BannerAd.reloadAfterRotate()`.
+                            adView = findViewById(R.id.adView);
+                        }
+
+                        // Remove the translucent navigation bar flag if it is set.
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+
+                        // Add the translucent status flag if it is unset.  This also resets `drawerLayout's` `View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN`.
+                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                        // Remove any `SYSTEM_UI` flags from `rootCoordinatorLayout`.
+                        rootCoordinatorLayout.setSystemUiVisibility(0);
+
+                        // Constrain `rootCoordinatorLayout` inside the status and navigation bars.
+                        rootCoordinatorLayout.setFitsSystemWindows(true);
                     }
-                } else {  // Switch to normal viewing mode.
-                    // Show the `appBar`.
-                    appBar.show();
 
-                    // Show the `BannerAd` in the free flavor.
-                    if (BuildConfig.FLAVOR.contentEquals("free")) {
-                        // Reload the ad.  Because the screen may have rotated, we need to use `reloadAfterRotate`.
-                        BannerAd.reloadAfterRotate(adView, getApplicationContext(), getString(R.string.ad_id));
-
-                        // Reinitialize the `adView` variable, as the `View` will have been removed and re-added by `BannerAd.reloadAfterRotate()`.
-                        adView = findViewById(R.id.adView);
-                    }
-
-                    // Remove the translucent navigation bar flag if it is set.
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-
-                    // Add the translucent status flag if it is unset.  This also resets `drawerLayout's` `View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN`.
-                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-                    // Remove any `SYSTEM_UI` flags from `rootCoordinatorLayout`.
-                    rootCoordinatorLayout.setSystemUiVisibility(0);
-
-                    // Constrain `rootCoordinatorLayout` inside the status and navigation bars.
-                    rootCoordinatorLayout.setFitsSystemWindows(true);
+                    // Consume the double-tap.
+                    return true;
+                } else { // Do not consume the double-tap because full screen browsing mode is disabled.
+                    return false;
                 }
-
-                // Consume the double-tap.
-                return true;
             }
         });
 
@@ -600,7 +607,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         // Replace the header that `WebView` creates for `X-Requested-With` with a null value.  The default value is the application ID (com.stoutner.privacybrowser.standard).
         customHeaders.put("X-Requested-With", "");
 
-        // Initialize the default preference values the first time the program is run.
+        // Initialize the default preference values the first time the program is run.  `this` is the context.  `false` keeps this command from resetting any current preferences back to default.
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         // Apply the settings from the shared preferences.
@@ -1628,6 +1635,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         swipeToRefreshEnabled = sharedPreferences.getBoolean("swipe_to_refresh_enabled", false);
         boolean doNotTrackEnabled = sharedPreferences.getBoolean("do_not_track", true);
         boolean proxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
+        fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("enable_full_screen_browsing_mode", false);
         hideSystemBarsOnFullscreen = sharedPreferences.getBoolean("hide_system_bars", false);
         translucentNavigationBarOnFullscreen = sharedPreferences.getBoolean("translucent_navigation_bar", true);
 
