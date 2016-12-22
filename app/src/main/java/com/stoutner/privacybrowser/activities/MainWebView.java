@@ -105,7 +105,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         SslCertificateError.SslCertificateErrorListener, DownloadFile.DownloadFileListener, DownloadImage.DownloadImageListener, UrlHistory.UrlHistoryListener {
 
     // `appBar` is public static so it can be accessed from `OrbotProxyHelper`.
-    // It is also used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
+    // It is also used in `onCreate()`, `onOptionsItemSelected()`, `closeFindOnPage()`, and `applySettings()`.
     public static ActionBar appBar;
 
     // `favoriteIcon` is public static so it can be accessed from `CreateHomeScreenShortcut`, `Bookmarks`, `CreateBookmark`, `CreateBookmarkFolder`, and `EditBookmark`.
@@ -129,9 +129,6 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
 
     // 'mainWebView' is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`, `findNextOnPage()`, `closeFindOnPage()`, and `loadUrlFromTextBox()`.
     private WebView mainWebView;
-
-    // `findOnPageEditText` is used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
-    private EditText findOnPageEditText;
 
     // `fullScreenVideoFrameLayout` is used in `onCreate()` and `onConfigurationChanged()`.
     private FrameLayout fullScreenVideoFrameLayout;
@@ -176,17 +173,29 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
     // `fullScreenBrowsingModeEnabled` is used in `onCreate()` and `applySettings()`.
     private boolean fullScreenBrowsingModeEnabled;
 
+    // `inFullScreenBrowsingMode` is used in `onCreate()` and `applySettings()`.
+    private boolean inFullScreenBrowsingMode;
+
     // `hideSystemBarsOnFullscreen` is used in `onCreate()` and `applySettings()`.
     private boolean hideSystemBarsOnFullscreen;
 
     // `translucentNavigationBarOnFullscreen` is used in `onCreate()` and `applySettings()`.
     private boolean translucentNavigationBarOnFullscreen;
 
+    // `findOnPageLinearLayout` is used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
+    private LinearLayout findOnPageLinearLayout;
+
+    // `findOnPageEditText` is used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
+    private EditText findOnPageEditText;
+
     // `mainMenu` is used in `onCreateOptionsMenu()` and `updatePrivacyIcons()`.
     private Menu mainMenu;
 
     // `drawerToggle` is used in `onCreate()`, `onPostCreate()`, `onConfigurationChanged()`, `onNewIntent()`, and `onNavigationItemSelected()`.
     private ActionBarDrawerToggle drawerToggle;
+
+    // `supportAppBar` is used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
+    private Toolbar supportAppBar;
 
     // `urlTextBox` is used in `onCreate()`, `onOptionsItemSelected()`, and `loadUrlFromTextBox()`.
     private EditText urlTextBox;
@@ -211,7 +220,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         // We need to use the `SupportActionBar` from `android.support.v7.app.ActionBar` until the minimum API is >= 21.
-        Toolbar supportAppBar = (Toolbar) findViewById(R.id.app_bar);
+        supportAppBar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(supportAppBar);
         appBar = getSupportActionBar();
 
@@ -248,6 +257,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerlayout);
         rootCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.root_coordinatorlayout);
         mainWebView = (WebView) findViewById(R.id.mainWebView);
+        findOnPageLinearLayout = (LinearLayout) findViewById(R.id.find_on_page_linearlayout);
         findOnPageEditText = (EditText) findViewById(R.id.find_on_page_edittext);
         fullScreenVideoFrameLayout = (FrameLayout) findViewById(R.id.full_screen_video_framelayout);
 
@@ -257,7 +267,10 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
             @Override
             public boolean onDoubleTap(MotionEvent event) {
                 if (fullScreenBrowsingModeEnabled) {  // Only process the double-tap if full screen browsing mode is enabled.
-                    if (appBar.isShowing()) {  // If `appBar` is visible, switch to full screen mode.
+                    // Toggle `inFullScreenBrowsingMode`.
+                    inFullScreenBrowsingMode = !inFullScreenBrowsingMode;
+
+                    if (inFullScreenBrowsingMode) {  // Switch to full screen mode.
                         // Hide the `appBar`.
                         appBar.hide();
 
@@ -638,6 +651,9 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
             favoriteIcon = favoriteIconBitmapDrawable.getBitmap();
         }
 
+        // Initialize `inFullScreenBrowsingMode`, which is always false at this point because Privacy Browser never starts in full screen browsing mode.
+        inFullScreenBrowsingMode = false;
+
         // Initialize AdView for the free flavor and request an ad.  If this is not the free flavor BannerAd.requestAd() does nothing.
         adView = findViewById(R.id.adView);
         BannerAd.requestAd(adView);
@@ -978,11 +994,9 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
 
             case R.id.find_on_page:
                 // Hide the URL app bar.
-                Toolbar appBarToolbar = (Toolbar) findViewById(R.id.app_bar);
-                appBarToolbar.setVisibility(View.GONE);
+                supportAppBar.setVisibility(View.GONE);
 
                 // Show the Find on Page `RelativeLayout`.
-                LinearLayout findOnPageLinearLayout = (LinearLayout) findViewById(R.id.find_on_page_linearlayout);
                 findOnPageLinearLayout.setVisibility(View.VISIBLE);
 
                 // Display the keyboard.  We have to wait 200 ms before running the command to work around a bug in Android.
@@ -1608,12 +1622,10 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         mainWebView.clearMatches();
 
         // Hide the Find on Page `RelativeLayout`.
-        LinearLayout findOnPageLinearLayout = (LinearLayout) findViewById(R.id.find_on_page_linearlayout);
         findOnPageLinearLayout.setVisibility(View.GONE);
 
         // Show the URL app bar.
-        Toolbar appBarToolbar = (Toolbar) findViewById(R.id.app_bar);
-        appBarToolbar.setVisibility(View.VISIBLE);
+        supportAppBar.setVisibility(View.VISIBLE);
 
         // Hide the keyboard so we can see the webpage.  `0` indicates no additional flags.
         inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
@@ -1713,7 +1725,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         }
 
         // If we are in full screen mode update the `SYSTEM_UI` flags.
-        if (!appBar.isShowing()) {
+        if (inFullScreenBrowsingMode) {
             if (hideSystemBarsOnFullscreen) {  // Hide everything.
                 // Remove the translucent navigation setting if it is currently flagged.
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
