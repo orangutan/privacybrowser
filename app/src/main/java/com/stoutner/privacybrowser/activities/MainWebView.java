@@ -209,6 +209,9 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
     // `inputMethodManager` is used in `onOptionsItemSelected()`, `loadUrlFromTextBox()`, and `closeFindOnPage()`.
     private InputMethodManager inputMethodManager;
 
+    // `mainWebViewRelativeLayout` is used in `onCreate()` and `onNavigationItemSelected()`.
+    private RelativeLayout mainWebViewRelativeLayout;
+
     @Override
     // Remove Android Studio's warning about the dangers of using SetJavaScriptEnabled.  The whole premise of Privacy Browser is built around an understanding of these dangers.
     @SuppressLint("SetJavaScriptEnabled")
@@ -256,6 +259,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         // Get handles for views that need to be accessed.
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerlayout);
         rootCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.root_coordinatorlayout);
+        mainWebViewRelativeLayout = (RelativeLayout) findViewById(R.id.main_webview_relativelayout);
         mainWebView = (WebView) findViewById(R.id.mainWebView);
         findOnPageLinearLayout = (LinearLayout) findViewById(R.id.find_on_page_linearlayout);
         findOnPageEditText = (EditText) findViewById(R.id.find_on_page_edittext);
@@ -287,10 +291,10 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                             // Remove the translucent status bar overlay on the `Drawer Layout`, which is special and needs its own command.
                             drawerLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
-                        /* SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
-                         * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
-                         * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically rehides them after they are shown.
-                         */
+                            /* SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                             * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                             * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically rehides them after they are shown.
+                             */
                             rootCoordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
                             // Set `rootCoordinatorLayout` to fill the whole screen.
@@ -1150,7 +1154,6 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                 customHeaders.clear();
 
                 // Detach all views from `mainWebViewRelativeLayout`.
-                RelativeLayout mainWebViewRelativeLayout = (RelativeLayout) findViewById(R.id.mainWebViewRelativeLayout);
                 mainWebViewRelativeLayout.removeAllViews();
 
                 // Destroy the internal state of `mainWebView`.

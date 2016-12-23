@@ -285,9 +285,9 @@
         <string name="enable_full_screen_browsing_mode">Enable full screen browsing mode</string>
         <string name="enable_full_screen_browsing_mode_summary">Double-tap to toggle full screen browsing mode.</string>
         <string name="hide_system_bars">Hide system bars</string>
-        <string name="hide_system_bars_summary">Hide the status and navigation bars in full screen mode.</string>
+        <string name="hide_system_bars_summary">Hide the status and navigation bars in full screen browsing mode. This doesn\'t work well if the keyboard is displayed during full screen browsing mode.</string>
         <string name="translucent_navigation_bar">Translucent navigation bar</string>
-        <string name="translucent_navigation_bar_summary">Make the navigation bar translucent in full screen mode.</string>
+        <string name="translucent_navigation_bar_summary">Make the navigation bar translucent in full screen browsing mode.</string>
     <string name="general">General</string>
         <string name="homepage_preference">Homepage</string>
         <string name="default_font_size">Default font size</string>

@@ -248,7 +248,7 @@
         <string name="enable_full_screen_browsing_mode">Habilitar pantalla completa</string>
         <string name="enable_full_screen_browsing_mode_summary">Doble toque para pantalla completa.</string>
         <string name="hide_system_bars">Esconder las barras del systema</string>
-        <string name="hide_system_bars_summary">Esconder las barras de estado y de navegación en el modo de pantalla completa.</string>
+        <string name="hide_system_bars_summary">Esconder las barras de estado y de navegación en el modo de pantalla completa.  Esto causa problems si el teclado se muestra en el modo de pantalla completa.</string>
         <string name="translucent_navigation_bar">Barra de navegación translúcida</string>
         <string name="translucent_navigation_bar_summary">Hacer la barra de navegación translúcida en el modo de pantalla completa.</string>
     <string name="general">General</string>

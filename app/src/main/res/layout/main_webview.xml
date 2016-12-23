@@ -20,7 +20,7 @@
 
 <!-- android:layout_weight="1" sets the RelativeLayout to fill the rest of the screen because it is encapsulated in a LinearLayout with android:orientation="vertical". -->
 <RelativeLayout
-    android:id="@+id/mainWebViewRelativeLayout"
+    android:id="@+id/main_webview_relativelayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
