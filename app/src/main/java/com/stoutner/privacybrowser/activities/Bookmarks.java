@@ -421,7 +421,7 @@ public class Bookmarks extends AppCompatActivity implements CreateBookmark.Creat
                                         // Do nothing because everything will be handled by `onDismissed()` below.
                                     }
                                 })
-                                .setCallback(new Snackbar.Callback() {
+                                .addCallback(new Snackbar.Callback() {
                                     @Override
                                     public void onDismissed(Snackbar snackbar, int event) {
                                         // Android Studio wants to see entries for every possible `Snackbar.Callback` even if they aren't used.
