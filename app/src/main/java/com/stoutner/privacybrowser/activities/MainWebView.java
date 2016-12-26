@@ -70,6 +70,7 @@ import android.webkit.DownloadListener;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -93,12 +94,18 @@ import com.stoutner.privacybrowser.dialogs.SslCertificateError;
 import com.stoutner.privacybrowser.dialogs.UrlHistory;
 import com.stoutner.privacybrowser.dialogs.ViewSslCertificate;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 // We need to use AppCompatActivity from android.support.v7.app.AppCompatActivity to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebView extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CreateHomeScreenShortcut.CreateHomeScreenSchortcutListener,
@@ -169,6 +176,9 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
 
     // `javaScriptEnabledSearchURL` is used in `loadURLFromTextBox()` and `applySettings()`.
     private String javaScriptEnabledSearchURL;
+
+    // `adBlockerEnabled` is used in `onCreate()` and `applySettings()`.
+    private boolean adBlockerEnabled;
 
     // `fullScreenBrowsingModeEnabled` is used in `onCreate()` and `applySettings()`.
     private boolean fullScreenBrowsingModeEnabled;
@@ -459,6 +469,28 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         // drawerToggle creates the hamburger icon at the start of the AppBar.
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, supportAppBar, R.string.open_navigation_drawer, R.string.close_navigation_drawer);
 
+        // Initialize `adServerSet`.
+        final Set<String> adServersSet = new HashSet<>();
+
+        // Load the list of ad servers into memory.
+        try {
+            // Load `pgl.yoyo.org_adservers.txt` into a `BufferedReader`.
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getAssets().open("pgl.yoyo.org_adservers.txt")));
+
+            // Create a string for storing each ad server.
+            String adServer;
+
+            // Populate `adServersSet`.
+            while ((adServer = bufferedReader.readLine()) != null) {
+                adServersSet.add(adServer);
+            }
+
+            // Close `bufferedReader`.
+            bufferedReader.close();
+        } catch (IOException ioException) {
+            // We're pretty sure the asset exists, so we don't need to worry about the `IOException` ever being thrown.
+        }
+
         mainWebView.setWebViewClient(new WebViewClient() {
             // `shouldOverrideUrlLoading` makes this `WebView` the default handler for URLs inside the app, so that links are not kicked out to other apps.
             // We have to use the deprecated `shouldOverrideUrlLoading` until API >= 24.
@@ -482,6 +514,41 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                 } else {  // Load the URL in Privacy Browser.
                     mainWebView.loadUrl(url, customHeaders);
                     return true;
+                }
+            }
+
+            // Block ads.  We have to use the deprecated `shouldInterceptRequest` until minimum API >= 21.
+            @SuppressWarnings("deprecation")
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, String url){
+                if (adBlockerEnabled) {  // Block ads.
+                    // Extract the host from `url`.
+                    Uri requestUri = Uri.parse(url);
+                    String requestHost = requestUri.getHost();
+
+                    // Create a variable to track if this is an ad server.
+                    boolean requestHostIsAdServer = false;
+
+                    // Check all the subdomains of `requestHost`.
+                    while (requestHost.contains(".")) {
+                        if (adServersSet.contains(requestHost)) {
+                            requestHostIsAdServer = true;
+                        }
+
+                        // Strip out the lowest subdomain of `requestHost`.
+                        requestHost = requestHost.substring(requestHost.indexOf(".") + 1);
+                    }
+
+                    if (requestHostIsAdServer) {  // It is an ad server.
+                        // Return an empty `WebResourceResponse`.
+                        return new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
+                    } else {  // It is not an ad server.
+                        // `return null` loads the requested resource.
+                        return null;
+                    }
+                } else {  // Ad blocking is disabled.
+                    // `return null` loads the requested resource.
+                    return null;
                 }
             }
 
@@ -1648,6 +1715,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         String homepageString = sharedPreferences.getString("homepage", "https://www.duckduckgo.com");
         String defaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
         swipeToRefreshEnabled = sharedPreferences.getBoolean("swipe_to_refresh_enabled", false);
+        adBlockerEnabled = sharedPreferences.getBoolean("block_ads", true);
         boolean doNotTrackEnabled = sharedPreferences.getBoolean("do_not_track", true);
         boolean proxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
         fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("enable_full_screen_browsing_mode", false);

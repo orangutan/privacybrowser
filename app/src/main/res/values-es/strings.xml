@@ -216,6 +216,8 @@
             <item>Personalizar</item>
         </string-array>
         <string name="custom_user_agent">Agente de usuario personalizado</string>
+        <string name="block_ads">Bloquear anuncios</string>
+        <string name="block_ads_summary">Usar la lista de servidores de anuncios de pgl.yoyo.org para bloquear anuncios.</string>
         <string name="do_not_track">No Seguir</string>
         <string name="do_not_track_summary">Mandar la cabecera de No Seguir que sugiere cortésmente que las páginas web no siguan este navegador.</string>
         <string name="proxy_through_orbot">Usar Orbot</string>

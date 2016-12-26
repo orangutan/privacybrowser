@@ -235,6 +235,8 @@
             <item>Custom user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
         </string-array>
         <string name="custom_user_agent">Custom user agent</string>
+        <string name="block_ads">Block ads</string>
+        <string name="block_ads_summary">Use the list of ad servers from pgl.yoyo.org to block ads.</string>
         <string name="do_not_track">Do not track</string>
         <string name="do_not_track_summary">Send the Do Not Track header which politely suggests that web servers not track this browser.</string>
         <string name="proxy_through_orbot">Proxy through Orbot</string>

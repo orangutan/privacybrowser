@@ -68,6 +68,12 @@
             android:inputType="textVisiblePassword|textMultiLine" />
 
         <SwitchPreference
+            android:key="block_ads"
+            android:title="@string/block_ads"
+            android:summary="@string/block_ads_summary"
+            android:defaultValue="true" />
+
+        <SwitchPreference
             android:key="do_not_track"
             android:title="@string/do_not_track"
             android:summary="@string/do_not_track_summary"
