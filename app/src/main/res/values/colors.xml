@@ -36,10 +36,10 @@
     <color name="blue_900">#FF0D47A1</color>
     <color name="blue_a700">#FF2962FF</color>
 
-    <color name="blue_grey_500">#FF607D8B</color>
+    <color name="blue_gray_500">#FF607D8B</color>
 
-    <color name="grey_100">#FFF5F5F5</color>
-    <color name="grey_500">#FF9E9E9E</color>
+    <color name="gray_100">#FFF5F5F5</color>
+    <color name="gray_500">#FF9E9E9E</color>
 
     <color name="light_green_a700">#FF64DD17</color>
 

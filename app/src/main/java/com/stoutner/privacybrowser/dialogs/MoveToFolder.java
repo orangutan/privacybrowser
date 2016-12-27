@@ -171,7 +171,7 @@ public class MoveToFolder extends AppCompatDialogFragment {
             };
         } else {  // Display `Home Folder` at the top of the `ListView`.
             // Get the home folder icon drawable and convert it to a `Bitmap`.  `this` specifies the current context.
-            Drawable homeFolderIconDrawable = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.folder_grey_bitmap);
+            Drawable homeFolderIconDrawable = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.folder_gray_bitmap);
             BitmapDrawable homeFolderIconBitmapDrawable = (BitmapDrawable) homeFolderIconDrawable;
             Bitmap homeFolderIconBitmap = homeFolderIconBitmapDrawable.getBitmap();
             // Convert the folder `Bitmap` to a byte array.  `0` is for lossless compression (the only option for a PNG).

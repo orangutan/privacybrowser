@@ -59,7 +59,7 @@
                         android:id="@+id/app_bar"
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
-                        android:background="@color/grey_100"
+                        android:background="@color/gray_100"
                         app:popupTheme="@style/LightPopupOverlay" />
 
                     <include layout="@layout/find_on_page_app_bar" />

@@ -98,7 +98,7 @@ public class OrbotProxyHelper {
                 alertDialog.show();
             }
         } else {  // Otherwise set the default grey `appBar` background.
-            MainWebView.appBar.setBackgroundDrawable(ContextCompat.getDrawable(privacyBrowserContext, R.color.grey_100));
+            MainWebView.appBar.setBackgroundDrawable(ContextCompat.getDrawable(privacyBrowserContext, R.color.gray_100));
         }
     }
 }
