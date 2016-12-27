@@ -77,7 +77,7 @@
             android:key="do_not_track"
             android:title="@string/do_not_track"
             android:summary="@string/do_not_track_summary"
-            android:defaultValue="true" />
+            android:defaultValue="false" />
 
         <SwitchPreference
             android:key="proxy_through_orbot"

@@ -1716,7 +1716,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         String defaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
         swipeToRefreshEnabled = sharedPreferences.getBoolean("swipe_to_refresh_enabled", false);
         adBlockerEnabled = sharedPreferences.getBoolean("block_ads", true);
-        boolean doNotTrackEnabled = sharedPreferences.getBoolean("do_not_track", true);
+        boolean doNotTrackEnabled = sharedPreferences.getBoolean("do_not_track", false);
         boolean proxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
         fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("enable_full_screen_browsing_mode", false);
         hideSystemBarsOnFullscreen = sharedPreferences.getBoolean("hide_system_bars", false);
