@@ -1,5 +1,5 @@
 /**
- * Copyright 2015-2016 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2015-2017 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -125,7 +125,6 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
 
     // `sslCertificate` is public static so it can be accessed from `ViewSslCertificate`.  It is also used in `onCreate()`.
     public static SslCertificate sslCertificate;
-
 
 
     // `drawerLayout` is used in `onCreate()`, `onNewIntent()`, and `onBackPressed()`.
@@ -529,14 +528,16 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                     // Create a variable to track if this is an ad server.
                     boolean requestHostIsAdServer = false;
 
-                    // Check all the subdomains of `requestHost`.
-                    while (requestHost.contains(".")) {
-                        if (adServersSet.contains(requestHost)) {
-                            requestHostIsAdServer = true;
-                        }
+                    // Check all the subdomains of `requestHost` if it is not null.
+                    if (requestHost != null) {
+                        while (requestHost.contains(".")) {
+                            if (adServersSet.contains(requestHost)) {
+                                requestHostIsAdServer = true;
+                            }
 
-                        // Strip out the lowest subdomain of `requestHost`.
-                        requestHost = requestHost.substring(requestHost.indexOf(".") + 1);
+                            // Strip out the lowest subdomain of `requestHost`.
+                            requestHost = requestHost.substring(requestHost.indexOf(".") + 1);
+                        }
                     }
 
                     if (requestHostIsAdServer) {  // It is an ad server.
@@ -1518,7 +1519,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         String fileName = downloadFileNameEditText.getText().toString();
 
         // Once we have `WRITE_EXTERNAL_STORAGE` permissions we can use `setDestinationInExternalPublicDir`.
-        if (Build.VERSION.SDK_INT >= 23) { // If API >= 23, set the download save in the the `DIRECTORY_DOWNLOADS` using `fileName`.
+        if (Build.VERSION.SDK_INT >= 23) { // If API >= 23, set the download location to `/sdcard/Android/data/com.stoutner.privacybrowser.standard/files` named `fileName`.
             downloadRequest.setDestinationInExternalFilesDir(this, "/", fileName);
         } else { // Only set the title using `fileName`.
             downloadRequest.setTitle(fileName);

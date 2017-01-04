@@ -18,8 +18,6 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<!-- `tools:ignore="MissingTranslation"` allows release APKs to be built if translation strings are missing.  The missing strings will fall back to English. -->
-
 <resources>
     <!-- Activities. -->
     <string name="privacy_browser">Navegador Privado</string>
