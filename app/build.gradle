@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2017 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -25,8 +25,8 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 16
-        versionName "1.14"
+        versionCode 17
+        versionName "1.14.1"
     }
 
     buildTypes {

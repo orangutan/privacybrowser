@@ -528,7 +528,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                     // Create a variable to track if this is an ad server.
                     boolean requestHostIsAdServer = false;
 
-                    // Check all the subdomains of `requestHost` if it is not null.
+                    // Check all the subdomains of `requestHost` if it is not `null`.
                     if (requestHost != null) {
                         while (requestHost.contains(".")) {
                             if (adServersSet.contains(requestHost)) {
