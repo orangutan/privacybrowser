@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2015-2016 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2017 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -47,8 +47,8 @@
     <string name="close_navigation_drawer">Close Navigation Drawer</string>
 
     <!-- Save As. -->
-    <string name="save_as">Save as</string>
-    <string name="save_image_as">Save image as</string>
+    <string name="save_as">Save As</string>
+    <string name="save_image_as">Save Image As</string>
     <string name="file_name">File name</string>
     <string name="image_name">Image name</string>
     <string name="unknown_size">unknown size</string>
@@ -237,7 +237,7 @@
         <string name="custom_user_agent">Custom user agent</string>
         <string name="block_ads">Block ads</string>
         <string name="block_ads_summary">Use the list of ad servers from pgl.yoyo.org to block ads.</string>
-        <string name="do_not_track">Do not track</string>
+        <string name="do_not_track">Do Not Track</string>
         <string name="do_not_track_summary">Send the Do Not Track header which politely suggests that web servers not track this browser.</string>
         <string name="proxy_through_orbot">Proxy through Orbot</string>
         <string name="proxy_through_orbot_summary">Proxy all web traffic through Orbot on localhost:8118.</string>
