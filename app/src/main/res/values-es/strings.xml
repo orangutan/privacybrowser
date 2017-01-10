@@ -30,35 +30,35 @@
     <string name="privacy_mode">Modo Privado</string>
     <string name="javascript_enabled">JavaScript habilitado</string>
     <string name="javascript_disabled">JavaScript deshabilitado</string>
-    <string name="first_party_cookies_enabled">Cookies de Primera Parte habilitadas</string>
-    <string name="first_party_cookies_disabled">Cookies de Primera Parte deshabilitadas</string>
-    <string name="third_party_cookies_enabled">Cookies de Terceras Partes habilitadas</string>
-    <string name="third_party_cookies_disabled">Cookies de Terceras Partes deshabilitadas</string>
+    <string name="first_party_cookies_enabled">Cookies de primera parte habilitadas</string>
+    <string name="first_party_cookies_disabled">Cookies de primera parte deshabilitadas</string>
+    <string name="third_party_cookies_enabled">Cookies de terceras partes habilitadas</string>
+    <string name="third_party_cookies_disabled">Cookies de terceras partes deshabilitadas</string>
     <string name="dom_storage_enabled">Almacenamiento DOM habilitado</string>
     <string name="dom_storage_disabled">Almacenamiento DOM deshabilitado</string>
-    <string name="form_data_enabled">Datos de Formulario habilitados</string>
-    <string name="form_data_disabled">Datos de Fromulario deshabilitados</string>
+    <string name="form_data_enabled">Datos de formulario habilitados</string>
+    <string name="form_data_disabled">Datos de fromulario deshabilitados</string>
     <string name="cookies_deleted">Cookies eliminadas</string>
     <string name="dom_storage_deleted">Almacenamiento DOM eliminado</string>
-    <string name="form_data_deleted">Datos de Formulario eliminados</string>
-    <string name="open_navigation_drawer">Abrir Caja de Navegación</string>
-    <string name="close_navigation_drawer">Cerrar Caja de Navegación</string>
+    <string name="form_data_deleted">Datos de formulario eliminados</string>
+    <string name="open_navigation_drawer">Abrir la caja de navegación</string>
+    <string name="close_navigation_drawer">Cerrar la caja de navegación</string>
 
     <!-- Save As. -->
-    <string name="save_as">Guardar Como</string>
-    <string name="save_image_as">Guardar Imagen Como</string>
+    <string name="save_as">Guardar como</string>
+    <string name="save_image_as">Guardar imagen como</string>
     <string name="file_name">Nombre de archivo</string>
     <string name="image_name">Nombre de imagen</string>
     <string name="unknown_size">Tamaño desconocido</string>
     <string name="download">Descargar</string>
 
     <!-- Custom App Bar. -->
-    <string name="favorite_icon">Icono Favorito</string>
-    <string name="url_or_search_terms">URL o Búsqueda</string>
+    <string name="favorite_icon">Icono favorito</string>
+    <string name="url_or_search_terms">URL o búsqueda</string>
 
     <!-- View SSL Certificate. -->
-    <string name="view_ssl_certificate">Ver Certificado SSL</string>
-    <string name="unencrypted_website">Web Sin Cifrar</string>
+    <string name="view_ssl_certificate">Ver certificado SSL</string>
+    <string name="unencrypted_website">Web sin cifrar</string>
     <string name="no_ssl_certificate">La comunicación con esta web no está cifrada por un certificado SSL.</string>
     <string name="ssl_certificate">Certificado SSL</string>
     <string name="close">Cerrar</string>
@@ -67,12 +67,12 @@
     <string name="common_name">Nombre Común (CN):</string>
     <string name="organization">Organización (O):</string>
     <string name="organizational_unit">Unidad Organizativa (OU):</string>
-    <string name="valid_dates">Periodo de Validez</string>
+    <string name="valid_dates">Periodo de validez</string>
     <string name="start_date">Comienza el:</string>
     <string name="end_date">Caduca el:</string>
 
     <!-- SSL Certificate Error. -->
-    <string name="ssl_certificate_error">Error de Certificado SSL</string>
+    <string name="ssl_certificate_error">Error de certificado SSL</string>
     <string name="proceed">Proceder</string>
     <string name="future_certificate">La fecha inicio del certificado está en el futuro</string>
     <string name="expired_certificate">El certificado ha expirado</string>
@@ -84,30 +84,30 @@
     <string name="url_label">URL:</string>
 
     <!-- MainWebView Navigation Drawer. -->
-    <string name="navigation_drawer">Caja de Navegación</string>
+    <string name="navigation_drawer">Caja de navegación</string>
     <string name="navigation">Navegación</string>
     <string name="home">Inicio</string>
     <string name="back">Atrás</string>
     <string name="forward">Adelante</string>
     <string name="history">Historial</string>
-        <string name="clear_history">Eliminar Historial</string>
+        <string name="clear_history">Eliminar historial</string>
     <string name="bookmarks">Marcadores</string>
     <string name="downloads">Descargas</string>
     <string name="settings">Configuración</string>
     <string name="guide">Guía</string>
     <string name="about">Acerca de</string>
-    <string name="clear_and_exit">Eliminar y Salir</string>
+    <string name="clear_and_exit">Eliminar y salir</string>
 
     <!-- MainWebView Options Menu. -->
     <string name="javascript">JavaScript</string>
-    <string name="first_party_cookies">Cookies de Primera Parte</string>
-    <string name="third_party_cookies">Cookies de Terceras Partes</string>
+    <string name="first_party_cookies">Cookies de primera parte</string>
+    <string name="third_party_cookies">Cookies de terceras partes</string>
     <string name="dom_storage">Almacenamiento DOM</string>
-    <string name="form_data">Datos de Formulario</string>
-    <string name="clear_cookies">Eliminar Cookies</string>
-    <string name="clear_dom_storage">Eliminar Almacenamiento DOM</string>
-    <string name="clear_form_data">Borrar Datos de Formulario</string>
-    <string name="font_size">Tamaño de Fuente</string>
+    <string name="form_data">Datos de formulario</string>
+    <string name="clear_cookies">Eliminar cookies</string>
+    <string name="clear_dom_storage">Eliminar almacenamiento DOM</string>
+    <string name="clear_form_data">Borrar datos de formulario</string>
+    <string name="font_size">Tamaño de fuente</string>
         <string name="fifty_percent">50%</string>
         <string name="seventy_five_percent">75%</string>
         <string name="one_hundred_percent">100%</string>
@@ -115,21 +115,21 @@
         <string name="one_hundred_fifty_percent">150%</string>
         <string name="one_hundred_seventy_five_percent">175%</string>
         <string name="two_hundred_percent">200%</string>
-    <string name="find_on_page">Buscar en Página</string>
+    <string name="find_on_page">Buscar en página</string>
     <string name="share">Compartir</string>
-    <string name="add_to_home_screen">Añadir a la Ventana de Inicio</string>
+    <string name="add_to_home_screen">Añadir a la ventana de inicio</string>
     <string name="print">Imprimir</string>
-        <string name="privacy_browser_web_page">Página Web de Navegador Privado</string>
+        <string name="privacy_browser_web_page">Página web de Navegador Privado</string>
     <string name="refresh">Actualizar</string>
 
     <!-- Context Menus. -->
     <string name="load_url">Cargar URL</string>
     <string name="copy_url">Copiar URL</string>
-    <string name="email_address">Correo Electrónico</string>
-    <string name="copy_email_address">Copiar Correo Electrónico</string>
-    <string name="write_email">Escribir Correo Electrónico</string>
-    <string name="view_image">Ver Imagen</string>
-    <string name="download_image">Descargar Imagen</string>
+    <string name="email_address">Correo electrónico</string>
+    <string name="copy_email_address">Copiar correo electrónico</string>
+    <string name="write_email">Escribir correo electrónico</string>
+    <string name="view_image">Ver imagen</string>
+    <string name="download_image">Descargar imagen</string>
 
     <!-- Find on Page. -->
     <string name="previous">Anterior</string>
@@ -142,9 +142,9 @@
     <string name="create">Crear</string>
 
     <!-- Bookmarks. -->
-    <string name="database_view">Vista de Base de Datos</string>
-    <string name="create_bookmark">Crear Marcador</string>
-    <string name="create_folder">Crear Carpeta</string>
+    <string name="database_view">Vista de base de datos</string>
+    <string name="create_bookmark">Crear marcador</string>
+    <string name="create_folder">Crear carpeta</string>
     <string name="current_bookmark_icon">Icono de marcador actual</string>
     <string name="current_folder_icon">Icono de carpeta actual</string>
     <string name="default_folder_icon">Icono de carpeta por defecto</string>
@@ -156,35 +156,35 @@
     <string name="cannot_create_folder">No se creó la carpeta porque el nombre no fue único:</string>
     <string name="cannot_save_folder">No se guardó la carpeta porque el nuevo nombre no fue único:</string>
     <string name="cannot_move_bookmarks">No se movió los marcadores selectionados porque ninguna carpeta nueva fue seleccionada.</string>
-    <string name="edit_bookmark">Editar Marcador</string>
-    <string name="edit_folder">Editar Carpeta</string>
-    <string name="move_to_folder">Mover a Carpeta</string>
+    <string name="edit_bookmark">Editar marcador</string>
+    <string name="edit_folder">Editar carpeta</string>
+    <string name="move_to_folder">Mover a carpeta</string>
     <string name="move">Mover</string>
     <string name="save">Guardar</string>
 
     <!-- Bookmarks Contextual App Bar. -->
-    <string name="one_selected">1 Seleccionado</string>
-    <string name="selected">Seleccionados</string>
+    <string name="one_selected">1 seleccionado</string>
+    <string name="selected">seleccionados</string>
     <string name="move_up">Subir</string>
     <string name="move_down">Bajar</string>
     <string name="edit">Editar</string>
     <string name="delete">Eliminar</string>
-    <string name="select_all">Selectionar Todo</string>
-    <string name="one_bookmark_deleted">1 Marcador Eliminados</string>
-    <string name="bookmarks_deleted">Marcadores Eliminados</string>
+    <string name="select_all">Selectionar todo</string>
+    <string name="one_bookmark_deleted">1 marcador eliminado</string>
+    <string name="bookmarks_deleted">Marcadores eliminados</string>
     <string name="undo">Deshacer</string>
 
     <!-- Bookmarks Database View. -->
-    <string name="bookmarks_database_view">Vista de Base de Datos de las Marcadores</string>
-    <string name="home_folder">Carpeta Inicio</string>
+    <string name="bookmarks_database_view">Vista de base de datos de marcadores</string>
+    <string name="home_folder">Carpeta inicio</string>
 
     <!-- Guide. -->
-    <string name="privacy_browser_guide">Guía de Navegador Privado Guía</string>
-    <string name="overview">Visión General</string>
-    <string name="local_storage">Almacenamiento Local</string>
+    <string name="privacy_browser_guide">Guía de Navegador Privado</string>
+    <string name="overview">Visión beneral</string>
+    <string name="local_storage">Almacenamiento local</string>
     <string name="tor">Tor</string>
     <string name="tracking_ids">Rastreo de IDs</string>
-    <string name="planned_features">Funciones Planeadas</string>
+    <string name="planned_features">Funciones planeadas</string>
 
     <!-- Preferences. -->
     <string name="privacy">Privacidad</string>
@@ -201,7 +201,7 @@
         <string name="user_agent">Agente de usuario</string>
         <string-array name="user_agent_entries">
             <item>Navegador Privado 1.0</item>
-            <item>WebView Por Defecto</item>
+            <item>WebView por defecto</item>
             <item>Firefox 48 en Android 6.0.1</item>
             <item>Chrome 52 en Android 6.0.1</item>
             <item>Safari en iOS 10</item>
@@ -218,8 +218,8 @@
         <string name="custom_user_agent">Agente de usuario personalizado</string>
         <string name="block_ads">Bloquear anuncios</string>
         <string name="block_ads_summary">Usar la lista de servidores de anuncios de pgl.yoyo.org para bloquear anuncios.</string>
-        <string name="do_not_track">No Rastrear</string>
-        <string name="do_not_track_summary">Enviar la cabecera de No Rastrear que educadamente sugiere que los servidores web no rastreen este navegador.</string>
+        <string name="do_not_track">No rastrear</string>
+        <string name="do_not_track_summary">Enviar la cabecera de no rastrear que educadamente sugiere que los servidores web no rastreen este navegador.</string>
         <string name="proxy_through_orbot">Enviar a través de Orbot</string>
         <string name="proxy_through_orbot_summary">Enviar todo el tráfico web a través de Orbot en localhost:8118.</string>
     <string name="search">Buscar</string>
@@ -254,7 +254,7 @@
         <string name="translucent_navigation_bar">Barra de navegación translúcida</string>
         <string name="translucent_navigation_bar_summary">Hacer la barra de navegación translúcida en el modo de navegación a pantalla completa.</string>
     <string name="general">General</string>
-        <string name="homepage_preference">Página inicial</string>
+        <string name="homepage_preference">Página de inicio</string>
         <string name="default_font_size">Tamaño de fuente por defecto</string>
         <string-array name="default_font_size_entries">
             <item>50%</item>
@@ -282,18 +282,18 @@
             <string name="manufacturer">Fabricante:</string>
             <string name="model">Modelo:</string>
             <string name="device">Dispositivo:</string>
-            <string name="bootloader">Cargador de Arranque:</string>
+            <string name="bootloader">Cargador de arranque:</string>
             <string name="radio">Radio:</string>
         <string name="software">Software</string>
             <string name="android">Android:</string>
                 <string name="api">API</string>
-            <string name="build">Versión de Compilación:</string>
-            <string name="security_patch">Parche de Seguridad:</string>
+            <string name="build">Versión de compilación:</string>
+            <string name="security_patch">Parche de seguridad:</string>
             <string name="webkit">WebKit:</string>
             <string name="chrome">Chrome:</string>
     <string name="permissions">Permisos</string>
-    <string name="privacy_policy">Política de Privacidad</string>
-    <string name="changelog">Registro de Cambios</string>
+    <string name="privacy_policy">Política de privacidad</string>
+    <string name="changelog">Registro de cambios</string>
     <string name="licenses">Licencias</string>
     <string name="contributors">Colaboradores</string>
     <string name="links">Enlaces</string>

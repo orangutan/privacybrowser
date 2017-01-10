@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2016 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2017 Soren Stoutner <soren@stoutner.com>.
 
   Translation 2016 Aaron Gerlach <aaron@gerlach.com>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -47,8 +47,8 @@
     <string name="close_navigation_drawer">Navigationspanel schließen</string>
 
     <!-- Save As. -->
-    <string name="save_as">Speichern unter</string>
-    <string name="save_image_as">Bild speichern unter</string>
+    <string name="save_as">Speichern Unter</string>
+    <string name="save_image_as">Bild Speichern Unter</string>
     <string name="file_name">Dateiname</string>
     <string name="image_name">Name des Bildes</string>
     <string name="unknown_size">Unbekannte Größe</string>
@@ -135,7 +135,7 @@
     <string name="next">Nächstes</string>
 
     <!-- Create Home Screen Shortcut Alert Dialog. -->
-    <string name="create_shortcut">Verknüpfung erstellen</string>
+    <string name="create_shortcut">Verknüpfung Erstellen</string>
     <string name="shortcut_name">Name der Verknüpfung</string>
     <string name="cancel">Abbrechen</string>
     <string name="create">Erstellen</string>
