@@ -180,7 +180,7 @@
 
     <!-- Guide. -->
     <string name="privacy_browser_guide">Guía de Navegador Privado</string>
-    <string name="overview">Visión beneral</string>
+    <string name="overview">Visión general</string>
     <string name="local_storage">Almacenamiento local</string>
     <string name="tor">Tor</string>
     <string name="tracking_ids">Rastreo de IDs</string>
@@ -219,7 +219,7 @@
         <string name="block_ads">Bloquear anuncios</string>
         <string name="block_ads_summary">Usar la lista de servidores de anuncios de pgl.yoyo.org para bloquear anuncios.</string>
         <string name="do_not_track">No rastrear</string>
-        <string name="do_not_track_summary">Enviar la cabecera de no rastrear que educadamente sugiere que los servidores web no rastreen este navegador.</string>
+        <string name="do_not_track_summary">Enviar la cabecera de no rastrear (DNT) que educadamente sugiere que los servidores web no rastreen este navegador.</string>
         <string name="proxy_through_orbot">Enviar a través de Orbot</string>
         <string name="proxy_through_orbot_summary">Enviar todo el tráfico web a través de Orbot en localhost:8118.</string>
     <string name="search">Buscar</string>
