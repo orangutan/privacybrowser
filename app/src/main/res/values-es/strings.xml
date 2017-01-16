@@ -28,8 +28,8 @@
 
     <!-- MainWebView. -->
     <string name="privacy_mode">Modo Privado</string>
-    <string name="javascript_enabled">JavaScript habilitado</string>
-    <string name="javascript_disabled">JavaScript deshabilitado</string>
+    <string name="javascript_enabled">Javascript habilitado</string>
+    <string name="javascript_disabled">Javascript deshabilitado</string>
     <string name="first_party_cookies_enabled">Cookies de primera parte habilitadas</string>
     <string name="first_party_cookies_disabled">Cookies de primera parte deshabilitadas</string>
     <string name="third_party_cookies_enabled">Cookies de terceras partes habilitadas</string>
@@ -99,7 +99,7 @@
     <string name="clear_and_exit">Eliminar y salir</string>
 
     <!-- MainWebView Options Menu. -->
-    <string name="javascript">JavaScript</string>
+    <string name="javascript">Javascript</string>
     <string name="first_party_cookies">Cookies de primera parte</string>
     <string name="third_party_cookies">Cookies de terceras partes</string>
     <string name="dom_storage">Almacenamiento DOM</string>
@@ -188,14 +188,14 @@
 
     <!-- Preferences. -->
     <string name="privacy">Privacidad</string>
-        <string name="javascript_preference">Habilitar JavaScript por defecto</string>
-        <string name="javascript_preference_summary">JavaScript permite a las webs ejecutar programas (scripts) en el dispositivo.</string>
+        <string name="javascript_preference">Habilitar Javascript por defecto</string>
+        <string name="javascript_preference_summary">Javascript permite a las webs ejecutar programas (scripts) en el dispositivo.</string>
         <string name="first_party_cookies_preference">Habilitar cookies de primera parte por defecto</string>
         <string name="first_party_cookies_preference_summary">Dispositivos con versiones de Android más antiguas que Lollipop (versión 5.0) también habilitarán las cookies de terceras partes con este ajuste.</string>
         <string name="third_party_cookies_preference">Habilar cookies de terceras partes por defecto</string>
         <string name="third_party_cookies_summary">Este ajuste requiere Android Lollipop (versión 5.0) o mayor.  No tiene efecto si las cookies de primera parte están deshabilitadas.</string>
         <string name="dom_storage_preference">Habilitar almacenamiento DOM por defecto</string>
-        <string name="dom_storage_preference_summary">JavaScript debe estar habilitado para que funcione el almacenamiento DOM.</string>
+        <string name="dom_storage_preference_summary">Javascript debe estar habilitado para que funcione el almacenamiento DOM.</string>
         <string name="save_form_data_preference">Habilitar el guardar los datos de formulario por defecto</string>
         <string name="save_form_data_preference_summary">Los datos de formularios guardados pueden rellenar automáticamente los casillas o campos de las webs.</string>
         <string name="user_agent">Agente de usuario</string>
@@ -223,7 +223,7 @@
         <string name="proxy_through_orbot">Enviar a través de Orbot</string>
         <string name="proxy_through_orbot_summary">Enviar todo el tráfico web a través de Orbot en localhost:8118.</string>
     <string name="search">Buscar</string>
-        <string name="javascript_disabled_search">Búsqueda de JavaScript deshabilitado</string>
+        <string name="javascript_disabled_search">Búsqueda de Javascript deshabilitado</string>
         <string-array name="javascript_disabled_search_entries">
             <item>DuckDuckGo</item>
             <item>StartPage</item>
@@ -233,8 +233,8 @@
             <item>Qwant</item>
             <item>Personalizado</item>
         </string-array>
-        <string name="javascript_disabled_search_custom_url">URL personalizado de búsqueda de JavaScript deshabilitado</string>
-        <string name="javascript_enabled_search">Búsqueda de JavaScript habilitado</string>
+        <string name="javascript_disabled_search_custom_url">URL personalizado de búsqueda de Javascript deshabilitado</string>
+        <string name="javascript_enabled_search">Búsqueda de Javascript habilitado</string>
         <string-array name="javascript_enabled_search_entries">
             <item>DuckDuckGo</item>
             <item>StartPage</item>
@@ -244,7 +244,7 @@
             <item>Qwant</item>
             <item>Personalizado</item>
         </string-array>
-        <string name="javascript_enabled_search_custom_url">URL personalizado de búsqueda de JavaScript habilitado</string>
+        <string name="javascript_enabled_search_custom_url">URL personalizado de búsqueda de Javascript habilitado</string>
         <string name="custom_url">URL personalizado</string>
     <string name="full_screen">Pantalla Completa</string>
         <string name="enable_full_screen_browsing_mode">Habilitar pantalla completa</string>
