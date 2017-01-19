@@ -27,7 +27,7 @@
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser</string>
     <string name="privacy_browser_settings">Privacy Browser Einstellungen</string>
-    <string name="android_asset_path">de</string>  <!-- For translations, this should be the localization abbreviation.  For example, German is `de`. -->
+    <string name="android_asset_path">de</string>  <!-- For translations, this should be the localization abbreviation. -->
 
     <!-- MainWebView. -->
     <string name="privacy_mode">Privatsphäre-Modus</string>
