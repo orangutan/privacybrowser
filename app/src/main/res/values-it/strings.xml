@@ -23,7 +23,7 @@
 <resources>
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser</string>
-    <string name="privacy_browser_settings">Impostazioni di Privacy Browser</string>
+    <string name="privacy_browser_settings">Impostazioni</string>
     <string name="android_asset_path">en</string>  <!-- For translations, this should be the localization abbreviation.  For example, Italian is `it`.  This should not be translated unless the Guide and About sections are localized. -->
 
     <!-- MainWebView. -->
@@ -31,7 +31,7 @@
     <string name="javascript_enabled">JavaScript abilitato</string>
     <string name="javascript_disabled">JavaScript disabilitato</string>
     <string name="first_party_cookies_enabled">Cookies proprietari abilitati</string>
-    <string name="first_party_cookies_disabled">Cookies proprietari disabled</string>
+    <string name="first_party_cookies_disabled">Cookies proprietari disabilitati</string>
     <string name="third_party_cookies_enabled">Cookies di terze parti abilitati</string>
     <string name="third_party_cookies_disabled">Cookies di terze parti disabilitati</string>
     <string name="dom_storage_enabled">DOM Storage abilitato</string>
@@ -92,11 +92,11 @@
     <string name="history">Cronologia</string>
         <string name="clear_history">Elimina cronologia</string>
     <string name="bookmarks">Segnalibri</string>
-    <string name="downloads">Downloads</string>
+    <string name="downloads">Download</string>
     <string name="settings">Impostazioni</string>
     <string name="guide">Guida</string>
     <string name="about">Informazioni</string>
-    <string name="clear_and_exit">Elimina dati di navigazione ed esci</string>
+    <string name="clear_and_exit">Elimina dati ed esci</string>
 
     <!-- MainWebView Options Menu. -->
     <string name="javascript">JavaScript</string>
@@ -191,7 +191,7 @@
         <string name="javascript_preference">Abilita JavaScript</string>
         <string name="javascript_preference_summary">Permetti a JavaScript di eseguire programmi (script) sul dispositivo.</string>
         <string name="first_party_cookies_preference">Abilita cookies proprietari</string>
-        <string name="first_party_cookies_preference_summary">Abilita cookies di terze parti anche per dispositivi con versioni di Android precedenti a Lollipop (versione 5.0).</string>
+        <string name="first_party_cookies_preference_summary">Questa impostazione abilita anche cookies di terze parti con dispositivi con versioni di Android precedenti a Lollipop (versione 5.0).</string>
         <string name="third_party_cookies_preference">Abilita cookies di terze parti</string>
         <string name="third_party_cookies_summary">Questa impostazione richiede Android Lollipop (version 5.0) o successivo.  Non ha effetti se i cookies proprietari sono disabilitati.</string>
         <string name="dom_storage_preference">Abilita DOM Storage</string>
