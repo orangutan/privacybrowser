@@ -200,17 +200,17 @@
         <string-array name="user_agent_entries">
             <item>Privacy Browser 1.0</item>
             <item>WebView-Standard</item>
-            <item>Firefox 48 auf Android 6.0.1</item>
-            <item>Chrome 52 auf Android 6.0.1</item>
-            <item>Safari auf iOS 10</item>
+            <item>Firefox 50 auf Android 7.1.1</item>
+            <item>Chrome 55 auf Android 7.1.1</item>
+            <item>Safari 10 auf iOS 10.2.1</item>
             <item>Firefox 45 auf Linux</item>
-            <item>Chromium 52 auf Linux</item>
-            <item>Konqueror 4.14.23 auf Linux</item>
-            <item>Firefox 48 auf Windows 10</item>
-            <item>Chrome 52 auf Windows 10</item>
-            <item>Internet Explorer 11 auf Windows 10</item>
+            <item>Chromium 55 auf Linux</item>
+            <item>Konqueror 4.14.26 auf Linux</item>
+            <item>Firefox 50 auf Windows 10</item>
+            <item>Chrome 55 auf Windows 10</item>
             <item>Edge 14 auf Windows 10</item>
-            <item>Safari 9.1.2 auf OS X 10.11.6</item>
+            <item>Internet Explorer 11 auf Windows 10</item>
+            <item>Safari 10.0.2 auf macOS 10.12.2</item>
             <item>Eigener</item>
         </string-array>
         <string name="custom_user_agent">Eigener User Agent</string>

@@ -202,17 +202,17 @@
         <string-array name="user_agent_entries">
             <item>Navegador Privado 1.0</item>
             <item>WebView por defecto</item>
-            <item>Firefox 48 en Android 6.0.1</item>
-            <item>Chrome 52 en Android 6.0.1</item>
-            <item>Safari en iOS 10</item>
+            <item>Firefox 50 en Android 7.1.1</item>
+            <item>Chrome 55 en Android 7.1.1</item>
+            <item>Safari 10 en iOS 10.2.1</item>
             <item>Firefox 45 en Linux</item>
-            <item>Chromium 52 en Linux</item>
-            <item>Konqueror 4.14.23 en Linux</item>
-            <item>Firefox 48 en Windows 10</item>
-            <item>Chrome 52 en Windows 10</item>
-            <item>Internet Explorer 11 en Windows 10</item>
+            <item>Chromium 55 en Linux</item>
+            <item>Konqueror 4.14.26 en Linux</item>
+            <item>Firefox 50 en Windows 10</item>
+            <item>Chrome 55 en Windows 10</item>
             <item>Edge 14 en Windows 10</item>
-            <item>Safari 9.1.2 en OS X 10.11.6</item>
+            <item>Internet Explorer 11 en Windows 10</item>
+            <item>Safari 10.0.2 en macOS 10.12.2</item>
             <item>Personalizado</item>
         </string-array>
         <string name="custom_user_agent">Agente de usuario personalizado</string>

@@ -17,56 +17,47 @@
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
 <html>
-<head>
-<!-- We have to make an image into its own block to center it. -->
-<style>
-    h3 {
-        color: 0D4781;
-    }
+    <head>
+        <!-- We have to make an image into its own block to center it. -->
+        <style>
+            h3 {
+                color: 0D4781;
+            }
 
-    img.center {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-    }
-</style>
-</head>
 
-<body>
-<h3>Browser Identification</h3>
+            img.center {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        </style>
+    </head>
 
-<p>When web browsers connect to websites, they send a user agent, which identifies the browser and the
-    rendering capabilities it possesses. They website can use this information to decide which version of the
-    website to send to the browser. For example, many websites have different versions for desktop and
-    mobile browsers.</p>
+    <body>
+        <h3>Browser Identification</h3>
 
-<p>By default, Privacy Browser uses the built-in user agent that comes with the WebView installed on the
-    device. You can see what it is by going to the <strong>Settings</strong> screen and setting the <strong>User
-    agent</strong> to <strong>WebView Default</strong>. The screenshot below shows a Nexus 6P running Android 6.0.1
-    with Android System WebView 51.0.2704.81 installed.</p>
+        <p>When web browsers connect to websites, they send a user agent, which identifies the browser and the rendering capabilities it possesses. The web server can use this information to decide which version of the
+            website to send to the browser. For example, many websites have different versions for desktop and mobile browsers.</p>
 
-<img class="center" src="images/user_agent.png" height="640" width="360">
+        <p>By default, Privacy Browser uses its own user agent, which is PrivacyBrowser/1.0. This sends a minimum of information to the web server. Because web servers do not recognize this to be a mobile user agent,
+            they typically display the desktop version of the site.</p>
 
-<p>There is enough information in the user agent that sometimes only a few visitors to a website will be the same. If the user agent
-    is combined with another piece of non-unique identifying information, often it results in a unique fingerprint.
-    The Electronic Frontier Foundation created a tool called <a href="https://panopticlick.eff.org/">Panopticlick</a>
-    to demonstrate how much information can be gleaned from these sources. If this test is run with JavaScript enabled the
-    amount of information that is disclosed increases greatly. <a href="https://www.browserleaks.com">Browser Leaks</a> and
-    <a href="https://amiunique.org/">Am I Unique</a> are also good sources of information.</p>
+        <p>By comparison, WebView&rsquo;s default user agent divulges a large amount of information about the hardware and softare of the device. On the <strong>Settings</strong> screen, selecting <strong>WebView Default</strong> as the
+            <strong>User agent</strong> displays the user agent that will be sent. The screenshot below shows a Nexus 6P running Android 7.1.1 with Android System WebView 55.0.2883.91 installed.  Most web servers will recognize this as
+            a mobile browser and will display the mobile version of the site if they have one.</p>
 
-<img class="center" src="images/panopticlick.png" height=640" width="360">
+        <img class="center" src="images/user_agent.png" height="640" width="360">
 
-<p>Privacy Browser allows you to change the user agent. There are several preset options that match common browsers and operating systems.
-    Privacy Browser defaults to its own user agent, which is simply PrivacyBrowser/1.0. For tracking purposes, anything that is rare is easier
-    to track. If Privacy Browser becomes common and many people use PrivacyBrowser/1.0 as their user agent, it will be a good choice for privacy.
-    Firefox or Chrome are the most common user agents, but they auto-update and their version numbers change so quickly
-    that it is likely the user agents included in Privacy Browser will often be out of step with the majority of user agents in the
-    server logs.</p>
+        <p>There is enough information in the user agent that sometimes only a few visitors to a website will be the same. If the user agent is combined with another piece of non-unique identifying information, often it results in a unique fingerprint.
+            The Electronic Frontier Foundation created a tool called <a href="https://panopticlick.eff.org/">Panopticlick</a> to demonstrate how much information can be gleaned from these sources. If this test is run with JavaScript enabled the
+            amount of information that is disclosed increases greatly. <a href="https://www.browserleaks.com">Browser Leaks</a> and <a href="https://amiunique.org/">Am I Unique</a> are also good sources of information.</p>
 
-<p>A second reason to change the user agent is to convince the web server to send the desktop version of the web page, which often works
-    better on modern smart phones than the mobile version. For this purpose, PrivacyBrowser/1.0 works well, because web servers typically
-    default to the desktop version unless they recognize a phone browser agent.</p>
+        <img class="center" src="images/panopticlick.png" height=640" width="360">
 
-<p>Android's WebView does not allow the user agent to be blank. If it is, WebView simply sends the default user-agent to the server.</p>
-</body>
+        <p>There are several preset user agents that match common browsers and operating systems. For browser fingerprinting purposes, anything that is rare is easier to track. If Privacy Browser becomes common and many people use PrivacyBrowser/1.0
+            as their user agent, it will be a good choice for privacy. Firefox or Chrome are the most common user agents, but they auto-update and their version numbers change so quickly that it is likely the user agents included in Privacy Browser
+            will often be out of step with the majority of user agents in the server logs.</p>
+
+        <p>Android's WebView does not allow the user agent to be blank. If it is, WebView simply sends the default user agent to the server.</p>
+    </body>
 </html>
