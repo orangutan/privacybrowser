@@ -24,7 +24,7 @@
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser</string>
     <string name="privacy_browser_settings">Impostazioni</string>
-    <string name="android_asset_path">en</string>  <!-- For translations, this should be the localization abbreviation.  For example, Italian is `it`.  This should not be translated unless the Guide and About sections are localized. -->
+    <string name="android_asset_path">it</string>  <!-- For translations, this should be the localization abbreviation. -->
 
     <!-- MainWebView. -->
     <string name="privacy_mode">Modalità privata</string>

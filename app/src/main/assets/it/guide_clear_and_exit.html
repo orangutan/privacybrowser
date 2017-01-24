@@ -1,0 +1,50 @@
+<!--
+  Copyright 2016-2017 Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<html>
+    <head>
+        <style>
+            h3 {
+                color: 0D4781;
+            }
+
+            item {
+                color: BF360C;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h3>Cleaning Out the Cruft</h3>
+
+        <p><strong>Clear and Exit</strong> does the following things:</p>
+
+        <ul>
+            <li><item>Removes all cookies</item>.</li>
+            <li><item>Removes all DOM storage</item>.</li>
+            <li><item>Removes all form data</item>.</li>
+            <li><item>Clears the cache, including disk files</item>.</li>
+            <li><item>Clears the back/forward history</item>.</li>
+            <li><item>Clears any saved SSL certificate preferences</item> (SSL certificates with errors that are ignored).</li>
+            <li><item>Deletes the current URL</item>.</li>
+            <li><item>Destroys the internal state of the WebView</item>.</li>
+            <li><item>Closes Privacy Browser</item>. For Android Lollipop and newer (version >= 5.0 or API >= 21), Privacy Browser is also removed from the recent app list.</li>
+        </ul>
+    </body>
+</html>
