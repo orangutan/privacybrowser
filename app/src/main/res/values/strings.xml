@@ -238,7 +238,7 @@
         <string name="block_ads">Block ads</string>
         <string name="block_ads_summary">Use the list of ad servers from pgl.yoyo.org to block ads.</string>
         <string name="do_not_track">Do Not Track</string>
-        <string name="do_not_track_summary">Send the Do Not Track header which politely suggests that web servers not track this browser.</string>
+        <string name="do_not_track_summary">Send the Do Not Track header, which politely suggests that web servers not track this browser.</string>
         <string name="proxy_through_orbot">Proxy through Orbot</string>
         <string name="proxy_through_orbot_summary">Proxy all web traffic through Orbot on localhost:8118.</string>
     <string name="search">Search</string>
