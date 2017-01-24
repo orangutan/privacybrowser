@@ -1,6 +1,8 @@
 /**
  * Copyright 2015-2017 Soren Stoutner <soren@stoutner.com>.
  *
+ * Download cookie code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+ *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
  * Privacy Browser is free software: you can redistribute it and/or modify
@@ -152,10 +154,10 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
     // It is `Boolean` instead of `boolean` because `applySettings()` needs to know if it is `null`.
     private Boolean javaScriptEnabled;
 
-    // `firstPartyCookiesEnabled` is used in `onCreate()`, `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applySettings()`.
+    // `firstPartyCookiesEnabled` is used in `onCreate()`, `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onDownloadImage()`, `onDownloadFile()`, and `applySettings()`.
     private boolean firstPartyCookiesEnabled;
 
-    // `thirdPartyCookiesEnabled` used in `onCreate()`, `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applySettings()`.
+    // `thirdPartyCookiesEnabled` used in `onCreate()`, `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onDownloadImage()`, `onDownloadFile()`, and `applySettings()`.
     private boolean thirdPartyCookiesEnabled;
 
     // `domStorageEnabled` is used in `onCreate()`, `onCreateOptionsMenu()`, `onOptionsItemSelected()`, and `applySettings()`.
@@ -1482,6 +1484,13 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         // Parse `imageUrl`.
         DownloadManager.Request downloadRequest = new DownloadManager.Request(Uri.parse(imageUrl));
 
+        // Pass cookies to download manager if cookies are enabled.  This is required to download item from websites that require a login.
+        if (firstPartyCookiesEnabled) {
+            String cookies = cookieManager.getCookie(imageUrl);
+            // In the HTTP request header, cookies are named `Cookie`.
+            downloadRequest.addRequestHeader("Cookie", cookies);
+        }
+
         // Get the file name from `dialogFragment`.
         EditText downloadImageNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.download_image_name);
         String imageName = downloadImageNameEditText.getText().toString();
@@ -1513,6 +1522,13 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
 
         // Parse `downloadUrl`.
         DownloadManager.Request downloadRequest = new DownloadManager.Request(Uri.parse(downloadUrl));
+
+        // Pass cookies to download manager if cookies are enabled.  This is required to download item from websites that require a login.
+        if (firstPartyCookiesEnabled) {
+            String cookies = cookieManager.getCookie(downloadUrl);
+            // In the HTTP request header, cookies are named `Cookie`.
+            downloadRequest.addRequestHeader("Cookie", cookies);
+        }
 
         // Get the file name from `dialogFragment`.
         EditText downloadFileNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.download_file_name);
