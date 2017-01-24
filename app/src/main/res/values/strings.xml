@@ -53,6 +53,8 @@
     <string name="image_name">Image name</string>
     <string name="unknown_size">unknown size</string>
     <string name="download">Download</string>
+    <string name="cannot_download_file">This file cannot be downloaded because it does not have an HTTP or HTTPS URI.</string>
+    <string name="cannot_download_image">This image cannot be downloaded because it does not have an HTTP or HTTPS URI.</string>
 
     <!-- Custom App Bar. -->
     <string name="favorite_icon">Favorite Icon</string>

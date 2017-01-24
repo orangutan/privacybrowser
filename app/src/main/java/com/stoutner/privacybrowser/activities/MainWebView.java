@@ -144,7 +144,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
     // `swipeRefreshLayout` is used in `onCreate()`, `onPrepareOptionsMenu`, and `onRestart()`.
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    // `cookieManager` is used in `onCreate()`, `onOptionsItemSelected()`, and `onNavigationItemSelected()`, and `onRestart()`.
+    // `cookieManager` is used in `onCreate()`, `onOptionsItemSelected()`, and `onNavigationItemSelected()`, `onDownloadImage()`, `onDownloadFile()`, and `onRestart()`.
     private CookieManager cookieManager;
 
     // `customHeader` is used in `onCreate()`, `onOptionsItemSelected()`, `onCreateContextMenu()`, and `loadUrlFromTextBox()`.
@@ -157,7 +157,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
     // `firstPartyCookiesEnabled` is used in `onCreate()`, `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onDownloadImage()`, `onDownloadFile()`, and `applySettings()`.
     private boolean firstPartyCookiesEnabled;
 
-    // `thirdPartyCookiesEnabled` used in `onCreate()`, `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onDownloadImage()`, `onDownloadFile()`, and `applySettings()`.
+    // `thirdPartyCookiesEnabled` used in `onCreate()`, `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applySettings()`.
     private boolean thirdPartyCookiesEnabled;
 
     // `domStorageEnabled` is used in `onCreate()`, `onCreateOptionsMenu()`, `onOptionsItemSelected()`, and `applySettings()`.
@@ -1478,80 +1478,95 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
 
     @Override
     public void onDownloadImage(AppCompatDialogFragment dialogFragment, String imageUrl) {
-        // Get a handle for the system `DOWNLOAD_SERVICE`.
-        DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+        // Download the image if it has an HTTP or HTTPS URI.
+        if (imageUrl.startsWith("http")) {
+            // Get a handle for the system `DOWNLOAD_SERVICE`.
+            DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
 
-        // Parse `imageUrl`.
-        DownloadManager.Request downloadRequest = new DownloadManager.Request(Uri.parse(imageUrl));
+            // Parse `imageUrl`.
+            DownloadManager.Request downloadRequest = new DownloadManager.Request(Uri.parse(imageUrl));
 
-        // Pass cookies to download manager if cookies are enabled.  This is required to download item from websites that require a login.
-        if (firstPartyCookiesEnabled) {
-            String cookies = cookieManager.getCookie(imageUrl);
-            // In the HTTP request header, cookies are named `Cookie`.
-            downloadRequest.addRequestHeader("Cookie", cookies);
+            // Pass cookies to download manager if cookies are enabled.  This is required to download images from websites that require a login.
+            if (firstPartyCookiesEnabled) {
+                // Get the cookies for `imageUrl`.
+                String cookies = cookieManager.getCookie(imageUrl);
+
+                // Add the cookies to `downloadRequest`.  In the HTTP request header, cookies are named `Cookie`.
+                downloadRequest.addRequestHeader("Cookie", cookies);
+            }
+
+            // Get the file name from `dialogFragment`.
+            EditText downloadImageNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.download_image_name);
+            String imageName = downloadImageNameEditText.getText().toString();
+
+            // Once we have `WRITE_EXTERNAL_STORAGE` permissions we can use `setDestinationInExternalPublicDir`.
+            if (Build.VERSION.SDK_INT >= 23) { // If API >= 23, set the download save in the the `DIRECTORY_DOWNLOADS` using `imageName`.
+                downloadRequest.setDestinationInExternalFilesDir(this, "/", imageName);
+            } else { // Only set the title using `imageName`.
+                downloadRequest.setTitle(imageName);
+            }
+
+            // Allow `MediaScanner` to index the download if it is a media file.
+            downloadRequest.allowScanningByMediaScanner();
+
+            // Add the URL as the description for the download.
+            downloadRequest.setDescription(imageUrl);
+
+            // Show the download notification after the download is completed.
+            downloadRequest.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+            // Initiate the download.
+            downloadManager.enqueue(downloadRequest);
+        } else {  // The image is not an HTTP or HTTPS URI.
+            Snackbar.make(mainWebView, R.string.cannot_download_image, Snackbar.LENGTH_INDEFINITE).show();
         }
-
-        // Get the file name from `dialogFragment`.
-        EditText downloadImageNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.download_image_name);
-        String imageName = downloadImageNameEditText.getText().toString();
-
-        // Once we have `WRITE_EXTERNAL_STORAGE` permissions we can use `setDestinationInExternalPublicDir`.
-        if (Build.VERSION.SDK_INT >= 23) { // If API >= 23, set the download save in the the `DIRECTORY_DOWNLOADS` using `imageName`.
-            downloadRequest.setDestinationInExternalFilesDir(this, "/", imageName);
-        } else { // Only set the title using `imageName`.
-            downloadRequest.setTitle(imageName);
-        }
-
-        // Allow `MediaScanner` to index the download if it is a media file.
-        downloadRequest.allowScanningByMediaScanner();
-
-        // Add the URL as the description for the download.
-        downloadRequest.setDescription(imageUrl);
-
-        // Show the download notification after the download is completed.
-        downloadRequest.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-
-        // Initiate the download.
-        downloadManager.enqueue(downloadRequest);
     }
 
     @Override
     public void onDownloadFile(AppCompatDialogFragment dialogFragment, String downloadUrl) {
-        // Get a handle for the system `DOWNLOAD_SERVICE`.
-        DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+        // Download the file if it has an HTTP or HTTPS URI.
+        if (downloadUrl.startsWith("http")) {
 
-        // Parse `downloadUrl`.
-        DownloadManager.Request downloadRequest = new DownloadManager.Request(Uri.parse(downloadUrl));
+            // Get a handle for the system `DOWNLOAD_SERVICE`.
+            DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
 
-        // Pass cookies to download manager if cookies are enabled.  This is required to download item from websites that require a login.
-        if (firstPartyCookiesEnabled) {
-            String cookies = cookieManager.getCookie(downloadUrl);
-            // In the HTTP request header, cookies are named `Cookie`.
-            downloadRequest.addRequestHeader("Cookie", cookies);
+            // Parse `downloadUrl`.
+            DownloadManager.Request downloadRequest = new DownloadManager.Request(Uri.parse(downloadUrl));
+
+            // Pass cookies to download manager if cookies are enabled.  This is required to download files from websites that require a login.
+            if (firstPartyCookiesEnabled) {
+                // Get the cookies for `downloadUrl`.
+                String cookies = cookieManager.getCookie(downloadUrl);
+
+                // Add the cookies to `downloadRequest`.  In the HTTP request header, cookies are named `Cookie`.
+                downloadRequest.addRequestHeader("Cookie", cookies);
+            }
+
+            // Get the file name from `dialogFragment`.
+            EditText downloadFileNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.download_file_name);
+            String fileName = downloadFileNameEditText.getText().toString();
+
+            // Once we have `WRITE_EXTERNAL_STORAGE` permissions we can use `setDestinationInExternalPublicDir`.
+            if (Build.VERSION.SDK_INT >= 23) { // If API >= 23, set the download location to `/sdcard/Android/data/com.stoutner.privacybrowser.standard/files` named `fileName`.
+                downloadRequest.setDestinationInExternalFilesDir(this, "/", fileName);
+            } else { // Only set the title using `fileName`.
+                downloadRequest.setTitle(fileName);
+            }
+
+            // Allow `MediaScanner` to index the download if it is a media file.
+            downloadRequest.allowScanningByMediaScanner();
+
+            // Add the URL as the description for the download.
+            downloadRequest.setDescription(downloadUrl);
+
+            // Show the download notification after the download is completed.
+            downloadRequest.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+            // Initiate the download.
+            downloadManager.enqueue(downloadRequest);
+        } else {  // The download is not an HTTP or HTTPS URI.
+            Snackbar.make(mainWebView, R.string.cannot_download_file, Snackbar.LENGTH_INDEFINITE).show();
         }
-
-        // Get the file name from `dialogFragment`.
-        EditText downloadFileNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.download_file_name);
-        String fileName = downloadFileNameEditText.getText().toString();
-
-        // Once we have `WRITE_EXTERNAL_STORAGE` permissions we can use `setDestinationInExternalPublicDir`.
-        if (Build.VERSION.SDK_INT >= 23) { // If API >= 23, set the download location to `/sdcard/Android/data/com.stoutner.privacybrowser.standard/files` named `fileName`.
-            downloadRequest.setDestinationInExternalFilesDir(this, "/", fileName);
-        } else { // Only set the title using `fileName`.
-            downloadRequest.setTitle(fileName);
-        }
-
-        // Allow `MediaScanner` to index the download if it is a media file.
-        downloadRequest.allowScanningByMediaScanner();
-
-        // Add the URL as the description for the download.
-        downloadRequest.setDescription(downloadUrl);
-
-        // Show the download notification after the download is completed.
-        downloadRequest.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-
-        // Initiate the download.
-        downloadManager.enqueue(downloadRequest);
     }
 
     public void viewSslCertificate(View view) {
