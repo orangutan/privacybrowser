@@ -1,67 +1,66 @@
 <!--
-  Copyright 2016 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2017 Soren Stoutner <soren@stoutner.com>.
 
-  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+  Translation 2017 Jose A. León Becerra.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
-  Privacy Browser is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+  Este archivo es parte de Navegador Privado (Privacy Browser) <https://www.stoutner.com/privacy-browser>.
 
-  Privacy Browser is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+  Navegador Privado (Privacy Browser) es software libre: puedes redistribuirlo y/o modificarlo
+  bajo los términos de la Licencia Pública General GNU, como se ha publicado por
+  la Fundación del Software Libre, tanto la versión 3 de la Licencia, o
+  (a su opción) cualquier versión posterior.
 
-  You should have received a copy of the GNU General Public License
-  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+  Navegador Privado (Privacy Browser) es distribuído con la esperanza de que será útil,
+  pero SIN NINGUNA GARANTÍA; ni siquiera la garantía implícita de
+  MERCANTILIDAD o APTITUD PARA UN PROPÓSITO PARTICULAR.  Vea la
+  Licencia Pública General para más detalles.
+
+  Usted debería haber recibido una copia de la Licencia Pública General GNU
+  junto con Navegador Privado (Privacy Browser).  Si no es así, vea <http://www.gnu.org/licenses/>. -->
 
 <html>
-<head>
-<style>
-    h3 {
-        color: 0D4781;
-    }
+    <head>
+        <style>
+            h3 {
+                color: 0D4781;
+            }
 
-    img.center {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-    }
-</style>
-</head>
+            img.center {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        </style>
+    </head>
 
-<body>
-<h3>Do Not Track</h3>
+    <body>
+        <h3>No Rastrear</h3>
 
-<p>A few years ago the W3C (World Wide Web Consortium) created a mechanism for browsers to inform web servers that they would not like to be tracked.
-    This is accomplished by including a <a href="https://en.wikipedia.org/wiki/Do_Not_Track">DNT (Do Not Track) header</a> with web requests.
-    This header is enabled by default in Privacy Browser, although if desired it can be disabled in the settings.</p>
+        <p>Hace algunos a&ntilde;os la W3C (Consorcio Mundial de la Red) cre&oacute; un mecanismo para que los navegadores informaran a los servidores web que no les gustar&iacute;a ser rastreados.
+            Esto se logra incluyendo un <a href="https://en.wikipedia.org/wiki/Do_Not_Track">encabezado DNT (Do Not Track o No Rastrear)</a> con las solicitudes web.</p>
 
-<p>The DNT header doesn't really provide much privacy because most web servers ignore it. For example, Yahoo, Google, Microsoft, and Facebook
-    all ignore at least some DNT headers.</p>
+        <p>El encabezado DNT no provee realmente de mucha privacidad porque la mayor&iacute;a de servidores web lo ignoran. Por ejemplo, Yahoo, Google, Microsoft y Facebook, todos ellos ignoran al menos algunos encabezados DNT.</p>
 
 
-<h3>Advertisements</h3>
+        <h3>Anuncios</h3>
 
-<p>Privacy Browser Free includes a banner advertisement across the bottom of the screen that is populated by Google's
-    AdMob network.  By default, Google provides the <a href="https://support.google.com/googleplay/android-developer/answer/6048248?hl=en">advertising ID</a>
-    of the device to the ads displayed through this network. This allows advertising companies to build a profile of
-    the device that show which apps are installed (that display ads), how often they are used, and which ads the user is interested in.</p>
+        <p>Navegador Privado Gratu&iacute;to incluye un anuncio de banner en la parte inferior de la pantalla que est&aacute; poblado por la red AdMob de Google.
+            Por defecto, Google proporciona el <a href="https://support.google.com/googleplay/android-developer/answer/6048248?hl=en">ID publicitario</a> del dispositivo a los anuncios que se muestran a trav&eacute;s de esta red.
+            Esto permite a las compa&ntilde;&iacute;as publicitarias construir un perfil del dispositivo que muestre qu&eacute; aplicaciones est&aacute;n instaladas (que muestran anuncios),
+            la frecuencia con la que se utilizan y los anuncios en los que est&aacute; interesado el usuario.</p>
 
-<p>Users can choose to disable the advertising ID in <strong>Settings</strong>, <strong>Google</strong>, <strong>Ads</strong>.</p>
+        <p>Los usuarios pueden elegir deshabilitar el ID publicitario en <strong>Configuraci&oacute;n</strong>, <strong>Google</strong>, <strong>Anuncios</strong>.</p>
 
-<img class="center" src="../en/images/advertising_id.png" height="640" width="360">
+        <img class="center" src="images/advertising_id.png" height="640" width="360">
 
-<p>The purpose of the free version of Privacy Browser is to allow people to test the features of the app.  The standard version can be purchased
-    on the major app stores or downloaded for free from
-    <a href="https://f-droid.org/repository/browse/?fdfilter=privacy+browser&fdid=com.stoutner.privacybrowser.standard">F-Droid</a>.</p>
+        <p>El prop&oacute;sito de la versi&oacute;n gratu&iacute;ta de Navegador Privado es la de permitir a la gente probar las caracter&iacute;sticas de la aplicaci&oacute;n.
+            La versi&oacute;n est&aacute;ndar se puede comprar en las principales tiendas de aplicaciones o descargarse gratuitamente de <a href="https://f-droid.org/repository/browse/?fdfilter=privacy+browser&fdid=com.stoutner.privacybrowser.standard">F-Droid</a>.
 
 
-<h3>Verizon Tracking Headers</h3>
+        <h3>Encabezado de Rastreo de Verizon</h3>
 
-<p>Verizon, one of the major mobile carriers in the United States, adds a unique tracking header to all HTTP traffic on their network.  The Electronic Frontier
-    Foundation has written about the <a href="https://www.eff.org/deeplinks/2014/11/verizon-x-uidh">privacy implications of this practice</a>.  Due to public pressure
-    Verizon has created a way to <a href="http://www.clark.com/how-opt-out-verizons-super-cookie-tracking">opt out of this tracking</a>.</p>
-</body>
+        <p>Verizon, una de las principales compa&ntilde;&iacute;as de telefon&iacute;a m&oacute;vil en los Estados Unidos, agrega un encabezado de rastreo &uacute;nico a todo el tr&aacute;fico HTTP sin cifrar en su red.
+            La EFF (Fundaci&oacute;n de Frontera Electr&oacute;nica) ha escrito sobre las <a href="https://www.eff.org/deeplinks/2014/11/verizon-x-uidh">implicaciones de privacidad de esta pr&aacute;ctica</a>.
+            Debido a la presi&oacute;n p&uacute;blica Verizon ha creado una manera de <a href="http://www.clark.com/how-opt-out-verizons-super-cookie-tracking">optar por evitar este rastreo</a>.</p>
+    </body>
 </html>
