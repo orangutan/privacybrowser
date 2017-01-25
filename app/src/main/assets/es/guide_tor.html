@@ -1,93 +1,85 @@
 <!--
-  Copyright 2016 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2017 Soren Stoutner <soren@stoutner.com>.
 
-  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+  Translation 2017 Jose A. León Becerra.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
-  Privacy Browser is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
+  Este archivo es parte de Navegador Privado (Privacy Browser) <https://www.stoutner.com/privacy-browser>.
 
-  Privacy Browser is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
+  Navegador Privado (Privacy Browser) es software libre: puedes redistribuirlo y/o modificarlo
+  bajo los términos de la Licencia Pública General GNU, como se ha publicado por
+  la Fundación del Software Libre, tanto la versión 3 de la Licencia, o
+  (a su opción) cualquier versión posterior.
 
-  You should have received a copy of the GNU General Public License
-  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+  Navegador Privado (Privacy Browser) es distribuído con la esperanza de que será útil,
+  pero SIN NINGUNA GARANTÍA; ni siquiera la garantía implícita de
+  MERCANTILIDAD o APTITUD PARA UN PROPÓSITO PARTICULAR.  Vea la
+  Licencia Pública General para más detalles.
+
+  Usted debería haber recibido una copia de la Licencia Pública General GNU
+  junto con Navegador Privado (Privacy Browser).  Si no es así, vea <http://www.gnu.org/licenses/>. -->
 
 <html>
-<head>
-    <style>
-        h3 {
-            color: 0D4781;
-        }
+    <head>
+        <style>
+            h3 {
+                color: 0D4781;
+            }
 
-        img.center {
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        }
-    </style>
-</head>
+            img.center {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        </style>
+    </head>
 
-<body>
-<h3>Tor and Its Limits</h3>
+    <body>
+        <h3>Tor y sus l&iacute;mites</h3>
 
-<p>There are two general categories of bad actors that want to infringe on the privacy of the web: malicious governments
-    with access to ISPs (Internet Service Providers) and mega corporations that run social and advertising networks.
-    TOR (The Onion Router) is useful in protecting privacy from malicious governments but not from mega corporations.</p>
-
-
-<h3>Malicious Governments</h3>
-
-<p>Malicious governments often spy on their citizens to punish dissent or human rights activity.  They commonly either
-    operate the local ISPs or they can force them to disclose information showing every IP address that is visited
-    by each user.  Tor is designed to defeat this infringement of privacy by encrypting the traffic
-    from a user's device and routing it through three separate servers on the internet before sending it on to the final destination.
-    This means that no individual ISP, server, or website, can know both the <a href="https://ipleak.net">IP address the user's device</a>
-    and the IP address of the final web server.  Malicious governments and the ISPs they control cannot tell which
-    web servers a user is accessing, although they can tell that the user is using Tor.  In some parts of
-    the world, using Tor could be construed as an evidence of illegal behavior ("if you didn't have anything
-    to hide you wouldn't be hiding your traffic from us") and users could be punished because governments
-    assume they are doing something that is prohibited. Thus, Tor can be helpful, but isn't a panacea.</p>
+        <p>Existen dos categor&iacute;as generales de malos actores que quieren infringir la privacidad de la web: gobiernos maliciosos con acceso a ISPs (Proveedores de Servicios de Internet) y grandes corporaciones que ofrecen redes sociales y de publicidad.
+            TOR (El Enrutador de Cebolla) es &uacute;til en proteger la privacidad de gobiernos maliciosos (que esp&iacute;an el tr&aacute;fico en tr&aacute;nsito) pero no de grandes corporaciones (que incrustan c&oacute;digo malicioso en los servidores web).</p>
 
 
-<h3>Mega Corporations</h3>
+        <h3>Gobiernos maliciosos</h3>
 
-<p>When a user connects to a web server, the web server can see the user's IP address. Although it isn't a perfect science,
-    IP addresses can be turned into physical addresses with a <a href="https://www.whatismyip.com/">fair amount of accuracy</a>.
-    Small web servers typically rely on IP addresses to identify the location of the users visiting their site.
-    Tor is a good solution to mask the user's location from these servers.  But large mega corporations
-    that own social media and advertising networks use a whole profile of information that is designed to track users
-    across devices and IP addresses.  These profiles employ a variety of techniques to identify users, including JavaScript,
-    cookies, tracking IDs, and <a href="https://panopticlick.eff.org/">browser fingerprinting</a>. Because the vast majority
-    of the websites on the internet either load an ad from one of the major networks or embed social media icons with their
-    associated JavaScript, these corporations have build profiles for almost every user online and can track their internet
-    activity across unrelated sites.</p>
-
-<p>They track every site that is visited, everything that is purchased, every credit card that is used to
-    make a purchase, every address that items are shipped to, and the GPS metadata of every picture that is
-    uploaded to the internet.  They build a profile of a user's age, gender, marital status, address, political affiliations,
-    religious affiliations, family circumstance, number of pets, and everything else they can get their hands on.
-    They even buy up databases of credit card usage at local stores, so they can track the off-line purchasing patterns of the users
-    in their profiles. Because they already have much more accurate address information about a user than an IP address discloses,
-    Tor provides no real privacy protection against mega corporations.</p>
-
-<p>The single best privacy protection against mega corporations is to browse the web with JavaScript disabled, followed
-    by blocking ad networks, disabling cookies and DOM storage, and using a browser that is difficult to fingerprint.</p>
+        <p>Los gobiernos maliciosos a menudo espían a sus ciudadanos para castigar la disidencia o la actividad de derechos humanos.
+            Normalmente suelen operar los ISPs locales o los fuerzan a revelar informaci&oacute;n mostrando cada direcci&oacute;n IP que visita cada usuario.
+            Tor est&aacute; dise&ntilde;ado para vencer esta infracci&oacute;n de privacidad encriptando el tr&aacute;fico del dispositivo de un usuario,
+            enrut&aacute;ndolo a trav&eacute;s de tres servidores separados en internet antes de enviarlo al destino final.
+            Esto significa que ning&uacute;n ISP local, servidor o p&aacute;gina web pueden, a la vez, conocer la direcci&oacute;n IP del dispositivo del usuario y la direcci&oacute;n IP del servidor web final.
+            Los gobiernos maliciosos y los ISPs que ellos controlan no pueden decir a qu&eacute; servidores web est&aacute; accediendo un determinado usuario, aunque pueden decir que ese usuario est&aacute; usando Tor.
+            En algunas partes del mundo, usar Tor podr&iacute;a interpretarse como una prueba de conducta ilegal (“si no tuvieras nada que esconder no estar&iacute;as encriptando tu tr&aacute;fico”)
+            y los usuarios podr&iacute;an ser castigados porque los gobiernos asumen que est&aacute;n haciendo algo prohibido. Por tanto, Tor puede ser &uacute;til, pero no es la panacea.</p>
 
 
-<h3>Using Tor</h3>
+        <h3>Grandes corporaciones</h3>
 
-<p>Despite the limitations, Tor can be useful in some circumstances.  The Tor project has an app for Android called Orbot,
-    which is available on <a href="https://f-droid.org/repository/browse/?fdfilter=orbot&fdid=org.torproject.android">F-Droid</a>
-    and everywhere else that Privacy Browser is distributed.  Privacy Browser has a setting to use Orbot as
-    a proxy.  When this is turned on, Privacy Browser's app bar will have a light blue background instead of
-    the default light grey. When Privacy Browser's Orbot proxy setting is enabled, internet access
-    will not work unless Orbot is running and connected to Tor. Because traffic is being routed through several Tor nodes,
-    using Tor is often much slower than connecting straight to the internet.</p>
+        <p>Cuando un usuario se conecta a un servidor web, &eacute;ste puede ver la direcci&oacute;n IP del usuario.
+            Aunque esto no es una ciencia perfecta, las direcciones IP se pueden convertir a direcciones f&iacute;sicas con <a href="https://www.whatismyip.com/">bastante precisi&oacute;n</a>.
+            Los peque&ntilde;os servidores web normalmente se basan en las direcciones IP para identificar la ubicaci&oacute;n de los usuarios que visitan su web. Tor es una buena soluci&oacute;n para ocultar la ubicaci&oacute;n del usuario de estos servidores.
+            Pero las m&aacute;s grandes corporaciones que poseen medios sociales y redes de publicidad usan un perfil completo de informaci&oacute;n diseñado para rastrear a los usuarios a trav&eacute;s de los dispositivos y direcciones IP.
+            Estos perfiles emplean una variedad de t&eacute;cnicas para identificar a los usuarios, incluyendo Javascript, cookies, IDs de seguimiento, y <a href="https://panopticlick.eff.org/">huellas del navegador</a>.
+            Debido a que la gran mayoría de p&aacute;ginas web en internet o cargan un anuncio de una de las principales redes, o integran iconos de medios sociales con su Javascript asociado,
+            estas corporaciones han creado perfiles para casi todos los usuarios en l&iacute;nea y pueden rastrear su actividad en internet a trav&eacute;s de sitios que no est&aacute;n relacionados.</p>
 
-<img class="center" src="../en/images/tor.png" height="640" width="360">
-</body>
+        <p>Ellos rastrean cada sitio web visitado, todo lo que se compra, cada tarjeta de cr&eacute;dito que es usada para realizar una compra, cada direcci&oacute;n a la que se env&iacute;an los art&iacute;culos,
+            y los metadatos GPS de cada im&aacute;gen que se sube a internet.
+            Construyen un perfil de la edad del usuario, g&eacute;nero, estado civil, direcci&oacute;n, afiliaciones pol&iacute;ticas, afiliaciones religiosas, circunstancias familiares, n&uacute;mero de mascotas, y cualquier otra cosa que caiga en sus manos.
+            Incluso compran bases de datos de transacciones con tarjeta de cr&eacute;dito en tiendas locales, para así poder rastrear de los usuarios en sus perfiles los patrones de compra que hacen cuando no est&aacute;n conectados.
+            Debido a que ya tienen informaci&oacute;n de direcci&oacute;n mucho m&aacute;s precisa sobre un usuario que lo que pueda revelar una direcci&oacute;n IP,
+            Tor no ofrece una verdadera protecci&oacute;n de la privacidad contra las grandes corporaciones.</p>
+
+        <p>La &uacute;nica mejor protecci&oacute;n de la privacidad contra las grandes corporaciones es navegar por la web con Javascript deshabilitado, seguido de bloquear redes publicitarias, inhabilitar cookies y almacenamiento DOM,
+            y usar un navegador del que sea dif&iacute;cil recoger huellas.</p>
+
+
+        <h3>Usando Tor</h3>
+
+        <p>A pesar de sus limitaciones, Tor puede ser &uacute;til en algunas circunstancias. El proyecto Tor tiene una app para Android llamada Orbot, que est&aacute; disponible en F-Droid y en todos los sitios donde se distribuye Navegador Privado.
+            Navegador Privado tiene un ajuste para usar Orbot como un proxy. Cuando se enciende, la barra de aplicaciones de Navegador Privado tendr&aacute; un fondo azul claro en lugar del gris claro por defecto.
+            Cuando el ajuste proxy Orbot de Navegador Privado est&aacute; habilitado, el acceso a internet no funcionar&aacute; a menos que se est&eacute; ejecutando Orbot y est&eacute; conectado a Tor.
+            Ya que el tr&aacute;fico se est&aacute; enrutando a trav&eacute;s de varios nodos Tor, usar Tor es a menudo mucho m&aacute;s lento que conectar directamente a internet.</p>
+
+        <img class="center" src="images/tor.png" height="640" width="360">
+    </body>
 </html>
