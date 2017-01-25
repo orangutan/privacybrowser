@@ -1,5 +1,7 @@
 <!--
-  Copyright 2016-2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2017 Soren Stoutner <soren@stoutner.com>.
+
+  Translation 2017 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -26,34 +28,36 @@
     </head>
 
     <body>
-        <h3>Have full network access</h3>
+        <h3>Accesso completo alla rete</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#INTERNET">android.permission.INTERNET</a></p>
-        <p>Required for the WebView to access the internet. Without this permission, Privacy Browser would be “No Browser: Protecting Your Privacy by Staying Completely Off the Internet”.</p>
+        <p>E' richiesto per permettere l'accesso Internet a WebView. Senza questo permesso, Privacy Browser sarebbe &ldquo;Nessun Browser: Protegge la tua Privacy restando completamente isolato da Internet&rdquo;.</p>
 
-        <h3>Install shortcuts</h3>
+        <h3>Creazione di collegamenti</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#INSTALL_SHORTCUT">com.android.launcher.permission.INSTALL_SHORTCUT</a></p>
-        <p>Required to add shortcuts for websites to the launcher desktop.</p>
+        <p>E' richiesto per poter creare collegamenti a siti web sulla schermata principale del dispositivo.</p>
 
         <br/>
         <hr/>
         <br/>
 
-        <p>In addition, Privacy Browser Free displays ads from Google's AdMob network using the Firebase backend. For the free flavor, Firebase adds the following permissions even though they are not listed in the manifest file.</p>
+        <p>Oltre ai permessi sopraelencati, Privacy Browser Free mostra gli annunci provenienti dalla Google's AdMob network utilizzando il Firebase backend.
+            Se si utilizza la versione Free, Firebase aggiunge i seguenti permessi anche se non sono elencati nel file &ldquo;manifest&rdquo;.</p>
 
-        <h3>View network connections</h3>
+        <h3>Visualizzare connessioni di rete</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#ACCESS_NETWORK_STATE">android.permission.ACCESS_NETWORK_STATE</a></p>
-        <p>Allows the ads to tell when you are connected to the internet and when you aren't (presumably so they don't try to reload an ad when you are disconnected). They can also tell if you are connected via Wi-Fi, 2G, 3G, 4G, etc.</p>
+        <p>Permette agli annunci di dire quando si &egrave; o non si &egrave; connessi a internet (presumibilmente per evitare il tentativo di ricaricare un annuncio quando non si &egrave; connessi).
+            Gli annunci possono anche dire se si &egrave; connessi via Wi-Fi, 2G, 3G, 4G, ecc.</p>
 
-        <h3>Prevent phone from sleeping</h3>
+        <h3>Impedire al dispositivo di entrare in modalit&agrave; sleeping</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WAKE_LOCK">android.permission.WAKE_LOCK</a></p>
-        <p>Allows the ads to keep the processor from sleeping and the screen from dimming, although in my testing I don't think the ads actually do this.</p>
+        <p>Permette agli annunci di impedire al processore di entrare in modalit&agrave; sleeping e allo schermo di spegnersi, anche se dopo vari test eseguiti non sembra che il comportamento sia questo.</p>
 
-        <h3>Receive data from Internet</h3>
+        <h3>Ricezione dati da Internet</h3>
         <p><a href="http://androidpermissions.com/permission/com.google.android.c2dm.permission.RECEIVE">com.google.android.c2dm.permission.RECEIVE</a></p>
-        <p>Allows Google to send information directly to the AdView without having to receive a request first (cloud-to-device messaging).</p>
+        <p>Permette a Google di inviare informazioni a AdView senza la necessit&agrave; di ricevere una richiesta preventiva (messaggistica &ldquo;cloud-to-device&rdquo;).</p>
 
-        <h3>Receive data from Internet</h3>
+        <h3>Ricezione dati da Internet</h3>
         <p><a href="https://developers.google.com/cloud-messaging/android/client">com.stoutner.privacybrowser.free.permission.C2D_MESSAGE</a></p>
-        <p>Secures the cloud-to-device messages so that only Privacy Browser Free can receive them.</p>
+        <p>Rende sicuri i messaggi cloud-to-device in modo che solo Privacy Browser Free possa riceverli.</p>
     </body>
 </html>
