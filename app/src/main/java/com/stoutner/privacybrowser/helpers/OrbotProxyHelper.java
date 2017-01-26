@@ -82,6 +82,11 @@ public class OrbotProxyHelper {
             try {  // Check to see if Orbot is installed.
                 PackageManager packageManager = privacyBrowserContext.getPackageManager();
                 packageManager.getPackageInfo("org.torproject.android", PackageManager.GET_ACTIVITIES);
+
+                // Send an `intent` to start Orbot.  The intent will be ignored if it is already running.
+                Intent orbotIntent = new Intent("org.torproject.android.intent.action.START");
+                orbotIntent.setPackage("org.torproject.android");
+                privacyBrowserContext.sendBroadcast(orbotIntent);
             } catch (PackageManager.NameNotFoundException exception){  // If an exception is thrown, Orbot is not installed.
                 // Build an `AlertDialog`.  `R.style.LightAlertDialog` formats the color of the button text.
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(parentActivity, R.style.LightAlertDialog);
