@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2016 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2017 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -20,5 +20,5 @@
 
 <resources>
     <!-- Activities. -->
-    <string name="privacy_browser">Navegador Privado Gratuito</string>
+    <string name="privacy_browser">Privacy Browser Free</string>
 </resources>

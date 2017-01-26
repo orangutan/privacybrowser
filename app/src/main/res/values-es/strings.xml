@@ -297,4 +297,6 @@
     <string name="licenses">Licencias</string>
     <string name="contributors">Colaboradores</string>
     <string name="links">Enlaces</string>
+    <string name="cannot_download_file">Este archivo no puede descargarse porque no tiene un URI HTTP o HTTPS.</string>
+    <string name="cannot_download_image">Esta imagen no puede descargarse porque no tiene un URI HTTP o HTTPS.</string>
 </resources>
