@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2017 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -36,6 +36,7 @@ import android.widget.TextView;
 import com.stoutner.privacybrowser.activities.MainWebView;
 import com.stoutner.privacybrowser.R;
 
+import java.text.DateFormat;
 import java.util.Date;
 
 // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
@@ -122,8 +123,8 @@ public class ViewSslCertificate extends DialogFragment {
             SpannableStringBuilder issuedByCNameStringBuilder = new SpannableStringBuilder(cNameLabel + issuedByCNameString);
             SpannableStringBuilder issuedByONameStringBuilder = new SpannableStringBuilder(oNameLabel + issuedByONameString);
             SpannableStringBuilder issuedByUNameStringBuilder = new SpannableStringBuilder(uNameLabel + issuedByUNameString);
-            SpannableStringBuilder startDateStringBuilder = new SpannableStringBuilder(startDateLabel + startDate.toString());
-            SpannableStringBuilder endDateStringBuilder = new SpannableStringBuilder(endDateLabel + endDate.toString());
+            SpannableStringBuilder startDateStringBuilder = new SpannableStringBuilder(startDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(startDate));
+            SpannableStringBuilder endDateStringBuilder = new SpannableStringBuilder(endDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(endDate));
 
             // Create a blue `ForegroundColorSpan`.  We have to use the deprecated `getColor` until API >= 23.
             @SuppressWarnings("deprecation") ForegroundColorSpan blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));

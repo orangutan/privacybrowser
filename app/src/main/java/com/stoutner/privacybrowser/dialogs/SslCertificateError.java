@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 Soren Stoutner <soren@stoutner.com>.
+ * Copyright 2016-2017 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -37,6 +37,7 @@ import android.widget.TextView;
 
 import com.stoutner.privacybrowser.R;
 
+import java.text.DateFormat;
 import java.util.Date;
 
 public class SslCertificateError extends AppCompatDialogFragment {
@@ -76,8 +77,8 @@ public class SslCertificateError extends AppCompatDialogFragment {
         argumentsBundle.putString("IssuedByCName", issuedByCNameForBundle);
         argumentsBundle.putString("IssuedByOName", issuedByONameForBundle);
         argumentsBundle.putString("IssuedByUName", issuedByUNameForBundle);
-        argumentsBundle.putString("StartDate", startDateForBundle.toString());
-        argumentsBundle.putString("EndDate", endDateForBundle.toString());
+        argumentsBundle.putString("StartDate", DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(startDateForBundle));
+        argumentsBundle.putString("EndDate", DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(endDateForBundle));
 
         // Add `argumentsBundle` to this instance of `SslCertificateError`.
         SslCertificateError thisSslCertificateErrorDialog = new SslCertificateError();
