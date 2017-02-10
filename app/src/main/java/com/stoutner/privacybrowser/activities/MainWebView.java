@@ -57,6 +57,7 @@ import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.ContextMenu;
 import android.view.GestureDetector;
@@ -1228,6 +1229,15 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
 
                 // Destroy the internal state of `mainWebView`.
                 mainWebView.destroy();
+
+                // Manually delete the `app_webview` folder, which contains an additional `WebView` cache.  See `https://code.google.com/p/android/issues/detail?id=233826&thanks=233826&ts=1486670530`.
+                Runtime runtime = Runtime.getRuntime();
+                String dataDirString = getApplicationInfo().dataDir;  // `dataDir` will vary, but will be something like `/data/user/0/com.stoutner.privacybrowser.standard`, which links to `/data/data/com.stoutner.privacybrowser.standard`.
+                try {
+                    runtime.exec("rm -rf " + dataDirString + "/app_webview");
+                } catch (IOException e) {
+                    // Do nothing if the files do not exist.
+                }
 
                 // Close Privacy Browser.  `finishAndRemoveTask` also removes Privacy Browser from the recent app list.
                 if (Build.VERSION.SDK_INT >= 21) {
