@@ -183,6 +183,10 @@
     <string name="bookmarks_database_view">Bookmarks Database View</string>
     <string name="home_folder">Home Folder</string>
 
+
+    <!-- Domains. -->
+    <string name="domains">Domains</string>
+
     <!-- Guide. -->
     <string name="privacy_browser_guide">Privacy Browser Guide</string>
     <string name="overview">Overview</string>

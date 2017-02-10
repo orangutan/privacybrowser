@@ -60,6 +60,7 @@
             android:orderInCategory="60" />
     </group>
 
+    <!-- If a group has an id, a line is drawn above it in the navigation view. -->
     <group
         android:id="@+id/navigationGroup2" >
         <item
@@ -69,25 +70,35 @@
             android:orderInCategory="70" />
 
         <item
-            android:id="@+id/guide"
-            android:title="@string/guide"
-            android:icon="@drawable/guide"
+            android:id="@+id/domains"
+            android:title="@string/domains"
+            android:icon="@drawable/domains"
             android:orderInCategory="80" />
-
-        <item
-            android:id="@+id/about"
-            android:title="@string/about"
-            android:icon="@drawable/about"
-            android:orderInCategory="90" />
     </group>
 
     <!-- If a group has an id, a line is drawn above it in the navigation view. -->
     <group
         android:id="@+id/navigationGroup3" >
         <item
+            android:id="@+id/guide"
+            android:title="@string/guide"
+            android:icon="@drawable/guide"
+            android:orderInCategory="90" />
+
+        <item
+            android:id="@+id/about"
+            android:title="@string/about"
+            android:icon="@drawable/about"
+            android:orderInCategory="100" />
+    </group>
+
+    <!-- If a group has an id, a line is drawn above it in the navigation view. -->
+    <group
+        android:id="@+id/navigationGroup4" >
+        <item
             android:id="@+id/clearAndExit"
             android:title="@string/clear_and_exit"
             android:icon="@drawable/exit"
-            android:orderInCategory="100" />
+            android:orderInCategory="110" />
     </group>
 </menu>
