@@ -121,7 +121,7 @@
             `android:persistableMode="persistNever"` removes Privacy Browser from the recents screen on a device reboot.
             `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
-            android:name=".activities.Domains"
+            android:name=".activities.DomainsList"
             android:label="@string/domains"
             android:theme="@style/PrivacyBrowser.SecondaryActivity"
             android:parentActivityName=".activities.MainWebView"

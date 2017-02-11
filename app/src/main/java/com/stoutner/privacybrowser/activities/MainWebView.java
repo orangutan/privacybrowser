@@ -57,7 +57,6 @@ import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.ContextMenu;
 import android.view.GestureDetector;
@@ -1180,6 +1179,14 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                 Intent settingsIntent = new Intent(this, Settings.class);
                 startActivity(settingsIntent);
                 break;
+
+            /*
+            case R.id.domains:
+                // Launch `DomainsList`.
+                Intent domainsIntent = new Intent(this, DomainsList.class);
+                startActivity(domainsIntent);
+                break;
+            */
 
             case R.id.guide:
                 // Launch `Guide`.

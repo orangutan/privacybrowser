@@ -19,8 +19,18 @@
 
 package com.stoutner.privacybrowser.activities;
 
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-public class Domains extends AppCompatActivity {
+import com.stoutner.privacybrowser.R;
 
+public class DomainsList extends AppCompatActivity {
+    private boolean twoPaneMode;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.domains_list_coordinatorlayout);
+
+    }
 }

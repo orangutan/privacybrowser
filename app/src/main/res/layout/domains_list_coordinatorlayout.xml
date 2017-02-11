@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2016-2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2017 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -21,12 +21,11 @@
 <!-- `android:fitsSystemWindows="true"` moves the AppBar below the status bar.
     When it is specified the theme should include `<item name="android:windowTranslucentStatus">true</item>` to make the status bar a transparent, darkened overlay. -->
 <android.support.design.widget.CoordinatorLayout
-    android:id="@+id/bookmarks_coordinatorlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:fitsSystemWindows="true" >
+    android:fitsSystemWindows="true">
 
     <!-- the `LinearLayout` with `orientation="vertical"` moves the content below the `AppBarLayout`. -->
     <LinearLayout
@@ -35,34 +34,23 @@
         android:orientation="vertical" >
 
         <android.support.design.widget.AppBarLayout
-            android:id="@+id/bookmarks_appbarlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:theme="@style/AppBarOverlay" >
 
             <!-- android:theme="@style/PrivacyBrowser.DarkAppBar" makes the text and icons in the AppBar white. -->
             <android.support.v7.widget.Toolbar
-                android:id="@+id/bookmarks_toolbar"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:background="@color/blue_700"
                 android:theme="@style/DarkAppBar"
                 app:popupTheme="@style/LightPopupOverlay" />
         </android.support.design.widget.AppBarLayout>
-
-        <!-- `android:choiceMode="multipleChoiceModal"` allows the contextual action menu to select more than one item at a time.
-            `android:dividerHeight` must be specified with `android:divider` or the height will be `0dp`.  In our case we want the height to be `0dp`. -->
-        <ListView
-            android:id="@+id/bookmarks_listview"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:choiceMode="multipleChoiceModal"
-            android:divider="@color/white"
-            android:dividerHeight="0dp" />
     </LinearLayout>
 
+    <include layout="@layout/domains_list" />
+
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/create_bookmark_fab"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_gravity="bottom|end"
