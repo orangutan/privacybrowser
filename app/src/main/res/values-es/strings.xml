@@ -197,7 +197,7 @@
         <string name="dom_storage_preference">Habilitar almacenamiento DOM por defecto</string>
         <string name="dom_storage_preference_summary">Javascript debe estar habilitado para que funcione el almacenamiento DOM.</string>
         <string name="save_form_data_preference">Habilitar el guardar los datos de formulario por defecto</string>
-        <string name="save_form_data_preference_summary">Los datos de formularios guardados pueden rellenar automáticamente los casillas o campos de las webs.</string>
+        <string name="save_form_data_preference_summary">Los datos de formularios guardados pueden rellenar automáticamente las casillas o campos de las webs.</string>
         <string name="user_agent">Agente de usuario</string>
         <string-array name="user_agent_entries">
             <item>Navegador Privado 1.0</item>

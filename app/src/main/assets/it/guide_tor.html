@@ -33,61 +33,61 @@
     </head>
 
     <body>
-        <h3>Tor and Its Limits</h3>
+        <h3>Tor e i suoi limiti</h3>
 
-        <p>There are two general categories of bad actors that want to infringe on the privacy of the web: malicious governments with access to ISPs (Internet Service Providers) and mega corporations that run social and advertising networks.
-            TOR (The Onion Router) is useful in protecting privacy from malicious governments (which spy on traffic in transit) but not from mega corporations (which embed malicious code on web servers).</p>
-
-
-        <h3>Malicious Governments</h3>
-
-        <p>Malicious governments often spy on their citizens to punish dissent or human rights activity. They commonly either
-            operate the local ISPs or they can force them to disclose information showing every IP address that is visited
-            by each user.  Tor is designed to defeat this infringement of privacy by encrypting the traffic
-            from a user&rsquo;s device and routing it through three separate servers on the internet before sending it on to the final destination.
-            This means that no individual ISP, server, or website, can know both the <a href="https://ipleak.net">IP address the user&rsquo;s device</a>
-            and the IP address of the final web server. Malicious governments and the ISPs they control cannot tell which
-            web servers a user is accessing, although they can tell that the user is using Tor. In some parts of
-            the world, using Tor could be construed as an evidence of illegal behavior (&ldquo;if you didn&rsquo;t have anything
-            to hide you wouldn&rsquo;t be encrypting your traffic&rdquo;) and users could be punished because governments
-            assume they are doing something that is prohibited. Thus, Tor can be helpful, but isn&rsquo;t a panacea.</p>
+        <p>Esistono due categorie generali di cattivi soggetti che vogliono violare la privacy del web: governi maliziosi con accesso agli ISP (Internet Service Providers) e mega corporations che gestiscono social network e agenzie pubblicitarie.
+            TOR (The Onion Router) &egrave; utile per proteggere la privacy dai governi maliziosi (che spiano il traffico in transito) ma non dalle mega corporations (che mettono codice maligno sui web server).</p>
 
 
-        <h3>Mega Corporations</h3>
+        <h3>Governi Maliziosi</h3>
 
-        <p>When a user connects to a web server, the web server can see the user&rsquo;s IP address. Although it isn&rsquo;t a perfect science,
-            IP addresses can be turned into physical addresses with a <a href="https://www.whatismyip.com/">fair amount of accuracy</a>.
-            Small web servers typically rely on IP addresses to identify the location of the users visiting their site.
-            Tor is a good solution to mask the user&rsquo;s location from these servers. But large mega corporations
-            that own social media and advertising networks use a whole profile of information that is designed to track users
-            across devices and IP addresses. These profiles employ a variety of techniques to identify users, including JavaScript,
-            cookies, tracking IDs, and <a href="https://panopticlick.eff.org/">browser fingerprinting</a>. Because the vast majority
-            of the websites on the internet either load an ad from one of the major networks or embed social media icons with their
-            associated JavaScript, these corporations have built profiles for almost every user online and can track their internet
-            activity across unrelated sites.</p>
-
-        <p>They track every site that is visited, everything that is purchased, every credit card that is used to
-            make a purchase, every address that items are shipped to, and the GPS metadata of every picture that is
-            uploaded to the internet. They build a profile of a user&rsquo;s age, gender, marital status, address, political affiliations,
-            religious affiliations, family circumstances, number of pets, and everything else they can get their hands on.
-            They even buy up databases of credit card transactions at local stores, so they can track the off-line purchasing patterns of the users
-            in their profiles. Because they already have much more accurate address information about a user than an IP address discloses,
-            Tor provides no real privacy protection against mega corporations.</p>
-
-        <p>The single best privacy protection against mega corporations is to browse the web with JavaScript disabled, followed
-            by blocking ad networks, disabling cookies and DOM storage, and using a browser that is difficult to fingerprint.</p>
+        <p>I governi malizionsi spesso spiano i loro cittadini per punire il dissenso o le attivit&agrave; di difesa dei diritti umani. Solitamente,
+            o gestiscono loro stessi gli ISP locali oppure li obbligano a rivelare informazioni mostrando tutti gli indirizzi IP visitati da ciascun utente.  
+			Tor &egrave; progettato per combattere questa modalit&agrave; di violazione della privacy perch&egrave; cripta il traffico
+            dei dispositivi e lo indirizza verso tre internet server distinti prima di inviarlo alla destinazione finale.
+            Questo significa che nessun ISP, server, o sito web, pu&ograve; conoscere l'<a href="https://ipleak.net">indirizzo IP dei dispositivi</a>
+            e nemmeno l'indirizzo IP del server di destinazione. I governi malizionsi e gli ISP che essi controllano non possono sapere a quale
+            web server gli utenti stiano accedendo, nonostante sappiano che gli utenti stanno utilizzando Tor. In alcune parti del mondo l'utilizzo di Tor
+			potrebbe essere visto come prova di un comportamento illegale (se non si avesse nulla da nascondere non sarebbe necessario criptare
+			il proprio traffico) e gli utenti potrebbero essere perseguiti perch&egrave; i governi presumerebbero l'esistenza di qualche azione illegale. 
+			Pertanto Tor pu&ograve; essere utile, ma non &egrave; la soluzione definitiva.</p>
 
 
-        <h3>Using Tor</h3>
+        <h3>Mega corporations</h3>
 
-        <p>Despite its limitations, Tor can be useful in some circumstances. The Tor project has an app for Android called Orbot,
-            which is available on <a href="https://f-droid.org/repository/browse/?fdfilter=orbot&fdid=org.torproject.android">F-Droid</a>
-            and everywhere else that Privacy Browser is distributed. Privacy Browser has a setting to use Orbot as
-            a proxy. When this is turned on, Privacy Browser&rsquo;s app bar will have a light blue background instead of
-            the default light grey. When Privacy Browser&rsquo;s Orbot proxy setting is enabled, internet access
-            will not work unless Orbot is running and connected to Tor. Because traffic is being routed through several Tor nodes,
-            using Tor is often much slower than connecting directly to the internet.</p>
+        <p>Quando un utente si connette a un web server, il server pu&ograve; vedere l'indirizzo IP dell'utente. Nonostante non sia una scienza esatta,
+            &egrave; possibile convertire l'IP in indirizzi fisici con <a href="https://www.whatismyip.com/">discreta accuratezza</a>.
+            I piccoli web server generalmente si affidano agli indirizzi IP per identificare la posizione degli utenti collegati al sito.
+            Tor &egrave; una buona soluzione per nascondere la posizione a questi server. Le mega corporations proprietarie di
+            social media e agenzie pubblicitarie utilizzano per&ograve; un intero profilo di informazioni con lo scopo di tracciare gli utenti
+            sui dispositivi e sgli indirizzi IP. Questi profili utilizzano molte tecniche diverse per l'identificazione degli utenti, tra cui JavaScript,
+            cookie, ID traccianti, e <a href="https://panopticlick.eff.org/">impronta digitale dei browser</a>. Siccome la maggior parte
+            dei siti web carica gli annunci da una delle principali agenzie o inserisce le icone dei social media e i relativi javascript, 
+            costruiscono profili per quasi tutti gli utenti e possono tracciare la loro attivit&agrave; su internet anche se relativa a altri siti.</p>
 
-        <img class="center" src="../en/images/tor.png" height="640" width="360">
+        <p>Viene tracciato ogni sito visitato, ogni acquisto effettuato, ogni carta di credito utilizzata, ogni indirizzo di spedizione,
+			i metadati GPS di ogni immagine che viene caricata su internet.
+            Viene costruito il profilo per et&agrave;, sesso, stato civile, indirizzo, appartenenza politica,
+            religione, situazione familiare, animali domestici, e tutto ci&ograve; su cui possono mettere le mani.
+            Le corporations acquistano anche i database delle transazioni con carta di credito effettuate nei negozi, per poter tracciare anche le
+			abitudini di acquisto off-line degli utenti nei loro profili. Dal momento che sono gi&agrave; in possesso di informazioni molto più
+			accurate sulla localizzazione di un utente rispetto a quanto ottenibile tramite indirizzo IP,
+            Tor non fornisce alcuna protezione sulla privacy contro le mega corporations.</p>
+
+        <p>La miglior protezione per la privacy contro le mega corporations &egrave; quella di navigare con JavaScript disabilitato,
+			seguita dal bloccare gli annunci pubblicitari, disabilitare i cookie e il DOM storage, e utilizzare un browser di cui &egrave; difficile avere l'impronta digitale.</p>
+
+
+        <h3>Utilizzo di Tor</h3>
+
+        <p>Nonostante le sue limitazioni, in alcune circostanze Tor pu&ograve; essere utile. Il progetto Tor ha sviluppato una app per Android chiamata Orbot,
+            disponibile su <a href="https://f-droid.org/repository/browse/?fdfilter=orbot&fdid=org.torproject.android">F-Droid</a>
+            e ovunque sia distribuito Privacy Browser. Privacy Browser &egrave; dotato di una impostazione per utilizzare come proxy Orbot.
+            Quando lo si abilita, la barra principale di Privacy Browser diventa di colore azzurro chiaro al posto del grigio di default.
+            Quando il proxy con Orbot &egrave; abilitato nelle impostazioni di Privacy Browser, l'accesso a internet non sar&agrave; possibile a meno che
+            Orbot non sia in funzione e connessa a Tor. Dal momento che il traffico transita attraverso diversi nodi Tor
+            la connessione &egrave; spesso pi&ugrave; lenta di una connessione a internet diretta.</p>
+
+        <img class="center" src="images/tor.png" height="640" width="360">
     </body>
 </html>
