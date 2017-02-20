@@ -1758,10 +1758,15 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         String userAgentString = sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0");
         String customUserAgentString = sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0");
         String javaScriptDisabledSearchString = sharedPreferences.getString("javascript_disabled_search", "https://duckduckgo.com/html/?q=");
-        String javaScriptDisabledCustomSearchString = sharedPreferences.getString("javascript_disabled_search_custom_url", "");
+        String javaScriptDisabledSearchCustomURLString = sharedPreferences.getString("javascript_disabled_search_custom_url", "");
         String javaScriptEnabledSearchString = sharedPreferences.getString("javascript_enabled_search", "https://duckduckgo.com/?q=");
-        String javaScriptEnabledCustomSearchString = sharedPreferences.getString("javascript_enabled_search_custom_url", "");
+        String javaScriptEnabledSearchCustomURLString = sharedPreferences.getString("javascript_enabled_search_custom_url", "");
         String homepageString = sharedPreferences.getString("homepage", "https://www.duckduckgo.com");
+        String torHomepageString = sharedPreferences.getString("tor_homepage", "https://3g2upl4pq6kufc4m.onion");
+        String torJavaScriptDisabledSearchString = sharedPreferences.getString("tor_javascript_disabled_search", "https://3g2upl4pq6kufc4m.onion/html/?q=");
+        String torJavaScriptDisabledSearchCustomURLString = sharedPreferences.getString("tor_javascript_disabled_search_custom_url", "");
+        String torJavaScriptEnabledSearchString = sharedPreferences.getString("tor_javascript_enabled_search", "https://3g2upl4pq6kufc4m.onion/?q=");
+        String torJavaScriptEnabledSearchCustomURLString = sharedPreferences.getString("tor_javascript_enabled_search_custom_url", "");
         String defaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
         swipeToRefreshEnabled = sharedPreferences.getBoolean("swipe_to_refresh_enabled", false);
         adBlockerEnabled = sharedPreferences.getBoolean("block_ads", true);
@@ -1793,8 +1798,50 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
             }
         }
 
-        // Apply the other settings from `sharedPreferences`.
-        homepage = homepageString;
+        // Set the homepage, search, and proxy options.
+        if (proxyThroughOrbot) {  // Set the Tor options.
+            // Set `torHomepageString` as `homepage`.
+            homepage = torHomepageString;
+
+            // Set JavaScript disabled search.
+            if (torJavaScriptDisabledSearchString.equals("Custom URL")) {  // Get the custom URL string.
+                javaScriptDisabledSearchURL = torJavaScriptDisabledSearchCustomURLString;
+            } else {  // Use the string from the pre-built list.
+                javaScriptDisabledSearchURL = torJavaScriptDisabledSearchString;
+            }
+
+            // Set JavaScript enabled search.
+            if (torJavaScriptEnabledSearchString.equals("Custom URL")) {  // Get the custom URL string.
+                javaScriptEnabledSearchURL = torJavaScriptEnabledSearchCustomURLString;
+            } else {  // Use the string from the pre-built list.
+                javaScriptEnabledSearchURL = torJavaScriptEnabledSearchString;
+            }
+
+            // Set the proxy.  `this` refers to the current activity where an `AlertDialog` might be displayed.
+            OrbotProxyHelper.setProxy(getApplicationContext(), this, "localhost", "8118");
+        } else {  // Set the non-Tor options.
+            // Set `homepageString` as `homepage`.
+            homepage = homepageString;
+
+            // Set JavaScript disabled search.
+            if (javaScriptDisabledSearchString.equals("Custom URL")) {  // Get the custom URL string.
+                javaScriptDisabledSearchURL = javaScriptDisabledSearchCustomURLString;
+            } else {  // Use the string from the pre-built list.
+                javaScriptDisabledSearchURL = javaScriptDisabledSearchString;
+            }
+
+            // Set JavaScript enabled search.
+            if (javaScriptEnabledSearchString.equals("Custom URL")) {  // Get the custom URL string.
+                javaScriptEnabledSearchURL = javaScriptEnabledSearchCustomURLString;
+            } else {  // Use the string from the pre-built list.
+                javaScriptEnabledSearchURL = javaScriptEnabledSearchString;
+            }
+
+            // Reset the proxy to default.  The host is `""` and the port is `"0"`.
+            OrbotProxyHelper.setProxy(getApplicationContext(), this, "", "0");
+        }
+
+        // Set swipe to refresh.
         swipeRefreshLayout.setEnabled(swipeToRefreshEnabled);
 
         // Set the user agent initial status.
@@ -1815,33 +1862,11 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                 break;
         }
 
-        // Set JavaScript disabled search.
-        if (javaScriptDisabledSearchString.equals("Custom URL")) {  // Get the custom URL string.
-            javaScriptDisabledSearchURL = javaScriptDisabledCustomSearchString;
-        } else {  // Use the string from the pre-built list.
-            javaScriptDisabledSearchURL = javaScriptDisabledSearchString;
-        }
-
-        // Set JavaScript enabled search.
-        if (javaScriptEnabledSearchString.equals("Custom URL")) {  // Get the custom URL string.
-            javaScriptEnabledSearchURL = javaScriptEnabledCustomSearchString;
-        } else {  // Use the string from the pre-built list.
-            javaScriptEnabledSearchURL = javaScriptEnabledSearchString;
-        }
-
         // Set Do Not Track status.
         if (doNotTrackEnabled) {
             customHeaders.put("DNT", "1");
         } else {
             customHeaders.remove("DNT");
-        }
-
-        // Set Orbot proxy status.
-        if (proxyThroughOrbot) {
-            // Set the proxy.  `this` refers to the current activity where an `AlertDialog` might be displayed.
-            OrbotProxyHelper.setProxy(getApplicationContext(), this, "localhost", "8118");
-        } else {  // Reset the proxy to default.  The host is `""` and the port is `"0"`.
-            OrbotProxyHelper.setProxy(getApplicationContext(), this, "", "0");
         }
 
         // If we are in full screen mode update the `SYSTEM_UI` flags.
