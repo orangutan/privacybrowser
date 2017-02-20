@@ -39,6 +39,7 @@ import java.lang.reflect.Method;
 
 public class OrbotProxyHelper {
     public static void setProxy(Context privacyBrowserContext, Activity parentActivity, String proxyHost, String proxyPort) {
+
         // Set the proxy values
         System.setProperty("http.proxyHost", proxyHost);
         System.setProperty("http.proxyPort", proxyPort);
@@ -83,10 +84,12 @@ public class OrbotProxyHelper {
                 PackageManager packageManager = privacyBrowserContext.getPackageManager();
                 packageManager.getPackageInfo("org.torproject.android", PackageManager.GET_ACTIVITIES);
 
-                // Send an `intent` to start Orbot.  The intent will be ignored if it is already running.
-                Intent orbotIntent = new Intent("org.torproject.android.intent.action.START");
-                orbotIntent.setPackage("org.torproject.android");
-                privacyBrowserContext.sendBroadcast(orbotIntent);
+                // Ask Orbot to connect if its current status is not "ON".
+                if (!MainWebView.orbotStatus.equals("ON")) {
+                    Intent orbotIntent = new Intent("org.torproject.android.intent.action.START");
+                    orbotIntent.setPackage("org.torproject.android");
+                    privacyBrowserContext.sendBroadcast(orbotIntent);
+                }
             } catch (PackageManager.NameNotFoundException exception){  // If an exception is thrown, Orbot is not installed.
                 // Build an `AlertDialog`.  `R.style.LightAlertDialog` formats the color of the button text.
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(parentActivity, R.style.LightAlertDialog);

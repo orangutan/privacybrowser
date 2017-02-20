@@ -24,10 +24,12 @@ package com.stoutner.privacybrowser.activities;
 import android.annotation.SuppressLint;
 import android.app.DialogFragment;
 import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -128,6 +130,9 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
     // `sslCertificate` is public static so it can be accessed from `ViewSslCertificate`.  It is also used in `onCreate()`.
     public static SslCertificate sslCertificate;
 
+    // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`.
+    public static String orbotStatus;
+
 
     // `drawerLayout` is used in `onCreate()`, `onNewIntent()`, and `onBackPressed()`.
     private DrawerLayout drawerLayout;
@@ -192,6 +197,12 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
 
     // `translucentNavigationBarOnFullscreen` is used in `onCreate()` and `applySettings()`.
     private boolean translucentNavigationBarOnFullscreen;
+
+    // `proxyThroughOrbot` is used in `onCreate()` and `applySettings()`
+    private boolean proxyThroughOrbot;
+
+    // `pendingUrl` is used in `onCreate()` and `applySettings()`
+    private String pendingUrl;
 
     // `findOnPageLinearLayout` is used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
     private LinearLayout findOnPageLinearLayout;
@@ -558,25 +569,31 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
             // Update the URL in urlTextBox when the page starts to load.
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                // We need to update `formattedUrlString` at the beginning of the load, so that if the user toggles JavaScript during the load the new website is reloaded.
-                formattedUrlString = url;
+                // Check to see if we are waiting on Orbot.
+                if (pendingUrl.isEmpty()) {  // We are not waiting on Orbot, so we need to process the URL.
+                    // We need to update `formattedUrlString` at the beginning of the load, so that if the user toggles JavaScript during the load the new website is reloaded.
+                    formattedUrlString = url;
 
-                // Display the loading URL is the URL text box.
-                urlTextBox.setText(url);
+                    // Display the loading URL is the URL text box.
+                    urlTextBox.setText(url);
+                }
             }
 
             // Update formattedUrlString and urlTextBox.  It is necessary to do this after the page finishes loading because the final URL can change during load.
             @Override
             public void onPageFinished(WebView view, String url) {
-                formattedUrlString = url;
+                // Check to see if we are waiting on Orbot.
+                if (pendingUrl.isEmpty()) {  // we are not waiting on Orbot, so we need to process the URL.
+                    formattedUrlString = url;
 
-                // Only update urlTextBox if the user is not typing in it.
-                if (!urlTextBox.hasFocus()) {
-                    urlTextBox.setText(formattedUrlString);
+                    // Only update urlTextBox if the user is not typing in it.
+                    if (!urlTextBox.hasFocus()) {
+                        urlTextBox.setText(formattedUrlString);
+                    }
+
+                    // Store the SSL certificate so it can be accessed from `ViewSslCertificate`.
+                    sslCertificate = mainWebView.getCertificate();
                 }
-
-                // Store the SSL certificate so it can be accessed from `ViewSslCertificate`.
-                sslCertificate = mainWebView.getCertificate();
             }
 
             // Handle SSL Certificate errors.
@@ -694,6 +711,39 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         // Replace the header that `WebView` creates for `X-Requested-With` with a null value.  The default value is the application ID (com.stoutner.privacybrowser.standard).
         customHeaders.put("X-Requested-With", "");
 
+        // Set the initial Orbot status.
+        orbotStatus = "unknown";
+
+        // Create a Orbot status `BroadcastReceiver`.
+        BroadcastReceiver orbotStatusBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Store the content of the status message in `orbotStatus`.
+                orbotStatus = intent.getStringExtra("org.torproject.android.intent.extra.STATUS");
+
+                // If we are waiting on `pendingUrl`, load it now that Orbot is connected.
+                if (orbotStatus.equals("ON") && !pendingUrl.isEmpty()) {
+
+                    // Wait 500 milliseconds, because Orbot isn't really ready yet.
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException exception) {
+                        // Do nothing.
+                    }
+
+                    // Load `pendingUrl`.
+                    formattedUrlString = pendingUrl;
+                    mainWebView.loadUrl(formattedUrlString, customHeaders);
+
+                    // Reset `pendingUrl` to be empty.
+                    pendingUrl = "";
+                }
+            }
+        };
+
+        // Register `orbotStatusBroadcastReceiver` on `this` context.
+        this.registerReceiver(orbotStatusBroadcastReceiver, new IntentFilter("org.torproject.android.intent.action.STATUS"));
+
         // Initialize the default preference values the first time the program is run.  `this` is the context.  `false` keeps this command from resetting any current preferences back to default.
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
@@ -714,8 +764,19 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
             formattedUrlString = homepage;
         }
 
-        // Load the initial website.
-        mainWebView.loadUrl(formattedUrlString, customHeaders);
+        // Initialize `pendingUrl`.
+        pendingUrl = "";
+
+        if (proxyThroughOrbot & !orbotStatus.equals("ON")) {  // We are waiting on Orbot.
+            // Save `formattedUrlString` in `pendingUrl`.
+            pendingUrl = formattedUrlString;
+
+            // Load a waiting page.  `null` specifies no encoding, which defaults to ASCII.
+            mainWebView.loadData("<html><body><br/><center><h1>Waiting for Orbot to connect...</h1></center></body></html>", "text/html", null);
+        } else {
+            // Load the initial website.
+            mainWebView.loadUrl(formattedUrlString, customHeaders);
+        }
 
         // If the favorite icon is null, load the default.
         if (favoriteIcon == null) {
@@ -1771,7 +1832,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         swipeToRefreshEnabled = sharedPreferences.getBoolean("swipe_to_refresh_enabled", false);
         adBlockerEnabled = sharedPreferences.getBoolean("block_ads", true);
         boolean doNotTrackEnabled = sharedPreferences.getBoolean("do_not_track", false);
-        boolean proxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
+        proxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
         fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("enable_full_screen_browsing_mode", false);
         hideSystemBarsOnFullscreen = sharedPreferences.getBoolean("hide_system_bars", false);
         translucentNavigationBarOnFullscreen = sharedPreferences.getBoolean("translucent_navigation_bar", true);
@@ -1898,6 +1959,14 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
                 }
             }
+        }
+
+        if (proxyThroughOrbot & !orbotStatus.equals("ON")) {  // We are waiting on Orbot.
+            // Save `formattedUrlString` in `pendingUrl`.
+            pendingUrl = formattedUrlString;
+
+            // Load a waiting page.  `null` specifies no encoding, which defaults to ASCII.
+            mainWebView.loadData("<html><body><br/><center><h1>Waiting for Orbot to connect...</h1></center></body></html>", "text/html", null);
         }
     }
 
