@@ -178,6 +178,9 @@
     <string name="bookmarks_database_view">Vista de base de datos de marcadores</string>
     <string name="home_folder">Carpeta inicio</string>
 
+    <!-- Domains. -->
+    <string name="domains">Dominios</string>
+
     <!-- Guide. -->
     <string name="privacy_browser_guide">Guía de Navegador Privado</string>
     <string name="overview">Visión general</string>
@@ -253,6 +256,21 @@
     <string name="tor">Tor</string>
         <string name="proxy_through_orbot">Enviar a través de Orbot</string>
         <string name="proxy_through_orbot_summary">Enviar todo el tráfico web a través de Orbot en localhost:8118.</string>
+        <string name="tor_homepage">Página de inicio de Tor</string>
+        <string name="tor_javascript_disabled_search">Buscar en Tor con Javascript deshabilitado.</string>
+        <string-array name="tor_javascript_disabled_search_entries">
+            <item>DuckDuckGo</item>
+            <item>Torch</item>
+            <item>Personalizado</item>
+        </string-array>
+        <string name="tor_javascript_disabled_search_custom_url">URL personalizada de búsqueda en Tor con Javascript deshabilitado</string>
+        <string name="tor_javascript_enabled_search">Buscar en Tor con JavaScript habilitado</string>
+        <string-array name="tor_javascript_enabled_search_entries">
+            <item>DuckDuckGo</item>
+            <item>Torch</item>
+            <item>Personalizado</item>
+        </string-array>
+        <string name="tor_javascript_enabled_search_custom_url">URL personalizada de búsqueda en Tor con JavaScript habilitado</string>
     <string name="general">General</string>
         <string name="homepage">Página de inicio</string>
         <string name="default_font_size">Tamaño de fuente por defecto</string>
