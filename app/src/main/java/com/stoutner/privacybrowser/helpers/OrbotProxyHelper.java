@@ -86,8 +86,16 @@ public class OrbotProxyHelper {
 
                 // Ask Orbot to connect if its current status is not "ON".
                 if (!MainWebView.orbotStatus.equals("ON")) {
+                    // Request Orbot to start.
                     Intent orbotIntent = new Intent("org.torproject.android.intent.action.START");
+
+                    // Send the intent to the Orbot package.
                     orbotIntent.setPackage("org.torproject.android");
+
+                    // Request a status response be sent back to this package.
+                    orbotIntent.putExtra("org.torproject.android.intent.extra.PACKAGE_NAME", privacyBrowserContext.getPackageName());
+
+                    // Make it so.
                     privacyBrowserContext.sendBroadcast(orbotIntent);
                 }
             } catch (PackageManager.NameNotFoundException exception){  // If an exception is thrown, Orbot is not installed.

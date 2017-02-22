@@ -202,7 +202,10 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
     private boolean proxyThroughOrbot;
 
     // `pendingUrl` is used in `onCreate()` and `applySettings()`
-    private String pendingUrl;
+    private static String pendingUrl;
+
+    // `waitingForOrbotData` is used in `onCreate()` and `applySettings()`.
+    private String waitingForOrbotHTMLString;
 
     // `findOnPageLinearLayout` is used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
     private LinearLayout findOnPageLinearLayout;
@@ -277,6 +280,45 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                 }
             }
         });
+
+        // Set `waitingForOrbotHTMLString`.
+        waitingForOrbotHTMLString = "<html><body><br/><center><h1>" + getString(R.string.waiting_for_orbot) + "</h1></center></body></html>";
+
+        // Initialize `pendingUrl`.
+        pendingUrl = "";
+
+        // Set the initial Orbot status.
+        orbotStatus = "unknown";
+
+        // Create an Orbot status `BroadcastReceiver`.
+        BroadcastReceiver orbotStatusBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Store the content of the status message in `orbotStatus`.
+                orbotStatus = intent.getStringExtra("org.torproject.android.intent.extra.STATUS");
+
+                // If we are waiting on `pendingUrl`, load it now that Orbot is connected.
+                if (orbotStatus.equals("ON") && !pendingUrl.isEmpty()) {
+
+                    // Wait 500 milliseconds, because Orbot isn't really ready yet.
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException exception) {
+                        // Do nothing.
+                    }
+
+                    // Copy `pendingUrl` to `formattedUrlString` and reset `pendingUrl` to be empty.
+                    formattedUrlString = pendingUrl;
+                    pendingUrl = "";
+
+                    // Load `formattedUrlString
+                    mainWebView.loadUrl(formattedUrlString, customHeaders);
+                }
+            }
+        };
+
+        // Register `orbotStatusBroadcastReceiver` on `this` context.
+        this.registerReceiver(orbotStatusBroadcastReceiver, new IntentFilter("org.torproject.android.intent.action.STATUS"));
 
         // Get handles for views that need to be accessed.
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerlayout);
@@ -711,44 +753,8 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         // Replace the header that `WebView` creates for `X-Requested-With` with a null value.  The default value is the application ID (com.stoutner.privacybrowser.standard).
         customHeaders.put("X-Requested-With", "");
 
-        // Set the initial Orbot status.
-        orbotStatus = "unknown";
-
-        // Create a Orbot status `BroadcastReceiver`.
-        BroadcastReceiver orbotStatusBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                // Store the content of the status message in `orbotStatus`.
-                orbotStatus = intent.getStringExtra("org.torproject.android.intent.extra.STATUS");
-
-                // If we are waiting on `pendingUrl`, load it now that Orbot is connected.
-                if (orbotStatus.equals("ON") && !pendingUrl.isEmpty()) {
-
-                    // Wait 500 milliseconds, because Orbot isn't really ready yet.
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException exception) {
-                        // Do nothing.
-                    }
-
-                    // Load `pendingUrl`.
-                    formattedUrlString = pendingUrl;
-                    mainWebView.loadUrl(formattedUrlString, customHeaders);
-
-                    // Reset `pendingUrl` to be empty.
-                    pendingUrl = "";
-                }
-            }
-        };
-
-        // Register `orbotStatusBroadcastReceiver` on `this` context.
-        this.registerReceiver(orbotStatusBroadcastReceiver, new IntentFilter("org.torproject.android.intent.action.STATUS"));
-
         // Initialize the default preference values the first time the program is run.  `this` is the context.  `false` keeps this command from resetting any current preferences back to default.
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-
-        // Apply the settings from the shared preferences.
-        applySettings();
 
         // Get the intent information that started the app.
         final Intent intent = getIntent();
@@ -759,22 +765,11 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
             formattedUrlString = intentUriData.toString();
         }
 
-        // If formattedUrlString is null assign the homepage to it.
-        if (formattedUrlString == null) {
-            formattedUrlString = homepage;
-        }
+        // Apply the settings from the shared preferences.
+        applySettings();
 
-        // Initialize `pendingUrl`.
-        pendingUrl = "";
-
-        if (proxyThroughOrbot & !orbotStatus.equals("ON")) {  // We are waiting on Orbot.
-            // Save `formattedUrlString` in `pendingUrl`.
-            pendingUrl = formattedUrlString;
-
-            // Load a waiting page.  `null` specifies no encoding, which defaults to ASCII.
-            mainWebView.loadData("<html><body><br/><center><h1>Waiting for Orbot to connect...</h1></center></body></html>", "text/html", null);
-        } else {
-            // Load the initial website.
+        // Load `formattedUrlString` if we are not proxying through Orbot and waiting for Orbot to connect.
+        if (!(proxyThroughOrbot & !orbotStatus.equals("ON"))) {
             mainWebView.loadUrl(formattedUrlString, customHeaders);
         }
 
@@ -1864,6 +1859,11 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
             // Set `torHomepageString` as `homepage`.
             homepage = torHomepageString;
 
+            // If formattedUrlString is null assign the homepage to it.
+            if (formattedUrlString == null) {
+                formattedUrlString = homepage;
+            }
+
             // Set JavaScript disabled search.
             if (torJavaScriptDisabledSearchString.equals("Custom URL")) {  // Get the custom URL string.
                 javaScriptDisabledSearchURL = torJavaScriptDisabledSearchCustomURLString;
@@ -1880,9 +1880,23 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
 
             // Set the proxy.  `this` refers to the current activity where an `AlertDialog` might be displayed.
             OrbotProxyHelper.setProxy(getApplicationContext(), this, "localhost", "8118");
+
+            // Display a message to the user if we are waiting on Orbot.
+            if (!orbotStatus.equals("ON")) {
+                // Save `formattedUrlString` in `pendingUrl`.
+                pendingUrl = formattedUrlString;
+
+                // Load a waiting page.  `null` specifies no encoding, which defaults to ASCII.
+                mainWebView.loadData(waitingForOrbotHTMLString, "text/html", null);
+            }
         } else {  // Set the non-Tor options.
             // Set `homepageString` as `homepage`.
             homepage = homepageString;
+
+            // If formattedUrlString is null assign the homepage to it.
+            if (formattedUrlString == null) {
+                formattedUrlString = homepage;
+            }
 
             // Set JavaScript disabled search.
             if (javaScriptDisabledSearchString.equals("Custom URL")) {  // Get the custom URL string.
@@ -1900,6 +1914,12 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
 
             // Reset the proxy to default.  The host is `""` and the port is `"0"`.
             OrbotProxyHelper.setProxy(getApplicationContext(), this, "", "0");
+
+            // Reset `pendingUrl` if we are currently waiting for Orbot to connect.
+            if (!pendingUrl.isEmpty()) {
+                formattedUrlString = pendingUrl;
+                pendingUrl = "";
+            }
         }
 
         // Set swipe to refresh.
@@ -1930,7 +1950,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
             customHeaders.remove("DNT");
         }
 
-        // If we are in full screen mode update the `SYSTEM_UI` flags.
+        // Update the `SYSTEM_UI` flags if we are in full screen mode.
         if (inFullScreenBrowsingMode) {
             if (hideSystemBarsOnFullscreen) {  // Hide everything.
                 // Remove the translucent navigation setting if it is currently flagged.
@@ -1959,14 +1979,6 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
                 }
             }
-        }
-
-        if (proxyThroughOrbot & !orbotStatus.equals("ON")) {  // We are waiting on Orbot.
-            // Save `formattedUrlString` in `pendingUrl`.
-            pendingUrl = formattedUrlString;
-
-            // Load a waiting page.  `null` specifies no encoding, which defaults to ASCII.
-            mainWebView.loadData("<html><body><br/><center><h1>Waiting for Orbot to connect...</h1></center></body></html>", "text/html", null);
         }
     }
 
