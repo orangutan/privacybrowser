@@ -189,7 +189,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
     // `fullScreenBrowsingModeEnabled` is used in `onCreate()` and `applySettings()`.
     private boolean fullScreenBrowsingModeEnabled;
 
-    // `inFullScreenBrowsingMode` is used in `onCreate()` and `applySettings()`.
+    // `inFullScreenBrowsingMode` is used in `onCreate()`, `onConfigurationChanged()`, and `applySettings()`.
     private boolean inFullScreenBrowsingMode;
 
     // `hideSystemBarsOnFullscreen` is used in `onCreate()` and `applySettings()`.
@@ -765,11 +765,17 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
             formattedUrlString = intentUriData.toString();
         }
 
+        // Initialize `inFullScreenBrowsingMode`, which is always false at this point because Privacy Browser never starts in full screen browsing mode.
+        inFullScreenBrowsingMode = false;
+
+        // Initialize AdView for the free flavor.
+        adView = findViewById(R.id.adView);
+
         // Apply the settings from the shared preferences.
         applySettings();
 
         // Load `formattedUrlString` if we are not proxying through Orbot and waiting for Orbot to connect.
-        if (!(proxyThroughOrbot & !orbotStatus.equals("ON"))) {
+        if (!(proxyThroughOrbot && !orbotStatus.equals("ON"))) {
             mainWebView.loadUrl(formattedUrlString, customHeaders);
         }
 
@@ -780,13 +786,6 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
             BitmapDrawable favoriteIconBitmapDrawable = (BitmapDrawable) favoriteIconDrawable;
             favoriteIcon = favoriteIconBitmapDrawable.getBitmap();
         }
-
-        // Initialize `inFullScreenBrowsingMode`, which is always false at this point because Privacy Browser never starts in full screen browsing mode.
-        inFullScreenBrowsingMode = false;
-
-        // Initialize AdView for the free flavor and request an ad.  If this is not the free flavor BannerAd.requestAd() does nothing.
-        adView = findViewById(R.id.adView);
-        BannerAd.requestAd(adView);
     }
 
 
@@ -1236,13 +1235,11 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                 startActivity(settingsIntent);
                 break;
 
-            /*
             case R.id.domains:
                 // Launch `DomainsList`.
                 Intent domainsIntent = new Intent(this, DomainsList.class);
                 startActivity(domainsIntent);
                 break;
-            */
 
             case R.id.guide:
                 // Launch `Guide`.
@@ -1335,7 +1332,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         super.onConfigurationChanged(newConfig);
 
         // Reload the ad for the free flavor if we are not in full screen mode.
-        if (BuildConfig.FLAVOR.contentEquals("free") && adView.isShown() && !fullScreenVideoFrameLayout.isShown()) {
+        if (BuildConfig.FLAVOR.contentEquals("free") && !inFullScreenBrowsingMode) {
             // Reload the ad.
             BannerAd.reloadAfterRotate(adView, getApplicationContext(), getString(R.string.ad_id));
 
@@ -1950,8 +1947,8 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
             customHeaders.remove("DNT");
         }
 
-        // Update the `SYSTEM_UI` flags if we are in full screen mode.
-        if (inFullScreenBrowsingMode) {
+        // Apply the appropriate full screen mode the `SYSTEM_UI` flags.
+        if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {
             if (hideSystemBarsOnFullscreen) {  // Hide everything.
                 // Remove the translucent navigation setting if it is currently flagged.
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
@@ -1979,6 +1976,33 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
                 }
             }
+        } else {  // Switch to normal viewing mode.
+            // Reset `inFullScreenBrowsingMode` to `false`.
+            inFullScreenBrowsingMode = false;
+
+            // Show the `appBar`.
+            appBar.show();
+
+            // Show the `BannerAd` in the free flavor.
+            if (BuildConfig.FLAVOR.contentEquals("free")) {
+                // Reload the ad.  Because the screen may have rotated, we need to use `reloadAfterRotate`.
+                BannerAd.reloadAfterRotate(adView, getApplicationContext(), getString(R.string.ad_id));
+
+                // Reinitialize the `adView` variable, as the `View` will have been removed and re-added by `BannerAd.reloadAfterRotate()`.
+                adView = findViewById(R.id.adView);
+            }
+
+            // Remove the translucent navigation bar flag if it is set.
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+
+            // Add the translucent status flag if it is unset.  This also resets `drawerLayout's` `View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN`.
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+            // Remove any `SYSTEM_UI` flags from `rootCoordinatorLayout`.
+            rootCoordinatorLayout.setSystemUiVisibility(0);
+
+            // Constrain `rootCoordinatorLayout` inside the status and navigation bars.
+            rootCoordinatorLayout.setFitsSystemWindows(true);
         }
     }
 

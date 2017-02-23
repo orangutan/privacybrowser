@@ -18,9 +18,21 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<!-- `android:baselineAligned="False"` reduces unneeded computational overhead with `RecyclerViews`. -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:baselineAligned="false"
+    android:divider="?android:attr/dividerHorizontal"
+    android:showDividers="middle"
+    tools:context=".activities.DomainsList">
 
+    <android.support.v7.widget.RecyclerView
+        android:layout_height="match_parent"
+        android:layout_width="200dp"
+        app:layoutManager="LinearLayoutManager" />
 </LinearLayout>
