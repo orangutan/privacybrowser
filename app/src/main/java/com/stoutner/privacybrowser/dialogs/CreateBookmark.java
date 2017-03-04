@@ -1,5 +1,5 @@
-/**
- * Copyright 2016 Soren Stoutner <soren@stoutner.com>.
+/*
+ * Copyright 2016-2017 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -20,6 +20,7 @@
 package com.stoutner.privacybrowser.dialogs;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -27,9 +28,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-// If we don't use `android.support.v7.app.AlertDialog` instead of `android.app.AlertDialog` then the dialog will be covered by the keyboard.
-import android.support.v7.app.AlertDialog;
-// We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <=22.
+// We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <= 22.
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.KeyEvent;
 import android.view.View;
@@ -56,7 +55,7 @@ public class CreateBookmark extends AppCompatDialogFragment {
         try {
             createBookmarkListener = (CreateBookmarkListener) context;
         } catch(ClassCastException exception) {
-            throw new ClassCastException(context.toString() + " must implement CreateBookmarkListener.");
+            throw new ClassCastException(context.toString() + " must implement `CreateBookmarkListener`.");
         }
     }
 
@@ -99,7 +98,7 @@ public class CreateBookmark extends AppCompatDialogFragment {
         // Remove the warning below that `setSoftInputMode` might produce `java.lang.NullPointerException`.
         assert alertDialog.getWindow() != null;
 
-        // Show the keyboard when the `Dialog` is displayed on the screen.
+        // Show the keyboard when the `AlertDialog` is displayed on the screen.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
         // We need to show the `AlertDialog` before we can call `setOnKeyListener()` below.
@@ -109,9 +108,9 @@ public class CreateBookmark extends AppCompatDialogFragment {
         EditText createBookmarkNameEditText = (EditText) alertDialog.findViewById(R.id.create_bookmark_name_edittext);
         assert createBookmarkNameEditText != null;  // Remove the warning below that `createBookmarkNameEditText` might be `null`.
         createBookmarkNameEditText.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down on the `enter` button, select the `PositiveButton` `Create`.
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+            public boolean onKey(View view, int keyCode, KeyEvent event) {
+                // If the event is a key-down on the `enter` key, select the `PositiveButton` `Create`.
+                if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)) {
                     // Trigger `createBookmarkListener` and return the `DialogFragment` to the parent activity.
                     createBookmarkListener.onCreateBookmark(CreateBookmark.this);
                     // Manually dismiss the `AlertDialog`.
@@ -132,8 +131,8 @@ public class CreateBookmark extends AppCompatDialogFragment {
         // Allow the `enter` key on the keyboard to create the bookmark from `create_bookmark_url_edittext`.
         createBookmarkUrlEditText.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down on the "enter" button, select the PositiveButton "Create".
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                // If the event is a key-down on the "enter" key, select the PositiveButton "Create".
+                if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)) {
                     // Trigger `createBookmarkListener` and return the DialogFragment to the parent activity.
                     createBookmarkListener.onCreateBookmark(CreateBookmark.this);
                     // Manually dismiss the `AlertDialog`.

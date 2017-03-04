@@ -1,5 +1,5 @@
-/**
- * Copyright 2016 Soren Stoutner <soren@stoutner.com>.
+/*
+ * Copyright 2016-2017 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -40,14 +40,14 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
     public static final String FAVORITE_ICON = "favoriteicon";
 
     // Initialize the database.  The lint warnings for the unused parameters are suppressed.
-    public BookmarksDatabaseHelper(Context context, @SuppressWarnings("UnusedParameters") String name, SQLiteDatabase.CursorFactory factory, @SuppressWarnings("UnusedParameters") int version) {
-        super(context, BOOKMARKS_DATABASE, factory, SCHEMA_VERSION);
+    public BookmarksDatabaseHelper(Context context, @SuppressWarnings("UnusedParameters") String name, SQLiteDatabase.CursorFactory cursorFactory, @SuppressWarnings("UnusedParameters") int version) {
+        super(context, BOOKMARKS_DATABASE, cursorFactory, SCHEMA_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase bookmarksDatabase) {
-        // Create the database if it doesn't exist.
-        String CREATE_BOOKMARKS_TABLE = "CREATE TABLE " + BOOKMARKS_TABLE + " (" +
+        // Setup the SQL string to create the `bookmarks` table.
+        final String CREATE_BOOKMARKS_TABLE = "CREATE TABLE " + BOOKMARKS_TABLE + " (" +
                 _ID + " integer primary key, " +
                 DISPLAY_ORDER + " integer, " +
                 BOOKMARK_NAME + " text, " +
@@ -56,6 +56,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
                 IS_FOLDER + " boolean, " +
                 FAVORITE_ICON + " blob);";
 
+        // Create the `bookmarks` table if it doesn't exist.
         bookmarksDatabase.execSQL(CREATE_BOOKMARKS_TABLE);
     }
 
@@ -65,6 +66,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void createBookmark(String bookmarkName, String bookmarkURL, int displayOrder, String parentFolder, byte[] favoriteIcon) {
+        // We need to store the bookmark data in a `ContentValues`.
         ContentValues bookmarkContentValues = new ContentValues();
 
         // ID is created automatically.
@@ -78,7 +80,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         // Get a writable database handle.
         SQLiteDatabase bookmarksDatabase = this.getWritableDatabase();
 
-        // The second argument is `null`, which makes it so that completely null rows cannot be created.  Not a problem in our case.
+        // Insert a new row.  The second argument is `null`, which makes it so that a completely null row cannot be created.
         bookmarksDatabase.insert(BOOKMARKS_TABLE, null, bookmarkContentValues);
 
         // Close the database handle.
@@ -113,8 +115,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         final String GET_ONE_BOOKMARK = "Select * FROM " + BOOKMARKS_TABLE +
                 " WHERE " + _ID + " = " + databaseId;
 
-        // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.
-        // We can't close the `Cursor` because we need to use it in the parent activity.
+        // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.  We can't close the `Cursor` because we need to use it in the parent activity.
         return bookmarksDatabase.rawQuery(GET_ONE_BOOKMARK, null);
     }
 
@@ -219,7 +220,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         // Get a readable database handle.
         SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
 
-        // Get everything in the BOOKMARKS_TABLE.
+        // Get everything in `BOOKMARKS_TABLE`.
         final String GET_ALL_BOOKMARKS = "Select * FROM " + BOOKMARKS_TABLE;
 
         // Return the results as a Cursor.  The second argument is `null` because there are no selectionArgs.
@@ -234,13 +235,12 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         // SQL escape `folderName`.
         folderName = DatabaseUtils.sqlEscapeString(folderName);
 
-        // Get everything in the BOOKMARKS_TABLE.
+        // Get everything in the `BOOKMARKS_TABLE` with `folderName` as the `PARENT_FOLDER`.
         final String GET_ALL_BOOKMARKS = "Select * FROM " + BOOKMARKS_TABLE +
                 " WHERE " + PARENT_FOLDER + " = " + folderName +
                 " ORDER BY " + DISPLAY_ORDER + " ASC";
 
-        // Return the results as a Cursor.  The second argument is `null` because there are no selectionArgs.
-        // We can't close the Cursor because we need to use it in the parent activity.
+        // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.  We can't close the `Cursor` because we need to use it in the parent activity.
         return bookmarksDatabase.rawQuery(GET_ALL_BOOKMARKS, null);
     }
 

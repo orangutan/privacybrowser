@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2016 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
@@ -20,6 +20,7 @@
 package com.stoutner.privacybrowser.dialogs;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -28,8 +29,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-// If we don't use `android.support.v7.app.AlertDialog` instead of `android.app.AlertDialog` then the dialog will be covered by the keyboard.
-import android.support.v7.app.AlertDialog;
 // We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <=22.
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.KeyEvent;

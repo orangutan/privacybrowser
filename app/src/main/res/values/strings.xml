@@ -185,6 +185,9 @@
 
     <!-- Domains. -->
     <string name="domains">Domains</string>
+    <string name="add_domain">Add Domain</string>
+    <string name="add">Add</string>
+    <string name="domain_name">Domain Name</string>
 
     <!-- Guide. -->
     <string name="privacy_browser_guide">Privacy Browser Guide</string>

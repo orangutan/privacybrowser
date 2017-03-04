@@ -42,8 +42,7 @@
         android:fullBackupContent="false"
         android:supportsRtl="true" >
 
-        <!-- If `android:name="android.webkit.WebView.MetricsOptOut"` is not `true` then `WebViews` will upload metrics to Google.
-            https://developer.android.com/reference/android/webkit/WebView.html -->
+        <!-- If `android:name="android.webkit.WebView.MetricsOptOut"` is not `true` then `WebViews` will upload metrics to Google.  <https://developer.android.com/reference/android/webkit/WebView.html> -->
         <meta-data
             android:name="android.webkit.WebView.MetricsOptOut"
             android:value="true" />
@@ -117,15 +116,13 @@
             android:persistableMode="persistNever"
             tools:ignore="UnusedAttribute" />
 
-        <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
-            `android:persistableMode="persistNever"` removes Privacy Browser from the recents screen on a device reboot.
+        <!-- `android:persistableMode="persistNever"` removes Privacy Browser from the recents screen on a device reboot.
             `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
             android:name=".activities.DomainsList"
             android:label="@string/domains"
             android:theme="@style/PrivacyBrowser.SecondaryActivity"
             android:parentActivityName=".activities.MainWebView"
-            android:configChanges="orientation|screenSize"
             android:screenOrientation="fullUser"
             android:persistableMode="persistNever"
             tools:ignore="UnusedAttribute" />

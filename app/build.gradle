@@ -51,14 +51,11 @@ android {
             applicationId "com.stoutner.privacybrowser.free"
         }
     }
-
-    // `return void` removes the lint error: `Not all execution paths return a value`.
-    return void
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:design:25.1.1'
+    compile 'com.android.support:design:25.2.0'
 
     // Only compile `com.google.firebase:firebase-ads:9.8.0` for the free flavor.
     freeCompile 'com.google.firebase:firebase-ads:9.8.0'

@@ -1,5 +1,5 @@
-/**
- * Copyright 2016 Soren Stoutner <soren@stoutner.com>.
+/*
+ * Copyright 2016-2017 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -20,14 +20,13 @@
 package com.stoutner.privacybrowser.dialogs;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-// `android.support.v7.app.AlertDialog` uses more of the horizontal screen real estate versus `android.app.AlertDialog's` smaller width.
-import android.support.v7.app.AlertDialog;
 // We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <=22.
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.KeyEvent;

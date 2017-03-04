@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2016-2017 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
@@ -28,6 +28,7 @@ import android.net.http.SslCertificate;
 import android.net.http.SslError;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+// We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <= 22.
 import android.support.v7.app.AppCompatDialogFragment;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;

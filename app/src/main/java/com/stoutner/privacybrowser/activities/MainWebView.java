@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015-2017 Soren Stoutner <soren@stoutner.com>.
  *
  * Download cookie code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.

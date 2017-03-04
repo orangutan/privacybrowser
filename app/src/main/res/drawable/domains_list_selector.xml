@@ -18,13 +18,9 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<!-- `android:dividerHeight` must be specified with `android:divider` or the height will be `0dp`.  In our case we want the height to be `0dp`. -->
-<ListView
-    android:id="@+id/domains_listview"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".activities.DomainsList"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:divider="@color/white"
-    android:dividerHeight="0dp" />
+<!-- This selector changes the background of activated items in the domains `RecyclerView`. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:state_activated="true"
+        android:drawable="@color/blue_100" />
+</selector>

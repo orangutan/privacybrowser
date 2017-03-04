@@ -1,5 +1,5 @@
-/**
- * Copyright 2016 Soren Stoutner <soren@stoutner.com>.
+/*
+ * Copyright 2016-2017 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -61,9 +61,8 @@ import com.stoutner.privacybrowser.dialogs.CreateBookmarkFolder;
 
 import java.io.ByteArrayOutputStream;
 
-public class Bookmarks extends AppCompatActivity implements CreateBookmark.CreateBookmarkListener,
-        CreateBookmarkFolder.CreateBookmarkFolderListener, EditBookmark.EditBookmarkListener,
-        EditBookmarkFolder.EditBookmarkFolderListener, MoveToFolder.MoveToFolderListener {
+public class Bookmarks extends AppCompatActivity implements CreateBookmark.CreateBookmarkListener, CreateBookmarkFolder.CreateBookmarkFolderListener, EditBookmark.EditBookmarkListener, EditBookmarkFolder.EditBookmarkFolderListener,
+        MoveToFolder.MoveToFolderListener {
 
     // `bookmarksDatabaseHelper` is public static so it can be accessed from `EditBookmark` and `MoveToFolder`.  It is also used in `onCreate()`,
     // `onCreateBookmarkCreate()`, `updateBookmarksListView()`, and `updateBookmarksListViewExcept()`.
@@ -111,12 +110,12 @@ public class Bookmarks extends AppCompatActivity implements CreateBookmark.Creat
         appBar.setDisplayHomeAsUpEnabled(true);
 
 
-        // Initialize the database handler and the ListView.  `this` specifies the context.  The two `null`s do not specify the database name or a `CursorFactory`.
-        // The `0` is to specify a database version, but that is set instead using a constant in `BookmarksDatabaseHelper`.
+        // Initialize the database handler and the `ListView`.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
+        // The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
         bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this, null, null, 0);
         bookmarksListView = (ListView) findViewById(R.id.bookmarks_listview);
 
-        // Set currentFolder to the home folder, which is null in the database.
+        // Set currentFolder to the home folder, which is `""` in the database.
         currentFolder = "";
 
         // Display the bookmarks in the ListView.
@@ -130,7 +129,7 @@ public class Bookmarks extends AppCompatActivity implements CreateBookmark.Creat
                 // Convert the id from long to int to match the format of the bookmarks database.
                 int databaseID = (int) id;
 
-                // Get the bookmark `Cursor` and move it to the first row.
+                // Get the bookmark `Cursor` for this ID and move it to the first row.
                 Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmarkCursor(databaseID);
                 bookmarkCursor.moveToFirst();
 
@@ -572,10 +571,12 @@ public class Bookmarks extends AppCompatActivity implements CreateBookmark.Creat
 
     @Override
     public void onCreateBookmark(AppCompatDialogFragment dialogFragment) {
-        // Get the `EditText`s from the `createBookmarkDialogFragment` and extract the strings.
+        // Get the `EditTexts` from the `dialogFragment`.
         EditText createBookmarkNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.create_bookmark_name_edittext);
-        String bookmarkNameString = createBookmarkNameEditText.getText().toString();
         EditText createBookmarkUrlEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.create_bookmark_url_edittext);
+
+        // Extract the strings from the `EditTexts`.
+        String bookmarkNameString = createBookmarkNameEditText.getText().toString();
         String bookmarkUrlString = createBookmarkUrlEditText.getText().toString();
 
         // Convert the favoriteIcon Bitmap to a byte array.
@@ -590,7 +591,7 @@ public class Bookmarks extends AppCompatActivity implements CreateBookmark.Creat
         // Create the bookmark.
         bookmarksDatabaseHelper.createBookmark(bookmarkNameString, bookmarkUrlString, newBookmarkDisplayOrder, currentFolder, favoriteIconByteArray);
 
-        // Refresh the ListView.  `setSelection` scrolls to the bottom of the list.
+        // Refresh the `ListView`.  `setSelection` scrolls to the bottom of the list.
         updateBookmarksListView(currentFolder);
         bookmarksListView.setSelection(newBookmarkDisplayOrder);
     }
@@ -782,7 +783,7 @@ public class Bookmarks extends AppCompatActivity implements CreateBookmark.Creat
         // Get a `Cursor` with the current contents of the bookmarks database.
         bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(folderName);
 
-        // Setup `bookmarksCursorAdapter` with `this` context.  `false` disables autoRequery.
+        // Setup `bookmarksCursorAdapter` with `this` context.  `false` disables `autoRequery`.
         CursorAdapter bookmarksCursorAdapter = new CursorAdapter(this, bookmarksCursor, false) {
             @Override
             public View newView(Context context, Cursor cursor, ViewGroup parent) {
@@ -868,7 +869,7 @@ public class Bookmarks extends AppCompatActivity implements CreateBookmark.Creat
             }
         };
 
-        // Update the ListView.
+        // Update the `ListView`.
         bookmarksListView.setAdapter(bookmarksCursorAdapter);
     }
 

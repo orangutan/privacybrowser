@@ -40,17 +40,19 @@
 
             <!-- android:theme="@style/PrivacyBrowser.DarkAppBar" makes the text and icons in the AppBar white. -->
             <android.support.v7.widget.Toolbar
+                android:id="@+id/domains_toolbar"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:background="@color/blue_700"
                 android:theme="@style/DarkAppBar"
                 app:popupTheme="@style/LightPopupOverlay" />
         </android.support.design.widget.AppBarLayout>
+
+        <include layout="@layout/domains_list" />
     </LinearLayout>
 
-    <include layout="@layout/domains_list" />
-
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_domain_fab"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_gravity="bottom|end"
