@@ -40,13 +40,13 @@ import com.stoutner.privacybrowser.R;
 
 import java.util.Locale;
 
-public class DownloadFile extends AppCompatDialogFragment {
+public class DownloadFileDialog extends AppCompatDialogFragment {
 
     private String downloadUrl;
     private String downloadFileName;
     private String fileSize;
 
-    public static DownloadFile fromUrl(String urlString, String contentDisposition, long contentLength) {
+    public static DownloadFileDialog fromUrl(String urlString, String contentDisposition, long contentLength) {
         // Create `argumentsBundle`.
         Bundle argumentsBundle = new Bundle();
 
@@ -69,8 +69,8 @@ public class DownloadFile extends AppCompatDialogFragment {
         argumentsBundle.putString("File_Name", fileNameString);
         argumentsBundle.putLong("File_Size", contentLength);
 
-        // Add `argumentsBundle` to this instance of `DownloadFile`.
-        DownloadFile thisDownloadFileDialog = new DownloadFile();
+        // Add `argumentsBundle` to this instance of `DownloadFileDialog`.
+        DownloadFileDialog thisDownloadFileDialog = new DownloadFileDialog();
         thisDownloadFileDialog.setArguments(argumentsBundle);
         return thisDownloadFileDialog;
     }
@@ -144,7 +144,7 @@ public class DownloadFile extends AppCompatDialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // trigger `onDownloadFile()` and return the `DialogFragment` and the download URL to the parent activity.
-                downloadFileListener.onDownloadFile(DownloadFile.this, downloadUrl);
+                downloadFileListener.onDownloadFile(DownloadFileDialog.this, downloadUrl);
             }
         });
 
@@ -177,7 +177,7 @@ public class DownloadFile extends AppCompatDialogFragment {
                 // If the event is an `ACTION_DOWN` on the `enter` key, initiate the download.
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     // trigger `onDownloadFile()` and return the `DialogFragment` and the URL to the parent activity.
-                    downloadFileListener.onDownloadFile(DownloadFile.this, downloadUrl);
+                    downloadFileListener.onDownloadFile(DownloadFileDialog.this, downloadUrl);
                     // Manually dismiss `alertDialog`.
                     alertDialog.dismiss();
                     // Consume the event.

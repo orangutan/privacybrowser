@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2016-2017 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
@@ -30,7 +30,7 @@ import android.support.v7.app.AlertDialog;
 import android.util.ArrayMap;
 import android.util.Log;
 
-import com.stoutner.privacybrowser.activities.MainWebView;
+import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.R;
 
 import java.lang.reflect.Field;
@@ -78,14 +78,14 @@ public class OrbotProxyHelper {
 
         if (proxyPort.equals("8118")) {  // Orbot proxy was turned on.
             // Set the `appBar` background to be light blue if Orbot proxy support is enabled.
-            MainWebView.appBar.setBackgroundDrawable(ContextCompat.getDrawable(privacyBrowserContext, R.color.blue_50));
+            MainWebViewActivity.appBar.setBackgroundDrawable(ContextCompat.getDrawable(privacyBrowserContext, R.color.blue_50));
 
             try {  // Check to see if Orbot is installed.
                 PackageManager packageManager = privacyBrowserContext.getPackageManager();
                 packageManager.getPackageInfo("org.torproject.android", PackageManager.GET_ACTIVITIES);
 
                 // Ask Orbot to connect if its current status is not "ON".
-                if (!MainWebView.orbotStatus.equals("ON")) {
+                if (!MainWebViewActivity.orbotStatus.equals("ON")) {
                     // Request Orbot to start.
                     Intent orbotIntent = new Intent("org.torproject.android.intent.action.START");
 
@@ -114,7 +114,7 @@ public class OrbotProxyHelper {
                 alertDialog.show();
             }
         } else {  // Otherwise set the default grey `appBar` background.
-            MainWebView.appBar.setBackgroundDrawable(ContextCompat.getDrawable(privacyBrowserContext, R.color.gray_100));
+            MainWebViewActivity.appBar.setBackgroundDrawable(ContextCompat.getDrawable(privacyBrowserContext, R.color.gray_100));
         }
     }
 }

@@ -45,12 +45,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.activities.Bookmarks;
+import com.stoutner.privacybrowser.activities.BookmarksActivity;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 
 import java.io.ByteArrayOutputStream;
 
-public class MoveToFolder extends AppCompatDialogFragment {
+public class MoveToFolderDialog extends AppCompatDialogFragment {
     // The public interface is used to send information back to the parent activity.
     public interface MoveToFolderListener {
         void onMoveToFolder(AppCompatDialogFragment dialogFragment);
@@ -97,7 +97,7 @@ public class MoveToFolder extends AppCompatDialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // Return the `DialogFragment` to the parent activity on save.
-                moveToFolderListener.onMoveToFolder(MoveToFolder.this);
+                moveToFolderListener.onMoveToFolder(MoveToFolderDialog.this);
             }
         });
 
@@ -112,20 +112,20 @@ public class MoveToFolder extends AppCompatDialogFragment {
         CursorAdapter foldersCursorAdapter;
 
         // Check to see if we are in the `Home Folder`.
-        if (Bookmarks.currentFolder.isEmpty()) {  // Don't display `Home Folder` at the top of the `ListView`.
+        if (BookmarksActivity.currentFolder.isEmpty()) {  // Don't display `Home Folder` at the top of the `ListView`.
             // Initialize `exceptFolders`.
             exceptFolders = "";
 
             // If a folder is selected, add it and all children to the list of folders not to display.
-            long[] selectedBookmarksLongArray = Bookmarks.checkedItemIds;
+            long[] selectedBookmarksLongArray = BookmarksActivity.checkedItemIds;
             for (long databaseIdLong : selectedBookmarksLongArray) {
                 // Get `databaseIdInt` for each selected bookmark.
                 int databaseIdInt = (int) databaseIdLong;
 
                 // If `databaseIdInt` is a folder.
-                if (Bookmarks.bookmarksDatabaseHelper.isFolder(databaseIdInt)) {
+                if (BookmarksActivity.bookmarksDatabaseHelper.isFolder(databaseIdInt)) {
                     // Get the name of the selected folder.
-                    String folderName = Bookmarks.bookmarksDatabaseHelper.getFolderName(databaseIdInt);
+                    String folderName = BookmarksActivity.bookmarksDatabaseHelper.getFolderName(databaseIdInt);
 
                     if (exceptFolders.isEmpty()){
                         // Add the selected folder to the list of folders not to display.
@@ -141,7 +141,7 @@ public class MoveToFolder extends AppCompatDialogFragment {
             }
 
             // Get a `Cursor` containing the folders to display.
-            foldersCursor = Bookmarks.bookmarksDatabaseHelper.getFoldersCursorExcept(exceptFolders);
+            foldersCursor = BookmarksActivity.bookmarksDatabaseHelper.getFoldersCursorExcept(exceptFolders);
 
             // Setup `foldersCursorAdaptor` with `this` context.  `false` disables autoRequery.
             foldersCursorAdapter = new CursorAdapter(alertDialog.getContext(), foldersCursor, false) {
@@ -184,18 +184,18 @@ public class MoveToFolder extends AppCompatDialogFragment {
             homeFolderMatrixCursor.addRow(new Object[]{0, getString(R.string.home_folder), homeFolderIconByteArray});
 
             // Add the parent folder to the list of folders not to display.
-            exceptFolders = DatabaseUtils.sqlEscapeString(Bookmarks.currentFolder);
+            exceptFolders = DatabaseUtils.sqlEscapeString(BookmarksActivity.currentFolder);
 
             // If a folder is selected, add it and all children to the list of folders not to display.
-            long[] selectedBookmarksLongArray = Bookmarks.checkedItemIds;
+            long[] selectedBookmarksLongArray = BookmarksActivity.checkedItemIds;
             for (long databaseIdLong : selectedBookmarksLongArray) {
                 // Get `databaseIdInt` for each selected bookmark.
                 int databaseIdInt = (int) databaseIdLong;
 
                 // If `databaseIdInt` is a folder.
-                if (Bookmarks.bookmarksDatabaseHelper.isFolder(databaseIdInt)) {
+                if (BookmarksActivity.bookmarksDatabaseHelper.isFolder(databaseIdInt)) {
                     // Get the name of the selected folder.
-                    String folderName = Bookmarks.bookmarksDatabaseHelper.getFolderName(databaseIdInt);
+                    String folderName = BookmarksActivity.bookmarksDatabaseHelper.getFolderName(databaseIdInt);
 
                     // Add the selected folder to the end of the list of folders not to display.
                     exceptFolders = exceptFolders + "," + DatabaseUtils.sqlEscapeString(folderName);
@@ -206,7 +206,7 @@ public class MoveToFolder extends AppCompatDialogFragment {
             }
 
             // Get a `foldersCursor`.
-            foldersCursor = Bookmarks.bookmarksDatabaseHelper.getFoldersCursorExcept(exceptFolders);
+            foldersCursor = BookmarksActivity.bookmarksDatabaseHelper.getFoldersCursorExcept(exceptFolders);
 
             // Combine `homeFolderMatrixCursor` and `foldersCursor`.
             MergeCursor foldersMergeCursor = new MergeCursor(new Cursor[]{homeFolderMatrixCursor, foldersCursor});
@@ -249,7 +249,7 @@ public class MoveToFolder extends AppCompatDialogFragment {
 
     private void addSubfoldersToExceptFolders(String folderName) {
         // Get a `Cursor` will all the immediate subfolders.
-        Cursor subfoldersCursor = Bookmarks.bookmarksDatabaseHelper.getSubfoldersCursor(folderName);
+        Cursor subfoldersCursor = BookmarksActivity.bookmarksDatabaseHelper.getSubfoldersCursor(folderName);
 
         for (int i = 0; i < subfoldersCursor.getCount(); i++) {
             // Move `subfolderCursor` to the current item.

@@ -90,13 +90,13 @@ import android.widget.TextView;
 import com.stoutner.privacybrowser.BannerAd;
 import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.dialogs.CreateHomeScreenShortcutDialog;
+import com.stoutner.privacybrowser.dialogs.DownloadImageDialog;
+import com.stoutner.privacybrowser.dialogs.UrlHistoryDialog;
+import com.stoutner.privacybrowser.dialogs.ViewSslCertificateDialog;
 import com.stoutner.privacybrowser.helpers.OrbotProxyHelper;
-import com.stoutner.privacybrowser.dialogs.CreateHomeScreenShortcut;
-import com.stoutner.privacybrowser.dialogs.DownloadFile;
-import com.stoutner.privacybrowser.dialogs.DownloadImage;
-import com.stoutner.privacybrowser.dialogs.SslCertificateError;
-import com.stoutner.privacybrowser.dialogs.UrlHistory;
-import com.stoutner.privacybrowser.dialogs.ViewSslCertificate;
+import com.stoutner.privacybrowser.dialogs.DownloadFileDialog;
+import com.stoutner.privacybrowser.dialogs.SslCertificateErrorDialog;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -112,22 +112,22 @@ import java.util.Map;
 import java.util.Set;
 
 // We need to use AppCompatActivity from android.support.v7.app.AppCompatActivity to have access to the SupportActionBar until the minimum API is >= 21.
-public class MainWebView extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CreateHomeScreenShortcut.CreateHomeScreenSchortcutListener,
-        SslCertificateError.SslCertificateErrorListener, DownloadFile.DownloadFileListener, DownloadImage.DownloadImageListener, UrlHistory.UrlHistoryListener {
+public class MainWebViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CreateHomeScreenShortcutDialog.CreateHomeScreenSchortcutListener,
+        SslCertificateErrorDialog.SslCertificateErrorListener, DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, UrlHistoryDialog.UrlHistoryListener {
 
     // `appBar` is public static so it can be accessed from `OrbotProxyHelper`.
     // It is also used in `onCreate()`, `onOptionsItemSelected()`, `closeFindOnPage()`, and `applySettings()`.
     public static ActionBar appBar;
 
-    // `favoriteIcon` is public static so it can be accessed from `CreateHomeScreenShortcut`, `Bookmarks`, `CreateBookmark`, `CreateBookmarkFolder`, and `EditBookmark`.
+    // `favoriteIcon` is public static so it can be accessed from `CreateHomeScreenShortcutDialog`, `BookmarksActivity`, `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, and `EditBookmarkDialog`.
     // It is also used in `onCreate()` and `onCreateHomeScreenShortcutCreate()`.
     public static Bitmap favoriteIcon;
 
-    // `formattedUrlString` is public static so it can be accessed from `Bookmarks`.
+    // `formattedUrlString` is public static so it can be accessed from `BookmarksActivity`.
     // It is also used in `onCreate()`, `onOptionsItemSelected()`, `onCreateHomeScreenShortcutCreate()`, and `loadUrlFromTextBox()`.
     public static String formattedUrlString;
 
-    // `sslCertificate` is public static so it can be accessed from `ViewSslCertificate`.  It is also used in `onCreate()`.
+    // `sslCertificate` is public static so it can be accessed from `ViewSslCertificateDialog`.  It is also used in `onCreate()`.
     public static SslCertificate sslCertificate;
 
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`.
@@ -633,7 +633,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                         urlTextBox.setText(formattedUrlString);
                     }
 
-                    // Store the SSL certificate so it can be accessed from `ViewSslCertificate`.
+                    // Store the SSL certificate so it can be accessed from `ViewSslCertificateDialog`.
                     sslCertificate = mainWebView.getCertificate();
                 }
             }
@@ -645,7 +645,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                 sslErrorHandler = handler;
 
                 // Display the SSL error `AlertDialog`.
-                AppCompatDialogFragment sslCertificateErrorDialogFragment = SslCertificateError.displayDialog(error);
+                AppCompatDialogFragment sslCertificateErrorDialogFragment = SslCertificateErrorDialog.displayDialog(error);
                 sslCertificateErrorDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.ssl_certificate_error));
             }
         });
@@ -735,8 +735,8 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         mainWebView.setDownloadListener(new DownloadListener() {
             @Override
             public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
-                // Show the `DownloadFile` `AlertDialog` and name this instance `@string/download`.
-                AppCompatDialogFragment downloadFileDialogFragment = DownloadFile.fromUrl(url, contentDisposition, contentLength);
+                // Show the `DownloadFileDialog` `AlertDialog` and name this instance `@string/download`.
+                AppCompatDialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(url, contentDisposition, contentLength);
                 downloadFileDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.download));
             }
         });
@@ -756,13 +756,15 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
         // Initialize the default preference values the first time the program is run.  `this` is the context.  `false` keeps this command from resetting any current preferences back to default.
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
-        // Get the intent information that started the app.
-        final Intent intent = getIntent();
+        // Get the intent that started the app.
+        final Intent launchingIntent = getIntent();
 
-        if (intent.getData() != null) {
-            // Get the intent data and convert it to a string.
-            final Uri intentUriData = intent.getData();
-            formattedUrlString = intentUriData.toString();
+        // Extract the launching intent data as `launchingIntentUriData`.
+        final Uri launchingIntentUriData = launchingIntent.getData();
+
+        // Convert the launching intent URI data (if it exists) to a string and store it in `formattedUrlString`.
+        if (launchingIntentUriData != null) {
+            formattedUrlString = launchingIntentUriData.toString();
         }
 
         // Initialize `inFullScreenBrowsingMode`, which is always false at this point because Privacy Browser never starts in full screen browsing mode.
@@ -1153,11 +1155,11 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                 return true;
 
             case R.id.addToHomescreen:
-                // Show the `CreateHomeScreenShortcut` `AlertDialog` and name this instance `R.string.create_shortcut`.
-                AppCompatDialogFragment createHomeScreenShortcutDialogFragment = new CreateHomeScreenShortcut();
+                // Show the `CreateHomeScreenShortcutDialog` `AlertDialog` and name this instance `R.string.create_shortcut`.
+                AppCompatDialogFragment createHomeScreenShortcutDialogFragment = new CreateHomeScreenShortcutDialog();
                 createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.create_shortcut));
 
-                //Everything else will be handled by `CreateHomeScreenShortcut` and the associated listener below.
+                //Everything else will be handled by `CreateHomeScreenShortcutDialog` and the associated listener below.
                 return true;
 
             case R.id.print:
@@ -1208,14 +1210,14 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                 // Gte the `WebBackForwardList`.
                 WebBackForwardList webBackForwardList = mainWebView.copyBackForwardList();
 
-                // Show the `UrlHistory` `AlertDialog` and name this instance `R.string.history`.  `this` is the `Context`.
-                AppCompatDialogFragment urlHistoryDialogFragment = UrlHistory.loadBackForwardList(this, webBackForwardList);
+                // Show the `UrlHistoryDialog` `AlertDialog` and name this instance `R.string.history`.  `this` is the `Context`.
+                AppCompatDialogFragment urlHistoryDialogFragment = UrlHistoryDialog.loadBackForwardList(this, webBackForwardList);
                 urlHistoryDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.history));
                 break;
 
             case R.id.bookmarks:
-                // Launch Bookmarks.
-                Intent bookmarksIntent = new Intent(this, Bookmarks.class);
+                // Launch BookmarksActivity.
+                Intent bookmarksIntent = new Intent(this, BookmarksActivity.class);
                 startActivity(bookmarksIntent);
                 break;
 
@@ -1230,26 +1232,26 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                 break;
 
             case R.id.settings:
-                // Launch `Settings`.
-                Intent settingsIntent = new Intent(this, Settings.class);
+                // Launch `SettingsActivity`.
+                Intent settingsIntent = new Intent(this, SettingsActivity.class);
                 startActivity(settingsIntent);
                 break;
 
             case R.id.domains:
-                // Launch `DomainsList`.
-                Intent domainsIntent = new Intent(this, DomainsList.class);
+                // Launch `DomainsActivity`.
+                Intent domainsIntent = new Intent(this, DomainsActivity.class);
                 startActivity(domainsIntent);
                 break;
 
             case R.id.guide:
-                // Launch `Guide`.
-                Intent guideIntent = new Intent(this, Guide.class);
+                // Launch `GuideActivity`.
+                Intent guideIntent = new Intent(this, GuideActivity.class);
                 startActivity(guideIntent);
                 break;
 
             case R.id.about:
-                // Launch `About`.
-                Intent aboutIntent = new Intent(this, About.class);
+                // Launch `AboutActivity`.
+                Intent aboutIntent = new Intent(this, AboutActivity.class);
                 startActivity(aboutIntent);
                 break;
 
@@ -1455,8 +1457,8 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                 menu.add(R.string.download_image).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        // Show the `DownloadImage` `AlertDialog` and name this instance `@string/download`.
-                        AppCompatDialogFragment downloadImageDialogFragment = DownloadImage.imageUrl(imageUrl);
+                        // Show the `DownloadImageDialog` `AlertDialog` and name this instance `@string/download`.
+                        AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
                         downloadImageDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.download));
                         return false;
                     }
@@ -1501,8 +1503,8 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
                 menu.add(R.string.download_image).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        // Show the `DownloadImage` `AlertDialog` and name this instance `@string/download`.
-                        AppCompatDialogFragment downloadImageDialogFragment = DownloadImage.imageUrl(imageUrl);
+                        // Show the `DownloadImageDialog` `AlertDialog` and name this instance `@string/download`.
+                        AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
                         downloadImageDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.download));
                         return false;
                     }
@@ -1640,8 +1642,8 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
     }
 
     public void viewSslCertificate(View view) {
-        // Show the `ViewSslCertificate` `AlertDialog` and name this instance `@string/view_ssl_certificate`.
-        DialogFragment viewSslCertificateDialogFragment = new ViewSslCertificate();
+        // Show the `ViewSslCertificateDialog` `AlertDialog` and name this instance `@string/view_ssl_certificate`.
+        DialogFragment viewSslCertificateDialogFragment = new ViewSslCertificateDialog();
         viewSslCertificateDialogFragment.show(getFragmentManager(), getResources().getString(R.string.view_ssl_certificate));
     }
 
@@ -1720,7 +1722,7 @@ public class MainWebView extends AppCompatActivity implements NavigationView.OnN
     public void onRestart() {
         super.onRestart();
 
-        // Apply the settings from shared preferences, which might have been changed in `Settings`.
+        // Apply the settings from shared preferences, which might have been changed in `SettingsActivity`.
         applySettings();
 
         // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.

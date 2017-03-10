@@ -26,7 +26,7 @@
     <string name="privacy_browser_settings">Configuración de Navegador Privado</string>
     <string name="android_asset_path">es</string>  <!-- For translations, this should be the localization abbreviation. -->
 
-    <!-- MainWebView. -->
+    <!-- MainWebViewActivity. -->
     <string name="privacy_mode">Modo Privado</string>
     <string name="javascript_enabled">Javascript habilitado</string>
     <string name="javascript_disabled">Javascript deshabilitado</string>
@@ -83,7 +83,7 @@
     <string name="url">URL</string>
     <string name="url_label">URL:</string>
 
-    <!-- MainWebView Navigation Drawer. -->
+    <!-- MainWebViewActivity Navigation Drawer. -->
     <string name="navigation_drawer">Caja de navegación</string>
     <string name="navigation">Navegación</string>
     <string name="home">Inicio</string>
@@ -98,7 +98,7 @@
     <string name="about">Acerca de</string>
     <string name="clear_and_exit">Eliminar y salir</string>
 
-    <!-- MainWebView Options Menu. -->
+    <!-- MainWebViewActivity Options Menu. -->
     <string name="javascript">Javascript</string>
     <string name="first_party_cookies">Cookies de primera parte</string>
     <string name="third_party_cookies">Cookies de terceras partes</string>

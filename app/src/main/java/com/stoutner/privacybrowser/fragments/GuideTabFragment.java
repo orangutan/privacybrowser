@@ -1,5 +1,5 @@
-/**
- * Copyright 2016 Soren Stoutner <soren@stoutner.com>.
+/*
+ * Copyright 2016-2017 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -28,15 +28,16 @@ import android.webkit.WebView;
 
 import com.stoutner.privacybrowser.R;
 
-public class GuideTab extends Fragment {
+public class GuideTabFragment extends Fragment {
+    // `tabNumber` is used in `onCreate()` and `onCreateView()`.
     private int tabNumber;
 
-    // GuideTab.createTab stores the tab number in the bundle arguments so it can be referenced from onCreate().
-    public static GuideTab createTab (int tab) {
+    // GuideTabFragment.createTab stores the tab number in the bundle arguments so it can be referenced from onCreate().
+    public static GuideTabFragment createTab (int tab) {
         Bundle thisTabArguments = new Bundle();
         thisTabArguments.putInt("Tab", tab);
 
-        GuideTab thisTab = new GuideTab();
+        GuideTabFragment thisTab = new GuideTabFragment();
         thisTab.setArguments(thisTabArguments);
         return thisTab;
     }
@@ -45,7 +46,7 @@ public class GuideTab extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Store the tab number in tabNumber.
+        // Store the tab number in `tabNumber`.
         tabNumber = getArguments().getInt("Tab");
     }
 

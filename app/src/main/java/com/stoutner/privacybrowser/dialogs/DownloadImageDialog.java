@@ -39,12 +39,12 @@ import com.stoutner.privacybrowser.R;
 
 // `android.support.v7.app.AlertDialog` uses more of the horizontal screen real estate versus `android.app.AlertDialog's` smaller width.
 // We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <=22.
-public class DownloadImage extends AppCompatDialogFragment {
+public class DownloadImageDialog extends AppCompatDialogFragment {
 
     private String imageUrl;
     private String imageFileName;
 
-    public static DownloadImage imageUrl(String imageUrlString) {
+    public static DownloadImageDialog imageUrl(String imageUrlString) {
         // Create `argumentsBundle`.
         Bundle argumentsBundle = new Bundle();
 
@@ -57,8 +57,8 @@ public class DownloadImage extends AppCompatDialogFragment {
         argumentsBundle.putString("URL", imageUrlString);
         argumentsBundle.putString("Image_Name", imageNameString);
 
-        // Add `argumentsBundle` to this instance of `DownloadFile`.
-        DownloadImage thisDownloadFileDialog = new DownloadImage();
+        // Add `argumentsBundle` to this instance of `DownloadFileDialog`.
+        DownloadImageDialog thisDownloadFileDialog = new DownloadImageDialog();
         thisDownloadFileDialog.setArguments(argumentsBundle);
         return thisDownloadFileDialog;
     }
@@ -118,7 +118,7 @@ public class DownloadImage extends AppCompatDialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // trigger `onDownloadFile()` and return the `DialogFragment` and the download URL to the parent activity.
-                downloadImageListener.onDownloadImage(DownloadImage.this, imageUrl);
+                downloadImageListener.onDownloadImage(DownloadImageDialog.this, imageUrl);
             }
         });
 
@@ -147,7 +147,7 @@ public class DownloadImage extends AppCompatDialogFragment {
                 // If the event is an `ACTION_DOWN` on the `enter` key, initiate the download.
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     // trigger `onDownloadImage()` and return the `DialogFragment` and the URL to the parent activity.
-                    downloadImageListener.onDownloadImage(DownloadImage.this, imageUrl);
+                    downloadImageListener.onDownloadImage(DownloadImageDialog.this, imageUrl);
                     // Manually dismiss `alertDialog`.
                     alertDialog.dismiss();
                     // Consume the event.

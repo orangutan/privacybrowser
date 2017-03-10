@@ -34,10 +34,10 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.stoutner.privacybrowser.activities.MainWebView;
+import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.R;
 
-public class CreateBookmarkFolder extends AppCompatDialogFragment {
+public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
     // The public interface is used to send information back to the parent activity.
     public interface CreateBookmarkFolderListener {
         void onCreateBookmarkFolder(AppCompatDialogFragment dialogFragment);
@@ -81,7 +81,7 @@ public class CreateBookmarkFolder extends AppCompatDialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // Return the `DialogFragment` to the parent activity on create.
-                createBookmarkFolderListener.onCreateBookmarkFolder(CreateBookmarkFolder.this);
+                createBookmarkFolderListener.onCreateBookmarkFolder(CreateBookmarkFolderDialog.this);
             }
         });
 
@@ -106,7 +106,7 @@ public class CreateBookmarkFolder extends AppCompatDialogFragment {
                 // If the event is a key-down on the `enter` key, select the `PositiveButton` `Create`.
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     // Trigger `createBookmarkFolderListener` and return the `DialogFragment` to the parent activity.
-                    createBookmarkFolderListener.onCreateBookmarkFolder(CreateBookmarkFolder.this);
+                    createBookmarkFolderListener.onCreateBookmarkFolder(CreateBookmarkFolderDialog.this);
                     // Manually dismiss the `AlertDialog`.
                     alertDialog.dismiss();
                     // Consume the event.
@@ -120,7 +120,7 @@ public class CreateBookmarkFolder extends AppCompatDialogFragment {
         // Display the current favorite icon.
         ImageView webPageIconImageView = (ImageView) alertDialog.findViewById(R.id.create_folder_web_page_icon);
         assert webPageIconImageView != null;  // Remove the warning that `webPageIconImageView` may be null.
-        webPageIconImageView.setImageBitmap(MainWebView.favoriteIcon);
+        webPageIconImageView.setImageBitmap(MainWebViewActivity.favoriteIcon);
 
         // `onCreateDialog()` requires the return of an `AlertDialog`.
         return alertDialog;

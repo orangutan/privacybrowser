@@ -1,5 +1,5 @@
-/**
- * Copyright 2016 Soren Stoutner <soren@stoutner.com>.
+/*
+ * Copyright 2016-2017 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -29,10 +29,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.stoutner.privacybrowser.fragments.AboutTab;
+import com.stoutner.privacybrowser.fragments.AboutTabFragment;
 import com.stoutner.privacybrowser.R;
 
-public class About extends AppCompatActivity {
+public class AboutActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +56,7 @@ public class About extends AppCompatActivity {
         aboutTabLayout.setupWithViewPager(aboutViewPager);
     }
 
-    public class aboutPagerAdapter extends FragmentPagerAdapter {
+    private class aboutPagerAdapter extends FragmentPagerAdapter {
         private aboutPagerAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -100,7 +100,7 @@ public class About extends AppCompatActivity {
         @Override
         // Setup each tab.
         public Fragment getItem(int tab) {
-            return AboutTab.createTab(tab);
+            return AboutTabFragment.createTab(tab);
         }
     }
 }

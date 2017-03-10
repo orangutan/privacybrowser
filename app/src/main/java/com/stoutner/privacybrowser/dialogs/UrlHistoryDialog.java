@@ -47,13 +47,13 @@ import com.stoutner.privacybrowser.definitions.History;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
-public class UrlHistory extends AppCompatDialogFragment{
+public class UrlHistoryDialog extends AppCompatDialogFragment{
 
     // `historyArrayList`  and `currentPageId` pass information from `onCreate()` to `onCreateDialog()`.
     private ArrayList<History> historyArrayList = new ArrayList<>();
     private int currentPageId;
 
-    public static UrlHistory loadBackForwardList(Context context, WebBackForwardList webBackForwardList) {
+    public static UrlHistoryDialog loadBackForwardList(Context context, WebBackForwardList webBackForwardList) {
         // Create `argumentsBundle`.
         Bundle argumentsBundle = new Bundle();
 
@@ -110,8 +110,8 @@ public class UrlHistory extends AppCompatDialogFragment{
         argumentsBundle.putStringArrayList("URL_History", urlArrayList);
         argumentsBundle.putStringArrayList("Favorite_Icons", iconBase64StringArrayList);
 
-        // Add `argumentsBundle` to this instance of `UrlHistory`.
-        UrlHistory thisUrlHistoryDialog = new UrlHistory();
+        // Add `argumentsBundle` to this instance of `UrlHistoryDialog`.
+        UrlHistoryDialog thisUrlHistoryDialog = new UrlHistoryDialog();
         thisUrlHistoryDialog.setArguments(argumentsBundle);
         return thisUrlHistoryDialog;
     }

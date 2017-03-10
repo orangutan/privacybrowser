@@ -36,10 +36,10 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 
-import com.stoutner.privacybrowser.activities.MainWebView;
+import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.R;
 
-public class CreateHomeScreenShortcut extends AppCompatDialogFragment {
+public class CreateHomeScreenShortcutDialog extends AppCompatDialogFragment {
     // The public interface is used to send information back to the parent activity.
     public interface CreateHomeScreenSchortcutListener {
         void onCreateHomeScreenShortcut(AppCompatDialogFragment dialogFragment);
@@ -67,7 +67,7 @@ public class CreateHomeScreenShortcut extends AppCompatDialogFragment {
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
 
         // Create a drawable version of the favorite icon.
-        Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), MainWebView.favoriteIcon);
+        Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), MainWebViewActivity.favoriteIcon);
 
         // Use `AlertDialog.Builder` to create the `AlertDialog`.  `R.style.LightAlertDialog` formats the color of the button text.
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.LightAlertDialog);
@@ -88,7 +88,7 @@ public class CreateHomeScreenShortcut extends AppCompatDialogFragment {
         dialogBuilder.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                createHomeScreenShortcutListener.onCreateHomeScreenShortcut(CreateHomeScreenShortcut.this);
+                createHomeScreenShortcutListener.onCreateHomeScreenShortcut(CreateHomeScreenShortcutDialog.this);
             }
         });
 
@@ -113,7 +113,7 @@ public class CreateHomeScreenShortcut extends AppCompatDialogFragment {
                 // If the event is a key-down on the "enter" button, select the PositiveButton "Create".
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     // Trigger the create listener.
-                    createHomeScreenShortcutListener.onCreateHomeScreenShortcut(CreateHomeScreenShortcut.this);
+                    createHomeScreenShortcutListener.onCreateHomeScreenShortcut(CreateHomeScreenShortcutDialog.this);
 
                     // Manually dismiss `alertDialog`.
                     alertDialog.dismiss();

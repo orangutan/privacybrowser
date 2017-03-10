@@ -1,5 +1,5 @@
-/**
- * Copyright 2016 Soren Stoutner <soren@stoutner.com>.
+/*
+ * Copyright 2016-2017 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -29,22 +29,22 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.stoutner.privacybrowser.fragments.GuideTab;
+import com.stoutner.privacybrowser.fragments.GuideTabFragment;
 import com.stoutner.privacybrowser.R;
 
-public class Guide extends AppCompatActivity {
+public class GuideActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.guide_coordinatorlayout);
 
-        // We need to use the SupportActionBar from android.support.v7.app.ActionBar until the minimum API is >= 21.
+        // We need to use `SupportActionBar` from `android.support.v7.app.ActionBar` until the minimum API is >= 21.
         Toolbar guideAppBar = (Toolbar) findViewById(R.id.guide_toolbar);
         setSupportActionBar(guideAppBar);
 
-        // Display the home arrow on supportAppBar.
+        // Display the home arrow on `ppBar`.
         final ActionBar appBar = getSupportActionBar();
-        assert appBar != null;// This assert removes the incorrect warning in Android Studio on the following line that appBar might be null.
+        assert appBar != null;  // This assert removes the incorrect lint warning in Android Studio on the following line that `appBar` might be `null`.
         appBar.setDisplayHomeAsUpEnabled(true);
 
         //  Setup the ViewPager.
@@ -58,7 +58,7 @@ public class Guide extends AppCompatActivity {
         aboutTabLayout.setupWithViewPager(aboutViewPager);
     }
 
-    public class guidePagerAdapter extends FragmentPagerAdapter {
+    private class guidePagerAdapter extends FragmentPagerAdapter {
         private guidePagerAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -105,7 +105,7 @@ public class Guide extends AppCompatActivity {
         @Override
         // Setup each tab.
         public Fragment getItem(int tab) {
-            return GuideTab.createTab(tab);
+            return GuideTabFragment.createTab(tab);
         }
     }
 

@@ -185,6 +185,7 @@
 
     <!-- Domains. -->
     <string name="domains">Domains</string>
+    <string name="domain_settings">Domain Settings</string>
     <string name="add_domain">Add Domain</string>
     <string name="add">Add</string>
     <string name="domain_name">Domain Name</string>

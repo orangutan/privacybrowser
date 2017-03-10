@@ -37,12 +37,12 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.stoutner.privacybrowser.activities.MainWebView;
+import com.stoutner.privacybrowser.activities.BookmarksActivity;
+import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.activities.Bookmarks;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 
-public class EditBookmarkFolder extends AppCompatDialogFragment {
+public class EditBookmarkFolderDialog extends AppCompatDialogFragment {
     // The public interface is used to send information back to the parent activity.
     public interface EditBookmarkFolderListener {
         void onSaveEditBookmarkFolder(AppCompatDialogFragment dialogFragment);
@@ -68,11 +68,11 @@ public class EditBookmarkFolder extends AppCompatDialogFragment {
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Get a long array with the the databaseId of the selected bookmark and convert it to an `int`.
-        long[] selectedBookmarkLongArray = Bookmarks.checkedItemIds;
+        long[] selectedBookmarkLongArray = BookmarksActivity.checkedItemIds;
         int selectedBookmarkDatabaseId = (int) selectedBookmarkLongArray[0];
 
         // Get a `Cursor` with the specified bookmark and move it to the first position.
-        Cursor bookmarkCursor = Bookmarks.bookmarksDatabaseHelper.getBookmarkCursor(selectedBookmarkDatabaseId);
+        Cursor bookmarkCursor = BookmarksActivity.bookmarksDatabaseHelper.getBookmarkCursor(selectedBookmarkDatabaseId);
         bookmarkCursor.moveToFirst();
 
         // Use `AlertDialog.Builder` to create the `AlertDialog`.  The style formats the color of the button text.
@@ -94,7 +94,7 @@ public class EditBookmarkFolder extends AppCompatDialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // Return the `DialogFragment` to the parent activity on save.
-                editBookmarkFolderListener.onSaveEditBookmarkFolder(EditBookmarkFolder.this);
+                editBookmarkFolderListener.onSaveEditBookmarkFolder(EditBookmarkFolderDialog.this);
             }
         });
 
@@ -120,10 +120,10 @@ public class EditBookmarkFolder extends AppCompatDialogFragment {
         assert currentIconImageView != null;  // Remove the warning below that `currentIconImageView` might be null.
         currentIconImageView.setImageBitmap(currentIconBitmap);
 
-        // Get a `Bitmap` of the favorite icon from `MainWebView` and display it in `edit_folder_web_page_favorite_icon`.
+        // Get a `Bitmap` of the favorite icon from `MainWebViewActivity` and display it in `edit_folder_web_page_favorite_icon`.
         ImageView webPageFavoriteIconImageView = (ImageView) alertDialog.findViewById(R.id.edit_folder_web_page_favorite_icon);
         assert webPageFavoriteIconImageView != null;  // Remove the warning below that `webPageFavoriteIcon` might be null.
-        webPageFavoriteIconImageView.setImageBitmap(MainWebView.favoriteIcon);
+        webPageFavoriteIconImageView.setImageBitmap(MainWebViewActivity.favoriteIcon);
 
         // Load the text for `edit_folder_name_edittext`.
         EditText folderNameEditText = (EditText) alertDialog.findViewById(R.id.edit_folder_name_edittext);
@@ -136,7 +136,7 @@ public class EditBookmarkFolder extends AppCompatDialogFragment {
                 // If the event is a key-down on the "enter" button, select the PositiveButton `Save`.
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     // Trigger `editBookmarkListener` and return the DialogFragment to the parent activity.
-                    editBookmarkFolderListener.onSaveEditBookmarkFolder(EditBookmarkFolder.this);
+                    editBookmarkFolderListener.onSaveEditBookmarkFolder(EditBookmarkFolderDialog.this);
                     // Manually dismiss the `AlertDialog`.
                     alertDialog.dismiss();
                     // Consume the event.

@@ -1,5 +1,5 @@
-/**
- * Copyright 2016 Soren Stoutner <soren@stoutner.com>.
+/*
+ * Copyright 2016-2017 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -34,15 +34,15 @@ import android.widget.TextView;
 import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.R;
 
-public class AboutTab extends Fragment {
+public class AboutTabFragment extends Fragment {
     private int tabNumber;
 
-    // AboutTab.createTab stores the tab number in the bundle arguments so it can be referenced from onCreate().
-    public static AboutTab createTab(int tab) {
+    // AboutTabFragment.createTab stores the tab number in the bundle arguments so it can be referenced from onCreate().
+    public static AboutTabFragment createTab(int tab) {
         Bundle thisTabArguments = new Bundle();
         thisTabArguments.putInt("Tab", tab);
 
-        AboutTab thisTab = new AboutTab();
+        AboutTabFragment thisTab = new AboutTabFragment();
         thisTab.setArguments(thisTabArguments);
         return thisTab;
     }

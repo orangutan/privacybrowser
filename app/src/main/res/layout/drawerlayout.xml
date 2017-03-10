@@ -31,7 +31,7 @@
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/root_coordinatorlayout"
         xmlns:tools="http://schemas.android.com/tools"
-        tools:context="com.stoutner.privacybrowser.activities.MainWebView"
+        tools:context="com.stoutner.privacybrowser.activities.MainWebViewActivity"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:fitsSystemWindows="true"

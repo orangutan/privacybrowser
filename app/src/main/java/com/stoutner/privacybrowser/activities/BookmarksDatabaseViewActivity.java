@@ -39,7 +39,7 @@ import android.widget.TextView;
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 
-public class BookmarksDatabaseView extends AppCompatActivity {
+public class BookmarksDatabaseViewActivity extends AppCompatActivity {
     // `bookmarksDatabaseHelper` is used in `onCreate()` and `updateBookmarksListView()`.
     private BookmarksDatabaseHelper bookmarksDatabaseHelper;
 

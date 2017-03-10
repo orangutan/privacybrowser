@@ -41,7 +41,7 @@ import com.stoutner.privacybrowser.R;
 import java.text.DateFormat;
 import java.util.Date;
 
-public class SslCertificateError extends AppCompatDialogFragment {
+public class SslCertificateErrorDialog extends AppCompatDialogFragment {
 
     private String primaryError;
     private String urlWithError;
@@ -54,7 +54,7 @@ public class SslCertificateError extends AppCompatDialogFragment {
     private String startDate;
     private String endDate;
 
-    public static SslCertificateError displayDialog(SslError error) {
+    public static SslCertificateErrorDialog displayDialog(SslError error) {
         // Get the various components of the SSL error message.
         int primaryErrorIntForBundle = error.getPrimaryError();
         String urlWithErrorForBundle = error.getUrl();
@@ -81,8 +81,8 @@ public class SslCertificateError extends AppCompatDialogFragment {
         argumentsBundle.putString("StartDate", DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(startDateForBundle));
         argumentsBundle.putString("EndDate", DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(endDateForBundle));
 
-        // Add `argumentsBundle` to this instance of `SslCertificateError`.
-        SslCertificateError thisSslCertificateErrorDialog = new SslCertificateError();
+        // Add `argumentsBundle` to this instance of `SslCertificateErrorDialog`.
+        SslCertificateErrorDialog thisSslCertificateErrorDialog = new SslCertificateErrorDialog();
         thisSslCertificateErrorDialog.setArguments(argumentsBundle);
         return thisSslCertificateErrorDialog;
     }

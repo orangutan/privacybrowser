@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:text="@string/domain_name"
-            android:labelFor="@id/domain_name_details_edittext"/>
+            android:labelFor="@+id/domain_settings_name_edittext"/>
     </LinearLayout>
 
     <!-- Data `LinearLayout`. -->
@@ -45,7 +45,7 @@
 
         <!-- `android:inputType="textUri"` disables spell check in the `EditText`. -->
         <EditText
-            android:id="@+id/domain_name_details_edittext"
+            android:id="@id/domain_settings_name_edittext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="textUri" />

@@ -33,7 +33,7 @@ import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.widget.TextView;
 
-import com.stoutner.privacybrowser.activities.MainWebView;
+import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.R;
 
 import java.text.DateFormat;
@@ -41,13 +41,13 @@ import java.util.Date;
 
 // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
 @SuppressLint("InflateParams")
-public class ViewSslCertificate extends DialogFragment {
+public class ViewSslCertificateDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Get the activity's layout inflater.
         LayoutInflater layoutInflater   = getActivity().getLayoutInflater();
 
         // Create a drawable version of the favorite icon.
-        Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), MainWebView.favoriteIcon);
+        Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), MainWebViewActivity.favoriteIcon);
 
         // Use `AlertDialog.Builder` to create the `AlertDialog`.  `R.style.LightAlertDialog` formats the color of the button text.
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.LightAlertDialog);
@@ -57,7 +57,7 @@ public class ViewSslCertificate extends DialogFragment {
         dialogBuilder.setNegativeButton(R.string.close, null);
 
         // Check to see if the website is encrypted.
-        if (MainWebView.sslCertificate == null) {  // The website is not encrypted.
+        if (MainWebViewActivity.sslCertificate == null) {  // The website is not encrypted.
             // Set the title.
             dialogBuilder.setTitle(R.string.unencrypted_website);
 
@@ -104,7 +104,7 @@ public class ViewSslCertificate extends DialogFragment {
             String endDateLabel = getString(R.string.end_date) + "  ";
 
             // Get the SSL certificate.
-            SslCertificate sslCertificate = MainWebView.sslCertificate;
+            SslCertificate sslCertificate = MainWebViewActivity.sslCertificate;
 
             // Get the strings from the SSL certificate.
             String issuedToCNameString = sslCertificate.getIssuedTo().getCName();

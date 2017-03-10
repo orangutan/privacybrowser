@@ -20,6 +20,7 @@
 package com.stoutner.privacybrowser.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -36,22 +37,21 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.dialogs.AddDomain;
+import com.stoutner.privacybrowser.dialogs.AddDomainDialog;
+import com.stoutner.privacybrowser.fragments.DomainSettingsFragment;
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 
-public class DomainsList extends AppCompatActivity implements AddDomain.AddDomainListener {
+public class DomainsActivity extends AppCompatActivity implements AddDomainDialog.AddDomainListener {
     // `domainsDatabaseHelper` is used in `onCreate()`, `onAddDomain()`, and `updateDomainsRecyclerView()`.
     private static DomainsDatabaseHelper domainsDatabaseHelper;
 
     // `domainsRecyclerView` is used in `onCreate()` and `updateDomainsListView()`.
     private ListView domainsListView;
 
-    private boolean twoPaneMode;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.domains_list_coordinatorlayout);
+        setContentView(R.layout.domains_coordinatorlayout);
 
         // We need to use the `SupportActionBar` from `android.support.v7.app.ActionBar` until the minimum API is >= 21.
         final Toolbar bookmarksAppBar = (Toolbar) findViewById(R.id.domains_toolbar);
@@ -66,8 +66,8 @@ public class DomainsList extends AppCompatActivity implements AddDomain.AddDomai
         // The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
         domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
 
-        // Determine if we are in two pane mode.  `domains_list_framelayout` is only populated if two panes are present.
-        twoPaneMode = ((findViewById(R.id.domains_list_framelayout)) != null);
+        // Determine if we are in two pane mode.  `domains_settings_linearlayout` is only populated if two panes are present.
+        final boolean twoPaneMode = ((findViewById(R.id.domain_settings_linearlayout)) != null);
 
         // Initialize `domainsListView`.
         domainsListView = (ListView) findViewById(R.id.domains_listview);
@@ -78,11 +78,32 @@ public class DomainsList extends AppCompatActivity implements AddDomain.AddDomai
                 // Convert the id from long to int to match the format of the domains database.
                 int databaseId = (int) id;
 
-                // Get the database `Cursor` for this ID and move it to the first row.
-                Cursor domainCursor = domainsDatabaseHelper.getCursorForId(databaseId);
-                domainCursor.moveToFirst();
+                // Display the Domain Settings.
+                if (twoPaneMode) {  // Display a fragment in two paned mode.
+                    // Highlight the selected domain.
+                    domainsListView.setItemChecked(position, true);
 
-                // If the
+                    // Store `databaseId` in `argumentsBundle`.
+                    Bundle argumentsBundle = new Bundle();
+                    argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, databaseId);
+
+                    // Add `argumentsBundle` to `domainSettingsFragment`.
+                    DomainSettingsFragment domainSettingsFragment = new DomainSettingsFragment();
+                    domainSettingsFragment.setArguments(argumentsBundle);
+
+                    // Display `domainSettingsFragment`.
+                    getSupportFragmentManager().beginTransaction().replace(R.id.domain_settings_linearlayout, domainSettingsFragment).commit();
+                } else { // Load the second activity on smaller screens.
+                    // Get a handle for the context.
+                    Context context = view.getContext();
+
+                    // Create `domainSettingsActivityIntent` with the `databaseId`.
+                    Intent domainSettingsActivityIntent = new Intent(context, DomainSettingsActivity.class);
+                    domainSettingsActivityIntent.putExtra(DomainSettingsFragment.DATABASE_ID, databaseId);
+
+                    // Start `DomainSettingsActivity`.
+                    context.startActivity(domainSettingsActivityIntent);
+                }
             }
         });
 
@@ -90,8 +111,8 @@ public class DomainsList extends AppCompatActivity implements AddDomain.AddDomai
         addDomainFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Show the `AddDomain` `AlertDialog` and name the instance `@string/add_domain`.
-                AppCompatDialogFragment addDomainDialog = new AddDomain();
+                // Show the `AddDomainDialog` `AlertDialog` and name the instance `@string/add_domain`.
+                AppCompatDialogFragment addDomainDialog = new AddDomainDialog();
                 addDomainDialog.show(getSupportFragmentManager(), getResources().getString(R.string.add_domain));
             }
         });

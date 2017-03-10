@@ -22,7 +22,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".activities.DomainsList"
+    tools:context=".activities.DomainsActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
@@ -30,18 +30,21 @@
     android:divider="?android:attr/dividerHorizontal"
     android:showDividers="middle" >
 
+    <!-- `android:choiceMode="singleChoice" allows a selected domain to be highlighted. -->
     <!-- `android:dividerHeight` must be specified with `android:divider` or the height will be `0dp`.  In our case we want the height to be `0dp`. -->
     <ListView
         android:id="@+id/domains_listview"
         android:layout_height="match_parent"
         android:layout_width="0dp"
         android:layout_weight="1"
+        android:choiceMode="singleChoice"
         android:divider="@color/white"
         android:dividerHeight="0dp" />
 
-    <FrameLayout
-        android:id="@+id/domains_list_framelayout"
+    <LinearLayout
+        android:id="@+id/domain_settings_linearlayout"
         android:layout_height="match_parent"
         android:layout_width="0dp"
-        android:layout_weight="3" />
+        android:layout_weight="3"
+        android:orientation="horizontal" />
 </LinearLayout>

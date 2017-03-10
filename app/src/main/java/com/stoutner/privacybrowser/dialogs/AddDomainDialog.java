@@ -35,7 +35,7 @@ import android.widget.EditText;
 
 import com.stoutner.privacybrowser.R;
 
-public class AddDomain extends AppCompatDialogFragment {
+public class AddDomainDialog extends AppCompatDialogFragment {
     // The public interface is used to send information back to the parent activity.
     public interface AddDomainListener {
         void onAddDomain(AppCompatDialogFragment dialogFragment);
@@ -80,7 +80,7 @@ public class AddDomain extends AppCompatDialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // Return the `DialogFragment` to the parent activity on add.
-                addDomainListener.onAddDomain(AddDomain.this);
+                addDomainListener.onAddDomain(AddDomainDialog.this);
             }
         });
 
@@ -103,7 +103,7 @@ public class AddDomain extends AppCompatDialogFragment {
                 // If the event is a key-down on the `enter` key, select the `PositiveButton` `Add`.
                 if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)) {
                     // Trigger `addDomainListener` and return the `DialogFragment` to the parent activity.
-                    addDomainListener.onAddDomain(AddDomain.this);
+                    addDomainListener.onAddDomain(AddDomainDialog.this);
                     // Manually dismiss the `AlertDialog`.
                     alertDialog.dismiss();
                     // Consume the event.
