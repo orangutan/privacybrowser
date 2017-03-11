@@ -24,15 +24,19 @@
     <style name="PrivacyBrowser" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowTranslucentStatus">true</item>
         <item name="colorAccent">@color/blue_700</item>
+        <item name="android:textColorHighlight">@color/blue_200</item>
     </style>
 
     <!-- `colorPrimaryDark` goes behind the status bar, which is then darkened by the overlay.
         `windowActionModeOverlay` makes the contextual app bar cover the support app bar. -->
     <style name="PrivacyBrowser.SecondaryActivity">
         <item name="colorPrimaryDark">@color/blue_700</item>
+        <item name="android:textColorHighlight">@color/blue_200</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="android:actionModeBackground">@color/blue_700</item>
         <item name="actionBarPopupTheme">@style/LightPopupOverlay</item>
+        <item name="android:spinnerItemStyle">@style/spinnerItemStyle</item>
+        <item name="android:spinnerDropDownItemStyle">@style/spinnerDropDownItemStyle</item>
     </style>
 
     <!-- `colorPrimaryDark` is the color of the status bar. -->
@@ -52,5 +56,20 @@
 
     <style name="LightAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert" >
         <item name="colorAccent">@color/blue_700</item>
+    </style>
+
+    <style name="spinnerItemStyle" >
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="spinnerDropDownItemStyle" >
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">18sp</item>
     </style>
 </resources>

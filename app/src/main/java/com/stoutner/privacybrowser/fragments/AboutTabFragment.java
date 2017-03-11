@@ -37,7 +37,7 @@ import com.stoutner.privacybrowser.R;
 public class AboutTabFragment extends Fragment {
     private int tabNumber;
 
-    // AboutTabFragment.createTab stores the tab number in the bundle arguments so it can be referenced from onCreate().
+    // `AboutTabFragment.createTab` stores the tab number in the bundle arguments so it can be referenced from `onCreate()`.
     public static AboutTabFragment createTab(int tab) {
         Bundle thisTabArguments = new Bundle();
         thisTabArguments.putInt("Tab", tab);
@@ -51,7 +51,7 @@ public class AboutTabFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Store the tab number in tabNumber.
+        // Store the tab number in `tabNumber`.
         tabNumber = getArguments().getInt("Tab");
     }
 

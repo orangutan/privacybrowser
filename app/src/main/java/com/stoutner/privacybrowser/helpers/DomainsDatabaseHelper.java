@@ -32,7 +32,16 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
     private static final String _ID = "_id";
 
     public static final String DOMAIN = "domain";
+    public static final String FONT_SIZE = "fontsize";
 
+    private static final String ENABLE_JAVASCRIPT = "enablejavascript";
+    private static final String ENABLE_FIRST_PARTY_COOKIES = "enablefirstpartycookies";
+    private static final String ENABLE_THIRD_PARTY_COOKIES = "enablethirdpartycookies";
+    private static final String ENABLE_DOM_STORAGE = "enabledomstorage";
+    private static final String ENABLE_FORM_DATA = "enableformdata";
+    private static final String USER_AGENT_NAME = "useragentname";
+    private static final String USER_AGENT_STRING = "useragentstring";
+    private static final String CUSTOM_USER_AGENT_STRING = "customuseragent";
 
     // Initialize the database.  The lint warnings for the unused parameters are suppressed.
     public DomainsDatabaseHelper(Context context, @SuppressWarnings("UnusedParameters") String name, SQLiteDatabase.CursorFactory cursorFactory, @SuppressWarnings("UnusedParameters") int version) {
@@ -44,7 +53,16 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         // Setup the SQL string to create the `domains` table.
         final String CREATE_DOMAINS_TABLE = "CREATE TABLE " + DOMAINS_TABLE + " (" +
                 _ID + " integer primary key, " +
-                DOMAIN + " text);";
+                DOMAIN + " text, " +
+                ENABLE_JAVASCRIPT + " boolean, " +
+                ENABLE_FIRST_PARTY_COOKIES + " boolean, " +
+                ENABLE_THIRD_PARTY_COOKIES + " boolean, " +
+                ENABLE_DOM_STORAGE + " boolean, " +
+                ENABLE_FORM_DATA + " boolean, " +
+                USER_AGENT_NAME + " text, " +
+                USER_AGENT_STRING + " text, " +
+                CUSTOM_USER_AGENT_STRING + " text, " +
+                FONT_SIZE + " integer);";
 
         // Create the `domains` table if it doesn't exist.
         domainsDatabase.execSQL(CREATE_DOMAINS_TABLE);
@@ -83,8 +101,17 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         // We need to store the domain data in a `ContentValues`.
         ContentValues domainContentValues = new ContentValues();
 
-        // ID is created automatically.
+        // Create entries for each field in the database.  The ID is created automatically.
         domainContentValues.put(DOMAIN, domainName);
+        domainContentValues.put(ENABLE_JAVASCRIPT, false);
+        domainContentValues.put(ENABLE_FIRST_PARTY_COOKIES, false);
+        domainContentValues.put(ENABLE_THIRD_PARTY_COOKIES, false);
+        domainContentValues.put(ENABLE_DOM_STORAGE, false);
+        domainContentValues.put(ENABLE_FORM_DATA, false);
+        domainContentValues.put(USER_AGENT_NAME, "Privacy Browser 1.0");
+        domainContentValues.put(USER_AGENT_STRING, "PrivacyBrowser/1.0");
+        domainContentValues.put(CUSTOM_USER_AGENT_STRING, "PrivacyBrowser/1.0");
+        domainContentValues.put(FONT_SIZE, "100");
 
         // Get a writable database handle.
         SQLiteDatabase domainsDatabase = this.getWritableDatabase();

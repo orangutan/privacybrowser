@@ -18,37 +18,230 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:orientation="horizontal" >
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:descendantFocusability="beforeDescendants" >
 
-    <!-- Labels `LinearLayout`. -->
     <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:orientation="vertical" >
+        android:layout_width="match_parent"
+        android:layout_margin="12dp"
+        android:orientation="vertical"
+        android:divider="?android:attr/dividerVertical"
+        android:showDividers="middle" >
 
-        <TextView
+        <!-- Domain name. -->
+        <LinearLayout
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="@string/domain_name"
-            android:labelFor="@+id/domain_settings_name_edittext"/>
-    </LinearLayout>
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
 
-    <!-- Data `LinearLayout`. -->
-    <LinearLayout
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:orientation="vertical" >
+            <ImageView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginBottom="26dp"
+                android:layout_gravity="bottom"
+                android:src="@drawable/domains"
+                android:tint="@color/blue_800"
+                tools:ignore="contentDescription" />
 
-        <!-- `android:inputType="textUri"` disables spell check in the `EditText`. -->
-        <EditText
-            android:id="@id/domain_settings_name_edittext"
-            android:layout_width="wrap_content"
+            <!-- `android.support.design.widget.TextInputLayout` makes the `android:hint` float above the `EditText`. -->
+            <android.support.design.widget.TextInputLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="6dp"
+                android:layout_marginBottom="14dp" >
+
+                <!-- `android:inputType="textUri"` disables spell check in the `EditText`. -->
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/domain_settings_name_edittext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/domain_name"
+                    android:inputType="textUri" />
+            </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
+
+        <!-- JavaScript. -->
+        <LinearLayout
             android:layout_height="wrap_content"
-            android:inputType="textUri" />
-    </LinearLayout>
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
 
-</LinearLayout>
+            <ImageView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/privacy_mode"
+                tools:ignore="contentDescription" />
+
+            <Switch
+                android:id="@+id/domain_settings_javascript_switch"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="14dp"
+                android:text="@string/javascript_enabled"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <!-- First-Party Cookies. -->
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="1dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/cookies_enabled"
+                android:tint="@color/blue_800"
+                tools:ignore="contentDescription" />
+
+            <Switch
+                android:id="@+id/domain_settings_first_party_cookies_switch"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="14dp"
+                android:text="@string/first_party_cookies_enabled"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <!-- Third-Party Cookies. -->
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="1dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/cookies_enabled"
+                android:tint="@color/blue_800"
+                tools:ignore="contentDescription" />
+
+            <Switch
+                android:id="@+id/domain_settings_third_party_cookies_switch"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="14dp"
+                android:text="@string/third_party_cookies_enabled"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <!-- DOM Storage. -->
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="1dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/dom_storage_enabled"
+                android:tint="@color/blue_800"
+                tools:ignore="contentDescription" />
+
+            <Switch
+                android:id="@+id/domain_settings_dom_storage_switch"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="14dp"
+                android:text="@string/dom_storage_enabled"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <!-- Form Data. -->
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="1dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/form_data_enabled"
+                android:tint="@color/blue_800"
+                tools:ignore="contentDescription" />
+
+            <Switch
+                android:id="@+id/domain_settings_form_data_switch"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="14dp"
+                android:text="@string/form_data_enabled"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <!-- User Agent. -->
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="1dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/user_agent"
+                android:tint="@color/blue_800"
+                android:contentDescription="@string/user_agent" />
+
+            <Spinner
+                android:id="@+id/domain_settings_user_agent_spinner"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="14dp" />
+        </LinearLayout>
+
+        <!-- Font Size. -->
+        <!-- We need to add an extra `android:layout_marginBottom="14dp"` to the last `LinearLayout` or the bottom of the `ScrollView` gets cutoff if API 25. -->
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginBottom="14dp" >
+
+            <ImageView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="1dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/font_size"
+                android:tint="@color/blue_800"
+                android:contentDescription="@string/font_size" />
+
+            <Spinner
+                android:id="@+id/domain_settings_font_size_spinner"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="14dp"/>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

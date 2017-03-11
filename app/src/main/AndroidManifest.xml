@@ -129,7 +129,8 @@
 
         <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
             `android:persistableMode="persistNever"` removes Privacy Browser from the recents screen on a device reboot.
-            `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
+            `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21.
+             `android:windowSoftInputMode="stateAlwaysHidden"` removes the keyboard from the screen, which is displayed because `ScrollViews` always focus the first `EditText` despite being told not to. -->
         <activity
             android:name=".activities.DomainSettingsActivity"
             android:label="@string/domain_settings"
@@ -137,6 +138,7 @@
             android:parentActivityName=".activities.DomainsActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullUser"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:persistableMode="persistNever"
             tools:ignore="UnusedAttribute" />
 

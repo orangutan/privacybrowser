@@ -36,15 +36,14 @@
         android:id="@+id/domains_listview"
         android:layout_height="match_parent"
         android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:choiceMode="singleChoice"
         android:divider="@color/white"
         android:dividerHeight="0dp" />
 
-    <LinearLayout
-        android:id="@+id/domain_settings_linearlayout"
+    <ScrollView
+        android:id="@+id/domain_settings_scrollview"
         android:layout_height="match_parent"
         android:layout_width="0dp"
-        android:layout_weight="3"
-        android:orientation="horizontal" />
+        android:layout_weight="3" />
 </LinearLayout>

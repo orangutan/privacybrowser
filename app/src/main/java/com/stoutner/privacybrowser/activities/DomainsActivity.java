@@ -67,7 +67,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
 
         // Determine if we are in two pane mode.  `domains_settings_linearlayout` is only populated if two panes are present.
-        final boolean twoPaneMode = ((findViewById(R.id.domain_settings_linearlayout)) != null);
+        final boolean twoPaneMode = ((findViewById(R.id.domain_settings_scrollview)) != null);
 
         // Initialize `domainsListView`.
         domainsListView = (ListView) findViewById(R.id.domains_listview);
@@ -80,9 +80,6 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
                 // Display the Domain Settings.
                 if (twoPaneMode) {  // Display a fragment in two paned mode.
-                    // Highlight the selected domain.
-                    domainsListView.setItemChecked(position, true);
-
                     // Store `databaseId` in `argumentsBundle`.
                     Bundle argumentsBundle = new Bundle();
                     argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, databaseId);
@@ -92,7 +89,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                     domainSettingsFragment.setArguments(argumentsBundle);
 
                     // Display `domainSettingsFragment`.
-                    getSupportFragmentManager().beginTransaction().replace(R.id.domain_settings_linearlayout, domainSettingsFragment).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.domain_settings_scrollview, domainSettingsFragment).commit();
                 } else { // Load the second activity on smaller screens.
                     // Get a handle for the context.
                     Context context = view.getContext();

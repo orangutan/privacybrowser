@@ -46,8 +46,8 @@ public class DomainSettingsActivity extends AppCompatActivity {
         // Get the intent that started the activity.
         final Intent launchingIntent = getIntent();
 
-        // Extract the `databaseID`.  The default value is `0`.
-        int databaseId = launchingIntent.getIntExtra(DomainSettingsFragment.DATABASE_ID, 0);
+        // Extract the `databaseID`.  The default value is `1`.
+        int databaseId = launchingIntent.getIntExtra(DomainSettingsFragment.DATABASE_ID, 1);
 
         // Store `databaseId` in `argumentsBundle`.
         Bundle argumentsBundle = new Bundle();

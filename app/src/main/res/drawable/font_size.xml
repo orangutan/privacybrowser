@@ -1,4 +1,4 @@
-<!-- `back.xml` comes from the Android Material icon set, where it is called `ic_arrow_back`.  It is released under the Apache License 2.0. -->
+<!-- `font_size.xml` comes from the Android Material icon set, where it is called `ic_text_fields`.  It is released under the Apache License 2.0. -->
 
 <!-- `tools:ignore="VectorRaster"` removes the lint warning about `android:autoMirrored="true" not applying to API < 21. -->
 <vector
@@ -14,5 +14,5 @@
     <!-- We have to use a hard coded color code until API >= 21.  Then we can use `@color`. -->
     <path
         android:fillColor="#FF000000"
-        android:pathData="M20,11H7.83l5.59,-5.59L12,4l-8,8 8,8 1.41,-1.41L7.83,13H20v-2z" />
+        android:pathData="M2.5,4v3h5v12h3L10.5,7h5L15.5,4h-13zM21.5,9h-9v3h3v7h3v-7h3L21.5,9z" />
 </vector>

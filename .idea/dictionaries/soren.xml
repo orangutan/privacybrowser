@@ -23,6 +23,7 @@
       <w>cname</w>
       <w>commitdiff</w>
       <w>coordinatorlayout</w>
+      <w>customuseragent</w>
       <w>didn</w>
       <w>displayorder</w>
       <w>dname</w>
@@ -32,12 +33,18 @@
       <w>dwallach</w>
       <w>eadd</w>
       <w>edittext</w>
+      <w>enabledomstorage</w>
+      <w>enablefirstpartycookies</w>
+      <w>enableformdata</w>
+      <w>enablejavascript</w>
+      <w>enablethirdpartycookies</w>
       <w>exynos</w>
       <w>favoriteicon</w>
       <w>fbee</w>
       <w>fdfilter</w>
       <w>fdid</w>
       <w>firebase</w>
+      <w>fontsize</w>
       <w>framelayout</w>
       <w>gerlach</w>
       <w>intl</w>
@@ -86,6 +93,9 @@
       <w>torproject</w>
       <w>uids</w>
       <w>uname</w>
+      <w>useragent</w>
+      <w>useragentname</w>
+      <w>useragentstring</w>
       <w>webkay</w>
       <w>webkitversion</w>
       <w>whatismyip</w>
