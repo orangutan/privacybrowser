@@ -47,10 +47,9 @@
                 app:popupTheme="@style/LightPopupOverlay" />
         </android.support.design.widget.AppBarLayout>
 
-        <LinearLayout
-            android:id="@+id/domain_settings_linearlayout"
+        <ScrollView
+            android:id="@+id/domain_settings_scrollview"
             android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:orientation="horizontal" />
+            android:layout_width="match_parent" />
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

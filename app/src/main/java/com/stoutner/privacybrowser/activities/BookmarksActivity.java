@@ -505,32 +505,27 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //Inflate the menu.
+        // Inflate the menu.
         getMenuInflater().inflate(R.menu.bookmarks_options_menu, menu);
 
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-
+        // Success.
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
+        // Get the ID of the `MenuItem` that was selected.
         int menuItemId = menuItem.getItemId();
 
         switch (menuItemId) {
-            case android.R.id.home:
+            case android.R.id.home:  // The home arrow is identified as `android.R.id.home`, not just `R.id.home`.
                 if (currentFolder.isEmpty()) {  // Exit BookmarksActivity if currently in the home folder.
                     NavUtils.navigateUpFromSameTask(this);
                 } else {  // Navigate up one folder.
                     // Place the former parent folder in `currentFolder`.
                     currentFolder = bookmarksDatabaseHelper.getParentFolder(currentFolder);
 
-                    // Exit BookmarksActivity if currently in the home folder.
+                    // Update `bookmarksListView`.
                     updateBookmarksListView(currentFolder);
                 }
                 break;

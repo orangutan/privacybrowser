@@ -1926,7 +1926,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
         // Set the user agent initial status.
         switch (userAgentString) {
-            case "Default user agent":
+            case "WebView default user agent":
                 // Set the user agent to `""`, which uses the default value.
                 mainWebView.getSettings().setUserAgentString("");
                 break;

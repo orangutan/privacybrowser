@@ -79,16 +79,15 @@ public class SettingsFragment extends PreferenceFragment {
         thirdPartyCookiesEnabled.setEnabled(savedPreferences.getBoolean("first_party_cookies_enabled", false));
 
 
-        // We need an inflated `WebView` to get the default user agent.
+        // We need to inflated a `WebView` to get the default user agent.
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        // `@SuppressLint("InflateParams")` removes the warning about using `null` as the `ViewGroup`, which in this case makes sense because we don't want to display `bare_webview` on the screen.
-        // `false` does not attach the view to the root.
+        // `@SuppressLint("InflateParams")` removes the warning about using `null` as the `ViewGroup`, which in this case makes sense because we don't want to display `bare_webview` on the screen.  `false` does not attach the view to the root.
         @SuppressLint("InflateParams") View bareWebViewLayout = inflater.inflate(R.layout.bare_webview, null, false);
         final WebView bareWebView = (WebView) bareWebViewLayout.findViewById(R.id.bare_webview);
 
         // Set the current user-agent as the summary text for the "user_agent" preference when the preference screen is loaded.
         switch (savedPreferences.getString("user_agent", "PrivacyBrowser/1.0")) {
-            case "Default user agent":
+            case "WebView default user agent":
                 // Get the user agent text from the webview (which changes based on the version of Android and WebView installed).
                 userAgentPreference.setSummary(bareWebView.getSettings().getUserAgentString());
                 break;
@@ -219,7 +218,7 @@ public class SettingsFragment extends PreferenceFragment {
                         String userAgentString = sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0");
 
                         switch (userAgentString) {
-                            case "Default user agent":
+                            case "WebView default user agent":
                                 // Display the user agent as the summary text for `userAgentPreference`, and disable `customUserAgent`.
                                 userAgentPreference.setSummary(bareWebView.getSettings().getUserAgentString());
                                 customUserAgent.setEnabled(false);

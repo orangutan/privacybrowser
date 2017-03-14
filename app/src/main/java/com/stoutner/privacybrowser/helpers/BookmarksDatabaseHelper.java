@@ -428,7 +428,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         bookmarkContentValues.put(DISPLAY_ORDER, displayOrder);
         bookmarkContentValues.put(PARENT_FOLDER, newFolder);
 
-        // Update the database.  The last argument is 'null' because there are no 'whereArgs'.
+        // Update the database.  The last argument is `null` because there are no `whereArgs`.
         bookmarksDatabase.update(BOOKMARKS_TABLE, bookmarkContentValues, _ID + " = " + databaseId, null);
 
         // Close the database handle.
@@ -439,7 +439,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         // Get a writable database handle.
         SQLiteDatabase bookmarksDatabase = this.getWritableDatabase();
 
-        // Deletes the row with the given databaseId.  The last argument is null because we don't need additional parameters.
+        // Deletes the row with the given `databaseId`.  The last argument is `null` because we don't need additional parameters.
         bookmarksDatabase.delete(BOOKMARKS_TABLE, _ID + " = " + databaseId, null);
 
         // Close the database handle.

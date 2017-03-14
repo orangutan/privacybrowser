@@ -19,6 +19,7 @@
 
 package com.stoutner.privacybrowser.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -27,9 +28,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.TextView;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
@@ -59,7 +64,14 @@ public class DomainSettingsFragment extends Fragment {
 
         // Get handles for the views in the fragment.
         EditText domainNameEditText = (EditText) domainSettingsView.findViewById(R.id.domain_settings_name_edittext);
+        Switch javaScriptEnabledSwitch = (Switch) domainSettingsView.findViewById(R.id.domain_settings_javascript_switch);
+        Switch firstPartyCookiesEnabledSwitch = (Switch) domainSettingsView.findViewById(R.id.domain_settings_first_party_cookies_switch);
+        Switch thirdPartyCookiesEnabledSwitch = (Switch) domainSettingsView.findViewById(R.id.domain_settings_third_party_cookies_switch);
+        Switch domStorageEnabledSwitch = (Switch) domainSettingsView.findViewById(R.id.domain_settings_dom_storage_switch);
+        Switch formDataEnabledSwitch = (Switch) domainSettingsView.findViewById(R.id.domain_settings_form_data_switch);
         Spinner userAgentSpinner = (Spinner) domainSettingsView.findViewById(R.id.domain_settings_user_agent_spinner);
+        final TextView userAgentTextView = (TextView) domainSettingsView.findViewById(R.id.domain_settings_user_agent_textview);
+        final EditText customUserAgentEditText = (EditText) domainSettingsView.findViewById(R.id.domain_settings_custom_user_agent_edittext);
         Spinner fontSizeSpinner = (Spinner) domainSettingsView.findViewById(R.id.domain_settings_font_size_spinner);
 
         // Initialize the database handler.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
@@ -71,12 +83,18 @@ public class DomainSettingsFragment extends Fragment {
         domainCursor.moveToFirst();
 
         // Save the `Cursor` entries as variables.
-        String domainNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN));
+        String domainNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME));
+        int javaScriptEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT));
+        int firstPartyCookiesEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES));
+        int thirdPartyCookiesEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES));
+        int domStorageEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE));
+        int formDataEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA));
+        final String currentUserAgentString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
         int fontSizeInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
 
         // Create `ArrayAdapters` for the `Spinners`and their `entry values`.
         ArrayAdapter<CharSequence> userAgentArrayAdapter = ArrayAdapter.createFromResource(context, R.array.user_agent_entries, android.R.layout.simple_spinner_item);
-        ArrayAdapter<CharSequence> userAgentEntryValuesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.user_agent_entry_values, android.R.layout.simple_spinner_item);
+        final ArrayAdapter<CharSequence> userAgentEntryValuesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.user_agent_entry_values, android.R.layout.simple_spinner_item);
         ArrayAdapter<CharSequence> fontSizeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.default_font_size_entries, android.R.layout.simple_spinner_item);
         ArrayAdapter<CharSequence> fontSizeEntryValuesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.default_font_size_entry_values, android.R.layout.simple_spinner_item);
 
@@ -88,16 +106,105 @@ public class DomainSettingsFragment extends Fragment {
         userAgentSpinner.setAdapter(userAgentArrayAdapter);
         fontSizeSpinner.setAdapter(fontSizeArrayAdapter);
 
-        //
-        // int userAgentArrayPosition =
+        // Set the domain name from the the database cursor.
+        domainNameEditText.setText(domainNameString);
+
+        // Set the status of the `Switches` from the database cursor.
+        javaScriptEnabledSwitch.setChecked(javaScriptEnabledInt == 1);
+        firstPartyCookiesEnabledSwitch.setChecked(firstPartyCookiesEnabledInt == 1);
+        thirdPartyCookiesEnabledSwitch.setChecked(thirdPartyCookiesEnabledInt == 1);
+        domStorageEnabledSwitch.setChecked(domStorageEnabledInt == 1);
+        formDataEnabledSwitch.setChecked(formDataEnabledInt == 1);
+
+        // We need to inflated a `WebView` to get the default user agent.
+        // `@SuppressLint("InflateParams")` removes the warning about using `null` as the `ViewGroup`, which in this case makes sense because we don't want to display `bare_webview` on the screen.  `false` does not attach the view to the root.
+        @SuppressLint("InflateParams") View bareWebViewLayout = inflater.inflate(R.layout.bare_webview, null, false);
+        WebView bareWebView = (WebView) bareWebViewLayout.findViewById(R.id.bare_webview);
+        final String webViewDefaultUserAgentString = bareWebView.getSettings().getUserAgentString();
+
+        // Get the position of the user agent in `userAgentEntryValuesArrayAdapter`.
+        int userAgentArrayPosition = userAgentEntryValuesArrayAdapter.getPosition(currentUserAgentString);
+
+        // Set the user agent.
+        if (userAgentArrayPosition == -1) {  // We are using a custom `userAgentString`.
+            // Set `userAgentSpinner` to `Custom`.
+            userAgentSpinner.setSelection(userAgentEntryValuesArrayAdapter.getPosition("Custom user agent"));
+
+            // Hide `userAgentTextView`.
+            userAgentTextView.setVisibility(View.GONE);
+
+            // Show `customUserAgentEditText` and set `userAgentString` as the text.
+            customUserAgentEditText.setVisibility(View.VISIBLE);
+            customUserAgentEditText.setText(currentUserAgentString);
+        } else if (currentUserAgentString.equals("WebView default user agent")) {  // We are using the `WebView` default user agent.
+            // Set the `userAgentSpinner` selection.
+            userAgentSpinner.setSelection(userAgentArrayPosition);
+
+            // Show `userAgentTextView` and set the text.
+            userAgentTextView.setVisibility(View.VISIBLE);
+            userAgentTextView.setText(webViewDefaultUserAgentString);
+
+            // Hide `customUserAgentEditText`.
+            customUserAgentEditText.setVisibility(View.GONE);
+        } else {  // We are using a standard user agent.
+            // Set the `userAgentSpinner` selection.
+            userAgentSpinner.setSelection(userAgentArrayPosition);
+
+            // Show `userAgentTextView` and set the text.
+            userAgentTextView.setVisibility(View.VISIBLE);
+            userAgentTextView.setText(currentUserAgentString);
+
+            // Hide `customUserAgentEditText`.
+            customUserAgentEditText.setVisibility(View.GONE);
+        }
 
         // Set the selected font size.
         int fontSizeArrayPosition = fontSizeEntryValuesArrayAdapter.getPosition(String.valueOf(fontSizeInt));
         fontSizeSpinner.setSelection(fontSizeArrayPosition);
 
+        // Set the `userAgentSpinner` `onItemClickListener()`.
+        userAgentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Store the new user agent string.
+                String newUserAgentString = getResources().getStringArray(R.array.user_agent_entry_values)[position];
 
-        // Set the text from the database cursor.
-        domainNameEditText.setText(domainNameString);
+                // Set the new user agent.
+                switch (newUserAgentString) {
+                    case "Custom user agent":
+                        // Hide `userAgentTextView`.
+                        userAgentTextView.setVisibility(View.GONE);
+
+                        // Show `customUserAgentEditText` and set `userAgentString` as the text.
+                        customUserAgentEditText.setVisibility(View.VISIBLE);
+                        customUserAgentEditText.setText(currentUserAgentString);
+                        break;
+
+                    case "WebView default user agent":
+                        // Show `userAgentTextView` and set the text.
+                        userAgentTextView.setVisibility(View.VISIBLE);
+                        userAgentTextView.setText(webViewDefaultUserAgentString);
+
+                        // Hide `customUserAgentEditText`.
+                        customUserAgentEditText.setVisibility(View.GONE);
+                        break;
+
+                    default:
+                        // Show `userAgentTextView` and set the text.
+                        userAgentTextView.setVisibility(View.VISIBLE);
+                        userAgentTextView.setText(getResources().getStringArray(R.array.user_agent_entry_values)[position]);
+
+                        // Hide `customUserAgentEditText`.
+                        customUserAgentEditText.setVisibility(View.GONE);
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing.
+            }
+        });
 
         return domainSettingsView;
     }

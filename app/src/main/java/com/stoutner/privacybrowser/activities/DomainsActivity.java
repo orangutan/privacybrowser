@@ -24,16 +24,21 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.stoutner.privacybrowser.R;
@@ -42,16 +47,31 @@ import com.stoutner.privacybrowser.fragments.DomainSettingsFragment;
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 
 public class DomainsActivity extends AppCompatActivity implements AddDomainDialog.AddDomainListener {
-    // `domainsDatabaseHelper` is used in `onCreate()`, `onAddDomain()`, and `updateDomainsRecyclerView()`.
+    // `context` is used in `onCreate()` and `onOptionsItemSelected()`.
+    Context context;
+
+    // `domainsDatabaseHelper` is used in `onCreate()`, `onOptionsItemSelected()`, `onAddDomain()`, and `updateDomainsRecyclerView()`.
     private static DomainsDatabaseHelper domainsDatabaseHelper;
 
     // `domainsRecyclerView` is used in `onCreate()` and `updateDomainsListView()`.
     private ListView domainsListView;
 
+    // `databaseId` is used in `onCreate()` and `onOptionsItemSelected()`.
+    private int databaseId;
+
+    // `saveMenuItem` is used in `onCreate()`, `onOptionsItemSelected()`, and `onCreateOptionsMenu()`.
+    private MenuItem saveMenuItem;
+
+    // `deleteMenuItem` is used in `onCreate()`, `onOptionsItemSelected()`, and `onCreateOptionsMenu()`.
+    private MenuItem deleteMenuItem;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.domains_coordinatorlayout);
+
+        // Get a handle for the context.
+        context = this;
 
         // We need to use the `SupportActionBar` from `android.support.v7.app.ActionBar` until the minimum API is >= 21.
         final Toolbar bookmarksAppBar = (Toolbar) findViewById(R.id.domains_toolbar);
@@ -75,11 +95,15 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         domainsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Convert the id from long to int to match the format of the domains database.
-                int databaseId = (int) id;
+                // Convert the id from `long` to `int` to match the format of the domains database.
+                databaseId = (int) id;
 
                 // Display the Domain Settings.
                 if (twoPaneMode) {  // Display a fragment in two paned mode.
+                    // Display the options `MenuItems`.
+                    saveMenuItem.setVisible(true);
+                    deleteMenuItem.setVisible(true);
+
                     // Store `databaseId` in `argumentsBundle`.
                     Bundle argumentsBundle = new Bundle();
                     argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, databaseId);
@@ -91,9 +115,6 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                     // Display `domainSettingsFragment`.
                     getSupportFragmentManager().beginTransaction().replace(R.id.domain_settings_scrollview, domainSettingsFragment).commit();
                 } else { // Load the second activity on smaller screens.
-                    // Get a handle for the context.
-                    Context context = view.getContext();
-
                     // Create `domainSettingsActivityIntent` with the `databaseId`.
                     Intent domainSettingsActivityIntent = new Intent(context, DomainSettingsActivity.class);
                     domainSettingsActivityIntent.putExtra(DomainSettingsFragment.DATABASE_ID, databaseId);
@@ -116,6 +137,84 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
         // Load the `ListView`.
         updateDomainsListView();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu.
+        getMenuInflater().inflate(R.menu.domains_options_menu, menu);
+
+        // Store the `MenuItems` for future use.
+        saveMenuItem = menu.findItem(R.id.save_domain);
+        deleteMenuItem = menu.findItem(R.id.delete_domain);
+
+        // Success!
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        // Get the ID of the `MenuItem` that was selected.
+        int menuItemID = menuItem.getItemId();
+
+        switch (menuItemID) {
+            case android.R.id.home:  // The home arrow is identified as `android.R.id.home`, not just `R.id.home`.
+                // Go home.
+                NavUtils.navigateUpFromSameTask(this);
+                break;
+
+            case R.id.save_domain:
+                // Get handles for the domain settings.
+                EditText domainNameEditText = (EditText) findViewById(R.id.domain_settings_name_edittext);
+                Switch javaScriptEnabledSwitch = (Switch) findViewById(R.id.domain_settings_javascript_switch);
+                Switch firstPartyCookiesEnabledSwitch = (Switch) findViewById(R.id.domain_settings_first_party_cookies_switch);
+                Switch thirdPartyCookiesEnabledSwitch = (Switch) findViewById(R.id.domain_settings_third_party_cookies_switch);
+                Switch domStorageEnabledSwitch = (Switch) findViewById(R.id.domain_settings_dom_storage_switch);
+                Switch formDataEnabledSwitch = (Switch) findViewById(R.id.domain_settings_form_data_switch);
+                Spinner userAgentSpinner = (Spinner) findViewById(R.id.domain_settings_user_agent_spinner);
+                EditText customUserAgentEditText = (EditText) findViewById(R.id.domain_settings_custom_user_agent_edittext);
+                Spinner fontSizeSpinner = (Spinner) findViewById(R.id.domain_settings_font_size_spinner);
+
+                // Extract the data for the domain settings.
+                String domainNameString = domainNameEditText.getText().toString();
+                boolean javaScriptEnabled = javaScriptEnabledSwitch.isChecked();
+                boolean firstPartyCookiesEnabled = firstPartyCookiesEnabledSwitch.isChecked();
+                boolean thirdPartyCookiesEnabled = thirdPartyCookiesEnabledSwitch.isChecked();
+                boolean domStorageEnabledEnabled = domStorageEnabledSwitch.isChecked();
+                boolean formDataEnabled = formDataEnabledSwitch.isChecked();
+                int userAgentPosition = userAgentSpinner.getSelectedItemPosition();
+                int fontSizePosition = fontSizeSpinner.getSelectedItemPosition();
+
+                // Get the data for the `Spinners` from the entry values string arrays.
+                String userAgentString = getResources().getStringArray(R.array.user_agent_entry_values)[userAgentPosition];
+                int fontSizeInt = Integer.parseInt(getResources().getStringArray(R.array.default_font_size_entry_values)[fontSizePosition]);
+
+                // Check to see if we are using a custom user agent.
+                if (userAgentString.equals("Custom user agent")) {
+                    // Set `userAgentString` to the custom user agent string.
+                    userAgentString = customUserAgentEditText.getText().toString();
+                }
+
+                // Save the domain settings.
+                domainsDatabaseHelper.saveDomain(databaseId, domainNameString, javaScriptEnabled, firstPartyCookiesEnabled, thirdPartyCookiesEnabled, domStorageEnabledEnabled, formDataEnabled, userAgentString, fontSizeInt);
+                break;
+
+            case R.id.delete_domain:
+                // Delete the selected domain.
+                domainsDatabaseHelper.deleteDomain(databaseId);
+
+                // Detach the domain settings fragment.
+                getSupportFragmentManager().beginTransaction().detach(getSupportFragmentManager().findFragmentById(R.id.domain_settings_scrollview)).commit();
+
+                // Hide the options `MenuItems`.
+                saveMenuItem.setVisible(false);
+                deleteMenuItem.setVisible(false);
+
+                // Update the `ListView`.
+                updateDomainsListView();
+                break;
+        }
+        return true;
     }
 
     @Override
@@ -146,7 +245,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             @Override
             public void bindView(View view, Context context, Cursor cursor) {
                 // Set the domain name.
-                String domainNameString = cursor.getString(cursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN));
+                String domainNameString = cursor.getString(cursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME));
                 TextView domainNameTextView = (TextView) view.findViewById(R.id.domain_name_textview);
                 domainNameTextView.setText(domainNameString);
             }

@@ -31,17 +31,14 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
     private static final String DOMAINS_TABLE = "domains";
     private static final String _ID = "_id";
 
-    public static final String DOMAIN = "domain";
+    public static final String DOMAIN_NAME = "domainname";
+    public static final String ENABLE_JAVASCRIPT = "enablejavascript";
+    public static final String ENABLE_FIRST_PARTY_COOKIES = "enablefirstpartycookies";
+    public static final String ENABLE_THIRD_PARTY_COOKIES = "enablethirdpartycookies";
+    public static final String ENABLE_DOM_STORAGE = "enabledomstorage";
+    public static final String ENABLE_FORM_DATA = "enableformdata";
+    public static final String USER_AGENT = "useragent";
     public static final String FONT_SIZE = "fontsize";
-
-    private static final String ENABLE_JAVASCRIPT = "enablejavascript";
-    private static final String ENABLE_FIRST_PARTY_COOKIES = "enablefirstpartycookies";
-    private static final String ENABLE_THIRD_PARTY_COOKIES = "enablethirdpartycookies";
-    private static final String ENABLE_DOM_STORAGE = "enabledomstorage";
-    private static final String ENABLE_FORM_DATA = "enableformdata";
-    private static final String USER_AGENT_NAME = "useragentname";
-    private static final String USER_AGENT_STRING = "useragentstring";
-    private static final String CUSTOM_USER_AGENT_STRING = "customuseragent";
 
     // Initialize the database.  The lint warnings for the unused parameters are suppressed.
     public DomainsDatabaseHelper(Context context, @SuppressWarnings("UnusedParameters") String name, SQLiteDatabase.CursorFactory cursorFactory, @SuppressWarnings("UnusedParameters") int version) {
@@ -53,15 +50,13 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         // Setup the SQL string to create the `domains` table.
         final String CREATE_DOMAINS_TABLE = "CREATE TABLE " + DOMAINS_TABLE + " (" +
                 _ID + " integer primary key, " +
-                DOMAIN + " text, " +
+                DOMAIN_NAME + " text, " +
                 ENABLE_JAVASCRIPT + " boolean, " +
                 ENABLE_FIRST_PARTY_COOKIES + " boolean, " +
                 ENABLE_THIRD_PARTY_COOKIES + " boolean, " +
                 ENABLE_DOM_STORAGE + " boolean, " +
                 ENABLE_FORM_DATA + " boolean, " +
-                USER_AGENT_NAME + " text, " +
-                USER_AGENT_STRING + " text, " +
-                CUSTOM_USER_AGENT_STRING + " text, " +
+                USER_AGENT + " text, " +
                 FONT_SIZE + " integer);";
 
         // Create the `domains` table if it doesn't exist.
@@ -77,9 +72,9 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         // Get a readable database handle.
         SQLiteDatabase domainsDatabase = this.getReadableDatabase();
 
-        // Get everything in `DOMAINS_TABLE` ordered by `DOMAIN`.
+        // Get everything in `DOMAINS_TABLE` ordered by `DOMAIN_NAME`.
         final String GET_CURSOR_SORTED_BY_DOMAIN = "Select * FROM " + DOMAINS_TABLE +
-                " ORDER BY " + DOMAIN + " ASC";
+                " ORDER BY " + DOMAIN_NAME + " ASC";
 
         // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.  We can't close the `Cursor` because we need to use it in the parent activity.
         return domainsDatabase.rawQuery(GET_CURSOR_SORTED_BY_DOMAIN, null);
@@ -98,19 +93,17 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void addDomain(String domainName) {
-        // We need to store the domain data in a `ContentValues`.
+        // Store the domain data in a `ContentValues`.
         ContentValues domainContentValues = new ContentValues();
 
         // Create entries for each field in the database.  The ID is created automatically.
-        domainContentValues.put(DOMAIN, domainName);
+        domainContentValues.put(DOMAIN_NAME, domainName);
         domainContentValues.put(ENABLE_JAVASCRIPT, false);
         domainContentValues.put(ENABLE_FIRST_PARTY_COOKIES, false);
         domainContentValues.put(ENABLE_THIRD_PARTY_COOKIES, false);
         domainContentValues.put(ENABLE_DOM_STORAGE, false);
         domainContentValues.put(ENABLE_FORM_DATA, false);
-        domainContentValues.put(USER_AGENT_NAME, "Privacy Browser 1.0");
-        domainContentValues.put(USER_AGENT_STRING, "PrivacyBrowser/1.0");
-        domainContentValues.put(CUSTOM_USER_AGENT_STRING, "PrivacyBrowser/1.0");
+        domainContentValues.put(USER_AGENT, "PrivacyBrowser/1.0");
         domainContentValues.put(FONT_SIZE, "100");
 
         // Get a writable database handle.
@@ -118,6 +111,41 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
 
         // Insert a new row.  The second argument is `null`, which makes it so that a completely null row cannot be created.
         domainsDatabase.insert(DOMAINS_TABLE, null, domainContentValues);
+
+        // Close the database handle.
+        domainsDatabase.close();
+    }
+
+    public void saveDomain(int databaseId, String domainName, boolean javaScriptEnabled, boolean firstPartyCookiesEnabled, boolean thirdPartyCookiesEnabled, boolean domStorageEnabled, boolean formDataEnabled, String userAgent, int fontSize) {
+        // Store the domain data in a `ContentValues`.
+        ContentValues domainContentValues = new ContentValues();
+
+        // Add entries for each field in the database.
+        domainContentValues.put(DOMAIN_NAME, domainName);
+        domainContentValues.put(ENABLE_JAVASCRIPT, javaScriptEnabled);
+        domainContentValues.put(ENABLE_FIRST_PARTY_COOKIES, firstPartyCookiesEnabled);
+        domainContentValues.put(ENABLE_THIRD_PARTY_COOKIES, thirdPartyCookiesEnabled);
+        domainContentValues.put(ENABLE_DOM_STORAGE, domStorageEnabled);
+        domainContentValues.put(ENABLE_FORM_DATA, formDataEnabled);
+        domainContentValues.put(USER_AGENT, userAgent);
+        domainContentValues.put(FONT_SIZE, fontSize);
+
+        // Get a writable database handle.
+        SQLiteDatabase domainsDatabase = this.getWritableDatabase();
+
+        // Update the row for `databaseId`.  The last argument is `null` because there are no `whereArgs`.
+        domainsDatabase.update(DOMAINS_TABLE, domainContentValues, _ID + " = " + databaseId, null);
+
+        // Close the database handle.
+        domainsDatabase.close();
+    }
+
+    public void deleteDomain(int databaseId) {
+        // Get a writable database handle.
+        SQLiteDatabase domainsDatabase = this.getWritableDatabase();
+
+        // Delete the row for `databaseId`.  The last argument is `null` because we don't need additional parameters.
+        domainsDatabase.delete(DOMAINS_TABLE, _ID + " = " + databaseId, null);
 
         // Close the database handle.
         domainsDatabase.close();

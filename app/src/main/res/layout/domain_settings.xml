@@ -46,6 +46,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginBottom="26dp"
+                android:layout_marginEnd="10dp"
                 android:layout_gravity="bottom"
                 android:src="@drawable/domains"
                 android:tint="@color/blue_800"
@@ -77,6 +78,7 @@
             <ImageView
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/privacy_mode"
                 tools:ignore="contentDescription" />
@@ -102,6 +104,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="1dp"
+                android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/cookies_enabled"
                 android:tint="@color/blue_800"
@@ -128,6 +131,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="1dp"
+                android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/cookies_enabled"
                 android:tint="@color/blue_800"
@@ -154,6 +158,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="1dp"
+                android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/dom_storage_enabled"
                 android:tint="@color/blue_800"
@@ -180,6 +185,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="1dp"
+                android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/form_data_enabled"
                 android:tint="@color/blue_800"
@@ -200,23 +206,47 @@
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="14dp" >
 
-            <ImageView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="1dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/user_agent"
-                android:tint="@color/blue_800"
-                android:contentDescription="@string/user_agent" />
-
-            <Spinner
-                android:id="@+id/domain_settings_user_agent_spinner"
+            <LinearLayout
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_marginTop="14dp"
-                android:layout_marginBottom="14dp" />
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/user_agent"
+                    android:tint="@color/blue_800"
+                    android:contentDescription="@string/user_agent" />
+
+                <Spinner
+                    android:id="@+id/domain_settings_user_agent_spinner"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:labelFor="@+id/domain_settings_custom_user_agent_edittext"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/domain_settings_user_agent_textview"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_marginStart="43dp"
+                android:layout_marginEnd="36dp"
+                android:textSize="13sp"/>
+
+            <EditText
+                android:id="@id/domain_settings_custom_user_agent_edittext"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="38dp"
+                android:layout_marginEnd="60dp"
+                android:inputType="textUri" />
         </LinearLayout>
 
         <!-- Font Size. -->
@@ -231,6 +261,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="1dp"
+                android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/font_size"
                 android:tint="@color/blue_800"
