@@ -18,21 +18,11 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<menu
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/delete_domain"
-        android:title="@string/delete"
-        android:orderInCategory="10"
-        android:icon="@drawable/delete"
-        app:showAsAction="ifRoom" />
-
+        android:state_enabled="false"
+        android:color="@color/gray_500" />
     <item
-        android:id="@+id/save_domain"
-        android:title="@string/save"
-        android:orderInCategory="20"
-        app:showAsAction="ifRoom" />
-
-</menu>
+        android:state_enabled="true"
+        android:color="@color/yellow_900" />
+</selector>

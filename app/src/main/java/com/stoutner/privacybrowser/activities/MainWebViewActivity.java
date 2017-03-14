@@ -123,7 +123,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // It is also used in `onCreate()` and `onCreateHomeScreenShortcutCreate()`.
     public static Bitmap favoriteIcon;
 
-    // `formattedUrlString` is public static so it can be accessed from `BookmarksActivity`.
+    // `formattedUrlString` is public static so it can be accessed from `BookmarksActivity`, `CreateBookmarkDialog`, and `AddDomainDialog`.
     // It is also used in `onCreate()`, `onOptionsItemSelected()`, `onCreateHomeScreenShortcutCreate()`, and `loadUrlFromTextBox()`.
     public static String formattedUrlString;
 

@@ -53,6 +53,9 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
     // `domainsDatabaseHelper` is used in `onCreate()`, `onOptionsItemSelected()`, `onAddDomain()`, and `updateDomainsRecyclerView()`.
     private static DomainsDatabaseHelper domainsDatabaseHelper;
 
+    // `twoPaneMode` is used in `onCreate()` and `updateDomainsListView()`.
+    private boolean twoPaneMode;
+
     // `domainsRecyclerView` is used in `onCreate()` and `updateDomainsListView()`.
     private ListView domainsListView;
 
@@ -87,7 +90,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
 
         // Determine if we are in two pane mode.  `domains_settings_linearlayout` is only populated if two panes are present.
-        final boolean twoPaneMode = ((findViewById(R.id.domain_settings_scrollview)) != null);
+        twoPaneMode = ((findViewById(R.id.domain_settings_scrollview)) != null);
 
         // Initialize `domainsListView`.
         domainsListView = (ListView) findViewById(R.id.domains_listview);
@@ -100,9 +103,9 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
                 // Display the Domain Settings.
                 if (twoPaneMode) {  // Display a fragment in two paned mode.
-                    // Display the options `MenuItems`.
-                    saveMenuItem.setVisible(true);
-                    deleteMenuItem.setVisible(true);
+                    // Enable the options `MenuItems`.
+                    saveMenuItem.setEnabled(true);
+                    deleteMenuItem.setEnabled(true);
 
                     // Store `databaseId` in `argumentsBundle`.
                     Bundle argumentsBundle = new Bundle();
@@ -134,9 +137,6 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                 addDomainDialog.show(getSupportFragmentManager(), getResources().getString(R.string.add_domain));
             }
         });
-
-        // Load the `ListView`.
-        updateDomainsListView();
     }
 
     @Override
@@ -145,8 +145,15 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         getMenuInflater().inflate(R.menu.domains_options_menu, menu);
 
         // Store the `MenuItems` for future use.
-        saveMenuItem = menu.findItem(R.id.save_domain);
         deleteMenuItem = menu.findItem(R.id.delete_domain);
+        saveMenuItem = menu.findItem(R.id.save_domain);
+
+        // Only display the options `MenuItems` in two pane mode.
+        deleteMenuItem.setVisible(twoPaneMode);
+        saveMenuItem.setVisible(twoPaneMode);
+
+        // Load the `ListView`.  We have to do this from `onCreateOptionsMenu()` instead of `onCreate()` because `updateDomainsListView()` needs the `MenuItems` to be inflated.
+        updateDomainsListView();
 
         // Success!
         return true;
@@ -206,10 +213,6 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                 // Detach the domain settings fragment.
                 getSupportFragmentManager().beginTransaction().detach(getSupportFragmentManager().findFragmentById(R.id.domain_settings_scrollview)).commit();
 
-                // Hide the options `MenuItems`.
-                saveMenuItem.setVisible(false);
-                deleteMenuItem.setVisible(false);
-
                 // Update the `ListView`.
                 updateDomainsListView();
                 break;
@@ -251,7 +254,38 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             }
         };
 
-        // Update the `RecyclerView`.
+        // Update the `ListView`.
         domainsListView.setAdapter(domainsCursorAdapter);
+
+        // Display the domain settings in the second pane if operating in two pane mode and the database contains at least one domain.
+        if (twoPaneMode && (domainsCursor.getCount() > 0)) {
+            // Select the first domain.
+            domainsListView.setItemChecked(0, true);
+
+            // Get the `databaseId` of the first item.
+            domainsCursor.moveToFirst();
+            databaseId = domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper._ID));
+
+            // Store `databaseId` in `argumentsBundle`.
+            Bundle argumentsBundle = new Bundle();
+            argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, databaseId);
+
+            // Add `argumentsBundle` to `domainSettingsFragment`.
+            DomainSettingsFragment domainSettingsFragment = new DomainSettingsFragment();
+            domainSettingsFragment.setArguments(argumentsBundle);
+
+            // Display `domainSettingsFragment`.
+            getSupportFragmentManager().beginTransaction().replace(R.id.domain_settings_scrollview, domainSettingsFragment).commit();
+
+            // Enable the options `MenuItems`.
+            deleteMenuItem.setEnabled(true);
+            deleteMenuItem.setIcon(R.drawable.delete);
+            saveMenuItem.setEnabled(true);
+        } else {
+            // Disable the options `MenuItems`.
+            deleteMenuItem.setEnabled(false);
+            deleteMenuItem.setIcon(R.drawable.delete_blue);
+            saveMenuItem.setEnabled(false);
+        }
     }
 }

@@ -29,8 +29,8 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
     private static final int SCHEMA_VERSION = 1;
     private static final String DOMAINS_DATABASE = "domains.db";
     private static final String DOMAINS_TABLE = "domains";
-    private static final String _ID = "_id";
 
+    public static final String _ID = "_id";
     public static final String DOMAIN_NAME = "domainname";
     public static final String ENABLE_JAVASCRIPT = "enablejavascript";
     public static final String ENABLE_FIRST_PARTY_COOKIES = "enablefirstpartycookies";

@@ -76,10 +76,6 @@ public class DomainSettingsActivity extends AppCompatActivity {
         // Inflate the menu.
         getMenuInflater().inflate(R.menu.domains_options_menu, menu);
 
-        // Show the `MenuItems`.
-        menu.findItem(R.id.save_domain).setVisible(true);
-        menu.findItem(R.id.delete_domain).setVisible(true);
-
         // Success!
         return true;
     }

@@ -24,6 +24,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 // We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <= 22.
 import android.support.annotation.NonNull;
@@ -34,6 +35,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
 public class AddDomainDialog extends AppCompatDialogFragment {
     // The public interface is used to send information back to the parent activity.
@@ -93,11 +95,17 @@ public class AddDomainDialog extends AppCompatDialogFragment {
         // Show the keyboard when the `AlertDialog` is displayed on the screen.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
-        // We need to show the `AlertDialog` before w3e can call `setOnKeyListener()` below.
+        // We need to show the `AlertDialog` before we can edit the contents.
         alertDialog.show();
 
-        // Allow the `enter` key on the keyboard to create the domain from `add_domain_edittext`.
+        // Get a handle for `domain_name_edittext`.
         EditText addDomainEditText = (EditText) alertDialog.findViewById(R.id.domain_name_edittext);
+
+        // Get the current domain from `formattedUrlString`.
+        Uri currentUri = Uri.parse(MainWebViewActivity.formattedUrlString);
+        addDomainEditText.setText(currentUri.getHost());
+
+        // Allow the `enter` key on the keyboard to create the domain from `add_domain_edittext`.
         addDomainEditText.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View view, int keyCode, KeyEvent event) {
                 // If the event is a key-down on the `enter` key, select the `PositiveButton` `Add`.

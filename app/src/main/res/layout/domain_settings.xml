@@ -76,6 +76,7 @@
             android:orientation="horizontal" >
 
             <ImageView
+                android:id="@+id/domain_settings_javascript_imageview"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginEnd="10dp"
@@ -101,13 +102,14 @@
             android:orientation="horizontal" >
 
             <ImageView
+                android:id="@+id/domain_settings_first_party_cookies_imageview"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="1dp"
                 android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/cookies_enabled"
-                android:tint="@color/blue_800"
+                android:tint="@color/domain_settings_icon_yellow_tint_selector"
                 tools:ignore="contentDescription" />
 
             <Switch
@@ -128,13 +130,14 @@
             android:orientation="horizontal" >
 
             <ImageView
+                android:id="@+id/domain_settings_third_party_cookies_imageview"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="1dp"
                 android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/cookies_enabled"
-                android:tint="@color/blue_800"
+                android:tint="@color/domain_settings_icon_red_tint_selector"
                 tools:ignore="contentDescription" />
 
             <Switch
@@ -155,13 +158,14 @@
             android:orientation="horizontal" >
 
             <ImageView
+                android:id="@+id/domain_settings_dom_storage_imageview"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="1dp"
                 android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/dom_storage_enabled"
-                android:tint="@color/blue_800"
+                android:tint="@color/domain_settings_icon_yellow_tint_selector"
                 tools:ignore="contentDescription" />
 
             <Switch
@@ -182,13 +186,14 @@
             android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/domain_settings_form_data_imageview"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="1dp"
                 android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/form_data_enabled"
-                android:tint="@color/blue_800"
+                android:tint="@color/domain_settings_icon_yellow_tint_selector"
                 tools:ignore="contentDescription" />
 
             <Switch

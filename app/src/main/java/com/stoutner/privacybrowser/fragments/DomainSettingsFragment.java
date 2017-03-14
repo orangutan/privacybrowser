@@ -31,7 +31,9 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -54,6 +56,8 @@ public class DomainSettingsFragment extends Fragment {
         databaseId = getArguments().getInt(DATABASE_ID);
     }
 
+    // We have to use the deprecated `getDrawable()` until the minimum API >= 21.
+    @SuppressWarnings("deprecation")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate `domain_settings`.  `false` does not attach it to the root `container`.
@@ -65,10 +69,15 @@ public class DomainSettingsFragment extends Fragment {
         // Get handles for the views in the fragment.
         EditText domainNameEditText = (EditText) domainSettingsView.findViewById(R.id.domain_settings_name_edittext);
         Switch javaScriptEnabledSwitch = (Switch) domainSettingsView.findViewById(R.id.domain_settings_javascript_switch);
+        final ImageView javaScriptImageView = (ImageView) domainSettingsView.findViewById(R.id.domain_settings_javascript_imageview);
         Switch firstPartyCookiesEnabledSwitch = (Switch) domainSettingsView.findViewById(R.id.domain_settings_first_party_cookies_switch);
+        final ImageView firstPartyCookiesImageView = (ImageView) domainSettingsView.findViewById(R.id.domain_settings_first_party_cookies_imageview);
         Switch thirdPartyCookiesEnabledSwitch = (Switch) domainSettingsView.findViewById(R.id.domain_settings_third_party_cookies_switch);
+        final ImageView thirdPartyCookiesImageView = (ImageView) domainSettingsView.findViewById(R.id.domain_settings_third_party_cookies_imageview);
         Switch domStorageEnabledSwitch = (Switch) domainSettingsView.findViewById(R.id.domain_settings_dom_storage_switch);
+        final ImageView domStorageImageView = (ImageView) domainSettingsView.findViewById(R.id.domain_settings_dom_storage_imageview);
         Switch formDataEnabledSwitch = (Switch) domainSettingsView.findViewById(R.id.domain_settings_form_data_switch);
+        final ImageView formDataImageView = (ImageView) domainSettingsView.findViewById(R.id.domain_settings_form_data_imageview);
         Spinner userAgentSpinner = (Spinner) domainSettingsView.findViewById(R.id.domain_settings_user_agent_spinner);
         final TextView userAgentTextView = (TextView) domainSettingsView.findViewById(R.id.domain_settings_user_agent_textview);
         final EditText customUserAgentEditText = (EditText) domainSettingsView.findViewById(R.id.domain_settings_custom_user_agent_edittext);
@@ -109,12 +118,50 @@ public class DomainSettingsFragment extends Fragment {
         // Set the domain name from the the database cursor.
         domainNameEditText.setText(domainNameString);
 
-        // Set the status of the `Switches` from the database cursor.
-        javaScriptEnabledSwitch.setChecked(javaScriptEnabledInt == 1);
-        firstPartyCookiesEnabledSwitch.setChecked(firstPartyCookiesEnabledInt == 1);
-        thirdPartyCookiesEnabledSwitch.setChecked(thirdPartyCookiesEnabledInt == 1);
-        domStorageEnabledSwitch.setChecked(domStorageEnabledInt == 1);
-        formDataEnabledSwitch.setChecked(formDataEnabledInt == 1);
+        // Set the JavaScript status.
+        if (javaScriptEnabledInt == 1) {  // JavaScript is enabled.
+            javaScriptEnabledSwitch.setChecked(true);
+            javaScriptImageView.setImageDrawable(getResources().getDrawable(R.drawable.javascript_enabled));
+        } else {  // JavaScript is disabled.
+            javaScriptEnabledSwitch.setChecked(false);
+            javaScriptImageView.setImageDrawable(getResources().getDrawable(R.drawable.privacy_mode));
+        }
+
+        // Set the first-party cookies status.
+        if (firstPartyCookiesEnabledInt == 1) {  // First-party cookies are enabled.
+            firstPartyCookiesEnabledSwitch.setChecked(true);
+            firstPartyCookiesImageView.setEnabled(true);
+        } else {  // First-party cookies are disabled.
+            firstPartyCookiesEnabledSwitch.setChecked(false);
+            firstPartyCookiesImageView.setEnabled(false);
+        }
+
+        // Set the third-party cookies status.
+        if (thirdPartyCookiesEnabledInt == 1) {  // Third-party cookies are enabled.
+            thirdPartyCookiesEnabledSwitch.setChecked(true);
+            thirdPartyCookiesImageView.setEnabled(true);
+        } else {  // Third-party cookies are disabled.
+            thirdPartyCookiesEnabledSwitch.setChecked(false);
+            thirdPartyCookiesImageView.setEnabled(false);
+        }
+
+        // Set the DOM storage status.
+        if (domStorageEnabledInt == 1) {  // DOM storage is enabled.
+            domStorageEnabledSwitch.setChecked(true);
+            domStorageImageView.setEnabled(true);
+        } else {  // Dom storage is disabled.
+            domStorageEnabledSwitch.setChecked(false);
+            domStorageImageView.setEnabled(false);
+        }
+
+        // Set the form data status.
+        if (formDataEnabledInt == 1) {  // Form data is enabled.
+            formDataEnabledSwitch.setChecked(true);
+            formDataImageView.setEnabled(true);
+        } else {  // Form data is disabled.
+            formDataEnabledSwitch.setChecked(false);
+            formDataImageView.setEnabled(false);
+        }
 
         // We need to inflated a `WebView` to get the default user agent.
         // `@SuppressLint("InflateParams")` removes the warning about using `null` as the `ViewGroup`, which in this case makes sense because we don't want to display `bare_webview` on the screen.  `false` does not attach the view to the root.
@@ -161,6 +208,55 @@ public class DomainSettingsFragment extends Fragment {
         // Set the selected font size.
         int fontSizeArrayPosition = fontSizeEntryValuesArrayAdapter.getPosition(String.valueOf(fontSizeInt));
         fontSizeSpinner.setSelection(fontSizeArrayPosition);
+
+        // Set the `javaScriptEnabledSwitch` `OnCheckedChangeListener()`.
+        javaScriptEnabledSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Update the icon.
+                if (isChecked) {
+                    javaScriptImageView.setImageDrawable(getResources().getDrawable(R.drawable.javascript_enabled));
+                } else {
+                    javaScriptImageView.setImageDrawable(getResources().getDrawable(R.drawable.privacy_mode));
+                }
+            }
+        });
+
+        // Set the `firstPartyCookiesEnabledSwitch` `OnCheckedChangeListener()`.
+        firstPartyCookiesEnabledSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Update the icon.
+                firstPartyCookiesImageView.setEnabled(isChecked);
+            }
+        });
+
+        // Set the `thirdPartyCookiesEnabledSwitch` `OnCheckedChangeListener()`.
+        thirdPartyCookiesEnabledSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Update the icon.
+                thirdPartyCookiesImageView.setEnabled(isChecked);
+            }
+        });
+
+        // Set the `domStorageEnabledSwitch` `OnCheckedChangeListener()`.
+        domStorageEnabledSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Update the icon.
+                domStorageImageView.setEnabled(isChecked);
+            }
+        });
+
+        // Set the `formDataEnabledSwitch` `OnCheckedChangeListener()`.
+        formDataEnabledSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Update the icon.
+                formDataImageView.setEnabled(isChecked);
+            }
+        });
 
         // Set the `userAgentSpinner` `onItemClickListener()`.
         userAgentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
