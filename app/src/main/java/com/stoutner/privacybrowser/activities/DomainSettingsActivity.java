@@ -19,14 +19,19 @@
 
 package com.stoutner.privacybrowser.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -87,7 +92,7 @@ public class DomainSettingsActivity extends AppCompatActivity {
 
         // Initialize the database handler.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
         // The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
-        DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(getApplicationContext(), null, null, 0);
+        final DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(getApplicationContext(), null, null, 0);
 
         switch (menuItemID) {
             case android.R.id.home:  // The home arrow is identified as `android.R.id.home`, not just `R.id.home`.
@@ -135,11 +140,52 @@ public class DomainSettingsActivity extends AppCompatActivity {
                 break;
 
             case R.id.delete_domain:
-                // Delete the selected domain.
-                domainsDatabaseHelper.deleteDomain(databaseId);
+                // Get a handle for the current activity.
+                final Activity activity = this;
 
-                // Navigate to `DomainsActivity`.
-                NavUtils.navigateUpFromSameTask(this);
+                // Get a handle for `domain_settings_coordinatorlayout` so we can display a `SnackBar` later.
+                CoordinatorLayout domainSettingsCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.domain_settings_coordinatorlayout);
+
+                // Detach `domain_settings_scrollview`.
+                getSupportFragmentManager().beginTransaction().detach(getSupportFragmentManager().findFragmentById(R.id.domain_settings_scrollview)).commit();
+
+                Snackbar.make(domainSettingsCoordinatorLayout, R.string.domain_deleted, Snackbar.LENGTH_SHORT)
+                        .setAction(R.string.undo, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // Do nothing because everything will be handled by `onDismiss` below.
+                            }
+                        })
+                        .addCallback(new Snackbar.Callback() {
+                            @Override
+                            public void onDismissed(Snackbar snackbar, int event) {
+                                switch (event) {
+                                    // The user pushed the `undo` button.
+                                    case Snackbar.Callback.DISMISS_EVENT_ACTION:
+                                        // Store `databaseId` in `argumentsBundle`.
+                                        Bundle argumentsBundle = new Bundle();
+                                        argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, databaseId);
+
+                                        // Add `argumentsBundle` to `domainSettingsFragment`.
+                                        DomainSettingsFragment domainSettingsFragment = new DomainSettingsFragment();
+                                        domainSettingsFragment.setArguments(argumentsBundle);
+
+                                        // Display `domainSettingsFragment`.
+                                        getSupportFragmentManager().beginTransaction().replace(R.id.domain_settings_scrollview, domainSettingsFragment).commit();
+                                        break;
+
+                                    // The `Snackbar` was dismissed without the `Undo` button being pushed.
+                                    default:
+                                        // Delete the selected domain.
+                                        domainsDatabaseHelper.deleteDomain(databaseId);
+
+                                        // Navigate to `DomainsActivity`.
+                                        NavUtils.navigateUpFromSameTask(activity);
+                                        break;
+                                }
+                            }
+                        })
+                        .show();
                 break;
         }
         return true;

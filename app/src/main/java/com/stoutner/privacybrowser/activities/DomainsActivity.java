@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -48,7 +49,7 @@ import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 
 public class DomainsActivity extends AppCompatActivity implements AddDomainDialog.AddDomainListener {
     // `context` is used in `onCreate()` and `onOptionsItemSelected()`.
-    Context context;
+    private Context context;
 
     // `domainsDatabaseHelper` is used in `onCreate()`, `onOptionsItemSelected()`, `onAddDomain()`, and `updateDomainsRecyclerView()`.
     private static DomainsDatabaseHelper domainsDatabaseHelper;
@@ -56,7 +57,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
     // `twoPaneMode` is used in `onCreate()` and `updateDomainsListView()`.
     private boolean twoPaneMode;
 
-    // `domainsRecyclerView` is used in `onCreate()` and `updateDomainsListView()`.
+    // `domainsListView` is used in `onCreate()`, `onOptionsItemSelected()`, and `updateDomainsListView()`.
     private ListView domainsListView;
 
     // `databaseId` is used in `onCreate()` and `onOptionsItemSelected()`.
@@ -117,6 +118,11 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
                     // Display `domainSettingsFragment`.
                     getSupportFragmentManager().beginTransaction().replace(R.id.domain_settings_scrollview, domainSettingsFragment).commit();
+
+                    // Enable the options `MenuItems`.
+                    deleteMenuItem.setEnabled(true);
+                    deleteMenuItem.setIcon(R.drawable.delete);
+                    saveMenuItem.setEnabled(true);
                 } else { // Load the second activity on smaller screens.
                     // Create `domainSettingsActivityIntent` with the `databaseId`.
                     Intent domainSettingsActivityIntent = new Intent(context, DomainSettingsActivity.class);
@@ -204,19 +210,119 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
                 // Save the domain settings.
                 domainsDatabaseHelper.saveDomain(databaseId, domainNameString, javaScriptEnabled, firstPartyCookiesEnabled, thirdPartyCookiesEnabled, domStorageEnabledEnabled, formDataEnabled, userAgentString, fontSizeInt);
+
+                // Display a `Snackbar`.
+                Snackbar.make(domainsListView, R.string.domain_settings_saved, Snackbar.LENGTH_SHORT).show();
+
+                // update the domains `ListView`.
+                updateDomainsListView();
                 break;
 
             case R.id.delete_domain:
-                // Delete the selected domain.
-                domainsDatabaseHelper.deleteDomain(databaseId);
+                // Save the `ListView` `currentPosition`.
+                final int currentPosition = domainsListView.getCheckedItemPosition();
 
-                // Detach the domain settings fragment.
-                getSupportFragmentManager().beginTransaction().detach(getSupportFragmentManager().findFragmentById(R.id.domain_settings_scrollview)).commit();
+                // Get a `Cursor` that does not show the domain to be deleted.
+                Cursor domainsPendingDeleteCursor = domainsDatabaseHelper.getDomainNameCursorOrderedByDomainExcept(databaseId);
+
+                // Setup `domainsPendingDeleteCursorAdapter` with `this` context.  `false` disables `autoRequery`.
+                CursorAdapter domainsPendingDeleteCursorAdapter = new CursorAdapter(this, domainsPendingDeleteCursor, false) {
+                    @Override
+                    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+                        // Inflate the individual item layout.  `false` does not attach it to the root.
+                        return getLayoutInflater().inflate(R.layout.domain_name_linearlayout, parent, false);
+                    }
+
+                    @Override
+                    public void bindView(View view, Context context, Cursor cursor) {
+                        // Set the domain name.
+                        String domainNameString = cursor.getString(cursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME));
+                        TextView domainNameTextView = (TextView) view.findViewById(R.id.domain_name_textview);
+                        domainNameTextView.setText(domainNameString);
+                    }
+                };
 
                 // Update the `ListView`.
-                updateDomainsListView();
+                domainsListView.setAdapter(domainsPendingDeleteCursorAdapter);
+
+                // Detach the domain settings `Fragment`.
+                getSupportFragmentManager().beginTransaction().detach(getSupportFragmentManager().findFragmentById(R.id.domain_settings_scrollview)).commit();
+
+                // Disable the options `MenuItems`.
+                deleteMenuItem.setEnabled(false);
+                deleteMenuItem.setIcon(R.drawable.delete_blue);
+                saveMenuItem.setEnabled(false);
+
+                // Display a `Snackbar`.
+                Snackbar.make(domainsListView, R.string.domain_deleted, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.undo, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // Do nothing because everything will be handled by `onDismissed()` below.
+                            }
+                        })
+                        .addCallback(new Snackbar.Callback() {
+                            @Override
+                            public void onDismissed(Snackbar snackbar, int event) {
+                                switch (event) {
+                                    // The user pushed the `Undo` button.
+                                    case Snackbar.Callback.DISMISS_EVENT_ACTION:
+                                        // Get a `Cursor` with the current contents of the domains database.
+                                        Cursor undoDeleteDomainsCursor = domainsDatabaseHelper.getDomainNameCursorOrderedByDomain();
+
+                                        // Setup `domainsCursorAdapter` with `this` context.  `false` disables `autoRequery`.
+                                        CursorAdapter undoDeleteDomainsCursorAdapter = new CursorAdapter(context, undoDeleteDomainsCursor, false) {
+                                            @Override
+                                            public View newView(Context context, Cursor cursor, ViewGroup parent) {
+                                                // Inflate the individual item layout.  `false` does not attach it to the root.
+                                                return getLayoutInflater().inflate(R.layout.domain_name_linearlayout, parent, false);
+                                            }
+
+                                            @Override
+                                            public void bindView(View view, Context context, Cursor cursor) {
+                                                // Set the domain name.
+                                                String domainNameString = cursor.getString(cursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME));
+                                                TextView domainNameTextView = (TextView) view.findViewById(R.id.domain_name_textview);
+                                                domainNameTextView.setText(domainNameString);
+                                            }
+                                        };
+
+                                        // Update the `ListView`.
+                                        domainsListView.setAdapter(undoDeleteDomainsCursorAdapter);
+
+                                        // Select the entry in the domain list at `currentPosition`.
+                                        domainsListView.setItemChecked(currentPosition, true);
+
+                                        // Store `databaseId` in `argumentsBundle`.
+                                        Bundle argumentsBundle = new Bundle();
+                                        argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, databaseId);
+
+                                        // Add `argumentsBundle` to `domainSettingsFragment`.
+                                        DomainSettingsFragment domainSettingsFragment = new DomainSettingsFragment();
+                                        domainSettingsFragment.setArguments(argumentsBundle);
+
+                                        // Display `domainSettingsFragment`.
+                                        getSupportFragmentManager().beginTransaction().replace(R.id.domain_settings_scrollview, domainSettingsFragment).commit();
+
+                                        // Enable the options `MenuItems`.
+                                        deleteMenuItem.setEnabled(true);
+                                        deleteMenuItem.setIcon(R.drawable.delete);
+                                        saveMenuItem.setEnabled(true);
+                                        break;
+
+                                    // The `Snackbar` was dismissed without the `Undo` button being pushed.
+                                    default:
+                                        // Delete the selected domain.
+                                        domainsDatabaseHelper.deleteDomain(databaseId);
+                                        break;
+                                }
+                            }
+                        })
+                        .show();
                 break;
         }
+
+        // Consume the event.
         return true;
     }
 
@@ -234,8 +340,19 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
     }
 
     private void updateDomainsListView() {
+        // Initialize `currentPosition`.
+        int currentPosition;
+
+        // Store the current position of `domainsListView` if it is already populated.
+        if (domainsListView.getCount() > 0){
+            currentPosition = domainsListView.getCheckedItemPosition();
+        } else {
+            // Set `currentPosition` to 0;
+            currentPosition = 0;
+        }
+
         // Get a `Cursor` with the current contents of the domains database.
-        Cursor domainsCursor = domainsDatabaseHelper.getCursorOrderedByDomain();
+        Cursor domainsCursor = domainsDatabaseHelper.getDomainNameCursorOrderedByDomain();
 
         // Setup `domainsCursorAdapter` with `this` context.  `false` disables `autoRequery`.
         CursorAdapter domainsCursorAdapter = new CursorAdapter(this, domainsCursor, false) {
@@ -259,11 +376,11 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
         // Display the domain settings in the second pane if operating in two pane mode and the database contains at least one domain.
         if (twoPaneMode && (domainsCursor.getCount() > 0)) {
-            // Select the first domain.
-            domainsListView.setItemChecked(0, true);
+            // Select the entry in the domain list at `currentPosition`.
+            domainsListView.setItemChecked(currentPosition, true);
 
-            // Get the `databaseId` of the first item.
-            domainsCursor.moveToFirst();
+            // Get the `databaseId` for `currentPosition`.
+            domainsCursor.moveToPosition(currentPosition);
             databaseId = domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper._ID));
 
             // Store `databaseId` in `argumentsBundle`.

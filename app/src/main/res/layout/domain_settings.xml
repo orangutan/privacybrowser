@@ -40,33 +40,46 @@
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal" >
+            android:orientation="vertical">
 
-            <ImageView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginBottom="26dp"
-                android:layout_marginEnd="10dp"
-                android:layout_gravity="bottom"
-                android:src="@drawable/domains"
-                android:tint="@color/blue_800"
-                tools:ignore="contentDescription" />
-
-            <!-- `android.support.design.widget.TextInputLayout` makes the `android:hint` float above the `EditText`. -->
-            <android.support.design.widget.TextInputLayout
+            <LinearLayout
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_marginStart="6dp"
-                android:layout_marginBottom="14dp" >
+                android:orientation="horizontal" >
 
-                <!-- `android:inputType="textUri"` disables spell check in the `EditText`. -->
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/domain_settings_name_edittext"
-                    android:layout_width="match_parent"
+                <ImageView
                     android:layout_height="wrap_content"
-                    android:hint="@string/domain_name"
-                    android:inputType="textUri" />
-            </android.support.design.widget.TextInputLayout>
+                    android:layout_width="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="12dp"
+                    android:layout_gravity="bottom"
+                    android:src="@drawable/domains"
+                    android:tint="@color/blue_800"
+                    tools:ignore="contentDescription" />
+
+                <!-- `android.support.design.widget.TextInputLayout` makes the `android:hint` float above the `EditText`. -->
+                <android.support.design.widget.TextInputLayout
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_marginStart="6dp" >
+
+                    <!-- `android:inputType="textUri"` disables spell check in the `EditText`. -->
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/domain_settings_name_edittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/domain_name"
+                        android:inputType="textUri" />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text="@string/domain_name_instructions"
+                android:textSize="12sp"
+                android:layout_marginStart="43dp"
+                android:layout_marginBottom="14dp" />
         </LinearLayout>
 
         <!-- JavaScript. -->
@@ -108,8 +121,7 @@
                 android:layout_marginTop="1dp"
                 android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/cookies_enabled"
-                android:tint="@color/domain_settings_icon_yellow_tint_selector"
+                android:src="@drawable/cookies_disabled"
                 tools:ignore="contentDescription" />
 
             <Switch
@@ -125,6 +137,7 @@
 
         <!-- Third-Party Cookies. -->
         <LinearLayout
+            android:id="@+id/domain_settings_third_party_cookies_linearlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:orientation="horizontal" >
@@ -136,8 +149,7 @@
                 android:layout_marginTop="1dp"
                 android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/cookies_enabled"
-                android:tint="@color/domain_settings_icon_red_tint_selector"
+                android:src="@drawable/cookies_disabled"
                 tools:ignore="contentDescription" />
 
             <Switch
@@ -164,8 +176,7 @@
                 android:layout_marginTop="1dp"
                 android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/dom_storage_enabled"
-                android:tint="@color/domain_settings_icon_yellow_tint_selector"
+                android:src="@drawable/dom_storage_disabled"
                 tools:ignore="contentDescription" />
 
             <Switch
@@ -192,8 +203,7 @@
                 android:layout_marginTop="1dp"
                 android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/form_data_enabled"
-                android:tint="@color/domain_settings_icon_yellow_tint_selector"
+                android:src="@drawable/form_data_disabled"
                 tools:ignore="contentDescription" />
 
             <Switch

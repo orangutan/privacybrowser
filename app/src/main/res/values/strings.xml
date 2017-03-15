@@ -189,6 +189,9 @@
     <string name="add_domain">Add Domain</string>
     <string name="add">Add</string>
     <string name="domain_name">Domain name</string>
+    <string name="domain_settings_saved">Domain settings saved</string>
+    <string name="domain_deleted">Domain deleted</string>
+    <string name="domain_name_instructions">*. may be prepended to a domain to include all subdomains (eg. *.stoutner.com)</string>
 
     <!-- Guide. -->
     <string name="privacy_browser_guide">Privacy Browser Guide</string>

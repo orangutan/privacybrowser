@@ -831,7 +831,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         MenuItem toggleDomStorage = menu.findItem(R.id.toggleDomStorage);
         MenuItem toggleSaveFormData = menu.findItem(R.id.toggleSaveFormData);
 
-        // Only display third-Party Cookies if SDK >= 21
+        // Only display third-party cookies if SDK >= 21
         toggleThirdPartyCookies.setVisible(Build.VERSION.SDK_INT >= 21);
 
         // Get the shared preference values.  `this` references the current context.

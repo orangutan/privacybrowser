@@ -405,6 +405,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                         // Scroll to where the deleted bookmark was located.
                         bookmarksListView.setSelection(selectedBookmarkPosition - 5);
 
+                        // Initialize `snackbarMessage`.
                         String snackbarMessage;
 
                         // Determine how many items are in the array and prepare an appropriate Snackbar message.
@@ -425,31 +426,17 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                                 .addCallback(new Snackbar.Callback() {
                                     @Override
                                     public void onDismissed(Snackbar snackbar, int event) {
-                                        // Android Studio wants to see entries for every possible `Snackbar.Callback` even if they aren't used.
                                         switch (event) {
-                                            // The user pushed the "Undo" button.
+                                            // The user pushed the `Undo` button.
                                             case Snackbar.Callback.DISMISS_EVENT_ACTION:
                                                 // Refresh the ListView to show the rows again.
                                                 updateBookmarksListView(currentFolder);
 
                                                 // Scroll to where the deleted bookmark was located.
                                                 bookmarksListView.setSelection(selectedBookmarkPosition - 5);
-
                                                 break;
 
-                                            case Snackbar.Callback.DISMISS_EVENT_CONSECUTIVE:
-                                                // Do nothing and let the default behavior run.
-
-                                            case Snackbar.Callback.DISMISS_EVENT_MANUAL:
-                                                // Do nothing and let the default behavior run.
-
-                                            case Snackbar.Callback.DISMISS_EVENT_SWIPE:
-                                                // Do nothing and let the default behavior run.
-
-                                            case Snackbar.Callback.DISMISS_EVENT_TIMEOUT:
-                                                // Do nothing and let the default behavior run.
-
-                                            // The Snackbar was dismissed without the "Undo" button being pushed.
+                                            // The `Snackbar` was dismissed without the `Undo` button being pushed.
                                             default:
                                                 // Delete each selected row.
                                                 for (long databaseIdLong : selectedBookmarksLongArray) {

@@ -112,7 +112,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
 
         // Prepare the SQL statement to get the `Cursor` for `databaseId`
-        final String GET_ONE_BOOKMARK = "Select * FROM " + BOOKMARKS_TABLE +
+        final String GET_ONE_BOOKMARK = "SELECT * FROM " + BOOKMARKS_TABLE +
                 " WHERE " + _ID + " = " + databaseId;
 
         // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.  We can't close the `Cursor` because we need to use it in the parent activity.
@@ -124,7 +124,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
 
         // Prepare the SQL statement to get the `Cursor` for the folder.
-        final String GET_FOLDER = "Select * FROM " + BOOKMARKS_TABLE +
+        final String GET_FOLDER = "SELECT * FROM " + BOOKMARKS_TABLE +
                 " WHERE " + _ID + " = " + databaseId;
 
         // Get `folderCursor`.  The second argument is `null` because there are no `selectionArgs`.
@@ -150,7 +150,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         folderName = DatabaseUtils.sqlEscapeString(folderName);
 
         // Prepare the SQL statement to get the `Cursor` for the folder.
-        final String GET_FOLDER = "Select * FROM " + BOOKMARKS_TABLE +
+        final String GET_FOLDER = "SELECT * FROM " + BOOKMARKS_TABLE +
                 " WHERE " + BOOKMARK_NAME + " = " + folderName +
                 " AND " + IS_FOLDER + " = " + 1;
 
@@ -164,7 +164,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
 
         // Prepare the SQL statement to get the `Cursor` for the folders.
-        final String GET_FOLDERS_EXCEPT = "Select * FROM " + BOOKMARKS_TABLE +
+        final String GET_FOLDERS_EXCEPT = "SELECT * FROM " + BOOKMARKS_TABLE +
                 " WHERE " + IS_FOLDER + " = " + 1 +
                 " AND " + BOOKMARK_NAME + " NOT IN (" + exceptFolders +
                 ") ORDER BY " + BOOKMARK_NAME + " ASC";
@@ -182,7 +182,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         currentFolder = DatabaseUtils.sqlEscapeString(currentFolder);
 
         // Prepare the SQL statement to get the `Cursor` for the subfolders.
-        final String GET_SUBFOLDERS = "Select * FROM " + BOOKMARKS_TABLE +
+        final String GET_SUBFOLDERS = "SELECT * FROM " + BOOKMARKS_TABLE +
                 " WHERE " + PARENT_FOLDER + " = " + currentFolder +
                 " AND " + IS_FOLDER + " = " + 1;
 
@@ -199,7 +199,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         currentFolder = DatabaseUtils.sqlEscapeString(currentFolder);
 
         // Prepare the SQL statement to get the parent folder.
-        final String GET_PARENT_FOLDER = "Select * FROM " + BOOKMARKS_TABLE +
+        final String GET_PARENT_FOLDER = "SELECT * FROM " + BOOKMARKS_TABLE +
                 " WHERE " + IS_FOLDER + " = " + 1 +
                 " AND " + BOOKMARK_NAME + " = " + currentFolder;
 
@@ -221,7 +221,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
 
         // Get everything in `BOOKMARKS_TABLE`.
-        final String GET_ALL_BOOKMARKS = "Select * FROM " + BOOKMARKS_TABLE;
+        final String GET_ALL_BOOKMARKS = "SELECT * FROM " + BOOKMARKS_TABLE;
 
         // Return the results as a Cursor.  The second argument is `null` because there are no selectionArgs.
         // We can't close the Cursor because we need to use it in the parent activity.
@@ -236,7 +236,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         folderName = DatabaseUtils.sqlEscapeString(folderName);
 
         // Get everything in the `BOOKMARKS_TABLE` with `folderName` as the `PARENT_FOLDER`.
-        final String GET_ALL_BOOKMARKS = "Select * FROM " + BOOKMARKS_TABLE +
+        final String GET_ALL_BOOKMARKS = "SELECT * FROM " + BOOKMARKS_TABLE +
                 " WHERE " + PARENT_FOLDER + " = " + folderName +
                 " ORDER BY " + DISPLAY_ORDER + " ASC";
 
@@ -264,7 +264,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         folderName = DatabaseUtils.sqlEscapeString(folderName);
 
         // Prepare the SQL statement to select all items except those with the specified IDs.
-        final String GET_All_BOOKMARKS_EXCEPT_SPECIFIED = "Select * FROM " + BOOKMARKS_TABLE +
+        final String GET_All_BOOKMARKS_EXCEPT_SPECIFIED = "SELECT * FROM " + BOOKMARKS_TABLE +
                 " WHERE " + PARENT_FOLDER + " = " + folderName +
                 " AND " + _ID + " NOT IN (" + doNotGetIdsString +
                 ") ORDER BY " + DISPLAY_ORDER + " ASC";
@@ -279,7 +279,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
 
         // Prepare the SQL statement to determine if `databaseId` is a folder.
-        final String CHECK_IF_FOLDER = "Select * FROM " + BOOKMARKS_TABLE +
+        final String CHECK_IF_FOLDER = "SELECT * FROM " + BOOKMARKS_TABLE +
                 " WHERE " + _ID + " = " + databaseId;
 
         // Populate folderCursor.  The second argument is `null` because there are no `selectionArgs`.
@@ -409,7 +409,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
 
         // Get the highest `DISPLAY_ORDER` in the new folder
         String newFolderSqlEscaped = DatabaseUtils.sqlEscapeString(newFolder);
-        final String NEW_FOLDER = "Select * FROM " + BOOKMARKS_TABLE +
+        final String NEW_FOLDER = "SELECT * FROM " + BOOKMARKS_TABLE +
                 " WHERE " + PARENT_FOLDER + " = " + newFolderSqlEscaped +
                 " ORDER BY " + DISPLAY_ORDER + " ASC";
         // The second argument is `null` because there are no `selectionArgs`.

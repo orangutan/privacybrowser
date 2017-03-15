@@ -22,6 +22,7 @@ package com.stoutner.privacybrowser.fragments;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 // We have to use `android.support.v4.app.Fragment` until minimum API >= 23.  Otherwise we cannot call `getContext()`.
 import android.support.v4.app.Fragment;
@@ -34,6 +35,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -72,9 +74,10 @@ public class DomainSettingsFragment extends Fragment {
         final ImageView javaScriptImageView = (ImageView) domainSettingsView.findViewById(R.id.domain_settings_javascript_imageview);
         Switch firstPartyCookiesEnabledSwitch = (Switch) domainSettingsView.findViewById(R.id.domain_settings_first_party_cookies_switch);
         final ImageView firstPartyCookiesImageView = (ImageView) domainSettingsView.findViewById(R.id.domain_settings_first_party_cookies_imageview);
-        Switch thirdPartyCookiesEnabledSwitch = (Switch) domainSettingsView.findViewById(R.id.domain_settings_third_party_cookies_switch);
+        LinearLayout thirdPartyCookiesLinearLayout = (LinearLayout) domainSettingsView.findViewById(R.id.domain_settings_third_party_cookies_linearlayout);
+        final Switch thirdPartyCookiesEnabledSwitch = (Switch) domainSettingsView.findViewById(R.id.domain_settings_third_party_cookies_switch);
         final ImageView thirdPartyCookiesImageView = (ImageView) domainSettingsView.findViewById(R.id.domain_settings_third_party_cookies_imageview);
-        Switch domStorageEnabledSwitch = (Switch) domainSettingsView.findViewById(R.id.domain_settings_dom_storage_switch);
+        final Switch domStorageEnabledSwitch = (Switch) domainSettingsView.findViewById(R.id.domain_settings_dom_storage_switch);
         final ImageView domStorageImageView = (ImageView) domainSettingsView.findViewById(R.id.domain_settings_dom_storage_imageview);
         Switch formDataEnabledSwitch = (Switch) domainSettingsView.findViewById(R.id.domain_settings_form_data_switch);
         final ImageView formDataImageView = (ImageView) domainSettingsView.findViewById(R.id.domain_settings_form_data_imageview);
@@ -127,40 +130,74 @@ public class DomainSettingsFragment extends Fragment {
             javaScriptImageView.setImageDrawable(getResources().getDrawable(R.drawable.privacy_mode));
         }
 
-        // Set the first-party cookies status.
+        // Set the first-party cookies status.  Once minimum API >= 21 we can use a selector as the tint mode instead of specifying different icons.
         if (firstPartyCookiesEnabledInt == 1) {  // First-party cookies are enabled.
             firstPartyCookiesEnabledSwitch.setChecked(true);
-            firstPartyCookiesImageView.setEnabled(true);
+            firstPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_enabled));
         } else {  // First-party cookies are disabled.
             firstPartyCookiesEnabledSwitch.setChecked(false);
-            firstPartyCookiesImageView.setEnabled(false);
+            firstPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_disabled));
         }
 
-        // Set the third-party cookies status.
-        if (thirdPartyCookiesEnabledInt == 1) {  // Third-party cookies are enabled.
-            thirdPartyCookiesEnabledSwitch.setChecked(true);
-            thirdPartyCookiesImageView.setEnabled(true);
-        } else {  // Third-party cookies are disabled.
-            thirdPartyCookiesEnabledSwitch.setChecked(false);
-            thirdPartyCookiesImageView.setEnabled(false);
+        // Only display third-party cookies if SDK_INT >= 21.
+        if (Build.VERSION.SDK_INT >= 21) {  // Third-party cookies can be configured for API >= 21.
+            // Only enable third-party-cookies if first-party cookies are enabled.
+            if (firstPartyCookiesEnabledInt == 1) {  // First-party cookies are enabled.
+                // Set the third-party cookies status.  Once minimum API >= 21 we can use a selector as the tint mode instead of specifying different icons.
+                if (thirdPartyCookiesEnabledInt == 1) {  // Both first-party and third-party cookies are enabled.
+                    thirdPartyCookiesEnabledSwitch.setChecked(true);
+                    thirdPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_warning));
+                } else {  // First party cookies are enabled but third-party cookies are disabled.
+                    thirdPartyCookiesEnabledSwitch.setChecked(false);
+                    thirdPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_disabled));
+                }
+            } else {  // First-party cookies are disabled.
+                // Set the status of third-party cookies, but disable it.
+                if (thirdPartyCookiesEnabledInt == 1) {  // Third-party cookies are enabled but first-party cookies are disabled.
+                    thirdPartyCookiesEnabledSwitch.setChecked(true);
+                    thirdPartyCookiesEnabledSwitch.setEnabled(false);
+                    thirdPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_ghosted));
+                } else {  // Both first party and third-party cookies are disabled.
+                    thirdPartyCookiesEnabledSwitch.setChecked(false);
+                    thirdPartyCookiesEnabledSwitch.setEnabled(false);
+                    thirdPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_ghosted));
+                }
+            }
+        } else {  // Third-party cookies cannot be configured for API <= 21.
+            // Hide the `LinearLayout` for third-party cookies.
+            thirdPartyCookiesLinearLayout.setVisibility(View.GONE);
         }
 
-        // Set the DOM storage status.
-        if (domStorageEnabledInt == 1) {  // DOM storage is enabled.
-            domStorageEnabledSwitch.setChecked(true);
-            domStorageImageView.setEnabled(true);
-        } else {  // Dom storage is disabled.
-            domStorageEnabledSwitch.setChecked(false);
-            domStorageImageView.setEnabled(false);
+        // Only enable DOM storage if JavaScript is enabled.
+        if (javaScriptEnabledInt == 1) {  // JavaScript is enabled.
+            // Set the DOM storage status.  Once minimum API >= 21 we can use a selector as the tint mode instead of specifying different icons.
+            if (domStorageEnabledInt == 1) {  // Both JavaScript and DOM storage are enabled.
+                domStorageEnabledSwitch.setChecked(true);
+                domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_enabled));
+            } else {  // JavaScript is enabled but DOM storage is disabled.
+                domStorageEnabledSwitch.setChecked(false);
+                domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_disabled));
+            }
+        } else {  // JavaScript is disabled.
+            // Set the status of DOM storage, but disable it.
+            if (domStorageEnabledInt == 1) {  // DOM storage is enabled but JavaScript is disabled.
+                domStorageEnabledSwitch.setChecked(true);
+                domStorageEnabledSwitch.setEnabled(false);
+                domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_ghosted));
+            } else {  // Both JavaScript and DOM storae are disabled.
+                domStorageEnabledSwitch.setChecked(false);
+                domStorageEnabledSwitch.setEnabled(false);
+                domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_ghosted));
+            }
         }
 
-        // Set the form data status.
+        // Set the form data status.  Once minimum API >= 21 we can use a selector as the tint mode instead of specifying different icons.
         if (formDataEnabledInt == 1) {  // Form data is enabled.
             formDataEnabledSwitch.setChecked(true);
-            formDataImageView.setEnabled(true);
+            formDataImageView.setImageDrawable(getResources().getDrawable(R.drawable.form_data_enabled));
         } else {  // Form data is disabled.
             formDataEnabledSwitch.setChecked(false);
-            formDataImageView.setEnabled(false);
+            formDataImageView.setImageDrawable(getResources().getDrawable(R.drawable.form_data_disabled));
         }
 
         // We need to inflated a `WebView` to get the default user agent.
@@ -213,11 +250,28 @@ public class DomainSettingsFragment extends Fragment {
         javaScriptEnabledSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // Update the icon.
-                if (isChecked) {
+                if (isChecked) {  // JavaScript is enabled.
+                    // Update the JavaScript icon.
                     javaScriptImageView.setImageDrawable(getResources().getDrawable(R.drawable.javascript_enabled));
-                } else {
+
+                    // Enable the DOM storage `Switch`.
+                    domStorageEnabledSwitch.setEnabled(true);
+
+                    // Update the DOM storage icon.
+                    if (domStorageEnabledSwitch.isChecked()) {  // DOM storage is enabled.
+                        domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_enabled));
+                    } else {  // DOM storage is disabled.
+                        domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_disabled));
+                    }
+                } else {  // JavaScript is disabled.
+                    // Update the JavaScript icon.
                     javaScriptImageView.setImageDrawable(getResources().getDrawable(R.drawable.privacy_mode));
+
+                    // Disable the DOM storage `Switch`.
+                    domStorageEnabledSwitch.setEnabled(false);
+
+                    // Set the DOM storage icon to be ghosted.
+                    domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_ghosted));
                 }
             }
         });
@@ -226,8 +280,29 @@ public class DomainSettingsFragment extends Fragment {
         firstPartyCookiesEnabledSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // Update the icon.
-                firstPartyCookiesImageView.setEnabled(isChecked);
+                if (isChecked) {  // First-party cookies are enabled.
+                    // Update the first-party cookies icon.
+                    firstPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_enabled));
+
+                    // Enable the third-party cookies `Switch`.
+                    thirdPartyCookiesEnabledSwitch.setEnabled(true);
+
+                    // Update the third-party cookies icon.
+                    if (thirdPartyCookiesEnabledSwitch.isChecked()) {  // Third-party cookies are enabled.
+                        thirdPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_warning));
+                    } else {  // Third-party cookies are disabled.
+                        thirdPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_disabled));
+                    }
+                } else {  // First-party cookies are disabled.
+                    // Update the first-party cookies icon.
+                    firstPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_disabled));
+
+                    // Disable the third-party cookies `Switch`.
+                    thirdPartyCookiesEnabledSwitch.setEnabled(false);
+
+                    // Set the third-party cookies icon to be ghosted.
+                    thirdPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_ghosted));
+                }
             }
         });
 
@@ -236,7 +311,11 @@ public class DomainSettingsFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Update the icon.
-                thirdPartyCookiesImageView.setEnabled(isChecked);
+                if (isChecked) {
+                    thirdPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_warning));
+                } else {
+                    thirdPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_disabled));
+                }
             }
         });
 
@@ -245,7 +324,11 @@ public class DomainSettingsFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Update the icon.
-                domStorageImageView.setEnabled(isChecked);
+                if (isChecked) {
+                    domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_enabled));
+                } else {
+                    domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_disabled));
+                }
             }
         });
 
@@ -254,7 +337,11 @@ public class DomainSettingsFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Update the icon.
-                formDataImageView.setEnabled(isChecked);
+                if (isChecked) {
+                    formDataImageView.setImageDrawable(getResources().getDrawable(R.drawable.form_data_enabled));
+                } else {
+                    formDataImageView.setImageDrawable(getResources().getDrawable(R.drawable.form_data_disabled));
+                }
             }
         });
 

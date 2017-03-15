@@ -68,16 +68,31 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         // Code for upgrading the database will be added here when the schema version > 1.
     }
 
-    public Cursor getCursorOrderedByDomain() {
+    public Cursor getDomainNameCursorOrderedByDomain() {
         // Get a readable database handle.
         SQLiteDatabase domainsDatabase = this.getReadableDatabase();
 
         // Get everything in `DOMAINS_TABLE` ordered by `DOMAIN_NAME`.
-        final String GET_CURSOR_SORTED_BY_DOMAIN = "Select * FROM " + DOMAINS_TABLE +
+        final String GET_CURSOR_ORDERED_BY_DOMAIN = "SELECT " + _ID + ", " + DOMAIN_NAME +
+                " FROM " + DOMAINS_TABLE +
                 " ORDER BY " + DOMAIN_NAME + " ASC";
 
         // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.  We can't close the `Cursor` because we need to use it in the parent activity.
-        return domainsDatabase.rawQuery(GET_CURSOR_SORTED_BY_DOMAIN, null);
+        return domainsDatabase.rawQuery(GET_CURSOR_ORDERED_BY_DOMAIN, null);
+    }
+
+    public Cursor getDomainNameCursorOrderedByDomainExcept(int databaseId) {
+        // Get a readable database handle.
+        SQLiteDatabase domainsDatabase = this.getReadableDatabase();
+
+        // Prepare the SQL statement to select all rows except that with `databaseId`.
+        final String GET_CURSOR_ORDERED_BY_DOMAIN_EXCEPT = "SELECT " + _ID + ", " + DOMAIN_NAME +
+                " FROM " + DOMAINS_TABLE +
+                " WHERE " + _ID + " IS NOT " + databaseId +
+                " ORDER BY " + DOMAIN_NAME + " ASC";
+
+        // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.  We can't close the `Cursor` because we need to use it in the parent activity.
+        return domainsDatabase.rawQuery(GET_CURSOR_ORDERED_BY_DOMAIN_EXCEPT, null);
     }
 
     public Cursor getCursorForId(int databaseId) {

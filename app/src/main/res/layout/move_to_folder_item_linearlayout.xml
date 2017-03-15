@@ -25,7 +25,7 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:orientation="horizontal"
-    android:background="@drawable/bookmarks_list_selector" >
+    android:background="@drawable/listview_item_background_selector" >
 
     <ImageView
         android:id="@+id/move_to_folder_icon"
