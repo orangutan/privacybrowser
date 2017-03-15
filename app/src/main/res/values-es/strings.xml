@@ -3,7 +3,7 @@
 <!--
   Copyright 2016-2017 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2017 Jose A. León Becerra.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017 Jose A. León Becerra <emails@joseleon.me>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   Este archivo es parte de Navegador Privado (Privacy Browser) <https://www.stoutner.com/privacy-browser>.
 
@@ -180,6 +180,13 @@
 
     <!-- Domains. -->
     <string name="domains">Dominios</string>
+    <string name="domain_settings">Configuración de dominio</string>
+    <string name="add_domain">Añadir dominio</string>
+    <string name="add">Añadir</string>
+    <string name="domain_name">Nombre de dominio</string>
+    <string name="domain_settings_saved">Configuración de dominio guardada</string>
+    <string name="domain_deleted">Dominio eliminado</string>
+    <string name="domain_name_instructions">*. puede ser añadido a un dominio para incluir todos los subdominios (p.ej. *.stoutner.com)</string>
 
     <!-- Guide. -->
     <string name="privacy_browser_guide">Guía de Navegador Privado</string>
@@ -290,6 +297,7 @@
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Enviar a través de Orbot no funcionará a menos que se instale Orbot.</string>
+    <string name="waiting_for_orbot">Esperando a Orbot para conectar...</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">Acerca de Navegador Privado</string>

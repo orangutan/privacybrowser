@@ -169,7 +169,7 @@
 
     <!-- Bookmarks Contextual App Bar. -->
     <string name="one_selected">1 Selected</string>
-    <string name="selected">Selected</string>  <!--This should be the plural form of the word.-->
+    <string name="selected">Selected</string>  <!--This is a plural adjective.-->
     <string name="move_up">Move Up</string>
     <string name="move_down">Move Down</string>
     <string name="edit">Edit</string>

@@ -51,6 +51,8 @@
     <string name="image_name">Nome Immagine</string>
     <string name="unknown_size">Dimensione sconosciuta</string>
     <string name="download">Scarica</string>
+    <string name="cannot_download_file">Il file non può essere scaricato perchè non ha un URL HTTP o HTTPS</string>
+    <string name="cannot_download_image">L\'immagine non può essere scaricata perchè non ha un URL HTTP o HTTPS</string>
 
     <!-- Custom App Bar. -->
     <string name="favorite_icon">FavIcon</string>
@@ -178,6 +180,16 @@
     <string name="bookmarks_database_view">Database dei Segnalibri</string>
     <string name="home_folder">Cartella principale</string>
 
+    <!-- Domains. -->
+    <string name="domains">Domini</string>
+    <string name="domain_settings">Impostazioni Domini</string>
+    <string name="add_domain">Aggiungi Dominio</string>
+    <string name="add">Aggiungi</string>
+    <string name="domain_name">Nome del Dominio</string>
+    <string name="domain_settings_saved">Impostazioni Domini Salvate</string>
+    <string name="domain_deleted">Dominio Eliminato</string>
+    <string name="domain_name_instructions">è possibile anteporre *. a un dominio per includere tutti i sottodomini (es. *.stoutner.com)</string>
+
     <!-- Guide. -->
     <string name="privacy_browser_guide">Guida di Privacy Browser</string>
     <string name="overview">Descrizione</string>
@@ -253,6 +265,21 @@
     <string name="tor">Tor</string>
         <string name="proxy_through_orbot">Utilizza Proxy con Orbot</string>
         <string name="proxy_through_orbot_summary">Utilizza Proxy attraverso Orbot su localhost:8118.</string>
+        <string name="tor_homepage">Tor Homepage</string>
+        <string name="tor_javascript_disabled_search">Tor - Ricerca con JavaScript disabilitato</string>
+        <string-array name="tor_javascript_disabled_search_entries">
+            <item>DuckDuckGo</item>
+            <item>Torch</item>
+            <item>Custom</item>
+        </string-array>
+        <string name="tor_javascript_disabled_search_custom_url">Tor - Ricerca personalizzata con JavaScript disabilitato</string>
+        <string name="tor_javascript_enabled_search">Tor - Ricerca con JavaScript abilitato</string>
+        <string-array name="tor_javascript_enabled_search_entries">
+            <item>DuckDuckGo</item>
+            <item>Torch</item>
+            <item>Custom</item>
+        </string-array>
+        <string name="tor_javascript_enabled_search_custom_url">Tor - Ricerca personalizzata con JavaScript abilitato</string>
     <string name="general">Generale</string>
         <string name="homepage">Homepage</string>
         <string name="default_font_size">Dimensione standard carattere</string>
@@ -272,6 +299,7 @@
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Il Proxy con Orbot funziona solo se è installato Orbot.</string>
+    <string name="waiting_for_orbot">In attesa della connessione di Orbot...</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">Informazioni su Privacy Browser</string>

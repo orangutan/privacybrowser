@@ -184,7 +184,7 @@ public class DomainSettingsFragment extends Fragment {
                 domStorageEnabledSwitch.setChecked(true);
                 domStorageEnabledSwitch.setEnabled(false);
                 domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_ghosted));
-            } else {  // Both JavaScript and DOM storae are disabled.
+            } else {  // Both JavaScript and DOM storage are disabled.
                 domStorageEnabledSwitch.setChecked(false);
                 domStorageEnabledSwitch.setEnabled(false);
                 domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_ghosted));
