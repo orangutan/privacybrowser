@@ -265,12 +265,10 @@
         </LinearLayout>
 
         <!-- Font Size. -->
-        <!-- We need to add an extra `android:layout_marginBottom="14dp"` to the last `LinearLayout` or the bottom of the `ScrollView` gets cutoff if API 25. -->
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginBottom="14dp" >
+            android:orientation="horizontal" >
 
             <ImageView
                 android:layout_height="wrap_content"
