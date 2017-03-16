@@ -91,7 +91,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
                 " WHERE " + _ID + " IS NOT " + databaseId +
                 " ORDER BY " + DOMAIN_NAME + " ASC";
 
-        // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.  We can't close the `Cursor` because we need to use it in the parent activity.
+        // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.  We can't close the `Cursor` because we need to use it in the calling activity.
         return domainsDatabase.rawQuery(GET_CURSOR_ORDERED_BY_DOMAIN_EXCEPT, null);
     }
 
@@ -99,12 +99,24 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         // Get a readable database handle.
         SQLiteDatabase domainsDatabase = this.getReadableDatabase();
 
-        // Prepare the SQL statement to ge the `Cursor` for `databaseId`.
-        final String GET_CURSOR_FOR_ID = "Select * FROM " + DOMAINS_TABLE +
+        // Prepare the SQL statement to get the `Cursor` for `databaseId`.
+        final String GET_CURSOR_FOR_ID = "SELECT * FROM " + DOMAINS_TABLE +
                 " WHERE " + _ID + " = " + databaseId;
 
-        // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.  We can't close the `Cursor` because we need to use it in the parent activity.
+        // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.  We can't close the `Cursor` because we need to use it in the calling activity.
         return domainsDatabase.rawQuery(GET_CURSOR_FOR_ID, null);
+    }
+
+    public Cursor getCursorForDomainName(String domainName) {
+        // Get a readable database handle.
+        SQLiteDatabase domainsDatabase = this.getReadableDatabase();
+
+        // Prepare the SQL statement to get the `Cursor` for `domainName`.
+        final String GET_CURSOR_FOR_DOMAIN_NAME = "SELECT * FROM " + DOMAINS_TABLE +
+                " WHERE " + DOMAIN_NAME + " = " + "\"" + domainName + "\"";
+
+        // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.  We can't close the `Cursor` because we need to us it in the calling activity.
+        return domainsDatabase.rawQuery(GET_CURSOR_FOR_DOMAIN_NAME, null);
     }
 
     public void addDomain(String domainName) {

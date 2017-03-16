@@ -32,6 +32,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -94,6 +95,7 @@ import com.stoutner.privacybrowser.dialogs.CreateHomeScreenShortcutDialog;
 import com.stoutner.privacybrowser.dialogs.DownloadImageDialog;
 import com.stoutner.privacybrowser.dialogs.UrlHistoryDialog;
 import com.stoutner.privacybrowser.dialogs.ViewSslCertificateDialog;
+import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 import com.stoutner.privacybrowser.helpers.OrbotProxyHelper;
 import com.stoutner.privacybrowser.dialogs.DownloadFileDialog;
 import com.stoutner.privacybrowser.dialogs.SslCertificateErrorDialog;
@@ -124,7 +126,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     public static Bitmap favoriteIcon;
 
     // `formattedUrlString` is public static so it can be accessed from `BookmarksActivity`, `CreateBookmarkDialog`, and `AddDomainDialog`.
-    // It is also used in `onCreate()`, `onOptionsItemSelected()`, `onCreateHomeScreenShortcutCreate()`, and `loadUrlFromTextBox()`.
+    // It is also used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onCreateHomeScreenShortcutCreate()`, and `loadUrlFromTextBox()`.
     public static String formattedUrlString;
 
     // `sslCertificate` is public static so it can be accessed from `ViewSslCertificateDialog`.  It is also used in `onCreate()`.
@@ -133,6 +135,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`.
     public static String orbotStatus;
 
+
+    // `navigatingHistory` is used in `onCreate()` and `onNavigationItemSelected()`.
+    private boolean navigatingHistory;
 
     // `drawerLayout` is used in `onCreate()`, `onNewIntent()`, and `onBackPressed()`.
     private DrawerLayout drawerLayout;
@@ -149,10 +154,10 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `swipeRefreshLayout` is used in `onCreate()`, `onPrepareOptionsMenu`, and `onRestart()`.
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    // `cookieManager` is used in `onCreate()`, `onOptionsItemSelected()`, and `onNavigationItemSelected()`, `onDownloadImage()`, `onDownloadFile()`, and `onRestart()`.
+    // `cookieManager` is used in `onCreate()`, `onOptionsItemSelected()`, and `onNavigationItemSelected()`, `loadUrlFromTextBox()`, `onDownloadImage()`, `onDownloadFile()`, and `onRestart()`.
     private CookieManager cookieManager;
 
-    // `customHeader` is used in `onCreate()`, `onOptionsItemSelected()`, `onCreateContextMenu()`, and `loadUrlFromTextBox()`.
+    // `customHeader` is used in `onCreate()`, `onOptionsItemSelected()`, `onCreateContextMenu()`, and `loadUrl()`.
     private final Map<String, String> customHeaders = new HashMap<>();
 
     // `javaScriptEnabled` is also used in `onCreate()`, `onCreateOptionsMenu()`, `onOptionsItemSelected()`, `loadUrlFromTextBox()`, and `applySettings()`.
@@ -222,7 +227,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `supportAppBar` is used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
     private Toolbar supportAppBar;
 
-    // `urlTextBox` is used in `onCreate()`, `onOptionsItemSelected()`, and `loadUrlFromTextBox()`.
+    // `urlTextBox` is used in `onCreate()`, `onOptionsItemSelected()`, `loadUrlFromTextBox()`, and `loadUrl()`.
     private EditText urlTextBox;
 
     // `adView` is used in `onCreate()` and `onConfigurationChanged()`.
@@ -312,7 +317,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     pendingUrl = "";
 
                     // Load `formattedUrlString
-                    mainWebView.loadUrl(formattedUrlString, customHeaders);
+                    loadUrl(formattedUrlString);
                 }
             }
         };
@@ -566,7 +571,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     startActivity(emailIntent);
                     return true;
                 } else {  // Load the URL in Privacy Browser.
-                    mainWebView.loadUrl(url, customHeaders);
+                    loadUrl(url);
                     return true;
                 }
             }
@@ -580,12 +585,12 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     Uri requestUri = Uri.parse(url);
                     String requestHost = requestUri.getHost();
 
-                    // Create a variable to track if this is an ad server.
+                    // Initialize a variable to track if this is an ad server.
                     boolean requestHostIsAdServer = false;
 
-                    // Check all the subdomains of `requestHost` if it is not `null`.
+                    // Check all the subdomains of `requestHost` if it is not `null` against the ad server database.
                     if (requestHost != null) {
-                        while (requestHost.contains(".")) {
+                        while (requestHost.contains(".") && !requestHostIsAdServer) {  // Stop checking if we run out of `.` or if we already know that `requestHostIsAdServer` is `true`.
                             if (adServersSet.contains(requestHost)) {
                                 requestHostIsAdServer = true;
                             }
@@ -618,6 +623,11 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
                     // Display the loading URL is the URL text box.
                     urlTextBox.setText(url);
+
+                    // Apply any custom domain settings if the URL was loaded by navigating history.
+                    if (navigatingHistory) {
+                        applyDomainSettings(url);
+                    }
                 }
             }
 
@@ -773,12 +783,19 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Initialize AdView for the free flavor.
         adView = findViewById(R.id.adView);
 
+        // Initialize the privacy settings variables.
+        javaScriptEnabled = false;
+        firstPartyCookiesEnabled = false;
+        thirdPartyCookiesEnabled = false;
+        domStorageEnabled = false;
+        saveFormDataEnabled = false;
+
         // Apply the settings from the shared preferences.
         applySettings();
 
         // Load `formattedUrlString` if we are not proxying through Orbot and waiting for Orbot to connect.
         if (!(proxyThroughOrbot && !orbotStatus.equals("ON"))) {
-            mainWebView.loadUrl(formattedUrlString, customHeaders);
+            loadUrl(formattedUrlString);
         }
 
         // If the favorite icon is null, load the default.
@@ -808,7 +825,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         }
 
         // Load the website.
-        mainWebView.loadUrl(formattedUrlString, customHeaders);
+        loadUrl(formattedUrlString);
 
         // Clear the keyboard if displayed and remove the focus on the urlTextBar if it has it.
         mainWebView.requestFocus();
@@ -1191,17 +1208,25 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
         switch (menuItemId) {
             case R.id.home:
-                mainWebView.loadUrl(homepage, customHeaders);
+                loadUrl(homepage);
                 break;
 
             case R.id.back:
                 if (mainWebView.canGoBack()) {
+                    // Set `navigatingHistory` so that the domain settings are applied when the new URL is loaded.
+                    navigatingHistory = true;
+
+                    // Load the previous website in the history.
                     mainWebView.goBack();
                 }
                 break;
 
             case R.id.forward:
                 if (mainWebView.canGoForward()) {
+                    // Set `navigatingHistory` so that the domain settings are applied when the new URL is loaded.
+                    navigatingHistory = true;
+
+                    // Load the next website in the history.
                     mainWebView.goForward();
                 }
                 break;
@@ -1371,7 +1396,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 menu.add(R.string.load_url).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        mainWebView.loadUrl(linkUrl, customHeaders);
+                        loadUrl(linkUrl);
                         return false;
                     }
                 });
@@ -1448,7 +1473,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 menu.add(R.string.view_image).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        mainWebView.loadUrl(imageUrl, customHeaders);
+                        loadUrl(imageUrl);
                         return false;
                     }
                 });
@@ -1494,7 +1519,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 menu.add(R.string.view_image).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        mainWebView.loadUrl(imageUrl, customHeaders);
+                        loadUrl(imageUrl);
                         return false;
                     }
                 });
@@ -1659,6 +1684,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
     @Override
     public void onUrlHistoryEntrySelected(int moveBackOrForwardSteps) {
+        // Set `navigatingHistory` so that the domain settings are applied when the new URL is loaded.
+        navigatingHistory = true;
+
         // Load the history entry.
         mainWebView.goBackOrForward(moveBackOrForwardSteps);
     }
@@ -1772,10 +1800,172 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             }
         }
 
-        mainWebView.loadUrl(formattedUrlString, customHeaders);
+        loadUrl(formattedUrlString);
 
         // Hide the keyboard so we can see the webpage.  `0` indicates no additional flags.
         inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
+    }
+
+
+    private void loadUrl(String url) {
+        // Apply any custom domain settings.
+        applyDomainSettings(url);
+
+        // Load the URL.
+        mainWebView.loadUrl(url, customHeaders);
+    }
+
+    // We have to use the deprecated `.getColor()` until the minimum API >= 23.
+    @SuppressWarnings("deprecation")
+    private void applyDomainSettings(String url) {
+        // Parse the URL into a URI.
+        Uri uri = Uri.parse(url);
+
+        // Extract the domain from `uri`.
+        String hostname = uri.getHost();
+
+        // Initialize the database handler.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
+        // The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
+        DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
+
+        // Get a full cursor from `domainsDatabaseHelper`.
+        Cursor domainNameCursor = domainsDatabaseHelper.getDomainNameCursorOrderedByDomain();
+
+        // Initialize `domainSettingsSet`.
+        Set<String> domainSettingsSet = new HashSet<>();
+
+        // Get the domain name column index.
+        int domainNameColumnIndex = domainNameCursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME);
+
+        // Populate `domainSettingsSet`.
+        for (int i=0; i<domainNameCursor.getCount(); i++) {
+            // Move `domainsCursor` to the current row.
+            domainNameCursor.moveToPosition(i);
+
+            // Store the domain name in `domainSettingsSet`.
+            domainSettingsSet.add(domainNameCursor.getString(domainNameColumnIndex));
+        }
+
+        // Close `domainNameCursor.
+        domainNameCursor.close();
+
+        // Initialize variables to track if this domain has stored domain settings, and if so, under which name.
+        boolean hostHasDomainSettings = false;
+        String domainNameInDatabase =  null;
+
+        // Check all the subdomains of `domain` if it is not `null` against the list of domains in `domainCursor`.
+        if (hostname != null) {
+            while (hostname.contains(".") && !hostHasDomainSettings) {  // Stop checking if we run out of  `.` or if we already know that `hostHasDomainSettings` is `true`.
+                if (domainSettingsSet.contains(hostname)) {  // Check the host name.
+                    hostHasDomainSettings = true;
+                    domainNameInDatabase = hostname;
+                } else if (domainSettingsSet.contains("*." + hostname)){  // Check the host name prepended by `*.`.
+                    hostHasDomainSettings = true;
+                    domainNameInDatabase = "*." + hostname;
+                }
+
+                // Strip out the lowest subdomain of `host`.
+                hostname = hostname.substring(hostname.indexOf(".") + 1);
+            }
+        }
+
+        FrameLayout urlAppBarFrameLayout = (FrameLayout) findViewById(R.id.url_app_bar_framelayout);
+
+        if (hostHasDomainSettings) {  // The url we are loading has custom domain settings.
+            // Get a cursor for the current host and move it to the first position.
+            Cursor currentHostDomainSettingsCursor = domainsDatabaseHelper.getCursorForDomainName(domainNameInDatabase);
+            currentHostDomainSettingsCursor.moveToFirst();
+
+            // Get the settings from the cursor.
+            javaScriptEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)) == 1);
+            firstPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES)) == 1);
+            thirdPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES)) == 1);
+            domStorageEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)) == 1);
+            saveFormDataEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA)) == 1);
+            String userAgentString = (currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT)));
+            int fontSize = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE)));
+
+            // Close `currentHostDomainSettingsCursor`.
+            currentHostDomainSettingsCursor.close();
+
+            // Apply the domain settings.
+            mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
+            cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
+            mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
+            mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
+            mainWebView.getSettings().setTextZoom(fontSize);
+
+            // Set third-party cookies status if API >= 21.
+            if (Build.VERSION.SDK_INT >= 21) {
+                cookieManager.setAcceptThirdPartyCookies(mainWebView, thirdPartyCookiesEnabled);
+            }
+
+            // Set the user agent.
+            if (userAgentString.equals("WebView default user agent")) {
+                // Set the user agent to `""`, which uses the default value.
+                mainWebView.getSettings().setUserAgentString("");
+            } else {
+                // Use the selected user agent.
+                mainWebView.getSettings().setUserAgentString(userAgentString);
+            }
+
+            // Set a green background on `urlTextBox` to indicate that custom domain settings are being used.  We have to use the deprecated `.getColor()` until the minimum API >= 23.
+            urlAppBarFrameLayout.setBackgroundColor(getResources().getColor(R.color.green_100));
+        } else {  // The URL we are loading does not have custom domain settings.  Load the defaults.
+            // Get the shared preference values.  `this` references the current context.
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+            // Store the values from `sharedPreferences` in variables.
+            javaScriptEnabled = sharedPreferences.getBoolean("javascript_enabled", false);
+            firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies_enabled", false);
+            thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies_enabled", false);
+            domStorageEnabled = sharedPreferences.getBoolean("dom_storage_enabled", false);
+            saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data_enabled", false);
+            String userAgentString = sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0");
+            String customUserAgentString = sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0");
+            String defaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
+
+            // Apply the default settings.
+            mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
+            cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
+            mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
+            mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
+            mainWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
+
+            // Set third-party cookies status if API >= 21.
+            if (Build.VERSION.SDK_INT >= 21) {
+                cookieManager.setAcceptThirdPartyCookies(mainWebView, thirdPartyCookiesEnabled);
+            }
+
+            // Set the default user agent.
+            switch (userAgentString) {
+                case "WebView default user agent":
+                    // Set the user agent to `""`, which uses the default value.
+                    mainWebView.getSettings().setUserAgentString("");
+                    break;
+
+                case "Custom user agent":
+                    // Set the custom user agent.
+                    mainWebView.getSettings().setUserAgentString(customUserAgentString);
+                    break;
+
+                default:
+                    // Use the selected user agent.
+                    mainWebView.getSettings().setUserAgentString(userAgentString);
+                    break;
+            }
+
+            // Set a transparent background on `urlTextBox`.  We have to use the deprecated `.getColor()` until the minimum API >= 23.
+            urlAppBarFrameLayout.setBackgroundColor(getResources().getColor(R.color.transparent));
+        }
+
+        // Close `domainsDatabaseHelper`.
+        domainsDatabaseHelper.close();
+
+        // Update the privacy icons, but only if `mainMenu` has already been populated.
+        if (mainMenu != null) {
+            updatePrivacyIcons(true);
+        }
     }
 
     public void findPreviousOnPage(View view) {
@@ -1810,8 +2000,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Store the values from `sharedPreferences` in variables.
-        String userAgentString = sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0");
-        String customUserAgentString = sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0");
         String javaScriptDisabledSearchString = sharedPreferences.getString("javascript_disabled_search", "https://duckduckgo.com/html/?q=");
         String javaScriptDisabledSearchCustomURLString = sharedPreferences.getString("javascript_disabled_search_custom_url", "");
         String javaScriptEnabledSearchString = sharedPreferences.getString("javascript_enabled_search", "https://duckduckgo.com/?q=");
@@ -1822,7 +2010,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         String torJavaScriptDisabledSearchCustomURLString = sharedPreferences.getString("tor_javascript_disabled_search_custom_url", "");
         String torJavaScriptEnabledSearchString = sharedPreferences.getString("tor_javascript_enabled_search", "https://3g2upl4pq6kufc4m.onion/?q=");
         String torJavaScriptEnabledSearchCustomURLString = sharedPreferences.getString("tor_javascript_enabled_search_custom_url", "");
-        String defaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
         swipeToRefreshEnabled = sharedPreferences.getBoolean("swipe_to_refresh_enabled", false);
         adBlockerEnabled = sharedPreferences.getBoolean("block_ads", true);
         boolean doNotTrackEnabled = sharedPreferences.getBoolean("do_not_track", false);
@@ -1830,28 +2017,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("enable_full_screen_browsing_mode", false);
         hideSystemBarsOnFullscreen = sharedPreferences.getBoolean("hide_system_bars", false);
         translucentNavigationBarOnFullscreen = sharedPreferences.getBoolean("translucent_navigation_bar", true);
-
-        // Because they can be modified on-the-fly by the user, these default settings are only applied when the program first runs.
-        if (javaScriptEnabled == null) {  // If `javaScriptEnabled` is null the program is just starting.
-            // Get the values from `sharedPreferences`.
-            javaScriptEnabled = sharedPreferences.getBoolean("javascript_enabled", false);
-            firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies_enabled", false);
-            thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies_enabled", false);
-            domStorageEnabled = sharedPreferences.getBoolean("dom_storage_enabled", false);
-            saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data_enabled", false);
-
-            // Apply the default settings.
-            mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
-            cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
-            mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
-            mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
-            mainWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
-
-            // Set third-party cookies status if API >= 21.
-            if (Build.VERSION.SDK_INT >= 21) {
-                cookieManager.setAcceptThirdPartyCookies(mainWebView, thirdPartyCookiesEnabled);
-            }
-        }
 
         // Set the homepage, search, and proxy options.
         if (proxyThroughOrbot) {  // Set the Tor options.
@@ -1923,24 +2088,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
         // Set swipe to refresh.
         swipeRefreshLayout.setEnabled(swipeToRefreshEnabled);
-
-        // Set the user agent initial status.
-        switch (userAgentString) {
-            case "WebView default user agent":
-                // Set the user agent to `""`, which uses the default value.
-                mainWebView.getSettings().setUserAgentString("");
-                break;
-
-            case "Custom user agent":
-                // Set the custom user agent.
-                mainWebView.getSettings().setUserAgentString(customUserAgentString);
-                break;
-
-            default:
-                // Use the selected user agent.
-                mainWebView.getSettings().setUserAgentString(userAgentString);
-                break;
-        }
 
         // Set Do Not Track status.
         if (doNotTrackEnabled) {
