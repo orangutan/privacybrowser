@@ -117,17 +117,14 @@ public class EditBookmarkFolderDialog extends AppCompatDialogFragment {
         Bitmap currentIconBitmap = BitmapFactory.decodeByteArray(currentIconByteArray, 0, currentIconByteArray.length);
         // Display `currentIconBitmap` in `edit_folder_current_icon`.
         ImageView currentIconImageView = (ImageView) alertDialog.findViewById(R.id.edit_folder_current_icon);
-        assert currentIconImageView != null;  // Remove the warning below that `currentIconImageView` might be null.
         currentIconImageView.setImageBitmap(currentIconBitmap);
 
         // Get a `Bitmap` of the favorite icon from `MainWebViewActivity` and display it in `edit_folder_web_page_favorite_icon`.
         ImageView webPageFavoriteIconImageView = (ImageView) alertDialog.findViewById(R.id.edit_folder_web_page_favorite_icon);
-        assert webPageFavoriteIconImageView != null;  // Remove the warning below that `webPageFavoriteIcon` might be null.
         webPageFavoriteIconImageView.setImageBitmap(MainWebViewActivity.favoriteIcon);
 
         // Load the text for `edit_folder_name_edittext`.
         EditText folderNameEditText = (EditText) alertDialog.findViewById(R.id.edit_folder_name_edittext);
-        assert folderNameEditText != null;  // Remove the warning below that `bookmarkNameEditText` might be null.
         folderNameEditText.setText(bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME)));
 
         // Allow the `enter` key on the keyboard to save the bookmark from `edit_bookmark_name_edittext`.

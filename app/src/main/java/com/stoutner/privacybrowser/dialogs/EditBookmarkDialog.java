@@ -117,17 +117,14 @@ public class EditBookmarkDialog extends AppCompatDialogFragment {
         Bitmap currentIconBitmap = BitmapFactory.decodeByteArray(currentIconByteArray, 0, currentIconByteArray.length);
         // Display `currentIconBitmap` in `edit_bookmark_current_icon`.
         ImageView currentIconImageView = (ImageView) alertDialog.findViewById(R.id.edit_bookmark_current_icon);
-        assert currentIconImageView != null;  // Remove the warning below that `currentIconImageView` might be null;
         currentIconImageView.setImageBitmap(currentIconBitmap);
 
         // Get a `Bitmap` of the favorite icon from `MainWebViewActivity` and display it in `edit_bookmark_web_page_favorite_icon`.
         ImageView newFavoriteIconImageView = (ImageView) alertDialog.findViewById(R.id.edit_bookmark_web_page_favorite_icon);
-        assert newFavoriteIconImageView != null;  // Remove the warning below that `newFavoriteIcon` might be null.
         newFavoriteIconImageView.setImageBitmap(MainWebViewActivity.favoriteIcon);
 
         // Load the text for `edit_bookmark_name_edittext`.
         EditText bookmarkNameEditText = (EditText) alertDialog.findViewById(R.id.edit_bookmark_name_edittext);
-        assert bookmarkNameEditText != null;  // Remove the warning below that `bookmarkNameEditText` might be null.
         bookmarkNameEditText.setText(bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME)));
 
         // Allow the `enter` key on the keyboard to save the bookmark from `edit_bookmark_name_edittext`.
@@ -150,7 +147,6 @@ public class EditBookmarkDialog extends AppCompatDialogFragment {
 
         // Load the text for `edit_bookmark_url_edittext`.
         EditText bookmarkUrlEditText = (EditText) alertDialog.findViewById(R.id.edit_bookmark_url_edittext);
-        assert bookmarkUrlEditText != null;// Remove the warning below that `bookmarkUrlEditText` might be null.
         bookmarkUrlEditText.setText(bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL)));
 
         // Allow the "enter" key on the keyboard to save the bookmark from `edit_bookmark_url_edittext`.

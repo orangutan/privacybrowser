@@ -135,6 +135,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`.
     public static String orbotStatus;
 
+    // `webViewTitle` is public static so it can be accessed from `CreateHomeScreenShorcutDialog`.  It is also used in `onCreate()`.
+    public static String webViewTitle;
+
 
     // `navigatingHistory` is used in `onCreate()` and `onNavigationItemSelected()`.
     private boolean navigatingHistory;
@@ -679,12 +682,19 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             // Set the favorite icon when it changes.
             @Override
             public void onReceivedIcon(WebView view, Bitmap icon) {
-                // Save a copy of the favorite icon for use if a shortcut is added to the home screen.
+                // Save a copy of the favorite icon.
                 favoriteIcon = icon;
 
                 // Place the favorite icon in the appBar.
                 ImageView imageViewFavoriteIcon = (ImageView) appBar.getCustomView().findViewById(R.id.favoriteIcon);
                 imageViewFavoriteIcon.setImageBitmap(Bitmap.createScaledBitmap(icon, 64, 64, true));
+            }
+
+            // Save a copy of the title when it changes.
+            @Override
+            public void onReceivedTitle(WebView view, String title) {
+                // Save a copy of the title.
+                webViewTitle = title;
             }
 
             // Enter full screen video

@@ -100,7 +100,6 @@ public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
 
         // Allow the `enter` key on the keyboard to create the folder from `create_folder_name_edittext`.
         EditText createFolderNameEditText = (EditText) alertDialog.findViewById(R.id.create_folder_name_edittext);
-        assert createFolderNameEditText != null;  // Remove the warning below that `createFolderNameEditText` might be `null`.
         createFolderNameEditText.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // If the event is a key-down on the `enter` key, select the `PositiveButton` `Create`.
@@ -119,7 +118,6 @@ public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
 
         // Display the current favorite icon.
         ImageView webPageIconImageView = (ImageView) alertDialog.findViewById(R.id.create_folder_web_page_icon);
-        assert webPageIconImageView != null;  // Remove the warning that `webPageIconImageView` may be null.
         webPageIconImageView.setImageBitmap(MainWebViewActivity.favoriteIcon);
 
         // `onCreateDialog()` requires the return of an `AlertDialog`.

@@ -220,9 +220,6 @@ public class UrlHistoryDialog extends AppCompatDialogFragment{
         // Get a handle for `listView`.
         ListView listView = (ListView) alertDialog.findViewById(R.id.history_listview);
 
-        // Remove the warning below that `listView` might be `null`.
-        assert listView != null;
-
         // Set the adapter on `listView`.
         listView.setAdapter(historyArrayAdapter);
 
@@ -233,15 +230,9 @@ public class UrlHistoryDialog extends AppCompatDialogFragment{
                 // Convert the `long` `id` to an `int`.
                 int itemId = (int) id;
 
-                // Only enable the click if it is not on the `currentPageId`.
+                // Only consume the click if it is not on the `currentPageId`.
                 if (itemId != currentPageId) {
-                    // Get the history entry for this `itemId`.
-                    History historyEntry = historyArrayAdapter.getItem(itemId);
-
-                    // Remove the lint warning below that `historyEntry` might be `null`.
-                    assert historyEntry != null;
-
-                    // Send the history entry URL to be loaded in `mainWebView`.
+                    // Go forward or back to `itemId`.
                     urlHistoryListener.onUrlHistoryEntrySelected(currentPageId - itemId);
 
                     // Dismiss the `Dialog`.

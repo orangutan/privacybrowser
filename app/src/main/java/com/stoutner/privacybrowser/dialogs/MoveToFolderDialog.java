@@ -159,7 +159,6 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
                     Bitmap folderIconBitmap = BitmapFactory.decodeByteArray(folderIconByteArray, 0, folderIconByteArray.length);
                     // Display `folderIconBitmap` in `move_to_folder_icon`.
                     ImageView folderIconImageView = (ImageView) view.findViewById(R.id.move_to_folder_icon);
-                    assert folderIconImageView != null;  // Remove the warning below that `currentIconImageView` might be null;
                     folderIconImageView.setImageBitmap(folderIconBitmap);
 
                     // Get the folder name from `cursor` and display it in `move_to_folder_name_textview`.
@@ -227,7 +226,6 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
                     Bitmap folderIconBitmap = BitmapFactory.decodeByteArray(folderIconByteArray, 0, folderIconByteArray.length);
                     // Display `folderIconBitmap` in `move_to_folder_icon`.
                     ImageView folderIconImageView = (ImageView) view.findViewById(R.id.move_to_folder_icon);
-                    assert folderIconImageView != null;  // Remove the warning below that `currentIconImageView` might be null;
                     folderIconImageView.setImageBitmap(folderIconBitmap);
 
                     // Get the folder name from `cursor` and display it in `move_to_folder_name_textview`.
@@ -240,7 +238,6 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
 
         // Display the ListView
         ListView foldersListView = (ListView) alertDialog.findViewById(R.id.move_to_folder_listview);
-        assert foldersListView != null;  // Remove the warning below that `foldersListView` might be null.
         foldersListView.setAdapter(foldersCursorAdapter);
 
         // `onCreateDialog` requires the return of an `AlertDialog`.

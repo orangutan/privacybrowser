@@ -105,9 +105,13 @@ public class CreateHomeScreenShortcutDialog extends AppCompatDialogFragment {
         // We need to show `alertDialog` before we can call `setOnKeyListener()` below.
         alertDialog.show();
 
-        // Allow the "enter" key on the keyboard to create the shortcut.
+        // Get a handle for `shortcut_name_edittext`.
         EditText shortcutNameEditText = (EditText) alertDialog.findViewById(R.id.shortcut_name_edittext);
-        assert shortcutNameEditText != null;  // Remove the warning below that shortcutNameEditText might be null.
+
+        // Set the current `WebView` title as the text for `shortcutNameEditText`.
+        shortcutNameEditText.setText(MainWebViewActivity.webViewTitle);
+
+        // Allow the "enter" key on the keyboard to create the shortcut.
         shortcutNameEditText.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // If the event is a key-down on the "enter" button, select the PositiveButton "Create".

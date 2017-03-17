@@ -104,9 +104,13 @@ public class CreateBookmarkDialog extends AppCompatDialogFragment {
         // We need to show the `AlertDialog` before we can call `setOnKeyListener()` below.
         alertDialog.show();
 
-        // Allow the `enter` key on the keyboard to create the bookmark from `create_bookmark_name_edittext`.
+        // Get a handle for `create_bookmark_name_edittext`.
         EditText createBookmarkNameEditText = (EditText) alertDialog.findViewById(R.id.create_bookmark_name_edittext);
-        assert createBookmarkNameEditText != null;  // Remove the warning below that `createBookmarkNameEditText` might be `null`.
+
+        // Set the current `WebView` title as the text for `create_bookmark_name_edittext`.
+        createBookmarkNameEditText.setText(MainWebViewActivity.webViewTitle);
+
+        // Allow the `enter` key on the keyboard to create the bookmark from `create_bookmark_name_edittext`.
         createBookmarkNameEditText.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View view, int keyCode, KeyEvent event) {
                 // If the event is a key-down on the `enter` key, select the `PositiveButton` `Create`.
@@ -125,7 +129,6 @@ public class CreateBookmarkDialog extends AppCompatDialogFragment {
 
         // Set the formattedUrlString as the initial text of `create_bookmark_url_edittext`.
         EditText createBookmarkUrlEditText = (EditText) alertDialog.findViewById(R.id.create_bookmark_url_edittext);
-        assert createBookmarkUrlEditText != null;// Remove the warning below that `createBookmarkUrlEditText` might be `null`.
         createBookmarkUrlEditText.setText(MainWebViewActivity.formattedUrlString);
 
         // Allow the `enter` key on the keyboard to create the bookmark from `create_bookmark_url_edittext`.

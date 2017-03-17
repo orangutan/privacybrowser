@@ -137,7 +137,6 @@ public class DownloadImageDialog extends AppCompatDialogFragment {
 
         // Set the text for `downloadImageNameTextView`.
         EditText downloadImageNameTextView = (EditText) alertDialog.findViewById(R.id.download_image_name);
-        assert downloadImageNameTextView != null;  // Remove the warning on the following line that `downloadImageNameTextView` might be `null`.
         downloadImageNameTextView.setText(imageFileName);
 
         // Allow the `enter` key on the keyboard to save the file from `downloadImageNameTextView`.

@@ -40,7 +40,8 @@
             android:layout_width="match_parent"
             android:hint="@string/bookmark_name"
             android:imeOptions="actionGo"
-            android:inputType="textUri" />
+            android:inputType="textUri"
+            android:selectAllOnFocus="true" />
         </android.support.design.widget.TextInputLayout>
 
     <!-- `android.support.design.widget.TextInputLayout` makes the `android:hint` float above the `EditText`. -->

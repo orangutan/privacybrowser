@@ -162,12 +162,10 @@ public class DownloadFileDialog extends AppCompatDialogFragment {
 
         // Set the text for `downloadFileSizeTextView`.
         TextView downloadFileSizeTextView = (TextView) alertDialog.findViewById(R.id.download_file_size);
-        assert downloadFileSizeTextView != null;  // Remove the warning on the following line that `downloadFileSizeTextView` might be `null`.
         downloadFileSizeTextView.setText(fileSize);
 
         // Set the text for `downloadFileNameTextView`.
         EditText downloadFileNameTextView = (EditText) alertDialog.findViewById(R.id.download_file_name);
-        assert downloadFileNameTextView != null;  // Remove the warning on the following line that `downloadFileNameTextView` might be `null`.
         downloadFileNameTextView.setText(downloadFileName);
 
         // Allow the `enter` key on the keyboard to save the file from `downloadFileNameTextView`.
