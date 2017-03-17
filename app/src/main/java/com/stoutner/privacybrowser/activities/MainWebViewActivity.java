@@ -135,7 +135,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`.
     public static String orbotStatus;
 
-    // `webViewTitle` is public static so it can be accessed from `CreateHomeScreenShorcutDialog`.  It is also used in `onCreate()`.
+    // `webViewTitle` is public static so it can be accessed from `CreateBookmarkDialog` and `CreateHomeScreenShortcutDialog`.  It is also used in `onCreate()`.
     public static String webViewTitle;
 
 
@@ -1716,6 +1716,10 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         } else {
             // Load the previous URL if available.
             if (mainWebView.canGoBack()) {
+                // Set `navigatingHistory` so that the domain settings are applied when the new URL is loaded.
+                navigatingHistory = true;
+
+                // Go back.
                 mainWebView.goBack();
             } else {
                 // Pass `onBackPressed()` to the system.
