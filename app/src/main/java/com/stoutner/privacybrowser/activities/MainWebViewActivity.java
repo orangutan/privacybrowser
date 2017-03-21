@@ -1152,6 +1152,14 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 mainWebView.getSettings().setTextZoom(200);
                 return true;
 
+            case R.id.share:
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, urlTextBox.getText().toString());
+                shareIntent.setType("text/plain");
+                startActivity(Intent.createChooser(shareIntent, "Share URL"));
+                return true;
+
             case R.id.find_on_page:
                 // Hide the URL app bar.
                 supportAppBar.setVisibility(View.GONE);
@@ -1175,20 +1183,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 }, 200);
                 return true;
 
-            case R.id.share:
-                Intent shareIntent = new Intent();
-                shareIntent.setAction(Intent.ACTION_SEND);
-                shareIntent.putExtra(Intent.EXTRA_TEXT, urlTextBox.getText().toString());
-                shareIntent.setType("text/plain");
-                startActivity(Intent.createChooser(shareIntent, "Share URL"));
-                return true;
-
-            case R.id.addToHomescreen:
-                // Show the `CreateHomeScreenShortcutDialog` `AlertDialog` and name this instance `R.string.create_shortcut`.
-                AppCompatDialogFragment createHomeScreenShortcutDialogFragment = new CreateHomeScreenShortcutDialog();
-                createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.create_shortcut));
-
-                //Everything else will be handled by `CreateHomeScreenShortcutDialog` and the associated listener below.
+            case R.id.refresh:
+                mainWebView.reload();
                 return true;
 
             case R.id.print:
@@ -1202,8 +1198,12 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 printManager.print(getResources().getString(R.string.privacy_browser_web_page), printDocumentAdapter, null);
                 return true;
 
-            case R.id.refresh:
-                mainWebView.reload();
+            case R.id.addToHomescreen:
+                // Show the `CreateHomeScreenShortcutDialog` `AlertDialog` and name this instance `R.string.create_shortcut`.
+                AppCompatDialogFragment createHomeScreenShortcutDialogFragment = new CreateHomeScreenShortcutDialog();
+                createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.create_shortcut));
+
+                //Everything else will be handled by `CreateHomeScreenShortcutDialog` and the associated listener below.
                 return true;
 
             default:
