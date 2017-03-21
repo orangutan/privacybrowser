@@ -1874,12 +1874,15 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             boolean hostHasDomainSettings = false;
             String domainNameInDatabase = null;
 
-            // Check all the subdomains of `hostname` against the list of domains in `domainCursor`.
+            // Check the hostname.
+            if (domainSettingsSet.contains(hostname)) {
+                hostHasDomainSettings = true;
+                domainNameInDatabase = hostname;
+            }
+
+            // Check all the subdomains of `hostname` against wildcard domains in `domainCursor`.
             while (hostname.contains(".") && !hostHasDomainSettings) {  // Stop checking if we run out of  `.` or if we already know that `hostHasDomainSettings` is `true`.
-                if (domainSettingsSet.contains(hostname)) {  // Check the host name.
-                    hostHasDomainSettings = true;
-                    domainNameInDatabase = hostname;
-                } else if (domainSettingsSet.contains("*." + hostname)) {  // Check the host name prepended by `*.`.
+                if (domainSettingsSet.contains("*." + hostname)) {  // Check the host name prepended by `*.`.
                     hostHasDomainSettings = true;
                     domainNameInDatabase = "*." + hostname;
                 }
