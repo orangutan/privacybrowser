@@ -209,6 +209,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `proxyThroughOrbot` is used in `onCreate()` and `applySettings()`
     private boolean proxyThroughOrbot;
 
+    // `currentDomain` is used in `onCreate() and `applyDomainSettings()`.
+    private String currentDomain;
+
     // `pendingUrl` is used in `onCreate()` and `applySettings()`
     private static String pendingUrl;
 
@@ -292,10 +295,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Set `waitingForOrbotHTMLString`.
         waitingForOrbotHTMLString = "<html><body><br/><center><h1>" + getString(R.string.waiting_for_orbot) + "</h1></center></body></html>";
 
-        // Initialize `pendingUrl`.
+        // Initialize `currentDomain`, `pendingUrl`, and `orbotStatus`.
+        currentDomain = "";
         pendingUrl = "";
-
-        // Set the initial Orbot status.
         orbotStatus = "unknown";
 
         // Create an Orbot status `BroadcastReceiver`.
@@ -800,8 +802,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         domStorageEnabled = false;
         saveFormDataEnabled = false;
 
-        // Apply the settings from the shared preferences.
-        applySettings();
+        // Apply the app settings from the shared preferences.
+        applyAppSettings();
 
         // Load `formattedUrlString` if we are not proxying through Orbot and waiting for Orbot to connect.
         if (!(proxyThroughOrbot && !orbotStatus.equals("ON"))) {
@@ -1765,7 +1767,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         super.onRestart();
 
         // Apply the settings from shared preferences, which might have been changed in `SettingsActivity`.
-        applySettings();
+        applyAppSettings();
 
         // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
         updatePrivacyIcons(true);
@@ -1838,42 +1840,46 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Extract the domain from `uri`.
         String hostname = uri.getHost();
 
-        // Initialize the database handler.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
-        // The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
-        DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
+        // Only apply the domain settings if `hostname` is not the same as `currentDomain`.  This allows the user to set temporary settings for JavaScript, Cookies, DOM Storage, etc.
+        if (!hostname.equals(currentDomain)) {
+            // Set the new `hostname` as the `currentDomain`.
+            currentDomain = hostname;
 
-        // Get a full cursor from `domainsDatabaseHelper`.
-        Cursor domainNameCursor = domainsDatabaseHelper.getDomainNameCursorOrderedByDomain();
+            // Initialize the database handler.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
+            // The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
+            DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
 
-        // Initialize `domainSettingsSet`.
-        Set<String> domainSettingsSet = new HashSet<>();
+            // Get a full cursor from `domainsDatabaseHelper`.
+            Cursor domainNameCursor = domainsDatabaseHelper.getDomainNameCursorOrderedByDomain();
 
-        // Get the domain name column index.
-        int domainNameColumnIndex = domainNameCursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME);
+            // Initialize `domainSettingsSet`.
+            Set<String> domainSettingsSet = new HashSet<>();
 
-        // Populate `domainSettingsSet`.
-        for (int i=0; i<domainNameCursor.getCount(); i++) {
-            // Move `domainsCursor` to the current row.
-            domainNameCursor.moveToPosition(i);
+            // Get the domain name column index.
+            int domainNameColumnIndex = domainNameCursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME);
 
-            // Store the domain name in `domainSettingsSet`.
-            domainSettingsSet.add(domainNameCursor.getString(domainNameColumnIndex));
-        }
+            // Populate `domainSettingsSet`.
+            for (int i = 0; i < domainNameCursor.getCount(); i++) {
+                // Move `domainsCursor` to the current row.
+                domainNameCursor.moveToPosition(i);
 
-        // Close `domainNameCursor.
-        domainNameCursor.close();
+                // Store the domain name in `domainSettingsSet`.
+                domainSettingsSet.add(domainNameCursor.getString(domainNameColumnIndex));
+            }
 
-        // Initialize variables to track if this domain has stored domain settings, and if so, under which name.
-        boolean hostHasDomainSettings = false;
-        String domainNameInDatabase =  null;
+            // Close `domainNameCursor.
+            domainNameCursor.close();
 
-        // Check all the subdomains of `domain` if it is not `null` against the list of domains in `domainCursor`.
-        if (hostname != null) {
+            // Initialize variables to track if this domain has stored domain settings, and if so, under which name.
+            boolean hostHasDomainSettings = false;
+            String domainNameInDatabase = null;
+
+            // Check all the subdomains of `hostname` against the list of domains in `domainCursor`.
             while (hostname.contains(".") && !hostHasDomainSettings) {  // Stop checking if we run out of  `.` or if we already know that `hostHasDomainSettings` is `true`.
                 if (domainSettingsSet.contains(hostname)) {  // Check the host name.
                     hostHasDomainSettings = true;
                     domainNameInDatabase = hostname;
-                } else if (domainSettingsSet.contains("*." + hostname)){  // Check the host name prepended by `*.`.
+                } else if (domainSettingsSet.contains("*." + hostname)) {  // Check the host name prepended by `*.`.
                     hostHasDomainSettings = true;
                     domainNameInDatabase = "*." + hostname;
                 }
@@ -1881,104 +1887,104 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 // Strip out the lowest subdomain of `host`.
                 hostname = hostname.substring(hostname.indexOf(".") + 1);
             }
-        }
 
-        FrameLayout urlAppBarFrameLayout = (FrameLayout) findViewById(R.id.url_app_bar_framelayout);
+            FrameLayout urlAppBarFrameLayout = (FrameLayout) findViewById(R.id.url_app_bar_framelayout);
 
-        if (hostHasDomainSettings) {  // The url we are loading has custom domain settings.
-            // Get a cursor for the current host and move it to the first position.
-            Cursor currentHostDomainSettingsCursor = domainsDatabaseHelper.getCursorForDomainName(domainNameInDatabase);
-            currentHostDomainSettingsCursor.moveToFirst();
+            if (hostHasDomainSettings) {  // The url we are loading has custom domain settings.
+                // Get a cursor for the current host and move it to the first position.
+                Cursor currentHostDomainSettingsCursor = domainsDatabaseHelper.getCursorForDomainName(domainNameInDatabase);
+                currentHostDomainSettingsCursor.moveToFirst();
 
-            // Get the settings from the cursor.
-            javaScriptEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)) == 1);
-            firstPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES)) == 1);
-            thirdPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES)) == 1);
-            domStorageEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)) == 1);
-            saveFormDataEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA)) == 1);
-            String userAgentString = (currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT)));
-            int fontSize = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE)));
+                // Get the settings from the cursor.
+                javaScriptEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)) == 1);
+                firstPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES)) == 1);
+                thirdPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES)) == 1);
+                domStorageEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)) == 1);
+                saveFormDataEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA)) == 1);
+                String userAgentString = (currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT)));
+                int fontSize = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE)));
 
-            // Close `currentHostDomainSettingsCursor`.
-            currentHostDomainSettingsCursor.close();
+                // Close `currentHostDomainSettingsCursor`.
+                currentHostDomainSettingsCursor.close();
 
-            // Apply the domain settings.
-            mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
-            cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
-            mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
-            mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
-            mainWebView.getSettings().setTextZoom(fontSize);
+                // Apply the domain settings.
+                mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
+                cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
+                mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
+                mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
+                mainWebView.getSettings().setTextZoom(fontSize);
 
-            // Set third-party cookies status if API >= 21.
-            if (Build.VERSION.SDK_INT >= 21) {
-                cookieManager.setAcceptThirdPartyCookies(mainWebView, thirdPartyCookiesEnabled);
-            }
+                // Set third-party cookies status if API >= 21.
+                if (Build.VERSION.SDK_INT >= 21) {
+                    cookieManager.setAcceptThirdPartyCookies(mainWebView, thirdPartyCookiesEnabled);
+                }
 
-            // Set the user agent.
-            if (userAgentString.equals("WebView default user agent")) {
-                // Set the user agent to `""`, which uses the default value.
-                mainWebView.getSettings().setUserAgentString("");
-            } else {
-                // Use the selected user agent.
-                mainWebView.getSettings().setUserAgentString(userAgentString);
-            }
-
-            // Set a green background on `urlTextBox` to indicate that custom domain settings are being used.  We have to use the deprecated `.getColor()` until the minimum API >= 23.
-            urlAppBarFrameLayout.setBackgroundColor(getResources().getColor(R.color.green_100));
-        } else {  // The URL we are loading does not have custom domain settings.  Load the defaults.
-            // Get the shared preference values.  `this` references the current context.
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-            // Store the values from `sharedPreferences` in variables.
-            javaScriptEnabled = sharedPreferences.getBoolean("javascript_enabled", false);
-            firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies_enabled", false);
-            thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies_enabled", false);
-            domStorageEnabled = sharedPreferences.getBoolean("dom_storage_enabled", false);
-            saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data_enabled", false);
-            String userAgentString = sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0");
-            String customUserAgentString = sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0");
-            String defaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
-
-            // Apply the default settings.
-            mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
-            cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
-            mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
-            mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
-            mainWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
-
-            // Set third-party cookies status if API >= 21.
-            if (Build.VERSION.SDK_INT >= 21) {
-                cookieManager.setAcceptThirdPartyCookies(mainWebView, thirdPartyCookiesEnabled);
-            }
-
-            // Set the default user agent.
-            switch (userAgentString) {
-                case "WebView default user agent":
+                // Set the user agent.
+                if (userAgentString.equals("WebView default user agent")) {
                     // Set the user agent to `""`, which uses the default value.
                     mainWebView.getSettings().setUserAgentString("");
-                    break;
-
-                case "Custom user agent":
-                    // Set the custom user agent.
-                    mainWebView.getSettings().setUserAgentString(customUserAgentString);
-                    break;
-
-                default:
+                } else {
                     // Use the selected user agent.
                     mainWebView.getSettings().setUserAgentString(userAgentString);
-                    break;
+                }
+
+                // Set a green background on `urlTextBox` to indicate that custom domain settings are being used.  We have to use the deprecated `.getColor()` until the minimum API >= 23.
+                urlAppBarFrameLayout.setBackgroundColor(getResources().getColor(R.color.green_100));
+            } else {  // The URL we are loading does not have custom domain settings.  Load the defaults.
+                // Get the shared preference values.  `this` references the current context.
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+                // Store the values from `sharedPreferences` in variables.
+                javaScriptEnabled = sharedPreferences.getBoolean("javascript_enabled", false);
+                firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies_enabled", false);
+                thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies_enabled", false);
+                domStorageEnabled = sharedPreferences.getBoolean("dom_storage_enabled", false);
+                saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data_enabled", false);
+                String userAgentString = sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0");
+                String customUserAgentString = sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0");
+                String defaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
+
+                // Apply the default settings.
+                mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
+                cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
+                mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
+                mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
+                mainWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
+
+                // Set third-party cookies status if API >= 21.
+                if (Build.VERSION.SDK_INT >= 21) {
+                    cookieManager.setAcceptThirdPartyCookies(mainWebView, thirdPartyCookiesEnabled);
+                }
+
+                // Set the default user agent.
+                switch (userAgentString) {
+                    case "WebView default user agent":
+                        // Set the user agent to `""`, which uses the default value.
+                        mainWebView.getSettings().setUserAgentString("");
+                        break;
+
+                    case "Custom user agent":
+                        // Set the custom user agent.
+                        mainWebView.getSettings().setUserAgentString(customUserAgentString);
+                        break;
+
+                    default:
+                        // Use the selected user agent.
+                        mainWebView.getSettings().setUserAgentString(userAgentString);
+                        break;
+                }
+
+                // Set a transparent background on `urlTextBox`.  We have to use the deprecated `.getColor()` until the minimum API >= 23.
+                urlAppBarFrameLayout.setBackgroundColor(getResources().getColor(R.color.transparent));
             }
 
-            // Set a transparent background on `urlTextBox`.  We have to use the deprecated `.getColor()` until the minimum API >= 23.
-            urlAppBarFrameLayout.setBackgroundColor(getResources().getColor(R.color.transparent));
-        }
+            // Close `domainsDatabaseHelper`.
+            domainsDatabaseHelper.close();
 
-        // Close `domainsDatabaseHelper`.
-        domainsDatabaseHelper.close();
-
-        // Update the privacy icons, but only if `mainMenu` has already been populated.
-        if (mainMenu != null) {
-            updatePrivacyIcons(true);
+            // Update the privacy icons, but only if `mainMenu` has already been populated.
+            if (mainMenu != null) {
+                updatePrivacyIcons(true);
+            }
         }
     }
 
@@ -2009,7 +2015,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
     }
 
-    private void applySettings() {
+    private void applyAppSettings() {
         // Get the shared preference values.  `this` references the current context.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
