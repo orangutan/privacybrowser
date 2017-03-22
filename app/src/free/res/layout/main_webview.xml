@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2016 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2017 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -18,8 +18,7 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<!-- android:layout_martinTop="?attr/actionBarSize" moves adRelativeLayout below the appBarLayout, which otherwise would cover the top of mainWebView.
-  android:layout_weight="1" sets the RelativeLayout to fill the rest of the screen because it is encapsulated in a LinearLayout with android:orientation="vertical"-->
+<!-- `android:layout_weight="1"` sets the `RelativeLayout` to fill the rest of the screen because it is encapsulated in a `LinearLayout` with `android:orientation="vertical"`.-->
 <RelativeLayout
     android:id="@+id/main_webview_relativelayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -29,10 +28,10 @@
     android:layout_height="0dp"
     android:layout_weight="1"
     tools:context="com.stoutner.privacybrowser.activities.MainWebViewActivity"
-    tools:showIn="@layout/drawerlayout">
+    tools:showIn="@layout/main_drawerlayout">
 
     <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
+        android:id="@+id/adview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -42,14 +41,14 @@
     </com.google.android.gms.ads.AdView>
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefreshLayout"
+        android:id="@+id/swipe_refreshlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/adView">
+        android:layout_above="@id/adview">
 
         <!-- Google does not currently want to support hiding the AppBar on scroll for a WebView child with the Support Toolbar.  https://code.google.com/p/android/issues/detail?id=200394 -->
         <WebView
-            android:id="@+id/mainWebView"
+            android:id="@+id/main_webview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:focusable="true"

@@ -1,5 +1,5 @@
-/**
- * Copyright 2016 Soren Stoutner <soren@stoutner.com>.
+/*
+ * Copyright 2016-2017 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -39,24 +39,24 @@ public class BannerAd extends AppCompatActivity{
     }
 
     public static void reloadAfterRotate (View view, Context applicationContext, String ad_id) {
-        // Cast view to an AdView.
+        // Cast `view` to an `AdView`.
         AdView adView = (AdView) view;
 
         // Save the layout parameters.
         RelativeLayout.LayoutParams adViewLayoutParameters = (RelativeLayout.LayoutParams) adView.getLayoutParams();
 
-        // Remove the AdView.
+        // Remove the `AdView`.
         RelativeLayout adViewParentLayout = (RelativeLayout) adView.getParent();
         adViewParentLayout.removeView(adView);
 
-        // Setup the new AdView.
+        // Setup the new `AdView`.
         adView = new AdView(applicationContext);
         adView.setAdSize(AdSize.SMART_BANNER);
         adView.setAdUnitId(ad_id);
-        adView.setId(R.id.adView);
+        adView.setId(R.id.adview);
         adView.setLayoutParams(adViewLayoutParameters);
 
-        // Display the new AdView.
+        // Display the new `AdView`.
         adViewParentLayout.addView(adView);
 
         // Request a new ad.
@@ -65,7 +65,7 @@ public class BannerAd extends AppCompatActivity{
     }
 
     public static void hideAd(View view) {
-        // Cast view to an AdView.
+        // Cast `view` to an `AdView`.
         AdView adView = (AdView) view;
 
         // Hide the ad.
@@ -73,26 +73,26 @@ public class BannerAd extends AppCompatActivity{
     }
 
     public static void showAd(View view) {
-        // Cast view to an AdView.
+        // Cast `view` to an `AdView`.
         AdView adView = (AdView) view;
 
-        // Hide the ad.
+        // Show the ad.
         adView.setVisibility(View.VISIBLE);
     }
 
     public static void pauseAd(View view) {
-        // Cast view to an AdView.
+        // Cast `view` to an `AdView`.
         AdView adView = (AdView) view;
 
-        // Pause the AdView.
+        // Pause the `AdView`.
         adView.pause();
     }
 
     public static void resumeAd(View view) {
-        // Cast view to an AdView.
+        // Cast `view` to an `AdView`.
         AdView adView = (AdView) view;
 
-        // Resume the AdView.
+        // Resume the `AdView`.
         adView.resume();
     }
 }

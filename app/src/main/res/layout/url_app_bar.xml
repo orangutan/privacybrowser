@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2015-2016 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2015-2017 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -18,55 +18,34 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<!-- `FrameLayout` lets the `ProgressBar` float on top of `urlTextBox`. -->
-<FrameLayout
-    android:id="@+id/url_app_bar_framelayout"
-    xmlns:tools="http://schemas.android.com/tools"
+<!-- `RelativeLayout` is used instead of a `LinearLayout` because `supportAppBar` does not let `android:layout_weight="1"` cause `urlTextBox` to fill all the available space. -->
+<RelativeLayout
+    android:id="@+id/url_app_bar_relativelayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     tools:context=".activities.MainWebViewActivity" >
 
-    <!-- `RelativeLayout` is used instead of a `LinearLayout` because `supportAppBar` does not let `android:layout_weight="1"` cause `urlTextBox` to fill all the available space. -->
-    <RelativeLayout
+    <!-- Set `@drawable/world` as the initial `favoriteIcon`.
+        `layout_height` and `layout_width` of 26dp matches the `AppBar` icons. -->
+    <ImageView
+        android:id="@+id/favorite_icon"
+        android:src="@drawable/world"
+        android:layout_height="26dp"
+        android:layout_width="26dp"
+        android:layout_centerVertical="true"
+        android:onClick="viewSslCertificate"
+        android:contentDescription="@string/favorite_icon" />
+
+    <!-- `android:imeOptions="actionGo"` sets the keyboard to have a `go` key instead of a `new line` key.
+        `android:inputType="textUri"` disables spell check in the `EditText`. -->
+    <EditText
+        android:id="@+id/url_edittext"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent" >
-
-        <!-- Set the program icon as the initial `favoriteIcon`.
-            `layout_height` and `layout_width` of 26dp matches the `AppBar` icons. -->
-        <ImageView
-            android:id="@+id/favoriteIcon"
-            android:src="@drawable/world"
-            android:layout_height="26dp"
-            android:layout_width="26dp"
-            android:layout_centerVertical="true"
-            android:onClick="viewSslCertificate"
-            android:contentDescription="@string/favorite_icon" />
-
-        <!-- `android:imeOptions="actionGo"` sets the keyboard to have a `go` key instead of a `new line` key.
-            `android:inputType="textUri"` disables spell check in the `EditText`. -->
-        <EditText
-            android:id="@+id/urlTextBox"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:layout_toEndOf="@id/favoriteIcon"
-            android:hint="@string/url_or_search_terms"
-            android:imeOptions="actionGo"
-            android:inputType="textUri" />
-    </RelativeLayout>
-
-    <!-- `android:max` changes the maximum `ProgressBar` value from 10000 to 100 to match progress percentage.
-        `android:layout_height="2dp"` works best for API 23 Marshmallow, but `3dp` is required for visibility on API <= 22.
-        `tools:ignore="UnusedAttribute"` removes the lint waring about `progressTint` and `progressBackgroundTint` not applying to API < 21. -->
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="3dp"
-        android:layout_gravity="bottom"
-        android:max="100"
-        android:progressTint="@color/blue_700"
-        android:progressBackgroundTint="@color/white"
-        android:visibility="gone"
-        tools:ignore="UnusedAttribute" />
-</FrameLayout>
+        android:layout_width="match_parent"
+        android:layout_toEndOf="@id/favorite_icon"
+        android:hint="@string/url_or_search_terms"
+        android:imeOptions="actionGo"
+        android:inputType="textUri" />
+</RelativeLayout>

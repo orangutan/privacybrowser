@@ -253,7 +253,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     @SuppressLint("SetJavaScriptEnabled")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.drawerlayout);
+        setContentView(R.layout.main_drawerlayout);
 
         // Get a handle for `inputMethodManager`.
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -266,12 +266,12 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // This is needed to get rid of the Android Studio warning that `appBar` might be null.
         assert appBar != null;
 
-        // Add the custom url_app_bar layout, which shows the favoriteIcon, urlTextBar, and progressBar.
+        // Add the custom `url_app_bar` layout, which shows the favorite icon and the URL text bar.
         appBar.setCustomView(R.layout.url_app_bar);
         appBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 
         // Set the "go" button on the keyboard to load the URL in urlTextBox.
-        urlTextBox = (EditText) appBar.getCustomView().findViewById(R.id.urlTextBox);
+        urlTextBox = (EditText) appBar.getCustomView().findViewById(R.id.url_edittext);
         urlTextBox.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -334,7 +334,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerlayout);
         rootCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.root_coordinatorlayout);
         mainWebViewRelativeLayout = (RelativeLayout) findViewById(R.id.main_webview_relativelayout);
-        mainWebView = (WebView) findViewById(R.id.mainWebView);
+        mainWebView = (WebView) findViewById(R.id.main_webview);
         findOnPageLinearLayout = (LinearLayout) findViewById(R.id.find_on_page_linearlayout);
         findOnPageEditText = (EditText) findViewById(R.id.find_on_page_edittext);
         fullScreenVideoFrameLayout = (FrameLayout) findViewById(R.id.full_screen_video_framelayout);
@@ -392,7 +392,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                             BannerAd.reloadAfterRotate(adView, getApplicationContext(), getString(R.string.ad_id));
 
                             // Reinitialize the `adView` variable, as the `View` will have been removed and re-added by `BannerAd.reloadAfterRotate()`.
-                            adView = findViewById(R.id.adView);
+                            adView = findViewById(R.id.adview);
                         }
 
                         // Remove the translucent navigation bar flag if it is set.
@@ -482,7 +482,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         });
 
         // Implement swipe to refresh
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refreshlayout);
         swipeRefreshLayout.setColorSchemeResources(R.color.blue_700);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -665,11 +665,13 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             }
         });
 
+        // Get a handle for the progress bar.
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+
         mainWebView.setWebChromeClient(new WebChromeClient() {
             // Update the progress bar when a page is loading.
             @Override
             public void onProgressChanged(WebView view, int progress) {
-                ProgressBar progressBar = (ProgressBar) appBar.getCustomView().findViewById(R.id.progressBar);
                 progressBar.setProgress(progress);
                 if (progress < 100) {
                     progressBar.setVisibility(View.VISIBLE);
@@ -688,7 +690,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 favoriteIcon = icon;
 
                 // Place the favorite icon in the appBar.
-                ImageView imageViewFavoriteIcon = (ImageView) appBar.getCustomView().findViewById(R.id.favoriteIcon);
+                ImageView imageViewFavoriteIcon = (ImageView) appBar.getCustomView().findViewById(R.id.favorite_icon);
                 imageViewFavoriteIcon.setImageBitmap(Bitmap.createScaledBitmap(icon, 64, 64, true));
             }
 
@@ -745,7 +747,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     BannerAd.reloadAfterRotate(adView, getApplicationContext(), getString(R.string.ad_id));
 
                     // Reinitialize the `adView` variable, as the `View` will have been removed and re-added by `BannerAd.reloadAfterRotate()`.
-                    adView = findViewById(R.id.adView);
+                    adView = findViewById(R.id.adview);
                 }
             }
         });
@@ -793,7 +795,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         inFullScreenBrowsingMode = false;
 
         // Initialize AdView for the free flavor.
-        adView = findViewById(R.id.adView);
+        adView = findViewById(R.id.adview);
 
         // Initialize the privacy settings variables.
         javaScriptEnabled = false;
@@ -995,11 +997,11 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
                 // Display a `Snackbar`.
                 if (javaScriptEnabled) {  // JavaScrip is enabled.
-                    Snackbar.make(findViewById(R.id.mainWebView), R.string.javascript_enabled, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.main_webview), R.string.javascript_enabled, Snackbar.LENGTH_SHORT).show();
                 } else if (firstPartyCookiesEnabled) {  // JavaScript is disabled, but first-party cookies are enabled.
-                    Snackbar.make(findViewById(R.id.mainWebView), R.string.javascript_disabled, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.main_webview), R.string.javascript_disabled, Snackbar.LENGTH_SHORT).show();
                 } else {  // Privacy mode.
-                    Snackbar.make(findViewById(R.id.mainWebView), R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.main_webview), R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
                 }
 
                 // Reload the WebView.
@@ -1021,11 +1023,11 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
                 // Display a `Snackbar`.
                 if (firstPartyCookiesEnabled) {  // First-party cookies are enabled.
-                    Snackbar.make(findViewById(R.id.mainWebView), R.string.first_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.main_webview), R.string.first_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
                 } else if (javaScriptEnabled){  // JavaScript is still enabled.
-                    Snackbar.make(findViewById(R.id.mainWebView), R.string.first_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.main_webview), R.string.first_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
                 } else {  // Privacy mode.
-                    Snackbar.make(findViewById(R.id.mainWebView), R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.main_webview), R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
                 }
 
                 // Reload the WebView.
@@ -1045,9 +1047,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
                     // Display a `Snackbar`.
                     if (thirdPartyCookiesEnabled) {
-                        Snackbar.make(findViewById(R.id.mainWebView), R.string.third_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(R.id.main_webview), R.string.third_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
                     } else {
-                        Snackbar.make(findViewById(R.id.mainWebView), R.string.third_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(R.id.main_webview), R.string.third_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
                     }
 
                     // Reload the WebView.
@@ -1070,9 +1072,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
                 // Display a `Snackbar`.
                 if (domStorageEnabled) {
-                    Snackbar.make(findViewById(R.id.mainWebView), R.string.dom_storage_enabled, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.main_webview), R.string.dom_storage_enabled, Snackbar.LENGTH_SHORT).show();
                 } else {
-                    Snackbar.make(findViewById(R.id.mainWebView), R.string.dom_storage_disabled, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.main_webview), R.string.dom_storage_disabled, Snackbar.LENGTH_SHORT).show();
                 }
 
                 // Reload the WebView.
@@ -1091,9 +1093,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
                 // Display a `Snackbar`.
                 if (saveFormDataEnabled) {
-                    Snackbar.make(findViewById(R.id.mainWebView), R.string.form_data_enabled, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.main_webview), R.string.form_data_enabled, Snackbar.LENGTH_SHORT).show();
                 } else {
-                    Snackbar.make(findViewById(R.id.mainWebView), R.string.form_data_disabled, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.main_webview), R.string.form_data_disabled, Snackbar.LENGTH_SHORT).show();
                 }
 
                 // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
@@ -1109,19 +1111,19 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 } else {
                     cookieManager.removeAllCookies(null);
                 }
-                Snackbar.make(findViewById(R.id.mainWebView), R.string.cookies_deleted, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.main_webview), R.string.cookies_deleted, Snackbar.LENGTH_SHORT).show();
                 return true;
 
             case R.id.clearDomStorage:
                 WebStorage webStorage = WebStorage.getInstance();
                 webStorage.deleteAllData();
-                Snackbar.make(findViewById(R.id.mainWebView), R.string.dom_storage_deleted, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.main_webview), R.string.dom_storage_deleted, Snackbar.LENGTH_SHORT).show();
                 return true;
 
             case R.id.clearFormData:
                 WebViewDatabase mainWebViewDatabase = WebViewDatabase.getInstance(this);
                 mainWebViewDatabase.clearFormData();
-                Snackbar.make(findViewById(R.id.mainWebView), R.string.form_data_deleted, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.main_webview), R.string.form_data_deleted, Snackbar.LENGTH_SHORT).show();
                 return true;
 
             case R.id.fontSizeFiftyPercent:
@@ -1376,7 +1378,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             BannerAd.reloadAfterRotate(adView, getApplicationContext(), getString(R.string.ad_id));
 
             // Reinitialize the `adView` variable, as the `View` will have been removed and re-added by `BannerAd.reloadAfterRotate()`.
-            adView = findViewById(R.id.adView);
+            adView = findViewById(R.id.adview);
         }
 
         // `invalidateOptionsMenu` should recalculate the number of action buttons from the menu to display on the app bar, but it doesn't because of the this bug:  https://code.google.com/p/android/issues/detail?id=20493#c8
@@ -1891,7 +1893,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 hostname = hostname.substring(hostname.indexOf(".") + 1);
             }
 
-            FrameLayout urlAppBarFrameLayout = (FrameLayout) findViewById(R.id.url_app_bar_framelayout);
+            RelativeLayout urlAppBarRelativeLayout = (RelativeLayout) findViewById(R.id.url_app_bar_relativelayout);
 
             if (hostHasDomainSettings) {  // The url we are loading has custom domain settings.
                 // Get a cursor for the current host and move it to the first position.
@@ -1932,7 +1934,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 }
 
                 // Set a green background on `urlTextBox` to indicate that custom domain settings are being used.  We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
-                urlAppBarFrameLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_green));
+                urlAppBarRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_green));
             } else {  // The URL we are loading does not have custom domain settings.  Load the defaults.
                 // Get the shared preference values.  `this` references the current context.
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -1978,7 +1980,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 }
 
                 // Set a transparent background on `urlTextBox`.  We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
-                urlAppBarFrameLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.url_bar_background_transparent));
+                urlAppBarRelativeLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.url_bar_background_transparent));
             }
 
             // Close `domainsDatabaseHelper`.
@@ -2161,7 +2163,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 BannerAd.reloadAfterRotate(adView, getApplicationContext(), getString(R.string.ad_id));
 
                 // Reinitialize the `adView` variable, as the `View` will have been removed and re-added by `BannerAd.reloadAfterRotate()`.
-                adView = findViewById(R.id.adView);
+                adView = findViewById(R.id.adview);
             }
 
             // Remove the translucent navigation bar flag if it is set.
