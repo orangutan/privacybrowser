@@ -209,7 +209,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `proxyThroughOrbot` is used in `onCreate()` and `applySettings()`
     private boolean proxyThroughOrbot;
 
-    // `currentDomain` is used in `onCreate() and `applyDomainSettings()`.
+    // `currentDomain` is used in `onCreate(), `onNavigationItemSelected()`, and `applyDomainSettings()`.
     private String currentDomain;
 
     // `pendingUrl` is used in `onCreate()` and `applySettings()`
@@ -1271,12 +1271,18 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 break;
 
             case R.id.settings:
+                // Reset `currentDomain` so that domain settings are reapplied after returning to `MainWebViewActivity`.
+                currentDomain = "";
+
                 // Launch `SettingsActivity`.
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);
                 startActivity(settingsIntent);
                 break;
 
             case R.id.domains:
+                // Reset `currentDomain` so that domain settings are reapplied after returning to `MainWebViewActivity`.
+                currentDomain = "";
+
                 // Launch `DomainsActivity`.
                 Intent domainsIntent = new Intent(this, DomainsActivity.class);
                 startActivity(domainsIntent);
