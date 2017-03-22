@@ -1831,7 +1831,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         mainWebView.loadUrl(url, customHeaders);
     }
 
-    // We have to use the deprecated `.getColor()` until the minimum API >= 23.
+    // We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
     @SuppressWarnings("deprecation")
     private void applyDomainSettings(String url) {
         // Parse the URL into a URI.
@@ -1931,8 +1931,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     mainWebView.getSettings().setUserAgentString(userAgentString);
                 }
 
-                // Set a green background on `urlTextBox` to indicate that custom domain settings are being used.  We have to use the deprecated `.getColor()` until the minimum API >= 23.
-                urlAppBarFrameLayout.setBackgroundColor(getResources().getColor(R.color.green_100));
+                // Set a green background on `urlTextBox` to indicate that custom domain settings are being used.  We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
+                urlAppBarFrameLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_green));
             } else {  // The URL we are loading does not have custom domain settings.  Load the defaults.
                 // Get the shared preference values.  `this` references the current context.
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -1977,8 +1977,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                         break;
                 }
 
-                // Set a transparent background on `urlTextBox`.  We have to use the deprecated `.getColor()` until the minimum API >= 23.
-                urlAppBarFrameLayout.setBackgroundColor(getResources().getColor(R.color.transparent));
+                // Set a transparent background on `urlTextBox`.  We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
+                urlAppBarFrameLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.url_bar_background_transparent));
             }
 
             // Close `domainsDatabaseHelper`.
