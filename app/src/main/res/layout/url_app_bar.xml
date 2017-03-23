@@ -35,6 +35,7 @@
         android:layout_height="26dp"
         android:layout_width="26dp"
         android:layout_centerVertical="true"
+        android:layout_marginStart="4dp"
         android:onClick="viewSslCertificate"
         android:contentDescription="@string/favorite_icon" />
 
