@@ -107,6 +107,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1786,15 +1787,15 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Get the text from urlTextBox and convert it to a string.  trim() removes white spaces from the beginning and end of the string.
         String unformattedUrlString = urlTextBox.getText().toString().trim();
 
-        URL unformattedUrl = null;
-        Uri.Builder formattedUri = new Uri.Builder();
-
         // Check to see if unformattedUrlString is a valid URL.  Otherwise, convert it into a Duck Duck Go search.
         if (Patterns.WEB_URL.matcher(unformattedUrlString).matches()) {
             // Add http:// at the beginning if it is missing.  Otherwise the app will segfault.
             if (!unformattedUrlString.startsWith("http")) {
                 unformattedUrlString = "http://" + unformattedUrlString;
             }
+
+            // Initialize `unformattedUrl`.
+            URL unformattedUrl = null;
 
             // Convert unformattedUrlString to a URL, then to a URI, and then back to a string, which sanitizes the input and adds in any missing components.
             try {
@@ -1803,17 +1804,21 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 e.printStackTrace();
             }
 
-            // The ternary operator (? :) makes sure that a null pointer exception is not thrown, which would happen if .get was called on a null value.
+            // The ternary operator (? :) makes sure that a null pointer exception is not thrown, which would happen if `.get` was called on a `null` value.
             final String scheme = unformattedUrl != null ? unformattedUrl.getProtocol() : null;
             final String authority = unformattedUrl != null ? unformattedUrl.getAuthority() : null;
             final String path = unformattedUrl != null ? unformattedUrl.getPath() : null;
             final String query = unformattedUrl != null ? unformattedUrl.getQuery() : null;
             final String fragment = unformattedUrl != null ? unformattedUrl.getRef() : null;
 
+            // Build the URI.
+            Uri.Builder formattedUri = new Uri.Builder();
             formattedUri.scheme(scheme).authority(authority).path(path).query(query).fragment(fragment);
-            formattedUrlString = formattedUri.build().toString();
+
+            // Decode `formattedUri` as a `String` in `UTF-8`.
+            formattedUrlString = URLDecoder.decode(formattedUri.build().toString(), "UTF-8");
         } else {
-            // Sanitize the search input and convert it to a DuckDuckGo search.
+            // Sanitize the search input and convert it to a search.
             final String encodedUrlString = URLEncoder.encode(unformattedUrlString, "UTF-8");
 
             // Use the correct search URL.
