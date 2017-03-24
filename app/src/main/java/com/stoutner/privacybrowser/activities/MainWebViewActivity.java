@@ -1828,9 +1828,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Get the text from urlTextBox and convert it to a string.  trim() removes white spaces from the beginning and end of the string.
         String unformattedUrlString = urlTextBox.getText().toString().trim();
 
-        // Check to see if unformattedUrlString is a valid URL.  Otherwise, convert it into a Duck Duck Go search.
-        if (Patterns.WEB_URL.matcher(unformattedUrlString).matches()) {
-            // Add http:// at the beginning if it is missing.  Otherwise the app will segfault.
+        // Check to see if `unformattedUrlString` is a valid URL.  Otherwise, convert it into a search.
+        if ((Patterns.WEB_URL.matcher(unformattedUrlString).matches()) || (unformattedUrlString.contains("localhost"))) {
+            // Add `http://` at the beginning if it is missing.  Otherwise the app will segfault.
             if (!unformattedUrlString.startsWith("http")) {
                 unformattedUrlString = "http://" + unformattedUrlString;
             }
@@ -1838,7 +1838,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             // Initialize `unformattedUrl`.
             URL unformattedUrl = null;
 
-            // Convert unformattedUrlString to a URL, then to a URI, and then back to a string, which sanitizes the input and adds in any missing components.
+            // Convert `unformattedUrlString` to a `URL`, then to a `URI`, and then back to a `String`, which sanitizes the input and adds in any missing components.
             try {
                 unformattedUrl = new URL(unformattedUrlString);
             } catch (MalformedURLException e) {
