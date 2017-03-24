@@ -521,13 +521,15 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
             @Override
             public void onDrawerStateChanged(int newState) {
-                // Update the `Back`, `Forward`, and `History` menu items every time the drawer opens.
-                navigationBackMenuItem.setEnabled(mainWebView.canGoBack());
-                navigationForwardMenuItem.setEnabled(mainWebView.canGoForward());
-                navigationHistoryMenuItem.setEnabled((mainWebView.canGoBack() || mainWebView.canGoForward()));
+                if ((newState == DrawerLayout.STATE_SETTLING) || (newState == DrawerLayout.STATE_DRAGGING)) {  // The drawer is opening or closing.
+                    // Update the `Back`, `Forward`, and `History` menu items.
+                    navigationBackMenuItem.setEnabled(mainWebView.canGoBack());
+                    navigationForwardMenuItem.setEnabled(mainWebView.canGoForward());
+                    navigationHistoryMenuItem.setEnabled((mainWebView.canGoBack() || mainWebView.canGoForward()));
 
-                // Hide the keyboard so we can see the navigation menu.  `0` indicates no additional flags.
-                inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
+                    // Hide the keyboard so we can see the navigation menu.  `0` indicates no additional flags.
+                    inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
+                }
             }
         });
 
@@ -642,11 +644,27 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             public void onPageFinished(WebView view, String url) {
                 // Check to see if we are waiting on Orbot.
                 if (pendingUrl.isEmpty()) {  // we are not waiting on Orbot, so we need to process the URL.
-                    formattedUrlString = url;
+                    // Check to see if `WebView` has set `url` to be `about:blank`.
+                    if (url.equals("about:blank")) {  // `WebView` is blank, so `formattedUrlString` should be `""` and `urlTextBox` should display a hint.
+                        // Set `formattedUrlString` to `""`.
+                        formattedUrlString = "";
 
-                    // Only update urlTextBox if the user is not typing in it.
-                    if (!urlTextBox.hasFocus()) {
+                        // Update `urlTextBox`.
                         urlTextBox.setText(formattedUrlString);
+
+                        // Request focus for `urlTextBox`.
+                        urlTextBox.requestFocus();
+
+                        // Display the keyboard.
+                        inputMethodManager.showSoftInput(urlTextBox, 0);
+                    } else {  // `WebView` has loaded a webpage.
+                        // Set `formattedUrlString`.
+                        formattedUrlString = url;
+
+                        // Only update `urlTextBox` if the user is not typing in it.
+                        if (!urlTextBox.hasFocus()) {
+                            urlTextBox.setText(formattedUrlString);
+                        }
                     }
 
                     // Store the SSL certificate so it can be accessed from `ViewSslCertificateDialog`.
@@ -1854,7 +1872,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         String hostname = uri.getHost();
 
         // Only apply the domain settings if `hostname` is not the same as `currentDomain`.  This allows the user to set temporary settings for JavaScript, Cookies, DOM Storage, etc.
-        if (!hostname.equals(currentDomain)) {
+        if (hostname != null && !hostname.equals(currentDomain)) {
             // Set the new `hostname` as the `currentDomain`.
             currentDomain = hostname;
 
