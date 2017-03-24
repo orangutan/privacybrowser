@@ -48,5 +48,6 @@
         android:layout_toEndOf="@id/favorite_icon"
         android:hint="@string/url_or_search_terms"
         android:imeOptions="actionGo"
-        android:inputType="textUri" />
+        android:inputType="textUri"
+        android:selectAllOnFocus="true" />
 </RelativeLayout>
