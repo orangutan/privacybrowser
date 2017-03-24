@@ -187,8 +187,8 @@ public class SettingsFragment extends PreferenceFragment {
         torJavaScriptEnabledSearchCustomURLPreference.setEnabled(proxyThroughOrbot && torJavaScriptEnabledSearchString.equals("Custom URL"));
 
 
-        // Set the homepage URL as the summary text for the `Homepage` preference when the preference screen is loaded.  The default is `https://www.duckduckgo.com`.
-        homepagePreference.setSummary(savedPreferences.getString("homepage", "https://www.duckduckgo.com"));
+        // Set the homepage URL as the summary text for the `Homepage` preference when the preference screen is loaded.  The default is `https://duckduckgo.com`.
+        homepagePreference.setSummary(savedPreferences.getString("homepage", "https://duckduckgo.com"));
 
         // Set the default font size as the summary text for the `Default Font Size` preference when the preference screen is loaded.  The default is `100`.
         defaultFontSizePreference.setSummary(defaultFontSizeString + "%%");

@@ -118,7 +118,7 @@ public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
 
         // Display the current favorite icon.
         ImageView webPageIconImageView = (ImageView) alertDialog.findViewById(R.id.create_folder_web_page_icon);
-        webPageIconImageView.setImageBitmap(MainWebViewActivity.favoriteIcon);
+        webPageIconImageView.setImageBitmap(MainWebViewActivity.favoriteIconBitmap);
 
         // `onCreateDialog()` requires the return of an `AlertDialog`.
         return alertDialog;

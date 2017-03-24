@@ -45,6 +45,7 @@
     <string name="form_data_deleted">Form Data deleted</string>
     <string name="open_navigation_drawer">Open Navigation Drawer</string>
     <string name="close_navigation_drawer">Close Navigation Drawer</string>
+    <string name="no_title">No title</string>
 
     <!-- Save As. -->
     <string name="save_as">Save As</string>

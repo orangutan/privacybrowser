@@ -121,7 +121,7 @@ public class EditBookmarkDialog extends AppCompatDialogFragment {
 
         // Get a `Bitmap` of the favorite icon from `MainWebViewActivity` and display it in `edit_bookmark_web_page_favorite_icon`.
         ImageView newFavoriteIconImageView = (ImageView) alertDialog.findViewById(R.id.edit_bookmark_web_page_favorite_icon);
-        newFavoriteIconImageView.setImageBitmap(MainWebViewActivity.favoriteIcon);
+        newFavoriteIconImageView.setImageBitmap(MainWebViewActivity.favoriteIconBitmap);
 
         // Load the text for `edit_bookmark_name_edittext`.
         EditText bookmarkNameEditText = (EditText) alertDialog.findViewById(R.id.edit_bookmark_name_edittext);

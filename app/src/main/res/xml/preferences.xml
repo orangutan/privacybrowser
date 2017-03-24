@@ -184,7 +184,7 @@
         <EditTextPreference
             android:key="homepage"
             android:title="@string/homepage"
-            android:defaultValue="https://www.duckduckgo.com"
+            android:defaultValue="https://duckduckgo.com"
             android:inputType="textUri" />
 
         <ListPreference

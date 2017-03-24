@@ -118,13 +118,12 @@ import java.util.Set;
 public class MainWebViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CreateHomeScreenShortcutDialog.CreateHomeScreenSchortcutListener,
         SslCertificateErrorDialog.SslCertificateErrorListener, DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, UrlHistoryDialog.UrlHistoryListener {
 
-    // `appBar` is public static so it can be accessed from `OrbotProxyHelper`.
-    // It is also used in `onCreate()`, `onOptionsItemSelected()`, `closeFindOnPage()`, and `applySettings()`.
+    // `appBar` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onOptionsItemSelected()`, `closeFindOnPage()`, and `applyAppSettings()`.
     public static ActionBar appBar;
 
-    // `favoriteIcon` is public static so it can be accessed from `CreateHomeScreenShortcutDialog`, `BookmarksActivity`, `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, and `EditBookmarkDialog`.
-    // It is also used in `onCreate()` and `onCreateHomeScreenShortcutCreate()`.
-    public static Bitmap favoriteIcon;
+    // `favoriteIconBitmap` is public static so it can be accessed from `CreateHomeScreenShortcutDialog`, `BookmarksActivity`, `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`, `ViewSslCertificateDialog`.
+    // It is also used in `onCreate()`, `onCreateHomeScreenShortcutCreate()`, and `applyDomainSettings`.
+    public static Bitmap favoriteIconBitmap;
 
     // `formattedUrlString` is public static so it can be accessed from `BookmarksActivity`, `CreateBookmarkDialog`, and `AddDomainDialog`.
     // It is also used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onCreateHomeScreenShortcutCreate()`, and `loadUrlFromTextBox()`.
@@ -140,13 +139,16 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     public static String webViewTitle;
 
 
-    // `navigatingHistory` is used in `onCreate()` and `onNavigationItemSelected()`.
+    // `navigatingHistory` is used in `onCreate()`, `onNavigationItemSelected()`, and `applyDomainSettings()`.
     private boolean navigatingHistory;
+
+    // `favoriteIconDefaultBitmap` is used in `onCreate()` and `applyDomainSettings`.
+    private Bitmap favoriteIconDefaultBitmap;
 
     // `drawerLayout` is used in `onCreate()`, `onNewIntent()`, and `onBackPressed()`.
     private DrawerLayout drawerLayout;
 
-    // `rootCoordinatorLayout` is used in `onCreate()` and `applySettings()`.
+    // `rootCoordinatorLayout` is used in `onCreate()` and `applyAppSettings()`.
     private CoordinatorLayout rootCoordinatorLayout;
 
     // 'mainWebView' is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`, `findNextOnPage()`, `closeFindOnPage()`, and `loadUrlFromTextBox()`.
@@ -158,65 +160,71 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `swipeRefreshLayout` is used in `onCreate()`, `onPrepareOptionsMenu`, and `onRestart()`.
     private SwipeRefreshLayout swipeRefreshLayout;
 
+    // `urlAppBarRelativeLayout` is used in `onCreate()` and `applyDomainSettings()`.
+    private RelativeLayout urlAppBarRelativeLayout;
+
+    // `favoriteIconImageView` is used in `onCreate()` and `applyDomainSettings()`
+    private ImageView favoriteIconImageView;
+
     // `cookieManager` is used in `onCreate()`, `onOptionsItemSelected()`, and `onNavigationItemSelected()`, `loadUrlFromTextBox()`, `onDownloadImage()`, `onDownloadFile()`, and `onRestart()`.
     private CookieManager cookieManager;
 
     // `customHeader` is used in `onCreate()`, `onOptionsItemSelected()`, `onCreateContextMenu()`, and `loadUrl()`.
     private final Map<String, String> customHeaders = new HashMap<>();
 
-    // `javaScriptEnabled` is also used in `onCreate()`, `onCreateOptionsMenu()`, `onOptionsItemSelected()`, `loadUrlFromTextBox()`, and `applySettings()`.
-    // It is `Boolean` instead of `boolean` because `applySettings()` needs to know if it is `null`.
+    // `javaScriptEnabled` is also used in `onCreate()`, `onCreateOptionsMenu()`, `onOptionsItemSelected()`, `loadUrlFromTextBox()`, and `applyAppSettings()`.
+    // It is `Boolean` instead of `boolean` because `applyAppSettings()` needs to know if it is `null`.
     private Boolean javaScriptEnabled;
 
-    // `firstPartyCookiesEnabled` is used in `onCreate()`, `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onDownloadImage()`, `onDownloadFile()`, and `applySettings()`.
+    // `firstPartyCookiesEnabled` is used in `onCreate()`, `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onDownloadImage()`, `onDownloadFile()`, and `applyAppSettings()`.
     private boolean firstPartyCookiesEnabled;
 
-    // `thirdPartyCookiesEnabled` used in `onCreate()`, `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applySettings()`.
+    // `thirdPartyCookiesEnabled` used in `onCreate()`, `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applyAppSettings()`.
     private boolean thirdPartyCookiesEnabled;
 
-    // `domStorageEnabled` is used in `onCreate()`, `onCreateOptionsMenu()`, `onOptionsItemSelected()`, and `applySettings()`.
+    // `domStorageEnabled` is used in `onCreate()`, `onCreateOptionsMenu()`, `onOptionsItemSelected()`, and `applyAppSettings()`.
     private boolean domStorageEnabled;
 
-    // `saveFormDataEnabled` is used in `onCreate()`, `onCreateOptionsMenu()`, `onOptionsItemSelected()`, and `applySettings()`.
+    // `saveFormDataEnabled` is used in `onCreate()`, `onCreateOptionsMenu()`, `onOptionsItemSelected()`, and `applyAppSettings()`.
     private boolean saveFormDataEnabled;
 
-    // `swipeToRefreshEnabled` is used in `onPrepareOptionsMenu()` and `applySettings()`.
+    // `swipeToRefreshEnabled` is used in `onPrepareOptionsMenu()` and `applyAppSettings()`.
     private boolean swipeToRefreshEnabled;
 
-    // 'homepage' is used in `onCreate()`, `onNavigationItemSelected()`, and `applySettings()`.
+    // 'homepage' is used in `onCreate()`, `onNavigationItemSelected()`, and `applyAppSettings()`.
     private String homepage;
 
-    // `javaScriptDisabledSearchURL` is used in `loadURLFromTextBox()` and `applySettings()`.
+    // `javaScriptDisabledSearchURL` is used in `loadURLFromTextBox()` and `applyAppSettings()`.
     private String javaScriptDisabledSearchURL;
 
-    // `javaScriptEnabledSearchURL` is used in `loadURLFromTextBox()` and `applySettings()`.
+    // `javaScriptEnabledSearchURL` is used in `loadURLFromTextBox()` and `applyAppSettings()`.
     private String javaScriptEnabledSearchURL;
 
-    // `adBlockerEnabled` is used in `onCreate()` and `applySettings()`.
+    // `adBlockerEnabled` is used in `onCreate()` and `applyAppSettings()`.
     private boolean adBlockerEnabled;
 
-    // `fullScreenBrowsingModeEnabled` is used in `onCreate()` and `applySettings()`.
+    // `fullScreenBrowsingModeEnabled` is used in `onCreate()` and `applyAppSettings()`.
     private boolean fullScreenBrowsingModeEnabled;
 
-    // `inFullScreenBrowsingMode` is used in `onCreate()`, `onConfigurationChanged()`, and `applySettings()`.
+    // `inFullScreenBrowsingMode` is used in `onCreate()`, `onConfigurationChanged()`, and `applyAppSettings()`.
     private boolean inFullScreenBrowsingMode;
 
-    // `hideSystemBarsOnFullscreen` is used in `onCreate()` and `applySettings()`.
+    // `hideSystemBarsOnFullscreen` is used in `onCreate()` and `applyAppSettings()`.
     private boolean hideSystemBarsOnFullscreen;
 
-    // `translucentNavigationBarOnFullscreen` is used in `onCreate()` and `applySettings()`.
+    // `translucentNavigationBarOnFullscreen` is used in `onCreate()` and `applyAppSettings()`.
     private boolean translucentNavigationBarOnFullscreen;
 
-    // `proxyThroughOrbot` is used in `onCreate()` and `applySettings()`
+    // `proxyThroughOrbot` is used in `onCreate()` and `applyAppSettings()`.
     private boolean proxyThroughOrbot;
 
-    // `currentDomain` is used in `onCreate(), `onNavigationItemSelected()`, and `applyDomainSettings()`.
-    private String currentDomain;
+    // `currentDomainName` is used in `onCreate(), `onNavigationItemSelected()`, and `applyDomainSettings()`.
+    private String currentDomainName;
 
-    // `pendingUrl` is used in `onCreate()` and `applySettings()`
+    // `pendingUrl` is used in `onCreate()` and `applyAppSettings()`.
     private static String pendingUrl;
 
-    // `waitingForOrbotData` is used in `onCreate()` and `applySettings()`.
+    // `waitingForOrbotData` is used in `onCreate()` and `applyAppSettings()`.
     private String waitingForOrbotHTMLString;
 
     // `findOnPageLinearLayout` is used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
@@ -296,8 +304,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Set `waitingForOrbotHTMLString`.
         waitingForOrbotHTMLString = "<html><body><br/><center><h1>" + getString(R.string.waiting_for_orbot) + "</h1></center></body></html>";
 
-        // Initialize `currentDomain`, `pendingUrl`, and `orbotStatus`.
-        currentDomain = "";
+        // Initialize `currentDomainName`, `pendingUrl`, and `orbotStatus`.
+        currentDomainName = "";
         pendingUrl = "";
         orbotStatus = "unknown";
 
@@ -339,6 +347,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         findOnPageLinearLayout = (LinearLayout) findViewById(R.id.find_on_page_linearlayout);
         findOnPageEditText = (EditText) findViewById(R.id.find_on_page_edittext);
         fullScreenVideoFrameLayout = (FrameLayout) findViewById(R.id.full_screen_video_framelayout);
+        urlAppBarRelativeLayout = (RelativeLayout) findViewById(R.id.url_app_bar_relativelayout);
+        favoriteIconImageView = (ImageView) findViewById(R.id.favorite_icon);
 
         // Create a double-tap listener to toggle full-screen mode.
         final GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
@@ -624,6 +634,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             // Update the URL in urlTextBox when the page starts to load.
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                // Reset `webViewTitle`
+                webViewTitle = getString(R.string.no_title);
+
                 // Check to see if we are waiting on Orbot.
                 if (pendingUrl.isEmpty()) {  // We are not waiting on Orbot, so we need to process the URL.
                     // We need to update `formattedUrlString` at the beginning of the load, so that if the user toggles JavaScript during the load the new website is reloaded.
@@ -657,6 +670,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
                         // Display the keyboard.
                         inputMethodManager.showSoftInput(urlTextBox, 0);
+
+                        // Apply the domain settings.
+                        applyDomainSettings(formattedUrlString);
                     } else {  // `WebView` has loaded a webpage.
                         // Set `formattedUrlString`.
                         formattedUrlString = url;
@@ -705,12 +721,14 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             // Set the favorite icon when it changes.
             @Override
             public void onReceivedIcon(WebView view, Bitmap icon) {
-                // Save a copy of the favorite icon.
-                favoriteIcon = icon;
+                // Only update the favorite icon if the website has finished loading.
+                if (progressBar.getVisibility() == View.GONE) {
+                    // Save a copy of the favorite icon.
+                    favoriteIconBitmap = icon;
 
-                // Place the favorite icon in the appBar.
-                ImageView imageViewFavoriteIcon = (ImageView) appBar.getCustomView().findViewById(R.id.favorite_icon);
-                imageViewFavoriteIcon.setImageBitmap(Bitmap.createScaledBitmap(icon, 64, 64, true));
+                    // Place the favorite icon in the appBar.
+                    favoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(icon, 64, 64, true));
+                }
             }
 
             // Save a copy of the title when it changes.
@@ -823,20 +841,25 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         domStorageEnabled = false;
         saveFormDataEnabled = false;
 
+        // Initialize `webViewTitle`.
+        webViewTitle = getString(R.string.no_title);
+
         // Apply the app settings from the shared preferences.
         applyAppSettings();
+
+        // Initialize `favoriteIconBitmap`.  We have to use `ContextCompat` until API >= 21.
+        Drawable favoriteIconDrawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.world);
+        BitmapDrawable favoriteIconBitmapDrawable = (BitmapDrawable) favoriteIconDrawable;
+        favoriteIconDefaultBitmap = favoriteIconBitmapDrawable.getBitmap();
+
+        // If the favorite icon is null, load the default.
+        if (favoriteIconBitmap == null) {
+            favoriteIconBitmap = favoriteIconDefaultBitmap;
 
         // Load `formattedUrlString` if we are not proxying through Orbot and waiting for Orbot to connect.
         if (!(proxyThroughOrbot && !orbotStatus.equals("ON"))) {
             loadUrl(formattedUrlString);
         }
-
-        // If the favorite icon is null, load the default.
-        if (favoriteIcon == null) {
-            // We have to use `ContextCompat` until API >= 21.
-            Drawable favoriteIconDrawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.world);
-            BitmapDrawable favoriteIconBitmapDrawable = (BitmapDrawable) favoriteIconDrawable;
-            favoriteIcon = favoriteIconBitmapDrawable.getBitmap();
         }
     }
 
@@ -1265,7 +1288,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 break;
 
             case R.id.history:
-                // Gte the `WebBackForwardList`.
+                // Get the `WebBackForwardList`.
                 WebBackForwardList webBackForwardList = mainWebView.copyBackForwardList();
 
                 // Show the `UrlHistoryDialog` `AlertDialog` and name this instance `R.string.history`.  `this` is the `Context`.
@@ -1290,8 +1313,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 break;
 
             case R.id.settings:
-                // Reset `currentDomain` so that domain settings are reapplied after returning to `MainWebViewActivity`.
-                currentDomain = "";
+                // Reset `currentDomainName` so that domain settings are reapplied after returning to `MainWebViewActivity`.
+                currentDomainName = "";
 
                 // Launch `SettingsActivity`.
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);
@@ -1299,8 +1322,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 break;
 
             case R.id.domains:
-                // Reset `currentDomain` so that domain settings are reapplied after returning to `MainWebViewActivity`.
-                currentDomain = "";
+                // Reset `currentDomainName` so that domain settings are reapplied after returning to `MainWebViewActivity`.
+                currentDomainName = "";
 
                 // Launch `DomainsActivity`.
                 Intent domainsIntent = new Intent(this, DomainsActivity.class);
@@ -1607,7 +1630,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         Intent placeBookmarkShortcut = new Intent();
         placeBookmarkShortcut.putExtra("android.intent.extra.shortcut.INTENT", bookmarkShortcut);
         placeBookmarkShortcut.putExtra("android.intent.extra.shortcut.NAME", shortcutNameEditText.getText().toString());
-        placeBookmarkShortcut.putExtra("android.intent.extra.shortcut.ICON", favoriteIcon);
+        placeBookmarkShortcut.putExtra("android.intent.extra.shortcut.ICON", favoriteIconBitmap);
         placeBookmarkShortcut.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
         sendBroadcast(placeBookmarkShortcut);
     }
@@ -1865,16 +1888,35 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
     @SuppressWarnings("deprecation")
     private void applyDomainSettings(String url) {
+        // Reset `navigatingHistory`.
+        navigatingHistory = false;
+
         // Parse the URL into a URI.
         Uri uri = Uri.parse(url);
 
         // Extract the domain from `uri`.
-        String hostname = uri.getHost();
+        String hostName = uri.getHost();
 
-        // Only apply the domain settings if `hostname` is not the same as `currentDomain`.  This allows the user to set temporary settings for JavaScript, Cookies, DOM Storage, etc.
-        if (hostname != null && !hostname.equals(currentDomain)) {
-            // Set the new `hostname` as the `currentDomain`.
-            currentDomain = hostname;
+        // Initialize `loadingNewDomainName`.
+        boolean loadingNewDomainName;
+
+        // If either `hostName` or `currentDomainName` are `null`, run the options for loading a new domain name.
+        // The lint suggestion to simplify the `if` statement is incorrect, because `hostName.equals(currentDomainName)` can produce a `null object reference.`
+        //noinspection SimplifiableIfStatement
+        if ((hostName == null) || (currentDomainName == null)) {
+            loadingNewDomainName = true;
+        } else {  // Determine if `hostName` equals `currentDomainName`.
+            loadingNewDomainName = !hostName.equals(currentDomainName);
+        }
+
+        // Only apply the domain settings if we are loading a new domain.  This allows the user to set temporary settings for JavaScript, cookies, DOM storage, etc.
+        if (loadingNewDomainName) {
+            // Set the new `hostname` as the `currentDomainName`.
+            currentDomainName = hostName;
+
+            // Reset `favoriteIconBitmap` and display it in the `appbar`.
+            favoriteIconBitmap = favoriteIconDefaultBitmap;
+            favoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(favoriteIconBitmap, 64, 64, true));
 
             // Initialize the database handler.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
             // The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
@@ -1906,23 +1948,23 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             String domainNameInDatabase = null;
 
             // Check the hostname.
-            if (domainSettingsSet.contains(hostname)) {
+            if (domainSettingsSet.contains(hostName)) {
                 hostHasDomainSettings = true;
-                domainNameInDatabase = hostname;
+                domainNameInDatabase = hostName;
             }
 
-            // Check all the subdomains of `hostname` against wildcard domains in `domainCursor`.
-            while (hostname.contains(".") && !hostHasDomainSettings) {  // Stop checking if we run out of  `.` or if we already know that `hostHasDomainSettings` is `true`.
-                if (domainSettingsSet.contains("*." + hostname)) {  // Check the host name prepended by `*.`.
-                    hostHasDomainSettings = true;
-                    domainNameInDatabase = "*." + hostname;
+            // If `hostName` is not `null`, check all the subdomains of `hostName` against wildcard domains in `domainCursor`.
+            if (hostName != null) {
+                while (hostName.contains(".") && !hostHasDomainSettings) {  // Stop checking if we run out of  `.` or if we already know that `hostHasDomainSettings` is `true`.
+                    if (domainSettingsSet.contains("*." + hostName)) {  // Check the host name prepended by `*.`.
+                        hostHasDomainSettings = true;
+                        domainNameInDatabase = "*." + hostName;
+                    }
+
+                    // Strip out the lowest subdomain of `host`.
+                    hostName = hostName.substring(hostName.indexOf(".") + 1);
                 }
-
-                // Strip out the lowest subdomain of `host`.
-                hostname = hostname.substring(hostname.indexOf(".") + 1);
             }
-
-            RelativeLayout urlAppBarRelativeLayout = (RelativeLayout) findViewById(R.id.url_app_bar_relativelayout);
 
             if (hostHasDomainSettings) {  // The url we are loading has custom domain settings.
                 // Get a cursor for the current host and move it to the first position.
@@ -2058,7 +2100,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         String javaScriptDisabledSearchCustomURLString = sharedPreferences.getString("javascript_disabled_search_custom_url", "");
         String javaScriptEnabledSearchString = sharedPreferences.getString("javascript_enabled_search", "https://duckduckgo.com/?q=");
         String javaScriptEnabledSearchCustomURLString = sharedPreferences.getString("javascript_enabled_search_custom_url", "");
-        String homepageString = sharedPreferences.getString("homepage", "https://www.duckduckgo.com");
+        String homepageString = sharedPreferences.getString("homepage", "https://duckduckgo.com");
         String torHomepageString = sharedPreferences.getString("tor_homepage", "https://3g2upl4pq6kufc4m.onion");
         String torJavaScriptDisabledSearchString = sharedPreferences.getString("tor_javascript_disabled_search", "https://3g2upl4pq6kufc4m.onion/html/?q=");
         String torJavaScriptDisabledSearchCustomURLString = sharedPreferences.getString("tor_javascript_disabled_search_custom_url", "");

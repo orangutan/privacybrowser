@@ -566,7 +566,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Convert the favoriteIcon Bitmap to a byte array.
         ByteArrayOutputStream favoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
         // `0` is for lossless compression (the only option for a PNG).
-        MainWebViewActivity.favoriteIcon.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
+        MainWebViewActivity.favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
         byte[] favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray();
 
         // Display the new bookmark below the current items in the (0 indexed) list.
@@ -604,7 +604,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                 BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
                 folderIconBitmap = folderIconBitmapDrawable.getBitmap();
             } else {  // Assign `favoriteIcon` from the `WebView`.
-                folderIconBitmap = MainWebViewActivity.favoriteIcon;
+                folderIconBitmap = MainWebViewActivity.favoriteIconBitmap;
             }
 
             // Convert `folderIconBitmap` to a byte array.  `0` is for lossless compression (the only option for a PNG).
@@ -645,7 +645,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString);
         } else {  // Update the bookmark using the `WebView` favorite icon.
             ByteArrayOutputStream newFavoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
-            MainWebViewActivity.favoriteIcon.compress(Bitmap.CompressFormat.PNG, 0, newFavoriteIconByteArrayOutputStream);
+            MainWebViewActivity.favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, newFavoriteIconByteArrayOutputStream);
             byte[] newFavoriteIconByteArray = newFavoriteIconByteArrayOutputStream.toByteArray();
 
             //  Update the bookmark and the favorite icon.
@@ -699,7 +699,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                     BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
                     folderIconBitmap = folderIconBitmapDrawable.getBitmap();
                 } else {  // Get the web page icon `ImageView` from the `Dialog`.
-                    folderIconBitmap = MainWebViewActivity.favoriteIcon;
+                    folderIconBitmap = MainWebViewActivity.favoriteIconBitmap;
                 }
 
                 // Convert the folder `Bitmap` to a byte array.  `0` is for lossless compression (the only option for a PNG).
