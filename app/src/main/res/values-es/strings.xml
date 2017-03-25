@@ -43,6 +43,7 @@
     <string name="form_data_deleted">Datos de formulario eliminados</string>
     <string name="open_navigation_drawer">Abrir la caja de navegación</string>
     <string name="close_navigation_drawer">Cerrar la caja de navegación</string>
+    <string name="no_title">Sin título</string>
 
     <!-- Save As. -->
     <string name="save_as">Guardar como</string>
