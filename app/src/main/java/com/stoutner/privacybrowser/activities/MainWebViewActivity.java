@@ -203,6 +203,12 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `adBlockerEnabled` is used in `onCreate()` and `applyAppSettings()`.
     private boolean adBlockerEnabled;
 
+    // `privacyBrowserRuntime` is used in `onCreate()` and `applyAppSettings()`.
+    Runtime privacyBrowserRuntime;
+
+    // `incognitoModeEnabled` is used in `onCreate()` and `applyAppSettings()`.
+    private boolean incognitoModeEnabled;
+
     // `fullScreenBrowsingModeEnabled` is used in `onCreate()` and `applyAppSettings()`.
     private boolean fullScreenBrowsingModeEnabled;
 
@@ -226,6 +232,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
     // `waitingForOrbotData` is used in `onCreate()` and `applyAppSettings()`.
     private String waitingForOrbotHTMLString;
+
+    // `privateDataDirectoryString` is used in `onCreate()` and `onNavigationItemSelected()`.
+    private String privateDataDirectoryString;
 
     // `findOnPageLinearLayout` is used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
     private LinearLayout findOnPageLinearLayout;
@@ -655,8 +664,28 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             // Update formattedUrlString and urlTextBox.  It is necessary to do this after the page finishes loading because the final URL can change during load.
             @Override
             public void onPageFinished(WebView view, String url) {
-                // Check to see if we are waiting on Orbot.
-                if (pendingUrl.isEmpty()) {  // we are not waiting on Orbot, so we need to process the URL.
+                // Clear the cache and history if Incognito Mode is enabled.
+                if (incognitoModeEnabled) {
+                    // Clear the cache.  `true` includes disk files.
+                    mainWebView.clearCache(true);
+
+                    // Clear the back/forward history.
+                    mainWebView.clearHistory();
+
+                    // Manually delete cache folders.
+                    try {
+                        // Delete the main `cache` folder.
+                        privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/cache");
+
+                        // Delete the `app_webview` folder, which contains an additional `WebView` cache.  See `https://code.google.com/p/android/issues/detail?id=233826&thanks=233826&ts=1486670530`.
+                        privacyBrowserRuntime.exec("rm -rf " + privacyBrowserRuntime + "/app_webview");
+                    } catch (IOException e) {
+                        // Do nothing if an error is thrown.
+                    }
+                }
+
+                // Update `urlTextBox` and apply domain settings if not waiting on Orbot.
+                if (pendingUrl.isEmpty()) {  // We are not waiting on Orbot, so we need to process the URL.
                     // Check to see if `WebView` has set `url` to be `about:blank`.
                     if (url.equals("about:blank")) {  // `WebView` is blank, so `formattedUrlString` should be `""` and `urlTextBox` should display a hint.
                         // Set `formattedUrlString` to `""`.
@@ -827,6 +856,12 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         if (launchingIntentUriData != null) {
             formattedUrlString = launchingIntentUriData.toString();
         }
+
+        // Get a handle for the `Runtime`.
+        privacyBrowserRuntime = Runtime.getRuntime();
+
+        // Store the application's private data directory.
+        privateDataDirectoryString = getApplicationInfo().dataDir;  // `dataDir` will vary, but will be something like `/data/user/0/com.stoutner.privacybrowser.standard`, which links to `/data/data/com.stoutner.privacybrowser.standard`.
 
         // Initialize `inFullScreenBrowsingMode`, which is always false at this point because Privacy Browser never starts in full screen browsing mode.
         inFullScreenBrowsingMode = false;
@@ -1358,7 +1393,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 WebViewDatabase webViewDatabase = WebViewDatabase.getInstance(this);
                 webViewDatabase.clearFormData();
 
-                // Clear cache.  The argument of "true" includes disk files.
+                // Clear the cache.  `true` includes disk files.
                 mainWebView.clearCache(true);
 
                 // Clear the back/forward history.
@@ -1379,15 +1414,13 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 // Destroy the internal state of `mainWebView`.
                 mainWebView.destroy();
 
-                // Manually delete folders.
-                Runtime runtime = Runtime.getRuntime();
-                String dataDirString = getApplicationInfo().dataDir;  // `dataDir` will vary, but will be something like `/data/user/0/com.stoutner.privacybrowser.standard`, which links to `/data/data/com.stoutner.privacybrowser.standard`.
+                // Manually delete cache folders.
                 try {
                     // Delete the main `cache` folder.
-                    runtime.exec("rm -rf " + dataDirString + "/cache");
+                    privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/cache");
 
                     // Delete the `app_webview` folder, which contains an additional `WebView` cache.  See `https://code.google.com/p/android/issues/detail?id=233826&thanks=233826&ts=1486670530`.
-                    runtime.exec("rm -rf " + dataDirString + "/app_webview");
+                    privacyBrowserRuntime.exec("rm -rf " + privacyBrowserRuntime + "/app_webview");
                 } catch (IOException e) {
                     // Do nothing if an error is thrown.
                 }
@@ -2110,13 +2143,14 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         String torJavaScriptDisabledSearchCustomURLString = sharedPreferences.getString("tor_javascript_disabled_search_custom_url", "");
         String torJavaScriptEnabledSearchString = sharedPreferences.getString("tor_javascript_enabled_search", "https://3g2upl4pq6kufc4m.onion/?q=");
         String torJavaScriptEnabledSearchCustomURLString = sharedPreferences.getString("tor_javascript_enabled_search_custom_url", "");
-        swipeToRefreshEnabled = sharedPreferences.getBoolean("swipe_to_refresh_enabled", false);
         adBlockerEnabled = sharedPreferences.getBoolean("block_ads", true);
+        incognitoModeEnabled = sharedPreferences.getBoolean("incognito_mode", false);
         boolean doNotTrackEnabled = sharedPreferences.getBoolean("do_not_track", false);
         proxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
         fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("enable_full_screen_browsing_mode", false);
         hideSystemBarsOnFullscreen = sharedPreferences.getBoolean("hide_system_bars", false);
         translucentNavigationBarOnFullscreen = sharedPreferences.getBoolean("translucent_navigation_bar", true);
+        swipeToRefreshEnabled = sharedPreferences.getBoolean("swipe_to_refresh", false);
 
         // Set the homepage, search, and proxy options.
         if (proxyThroughOrbot) {  // Set the Tor options.

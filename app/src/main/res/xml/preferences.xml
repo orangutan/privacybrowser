@@ -74,10 +74,59 @@
             android:defaultValue="true" />
 
         <SwitchPreference
+            android:key="incognito_mode"
+            android:title="@string/incognito_mode"
+            android:summary="@string/incognito_mode_summary"
+            android:defaultValue="false" />
+
+        <SwitchPreference
             android:key="do_not_track"
             android:title="@string/do_not_track"
             android:summary="@string/do_not_track_summary"
             android:defaultValue="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="tor"
+        android:title="@string/tor" >
+
+        <SwitchPreference
+            android:key="proxy_through_orbot"
+            android:title="@string/proxy_through_orbot"
+            android:summary="@string/proxy_through_orbot_summary"
+            android:defaultValue="false" />
+
+        <EditTextPreference
+            android:key="tor_homepage"
+            android:title="@string/tor_homepage"
+            android:defaultValue="https://3g2upl4pq6kufc4m.onion"
+            android:inputType="textUri" />
+
+        <ListPreference
+            android:key="tor_javascript_disabled_search"
+            android:title="@string/tor_javascript_disabled_search"
+            android:entries="@array/tor_javascript_disabled_search_entries"
+            android:entryValues="@array/tor_javascript_disabled_search_entry_values"
+            android:defaultValue="https://3g2upl4pq6kufc4m.onion/html/?q=" />
+
+        <EditTextPreference
+            android:key="tor_javascript_disabled_search_custom_url"
+            android:title="@string/tor_javascript_disabled_search_custom_url"
+            android:defaultValue=""
+            android:inputType="textUri" />
+
+        <ListPreference
+            android:key="tor_javascript_enabled_search"
+            android:title="@string/tor_javascript_enabled_search"
+            android:entries="@array/tor_javascript_enabled_search_entries"
+            android:entryValues="@array/tor_javascript_enabled_search_entry_values"
+            android:defaultValue="https://3g2upl4pq6kufc4m.onion/?q=" />
+
+        <EditTextPreference
+            android:key="tor_javascript_enabled_search_custom_url"
+            android:title="@string/tor_javascript_enabled_search_custom_url"
+            android:defaultValue=""
+            android:inputType="textUri" />
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -135,49 +184,6 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="tor"
-        android:title="@string/tor" >
-
-        <SwitchPreference
-            android:key="proxy_through_orbot"
-            android:title="@string/proxy_through_orbot"
-            android:summary="@string/proxy_through_orbot_summary"
-            android:defaultValue="false" />
-
-        <EditTextPreference
-            android:key="tor_homepage"
-            android:title="@string/tor_homepage"
-            android:defaultValue="https://3g2upl4pq6kufc4m.onion"
-            android:inputType="textUri" />
-
-        <ListPreference
-            android:key="tor_javascript_disabled_search"
-            android:title="@string/tor_javascript_disabled_search"
-            android:entries="@array/tor_javascript_disabled_search_entries"
-            android:entryValues="@array/tor_javascript_disabled_search_entry_values"
-            android:defaultValue="https://3g2upl4pq6kufc4m.onion/html/?q=" />
-
-        <EditTextPreference
-            android:key="tor_javascript_disabled_search_custom_url"
-            android:title="@string/tor_javascript_disabled_search_custom_url"
-            android:defaultValue=""
-            android:inputType="textUri" />
-
-        <ListPreference
-            android:key="tor_javascript_enabled_search"
-            android:title="@string/tor_javascript_enabled_search"
-            android:entries="@array/tor_javascript_enabled_search_entries"
-            android:entryValues="@array/tor_javascript_enabled_search_entry_values"
-            android:defaultValue="https://3g2upl4pq6kufc4m.onion/?q=" />
-
-        <EditTextPreference
-            android:key="tor_javascript_enabled_search_custom_url"
-            android:title="@string/tor_javascript_enabled_search_custom_url"
-            android:defaultValue=""
-            android:inputType="textUri" />
-    </PreferenceCategory>
-
-    <PreferenceCategory
         android:key="general"
         android:title="@string/general" >
 
@@ -195,7 +201,7 @@
             android:defaultValue="100" />
 
         <SwitchPreference
-            android:key="swipe_to_refresh_enabled"
+            android:key="swipe_to_refresh"
             android:title="@string/swipe_to_refresh_enabled"
             android:summary="@string/swipe_to_refresh_enabled_summary"
             android:defaultValue="false" />

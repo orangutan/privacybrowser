@@ -230,6 +230,24 @@
         <string name="block_ads_summary">Usar la lista de servidores de anuncios de pgl.yoyo.org para bloquear anuncios.</string>
         <string name="do_not_track">No rastrear</string>
         <string name="do_not_track_summary">Enviar la cabecera de no rastrear (DNT) que educadamente sugiere que los servidores web no rastreen este navegador.</string>
+    <string name="tor">Tor</string>
+        <string name="proxy_through_orbot">Enviar a través de Orbot</string>
+        <string name="proxy_through_orbot_summary">Enviar todo el tráfico web a través de Orbot en localhost:8118.</string>
+        <string name="tor_homepage">Página de inicio de Tor</string>
+        <string name="tor_javascript_disabled_search">Buscar en Tor con Javascript deshabilitado.</string>
+        <string-array name="tor_javascript_disabled_search_entries">
+            <item>DuckDuckGo</item>
+            <item>Torch</item>
+            <item>Personalizado</item>
+        </string-array>
+        <string name="tor_javascript_disabled_search_custom_url">URL personalizada de búsqueda en Tor con Javascript deshabilitado</string>
+        <string name="tor_javascript_enabled_search">Buscar en Tor con JavaScript habilitado</string>
+        <string-array name="tor_javascript_enabled_search_entries">
+            <item>DuckDuckGo</item>
+            <item>Torch</item>
+            <item>Personalizado</item>
+        </string-array>
+        <string name="tor_javascript_enabled_search_custom_url">URL personalizada de búsqueda en Tor con JavaScript habilitado</string>
     <string name="search">Buscar</string>
         <string name="javascript_disabled_search">Búsqueda de Javascript deshabilitado</string>
         <string-array name="javascript_disabled_search_entries">
@@ -261,24 +279,6 @@
         <string name="hide_system_bars_summary">Esconder las barras de estado y de navegación en el modo de navegación a pantalla completa.  Esto no funciona bien si el teclado es mostrado durante el modo de navegación a pantalla completa.</string>
         <string name="translucent_navigation_bar">Barra de navegación translúcida</string>
         <string name="translucent_navigation_bar_summary">Hacer la barra de navegación translúcida en el modo de navegación a pantalla completa.</string>
-    <string name="tor">Tor</string>
-        <string name="proxy_through_orbot">Enviar a través de Orbot</string>
-        <string name="proxy_through_orbot_summary">Enviar todo el tráfico web a través de Orbot en localhost:8118.</string>
-        <string name="tor_homepage">Página de inicio de Tor</string>
-        <string name="tor_javascript_disabled_search">Buscar en Tor con Javascript deshabilitado.</string>
-        <string-array name="tor_javascript_disabled_search_entries">
-            <item>DuckDuckGo</item>
-            <item>Torch</item>
-            <item>Personalizado</item>
-        </string-array>
-        <string name="tor_javascript_disabled_search_custom_url">URL personalizada de búsqueda en Tor con Javascript deshabilitado</string>
-        <string name="tor_javascript_enabled_search">Buscar en Tor con JavaScript habilitado</string>
-        <string-array name="tor_javascript_enabled_search_entries">
-            <item>DuckDuckGo</item>
-            <item>Torch</item>
-            <item>Personalizado</item>
-        </string-array>
-        <string name="tor_javascript_enabled_search_custom_url">URL personalizada de búsqueda en Tor con JavaScript habilitado</string>
     <string name="general">General</string>
         <string name="homepage">Página de inicio</string>
         <string name="default_font_size">Tamaño de fuente por defecto</string>

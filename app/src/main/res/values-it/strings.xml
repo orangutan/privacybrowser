@@ -232,6 +232,24 @@
         <string name="block_ads_summary">Per bloccare gli annunci utilizza la lista dei server di pgl.yoyo.org.</string>
         <string name="do_not_track">Non tracciare</string>
         <string name="do_not_track_summary">Invia un\'intestazione di non tracciamento per chiedere al web server di non tracciare il browser.</string>
+    <string name="tor">Tor</string>
+        <string name="proxy_through_orbot">Utilizza Proxy con Orbot</string>
+        <string name="proxy_through_orbot_summary">Utilizza Proxy attraverso Orbot su localhost:8118.</string>
+        <string name="tor_homepage">Tor Homepage</string>
+        <string name="tor_javascript_disabled_search">Tor - Ricerca con JavaScript disabilitato</string>
+        <string-array name="tor_javascript_disabled_search_entries">
+            <item>DuckDuckGo</item>
+            <item>Torch</item>
+            <item>Custom</item>
+        </string-array>
+        <string name="tor_javascript_disabled_search_custom_url">Tor - Ricerca personalizzata con JavaScript disabilitato</string>
+        <string name="tor_javascript_enabled_search">Tor - Ricerca con JavaScript abilitato</string>
+        <string-array name="tor_javascript_enabled_search_entries">
+            <item>DuckDuckGo</item>
+            <item>Torch</item>
+            <item>Custom</item>
+        </string-array>
+        <string name="tor_javascript_enabled_search_custom_url">Tor - Ricerca personalizzata con JavaScript abilitato</string>
     <string name="search">Ricerca</string>
         <string name="javascript_disabled_search">Ricerca con JavaScript disabilitato</string>
         <string-array name="javascript_disabled_search_entries">
@@ -263,24 +281,6 @@
         <string name="hide_system_bars_summary">Nasconde la barra di stato e la barra di navigazione durante la navigazione a schermo intero. Questa opzione non funziona perfettamente se si visualizza la tastiera durante la navigazione a schermo intero.</string>
         <string name="translucent_navigation_bar">Barra di navigazione trasparente</string>
         <string name="translucent_navigation_bar_summary">Rende la barra di navigazione trasparente durante la navigazione a schermo intero.</string>
-    <string name="tor">Tor</string>
-        <string name="proxy_through_orbot">Utilizza Proxy con Orbot</string>
-        <string name="proxy_through_orbot_summary">Utilizza Proxy attraverso Orbot su localhost:8118.</string>
-        <string name="tor_homepage">Tor Homepage</string>
-        <string name="tor_javascript_disabled_search">Tor - Ricerca con JavaScript disabilitato</string>
-        <string-array name="tor_javascript_disabled_search_entries">
-            <item>DuckDuckGo</item>
-            <item>Torch</item>
-            <item>Custom</item>
-        </string-array>
-        <string name="tor_javascript_disabled_search_custom_url">Tor - Ricerca personalizzata con JavaScript disabilitato</string>
-        <string name="tor_javascript_enabled_search">Tor - Ricerca con JavaScript abilitato</string>
-        <string-array name="tor_javascript_enabled_search_entries">
-            <item>DuckDuckGo</item>
-            <item>Torch</item>
-            <item>Custom</item>
-        </string-array>
-        <string name="tor_javascript_enabled_search_custom_url">Tor - Ricerca personalizzata con JavaScript abilitato</string>
     <string name="general">Generale</string>
         <string name="homepage">Homepage</string>
         <string name="default_font_size">Dimensione standard carattere</string>

@@ -215,6 +215,9 @@
         <string name="custom_user_agent">Eigener User Agent</string>
         <string name="do_not_track">Nicht verfolgen (Do not track)</string>
         <string name="do_not_track_summary">Einen "Do Not Track-Header" senden, der freundlich anfragt, dass Webserver diesen Browser nicht nachverfolgen sollen.</string>
+    <string name="tor">Tor</string>
+        <string name="proxy_through_orbot">Proxy durch Orbot</string>
+        <string name="proxy_through_orbot_summary">Sämtlichen Web-Verkehr durch Orbot mittels localhost:8118 leiten.</string>
     <string name="search">Suche</string>
         <string name="javascript_disabled_search">Suchmaschine bei deaktiviertem JavaScript</string>
         <string-array name="javascript_disabled_search_entries">
@@ -239,11 +242,8 @@
         </string-array>
         <string name="javascript_enabled_search_custom_url">Suchmaschinen-URL bei aktivertem JavaScript</string>
         <string name="custom_url">Eigene URL</string>
-    <string name="tor">Tor</string>
-        <string name="proxy_through_orbot">Proxy durch Orbot</string>
-        <string name="proxy_through_orbot_summary">Sämtlichen Web-Verkehr durch Orbot mittels localhost:8118 leiten.</string>
     <string name="general">Allgemein</string>
-    <string name="homepage">Startseite</string>
+        <string name="homepage">Startseite</string>
         <string name="default_font_size">Standard-Schriftgröße</string>
         <string-array name="default_font_size_entries">
             <item>50%</item>

@@ -249,8 +249,38 @@
         <string name="custom_user_agent">Custom user agent</string>
         <string name="block_ads">Block ads</string>
         <string name="block_ads_summary">Use the list of ad servers from pgl.yoyo.org to block ads.</string>
+        <string name="incognito_mode">Incognito Mode</string>
+        <string name="incognito_mode_summary">Clear the history and cache after each webpage finishes loading.</string>
         <string name="do_not_track">Do Not Track</string>
         <string name="do_not_track_summary">Send the Do Not Track header, which politely suggests that web servers not track this browser.</string>
+    <string name="tor">Tor</string>
+        <string name="proxy_through_orbot">Proxy through Orbot</string>
+        <string name="proxy_through_orbot_summary">Proxy all web traffic through Orbot on localhost:8118.</string>
+        <string name="tor_homepage">Tor Homepage</string>
+        <string name="tor_javascript_disabled_search">Tor JavaScript-disabled search</string>
+        <string-array name="tor_javascript_disabled_search_entries">
+            <item>DuckDuckGo</item>
+            <item>Torch</item>
+            <item>Custom</item>
+        </string-array>
+        <string-array name="tor_javascript_disabled_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
+            <item>http://3g2upl4pq6kufc4m.onion/html/?q=</item>
+            <item>http://xmh57jrzrnw6insl.onion/4a1f6b371c/search.cgi?q=</item>
+            <item>Custom URL</item><!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
+        </string-array>
+        <string name="tor_javascript_disabled_search_custom_url">Tor JavaScript-disabled search custom URL</string>
+        <string name="tor_javascript_enabled_search">Tor JavaScript-enabled search</string>
+        <string-array name="tor_javascript_enabled_search_entries">
+            <item>DuckDuckGo</item>
+            <item>Torch</item>
+            <item>Custom</item>
+        </string-array>
+        <string-array name="tor_javascript_enabled_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
+            <item>http://3g2upl4pq6kufc4m.onion/?q=</item>
+            <item>http://xmh57jrzrnw6insl.onion/4a1f6b371c/search.cgi?q=</item>
+            <item>Custom URL</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
+        </string-array>
+        <string name="tor_javascript_enabled_search_custom_url">Tor JavaScript-enabled search custom URL</string>
     <string name="search">Search</string>
         <string name="javascript_disabled_search">JavaScript-disabled search</string>
         <string-array name="javascript_disabled_search_entries">
@@ -300,34 +330,6 @@
         <string name="hide_system_bars_summary">Hide the status and navigation bars in full screen browsing mode. This doesn\'t work well if the keyboard is displayed during full screen browsing mode.</string>
         <string name="translucent_navigation_bar">Translucent navigation bar</string>
         <string name="translucent_navigation_bar_summary">Make the navigation bar translucent in full screen browsing mode.</string>
-    <string name="tor">Tor</string>
-        <string name="proxy_through_orbot">Proxy through Orbot</string>
-        <string name="proxy_through_orbot_summary">Proxy all web traffic through Orbot on localhost:8118.</string>
-        <string name="tor_homepage">Tor Homepage</string>
-        <string name="tor_javascript_disabled_search">Tor JavaScript-disabled search</string>
-        <string-array name="tor_javascript_disabled_search_entries">
-            <item>DuckDuckGo</item>
-            <item>Torch</item>
-            <item>Custom</item>
-        </string-array>
-        <string-array name="tor_javascript_disabled_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
-            <item>http://3g2upl4pq6kufc4m.onion/html/?q=</item>
-            <item>http://xmh57jrzrnw6insl.onion/4a1f6b371c/search.cgi?q=</item>
-            <item>Custom URL</item><!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
-        </string-array>
-        <string name="tor_javascript_disabled_search_custom_url">Tor JavaScript-disabled search custom URL</string>
-        <string name="tor_javascript_enabled_search">Tor JavaScript-enabled search</string>
-        <string-array name="tor_javascript_enabled_search_entries">
-            <item>DuckDuckGo</item>
-            <item>Torch</item>
-            <item>Custom</item>
-        </string-array>
-        <string-array name="tor_javascript_enabled_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
-            <item>http://3g2upl4pq6kufc4m.onion/?q=</item>
-            <item>http://xmh57jrzrnw6insl.onion/4a1f6b371c/search.cgi?q=</item>
-            <item>Custom URL</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
-        </string-array>
-        <string name="tor_javascript_enabled_search_custom_url">Tor JavaScript-enabled search custom URL</string>
     <string name="general">General</string>
         <string name="homepage">Homepage</string>
         <string name="default_font_size">Default font size</string>
