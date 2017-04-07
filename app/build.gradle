@@ -55,7 +55,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:design:25.3.0'
+    compile 'com.android.support:design:25.3.1'
 
     // Only compile `com.google.firebase:firebase-ads:9.8.0` for the free flavor.
     freeCompile 'com.google.firebase:firebase-ads:9.8.0'

@@ -1379,13 +1379,17 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 // Destroy the internal state of `mainWebView`.
                 mainWebView.destroy();
 
-                // Manually delete the `app_webview` folder, which contains an additional `WebView` cache.  See `https://code.google.com/p/android/issues/detail?id=233826&thanks=233826&ts=1486670530`.
+                // Manually delete folders.
                 Runtime runtime = Runtime.getRuntime();
                 String dataDirString = getApplicationInfo().dataDir;  // `dataDir` will vary, but will be something like `/data/user/0/com.stoutner.privacybrowser.standard`, which links to `/data/data/com.stoutner.privacybrowser.standard`.
                 try {
+                    // Delete the main `cache` folder.
+                    runtime.exec("rm -rf " + dataDirString + "/cache");
+
+                    // Delete the `app_webview` folder, which contains an additional `WebView` cache.  See `https://code.google.com/p/android/issues/detail?id=233826&thanks=233826&ts=1486670530`.
                     runtime.exec("rm -rf " + dataDirString + "/app_webview");
                 } catch (IOException e) {
-                    // Do nothing if the files do not exist.
+                    // Do nothing if an error is thrown.
                 }
 
                 // Close Privacy Browser.  `finishAndRemoveTask` also removes Privacy Browser from the recent app list.
