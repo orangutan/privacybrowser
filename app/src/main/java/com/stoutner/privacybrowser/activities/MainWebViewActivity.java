@@ -227,8 +227,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `currentDomainName` is used in `onCreate(), `onNavigationItemSelected()`, and `applyDomainSettings()`.
     private String currentDomainName;
 
-    // `pendingUrl` is used in `onCreate()` and `applyAppSettings()`.
-    private static String pendingUrl;
+    // `waitingForOrbot` is used in `onCreate()` and `applyAppSettings()`.
+    private boolean waitingForOrbot;
 
     // `waitingForOrbotData` is used in `onCreate()` and `applyAppSettings()`.
     private String waitingForOrbotHTMLString;
@@ -313,10 +313,10 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Set `waitingForOrbotHTMLString`.
         waitingForOrbotHTMLString = "<html><body><br/><center><h1>" + getString(R.string.waiting_for_orbot) + "</h1></center></body></html>";
 
-        // Initialize `currentDomainName`, `pendingUrl`, and `orbotStatus`.
+        // Initialize `currentDomainName`, `orbotStatus`, and `waitingForOrbot`.
         currentDomainName = "";
-        pendingUrl = "";
         orbotStatus = "unknown";
+        waitingForOrbot = false;
 
         // Create an Orbot status `BroadcastReceiver`.
         BroadcastReceiver orbotStatusBroadcastReceiver = new BroadcastReceiver() {
@@ -325,19 +325,10 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 // Store the content of the status message in `orbotStatus`.
                 orbotStatus = intent.getStringExtra("org.torproject.android.intent.extra.STATUS");
 
-                // If we are waiting on `pendingUrl`, load it now that Orbot is connected.
-                if (orbotStatus.equals("ON") && !pendingUrl.isEmpty()) {
-
-                    // Wait 500 milliseconds, because Orbot isn't really ready yet.
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException exception) {
-                        // Do nothing.
-                    }
-
-                    // Copy `pendingUrl` to `formattedUrlString` and reset `pendingUrl` to be empty.
-                    formattedUrlString = pendingUrl;
-                    pendingUrl = "";
+                // If we are waiting on Orbot, load the website now that Orbot is connected.
+                if (orbotStatus.equals("ON") && waitingForOrbot) {
+                    // Reset `waitingForOrbot`.
+                    waitingForOrbot = false;
 
                     // Load `formattedUrlString
                     loadUrl(formattedUrlString);
@@ -647,7 +638,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 webViewTitle = getString(R.string.no_title);
 
                 // Check to see if we are waiting on Orbot.
-                if (pendingUrl.isEmpty()) {  // We are not waiting on Orbot, so we need to process the URL.
+                if (!waitingForOrbot) {  // We are not waiting on Orbot, so we need to process the URL.
                     // We need to update `formattedUrlString` at the beginning of the load, so that if the user toggles JavaScript during the load the new website is reloaded.
                     formattedUrlString = url;
 
@@ -685,7 +676,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 }
 
                 // Update `urlTextBox` and apply domain settings if not waiting on Orbot.
-                if (pendingUrl.isEmpty()) {  // We are not waiting on Orbot, so we need to process the URL.
+                if (!waitingForOrbot && !url.startsWith("data:text/html,<html><body><br/><center><h1>")) {  // Sometimes `waitingForOrbot` is reset while the Orbot message `onPageFinished()` is running, causing a race condition.  For this reason we check both.
                     // Check to see if `WebView` has set `url` to be `about:blank`.
                     if (url.equals("about:blank")) {  // `WebView` is blank, so `formattedUrlString` should be `""` and `urlTextBox` should display a hint.
                         // Set `formattedUrlString` to `""`.
@@ -890,11 +881,11 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // If the favorite icon is null, load the default.
         if (favoriteIconBitmap == null) {
             favoriteIconBitmap = favoriteIconDefaultBitmap;
-
-        // Load `formattedUrlString` if we are not proxying through Orbot and waiting for Orbot to connect.
-        if (!(proxyThroughOrbot && !orbotStatus.equals("ON"))) {
-            loadUrl(formattedUrlString);
         }
+
+        // Load `formattedUrlString` if we are not waiting for Orbot to connect.
+        if (!waitingForOrbot) {
+            loadUrl(formattedUrlString);
         }
     }
 
@@ -2181,8 +2172,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
             // Display a message to the user if we are waiting on Orbot.
             if (!orbotStatus.equals("ON")) {
-                // Save `formattedUrlString` in `pendingUrl`.
-                pendingUrl = formattedUrlString;
+                // Set `waitingForOrbot`.
+                waitingForOrbot = true;
 
                 // Load a waiting page.  `null` specifies no encoding, which defaults to ASCII.
                 mainWebView.loadData(waitingForOrbotHTMLString, "text/html", null);
@@ -2213,11 +2204,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             // Reset the proxy to default.  The host is `""` and the port is `"0"`.
             OrbotProxyHelper.setProxy(getApplicationContext(), this, "", "0");
 
-            // Reset `pendingUrl` if we are currently waiting for Orbot to connect.
-            if (!pendingUrl.isEmpty()) {
-                formattedUrlString = pendingUrl;
-                pendingUrl = "";
-            }
+            // Reset `waitingForOrbot.
+            waitingForOrbot = false;
         }
 
         // Set swipe to refresh.
