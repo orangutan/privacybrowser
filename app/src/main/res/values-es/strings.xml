@@ -239,14 +239,12 @@
         <string name="tor_javascript_disabled_search">Buscar en Tor con Javascript deshabilitado.</string>
         <string-array name="tor_javascript_disabled_search_entries">
             <item>DuckDuckGo</item>
-            <item>Torch</item>
             <item>Personalizado</item>
         </string-array>
         <string name="tor_javascript_disabled_search_custom_url">URL personalizada de búsqueda en Tor con Javascript deshabilitado</string>
         <string name="tor_javascript_enabled_search">Buscar en Tor con JavaScript habilitado</string>
         <string-array name="tor_javascript_enabled_search_entries">
             <item>DuckDuckGo</item>
-            <item>Torch</item>
             <item>Personalizado</item>
         </string-array>
         <string name="tor_javascript_enabled_search_custom_url">URL personalizada de búsqueda en Tor con JavaScript habilitado</string>

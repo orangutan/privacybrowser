@@ -221,9 +221,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `translucentNavigationBarOnFullscreen` is used in `onCreate()` and `applyAppSettings()`.
     private boolean translucentNavigationBarOnFullscreen;
 
-    // `proxyThroughOrbot` is used in `onCreate()` and `applyAppSettings()`.
-    private boolean proxyThroughOrbot;
-
     // `currentDomainName` is used in `onCreate(), `onNavigationItemSelected()`, and `applyDomainSettings()`.
     private String currentDomainName;
 
@@ -676,7 +673,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 }
 
                 // Update `urlTextBox` and apply domain settings if not waiting on Orbot.
-                if (!waitingForOrbot && !url.startsWith("data:text/html,<html><body><br/><center><h1>")) {  // Sometimes `waitingForOrbot` is reset while the Orbot message `onPageFinished()` is running, causing a race condition.  For this reason we check both.
+                if (!waitingForOrbot) {
                     // Check to see if `WebView` has set `url` to be `about:blank`.
                     if (url.equals("about:blank")) {  // `WebView` is blank, so `formattedUrlString` should be `""` and `urlTextBox` should display a hint.
                         // Set `formattedUrlString` to `""`.
@@ -870,9 +867,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Initialize `webViewTitle`.
         webViewTitle = getString(R.string.no_title);
 
-        // Apply the app settings from the shared preferences.
-        applyAppSettings();
-
         // Initialize `favoriteIconBitmap`.  We have to use `ContextCompat` until API >= 21.
         Drawable favoriteIconDrawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.world);
         BitmapDrawable favoriteIconBitmapDrawable = (BitmapDrawable) favoriteIconDrawable;
@@ -882,6 +876,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         if (favoriteIconBitmap == null) {
             favoriteIconBitmap = favoriteIconDefaultBitmap;
         }
+
+        // Apply the app settings from the shared preferences.
+        applyAppSettings();
 
         // Load `formattedUrlString` if we are not waiting for Orbot to connect.
         if (!waitingForOrbot) {
@@ -1825,7 +1822,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     }
 
     @Override
-    public void onResume() {
+    public void onResume() {  // `onResume()` also runs every time the app starts after `onCreate()` and `onStart()`.
         super.onResume();
 
         // Resume JavaScript (if enabled).
@@ -2137,7 +2134,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         adBlockerEnabled = sharedPreferences.getBoolean("block_ads", true);
         incognitoModeEnabled = sharedPreferences.getBoolean("incognito_mode", false);
         boolean doNotTrackEnabled = sharedPreferences.getBoolean("do_not_track", false);
-        proxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
+        boolean proxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
         fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("enable_full_screen_browsing_mode", false);
         hideSystemBarsOnFullscreen = sharedPreferences.getBoolean("hide_system_bars", false);
         translucentNavigationBarOnFullscreen = sharedPreferences.getBoolean("translucent_navigation_bar", true);

@@ -239,14 +239,12 @@
         <string name="tor_javascript_disabled_search">Tor - Ricerca con JavaScript disabilitato</string>
         <string-array name="tor_javascript_disabled_search_entries">
             <item>DuckDuckGo</item>
-            <item>Torch</item>
             <item>Custom</item>
         </string-array>
         <string name="tor_javascript_disabled_search_custom_url">Tor - Ricerca personalizzata con JavaScript disabilitato</string>
         <string name="tor_javascript_enabled_search">Tor - Ricerca con JavaScript abilitato</string>
         <string-array name="tor_javascript_enabled_search_entries">
             <item>DuckDuckGo</item>
-            <item>Torch</item>
             <item>Custom</item>
         </string-array>
         <string name="tor_javascript_enabled_search_custom_url">Tor - Ricerca personalizzata con JavaScript abilitato</string>
