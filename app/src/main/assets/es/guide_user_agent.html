@@ -26,16 +26,24 @@
                 color: 0D4781;
             }
 
+            img.title {
+                vertical-align: bottom;
+                height: 32;
+                width: 32;
+            }
+
             img.center {
                 display: block;
                 margin-left: auto;
                 margin-right: auto;
+                height: 640;
+                width: 360;
             }
         </style>
     </head>
 
     <body>
-        <h3>Identificaci&oacute;n del navegador</h3>
+        <h3><img class="title" src="../en/images/ic_devices_other_dark_blue.png"> Identificaci&oacute;n del navegador</h3>
 
         <p>Cuando los navegadores web se conectan a las p&aacute;ginas web, env&iacute;an un agente de usuario, que identifica al navegador y a las capacidades de rendering que posee.
             El servidor web puede usar esta informaci&oacute;n para decidir qu&eacute; versi&oacute;n de p&aacute;gina web enviar al navegador.
@@ -49,7 +57,7 @@
             La captura de pantalla de abajo muestra un Nexus 6P corriendo Android 7.1.1 con el sistema de android WebView 55.0.2883.91 instalado.
             La mayor&iacute;a de servidores web reconocer&aacute;n esto como un navegador m&oacute;vil y mostrar&aacute; la versi&oacute;n m&oacute;vil del sitio si dispone de ella.</p>
 
-        <img class="center" src="images/user_agent.png" height="640" width="360">
+        <img class="center" src="images/user_agent.png">
 
         <p>Existe tanta informaci&oacute;n en el agente de usuario que algunas veces ser&aacute; el mismo con s&oacute;lo unos pocos visitantes a una p&aacute;gina web.
             Si el agente de usuario es combinado con otra pieza de informaci&oacute;n identificativa que no es &uacute;nica, esto da lugar a menudo a una huella &uacute;nica.
@@ -57,7 +65,7 @@
             Si esta prueba se realiza con javascript habilitado, la cantidad de información que es revelada aumenta grandemente.
             <a href="https://www.browserleaks.com">Browser Leaks (Fugas del navegador)</a> y <a href="https://amiunique.org/">Am I Unique (¿Soy &uacute;nico?)</a> son tambi&eacute;n buenas fuentes de informaci&oacute;n.</p>
 
-        <img class="center" src="../en/images/panopticlick.png" height=640" width="360">
+        <img class="center" src="../en/images/panopticlick.png">
 
         <p>Existen varios agentes de usuario preestablecidos que coinciden con los m&aacute;s comunes navegadores y sistemas operativos.
             A los efectos de huellas del navegador, todo lo que sea extra&ntilde;o es m&aacute;s f&aacute;cil de rastrear.

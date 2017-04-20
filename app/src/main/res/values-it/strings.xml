@@ -52,8 +52,8 @@
     <string name="image_name">Nome Immagine</string>
     <string name="unknown_size">Dimensione sconosciuta</string>
     <string name="download">Scarica</string>
-    <string name="cannot_download_file">Il file non può essere scaricato perchè non ha un URL HTTP o HTTPS</string>
-    <string name="cannot_download_image">L\'immagine non può essere scaricata perchè non ha un URL HTTP o HTTPS</string>
+    <string name="cannot_download_file">Il file non può essere scaricato perché non ha un URL HTTP o HTTPS</string>
+    <string name="cannot_download_image">L\'immagine non può essere scaricata perché non ha un URL HTTP o HTTPS</string>
 
     <!-- Custom App Bar. -->
     <string name="favorite_icon">FavIcon</string>
@@ -156,8 +156,8 @@
     <string name="folder_name">Nome Cartella</string>
     <string name="bookmark_url">URL Segnalibro</string>
     <string name="folder_names_must_be_unique">I nomi delle cartelle devono essere unici</string>
-    <string name="cannot_create_folder">Non è possibile creare la cartella perchè già esistente:</string>
-    <string name="cannot_save_folder">Non è possibile salvare la cartella perchè già esistente:</string>
+    <string name="cannot_create_folder">Non è possibile creare la cartella perché già esistente:</string>
+    <string name="cannot_save_folder">Non è possibile salvare la cartella perché già esistente:</string>
     <string name="cannot_move_bookmarks">Non è possibile spostare il segnalibro, nessuna cartella selezionata.</string>
     <string name="edit_bookmark">Modifica Segnalibro</string>
     <string name="edit_folder">Modifica Cartella</string>
@@ -230,6 +230,8 @@
         <string name="custom_user_agent">User agent personalizzato</string>
         <string name="block_ads">Blocca annunci</string>
         <string name="block_ads_summary">Per bloccare gli annunci utilizza la lista dei server di pgl.yoyo.org.</string>
+        <string name="incognito_mode">Modalità Incognito</string>
+        <string name="incognito_mode_summary">Cancella la cronologia e la cache al termine del caricamento di ogni pagina.</string>
         <string name="do_not_track">Non tracciare</string>
         <string name="do_not_track_summary">Invia un\'intestazione di non tracciamento per chiedere al web server di non tracciare il browser.</string>
     <string name="tor">Tor</string>

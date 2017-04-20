@@ -1,7 +1,5 @@
 <!--
-  Copyright 2016-2017 Soren Stoutner <soren@stoutner.com>.
-
-  Translation 2016 Aaron Gerlach <aaron@gerlach.com>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Copyright 2017 Soren Stoutner <soren@stoutner.com>.
 
   Diese Datei ist Teil von Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -28,23 +26,28 @@
                 color: 0D4781;
             }
 
-            strong {
-                color: BF360C;
+            img.title {
+                vertical-align: bottom;
+                height: 32;
+                width: 32;
+            }
+
+            img.center {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                height: 640;
+                width: 360;
             }
         </style>
     </head>
 
     <body>
-        <h3>Das Beste kommt erst noch</h3>
+        <h3><img class="title" src="../en/images/ic_dns_dark_blue.png"> Secure Web Browsing</h3>
 
-        <p>Privacy Browser ist noch unfertig. Die allerbesten Features werden erst noch mit eingebunden. Sie beinhalten Folgendes:</p>
+        <p>Privacy Browser&rsquo;s default is to browse with JavaScript, cookies, and DOM storage disabled. However, some websites legitimately need these features enabled to function correctly.
+            Domain settings can automatically turn on a specified set of features when visiting a designated domain.</p>
 
-        <ul>
-            <li><strong>Detaillierte Einstellungen f&uuml;r Cookies und DOM-Speicher</strong>.</li>
-            <li><strong>Verschl&uuml;sseltes Synchronisieren zwischen Ger&auml;ten</strong>.</li>
-            <li><strong>Browsen mit Tabs</strong>.</li>
-        </ul>
-
-        <p>Eine umfangreichere Liste aller geplanten Features und Fehler ist unter <a href="https://redmine.stoutner.com/projects/privacy-browser/issues">redmine.stoutner.com</a> verf&uuml;gbar.</p>
+        <p><img class="center" src="images/domain_settings.png"></p>
     </body>
 </html>

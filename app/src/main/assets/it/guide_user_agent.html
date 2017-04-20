@@ -26,17 +26,24 @@
                 color: 0D4781;
             }
 
+            img.title {
+                vertical-align: bottom;
+                height: 32;
+                width: 32;
+            }
 
             img.center {
                 display: block;
                 margin-left: auto;
                 margin-right: auto;
+                height: 640;
+                width: 360;
             }
         </style>
     </head>
 
     <body>
-        <h3>Identificazione del Browser</h3>
+        <h3><img class="title" src="../en/images/ic_devices_other_dark_blue.png"> Identificazione del Browser</h3>
 
         <p>Nel momento in cui un browser si connette ai siti web, invia uno user agent che identifica il browser e le sue caratteristiche di rendering. Il web server pu&ograve; utilizzare tali informazioni per decidere quale versione
             del sito inviare al browser. Molti siti web infatti sono disponibili in versioni diverse a seconda che vi si acceda con browser da PC (desktop) o da dispositivo mobile.</p>
@@ -48,13 +55,13 @@
             <strong>User agent</strong> viene mostrato lo user agent che sar&agrave; inviato al web server. Lo screenshot sottostante mostra un Nexus 6P con Android 7.1.1 con installato Android System WebView 55.0.2883.91.  La maggior parte dei web server lo riconoscer&agrave; come
             browser mobile e invier&agrave; la versione mobile del sito, se disponibile.</p>
 
-        <img class="center" src="images/user_agent.png" height="640" width="360">
+        <img class="center" src="images/user_agent.png">
 
         <p>Nello user agent sono presenti informazioni sufficienti a far s&igrave; che solo di tanto in tanto a un sito web risulteranno visitatori identici. Se allo user agent viene aggiunto qualche altro pezzetto di informazione anche non univoca, spesso il risultato sar&agrave; quello di avere una impronta digitale unica.
             La Electronic Frontier Foundation ha creato un tool dal nome <a href="https://panopticlick.eff.org/">Panopticlick</a> per dimostrare quante informazioni possono essere raccolte. Se si esegue questo test con JavaScript abilitato
             la quantit&agrave; di informazioni &egrave; poi ancora maggiore. <a href="https://www.browserleaks.com">Browser Leaks</a> e <a href="https://amiunique.org/">Am I Unique</a> possono fornire ulteriori interessanti informazioni al riguardo.</p>
 
-        <img class="center" src="../en/images/panopticlick.png" height=640" width="360">
+        <img class="center" src="../en/images/panopticlick.png">
 
         <p>Sono disponibili diversi user agent predefiniti che identificano i browser e i sistemi operativi pi&ugrave; comuni. Dal punto di vista dell'impronta digitale del browser, pi&ugrave; &egrave; rara, pi&ugrave; &egrave; facile da tracciare. Nel caso in cui Privacy Browser diventi di uso comune, e molti utenti utilizzino PrivacyBrowser/1.0
             come user agent, sar&agrave; una buona scelta dal punto di vista della privacy. Firefox o Chrome sono gli user agents pi&ugrave; comuni, ma vengono aggiornati spesso e il loro numero di versione cambia cos&igrave; di frequente che lo user agent incluso in Privacy Browser molto facilmente
