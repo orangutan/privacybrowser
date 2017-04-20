@@ -987,6 +987,11 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
         // Prepare the font size title and current size menu item.
         switch (fontSize) {
+            case 25:
+                fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.twenty_five_percent);
+                selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeTwentyFivePercent);
+                break;
+
             case 50:
                 fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.fifty_percent);
                 selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeFiftyPercent);
@@ -1189,6 +1194,10 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 WebViewDatabase mainWebViewDatabase = WebViewDatabase.getInstance(this);
                 mainWebViewDatabase.clearFormData();
                 Snackbar.make(findViewById(R.id.main_webview), R.string.form_data_deleted, Snackbar.LENGTH_SHORT).show();
+                return true;
+
+            case R.id.fontSizeTwentyFivePercent:
+                mainWebView.getSettings().setTextZoom(25);
                 return true;
 
             case R.id.fontSizeFiftyPercent:

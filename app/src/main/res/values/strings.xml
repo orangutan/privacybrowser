@@ -113,6 +113,7 @@
     <string name="clear_dom_storage">Clear DOM Storage</string>
     <string name="clear_form_data">Clear Form Data</string>
     <string name="font_size">Font Size</string>
+        <string name="twenty_five_percent">25%</string>
         <string name="fifty_percent">50%</string>
         <string name="seventy_five_percent">75%</string>
         <string name="one_hundred_percent">100%</string>
@@ -330,6 +331,7 @@
         <string name="homepage">Homepage</string>
         <string name="default_font_size">Default font size</string>
         <string-array name="default_font_size_entries">
+            <item>25%</item>
             <item>50%</item>
             <item>75%</item>
             <item>100%</item>
@@ -339,6 +341,7 @@
             <item>200%</item>
         </string-array>
         <string-array name="default_font_size_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
+            <item>25</item>
             <item>50</item>
             <item>75</item>
             <item>100</item>

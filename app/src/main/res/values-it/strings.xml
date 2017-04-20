@@ -111,6 +111,7 @@
     <string name="clear_dom_storage">Elimina DOM Storage</string>
     <string name="clear_form_data">Elimina dati dei moduli</string>
     <string name="font_size">Dimensione Font</string>
+        <string name="twenty_five_percent">25%</string>
         <string name="fifty_percent">50%</string>
         <string name="seventy_five_percent">75%</string>
         <string name="one_hundred_percent">100%</string>
@@ -285,6 +286,7 @@
         <string name="homepage">Homepage</string>
         <string name="default_font_size">Dimensione standard carattere</string>
         <string-array name="default_font_size_entries">
+            <item>25%</item>
             <item>50%</item>
             <item>75%</item>
             <item>100%</item>

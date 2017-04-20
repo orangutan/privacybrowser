@@ -109,7 +109,8 @@
     <string name="clear_cookies">Cookies leeren</string>
     <string name="clear_dom_storage">DOM-Speicher leeren</string>
     <string name="clear_form_data">Formulardaten leeren</string>
-        <string name="font_size">Schriftgröße</string>
+    <string name="font_size">Schriftgröße</string>
+        <string name="twenty_five_percent">25%</string>
         <string name="fifty_percent">50%</string>
         <string name="seventy_five_percent">75%</string>
         <string name="one_hundred_percent">100%</string>
@@ -246,6 +247,7 @@
         <string name="homepage">Startseite</string>
         <string name="default_font_size">Standard-Schriftgröße</string>
         <string-array name="default_font_size_entries">
+            <item>25%</item>
             <item>50%</item>
             <item>75%</item>
             <item>100%</item>
