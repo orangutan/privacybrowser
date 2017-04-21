@@ -377,6 +377,12 @@
             <string name="security_patch">Security Patch:</string>
             <string name="webkit">WebKit:</string>
             <string name="chrome">Chrome:</string>
+        <string name="package_signature">Package Signature</string>
+            <string name="issuer_dn">Issuer DN:</string>
+            <string name="subject_dn">Subject DN:</string>
+            <string name="certificate_version">Certificate Version:</string>
+            <string name="serial_number">Serial Number:</string>
+            <string name="signature_algorithm">Signature Algorithm:</string>
     <string name="permissions">Permissions</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="changelog">Changelog</string>

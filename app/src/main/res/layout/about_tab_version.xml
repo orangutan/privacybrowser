@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2016 Soren Stoutner <soren@stoutner.com>.
+  Copyright 2016-2017 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -148,6 +148,51 @@
                 android:id="@+id/about_version_chrome"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
+            <!-- Package Signature. -->
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/package_signature"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/blue_900"
+                android:paddingTop="12dp" />
+
+            <TextView
+                android:id="@+id/about_version_certificate_issuer_dn"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"/>
+
+            <TextView
+                android:id="@+id/about_version_certificate_subject_dn"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"/>
+
+            <TextView
+                android:id="@+id/about_version_certificate_start_date"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"/>
+
+            <TextView
+                android:id="@+id/about_version_certificate_end_date"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"/>
+
+            <TextView
+                android:id="@+id/about_version_certificate_version"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"/>
+
+            <TextView
+                android:id="@+id/about_version_certificate_serial_number"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"/>
+
+            <TextView
+                android:id="@+id/about_version_certificate_signature_algorithm"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"/>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

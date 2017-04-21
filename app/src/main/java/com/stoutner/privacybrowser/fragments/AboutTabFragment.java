@@ -19,6 +19,9 @@
 
 package com.stoutner.privacybrowser.fragments;
 
+import android.annotation.SuppressLint;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -33,6 +36,16 @@ import android.widget.TextView;
 
 import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.R;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.security.Principal;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.text.DateFormat;
+import java.util.Date;
 
 public class AboutTabFragment extends Fragment {
     private int tabNumber;
@@ -77,7 +90,14 @@ public class AboutTabFragment extends Fragment {
             TextView versionBuildTextView = (TextView) tabLayout.findViewById(R.id.about_version_build);
             TextView versionSecurityPatchTextView = (TextView) tabLayout.findViewById(R.id.about_version_securitypatch);
             TextView versionWebKitTextView = (TextView) tabLayout.findViewById(R.id.about_version_webkit);
-            TextView versionChromeText = (TextView) tabLayout.findViewById(R.id.about_version_chrome);
+            TextView versionChromeTextView = (TextView) tabLayout.findViewById(R.id.about_version_chrome);
+            TextView certificateIssuerDNTextView = (TextView) tabLayout.findViewById(R.id.about_version_certificate_issuer_dn);
+            TextView certificateSubjectDNTextView = (TextView) tabLayout.findViewById(R.id.about_version_certificate_subject_dn);
+            TextView certificateStartDateTextView = (TextView) tabLayout.findViewById(R.id.about_version_certificate_start_date);
+            TextView certificateEndDateTextView = (TextView) tabLayout.findViewById(R.id.about_version_certificate_end_date);
+            TextView certificateVersionTextView = (TextView) tabLayout.findViewById(R.id.about_version_certificate_version);
+            TextView certificateSerialNumberTextView = (TextView) tabLayout.findViewById(R.id.about_version_certificate_serial_number);
+            TextView certificateSignatureAlgorithmTextView = (TextView) tabLayout.findViewById(R.id.about_version_certificate_signature_algorithm);
 
             // Setup the labels.
             String version = getString(R.string.version) + " " + BuildConfig.VERSION_NAME + " (" + getString(R.string.version_code) + " " + Integer.toString(BuildConfig.VERSION_CODE) + ")";
@@ -90,6 +110,13 @@ public class AboutTabFragment extends Fragment {
             String buildLabel = getString(R.string.build) + "  ";
             String webKitLabel = getString(R.string.webkit) + "  ";
             String chromeLabel = getString(R.string.chrome) + "  ";
+            String issuerDNLabel = getString(R.string.issuer_dn) + "  ";
+            String subjectDNLabel = getString(R.string.subject_dn) + "  ";
+            String startDateLabel = getString(R.string.start_date) + "  ";
+            String endDateLabel = getString(R.string.end_date) + "  ";
+            String certificateVersionLabel = getString(R.string.certificate_version) + "  ";
+            String serialNumberLabel = getString(R.string.serial_number) + "  ";
+            String signatureAlgorithmLabel = getString(R.string.signature_algorithm) + "  ";
 
             // `webViewLayout` is only used to get the default user agent from `bare_webview`.  It is not used to render content on the screen.
             View webViewLayout = inflater.inflate(R.layout.bare_webview, container, false);
@@ -135,7 +162,7 @@ public class AboutTabFragment extends Fragment {
             webKitStringBuilder.setSpan(blueColorSpan, webKitLabel.length(), webKitStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             chromeStringBuilder.setSpan(blueColorSpan, chromeLabel.length(), chromeStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
-            // Display the strings.
+            // Display the strings in the text boxes.
             versionNumberTextView.setText(version);
             versionBrandTextView.setText(brandStringBuilder);
             versionManufacturerTextView.setText(manufacturerStringBuilder);
@@ -145,7 +172,7 @@ public class AboutTabFragment extends Fragment {
             versionAndroidTextView.setText(androidStringBuilder);
             versionBuildTextView.setText(buildStringBuilder);
             versionWebKitTextView.setText(webKitStringBuilder);
-            versionChromeText.setText(chromeStringBuilder);
+            versionChromeTextView.setText(chromeStringBuilder);
 
             // Build.VERSION.SECURITY_PATCH is only available for SDK_INT >= 23.
             if (Build.VERSION.SDK_INT >= 23) {
@@ -166,6 +193,64 @@ public class AboutTabFragment extends Fragment {
                 versionRadioTextView.setText(radioStringBuilder);
             } else { // Hide `versionRadioTextView`.
                 versionRadioTextView.setVisibility(View.GONE);
+            }
+
+            // Display the package signature.
+            try {
+                // Get the first package signature.  Suppress the lint warning about the need to be careful in implementing comparison of certificates for security purposes.
+                @SuppressLint("PackageManagerGetSignatures") Signature packageSignature = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), PackageManager.GET_SIGNATURES).signatures[0];
+
+                // Convert the signature to a `byte[]` `InputStream`.
+                InputStream certificateByteArrayInputStream = new ByteArrayInputStream(packageSignature.toByteArray());
+
+                // Display the certificate information on the screen.
+                try {
+                    // Instantiate a `CertificateFactory`.
+                    CertificateFactory certificateFactory = CertificateFactory.getInstance("X509");
+
+                    // Generate an `X509Certificate`.
+                    X509Certificate x509Certificate = (X509Certificate) certificateFactory.generateCertificate(certificateByteArrayInputStream);
+
+                    // Store the individual sections of the certificate that we are interested in.
+                    Principal issuerDNPrincipal = x509Certificate.getIssuerDN();
+                    Principal subjectDNPrincipal = x509Certificate.getSubjectDN();
+                    Date startDate = x509Certificate.getNotBefore();
+                    Date endDate = x509Certificate.getNotAfter();
+                    int certificateVersion = x509Certificate.getVersion();
+                    BigInteger serialNumberBigInteger = x509Certificate.getSerialNumber();
+                    String signatureAlgorithmNameString = x509Certificate.getSigAlgName();
+
+                    // Create a `SpannableStringBuilder` for each `TextView` that needs multiple colors of text.
+                    SpannableStringBuilder issuerDNStringBuilder = new SpannableStringBuilder(issuerDNLabel + issuerDNPrincipal.toString());
+                    SpannableStringBuilder subjectDNStringBuilder = new SpannableStringBuilder(subjectDNLabel + subjectDNPrincipal.toString());
+                    SpannableStringBuilder startDateStringBuilder = new SpannableStringBuilder(startDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(startDate));
+                    SpannableStringBuilder endDataStringBuilder = new SpannableStringBuilder(endDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(endDate));
+                    SpannableStringBuilder certificateVersionStringBuilder = new SpannableStringBuilder(certificateVersionLabel + certificateVersion);
+                    SpannableStringBuilder serialNumberStringBuilder = new SpannableStringBuilder(serialNumberLabel + serialNumberBigInteger);
+                    SpannableStringBuilder signatureAlgorithmStringBuilder = new SpannableStringBuilder(signatureAlgorithmLabel + signatureAlgorithmNameString);
+
+                    // Setup the spans to display the device information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
+                    issuerDNStringBuilder.setSpan(blueColorSpan, issuerDNLabel.length(), issuerDNStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    subjectDNStringBuilder.setSpan(blueColorSpan, subjectDNLabel.length(), subjectDNStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    startDateStringBuilder.setSpan(blueColorSpan, startDateLabel.length(), startDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    endDataStringBuilder.setSpan(blueColorSpan, endDateLabel.length(), endDataStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    certificateVersionStringBuilder.setSpan(blueColorSpan, certificateVersionLabel.length(), certificateVersionStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    serialNumberStringBuilder.setSpan(blueColorSpan, serialNumberLabel.length(), serialNumberStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    signatureAlgorithmStringBuilder.setSpan(blueColorSpan, signatureAlgorithmLabel.length(), signatureAlgorithmStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                    // Display the strings in the text boxes.
+                    certificateIssuerDNTextView.setText(issuerDNStringBuilder);
+                    certificateSubjectDNTextView.setText(subjectDNStringBuilder);
+                    certificateStartDateTextView.setText(startDateStringBuilder);
+                    certificateEndDateTextView.setText(endDataStringBuilder);
+                    certificateVersionTextView.setText(certificateVersionStringBuilder);
+                    certificateSerialNumberTextView.setText(serialNumberStringBuilder);
+                    certificateSignatureAlgorithmTextView.setText(signatureAlgorithmStringBuilder);
+                } catch (CertificateException e) {
+                    // Do nothing if there is a certificate error.
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+                // Do nothing if `PackageManager` says Privacy Browser isn't installed.
             }
         } else { // load a WebView for all the other tabs.  Tab numbers start at 0.
             // Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.
