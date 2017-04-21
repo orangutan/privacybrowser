@@ -2257,8 +2257,10 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             // Reset `inFullScreenBrowsingMode` to `false`.
             inFullScreenBrowsingMode = false;
 
-            // Show the `appBar`.
-            appBar.show();
+            // Show the `appBar` if `findOnPageLinearLayout` is not visible.
+            if (findOnPageLinearLayout.getVisibility() == View.GONE) {
+                appBar.show();
+            }
 
             // Show the `BannerAd` in the free flavor.
             if (BuildConfig.FLAVOR.contentEquals("free")) {
