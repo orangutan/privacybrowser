@@ -23,6 +23,8 @@
 
 <html>
     <head>
+        <meta charset="UTF-8">
+
         <!-- We have to make an image into its own block to center it. -->
         <style>
             h3 {
@@ -49,34 +51,34 @@
         <h3><img class="title" src="../en/images/ic_devices_other_dark_blue.png"> Browser-Identifikation</h3>
 
         <p>Wenn Internetbrowser sich mit Websites verbinden senden sie einen sog. User Agent, welcher den Browser und die
-            Rendering-M&ouml;glichkeiten an die Website kommuniziert. Die Website kann diese Informationen nutzen, um zu entscheiden, welche Version der Website
-            an den Browser &uuml;bermittelt werden soll.  Viele Websites haben beispielsweise verschiedene Versionen f&uuml;r Desktopcomputer
+            Rendering-Möglichkeiten an die Website kommuniziert. Die Website kann diese Informationen nutzen, um zu entscheiden, welche Version der Website
+            an den Browser übermittelt werden soll.  Viele Websites haben beispielsweise verschiedene Versionen für Desktopcomputer
             mobile Browser.</p>
 
-        <p>Privacy Browser nutzt standardm&auml;&szlig;ig den auf dem Ger&auml;t in WebView integrierten User Agent.
-            Sie k&ouml;nnen nachsehen, welcher es ist, wenn Sie in die <strong>Einstellungen</strong> gehen und den <strong>User
+        <p>Privacy Browser nutzt standardmäßig den auf dem Gerät in WebView integrierten User Agent.
+            Sie können nachsehen, welcher es ist, wenn Sie in die <strong>Einstellungen</strong> gehen und den <strong>User
                 Agent</strong> auf <strong>WebView-Standard</strong> stellen. Der Screenshot unten zeigt ein Nexus 6P mit Android 6.0.1
             und installiertem Android System WebView 52.0.2743.98.</p>
 
         <img class="center" src="images/user_agent.png">
 
-        <p>Im User Agent sind gen&uuml;gend Informationen, sodass manchmal nur einige wenige Besucher einer Website denselben haben. Wenn der User Agent
+        <p>Im User Agent sind genügend Informationen, sodass manchmal nur einige wenige Besucher einer Website denselben haben. Wenn der User Agent
             mit einem anderen Teil von nicht-einmaligen Identifizierungsinformationen kombiniert wird, resultiert das oft in einem einmaligen "Fingerabdruck".
             Die Electronic Frontier Foundation hat ein Tool namens <a href="https://panopticlick.eff.org/">Panopticlick</a> erstellt,
-            um zu demonstrieren, wie viele Informationen aus diesen Quellen bezogen werden k&ouml;nnen. Wenn dieser Test mit aktiviertem Javascript ausgef&uuml;hrt wird
-            w&auml;chst die Anzahl an Sammelband Informationen drastisch.</p>
+            um zu demonstrieren, wie viele Informationen aus diesen Quellen bezogen werden können. Wenn dieser Test mit aktiviertem Javascript ausgeführt wird
+            wächst die Anzahl an Sammelband Informationen drastisch.</p>
 
         <img class="center" src="../en/images/panopticlick.png">
 
-        <p>Privacy Browser erlaubt Ihnen den User Agent zu &auml;ndern. Es gibt einige vorgegebenen Optionen, die auf &uuml;bliche Browser und Betriebssysteme zutreffen.
-            Privacy Browser hat au&szlig;erdem seinen eigenen User Agent, welcher ganz einfach PrivacyBrowser/1.0 ist. Beim Tracking gilt: Alles was selten ist, ist einfacher
-            zu verfolgen. Wenn Privacy Browser bekannter wird und mehr Leute PrivacyBrowser/1.0 als User Agent nutzen wird es eine gute Wahl f&uuml;r Privatsph&auml;re darstellen.
-            Momentan erm&ouml;glicht das W&auml;hlen von etwas, das viele Klicks auf dem Server hat, wie <strong>Edge 13 auf Windows 10</strong>, das Untertauchen in der
-            Menge der Nutzer. Firefox oder Chrome bieten weniger Privatsph&auml;re, da sie automatisch aktualisiert werden und ihre Versionsnummer so schnell wechselt, sodass
-            die in Privacy Browser eingepflegte Version wahrscheinlich schnell &uuml;berholt wird und so oft aus der auf Server Logs auftauchenden Menge heraussticht.</p>
+        <p>Privacy Browser erlaubt Ihnen den User Agent zu ändern. Es gibt einige vorgegebenen Optionen, die auf übliche Browser und Betriebssysteme zutreffen.
+            Privacy Browser hat außerdem seinen eigenen User Agent, welcher ganz einfach PrivacyBrowser/1.0 ist. Beim Tracking gilt: Alles was selten ist, ist einfacher
+            zu verfolgen. Wenn Privacy Browser bekannter wird und mehr Leute PrivacyBrowser/1.0 als User Agent nutzen wird es eine gute Wahl für Privatsphäre darstellen.
+            Momentan ermöglicht das Wählen von etwas, das viele Klicks auf dem Server hat, wie <strong>Edge 13 auf Windows 10</strong>, das Untertauchen in der
+            Menge der Nutzer. Firefox oder Chrome bieten weniger Privatsphäre, da sie automatisch aktualisiert werden und ihre Versionsnummer so schnell wechselt, sodass
+            die in Privacy Browser eingepflegte Version wahrscheinlich schnell überholt wird und so oft aus der auf Server Logs auftauchenden Menge heraussticht.</p>
 
-        <p>Ein zweiter Grund f&uuml;r das &Auml;ndern des User Agents ist das &Uuml;berzeugen des Servers, dass er die Desktopversion der Website anzeigen soll, welche oftmals
-            besser auf modernen Smartphones l&auml;uft als die mobile Seite. F&uuml;r diesen Zweck funktioniert PrivacyBrowser/1.0 sehr gut, da Webserver f&uuml;r gew&ouml;hnlich
+        <p>Ein zweiter Grund für das Ändern des User Agents ist das Überzeugen des Servers, dass er die Desktopversion der Website anzeigen soll, welche oftmals
+            besser auf modernen Smartphones läuft als die mobile Seite. Für diesen Zweck funktioniert PrivacyBrowser/1.0 sehr gut, da Webserver für gewöhnlich
             die Desktopversion als Standardversion anzeigen, wenn sie keinen mobilen Browser als User Agent erhalten.</p>
 
         <p>Androids WebView erlaubt keinen leeren User Agent. Wenn das der Fall ist, wird der Standard-User Agent an den Server gesandt.</p>

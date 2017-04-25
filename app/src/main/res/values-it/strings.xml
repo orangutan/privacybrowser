@@ -322,6 +322,12 @@
             <string name="security_patch">Patch si sicurezza:</string>
             <string name="webkit">WebKit:</string>
             <string name="chrome">Chrome:</string>
+        <string name="package_signature">Firma del Pacchetto</string>
+            <string name="issuer_dn">Emittente:</string>
+            <string name="subject_dn">Soggetto:</string>
+            <string name="certificate_version">Versione del Certificato:</string>
+            <string name="serial_number">Numero di Serie:</string>
+            <string name="signature_algorithm">Algoritmo di firma:</string>
     <string name="permissions">Autorizzazioni</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="changelog">Changelog</string>

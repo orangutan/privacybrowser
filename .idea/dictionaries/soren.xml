@@ -15,6 +15,7 @@
       <w>beeb</w>
       <w>bookmarkname</w>
       <w>bookmarkurl</w>
+      <w>browserleaks</w>
       <w>buildapi</w>
       <w>buildversion</w>
       <w>buratti</w>
@@ -25,6 +26,7 @@
       <w>commitdiff</w>
       <w>coordinatorlayout</w>
       <w>customuseragent</w>
+      <w>deeplinks</w>
       <w>didn</w>
       <w>displayorder</w>
       <w>dname</w>
@@ -49,10 +51,12 @@
       <w>fontsize</w>
       <w>framelayout</w>
       <w>gerlach</w>
+      <w>googleplay</w>
       <w>imageview</w>
       <w>intl</w>
       <w>ipleak</w>
       <w>isfolder</w>
+      <w>joseleon</w>
       <w>khtml</w>
       <w>knackstedt</w>
       <w>konqueror</w>
@@ -80,6 +84,7 @@
       <w>refreshlayout</w>
       <w>relativelayout</w>
       <w>requery</w>
+      <w>roadmap</w>
       <w>robinlinus</w>
       <w>samsung</w>
       <w>securitypatch</w>
@@ -96,11 +101,13 @@
       <w>textview</w>
       <w>theverge</w>
       <w>torproject</w>
+      <w>uidh</w>
       <w>uids</w>
       <w>uname</w>
       <w>useragent</w>
       <w>useragentname</w>
       <w>useragentstring</w>
+      <w>verizons</w>
       <w>webkay</w>
       <w>webkitversion</w>
       <w>whatismyip</w>

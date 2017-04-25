@@ -320,6 +320,12 @@
             <string name="security_patch">Parche de seguridad:</string>
             <string name="webkit">WebKit:</string>
             <string name="chrome">Chrome:</string>
+        <string name="package_signature">Firma del paquete</string>
+            <string name="issuer_dn">DN del emisor:</string>
+            <string name="subject_dn">DN del sujeto:</string>
+            <string name="certificate_version">Versión del certificado:</string>
+            <string name="serial_number">Número de serie:</string>
+            <string name="signature_algorithm">Algoritmo de firma:</string>
     <string name="permissions">Permisos</string>
     <string name="privacy_policy">Política de privacidad</string>
     <string name="changelog">Historial de cambios</string>

@@ -18,6 +18,8 @@
 
 <html>
     <head>
+        <meta charset="UTF-8">
+
         <!-- We have to make an image into its own block to center it. -->
         <style>
             h3 {
@@ -49,7 +51,7 @@
         <p>By default, Privacy Browser uses its own user agent, which is PrivacyBrowser/1.0. This sends a minimum of information to the web server. Because web servers do not recognize this to be a mobile user agent,
             they typically display the desktop version of the site.</p>
 
-        <p>By comparison, WebView&rsquo;s default user agent divulges a large amount of information about the hardware and softare of the device. On the <strong>Settings</strong> screen, selecting <strong>WebView Default</strong> as the
+        <p>By comparison, WebView’s default user agent divulges a large amount of information about the hardware and software of the device. On the <strong>Settings</strong> screen, selecting <strong>WebView Default</strong> as the
             <strong>User agent</strong> displays the user agent that will be sent. The screenshot below shows a Nexus 6P running Android 7.1.1 with Android System WebView 55.0.2883.91 installed.  Most web servers will recognize this as
             a mobile browser and will display the mobile version of the site if they have one.</p>
 
@@ -65,6 +67,6 @@
             as their user agent, it will be a good choice for privacy. Firefox or Chrome are the most common user agents, but they auto-update and their version numbers change so quickly that it is likely the user agents included in Privacy Browser
             will often be out of step with the majority of user agents in the server logs.</p>
 
-        <p>Android&rsquo;s WebView does not allow the user agent to be blank. If it is, WebView simply sends the default user agent to the server.</p>
+        <p>Android’s WebView does not allow the user agent to be blank. If it is, WebView simply sends the default user agent to the server.</p>
     </body>
 </html>
