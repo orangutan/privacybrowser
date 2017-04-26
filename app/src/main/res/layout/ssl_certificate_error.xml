@@ -21,11 +21,11 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
-    android:layout_width="wrap_content" >
+    android:layout_width="match_parent" >
 
     <LinearLayout
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:padding="10dp"
         android:orientation="vertical" >
 
@@ -33,6 +33,7 @@
             android:id="@+id/primary_error"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:textColor="@color/red_a700"
             android:textStyle="bold"/>
 
@@ -79,6 +80,7 @@
 
         <!-- Issued By. -->
         <TextView
+            android:id="@+id/issued_by_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
@@ -105,6 +107,7 @@
 
         <!-- Valid Dates. -->
         <TextView
+            android:id="@+id/valid_dates_textview"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_marginTop="15dp"

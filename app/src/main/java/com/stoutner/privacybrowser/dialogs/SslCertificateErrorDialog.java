@@ -43,7 +43,7 @@ import java.util.Date;
 
 public class SslCertificateErrorDialog extends AppCompatDialogFragment {
 
-    private String primaryError;
+    private int primaryErrorInt;
     private String urlWithError;
     private String issuedToCName;
     private String issuedToOName;
@@ -92,6 +92,7 @@ public class SslCertificateErrorDialog extends AppCompatDialogFragment {
         super.onCreate(savedInstanceState);
 
         // Save the components of the SSL error message in class variables.
+        primaryErrorInt = getArguments().getInt("PrimaryErrorInt");
         urlWithError = getArguments().getString("UrlWithError");
         issuedToCName = getArguments().getString("IssuedToCName");
         issuedToOName = getArguments().getString("IssuedToOName");
@@ -101,34 +102,6 @@ public class SslCertificateErrorDialog extends AppCompatDialogFragment {
         issuedByUName = getArguments().getString("IssuedByUName");
         startDate = getArguments().getString("StartDate");
         endDate = getArguments().getString("EndDate");
-
-        // Get the appropriate string for `primaryError.
-        int primaryErrorInt = getArguments().getInt("PrimaryErrorInt");
-        switch (primaryErrorInt) {
-            case SslError.SSL_NOTYETVALID:
-                primaryError = getString(R.string.future_certificate);
-                break;
-
-            case SslError.SSL_EXPIRED:
-                primaryError = getString(R.string.expired_certificate);
-                break;
-
-            case SslError.SSL_IDMISMATCH:
-                primaryError = getString(R.string.cn_mismatch);
-                break;
-
-            case SslError.SSL_UNTRUSTED:
-                primaryError = getString(R.string.untrusted);
-                break;
-
-            case SslError.SSL_DATE_INVALID:
-                primaryError = getString(R.string.invalid_date);
-                break;
-
-            case SslError.SSL_INVALID:
-                primaryError = getString(R.string.invalid_certificate);
-                break;
-        }
     }
 
     // The public interface is used to send information back to the parent activity.
@@ -154,6 +127,7 @@ public class SslCertificateErrorDialog extends AppCompatDialogFragment {
 
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
+    @SuppressWarnings("deprecation")
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -195,9 +169,11 @@ public class SslCertificateErrorDialog extends AppCompatDialogFragment {
         TextView issuedToCNameTextView = (TextView) alertDialog.findViewById(R.id.issued_to_cname_error_dialog);
         TextView issuedToONameTextView = (TextView) alertDialog.findViewById(R.id.issued_to_oname_error_dialog);
         TextView issuedToUNameTextView = (TextView) alertDialog.findViewById(R.id.issued_to_uname_error_dialog);
+        TextView issuedByTextView = (TextView) alertDialog.findViewById(R.id.issued_by_textview);
         TextView issuedByCNameTextView = (TextView) alertDialog.findViewById(R.id.issued_by_cname_error_dialog);
         TextView issuedByONameTextView = (TextView) alertDialog.findViewById(R.id.issued_by_oname_error_dialog);
         TextView issuedByUNameTextView = (TextView) alertDialog.findViewById(R.id.issued_by_uname_error_dialog);
+        TextView validDatesTextView = (TextView) alertDialog.findViewById(R.id.valid_dates_textview);
         TextView startDateTextView = (TextView) alertDialog.findViewById(R.id.start_date_error_dialog);
         TextView endDateTextView = (TextView) alertDialog.findViewById(R.id.end_date_error_dialog);
 
@@ -220,8 +196,9 @@ public class SslCertificateErrorDialog extends AppCompatDialogFragment {
         SpannableStringBuilder startDateStringBuilder = new SpannableStringBuilder(startDateLabel + startDate);
         SpannableStringBuilder endDateStringBuilder = new SpannableStringBuilder((endDateLabel + endDate));
 
-        // Create a blue `ForegroundColorSpan`.  We have to use the deprecated `getColor` until API >= 23.
-        @SuppressWarnings("deprecation") ForegroundColorSpan blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
+        // Create the `ForegroundColorSpan`.  We have to use the deprecated `getColor` until API >= 23.
+        ForegroundColorSpan blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
+        ForegroundColorSpan redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
 
         // Setup the spans to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
         urlStringBuilder.setSpan(blueColorSpan, urlLabel.length(), urlStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
@@ -234,9 +211,70 @@ public class SslCertificateErrorDialog extends AppCompatDialogFragment {
         startDateStringBuilder.setSpan(blueColorSpan, startDateLabel.length(), startDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         endDateStringBuilder.setSpan(blueColorSpan, endDateLabel.length(), endDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
+        // Initialize `primaryErrorString`.
+        String primaryErrorString = "";
+
+        // Highlight the primary error in red and store the primary error string in `primaryErrorString`.
+        switch (primaryErrorInt) {
+            case SslError.SSL_IDMISMATCH:
+                // Change the URL span colors to red.
+                urlStringBuilder.setSpan(redColorSpan, urlLabel.length(), urlStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                issuedToCNameStringBuilder.setSpan(redColorSpan, cNameLabel.length(), issuedToCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                // Store the primary error string.
+                primaryErrorString = getString(R.string.cn_mismatch);
+                break;
+
+            case SslError.SSL_UNTRUSTED:
+                // Change the `issuesByTextView` text to red.  We have to use the deprecated `getColor()` until API >= 23.
+                issuedByTextView.setTextColor(getResources().getColor(R.color.red_a700));
+
+                // Change the issued by span color to red.
+                issuedByCNameStringBuilder.setSpan(redColorSpan, cNameLabel.length(), issuedByCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                issuedByONameStringBuilder.setSpan(redColorSpan, oNameLabel.length(), issuedByONameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                issuedByUNameStringBuilder.setSpan(redColorSpan, uNameLabel.length(), issuedByUNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                // Store the primary error string.
+                primaryErrorString = getString(R.string.untrusted);
+                break;
+
+            case SslError.SSL_DATE_INVALID:
+                // Change the `validDatesTextView` text to red.  We have to use the deprecated `getColor()` until API >= 23.
+                validDatesTextView.setTextColor(getResources().getColor(R.color.red_a700));
+
+                // Change the date span colors to red.
+                startDateStringBuilder.setSpan(redColorSpan, startDateLabel.length(), startDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                endDateStringBuilder.setSpan(redColorSpan, endDateLabel.length(), endDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                // Store the primary error string.
+                primaryErrorString = getString(R.string.invalid_date);
+                break;
+
+            case SslError.SSL_NOTYETVALID:
+                // Change the start date span color to red.
+                startDateStringBuilder.setSpan(redColorSpan, startDateLabel.length(), startDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                // Store the primary error string.
+                primaryErrorString = getString(R.string.future_certificate);
+                break;
+
+            case SslError.SSL_EXPIRED:
+                // Change the end date span color to red.
+                endDateStringBuilder.setSpan(redColorSpan, endDateLabel.length(), endDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                // Store the primary error string.
+                primaryErrorString = getString(R.string.expired_certificate);
+                break;
+
+            case SslError.SSL_INVALID:
+                // Store the primary error string.
+                primaryErrorString = getString(R.string.invalid_certificate);
+                break;
+        }
+
 
         // Display the strings.
-        primaryErrorTextView.setText(primaryError);
+        primaryErrorTextView.setText(primaryErrorString);
         urlTextView.setText(urlStringBuilder);
         issuedToCNameTextView.setText(issuedToCNameStringBuilder);
         issuedToONameTextView.setText(issuedToONameStringBuilder);
