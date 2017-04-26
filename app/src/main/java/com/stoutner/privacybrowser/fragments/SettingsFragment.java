@@ -47,17 +47,13 @@ public class SettingsFragment extends PreferenceFragment {
         final Preference thirdPartyCookiesEnabled = findPreference("third_party_cookies_enabled");
         final Preference userAgentPreference = findPreference("user_agent");
         final Preference customUserAgent = findPreference("custom_user_agent");
-        final Preference javaScriptDisabledSearchPreference = findPreference("javascript_disabled_search");
-        final Preference javaScriptDisabledSearchCustomURLPreference = findPreference("javascript_disabled_search_custom_url");
-        final Preference javaScriptEnabledSearchPreference = findPreference("javascript_enabled_search");
-        final Preference javaScriptEnabledSearchCustomURLPreference = findPreference("javascript_enabled_search_custom_url");
+        final Preference torHomepagePreference = findPreference("tor_homepage");
+        final Preference torSearchPreference = findPreference("tor_search");
+        final Preference torSearchCustomURLPreference = findPreference("tor_search_custom_url");
+        final Preference searchPreference = findPreference("search");
+        final Preference searchCustomURLPreference = findPreference("search_custom_url");
         final Preference hideSystemBarsPreference = findPreference("hide_system_bars");
         final Preference translucentNavigationBarPreference = findPreference("translucent_navigation_bar");
-        final Preference torHomepagePreference = findPreference("tor_homepage");
-        final Preference torJavaScriptDisabledSearchPreference = findPreference("tor_javascript_disabled_search");
-        final Preference torJavaScriptDisabledSearchCustomURLPreference = findPreference("tor_javascript_disabled_search_custom_url");
-        final Preference torJavaScriptEnabledSearchPreference = findPreference("tor_javascript_enabled_search");
-        final Preference torJavaScriptEnabledSearchCustomURLPreference = findPreference("tor_javascript_enabled_search_custom_url");
         final Preference homepagePreference = findPreference("homepage");
         final Preference defaultFontSizePreference = findPreference("default_font_size");
 
@@ -66,10 +62,8 @@ public class SettingsFragment extends PreferenceFragment {
         final boolean proxyThroughOrbot = savedPreferences.getBoolean("proxy_through_orbot", false);
 
         // Get strings from the preferences.
-        String javaScriptDisabledSearchString = savedPreferences.getString("javascript_disabled_search", "https://duckduckgo.com/html/?q=");
-        String javaScriptEnabledSearchString = savedPreferences.getString("javascript_enabled_search", "https://duckduckgo.com/?q=");
-        String torJavaScriptDisabledSearchString = savedPreferences.getString("tor_javascript_disabled_search", "https://3g2upl4pq6kufc4m.onion/html/?q=");
-        String torJavaScriptEnabledSearchString = savedPreferences.getString("tor_javascript_enabled_search", "https://3g2upl4pq6kufc4m.onion/?q=");
+        String torSearchString = savedPreferences.getString("tor_search", "https://3g2upl4pq6kufc4m.onion/html/?q=");
+        String searchString = savedPreferences.getString("search", "https://duckduckgo.com/html/?q=");
         String defaultFontSizeString = savedPreferences.getString("default_font_size", "100");
 
         // Allow the user to access "dom_storage_enabled" if "javascript_enabled" is enabled.  The default is false.
@@ -108,32 +102,42 @@ public class SettingsFragment extends PreferenceFragment {
         customUserAgent.setEnabled(userAgentPreference.getSummary().equals("Custom user agent"));
 
 
-        // Set the JavaScript-disabled search URL as the summary text for the JavaScript-disabled search preference when the preference screen is loaded.  The default is `https://duckduckgo.com/html/?q=`.
-        if (javaScriptDisabledSearchString.equals("Custom URL")) {
+        // Set the Tor homepage URL as the summary text for the `tor_homepage` preference when the preference screen is loaded.  The default is DuckDuckGo: `https://3g2upl4pq6kufc4m.onion`.
+        torHomepagePreference.setSummary(savedPreferences.getString("tor_homepage", "https://3g2upl4pq6kufc4m.onion"));
+
+
+        // Set the Tor search URL as the summary text for the Tor preference when the preference screen is loaded.  The default is `https://3g2upl4pq6kufc4m.onion/html/?q=`
+        if (torSearchString.equals("Custom URL")) {
             // Use R.string.custom_url, which will be translated, instead of the array value, which will not.
-            javaScriptDisabledSearchPreference.setSummary(R.string.custom_url);
+            torSearchPreference.setSummary(R.string.custom_url);
         } else {
             // Set the array value as the summary text.
-            javaScriptDisabledSearchPreference.setSummary(javaScriptDisabledSearchString);
+            torSearchPreference.setSummary(torSearchString);
         }
 
-        // Set the summary text for `javascript_disabled_search_custom_url` (the default is `""`) and enable it if `javascript_disabled_search` is set to `Custom URL`.
-        javaScriptDisabledSearchCustomURLPreference.setSummary(savedPreferences.getString("javascript_disabled_search_custom_url", ""));
-        javaScriptDisabledSearchCustomURLPreference.setEnabled(javaScriptDisabledSearchString.equals("Custom URL"));
+        // Set the summary text for `torsearch_custom_url`.  The default is `""`.
+        torSearchCustomURLPreference.setSummary(savedPreferences.getString("tor_search_custom_url", ""));
+
+        // Enable the Tor preferences only if `proxy_through_orbot` is enabled.  The default is `false`.
+        torHomepagePreference.setEnabled(proxyThroughOrbot);
+        torSearchPreference.setEnabled(proxyThroughOrbot);
+
+        // Enable the Tor custom URL search options only if `proxyThroughOrbot` is true and the search is set to `Custom URL`.
+        torSearchCustomURLPreference.setEnabled(proxyThroughOrbot && torSearchString.equals("Custom URL"));
 
 
-        // Set the JavaScript-enabled search URL as the summary text for the JavaScript-enabled search preference when the preference screen is loaded.  The default is `https://duckduckgo.com/?q=`.
-        if (javaScriptEnabledSearchString.equals("Custom URL")) {
-            // If set to "Custom URL", use R.string.custom_url, which will be translated, instead of the array value, which will not.
-            javaScriptEnabledSearchPreference.setSummary(R.string.custom_url);
+        // Set the search URL as the summary text for the search preference when the preference screen is loaded.  The default is `https://duckduckgo.com/html/?q=`.
+        if (searchString.equals("Custom URL")) {
+            // Use R.string.custom_url, which will be translated, instead of the array value, which will not.
+            searchPreference.setSummary(R.string.custom_url);
         } else {
             // Set the array value as the summary text.
-            javaScriptEnabledSearchPreference.setSummary(javaScriptEnabledSearchString);
+            searchPreference.setSummary(searchString);
         }
 
-        // Set the summary text for `javascript_enabled_search_custom_url` (the default is `""`) and enable it if `javascript_enabled_search` is set to `Custom URL`.
-        javaScriptEnabledSearchCustomURLPreference.setSummary(savedPreferences.getString("javascript_enabled_search_custom_url", ""));
-        javaScriptEnabledSearchCustomURLPreference.setEnabled(javaScriptEnabledSearchString.equals("Custom URL"));
+        // Set the summary text for `search_custom_url` (the default is `""`) and enable it if `search` is set to `Custom URL`.
+        searchCustomURLPreference.setSummary(savedPreferences.getString("search_custom_url", ""));
+        searchCustomURLPreference.setEnabled(searchString.equals("Custom URL"));
 
 
         // Enable the full screen options if full screen browsing mode is enabled.
@@ -145,46 +149,6 @@ public class SettingsFragment extends PreferenceFragment {
             // Disable `transparent_navigation_bar` if `hide_system_bars` is `true`.
             translucentNavigationBarPreference.setEnabled(!savedPreferences.getBoolean("hide_system_bars", false));
         }
-
-
-        // Set the Tor homepage URL as the summary text for the `tor_homepage` preference when the preference screen is loaded.  The default is DuckDuckGo: `https://3g2upl4pq6kufc4m.onion`.
-        torHomepagePreference.setSummary(savedPreferences.getString("tor_homepage", "https://3g2upl4pq6kufc4m.onion"));
-
-
-        // Set the Tor JavaScript-disabled search URL as the summary text for the Tor JavaScript-disabled search preference when the preference screen is loaded.  The default is `https://3g2upl4pq6kufc4m.onion/html/?q=`
-        if (torJavaScriptDisabledSearchString.equals("Custom URL")) {
-            // Use R.string.custom_url, which will be translated, instead of the array value, which will not.
-            torJavaScriptDisabledSearchPreference.setSummary(R.string.custom_url);
-        } else {
-            // Set the array value as the summary text.
-            torJavaScriptDisabledSearchPreference.setSummary(torJavaScriptDisabledSearchString);
-        }
-
-        // Set the summary text for `tor_javascript_disabled_search_custom_url`.  The default is `""`.
-        torJavaScriptDisabledSearchCustomURLPreference.setSummary(savedPreferences.getString("tor_javascript_disabled_search_custom_url", ""));
-
-
-        // Set the Tor JavaScript-enabled search URL as the summary text for the Tor Javascript-enabled search preference when the preference screen is loaded.  The default is `https://3g2upl4pq6kufc4m.onion/?q=`.
-        if (torJavaScriptEnabledSearchString.equals("Custom URL")) {
-            // Use R.string.custom_url, which will be translated, instead of the array value, which will not.
-            torJavaScriptEnabledSearchPreference.setSummary(R.string.custom_url);
-        } else {
-            // Set the array value as the summary text.
-            torJavaScriptEnabledSearchPreference.setSummary(torJavaScriptEnabledSearchString);
-        }
-
-        // Set the summary text for `tor_javascript_enabled_search_custom_url`.  The default is `""`.
-        torJavaScriptEnabledSearchCustomURLPreference.setSummary(savedPreferences.getString("tor_javascript_enabled_search_custom_url", ""));
-
-
-        // Enable the Tor preferences only if `proxy_through_orbot` is enabled.  The default is `false`.
-        torHomepagePreference.setEnabled(proxyThroughOrbot);
-        torJavaScriptDisabledSearchPreference.setEnabled(proxyThroughOrbot);
-        torJavaScriptEnabledSearchPreference.setEnabled(proxyThroughOrbot);
-
-        // Enable the Tor custom URL search options only if `proxyThroughOrbot` is true and the search is set to `Custom URL`.
-        torJavaScriptDisabledSearchCustomURLPreference.setEnabled(proxyThroughOrbot && torJavaScriptDisabledSearchString.equals("Custom URL"));
-        torJavaScriptEnabledSearchCustomURLPreference.setEnabled(proxyThroughOrbot && torJavaScriptEnabledSearchString.equals("Custom URL"));
 
 
         // Set the homepage URL as the summary text for the `Homepage` preference when the preference screen is loaded.  The default is `https://duckduckgo.com`.
@@ -243,38 +207,61 @@ public class SettingsFragment extends PreferenceFragment {
                         customUserAgent.setSummary(sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0"));
                         break;
 
-                    case "javascript_disabled_search":
-                        String newJavaScriptDisabledSearchString = sharedPreferences.getString("javascript_disabled_search", "https://duckduckgo.com/html/?q=");
-                        if (newJavaScriptDisabledSearchString.equals("Custom URL")) {  // Set the summary text to `R.string.custom_url`, which is translated.
-                            javaScriptDisabledSearchPreference.setSummary(R.string.custom_url);
+                    case "proxy_through_orbot":
+                        // Get current settings.
+                        boolean currentProxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
+                        String currentTorSearchString = sharedPreferences.getString("tor_search", "https://3g2upl4pq6kufc4m.onion/html/?q=");
+
+                        // Enable the Tor preferences only if `proxy_through_orbot` is enabled.  The default is `false`.
+                        torHomepagePreference.setEnabled(currentProxyThroughOrbot);
+                        torSearchPreference.setEnabled(currentProxyThroughOrbot);
+
+                        // Enable the Tor custom URL search option only if `currentProxyThroughOrbot` is true and the search is set to `Custom URL`.
+                        torSearchCustomURLPreference.setEnabled(currentProxyThroughOrbot && currentTorSearchString.equals("Custom URL"));
+                        break;
+
+                    case "tor_homepage":
+                        // Set the new tor homepage URL as the summary text for the `tor_homepage` preference.  The default is DuckDuckGo:  `https://3g2upl4pq6kufc4m.onion`.
+                        torHomepagePreference.setSummary(sharedPreferences.getString("tor_homepage", "https://3g2upl4pq6kufc4m.onion"));
+                        break;
+
+                    case "tor_search":
+                        // Get the present search string.
+                        String presentTorSearchString = sharedPreferences.getString("tor_search", "https://3g2upl4pq6kufc4m.onion/html/?q=");
+
+                        // Set the summary text for `tor_search`.
+                        if (presentTorSearchString.equals("Custom URL")) {
+                            // Use R.string.custom_url, which is translated, instead of the array value, which isn't.
+                            torSearchPreference.setSummary(R.string.custom_url);
+                        } else {
+                            // Set the array value as the summary text.
+                            torSearchPreference.setSummary(presentTorSearchString);
+                        }
+
+                        // Set the status of `torJavaScriptDisabledSearchCustomURLPreference`.
+                        torSearchCustomURLPreference.setEnabled(presentTorSearchString.equals("Custom URL"));
+                        break;
+
+                    case "tor_search_custom_url":
+                        // Set the summary text for `tor_search_custom_url`.
+                        torSearchCustomURLPreference.setSummary(sharedPreferences.getString("tor_search_custom_url", ""));
+                        break;
+
+                    case "search":
+                        String newSearchString = sharedPreferences.getString("search", "https://duckduckgo.com/html/?q=");
+                        if (newSearchString.equals("Custom URL")) {  // Set the summary text to `R.string.custom_url`, which is translated.
+                            searchPreference.setSummary(R.string.custom_url);
                         } else {  // Set the new search URL as the summary text for the JavaScript-disabled search preference.
-                            javaScriptDisabledSearchPreference.setSummary(newJavaScriptDisabledSearchString);
+                            searchPreference.setSummary(newSearchString);
                         }
 
-                        // Enable or disable javaScriptDisabledSearchCustomURLPreference.
-                        javaScriptDisabledSearchCustomURLPreference.setEnabled(newJavaScriptDisabledSearchString.equals("Custom URL"));
+                        // Enable or disable `searchCustomURLPreference`.
+                        searchCustomURLPreference.setEnabled(newSearchString.equals("Custom URL"));
                         break;
 
-                    case "javascript_disabled_search_custom_url":
-                        // Set the new custom search URL as the summary text for `javascript_disabled_search_custom_url`.  The default is `""`.
-                        javaScriptDisabledSearchCustomURLPreference.setSummary(sharedPreferences.getString("javascript_disabled_search_custom_url", ""));
-                        break;
-
-                    case "javascript_enabled_search":
-                        String newJavaScriptEnabledSearchString = sharedPreferences.getString("javascript_enabled_search", "https://duckduckgo.com/?q=");
-                        if (newJavaScriptEnabledSearchString.equals("Custom URL")) {  // Set the summary text to `R.string.custom_url`, which is translated.
-                            javaScriptEnabledSearchPreference.setSummary(R.string.custom_url);
-                        } else {  // Set the new search URL as the summary text for the JavaScript-enabled search preference..
-                            javaScriptEnabledSearchPreference.setSummary(newJavaScriptEnabledSearchString);
-                        }
-
-                        // Enable or disable javaScriptEnabledSearchCustomURLPreference.
-                        javaScriptEnabledSearchCustomURLPreference.setEnabled(newJavaScriptEnabledSearchString.equals("Custom URL"));
-                        break;
-
-                    case "javascript_enabled_search_custom_url":
-                        // Set the new custom search URL as the summary text for `javascript_enabled_search_custom_url`.  The default is `""`.
-                        javaScriptEnabledSearchCustomURLPreference.setSummary(sharedPreferences.getString("javascript_enabled_search_custom_url", ""));
+                    case "search_custom_url":
+                        // Set the new custom search URL as the summary text for `search_custom_url`.  The default is `""`.
+                        searchCustomURLPreference.setSummary(sharedPreferences.getString("search_custom_url", ""));
                         break;
 
                     case "enable_full_screen_browsing_mode":
@@ -290,71 +277,6 @@ public class SettingsFragment extends PreferenceFragment {
                             hideSystemBarsPreference.setEnabled(false);
                             translucentNavigationBarPreference.setEnabled(false);
                         }
-                        break;
-
-                    case "proxy_through_orbot":
-                        // Get current settings.
-                        boolean currentProxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
-                        String currentTorJavaScriptDisabledSearchString = sharedPreferences.getString("tor_javascript_disabled_search", "https://3g2upl4pq6kufc4m.onion/html/?q=");
-                        String currentTorJavaScriptEnabledSearchString = sharedPreferences.getString("tor_javascript_enabled_search", "https://3g2upl4pq6kufc4m.onion/?q=");
-
-                        // Enable the Tor preferences only if `proxy_through_orbot` is enabled.  The default is `false`.
-                        torHomepagePreference.setEnabled(currentProxyThroughOrbot);
-                        torJavaScriptDisabledSearchPreference.setEnabled(currentProxyThroughOrbot);
-                        torJavaScriptEnabledSearchPreference.setEnabled(currentProxyThroughOrbot);
-
-                        // Enable the Tor custom URL search options only if `currentProxyThroughOrbot` is true and the search is set to `Custom URL`.
-                        torJavaScriptDisabledSearchCustomURLPreference.setEnabled(currentProxyThroughOrbot && currentTorJavaScriptDisabledSearchString.equals("Custom URL"));
-                        torJavaScriptEnabledSearchCustomURLPreference.setEnabled(currentProxyThroughOrbot && currentTorJavaScriptEnabledSearchString.equals("Custom URL"));
-                        break;
-
-                    case "tor_homepage":
-                        // Set the new tor homepage URL as the summary text for the `tor_homepage` preference.  The default is DuckDuckGo:  `https://3g2upl4pq6kufc4m.onion`.
-                        torHomepagePreference.setSummary(sharedPreferences.getString("tor_homepage", "https://3g2upl4pq6kufc4m.onion"));
-                        break;
-
-                    case "tor_javascript_disabled_search":
-                        // Get the present search string.
-                        String presentTorJavaScriptDisabledSearchString = sharedPreferences.getString("tor_javascript_disabled_search", "https://3g2upl4pq6kufc4m.onion/html/?q=");
-
-                        // Set the summary text for `tor_javascript_disabled_search`.
-                        if (presentTorJavaScriptDisabledSearchString.equals("Custom URL")) {
-                            // Use R.string.custom_url, which is translated, instead of the array value, which isn't.
-                            torJavaScriptDisabledSearchPreference.setSummary(R.string.custom_url);
-                        } else {
-                            // Set the array value as the summary text.
-                            torJavaScriptDisabledSearchPreference.setSummary(presentTorJavaScriptDisabledSearchString);
-                        }
-
-                        // Set the status of `torJavaScriptDisabledSearchCustomURLPreference`.
-                        torJavaScriptDisabledSearchCustomURLPreference.setEnabled(presentTorJavaScriptDisabledSearchString.equals("Custom URL"));
-                        break;
-
-                    case "tor_javascript_disabled_search_custom_url":
-                        // Set the summary text for `tor_javascript_disabled_search_custom_url`.
-                        torJavaScriptDisabledSearchCustomURLPreference.setSummary(sharedPreferences.getString("tor_javascript_disabled_search_custom_url", ""));
-                        break;
-
-                    case "tor_javascript_enabled_search":
-                        // Get the present search string.
-                        String presentTorJavaScriptEnabledSearchString = sharedPreferences.getString("tor_javascript_enabled_search", "https://3g2upl4pq6kufc4m.onion/?q=");
-
-                        // Set the summary text for `tor_javascript_enabled_search`.
-                        if (presentTorJavaScriptEnabledSearchString.equals("Custom URL")) {
-                            // Use R.string.custom_url, which is translated, instead of the array value, which isn't.
-                            torJavaScriptEnabledSearchPreference.setSummary(R.string.custom_url);
-                        } else {
-                            // Set the array value as the summary text.
-                            torJavaScriptEnabledSearchPreference.setSummary(presentTorJavaScriptEnabledSearchString);
-                        }
-
-                        // Set the status of `torJavaScriptEnabledSearchCustomURLPreference`.
-                        torJavaScriptEnabledSearchCustomURLPreference.setEnabled(presentTorJavaScriptEnabledSearchString.equals("Custom URL"));
-                        break;
-
-                    case "tor_javascript_enabled_search_custom_url":
-                        // Set the summary text for `tor_javascript_enabled_search_custom_url`.
-                        torJavaScriptEnabledSearchCustomURLPreference.setSummary(sharedPreferences.getString("tor_javascript_enabled_search_custom_url", ""));
                         break;
 
                     case "homepage":

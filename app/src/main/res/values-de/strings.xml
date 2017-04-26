@@ -220,28 +220,19 @@
         <string name="proxy_through_orbot">Proxy durch Orbot</string>
         <string name="proxy_through_orbot_summary">Sämtlichen Web-Verkehr durch Orbot mittels localhost:8118 leiten.</string>
     <string name="search">Suche</string>
-        <string name="javascript_disabled_search">Suchmaschine bei deaktiviertem JavaScript</string>
-        <string-array name="javascript_disabled_search_entries">
-            <item>DuckDuckGo</item>
+        <string-array name="search_entries">
+            <item>DuckDuckGo JavaScript disabled</item>
+            <item>DuckDuckGo JavaScript enabled</item>
             <item>StartPage</item>
             <item>Google</item>
             <item>Bing</item>
-            <item>Yahoo</item>
-            <item>Qwant</item>
+            <item>Yahoo JavaScript disabled</item>
+            <item>Yahoo JavaScript enabled</item>
+            <item>Qwant JavaScript disabled</item>
+            <item>Qwant JavaScript enabled</item>
             <item>Eigene</item>
         </string-array>
-        <string name="javascript_disabled_search_custom_url">Suchmaschinen-URL bei deaktiviertem JavaScript</string>
-        <string name="javascript_enabled_search">Suchmaschine bei aktiviertem JavaScript</string>
-        <string-array name="javascript_enabled_search_entries">
-            <item>DuckDuckGo</item>
-            <item>StartPage</item>
-            <item>Google</item>
-            <item>Bing</item>
-            <item>Yahoo</item>
-            <item>Qwant</item>
-            <item>Eigene</item>
-        </string-array>
-        <string name="javascript_enabled_search_custom_url">Suchmaschinen-URL bei aktivertem JavaScript</string>
+        <string name="search_custom_url">Suchmaschinen-URL</string>
         <string name="custom_url">Eigene URL</string>
     <string name="general">Allgemein</string>
         <string name="homepage">Startseite</string>
@@ -282,6 +273,7 @@
             <string name="security_patch">Sicherheits-Patch:</string>
             <string name="webkit">WebKit:</string>
             <string name="chrome">Chrome:</string>
+            <string name="orbot">Orbot:</string>
     <string name="permissions">Berechtigungen</string>
     <string name="privacy_policy">Datenschutzrichtlinie</string>
     <string name="changelog">Changelog</string>

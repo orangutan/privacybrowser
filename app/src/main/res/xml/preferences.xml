@@ -103,59 +103,33 @@
             android:inputType="textUri" />
 
         <ListPreference
-            android:key="tor_javascript_disabled_search"
-            android:title="@string/tor_javascript_disabled_search"
-            android:entries="@array/tor_javascript_disabled_search_entries"
-            android:entryValues="@array/tor_javascript_disabled_search_entry_values"
+            android:key="tor_search"
+            android:title="@string/tor_search"
+            android:entries="@array/tor_search_entries"
+            android:entryValues="@array/tor_search_entry_values"
             android:defaultValue="https://3g2upl4pq6kufc4m.onion/html/?q=" />
 
         <EditTextPreference
-            android:key="tor_javascript_disabled_search_custom_url"
-            android:title="@string/tor_javascript_disabled_search_custom_url"
-            android:defaultValue=""
-            android:inputType="textUri" />
-
-        <ListPreference
-            android:key="tor_javascript_enabled_search"
-            android:title="@string/tor_javascript_enabled_search"
-            android:entries="@array/tor_javascript_enabled_search_entries"
-            android:entryValues="@array/tor_javascript_enabled_search_entry_values"
-            android:defaultValue="https://3g2upl4pq6kufc4m.onion/?q=" />
-
-        <EditTextPreference
-            android:key="tor_javascript_enabled_search_custom_url"
-            android:title="@string/tor_javascript_enabled_search_custom_url"
+            android:key="tor_search_custom_url"
+            android:title="@string/tor_search_custom_url"
             android:defaultValue=""
             android:inputType="textUri" />
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="search"
+        android:key="search_category"
         android:title="@string/search">
 
         <ListPreference
-            android:key="javascript_disabled_search"
-            android:title="@string/javascript_disabled_search"
-            android:entries="@array/javascript_disabled_search_entries"
-            android:entryValues="@array/javascript_disabled_search_entry_values"
+            android:key="search"
+            android:title="@string/search"
+            android:entries="@array/search_entries"
+            android:entryValues="@array/search_entry_values"
             android:defaultValue="https://duckduckgo.com/html/?q=" />
 
         <EditTextPreference
-            android:key="javascript_disabled_search_custom_url"
-            android:title="@string/javascript_disabled_search_custom_url"
-            android:defaultValue=""
-            android:inputType="textUri" />
-
-        <ListPreference
-            android:key="javascript_enabled_search"
-            android:title="@string/javascript_enabled_search"
-            android:entries="@array/javascript_enabled_search_entries"
-            android:entryValues="@array/javascript_enabled_search_entry_values"
-            android:defaultValue="https://duckduckgo.com/?q=" />
-
-        <EditTextPreference
-            android:key="javascript_enabled_search_custom_url"
-            android:title="@string/javascript_enabled_search_custom_url"
+            android:key="search_custom_url"
+            android:title="@string/search_custom_url"
             android:defaultValue=""
             android:inputType="textUri" />
     </PreferenceCategory>

@@ -194,11 +194,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // 'homepage' is used in `onCreate()`, `onNavigationItemSelected()`, and `applyAppSettings()`.
     private String homepage;
 
-    // `javaScriptDisabledSearchURL` is used in `loadURLFromTextBox()` and `applyAppSettings()`.
-    private String javaScriptDisabledSearchURL;
-
-    // `javaScriptEnabledSearchURL` is used in `loadURLFromTextBox()` and `applyAppSettings()`.
-    private String javaScriptEnabledSearchURL;
+    // `searchURL` is used in `loadURLFromTextBox()` and `applyAppSettings()`.
+    private String searchURL;
 
     // `adBlockerEnabled` is used in `onCreate()` and `applyAppSettings()`.
     private boolean adBlockerEnabled;
@@ -1896,12 +1893,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             // Sanitize the search input and convert it to a search.
             final String encodedUrlString = URLEncoder.encode(unformattedUrlString, "UTF-8");
 
-            // Use the correct search URL.
-            if (javaScriptEnabled) {  // JavaScript is enabled.
-                formattedUrlString = javaScriptEnabledSearchURL + encodedUrlString;
-            } else { // JavaScript is disabled.
-                formattedUrlString = javaScriptDisabledSearchURL + encodedUrlString;
-            }
+            // Add the base search URL.
+            formattedUrlString = searchURL + encodedUrlString;
         }
 
         loadUrl(formattedUrlString);
@@ -2130,16 +2123,12 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Store the values from `sharedPreferences` in variables.
-        String javaScriptDisabledSearchString = sharedPreferences.getString("javascript_disabled_search", "https://duckduckgo.com/html/?q=");
-        String javaScriptDisabledSearchCustomURLString = sharedPreferences.getString("javascript_disabled_search_custom_url", "");
-        String javaScriptEnabledSearchString = sharedPreferences.getString("javascript_enabled_search", "https://duckduckgo.com/?q=");
-        String javaScriptEnabledSearchCustomURLString = sharedPreferences.getString("javascript_enabled_search_custom_url", "");
         String homepageString = sharedPreferences.getString("homepage", "https://duckduckgo.com");
         String torHomepageString = sharedPreferences.getString("tor_homepage", "https://3g2upl4pq6kufc4m.onion");
-        String torJavaScriptDisabledSearchString = sharedPreferences.getString("tor_javascript_disabled_search", "https://3g2upl4pq6kufc4m.onion/html/?q=");
-        String torJavaScriptDisabledSearchCustomURLString = sharedPreferences.getString("tor_javascript_disabled_search_custom_url", "");
-        String torJavaScriptEnabledSearchString = sharedPreferences.getString("tor_javascript_enabled_search", "https://3g2upl4pq6kufc4m.onion/?q=");
-        String torJavaScriptEnabledSearchCustomURLString = sharedPreferences.getString("tor_javascript_enabled_search_custom_url", "");
+        String torSearchString = sharedPreferences.getString("tor_search", "https://3g2upl4pq6kufc4m.onion/html/?q=");
+        String torSearchCustomURLString = sharedPreferences.getString("tor_search_custom_url", "");
+        String searchString = sharedPreferences.getString("search", "https://duckduckgo.com/html/?q=");
+        String searchCustomURLString = sharedPreferences.getString("search_custom_url", "");
         adBlockerEnabled = sharedPreferences.getBoolean("block_ads", true);
         incognitoModeEnabled = sharedPreferences.getBoolean("incognito_mode", false);
         boolean doNotTrackEnabled = sharedPreferences.getBoolean("do_not_track", false);
@@ -2159,18 +2148,11 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 formattedUrlString = homepage;
             }
 
-            // Set JavaScript disabled search.
-            if (torJavaScriptDisabledSearchString.equals("Custom URL")) {  // Get the custom URL string.
-                javaScriptDisabledSearchURL = torJavaScriptDisabledSearchCustomURLString;
+            // Set the search URL.
+            if (torSearchString.equals("Custom URL")) {  // Get the custom URL string.
+                searchURL = torSearchCustomURLString;
             } else {  // Use the string from the pre-built list.
-                javaScriptDisabledSearchURL = torJavaScriptDisabledSearchString;
-            }
-
-            // Set JavaScript enabled search.
-            if (torJavaScriptEnabledSearchString.equals("Custom URL")) {  // Get the custom URL string.
-                javaScriptEnabledSearchURL = torJavaScriptEnabledSearchCustomURLString;
-            } else {  // Use the string from the pre-built list.
-                javaScriptEnabledSearchURL = torJavaScriptEnabledSearchString;
+                searchURL = torSearchString;
             }
 
             // Set the proxy.  `this` refers to the current activity where an `AlertDialog` might be displayed.
@@ -2193,18 +2175,11 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 formattedUrlString = homepage;
             }
 
-            // Set JavaScript disabled search.
-            if (javaScriptDisabledSearchString.equals("Custom URL")) {  // Get the custom URL string.
-                javaScriptDisabledSearchURL = javaScriptDisabledSearchCustomURLString;
+            // Set the search URL.
+            if (searchString.equals("Custom URL")) {  // Get the custom URL string.
+                searchURL = searchCustomURLString;
             } else {  // Use the string from the pre-built list.
-                javaScriptDisabledSearchURL = javaScriptDisabledSearchString;
-            }
-
-            // Set JavaScript enabled search.
-            if (javaScriptEnabledSearchString.equals("Custom URL")) {  // Get the custom URL string.
-                javaScriptEnabledSearchURL = javaScriptEnabledSearchCustomURLString;
-            } else {  // Use the string from the pre-built list.
-                javaScriptEnabledSearchURL = javaScriptEnabledSearchString;
+                searchURL = searchString;
             }
 
             // Reset the proxy to default.  The host is `""` and the port is `"0"`.

@@ -237,41 +237,27 @@
         <string name="proxy_through_orbot">Enviar a través de Orbot</string>
         <string name="proxy_through_orbot_summary">Enviar todo el tráfico web a través de Orbot en localhost:8118.</string>
         <string name="tor_homepage">Página de inicio de Tor</string>
-        <string name="tor_javascript_disabled_search">Buscar en Tor con Javascript deshabilitado.</string>
-        <string-array name="tor_javascript_disabled_search_entries">
-            <item>DuckDuckGo</item>
+        <string name="tor_search">Búsqueda en Tor</string>
+        <string-array name="tor_search_entries">
+            <item>DuckDuckGo Javascript deshabilitado</item>
+            <item>DuckDuckGo Javascript habilitado</item>
             <item>Personalizado</item>
         </string-array>
-        <string name="tor_javascript_disabled_search_custom_url">URL personalizada de búsqueda en Tor con Javascript deshabilitado</string>
-        <string name="tor_javascript_enabled_search">Buscar en Tor con JavaScript habilitado</string>
-        <string-array name="tor_javascript_enabled_search_entries">
-            <item>DuckDuckGo</item>
-            <item>Personalizado</item>
-        </string-array>
-        <string name="tor_javascript_enabled_search_custom_url">URL personalizada de búsqueda en Tor con JavaScript habilitado</string>
+        <string name="tor_search_custom_url">URL personalizada de búsqueda en Tor</string>
     <string name="search">Buscar</string>
-        <string name="javascript_disabled_search">Búsqueda de Javascript deshabilitado</string>
-        <string-array name="javascript_disabled_search_entries">
-            <item>DuckDuckGo</item>
+        <string-array name="search_entries">
+            <item>DuckDuckGo Javascript deshabilitado</item>
+            <item>DuckDuckGo Javascript habilitado</item>
             <item>StartPage</item>
             <item>Google</item>
             <item>Bing</item>
-            <item>Yahoo</item>
-            <item>Qwant</item>
+            <item>Yahoo Javascript deshabilitado</item>
+            <item>Yahoo Javascript habilitado</item>
+            <item>Qwant Javascript deshatilitado</item>
+            <item>Qwant Javascript habilitado</item>
             <item>Personalizado</item>
         </string-array>
-        <string name="javascript_disabled_search_custom_url">URL personalizado de búsqueda de Javascript deshabilitado</string>
-        <string name="javascript_enabled_search">Búsqueda de Javascript habilitado</string>
-        <string-array name="javascript_enabled_search_entries">
-            <item>DuckDuckGo</item>
-            <item>StartPage</item>
-            <item>Google</item>
-            <item>Bing</item>
-            <item>Yahoo</item>
-            <item>Qwant</item>
-            <item>Personalizado</item>
-        </string-array>
-        <string name="javascript_enabled_search_custom_url">URL personalizado de búsqueda de Javascript habilitado</string>
+        <string name="search_custom_url">URL personalizado de búsqueda</string>
         <string name="custom_url">URL personalizado</string>
     <string name="full_screen">Pantalla Completa</string>
         <string name="enable_full_screen_browsing_mode">Habilitar pantalla completa</string>
@@ -320,6 +306,7 @@
             <string name="security_patch">Parche de seguridad:</string>
             <string name="webkit">WebKit:</string>
             <string name="chrome">Chrome:</string>
+            <string name="orbot">Orbot:</string>
         <string name="package_signature">Firma del paquete</string>
             <string name="issuer_dn">DN del emisor:</string>
             <string name="subject_dn">DN del sujeto:</string>

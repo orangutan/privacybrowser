@@ -257,68 +257,45 @@
     <string name="tor">Tor</string>
         <string name="proxy_through_orbot">Proxy through Orbot</string>
         <string name="proxy_through_orbot_summary">Proxy all web traffic through Orbot on localhost:8118.</string>
-        <string name="tor_homepage">Tor Homepage</string>
-        <string name="tor_javascript_disabled_search">Tor JavaScript-disabled search</string>
-        <string-array name="tor_javascript_disabled_search_entries">
-            <item>DuckDuckGo</item>
+        <string name="tor_homepage">Tor homepage</string>
+        <string name="tor_search">Tor search</string>
+        <string-array name="tor_search_entries">
+            <item>DuckDuckGo JavaScript disabled</item>
+            <item>DuckDuckGo JavaScript enabled</item>
             <item>Custom</item>
         </string-array>
-        <string-array name="tor_javascript_disabled_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
+        <string-array name="tor_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
             <item>https://3g2upl4pq6kufc4m.onion/html/?q=</item>
+            <item>https://3g2upl4pq6kufc4m.onion/?q=</item>
             <item>Custom URL</item><!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
         </string-array>
-        <string name="tor_javascript_disabled_search_custom_url">Tor JavaScript-disabled search custom URL</string>
-        <string name="tor_javascript_enabled_search">Tor JavaScript-enabled search</string>
-        <string-array name="tor_javascript_enabled_search_entries">
-            <item>DuckDuckGo</item>
-            <item>Custom</item>
-        </string-array>
-        <string-array name="tor_javascript_enabled_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
-            <item>https://3g2upl4pq6kufc4m.onion/?q=</item>
-            <item>Custom URL</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
-        </string-array>
-        <string name="tor_javascript_enabled_search_custom_url">Tor JavaScript-enabled search custom URL</string>
+        <string name="tor_search_custom_url">Tor search custom URL</string>
     <string name="search">Search</string>
-        <string name="javascript_disabled_search">JavaScript-disabled search</string>
-        <string-array name="javascript_disabled_search_entries">
-            <item>DuckDuckGo</item>
+        <string-array name="search_entries">
+            <item>DuckDuckGo JavaScript disabled</item>
+            <item>DuckDuckGo JavaScript enabled</item>
             <item>StartPage</item>
             <item>Google</item>
             <item>Bing</item>
-            <item>Yahoo</item>
-            <item>Qwant</item>
+            <item>Yahoo JavaScript disabled</item>
+            <item>Yahoo JavaScript enabled</item>
+            <item>Qwant JavaScript disabled</item>
+            <item>Qwant JavaScript enabled</item>
             <item>Custom</item>
         </string-array>
-        <string-array name="javascript_disabled_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
+        <string-array name="search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
             <item>https://duckduckgo.com/html/?q=</item>
-            <item>https://www.startpage.com/do/search?q=</item>
-            <item>https://www.google.com/search?q=</item>
-            <item>https://www.bing.com/search?q=</item>
-            <item>https://search.yahoo.com/mobile/s?nojs=1&amp;p=</item>
-            <item>https://lite.qwant.com/?q=</item>
-            <item>Custom URL</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
-        </string-array>
-        <string name="javascript_disabled_search_custom_url">JavaScript-disabled search custom URL</string>
-        <string name="javascript_enabled_search">JavaScript-enabled search</string>
-        <string-array name="javascript_enabled_search_entries">
-            <item>DuckDuckGo</item>
-            <item>StartPage</item>
-            <item>Google</item>
-            <item>Bing</item>
-            <item>Yahoo</item>
-            <item>Qwant</item>
-            <item>Custom</item>
-        </string-array>
-        <string-array name="javascript_enabled_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
             <item>https://duckduckgo.com/?q=</item>
             <item>https://www.startpage.com/do/search?q=</item>
             <item>https://www.google.com/search?q=</item>
             <item>https://www.bing.com/search?q=</item>
+            <item>https://search.yahoo.com/mobile/s?nojs=1&amp;p=</item>
             <item>https://search.yahoo.com/mobile/s?p=</item>
+            <item>https://lite.qwant.com/?q=</item>
             <item>https://www.qwant.com/?q=</item>
             <item>Custom URL</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
         </string-array>
-        <string name="javascript_enabled_search_custom_url">JavaScript-enabled search custom URL</string>
+        <string name="search_custom_url">Search custom URL</string>
         <string name="custom_url">Custom URL</string>
     <string name="full_screen">Full Screen</string>
         <string name="enable_full_screen_browsing_mode">Enable full screen browsing mode</string>
