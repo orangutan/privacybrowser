@@ -91,6 +91,7 @@ public class AboutTabFragment extends Fragment {
             TextView versionSecurityPatchTextView = (TextView) tabLayout.findViewById(R.id.about_version_securitypatch);
             TextView versionWebKitTextView = (TextView) tabLayout.findViewById(R.id.about_version_webkit);
             TextView versionChromeTextView = (TextView) tabLayout.findViewById(R.id.about_version_chrome);
+            TextView versionOrbotTextView = (TextView) tabLayout.findViewById(R.id.about_version_orbot);
             TextView certificateIssuerDNTextView = (TextView) tabLayout.findViewById(R.id.about_version_certificate_issuer_dn);
             TextView certificateSubjectDNTextView = (TextView) tabLayout.findViewById(R.id.about_version_certificate_subject_dn);
             TextView certificateStartDateTextView = (TextView) tabLayout.findViewById(R.id.about_version_certificate_start_date);
@@ -137,7 +138,16 @@ public class AboutTabFragment extends Fragment {
             // Select the substring that begins after "Chrome/" and goes until the next " ".
             String chrome = userAgentString.substring(userAgentString.indexOf("Chrome/") + 7, userAgentString.indexOf(" ", userAgentString.indexOf("Chrome/")));
 
-            // Create a `SpannableStringBuilder` for each `TextView` that needs multiple colors of text.
+            // Get the Orbot version name if Orbot is installed.
+            String orbot;
+            try {
+                // Store the version name.
+                orbot = getContext().getPackageManager().getPackageInfo("org.torproject.android", PackageManager.GET_CONFIGURATIONS).versionName;
+            } catch (PackageManager.NameNotFoundException e) {  // Orbot is not installed.
+                orbot = "";
+            }
+
+            // Create a `SpannableStringBuilder` for the hardware and software `TextViews` that needs multiple colors of text.
             SpannableStringBuilder brandStringBuilder = new SpannableStringBuilder(brandLabel + brand);
             SpannableStringBuilder manufacturerStringBuilder = new SpannableStringBuilder(manufacturerLabel + manufacturer);
             SpannableStringBuilder modelStringBuilder = new SpannableStringBuilder(modelLabel + model);
@@ -181,7 +191,7 @@ public class AboutTabFragment extends Fragment {
                 SpannableStringBuilder securityPatchStringBuilder = new SpannableStringBuilder(securityPatchLabel + securityPatch);
                 securityPatchStringBuilder.setSpan(blueColorSpan, securityPatchLabel.length(), securityPatchStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 versionSecurityPatchTextView.setText(securityPatchStringBuilder);
-            } else { // Hide `versionSecurityPatchTextView`.
+            } else {  // SDK_INT < 23, so `versionSecurityPatchTextView` should be hidden.
                 versionSecurityPatchTextView.setVisibility(View.GONE);
             }
 
@@ -191,8 +201,18 @@ public class AboutTabFragment extends Fragment {
                 SpannableStringBuilder radioStringBuilder = new SpannableStringBuilder(radioLabel + radio);
                 radioStringBuilder.setSpan(blueColorSpan, radioLabel.length(), radioStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 versionRadioTextView.setText(radioStringBuilder);
-            } else { // Hide `versionRadioTextView`.
+            } else {  // This device does not have a radio, so `versionRadioTextView` should be hidden.
                 versionRadioTextView.setVisibility(View.GONE);
+            }
+
+            // Only populate `versionOrbotTextView` if Orbot is installed.
+            if (!orbot.equals("")) {
+                String orbotLabel = getString(R.string.orbot) + "  ";
+                SpannableStringBuilder orbotStringBuilder = new SpannableStringBuilder(orbotLabel + orbot);
+                orbotStringBuilder.setSpan(blueColorSpan, orbotLabel.length(), orbotStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                versionOrbotTextView.setText(orbotStringBuilder);
+            } else {  // Orbot is not installed, so the `versionOrbotTextView` should be hidden.
+                versionOrbotTextView.setVisibility(View.GONE);
             }
 
             // Display the package signature.

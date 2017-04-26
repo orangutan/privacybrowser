@@ -40,16 +40,16 @@
               which isn't needed in this case because the `ImageView` is only decorative. -->
             <ImageView
                 android:id="@+id/about_version_icon"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
                 android:src="@mipmap/privacy_browser"
                 android:paddingTop="10dp"
                 tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/about_version_privacy_browser_textview"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
                 android:text="@string/privacy_browser"
                 android:textStyle="bold"
                 android:textSize="22sp"
@@ -58,8 +58,8 @@
 
             <TextView
                 android:id="@+id/about_version_number"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
                 android:textColor="@color/blue_700"
                 android:layout_below="@id/about_version_privacy_browser_textview"
                 android:layout_toEndOf="@id/about_version_icon" />
@@ -68,8 +68,8 @@
         <!-- The purpose of this `LinearLayout` is to provide padding on the start of the `TextViews` to make them line up with `about_version_icon`.
           Although we don't need it, we have to include `android:paddingEnd` to make lint happy. -->
         <LinearLayout
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_width="match_parent"
             android:orientation="vertical"
             android:paddingTop="16dp"
             android:paddingStart="4dp"
@@ -77,8 +77,8 @@
 
             <!-- Hardware. -->
             <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
                 android:text="@string/hardware"
                 android:textStyle="bold"
                 android:textSize="18sp"
@@ -86,38 +86,38 @@
 
             <TextView
                 android:id="@+id/about_version_brand"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content" />
 
             <TextView
                 android:id="@+id/about_version_manufacturer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content" />
 
             <TextView
                 android:id="@+id/about_version_model"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content" />
 
             <TextView
                 android:id="@+id/about_version_device"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content" />
 
             <TextView
                 android:id="@+id/about_version_bootloader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content" />
 
             <TextView
                 android:id="@+id/about_version_radio"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content" />
 
             <!-- Software. -->
             <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
                 android:text="@string/software"
                 android:textStyle="bold"
                 android:textSize="18sp"
@@ -126,28 +126,33 @@
 
             <TextView
                 android:id="@+id/about_version_android"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content" />
 
             <TextView
                 android:id="@+id/about_version_build"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content" />
 
             <TextView
                 android:id="@+id/about_version_securitypatch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content" />
 
             <TextView
                 android:id="@+id/about_version_webkit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content" />
 
             <TextView
                 android:id="@+id/about_version_chrome"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content" />
+
+            <TextView
+                android:id="@+id/about_version_orbot"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content" />
 
             <!-- Package Signature. -->
             <TextView
@@ -162,37 +167,37 @@
             <TextView
                 android:id="@+id/about_version_certificate_issuer_dn"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"/>
+                android:layout_width="wrap_content" />
 
             <TextView
                 android:id="@+id/about_version_certificate_subject_dn"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"/>
+                android:layout_width="wrap_content" />
 
             <TextView
                 android:id="@+id/about_version_certificate_start_date"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"/>
+                android:layout_width="wrap_content" />
 
             <TextView
                 android:id="@+id/about_version_certificate_end_date"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"/>
+                android:layout_width="wrap_content" />
 
             <TextView
                 android:id="@+id/about_version_certificate_version"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"/>
+                android:layout_width="wrap_content" />
 
             <TextView
                 android:id="@+id/about_version_certificate_serial_number"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"/>
+                android:layout_width="wrap_content" />
 
             <TextView
                 android:id="@+id/about_version_certificate_signature_algorithm"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"/>
+                android:layout_width="wrap_content" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
