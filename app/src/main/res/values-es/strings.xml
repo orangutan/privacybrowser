@@ -244,7 +244,7 @@
             <item>Personalizado</item>
         </string-array>
         <string name="tor_search_custom_url">URL personalizada de búsqueda en Tor</string>
-    <string name="search">Buscar</string>
+    <string name="search">Búsqueda</string>
         <string-array name="search_entries">
             <item>DuckDuckGo Javascript deshabilitado</item>
             <item>DuckDuckGo Javascript habilitado</item>

@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  Copyright 2015-2017 Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<!-- `tools:ignore="MissingTranslation"` allows release APKs to be built if translation strings are missing.  The missing strings will fall back to English. -->
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation" >
+
+    <!-- Activities. -->
+    <string name="privacy_browser">Privacy Browser</string>
+    <string name="privacy_browser_settings">Privacy Browser Settings</string>
+    <string name="android_asset_path">en</string>  <!-- For translations, this should be the localization abbreviation.  For example, Spanish is `es`.  This should not be translated unless the Guide and About sections are localized. -->
+
+    <!-- MainWebView. -->
+    <string name="privacy_mode">Privacy Mode</string>
+    <string name="javascript_enabled">JavaScript enabled</string>
+    <string name="javascript_disabled">JavaScript disabled</string>
+    <string name="first_party_cookies_enabled">First-Party Cookies enabled</string>
+    <string name="first_party_cookies_disabled">First-Party Cookies disabled</string>
+    <string name="third_party_cookies_enabled">Third-Party Cookies enabled</string>
+    <string name="third_party_cookies_disabled">Third-Party Cookies disabled</string>
+    <string name="dom_storage_enabled">DOM Storage enabled</string>
+    <string name="dom_storage_disabled">DOM Storage disabled</string>
+    <string name="form_data_enabled">Form Data enabled</string>
+    <string name="form_data_disabled">Form Data disabled</string>
+    <string name="cookies_deleted">Cookies deleted</string>
+    <string name="dom_storage_deleted">DOM Storage deleted</string>
+    <string name="form_data_deleted">Form Data deleted</string>
+    <string name="open_navigation_drawer">Open Navigation Drawer</string>
+    <string name="close_navigation_drawer">Close Navigation Drawer</string>
+    <string name="no_title">No title</string>
+
+    <!-- Save As. -->
+    <string name="save_as">Save As</string>
+    <string name="save_image_as">Save Image As</string>
+    <string name="file_name">File name</string>
+    <string name="image_name">Image name</string>
+    <string name="unknown_size">unknown size</string>
+    <string name="download">Download</string>
+    <string name="cannot_download_file">This file cannot be downloaded because it does not have an HTTP or HTTPS URI.</string>
+    <string name="cannot_download_image">This image cannot be downloaded because it does not have an HTTP or HTTPS URI.</string>
+
+    <!-- Custom App Bar. -->
+    <string name="favorite_icon">Favorite Icon</string>
+    <string name="url_or_search_terms">URL or Search Terms</string>
+
+    <!-- View SSL Certificate. -->
+    <string name="view_ssl_certificate">View SSL Certificate</string>
+    <string name="unencrypted_website">Unencrypted Website</string>
+    <string name="no_ssl_certificate">Communication with this website is not encrypted by an SSL certificate.</string>
+    <string name="ssl_certificate">SSL Certificate</string>
+    <string name="close">Close</string>
+    <string name="issued_to">Issued To</string>
+    <string name="issued_by">Issued By</string>
+    <string name="common_name">Common Name (CN):</string>
+    <string name="organization">Organization (O):</string>
+    <string name="organizational_unit">Organizational Unit (OU):</string>
+    <string name="valid_dates">Valid Dates</string>
+    <string name="start_date">Start Date:</string>
+    <string name="end_date">End Date:</string>
+
+    <!-- SSL Certificate Error. -->
+    <string name="ssl_certificate_error">SSL Certificate Error</string>
+    <string name="proceed">Proceed</string>
+    <string name="future_certificate">The certificate start date is in the future</string>
+    <string name="expired_certificate">The certificate is expired</string>
+    <string name="cn_mismatch">The Common Name does not match the hostname</string>
+    <string name="untrusted">The certificate authority is not trusted</string>
+    <string name="invalid_date">The date on the certificate is invalid</string>
+    <string name="invalid_certificate">The certificate is invalid</string>
+    <string name="url">URL</string>
+    <string name="url_label">URL:</string>
+
+    <!-- MainWebView Navigation Drawer. -->
+    <string name="navigation_drawer">Navigation Drawer</string>
+    <string name="navigation">Navigation</string>
+    <string name="home">Home</string>
+    <string name="back">Back</string>
+    <string name="forward">Forward</string>
+    <string name="history">History</string>
+        <string name="clear_history">Clear History</string>
+    <string name="bookmarks">Bookmarks</string>
+    <string name="downloads">Downloads</string>
+    <string name="settings">Settings</string>
+    <string name="guide">Guide</string>
+    <string name="about">About</string>
+    <string name="clear_and_exit">Clear and Exit</string>
+
+    <!-- MainWebView Options Menu. -->
+    <string name="javascript">JavaScript</string>
+    <string name="first_party_cookies">First-Party Cookies</string>
+    <string name="third_party_cookies">Third-Party Cookies</string>
+    <string name="dom_storage">DOM Storage</string>
+    <string name="form_data">Form Data</string>
+    <string name="clear_cookies">Clear Cookies</string>
+    <string name="clear_dom_storage">Clear DOM Storage</string>
+    <string name="clear_form_data">Clear Form Data</string>
+    <string name="font_size">Font Size</string>
+        <string name="twenty_five_percent">25%</string>
+        <string name="fifty_percent">50%</string>
+        <string name="seventy_five_percent">75%</string>
+        <string name="one_hundred_percent">100%</string>
+        <string name="one_hundred_twenty_five_percent">125%</string>
+        <string name="one_hundred_fifty_percent">150%</string>
+        <string name="one_hundred_seventy_five_percent">175%</string>
+        <string name="two_hundred_percent">200%</string>
+    <string name="find_on_page">Find on Page</string>
+    <string name="share">Share</string>
+    <string name="add_to_home_screen">Add to Home Screen</string>
+    <string name="print">Print</string>
+        <string name="privacy_browser_web_page">Privacy Browser Web Page</string>
+    <string name="refresh">Refresh</string>
+
+    <!-- Context Menus. -->
+    <string name="load_url">Load URL</string>
+    <string name="copy_url">Copy URL</string>
+    <string name="email_address">Email Address</string>
+    <string name="copy_email_address">Copy Email Address</string>
+    <string name="write_email">Write Email</string>
+    <string name="view_image">View Image</string>
+    <string name="download_image">Download Image</string>
+
+    <!-- Find on Page. -->
+    <string name="zero_of_zero" translatable="false">0/0</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+
+    <!-- Create Home Screen Shortcut Alert Dialog. -->
+    <string name="create_shortcut">Create Shortcut</string>
+    <string name="shortcut_name">Shortcut name</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Create</string>
+
+    <!-- Bookmarks. -->
+    <string name="database_view">Database View</string>
+    <string name="create_bookmark">Create Bookmark</string>
+    <string name="create_folder">Create Folder</string>
+    <string name="current_bookmark_icon">Current bookmark icon</string>
+    <string name="current_folder_icon">Current folder icon</string>
+    <string name="default_folder_icon">Default folder icon</string>
+    <string name="web_page_favorite_icon">Web page favorite icon</string>
+    <string name="bookmark_name">Bookmark name</string>
+    <string name="folder_name">Folder name</string>
+    <string name="bookmark_url">Bookmark URL</string>
+    <string name="folder_names_must_be_unique">Folder names must be unique</string>
+    <string name="cannot_create_folder">Cannot create the folder because the name is not unique:</string>
+    <string name="cannot_save_folder">Cannot save the folder because the new name is not unique:</string>
+    <string name="cannot_move_bookmarks">Cannot move the selected bookmarks because no new folder was selected.</string>
+    <string name="edit_bookmark">Edit Bookmark</string>
+    <string name="edit_folder">Edit Folder</string>
+    <string name="move_to_folder">Move to Folder</string>
+    <string name="move">Move</string>
+    <string name="save">Save</string>
+
+    <!-- Bookmarks Contextual App Bar. -->
+    <string name="one_selected">1 Selected</string>
+    <string name="selected">Selected</string>  <!--This is a plural adjective.-->
+    <string name="move_up">Move Up</string>
+    <string name="move_down">Move Down</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="select_all">Select All</string>
+    <string name="one_bookmark_deleted">1 Bookmark Deleted</string>
+    <string name="bookmarks_deleted">Bookmarks Deleted</string>
+    <string name="undo">Undo</string>
+
+    <!-- Bookmarks Database View. -->
+    <string name="bookmarks_database_view">Bookmarks Database View</string>
+    <string name="home_folder">Home Folder</string>
+
+    <!-- Domains. -->
+    <string name="domains">Domains</string>
+    <string name="domain_settings">Domain Settings</string>
+    <string name="add_domain">Add Domain</string>
+    <string name="add">Add</string>
+    <string name="domain_name">Domain name</string>
+    <string name="domain_settings_saved">Domain settings saved</string>
+    <string name="domain_deleted">Domain deleted</string>
+    <string name="domain_name_instructions">*. may be prepended to a domain to include all subdomains (eg. *.stoutner.com)</string>
+
+    <!-- Guide. -->
+    <string name="privacy_browser_guide">Privacy Browser Guide</string>
+    <string name="overview">Overview</string>
+    <string name="local_storage">Local Storage</string>
+    <string name="tracking_ids">Tracking IDs</string>
+    <string name="planned_features">Planned Features</string>
+
+    <!-- Preferences. -->
+    <string name="privacy">Privacy</string>
+        <string name="javascript_preference">Enable JavaScript by default</string>
+        <string name="javascript_preference_summary">JavaScript allows websites to run programs (scripts) on the device.</string>
+        <string name="first_party_cookies_preference">Enable first-party cookies by default</string>
+        <string name="first_party_cookies_preference_summary">Devices with versions of Android older than Lollipop (version 5.0) will also enable third-party cookies with this setting.</string>
+        <string name="third_party_cookies_preference">Enable third-party cookies by default</string>
+        <string name="third_party_cookies_summary">This setting requires Android Lollipop (version 5.0) or higher.  It has no effect if first-party cookies are disabled.</string>
+        <string name="dom_storage_preference">Enable DOM storage by default</string>
+        <string name="dom_storage_preference_summary">JavaScript must be enabled for DOM storage to function.</string>
+        <string name="save_form_data_preference">Enable saving of form data by default</string>
+        <string name="save_form_data_preference_summary">Saved form data can auto-populate fields on websites.</string>
+        <string name="user_agent">User agent</string>
+        <string-array name="user_agent_entries">
+            <item>Privacy Browser 1.0</item>
+            <item>WebView Default</item>
+            <item>Firefox 50 on Android 7.1.1</item>
+            <item>Chrome 55 on Android 7.1.1</item>
+            <item>Safari 10 on iOS 10.2.1</item>
+            <item>Firefox 45 on Linux</item>
+            <item>Chromium 55 on Linux</item>
+            <item>Konqueror 4.14.26 on Linux</item>
+            <item>Firefox 50 on Windows 10</item>
+            <item>Chrome 55 on Windows 10</item>
+            <item>Edge 14 on Windows 10</item>
+            <item>Internet Explorer 11 on Windows 10</item>
+            <item>Safari 10.0.2 on macOS 10.12.2</item>
+            <item>Custom</item>
+        </string-array>
+        <string-array name="user_agent_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
+            <item>PrivacyBrowser/1.0</item>
+            <item>WebView default user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
+            <item>Mozilla/5.0 (Android 7.1.1; Mobile; rv:50.0) Gecko/50.0 Firefox/50.0</item>
+            <item>Mozilla/5.0 (Linux; Android 7.1.1; Nexus 6P Build/N4F26I) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.91 Mobile Safari/537.36</item>
+            <item>Mozilla/5.0 (iPhone; CPU iPhone OS 10_2_1 like Mac OS X) AppleWebKit/602.4.6 (KHTML, like Gecko) Version/10.0 Mobile/14D27 Safari/602.1</item>
+            <item>Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101 Firefox/45.0</item>
+            <item>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.75 Safari/537.36</item>
+            <item>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/534.34 (KHTML, like Gecko) konqueror/4.14.26 Safari/534.34</item>
+            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:50.0) Gecko/20100101 Firefox/50.0</item>
+            <item>Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36</item>
+            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.79 Safari/537.36 Edge/14.14393</item>
+            <item>Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko</item>
+            <item>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/602.3.12 (KHTML, like Gecko) Version/10.0.2 Safari/602.3.12</item>
+            <item>Custom user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
+        </string-array>
+        <string name="custom_user_agent">Custom user agent</string>
+        <string name="block_ads">Block ads</string>
+        <string name="block_ads_summary">Use the list of ad servers from pgl.yoyo.org to block ads.</string>
+        <string name="incognito_mode">Incognito Mode</string>
+        <string name="incognito_mode_summary">Clear the history and cache after each webpage finishes loading.</string>
+        <string name="do_not_track">Do Not Track</string>
+        <string name="do_not_track_summary">Send the Do Not Track header, which politely suggests that web servers not track this browser.</string>
+    <string name="tor">Tor</string>
+        <string name="proxy_through_orbot">Proxy through Orbot</string>
+        <string name="proxy_through_orbot_summary">Proxy all web traffic through Orbot on localhost:8118.</string>
+        <string name="tor_homepage">Tor Homepage</string>
+        <string name="tor_javascript_disabled_search">Tor JavaScript-disabled search</string>
+        <string-array name="tor_javascript_disabled_search_entries">
+            <item>DuckDuckGo</item>
+            <item>Custom</item>
+        </string-array>
+        <string-array name="tor_javascript_disabled_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
+            <item>https://3g2upl4pq6kufc4m.onion/html/?q=</item>
+            <item>Custom URL</item><!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
+        </string-array>
+        <string name="tor_javascript_disabled_search_custom_url">Tor JavaScript-disabled search custom URL</string>
+        <string name="tor_javascript_enabled_search">Tor JavaScript-enabled search</string>
+        <string-array name="tor_javascript_enabled_search_entries">
+            <item>DuckDuckGo</item>
+            <item>Custom</item>
+        </string-array>
+        <string-array name="tor_javascript_enabled_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
+            <item>https://3g2upl4pq6kufc4m.onion/?q=</item>
+            <item>Custom URL</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
+        </string-array>
+        <string name="tor_javascript_enabled_search_custom_url">Tor JavaScript-enabled search custom URL</string>
+    <string name="search">Search</string>
+        <string name="javascript_disabled_search">JavaScript-disabled search</string>
+        <string-array name="javascript_disabled_search_entries">
+            <item>DuckDuckGo</item>
+            <item>StartPage</item>
+            <item>Google</item>
+            <item>Bing</item>
+            <item>Yahoo</item>
+            <item>Qwant</item>
+            <item>Custom</item>
+        </string-array>
+        <string-array name="javascript_disabled_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
+            <item>https://duckduckgo.com/html/?q=</item>
+            <item>https://www.startpage.com/do/search?q=</item>
+            <item>https://www.google.com/search?q=</item>
+            <item>https://www.bing.com/search?q=</item>
+            <item>https://search.yahoo.com/mobile/s?nojs=1&amp;p=</item>
+            <item>https://lite.qwant.com/?q=</item>
+            <item>Custom URL</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
+        </string-array>
+        <string name="javascript_disabled_search_custom_url">JavaScript-disabled search custom URL</string>
+        <string name="javascript_enabled_search">JavaScript-enabled search</string>
+        <string-array name="javascript_enabled_search_entries">
+            <item>DuckDuckGo</item>
+            <item>StartPage</item>
+            <item>Google</item>
+            <item>Bing</item>
+            <item>Yahoo</item>
+            <item>Qwant</item>
+            <item>Custom</item>
+        </string-array>
+        <string-array name="javascript_enabled_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
+            <item>https://duckduckgo.com/?q=</item>
+            <item>https://www.startpage.com/do/search?q=</item>
+            <item>https://www.google.com/search?q=</item>
+            <item>https://www.bing.com/search?q=</item>
+            <item>https://search.yahoo.com/mobile/s?p=</item>
+            <item>https://www.qwant.com/?q=</item>
+            <item>Custom URL</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
+        </string-array>
+        <string name="javascript_enabled_search_custom_url">JavaScript-enabled search custom URL</string>
+        <string name="custom_url">Custom URL</string>
+    <string name="full_screen">Full Screen</string>
+        <string name="enable_full_screen_browsing_mode">Enable full screen browsing mode</string>
+        <string name="enable_full_screen_browsing_mode_summary">Double-tap to toggle full screen browsing mode.</string>
+        <string name="hide_system_bars">Hide system bars</string>
+        <string name="hide_system_bars_summary">Hide the status and navigation bars in full screen browsing mode. This doesn\'t work well if the keyboard is displayed during full screen browsing mode.</string>
+        <string name="translucent_navigation_bar">Translucent navigation bar</string>
+        <string name="translucent_navigation_bar_summary">Make the navigation bar translucent in full screen browsing mode.</string>
+    <string name="general">General</string>
+        <string name="homepage">Homepage</string>
+        <string name="default_font_size">Default font size</string>
+        <string-array name="default_font_size_entries">
+            <item>25%</item>
+            <item>50%</item>
+            <item>75%</item>
+            <item>100%</item>
+            <item>125%</item>
+            <item>150%</item>
+            <item>175%</item>
+            <item>200%</item>
+        </string-array>
+        <string-array name="default_font_size_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
+            <item>25</item>
+            <item>50</item>
+            <item>75</item>
+            <item>100</item>
+            <item>125</item>
+            <item>150</item>
+            <item>175</item>
+            <item>200</item>
+        </string-array>
+        <string name="swipe_to_refresh_enabled">Swipe to refresh</string>
+        <string name="swipe_to_refresh_enabled_summary">Some websites don\'t work well if swipe to refresh is enabled.</string>
+        <string name="display_additional_app_bar_icons">Display additional app bar icons</string>
+        <string name="display_additional_app_bar_icons_summary">Display icons for toggling cookies, DOM storage, and form data in the app bar if there is room.</string>
+
+    <!-- Orbot. -->
+    <string name="orbot_proxy_not_installed">Orbot proxy will not work unless Orbot is installed.</string>
+    <string name="waiting_for_orbot">Waiting for Orbot to connect...</string>
+
+    <!-- About Activity. -->
+    <string name="about_privacy_browser">About Privacy Browser</string>
+    <string name="version">Version</string>
+        <string name="version_code">version code</string>
+        <string name="hardware">Hardware</string>
+            <string name="brand">Brand:</string>
+            <string name="manufacturer">Manufacturer:</string>
+            <string name="model">Model:</string>
+            <string name="device">Device:</string>
+            <string name="bootloader">Bootloader:</string>
+            <string name="radio">Radio:</string>
+        <string name="software">Software</string>
+            <string name="android">Android:</string>
+                <string name="api">API</string>
+            <string name="build">Build:</string>
+            <string name="security_patch">Security Patch:</string>
+            <string name="webkit">WebKit:</string>
+            <string name="chrome">Chrome:</string>
+        <string name="package_signature">Package Signature</string>
+            <string name="issuer_dn">Issuer DN:</string>
+            <string name="subject_dn">Subject DN:</string>
+            <string name="certificate_version">Certificate Version:</string>
+            <string name="serial_number">Serial Number:</string>
+            <string name="signature_algorithm">Signature Algorithm:</string>
+    <string name="permissions">Permissions</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="changelog">Changelog</string>
+    <string name="licenses">Licenses</string>
+    <string name="contributors">Contributors</string>
+    <string name="links">Links</string>
+
+    <!-- Ad Control. -->
+    <string name="ad_id" translatable="false">Null</string>  <!-- There are no ads in the standard flavor, but this string must exist because it is referenced in the code. -->
+</resources>
