@@ -243,22 +243,22 @@
         <string name="tor_homepage">Tor homepage</string>
         <string name="tor_search">Tor search</string>
         <string-array name="tor_search_entries">
-            <item>DuckDuckGo JavaScript disabled</item>
-            <item>DuckDuckGo JavaScript enabled</item>
+            <item>DuckDuckGo - JavaScript disabled</item>
+            <item>DuckDuckGo - JavaScript enabled</item>
             <item>Custom</item>
         </string-array>
         <string name="tor_search_custom_url">Tor search custom URL</string>
     <string name="search">Search</string>
         <string-array name="search_entries">
-            <item>DuckDuckGo JavaScript disabled</item>
-            <item>DuckDuckGo JavaScript enabled</item>
+            <item>DuckDuckGo - JavaScript disabled</item>
+            <item>DuckDuckGo - JavaScript enabled</item>
             <item>StartPage</item>
             <item>Google</item>
             <item>Bing</item>
-            <item>Yahoo JavaScript disabled</item>
-            <item>Yahoo JavaScript enabled</item>
-            <item>Qwant JavaScript disabled</item>
-            <item>Qwant JavaScript enabled</item>
+            <item>Yahoo - JavaScript disabled</item>
+            <item>Yahoo - JavaScript enabled</item>
+            <item>Qwant - JavaScript disabled</item>
+            <item>Qwant - JavaScript enabled</item>
             <item>Custom</item>
         </string-array>
         <string name="search_custom_url">Search custom URL</string>

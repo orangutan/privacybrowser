@@ -241,23 +241,23 @@
         <string name="tor_homepage">Tor Homepage</string>
         <string name="tor_search">Tor - Ricerca</string>
         <string-array name="tor_search_entries">
-            <item>DuckDuckGo JavaScript disabled</item>
-            <item>DuckDuckGo JavaScript enabled</item>
-            <item>Custom</item>
+            <item>DuckDuckGo - JavaScript disabilitato</item>
+            <item>DuckDuckGo - JavaScript abilitato</item>
+            <item>Personalizzata</item>
         </string-array>
         <string name="tor_search_custom_url">Tor - Ricerca personalizzata</string>
     <string name="search">Ricerca</string>
         <string-array name="search_entries">
-            <item>DuckDuckGo JavaScript disabled</item>
-            <item>DuckDuckGo JavaScript enabled</item>
+            <item>DuckDuckGo - JavaScript disabilitato</item>
+            <item>DuckDuckGo - JavaScript abilitato</item>
             <item>StartPage</item>
             <item>Google</item>
             <item>Bing</item>
-            <item>Yahoo JavaScript disabled</item>
-            <item>Yahoo JavaScript enabled</item>
-            <item>Qwant JavaScript disabled</item>
-            <item>Qwant JavaScript enabled</item>
-            <item>Custom</item>
+            <item>Yahoo - JavaScript disabilitato</item>
+            <item>Yahoo - JavaScript abilitato</item>
+            <item>Qwant - JavaScript disabilitato</item>
+            <item>Qwant - JavaScript abilitato</item>
+            <item>Personalizzata</item>
         </string-array>
         <string name="search_custom_url">Ricerca personalizzata</string>
         <string name="custom_url">URL Personalizzata</string>

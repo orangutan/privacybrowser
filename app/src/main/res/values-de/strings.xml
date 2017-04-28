@@ -221,15 +221,15 @@
         <string name="proxy_through_orbot_summary">Sämtlichen Web-Verkehr durch Orbot mittels localhost:8118 leiten.</string>
     <string name="search">Suche</string>
         <string-array name="search_entries">
-            <item>DuckDuckGo JavaScript disabled</item>
-            <item>DuckDuckGo JavaScript enabled</item>
+            <item>DuckDuckGo - JavaScript disabled</item>
+            <item>DuckDuckGo - JavaScript enabled</item>
             <item>StartPage</item>
             <item>Google</item>
             <item>Bing</item>
-            <item>Yahoo JavaScript disabled</item>
-            <item>Yahoo JavaScript enabled</item>
-            <item>Qwant JavaScript disabled</item>
-            <item>Qwant JavaScript enabled</item>
+            <item>Yahoo - JavaScript disabled</item>
+            <item>Yahoo - JavaScript enabled</item>
+            <item>Qwant - JavaScript disabled</item>
+            <item>Qwant - JavaScript enabled</item>
             <item>Eigene</item>
         </string-array>
         <string name="search_custom_url">Suchmaschinen-URL</string>

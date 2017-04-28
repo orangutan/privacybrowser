@@ -260,8 +260,8 @@
         <string name="tor_homepage">Tor homepage</string>
         <string name="tor_search">Tor search</string>
         <string-array name="tor_search_entries">
-            <item>DuckDuckGo JavaScript disabled</item>
-            <item>DuckDuckGo JavaScript enabled</item>
+            <item>DuckDuckGo - JavaScript disabled</item>
+            <item>DuckDuckGo - JavaScript enabled</item>
             <item>Custom</item>
         </string-array>
         <string-array name="tor_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
@@ -272,21 +272,21 @@
         <string name="tor_search_custom_url">Tor search custom URL</string>
     <string name="search">Search</string>
         <string-array name="search_entries">
-            <item>DuckDuckGo JavaScript disabled</item>
-            <item>DuckDuckGo JavaScript enabled</item>
+            <item>DuckDuckGo - JavaScript disabled</item>
+            <item>DuckDuckGo - JavaScript enabled</item>
             <item>StartPage</item>
             <item>Google</item>
             <item>Bing</item>
-            <item>Yahoo JavaScript disabled</item>
-            <item>Yahoo JavaScript enabled</item>
-            <item>Qwant JavaScript disabled</item>
-            <item>Qwant JavaScript enabled</item>
+            <item>Yahoo - JavaScript disabled</item>
+            <item>Yahoo - JavaScript enabled</item>
+            <item>Qwant - JavaScript disabled</item>
+            <item>Qwant - JavaScript enabled</item>
             <item>Custom</item>
         </string-array>
         <string-array name="search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
             <item>https://duckduckgo.com/html/?q=</item>
             <item>https://duckduckgo.com/?q=</item>
-            <item>https://www.startpage.com/do/search?q=</item>
+            <item>https://www.startpage.com/do/search?query=</item>
             <item>https://www.google.com/search?q=</item>
             <item>https://www.bing.com/search?q=</item>
             <item>https://search.yahoo.com/mobile/s?nojs=1&amp;p=</item>

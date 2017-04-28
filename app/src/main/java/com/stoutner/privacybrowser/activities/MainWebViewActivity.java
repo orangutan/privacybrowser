@@ -663,7 +663,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                         privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/cache");
 
                         // Delete the `app_webview` folder, which contains an additional `WebView` cache.  See `https://code.google.com/p/android/issues/detail?id=233826&thanks=233826&ts=1486670530`.
-                        privacyBrowserRuntime.exec("rm -rf " + privacyBrowserRuntime + "/app_webview");
+                        privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview");
                     } catch (IOException e) {
                         // Do nothing if an error is thrown.
                     }
@@ -1414,7 +1414,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/cache");
 
                     // Delete the `app_webview` folder, which contains an additional `WebView` cache.  See `https://code.google.com/p/android/issues/detail?id=233826&thanks=233826&ts=1486670530`.
-                    privacyBrowserRuntime.exec("rm -rf " + privacyBrowserRuntime + "/app_webview");
+                    privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview");
                 } catch (IOException e) {
                     // Do nothing if an error is thrown.
                 }
