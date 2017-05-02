@@ -822,6 +822,12 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Hide zoom controls.
         mainWebView.getSettings().setDisplayZoomControls(false);
 
+        // Set `mainWebView` to use a wide viewport.  Otherwise, some web pages will be scrunched and some content will render outside the screen.
+        mainWebView.getSettings().setUseWideViewPort(true);
+
+        // Set `mainWebView` to load in overview mode (zoomed out to the maximum width).
+        mainWebView.getSettings().setLoadWithOverviewMode(true);
+
         // Initialize cookieManager.
         cookieManager = CookieManager.getInstance();
 
