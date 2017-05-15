@@ -1,0 +1,19 @@
+Privacy Browser ist ein Web-Browser, der Ihre Privatsphäre durch einfache Einstellmöglichkeiten für JavaScript, DOM-Speicher und Cookies schützt. Viele Websites nutzen diese Technologien, um Besucher bei Besuchen ihrer oder anderer Websites zu verfolgen. Das Tippen auf den Privatsphäre-Schild schaltet zwischen Ein- und ausgeschaltetem JavaScript um und lädt WebView neu. Wenn JavaScript deaktiviert ist, werden nicht nur Privatsphäre und Sicherheit erhöht, sondern Websites laden auch noch schneller bei weniger Datenverbrauch.
+
+Privacy Browser benutzt Androids eingebaute WebView, um Websites zu rendern. Infolgedessen funktioniert er am besten, wenn Sie auf die neuste WebView-Version aktualisiert haben. 
+
+Warning: Privacy Browser is susceptible to
+[https://www.stoutner.com/kitkat-security-problems/ MITM (Man In The Middle)
+attacks] when browsing insecure websites from devices running Android KitKat
+(version 4.4.x, API 19).
+
+Funktionen:
+*Verknüpfungs-Icons zur Startseite hinzufügen.
+*Lesezeichen.
+*Unterstützung für TOR über Orbot.
+
+Geplante Funktionen für künftige Versionen:
+*Dateiupload auf Websites.
+*Detaillierte Cookie-Verwaltung.
+*Detaillierte DOM-Speicher-Verwaltung. 
+*Mehrere Tabs öffnen.

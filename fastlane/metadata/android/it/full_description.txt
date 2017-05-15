@@ -1,0 +1,16 @@
+Privacy Browser protegge la privacy perchè disabilita di default JavaScript, il DOM storage, e i cookie, ma fornisce sistemi rapidi per la loro abilitazione per i siti web in cui sono richiesti. Molti siti web utilizzano queste tecnologie per tracciare gli utenti che li visitano.
+
+Privacy Browser utilizza, per la visualizzazione delle pagine web, WebView nativo di Android. Per questo motivo il funzionamento è ottimale se Webview è aggiornato all'ultima versione.
+
+Attenzione: Privacy Browser è vulnerabile agli [https://www.stoutner.com/kitkat-security-problems/ attacchi MITM (Man In The Middle)] quando si accede a siti non sicuri con dispositivi su cui è installato Android KitKat (versione 4.4.x, API 19).
+
+Funzionalità:
+*Navigazione a schermo intero.
+*Ad-blocker integrato.
+*Supporto per Tor Orbot proxy.
+
+Funzionalità previste per le prossime versioni:
+*Upload di file ai siti web.
+*Controllo fine dei cookie.
+*Controllo fine del DOM storage.
+*Navigazione con tab.

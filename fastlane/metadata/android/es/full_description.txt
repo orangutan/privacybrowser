@@ -1,0 +1,15 @@
+Navegador Privado protege tu privacidad al deshabilitar JavaScript, almacenamiento DOM y cookies por defecto. Asimismo, hay maneras fáciles de habilitarlos
+para las páginas web que lo requieran. Muchas páginas web usan estas tecnologías para rastrear a los usuarios entre visitas y a través de los sitios.
+
+Navegador Privado usa el WebView proporcionado por Android para interpretar las páginas web, por lo que funciona mejor si tienes la versión actual de WebView.
+
+Aviso: Navegador Privado es susceptible de [https://www.stoutner.com/kitkat-security-problems/ ataques de Hombre En El Medio (MITM)] al navegar por páginas web inseguras con dispositivos que corren Android KitKat (versión 4.4.x, API 19).
+
+Funciones:
+*Modo de navegación a pantalla completa.
+*Bloqueador de anuncios integrado.
+*Opción de activar el funcionamiento con el proxy de Tor Orbot.
+
+Funciones planeadas para versiones futuras:
+*Cargar archivos a las páginas web.
+*Pestañas de navegación.
