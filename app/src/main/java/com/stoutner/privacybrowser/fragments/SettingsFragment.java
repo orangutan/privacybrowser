@@ -21,6 +21,7 @@ package com.stoutner.privacybrowser.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -57,21 +58,18 @@ public class SettingsFragment extends PreferenceFragment {
         final Preference homepagePreference = findPreference("homepage");
         final Preference defaultFontSizePreference = findPreference("default_font_size");
 
-        // Get booleans from the preferences.
-        final boolean fullScreenBrowsingModeEnabled = savedPreferences.getBoolean("enable_full_screen_browsing_mode", false);
-        final boolean proxyThroughOrbot = savedPreferences.getBoolean("proxy_through_orbot", false);
+        // Set dependencies.
+        domStorageEnabled.setDependency("javascript_enabled");
+        torHomepagePreference.setDependency("proxy_through_orbot");
+        torSearchPreference.setDependency("proxy_through_orbot");
+        hideSystemBarsPreference.setDependency("enable_full_screen_browsing_mode");
 
         // Get strings from the preferences.
         String torSearchString = savedPreferences.getString("tor_search", "https://3g2upl4pq6kufc4m.onion/html/?q=");
         String searchString = savedPreferences.getString("search", "https://duckduckgo.com/html/?q=");
-        String defaultFontSizeString = savedPreferences.getString("default_font_size", "100");
 
-        // Allow the user to access "dom_storage_enabled" if "javascript_enabled" is enabled.  The default is false.
-        domStorageEnabled.setEnabled(savedPreferences.getBoolean("javascript_enabled", false));
-
-        // Allow the user to access "third_party_cookies_enabled" if "first_party_cookies_enabled" is enabled.  The default is false.
-        thirdPartyCookiesEnabled.setEnabled(savedPreferences.getBoolean("first_party_cookies_enabled", false));
-
+        // Only enable `third_party_cookies_enabled` if `first_party_cookies_enabled` is `true` and API >= 21.
+        thirdPartyCookiesEnabled.setEnabled(savedPreferences.getBoolean("first_party_cookies_enabled", false) && (Build.VERSION.SDK_INT >= 21));
 
         // We need to inflated a `WebView` to get the default user agent.
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -115,15 +113,11 @@ public class SettingsFragment extends PreferenceFragment {
             torSearchPreference.setSummary(torSearchString);
         }
 
-        // Set the summary text for `torsearch_custom_url`.  The default is `""`.
+        // Set the summary text for `tor_search_custom_url`.  The default is `""`.
         torSearchCustomURLPreference.setSummary(savedPreferences.getString("tor_search_custom_url", ""));
 
-        // Enable the Tor preferences only if `proxy_through_orbot` is enabled.  The default is `false`.
-        torHomepagePreference.setEnabled(proxyThroughOrbot);
-        torSearchPreference.setEnabled(proxyThroughOrbot);
-
-        // Enable the Tor custom URL search options only if `proxyThroughOrbot` is true and the search is set to `Custom URL`.
-        torSearchCustomURLPreference.setEnabled(proxyThroughOrbot && torSearchString.equals("Custom URL"));
+        // Enable the Tor custom URL search options only if proxying through Orbot and the search is set to `Custom URL`.
+        torSearchCustomURLPreference.setEnabled(savedPreferences.getBoolean("proxy_through_orbot", false) && torSearchString.equals("Custom URL"));
 
 
         // Set the search URL as the summary text for the search preference when the preference screen is loaded.  The default is `https://duckduckgo.com/html/?q=`.
@@ -140,22 +134,15 @@ public class SettingsFragment extends PreferenceFragment {
         searchCustomURLPreference.setEnabled(searchString.equals("Custom URL"));
 
 
-        // Enable the full screen options if full screen browsing mode is enabled.
-        if (!fullScreenBrowsingModeEnabled) {
-            // Disable the full screen options.
-            hideSystemBarsPreference.setEnabled(false);
-            translucentNavigationBarPreference.setEnabled(false);
-        } else {
-            // Disable `transparent_navigation_bar` if `hide_system_bars` is `true`.
-            translucentNavigationBarPreference.setEnabled(!savedPreferences.getBoolean("hide_system_bars", false));
-        }
+        // Enable `transparent_navigation_bar` only if full screen browsing mode is enabled and `hide_system_bars` is disabled.
+        translucentNavigationBarPreference.setEnabled(savedPreferences.getBoolean("enable_full_screen_browsing_mode", false) && !savedPreferences.getBoolean("hide_system_bars", false));
 
 
         // Set the homepage URL as the summary text for the `Homepage` preference when the preference screen is loaded.  The default is `https://duckduckgo.com`.
         homepagePreference.setSummary(savedPreferences.getString("homepage", "https://duckduckgo.com"));
 
         // Set the default font size as the summary text for the `Default Font Size` preference when the preference screen is loaded.  The default is `100`.
-        defaultFontSizePreference.setSummary(defaultFontSizeString + "%%");
+        defaultFontSizePreference.setSummary(savedPreferences.getString("default_font_size", "100") + "%%");
 
 
         // Listen for preference changes.
@@ -166,16 +153,9 @@ public class SettingsFragment extends PreferenceFragment {
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
                 switch (key) {
-                    case "javascript_enabled":
-                        // Toggle the state of the `dom_storage_enabled` preference.  The default is `false`.
-                        final Preference domStorageEnabled = findPreference("dom_storage_enabled");
-                        domStorageEnabled.setEnabled(sharedPreferences.getBoolean("javascript_enabled", false));
-                        break;
-
                     case "first_party_cookies_enabled":
-                        // Toggle the state of the `third_party_cookies_enabled` preference.  The default is `false`.
-                        final Preference thirdPartyCookiesEnabled = findPreference("third_party_cookies_enabled");
-                        thirdPartyCookiesEnabled.setEnabled(sharedPreferences.getBoolean("first_party_cookies_enabled", false));
+                        // Enable `third_party_cookies_enabled` if `first_party_cookies_enabled` is `true` and API >= 21.
+                        thirdPartyCookiesEnabled.setEnabled(sharedPreferences.getBoolean("first_party_cookies_enabled", false) && (Build.VERSION.SDK_INT >= 21));
                         break;
 
                     case "user_agent":
@@ -189,13 +169,13 @@ public class SettingsFragment extends PreferenceFragment {
                                 break;
 
                             case "Custom user agent":
-                                // Display "Custom user agent" as the summary text for userAgentPreference, and enable customUserAgent.
+                                // Display `Custom user agent` as the summary text for `userAgentPreference`, and enable `customUserAgent`.
                                 userAgentPreference.setSummary(R.string.custom_user_agent);
                                 customUserAgent.setEnabled(true);
                                 break;
 
                             default:
-                                // Display the user agent as the summary text for userAgentPreference, and disable customUserAgent.
+                                // Display the user agent as the summary text for `userAgentPreference`, and disable `customUserAgent`.
                                 userAgentPreference.setSummary(sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0"));
                                 customUserAgent.setEnabled(false);
                                 break;
@@ -211,10 +191,6 @@ public class SettingsFragment extends PreferenceFragment {
                         // Get current settings.
                         boolean currentProxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
                         String currentTorSearchString = sharedPreferences.getString("tor_search", "https://3g2upl4pq6kufc4m.onion/html/?q=");
-
-                        // Enable the Tor preferences only if `proxy_through_orbot` is enabled.  The default is `false`.
-                        torHomepagePreference.setEnabled(currentProxyThroughOrbot);
-                        torSearchPreference.setEnabled(currentProxyThroughOrbot);
 
                         // Enable the Tor custom URL search option only if `currentProxyThroughOrbot` is true and the search is set to `Custom URL`.
                         torSearchCustomURLPreference.setEnabled(currentProxyThroughOrbot && currentTorSearchString.equals("Custom URL"));
@@ -265,18 +241,13 @@ public class SettingsFragment extends PreferenceFragment {
                         break;
 
                     case "enable_full_screen_browsing_mode":
-                        boolean newFullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("enable_full_screen_browsing_mode", false);
-                        if (newFullScreenBrowsingModeEnabled) {
-                            // Enable `hideSystemBarsPreference`.
-                            hideSystemBarsPreference.setEnabled(true);
+                        // Enable `transparent_navigation_bar` only if full screen browsing mode is enabled and `hide_system_bars` is disabled.
+                        translucentNavigationBarPreference.setEnabled(sharedPreferences.getBoolean("enable_full_screen_browsing_mode", false) && !sharedPreferences.getBoolean("hide_system_bars", false));
+                        break;
 
-                            // Only enable `transparent_navigation_bar` if `hide_system_bars` is `false`.
-                            translucentNavigationBarPreference.setEnabled(!sharedPreferences.getBoolean("hide_system_bars", false));
-                        } else {
-                            // Disable the full screen options.
-                            hideSystemBarsPreference.setEnabled(false);
-                            translucentNavigationBarPreference.setEnabled(false);
-                        }
+                    case "hide_system_bars":
+                        // Enable `translucentNavigationBarPreference` if `hide_system_bars` is disabled.
+                        translucentNavigationBarPreference.setEnabled(!sharedPreferences.getBoolean("hide_system_bars", false));
                         break;
 
                     case "homepage":
@@ -285,16 +256,8 @@ public class SettingsFragment extends PreferenceFragment {
                         break;
 
                     case "default_font_size":
-                        // Get the default font size as a string.  The default is `100`.
-                        String newDefaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
-
                         // Update the summary text of `default_font_size`.
-                        defaultFontSizePreference.setSummary(newDefaultFontSizeString + "%%");
-                        break;
-
-                    case "hide_system_bars":
-                        // Enable `translucentNavigationBarPreference` if `hide_system_bars` is disabled.
-                        translucentNavigationBarPreference.setEnabled(!sharedPreferences.getBoolean("hide_system_bars", false));
+                        defaultFontSizePreference.setSummary(sharedPreferences.getString("default_font_size", "100") + "%%");
                         break;
 
                     default:
