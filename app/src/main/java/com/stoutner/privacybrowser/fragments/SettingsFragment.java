@@ -44,8 +44,10 @@ public class SettingsFragment extends PreferenceFragment {
         savedPreferences = getPreferenceScreen().getSharedPreferences();
 
         // Get handles for the preferences we need to modify.
-        final Preference domStorageEnabled = findPreference("dom_storage_enabled");
+        final Preference javaScriptEnabled = findPreference("javascript_enabled");
+        final Preference firstPartyCookiesEnabled = findPreference("first_party_cookies_enabled");
         final Preference thirdPartyCookiesEnabled = findPreference("third_party_cookies_enabled");
+        final Preference domStorageEnabled = findPreference("dom_storage_enabled");
         final Preference userAgentPreference = findPreference("user_agent");
         final Preference customUserAgent = findPreference("custom_user_agent");
         final Preference torHomepagePreference = findPreference("tor_homepage");
@@ -68,8 +70,13 @@ public class SettingsFragment extends PreferenceFragment {
         String torSearchString = savedPreferences.getString("tor_search", "https://3g2upl4pq6kufc4m.onion/html/?q=");
         String searchString = savedPreferences.getString("search", "https://duckduckgo.com/html/?q=");
 
+        // Get booleans from the preferences.
+        boolean javaScriptEnabledBoolean = savedPreferences.getBoolean("javascript_enabled", false);
+        boolean firstPartyCookiesEnabledBoolean = savedPreferences.getBoolean("first_party_cookies_enabled", false);
+        boolean thirdPartyCookiesEnabledBoolean = savedPreferences.getBoolean("third_party_cookies_enabled", false);
+
         // Only enable `third_party_cookies_enabled` if `first_party_cookies_enabled` is `true` and API >= 21.
-        thirdPartyCookiesEnabled.setEnabled(savedPreferences.getBoolean("first_party_cookies_enabled", false) && (Build.VERSION.SDK_INT >= 21));
+        thirdPartyCookiesEnabled.setEnabled(firstPartyCookiesEnabledBoolean && (Build.VERSION.SDK_INT >= 21));
 
         // We need to inflated a `WebView` to get the default user agent.
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -145,6 +152,42 @@ public class SettingsFragment extends PreferenceFragment {
         defaultFontSizePreference.setSummary(savedPreferences.getString("default_font_size", "100") + "%%");
 
 
+        // Set the `javascript_enabled` icon.
+        if (javaScriptEnabledBoolean) {
+            javaScriptEnabled.setIcon(R.drawable.javascript_enabled);
+        } else {
+            javaScriptEnabled.setIcon(R.drawable.privacy_mode);
+        }
+
+        // Set the `first_party_cookies_enabled` icon.
+        if (firstPartyCookiesEnabledBoolean) {
+            firstPartyCookiesEnabled.setIcon(R.drawable.cookies_enabled);
+        } else {
+            firstPartyCookiesEnabled.setIcon(R.drawable.cookies_disabled);
+        }
+
+        // Set the `third_party_cookies_enabled` icon.
+        if (firstPartyCookiesEnabledBoolean && Build.VERSION.SDK_INT >= 21) {
+            if (thirdPartyCookiesEnabledBoolean) {
+                thirdPartyCookiesEnabled.setIcon(R.drawable.cookies_warning);
+            } else {
+                thirdPartyCookiesEnabled.setIcon(R.drawable.cookies_disabled);
+            }
+        } else {
+            thirdPartyCookiesEnabled.setIcon(R.drawable.cookies_ghosted);
+        }
+
+        // Set the `dom_storage_enabled` icon.
+        if (javaScriptEnabledBoolean) {
+            if (savedPreferences.getBoolean("dom_storage_enabled", false)) {
+                domStorageEnabled.setIcon(R.drawable.dom_storage_enabled);
+            } else {
+                domStorageEnabled.setIcon(R.drawable.dom_storage_disabled);
+            }
+        } else {
+            domStorageEnabled.setIcon(R.drawable.dom_storage_ghosted);
+        }
+
         // Listen for preference changes.
         preferencesListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
@@ -153,9 +196,71 @@ public class SettingsFragment extends PreferenceFragment {
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
                 switch (key) {
+                    case "javascript_enabled":
+                        // Update the icons.
+                        if (sharedPreferences.getBoolean("javascript_enabled", false)) {
+                            // Update the icon for `javascript_enabled`.
+                            javaScriptEnabled.setIcon(R.drawable.javascript_enabled);
+
+                            // Update the icon for `dom_storage_enabled`.
+                            if (sharedPreferences.getBoolean("dom_storage_enabled", false)) {
+                                domStorageEnabled.setIcon(R.drawable.dom_storage_enabled);
+                            } else {
+                                domStorageEnabled.setIcon(R.drawable.dom_storage_disabled);
+                            }
+                        } else {  // `javascript_enabled` is `false`.
+                            // Update the icon for `javascript_enabled`.
+                            javaScriptEnabled.setIcon(R.drawable.privacy_mode);
+
+                            // Set the icon for `dom_storage_disabled` to be ghosted.
+                            domStorageEnabled.setIcon(R.drawable.dom_storage_ghosted);
+                        }
+                        break;
+
                     case "first_party_cookies_enabled":
+                        // Update the icons for `first_party_cookies_enabled` and `third_party_cookies_enabled`.
+                        if (sharedPreferences.getBoolean("first_party_cookies_enabled", false)) {
+                            // Set the icon for `first_party_cookies_enabled`.
+                            firstPartyCookiesEnabled.setIcon(R.drawable.cookies_enabled);
+
+                            // Update the icon for `third_party_cookies_enabled`.
+                            if (Build.VERSION.SDK_INT >= 21) {
+                                if (sharedPreferences.getBoolean("third_party_cookies_enabled", false)) {
+                                    thirdPartyCookiesEnabled.setIcon(R.drawable.cookies_warning);
+                                } else {
+                                    thirdPartyCookiesEnabled.setIcon(R.drawable.cookies_disabled);
+                                }
+                            } else {
+                                thirdPartyCookiesEnabled.setIcon(R.drawable.cookies_ghosted);
+                            }
+                        } else {  // `first_party_cookies_enabled` is `false`.
+                            // Update the icon for `first_party_cookies_enabled`.
+                            firstPartyCookiesEnabled.setIcon(R.drawable.cookies_disabled);
+
+                            // Set the icon for `third_party_cookies_enabled` to be ghosted.
+                            thirdPartyCookiesEnabled.setIcon(R.drawable.cookies_ghosted);
+                        }
+
                         // Enable `third_party_cookies_enabled` if `first_party_cookies_enabled` is `true` and API >= 21.
                         thirdPartyCookiesEnabled.setEnabled(sharedPreferences.getBoolean("first_party_cookies_enabled", false) && (Build.VERSION.SDK_INT >= 21));
+                        break;
+
+                    case "third_party_cookies_enabled":
+                        // Update the icon.
+                        if (sharedPreferences.getBoolean("third_party_cookies_enabled", false)) {
+                            thirdPartyCookiesEnabled.setIcon(R.drawable.cookies_warning);
+                        } else {
+                            thirdPartyCookiesEnabled.setIcon(R.drawable.cookies_disabled);
+                        }
+                        break;
+
+                    case "dom_storage_enabled":
+                        // Update the icon.
+                        if (sharedPreferences.getBoolean("dom_storage_enabled", false)) {
+                            domStorageEnabled.setIcon(R.drawable.dom_storage_enabled);
+                        } else {
+                            domStorageEnabled.setIcon(R.drawable.dom_storage_disabled);
+                        }
                         break;
 
                     case "user_agent":

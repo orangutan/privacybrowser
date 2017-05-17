@@ -58,7 +58,8 @@
             android:title="@string/user_agent"
             android:entries="@array/user_agent_entries"
             android:entryValues="@array/user_agent_entry_values"
-            android:defaultValue="PrivacyBrowser/1.0" />
+            android:defaultValue="PrivacyBrowser/1.0"
+            android:icon="@drawable/user_agent" />
 
         <!-- android:inputType="textVisiblePassword" sets the keyboard to have a dedicated number row.-->
         <EditTextPreference
@@ -172,7 +173,8 @@
             android:title="@string/default_font_size"
             android:entries="@array/default_font_size_entries"
             android:entryValues="@array/default_font_size_entry_values"
-            android:defaultValue="100" />
+            android:defaultValue="100"
+            android:icon="@drawable/font_size" />
 
         <SwitchPreference
             android:key="swipe_to_refresh"

@@ -237,7 +237,6 @@
                     android:layout_marginEnd="10dp"
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/user_agent"
-                    android:tint="@color/blue_800"
                     android:contentDescription="@string/user_agent" />
 
                 <Spinner
@@ -277,7 +276,6 @@
                 android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/font_size"
-                android:tint="@color/blue_800"
                 android:contentDescription="@string/font_size" />
 
             <Spinner

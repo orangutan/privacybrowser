@@ -568,8 +568,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             @SuppressWarnings("deprecation")
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                // Use an external email program if the link begins with `mailto:`.
-                if (url.startsWith("mailto:")) {
+                if (url.startsWith("mailto:")) {  // Load the URL in an external email program because it begins with `mailto:`.
                     // We use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
 
@@ -581,10 +580,15 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
                     // Make it so.
                     startActivity(emailIntent);
+
+                    // Returning `true` indicates the application is handling the URL.
                     return true;
                 } else {  // Load the URL in Privacy Browser.
-                    loadUrl(url);
-                    return true;
+                    // Apply the domain settings for the new URL.
+                    applyDomainSettings(url);
+
+                    // Returning `false` causes the current `WebView` to handle the URL and prevents it from adding redirects to the history list.
+                    return false;
                 }
             }
 
