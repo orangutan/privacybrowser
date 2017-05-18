@@ -44,12 +44,14 @@ public class SettingsFragment extends PreferenceFragment {
         savedPreferences = getPreferenceScreen().getSharedPreferences();
 
         // Get handles for the preferences we need to modify.
-        final Preference javaScriptEnabled = findPreference("javascript_enabled");
-        final Preference firstPartyCookiesEnabled = findPreference("first_party_cookies_enabled");
-        final Preference thirdPartyCookiesEnabled = findPreference("third_party_cookies_enabled");
-        final Preference domStorageEnabled = findPreference("dom_storage_enabled");
+        final Preference javaScriptPreference = findPreference("javascript_enabled");
+        final Preference firstPartyCookiesPreference = findPreference("first_party_cookies_enabled");
+        final Preference thirdPartyCookiesPreference = findPreference("third_party_cookies_enabled");
+        final Preference domStoragePreference = findPreference("dom_storage_enabled");
+        final Preference saveFormDataPreference = findPreference("save_form_data_enabled");
         final Preference userAgentPreference = findPreference("user_agent");
-        final Preference customUserAgent = findPreference("custom_user_agent");
+        final Preference customUserAgentPreference = findPreference("custom_user_agent");
+        final Preference doNotTrackPreference = findPreference("do_not_track");
         final Preference torHomepagePreference = findPreference("tor_homepage");
         final Preference torSearchPreference = findPreference("tor_search");
         final Preference torSearchCustomURLPreference = findPreference("tor_search_custom_url");
@@ -61,7 +63,7 @@ public class SettingsFragment extends PreferenceFragment {
         final Preference defaultFontSizePreference = findPreference("default_font_size");
 
         // Set dependencies.
-        domStorageEnabled.setDependency("javascript_enabled");
+        domStoragePreference.setDependency("javascript_enabled");
         torHomepagePreference.setDependency("proxy_through_orbot");
         torSearchPreference.setDependency("proxy_through_orbot");
         hideSystemBarsPreference.setDependency("enable_full_screen_browsing_mode");
@@ -75,8 +77,8 @@ public class SettingsFragment extends PreferenceFragment {
         boolean firstPartyCookiesEnabledBoolean = savedPreferences.getBoolean("first_party_cookies_enabled", false);
         boolean thirdPartyCookiesEnabledBoolean = savedPreferences.getBoolean("third_party_cookies_enabled", false);
 
-        // Only enable `third_party_cookies_enabled` if `first_party_cookies_enabled` is `true` and API >= 21.
-        thirdPartyCookiesEnabled.setEnabled(firstPartyCookiesEnabledBoolean && (Build.VERSION.SDK_INT >= 21));
+        // Only enable `thirdPartyCookiesPreference` if `firstPartyCookiesEnabledBoolean` is `true` and API >= 21.
+        thirdPartyCookiesPreference.setEnabled(firstPartyCookiesEnabledBoolean && (Build.VERSION.SDK_INT >= 21));
 
         // We need to inflated a `WebView` to get the default user agent.
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -102,9 +104,9 @@ public class SettingsFragment extends PreferenceFragment {
                 break;
         }
 
-        // Set the summary text for "custom_user_agent" (the default is "PrivacyBrowser/1.0") and enable it if "user_agent" it set to "Custom user agent".
-        customUserAgent.setSummary(savedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0"));
-        customUserAgent.setEnabled(userAgentPreference.getSummary().equals("Custom user agent"));
+        // Set the summary text for "customUserAgentPreference" (the default is `PrivacyBrowser/1.0`) and enable it if `userAgentPreference` it set to `Custom user agent`.
+        customUserAgentPreference.setSummary(savedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0"));
+        customUserAgentPreference.setEnabled(userAgentPreference.getSummary().equals("Custom user agent"));
 
 
         // Set the Tor homepage URL as the summary text for the `tor_homepage` preference when the preference screen is loaded.  The default is DuckDuckGo: `https://3g2upl4pq6kufc4m.onion`.
@@ -152,40 +154,61 @@ public class SettingsFragment extends PreferenceFragment {
         defaultFontSizePreference.setSummary(savedPreferences.getString("default_font_size", "100") + "%%");
 
 
-        // Set the `javascript_enabled` icon.
+        // Set the `javaScriptPreference` icon.
         if (javaScriptEnabledBoolean) {
-            javaScriptEnabled.setIcon(R.drawable.javascript_enabled);
+            javaScriptPreference.setIcon(R.drawable.javascript_enabled);
         } else {
-            javaScriptEnabled.setIcon(R.drawable.privacy_mode);
+            javaScriptPreference.setIcon(R.drawable.privacy_mode);
         }
 
-        // Set the `first_party_cookies_enabled` icon.
+        // Set the `firstPartyCookiesPreference` icon.
         if (firstPartyCookiesEnabledBoolean) {
-            firstPartyCookiesEnabled.setIcon(R.drawable.cookies_enabled);
+            firstPartyCookiesPreference.setIcon(R.drawable.cookies_enabled);
         } else {
-            firstPartyCookiesEnabled.setIcon(R.drawable.cookies_disabled);
+            firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled);
         }
 
-        // Set the `third_party_cookies_enabled` icon.
+        // Set the `thirdPartyCookiesPreference` icon.
         if (firstPartyCookiesEnabledBoolean && Build.VERSION.SDK_INT >= 21) {
             if (thirdPartyCookiesEnabledBoolean) {
-                thirdPartyCookiesEnabled.setIcon(R.drawable.cookies_warning);
+                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_warning);
             } else {
-                thirdPartyCookiesEnabled.setIcon(R.drawable.cookies_disabled);
+                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled);
             }
         } else {
-            thirdPartyCookiesEnabled.setIcon(R.drawable.cookies_ghosted);
+            thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted);
         }
 
-        // Set the `dom_storage_enabled` icon.
+        // Set the `domStoragePreference` icon.
         if (javaScriptEnabledBoolean) {
             if (savedPreferences.getBoolean("dom_storage_enabled", false)) {
-                domStorageEnabled.setIcon(R.drawable.dom_storage_enabled);
+                domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
             } else {
-                domStorageEnabled.setIcon(R.drawable.dom_storage_disabled);
+                domStoragePreference.setIcon(R.drawable.dom_storage_disabled);
             }
         } else {
-            domStorageEnabled.setIcon(R.drawable.dom_storage_ghosted);
+            domStoragePreference.setIcon(R.drawable.dom_storage_ghosted);
+        }
+
+        // Set the `saveFormDataPreference` icon.
+        if (savedPreferences.getBoolean("save_form_data_enabled", false)) {
+            saveFormDataPreference.setIcon(R.drawable.form_data_enabled);
+        } else {
+            saveFormDataPreference.setIcon(R.drawable.form_data_disabled);
+        }
+
+        // Set the `customUserAgentPreference` icon.
+        if (customUserAgentPreference.isEnabled()) {
+            customUserAgentPreference.setIcon(R.drawable.user_agent_enabled);
+        } else {
+            customUserAgentPreference.setIcon(R.drawable.user_agent_ghosted);
+        }
+
+        // Set the `doNotTrackPreference` icon.
+        if (savedPreferences.getBoolean("do_not_track", false)) {
+            doNotTrackPreference.setIcon(R.drawable.do_not_track_enabled);
+        } else {
+            doNotTrackPreference.setIcon(R.drawable.do_not_track_disabled);
         }
 
         // Listen for preference changes.
@@ -200,20 +223,20 @@ public class SettingsFragment extends PreferenceFragment {
                         // Update the icons.
                         if (sharedPreferences.getBoolean("javascript_enabled", false)) {
                             // Update the icon for `javascript_enabled`.
-                            javaScriptEnabled.setIcon(R.drawable.javascript_enabled);
+                            javaScriptPreference.setIcon(R.drawable.javascript_enabled);
 
                             // Update the icon for `dom_storage_enabled`.
                             if (sharedPreferences.getBoolean("dom_storage_enabled", false)) {
-                                domStorageEnabled.setIcon(R.drawable.dom_storage_enabled);
+                                domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
                             } else {
-                                domStorageEnabled.setIcon(R.drawable.dom_storage_disabled);
+                                domStoragePreference.setIcon(R.drawable.dom_storage_disabled);
                             }
                         } else {  // `javascript_enabled` is `false`.
                             // Update the icon for `javascript_enabled`.
-                            javaScriptEnabled.setIcon(R.drawable.privacy_mode);
+                            javaScriptPreference.setIcon(R.drawable.privacy_mode);
 
                             // Set the icon for `dom_storage_disabled` to be ghosted.
-                            domStorageEnabled.setIcon(R.drawable.dom_storage_ghosted);
+                            domStoragePreference.setIcon(R.drawable.dom_storage_ghosted);
                         }
                         break;
 
@@ -221,75 +244,102 @@ public class SettingsFragment extends PreferenceFragment {
                         // Update the icons for `first_party_cookies_enabled` and `third_party_cookies_enabled`.
                         if (sharedPreferences.getBoolean("first_party_cookies_enabled", false)) {
                             // Set the icon for `first_party_cookies_enabled`.
-                            firstPartyCookiesEnabled.setIcon(R.drawable.cookies_enabled);
+                            firstPartyCookiesPreference.setIcon(R.drawable.cookies_enabled);
 
                             // Update the icon for `third_party_cookies_enabled`.
                             if (Build.VERSION.SDK_INT >= 21) {
                                 if (sharedPreferences.getBoolean("third_party_cookies_enabled", false)) {
-                                    thirdPartyCookiesEnabled.setIcon(R.drawable.cookies_warning);
+                                    thirdPartyCookiesPreference.setIcon(R.drawable.cookies_warning);
                                 } else {
-                                    thirdPartyCookiesEnabled.setIcon(R.drawable.cookies_disabled);
+                                    thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled);
                                 }
                             } else {
-                                thirdPartyCookiesEnabled.setIcon(R.drawable.cookies_ghosted);
+                                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted);
                             }
                         } else {  // `first_party_cookies_enabled` is `false`.
                             // Update the icon for `first_party_cookies_enabled`.
-                            firstPartyCookiesEnabled.setIcon(R.drawable.cookies_disabled);
+                            firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled);
 
                             // Set the icon for `third_party_cookies_enabled` to be ghosted.
-                            thirdPartyCookiesEnabled.setIcon(R.drawable.cookies_ghosted);
+                            thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted);
                         }
 
                         // Enable `third_party_cookies_enabled` if `first_party_cookies_enabled` is `true` and API >= 21.
-                        thirdPartyCookiesEnabled.setEnabled(sharedPreferences.getBoolean("first_party_cookies_enabled", false) && (Build.VERSION.SDK_INT >= 21));
+                        thirdPartyCookiesPreference.setEnabled(sharedPreferences.getBoolean("first_party_cookies_enabled", false) && (Build.VERSION.SDK_INT >= 21));
                         break;
 
                     case "third_party_cookies_enabled":
                         // Update the icon.
                         if (sharedPreferences.getBoolean("third_party_cookies_enabled", false)) {
-                            thirdPartyCookiesEnabled.setIcon(R.drawable.cookies_warning);
+                            thirdPartyCookiesPreference.setIcon(R.drawable.cookies_warning);
                         } else {
-                            thirdPartyCookiesEnabled.setIcon(R.drawable.cookies_disabled);
+                            thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled);
                         }
                         break;
 
                     case "dom_storage_enabled":
                         // Update the icon.
                         if (sharedPreferences.getBoolean("dom_storage_enabled", false)) {
-                            domStorageEnabled.setIcon(R.drawable.dom_storage_enabled);
+                            domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
                         } else {
-                            domStorageEnabled.setIcon(R.drawable.dom_storage_disabled);
+                            domStoragePreference.setIcon(R.drawable.dom_storage_disabled);
                         }
                         break;
+
+                    case "save_form_data_enabled":
+                        // Update the icon.
+                        if (sharedPreferences.getBoolean("save_form_data_enabled", false)) {
+                            saveFormDataPreference.setIcon(R.drawable.form_data_enabled);
+                        } else {
+                            saveFormDataPreference.setIcon(R.drawable.form_data_disabled);
+                        }
 
                     case "user_agent":
                         String userAgentString = sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0");
 
                         switch (userAgentString) {
                             case "WebView default user agent":
-                                // Display the user agent as the summary text for `userAgentPreference`, and disable `customUserAgent`.
+                                // Display the user agent as the summary text for `userAgentPreference`.
                                 userAgentPreference.setSummary(bareWebView.getSettings().getUserAgentString());
-                                customUserAgent.setEnabled(false);
+
+                                // Update `customUserAgentPreference`.
+                                customUserAgentPreference.setEnabled(false);
+                                customUserAgentPreference.setIcon(R.drawable.user_agent_ghosted);
                                 break;
 
                             case "Custom user agent":
-                                // Display `Custom user agent` as the summary text for `userAgentPreference`, and enable `customUserAgent`.
+                                // Display `Custom user agent` as the summary text for `userAgentPreference`.
                                 userAgentPreference.setSummary(R.string.custom_user_agent);
-                                customUserAgent.setEnabled(true);
+
+                                // Update `customUserAgentPreference`.
+                                customUserAgentPreference.setEnabled(true);
+                                customUserAgentPreference.setIcon(R.drawable.user_agent_enabled);
                                 break;
 
                             default:
-                                // Display the user agent as the summary text for `userAgentPreference`, and disable `customUserAgent`.
+                                // Display the user agent as the summary text for `userAgentPreference`.
                                 userAgentPreference.setSummary(sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0"));
-                                customUserAgent.setEnabled(false);
+
+                                // Update `customUserAgentPreference`.
+                                customUserAgentPreference.setEnabled(false);
+                                customUserAgentPreference.setIcon(R.drawable.user_agent_ghosted);
                                 break;
                         }
                         break;
 
                     case "custom_user_agent":
                         // Set the new custom user agent as the summary text for `custom_user_agent`.  The default is `PrivacyBrowser/1.0`.
-                        customUserAgent.setSummary(sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0"));
+                        customUserAgentPreference.setSummary(sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0"));
+                        break;
+
+                    case "do_not_track":
+                        // Update the icon.
+                        if (sharedPreferences.getBoolean("do_not_track", false)) {
+                            doNotTrackPreference.setIcon(R.drawable.do_not_track_enabled);
+                        } else {
+                            doNotTrackPreference.setIcon(R.drawable.do_not_track_disabled);
+                        }
+
                         break;
 
                     case "proxy_through_orbot":

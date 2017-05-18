@@ -236,7 +236,7 @@
                     android:layout_marginTop="1dp"
                     android:layout_marginEnd="10dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/user_agent"
+                    android:src="@drawable/user_agent_enabled"
                     android:contentDescription="@string/user_agent" />
 
                 <Spinner

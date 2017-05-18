@@ -1236,10 +1236,21 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 return true;
 
             case R.id.share:
+                // Setup the share string.
+                String shareString;
+                if (webViewTitle != null) {
+                    shareString = webViewTitle + " – " + urlTextBox.getText().toString();
+                } else {
+                    shareString = urlTextBox.getText().toString();
+                }
+
+                // Create the share intent.
                 Intent shareIntent = new Intent();
                 shareIntent.setAction(Intent.ACTION_SEND);
-                shareIntent.putExtra(Intent.EXTRA_TEXT, urlTextBox.getText().toString());
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareString);
                 shareIntent.setType("text/plain");
+
+                // Make it so.
                 startActivity(Intent.createChooser(shareIntent, "Share URL"));
                 return true;
 
