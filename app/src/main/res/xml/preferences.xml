@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2016 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -59,7 +59,7 @@
             android:entries="@array/user_agent_entries"
             android:entryValues="@array/user_agent_entry_values"
             android:defaultValue="PrivacyBrowser/1.0"
-            android:icon="@drawable/user_agent_enabled" />
+            android:icon="@drawable/user_agent" />
 
         <!-- android:inputType="textVisiblePassword" sets the keyboard to have a dedicated number row.-->
         <EditTextPreference
@@ -126,7 +126,8 @@
             android:title="@string/search"
             android:entries="@array/search_entries"
             android:entryValues="@array/search_entry_values"
-            android:defaultValue="https://duckduckgo.com/html/?q=" />
+            android:defaultValue="https://duckduckgo.com/html/?q="
+            android:icon="@drawable/search_enabled" />
 
         <EditTextPreference
             android:key="search_custom_url"

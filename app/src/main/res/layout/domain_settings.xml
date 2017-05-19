@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -236,7 +236,7 @@
                     android:layout_marginTop="1dp"
                     android:layout_marginEnd="10dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/user_agent_enabled"
+                    android:src="@drawable/user_agent"
                     android:contentDescription="@string/user_agent" />
 
                 <Spinner

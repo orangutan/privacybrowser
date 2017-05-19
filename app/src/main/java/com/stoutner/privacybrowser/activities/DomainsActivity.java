@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -51,7 +51,10 @@ public class SettingsFragment extends PreferenceFragment {
         final Preference saveFormDataPreference = findPreference("save_form_data_enabled");
         final Preference userAgentPreference = findPreference("user_agent");
         final Preference customUserAgentPreference = findPreference("custom_user_agent");
+        final Preference blockAdsPreference = findPreference("block_ads");
+        final Preference incognitoModePreference = findPreference("incognito_mode");
         final Preference doNotTrackPreference = findPreference("do_not_track");
+        final Preference proxyThroughOrbotPreference = findPreference("proxy_through_orbot");
         final Preference torHomepagePreference = findPreference("tor_homepage");
         final Preference torSearchPreference = findPreference("tor_search");
         final Preference torSearchCustomURLPreference = findPreference("tor_search_custom_url");
@@ -76,6 +79,7 @@ public class SettingsFragment extends PreferenceFragment {
         boolean javaScriptEnabledBoolean = savedPreferences.getBoolean("javascript_enabled", false);
         boolean firstPartyCookiesEnabledBoolean = savedPreferences.getBoolean("first_party_cookies_enabled", false);
         boolean thirdPartyCookiesEnabledBoolean = savedPreferences.getBoolean("third_party_cookies_enabled", false);
+        boolean proxyThroughOrbotBoolean = savedPreferences.getBoolean("proxy_through_orbot", false);
 
         // Only enable `thirdPartyCookiesPreference` if `firstPartyCookiesEnabledBoolean` is `true` and API >= 21.
         thirdPartyCookiesPreference.setEnabled(firstPartyCookiesEnabledBoolean && (Build.VERSION.SDK_INT >= 21));
@@ -126,7 +130,7 @@ public class SettingsFragment extends PreferenceFragment {
         torSearchCustomURLPreference.setSummary(savedPreferences.getString("tor_search_custom_url", ""));
 
         // Enable the Tor custom URL search options only if proxying through Orbot and the search is set to `Custom URL`.
-        torSearchCustomURLPreference.setEnabled(savedPreferences.getBoolean("proxy_through_orbot", false) && torSearchString.equals("Custom URL"));
+        torSearchCustomURLPreference.setEnabled(proxyThroughOrbotBoolean && torSearchString.equals("Custom URL"));
 
 
         // Set the search URL as the summary text for the search preference when the preference screen is loaded.  The default is `https://duckduckgo.com/html/?q=`.
@@ -199,9 +203,23 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the `customUserAgentPreference` icon.
         if (customUserAgentPreference.isEnabled()) {
-            customUserAgentPreference.setIcon(R.drawable.user_agent_enabled);
+            customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled);
         } else {
-            customUserAgentPreference.setIcon(R.drawable.user_agent_ghosted);
+            customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted);
+        }
+
+        // Set the `blockAdsPreference` icon.
+        if (savedPreferences.getBoolean("block_ads", true)) {
+            blockAdsPreference.setIcon(R.drawable.block_ads_enabled);
+        } else {
+            blockAdsPreference.setIcon(R.drawable.block_ads_disabled);
+        }
+
+        // Set the `incognitoModePreference` icon.
+        if (savedPreferences.getBoolean("incognito_mode", false)) {
+            incognitoModePreference.setIcon(R.drawable.incognito_mode_enabled);
+        } else {
+            incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled);
         }
 
         // Set the `doNotTrackPreference` icon.
@@ -210,6 +228,21 @@ public class SettingsFragment extends PreferenceFragment {
         } else {
             doNotTrackPreference.setIcon(R.drawable.do_not_track_disabled);
         }
+
+        // Set the `proxyThroughOrbotPreference` icon.
+        if (proxyThroughOrbotBoolean) {
+            proxyThroughOrbotPreference.setIcon(R.drawable.orbot_enabled);
+        } else {
+            proxyThroughOrbotPreference.setIcon(R.drawable.orbot_disabled);
+        }
+
+        // Set the `searchCustomURLPreference` icon.
+        if (searchCustomURLPreference.isEnabled()) {
+            searchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled);
+        } else {
+            searchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted);
+        }
+
 
         // Listen for preference changes.
         preferencesListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
@@ -304,7 +337,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                                 // Update `customUserAgentPreference`.
                                 customUserAgentPreference.setEnabled(false);
-                                customUserAgentPreference.setIcon(R.drawable.user_agent_ghosted);
+                                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted);
                                 break;
 
                             case "Custom user agent":
@@ -313,7 +346,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                                 // Update `customUserAgentPreference`.
                                 customUserAgentPreference.setEnabled(true);
-                                customUserAgentPreference.setIcon(R.drawable.user_agent_enabled);
+                                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled);
                                 break;
 
                             default:
@@ -322,7 +355,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                                 // Update `customUserAgentPreference`.
                                 customUserAgentPreference.setEnabled(false);
-                                customUserAgentPreference.setIcon(R.drawable.user_agent_ghosted);
+                                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted);
                                 break;
                         }
                         break;
@@ -330,6 +363,24 @@ public class SettingsFragment extends PreferenceFragment {
                     case "custom_user_agent":
                         // Set the new custom user agent as the summary text for `custom_user_agent`.  The default is `PrivacyBrowser/1.0`.
                         customUserAgentPreference.setSummary(sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0"));
+                        break;
+
+                    case "block_ads":
+                        // Update the icon.
+                        if (sharedPreferences.getBoolean("block_ads", true)) {
+                            blockAdsPreference.setIcon(R.drawable.block_ads_enabled);
+                        } else {
+                            blockAdsPreference.setIcon(R.drawable.block_ads_disabled);
+                        }
+                        break;
+
+                    case "incognito_mode":
+                        // Update the icon.
+                        if (sharedPreferences.getBoolean("incognito_mode", false)) {
+                            incognitoModePreference.setIcon(R.drawable.incognito_mode_enabled);
+                        } else {
+                            incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled);
+                        }
                         break;
 
                     case "do_not_track":
@@ -349,6 +400,13 @@ public class SettingsFragment extends PreferenceFragment {
 
                         // Enable the Tor custom URL search option only if `currentProxyThroughOrbot` is true and the search is set to `Custom URL`.
                         torSearchCustomURLPreference.setEnabled(currentProxyThroughOrbot && currentTorSearchString.equals("Custom URL"));
+
+                        // Update the icon.
+                        if (currentProxyThroughOrbot) {
+                            proxyThroughOrbotPreference.setIcon(R.drawable.orbot_enabled);
+                        } else {
+                            proxyThroughOrbotPreference.setIcon(R.drawable.orbot_disabled);
+                        }
                         break;
 
                     case "tor_homepage":
@@ -379,15 +437,25 @@ public class SettingsFragment extends PreferenceFragment {
                         break;
 
                     case "search":
+                        // Store the new search string.
                         String newSearchString = sharedPreferences.getString("search", "https://duckduckgo.com/html/?q=");
-                        if (newSearchString.equals("Custom URL")) {  // Set the summary text to `R.string.custom_url`, which is translated.
-                            searchPreference.setSummary(R.string.custom_url);
-                        } else {  // Set the new search URL as the summary text for the JavaScript-disabled search preference.
-                            searchPreference.setSummary(newSearchString);
-                        }
 
-                        // Enable or disable `searchCustomURLPreference`.
-                        searchCustomURLPreference.setEnabled(newSearchString.equals("Custom URL"));
+                        // Update `searchPreference` and `searchCustomURLPreference`.
+                        if (newSearchString.equals("Custom URL")) {  // `Custom URL` is selected.
+                            // Set the summary text to `R.string.custom_url`, which is translated.
+                            searchPreference.setSummary(R.string.custom_url);
+
+                            // Update `searchCustomURLPreference`.
+                            searchCustomURLPreference.setEnabled(true);
+                            searchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled);
+                        } else {  // `Custom URL` is not selected.
+                            // Set the summary text to `newSearchString`.
+                            searchPreference.setSummary(newSearchString);
+
+                            // Update `searchCustomURLPreference`.
+                            searchCustomURLPreference.setEnabled(false);
+                            searchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted);
+                        }
                         break;
 
                     case "search_custom_url":

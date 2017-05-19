@@ -1,5 +1,5 @@
 <!-- `warning.xml` is derived from `ic_security` and `ic_language`, which are part of the Android Material icon set.  They are released under the Apache License 2.0.
-    Modifications were made by Soren Stoutner <soren@stoutner.com> in 2016 and are released under the GPLv3+ license. -->
+    Modifications copyright © 2016 Soren Stoutner <soren@stoutner.com>.  The resulting image is released under the GPLv3+ license. -->
 
 <vector
     xmlns:android="http://schemas.android.com/apk/res/android"
