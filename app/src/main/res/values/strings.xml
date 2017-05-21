@@ -298,10 +298,10 @@
         <string name="search_custom_url">Search custom URL</string>
         <string name="custom_url">Custom URL</string>
     <string name="full_screen">Full Screen</string>
-        <string name="enable_full_screen_browsing_mode">Enable full screen browsing mode</string>
-        <string name="enable_full_screen_browsing_mode_summary">Double-tap to toggle full screen browsing mode.</string>
+        <string name="full_screen_browsing_mode">Full screen browsing mode</string>
+        <string name="full_screen_browsing_mode_summary">Double-tap to toggle full screen browsing mode.</string>
         <string name="hide_system_bars">Hide system bars</string>
-        <string name="hide_system_bars_summary">Hide the status and navigation bars in full screen browsing mode. This doesn\'t work well if the keyboard is displayed during full screen browsing mode.</string>
+        <string name="hide_system_bars_summary">Hide the status and navigation bars in full screen browsing mode. This doesn’t work well if the keyboard is displayed during full screen browsing mode.</string>
         <string name="translucent_navigation_bar">Translucent navigation bar</string>
         <string name="translucent_navigation_bar_summary">Make the navigation bar translucent in full screen browsing mode.</string>
     <string name="general">General</string>
@@ -328,7 +328,7 @@
             <item>200</item>
         </string-array>
         <string name="swipe_to_refresh_enabled">Swipe to refresh</string>
-        <string name="swipe_to_refresh_enabled_summary">Some websites don\'t work well if swipe to refresh is enabled.</string>
+        <string name="swipe_to_refresh_enabled_summary">Some websites don’t work well if swipe to refresh is enabled.</string>
         <string name="display_additional_app_bar_icons">Display additional app bar icons</string>
         <string name="display_additional_app_bar_icons_summary">Display icons for toggling cookies, DOM storage, and form data in the app bar if there is room.</string>
 

@@ -141,9 +141,9 @@
         android:title="@string/full_screen">
 
         <SwitchPreference
-            android:key="enable_full_screen_browsing_mode"
-            android:title="@string/enable_full_screen_browsing_mode"
-            android:summary="@string/enable_full_screen_browsing_mode_summary"
+            android:key="full_screen_browsing_mode"
+            android:title="@string/full_screen_browsing_mode"
+            android:summary="@string/full_screen_browsing_mode_summary"
             android:defaultValue="false" />
 
         <SwitchPreference
@@ -167,7 +167,8 @@
             android:key="homepage"
             android:title="@string/homepage"
             android:defaultValue="https://duckduckgo.com"
-            android:inputType="textUri" />
+            android:inputType="textUri"
+            android:icon="@drawable/home_enabled" />
 
         <ListPreference
             android:key="default_font_size"

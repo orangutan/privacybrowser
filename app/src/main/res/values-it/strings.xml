@@ -262,8 +262,8 @@
         <string name="search_custom_url">Ricerca personalizzata</string>
         <string name="custom_url">URL Personalizzata</string>
     <string name="full_screen">Schermo intero</string>
-        <string name="enable_full_screen_browsing_mode">Abilita la navigazione a schermo intero</string>
-        <string name="enable_full_screen_browsing_mode_summary">Toccare due volte per avviare la navigazione a schermo intero.</string>
+        <string name="full_screen_browsing_mode">Navigazione a schermo intero</string>
+        <string name="full_screen_browsing_mode_summary">Toccare due volte per avviare la navigazione a schermo intero.</string>
         <string name="hide_system_bars">Nascondi le barre di sistema</string>
         <string name="hide_system_bars_summary">Nasconde la barra di stato e la barra di navigazione durante la navigazione a schermo intero. Questa opzione non funziona perfettamente se si visualizza la tastiera durante la navigazione a schermo intero.</string>
         <string name="translucent_navigation_bar">Barra di navigazione trasparente</string>

@@ -2154,7 +2154,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         incognitoModeEnabled = sharedPreferences.getBoolean("incognito_mode", false);
         boolean doNotTrackEnabled = sharedPreferences.getBoolean("do_not_track", false);
         boolean proxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
-        fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("enable_full_screen_browsing_mode", false);
+        fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("full_screen_browsing_mode", false);
         hideSystemBarsOnFullscreen = sharedPreferences.getBoolean("hide_system_bars", false);
         translucentNavigationBarOnFullscreen = sharedPreferences.getBoolean("translucent_navigation_bar", true);
         swipeToRefreshEnabled = sharedPreferences.getBoolean("swipe_to_refresh", false);

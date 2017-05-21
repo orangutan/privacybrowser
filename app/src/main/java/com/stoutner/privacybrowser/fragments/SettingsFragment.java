@@ -60,16 +60,19 @@ public class SettingsFragment extends PreferenceFragment {
         final Preference torSearchCustomURLPreference = findPreference("tor_search_custom_url");
         final Preference searchPreference = findPreference("search");
         final Preference searchCustomURLPreference = findPreference("search_custom_url");
+        final Preference fullScreenBrowsingModePreference = findPreference("full_screen_browsing_mode");
         final Preference hideSystemBarsPreference = findPreference("hide_system_bars");
         final Preference translucentNavigationBarPreference = findPreference("translucent_navigation_bar");
         final Preference homepagePreference = findPreference("homepage");
         final Preference defaultFontSizePreference = findPreference("default_font_size");
+        final Preference swipeToRefreshPreference = findPreference("swipe_to_refresh");
+        final Preference displayAdditionalAppBarIconsPreference = findPreference("display_additional_app_bar_icons");
 
         // Set dependencies.
         domStoragePreference.setDependency("javascript_enabled");
         torHomepagePreference.setDependency("proxy_through_orbot");
         torSearchPreference.setDependency("proxy_through_orbot");
-        hideSystemBarsPreference.setDependency("enable_full_screen_browsing_mode");
+        hideSystemBarsPreference.setDependency("full_screen_browsing_mode");
 
         // Get strings from the preferences.
         String torSearchString = savedPreferences.getString("tor_search", "https://3g2upl4pq6kufc4m.onion/html/?q=");
@@ -80,6 +83,8 @@ public class SettingsFragment extends PreferenceFragment {
         boolean firstPartyCookiesEnabledBoolean = savedPreferences.getBoolean("first_party_cookies_enabled", false);
         boolean thirdPartyCookiesEnabledBoolean = savedPreferences.getBoolean("third_party_cookies_enabled", false);
         boolean proxyThroughOrbotBoolean = savedPreferences.getBoolean("proxy_through_orbot", false);
+        boolean fullScreenBrowsingModeBoolean = savedPreferences.getBoolean("full_screen_browsing_mode", false);
+        boolean hideSystemBarsBoolean = savedPreferences.getBoolean("hide_system_bars", false);
 
         // Only enable `thirdPartyCookiesPreference` if `firstPartyCookiesEnabledBoolean` is `true` and API >= 21.
         thirdPartyCookiesPreference.setEnabled(firstPartyCookiesEnabledBoolean && (Build.VERSION.SDK_INT >= 21));
@@ -147,8 +152,8 @@ public class SettingsFragment extends PreferenceFragment {
         searchCustomURLPreference.setEnabled(searchString.equals("Custom URL"));
 
 
-        // Enable `transparent_navigation_bar` only if full screen browsing mode is enabled and `hide_system_bars` is disabled.
-        translucentNavigationBarPreference.setEnabled(savedPreferences.getBoolean("enable_full_screen_browsing_mode", false) && !savedPreferences.getBoolean("hide_system_bars", false));
+        // Enable `translucentNavigationBarPreference` only if full screen browsing mode is enabled and `hide_system_bars` is disabled.
+        translucentNavigationBarPreference.setEnabled(fullScreenBrowsingModeBoolean && !hideSystemBarsBoolean);
 
 
         // Set the homepage URL as the summary text for the `Homepage` preference when the preference screen is loaded.  The default is `https://duckduckgo.com`.
@@ -236,6 +241,24 @@ public class SettingsFragment extends PreferenceFragment {
             proxyThroughOrbotPreference.setIcon(R.drawable.orbot_disabled);
         }
 
+        // Set the `torSearchPreference` and `torSearchCustomURLPreference` icons.
+        if (proxyThroughOrbotBoolean) {
+            // Set the `torHomepagePreference` and `torSearchPreference` icons.
+            torHomepagePreference.setIcon(R.drawable.home_enabled);
+            torSearchPreference.setIcon(R.drawable.search_enabled);
+
+            // Set the `torSearchCustomURLPreference` icon.
+            if (torSearchCustomURLPreference.isEnabled()) {
+                torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled);
+            } else {
+                torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_disabled);
+            }
+        } else {  // Proxy through Orbot is disabled.
+            torHomepagePreference.setIcon(R.drawable.home_ghosted);
+            torSearchPreference.setIcon(R.drawable.search_ghosted);
+            torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted);
+        }
+
         // Set the `searchCustomURLPreference` icon.
         if (searchCustomURLPreference.isEnabled()) {
             searchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled);
@@ -243,6 +266,47 @@ public class SettingsFragment extends PreferenceFragment {
             searchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted);
         }
 
+        // Set the full screen browsing mode icons.
+        if (fullScreenBrowsingModeBoolean) {
+            // Set the `fullScreenBrowsingModePreference` icon.
+            fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled);
+
+            if (hideSystemBarsBoolean) {
+                // Set `hideSystemBarsPreference` to use the enabled icon.
+                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_enabled);
+
+                // Set `translucentNavigationBarPreference` to use the ghosted icon.
+                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted);
+            } else {  // `hideSystemBarsBoolean` is false.
+                // Set `hideSystemBarsPreference` to use the disabled icon.
+                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_disabled);
+
+                // Set the correct icon for `translucentNavigationBarPreference`.
+                if (savedPreferences.getBoolean("translucent_navigation_bar", true)) {
+                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled);
+                } else {
+                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled);
+                }
+            }
+        } else {  // `fullScreenBrwosingModeBoolean` is false.
+            fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled);
+            hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_ghosted);
+            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted);
+        }
+
+        // Set the `swipeToRefreshPreference` icon.
+        if (savedPreferences.getBoolean("swipe_to_refresh", false)) {
+            swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled);
+        } else {
+            swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled);
+        }
+
+        // Set the `displayAdditionalAppBarIconsPreference` icon.
+        if (savedPreferences.getBoolean("display_additional_app_bar_icons", false)) {
+            displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled);
+        } else {
+            displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled);
+        }
 
         // Listen for preference changes.
         preferencesListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
@@ -401,11 +465,24 @@ public class SettingsFragment extends PreferenceFragment {
                         // Enable the Tor custom URL search option only if `currentProxyThroughOrbot` is true and the search is set to `Custom URL`.
                         torSearchCustomURLPreference.setEnabled(currentProxyThroughOrbot && currentTorSearchString.equals("Custom URL"));
 
-                        // Update the icon.
+                        // Update the icons.
                         if (currentProxyThroughOrbot) {
+                            // Set the `proxyThroughOrbotPreference`, `torHomepagePreference`, and `torSearchPreference` icons.
                             proxyThroughOrbotPreference.setIcon(R.drawable.orbot_enabled);
-                        } else {
+                            torHomepagePreference.setIcon(R.drawable.home_enabled);
+                            torSearchPreference.setIcon(R.drawable.search_enabled);
+
+                            // Set the `torSearchCustomURLPreference` icon.
+                            if (torSearchCustomURLPreference.isEnabled()) {
+                                torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled);
+                            } else {
+                                torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_disabled);
+                            }
+                        } else {  // Proxy through Orbot is disabled.
                             proxyThroughOrbotPreference.setIcon(R.drawable.orbot_disabled);
+                            torHomepagePreference.setIcon(R.drawable.home_ghosted);
+                            torSearchPreference.setIcon(R.drawable.search_ghosted);
+                            torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted);
                         }
                         break;
 
@@ -418,17 +495,22 @@ public class SettingsFragment extends PreferenceFragment {
                         // Get the present search string.
                         String presentTorSearchString = sharedPreferences.getString("tor_search", "https://3g2upl4pq6kufc4m.onion/html/?q=");
 
-                        // Set the summary text for `tor_search`.
+                        // Update the preferences.
                         if (presentTorSearchString.equals("Custom URL")) {
-                            // Use R.string.custom_url, which is translated, instead of the array value, which isn't.
+                            // Use `R.string.custom_url`, which is translated, as the summary instead of the array value, which isn't.
                             torSearchPreference.setSummary(R.string.custom_url);
+
+                            // Update `torSearchCustomURLPreference`.
+                            torSearchCustomURLPreference.setEnabled(true);
+                            torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled);
                         } else {
                             // Set the array value as the summary text.
                             torSearchPreference.setSummary(presentTorSearchString);
-                        }
 
-                        // Set the status of `torJavaScriptDisabledSearchCustomURLPreference`.
-                        torSearchCustomURLPreference.setEnabled(presentTorSearchString.equals("Custom URL"));
+                            // Update `torSearchCustomURLPreference`.
+                            torSearchCustomURLPreference.setEnabled(false);
+                            torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_disabled);
+                        }
                         break;
 
                     case "tor_search_custom_url":
@@ -463,14 +545,70 @@ public class SettingsFragment extends PreferenceFragment {
                         searchCustomURLPreference.setSummary(sharedPreferences.getString("search_custom_url", ""));
                         break;
 
-                    case "enable_full_screen_browsing_mode":
-                        // Enable `transparent_navigation_bar` only if full screen browsing mode is enabled and `hide_system_bars` is disabled.
-                        translucentNavigationBarPreference.setEnabled(sharedPreferences.getBoolean("enable_full_screen_browsing_mode", false) && !sharedPreferences.getBoolean("hide_system_bars", false));
+                    case "full_screen_browsing_mode":
+                        if (sharedPreferences.getBoolean("full_screen_browsing_mode", false)) {
+                            // Set `fullScreenBrowsingModePreference` to use the enabled icon.
+                            fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled);
+
+                            if (sharedPreferences.getBoolean("hide_system_bars", false)) {
+                                // Set `hideSystemBarsPreference` to use the enabled icon.
+                                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_enabled);
+
+                                // Update `translucentNavigationBarPreference`.
+                                translucentNavigationBarPreference.setEnabled(false);
+                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted);
+                            } else {  // `hide_system_bars` is false.
+                                // Set `hideSystemBarsPreference` to use the disabled icon.
+                                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_disabled);
+
+                                // Update `translucentNavigationBarPreference`.
+                                translucentNavigationBarPreference.setEnabled(true);
+                                if (sharedPreferences.getBoolean("translucent_navigation_bar", true)) {
+                                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled);
+                                } else {
+                                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled);
+                                }
+                            }
+                        } else {  // `full_screen_browsing_mode` is false.
+                            // Disable `translucentNavigationBarPreference`.
+                            translucentNavigationBarPreference.setEnabled(false);
+
+                            // Update the icons.
+                            fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled);
+                            hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_ghosted);
+                            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted);
+                        }
                         break;
 
                     case "hide_system_bars":
-                        // Enable `translucentNavigationBarPreference` if `hide_system_bars` is disabled.
-                        translucentNavigationBarPreference.setEnabled(!sharedPreferences.getBoolean("hide_system_bars", false));
+                        if (sharedPreferences.getBoolean("hide_system_bars", false)) {
+                            // Set `hideSystemBarsPreference` to use the enabled icon.
+                            hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_enabled);
+
+                            // Update `translucentNavigationBarPreference`.
+                            translucentNavigationBarPreference.setEnabled(false);
+                            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted);
+                        } else {  // `hide_system_bars` is false.
+                            // Set `hideSystemBarsPreference` to use the disabled icon.
+                            hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_disabled);
+
+                            // Update `translucentNavigationBarPreference`.
+                            translucentNavigationBarPreference.setEnabled(true);
+                            if (sharedPreferences.getBoolean("translucent_navigation_bar", true)) {
+                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled);
+                            } else {
+                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled);
+                            }
+                        }
+                        break;
+
+                    case "translucent_navigation_bar":
+                        // Update the icon.
+                        if (sharedPreferences.getBoolean("translucent_navigation_bar", true)) {
+                            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled);
+                        } else {
+                            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled);
+                        }
                         break;
 
                     case "homepage":
@@ -481,6 +619,24 @@ public class SettingsFragment extends PreferenceFragment {
                     case "default_font_size":
                         // Update the summary text of `default_font_size`.
                         defaultFontSizePreference.setSummary(sharedPreferences.getString("default_font_size", "100") + "%%");
+                        break;
+
+                    case "swipe_to_refresh":
+                        // Update the icon.
+                        if (sharedPreferences.getBoolean("swipe_to_refresh", false)) {
+                            swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled);
+                        } else {
+                            swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled);
+                        }
+                        break;
+
+                    case "display_additional_app_bar_icons":
+                        // Update the icon.
+                        if (sharedPreferences.getBoolean("display_additional_app_bar_icons", false)) {
+                            displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled);
+                        } else {
+                            displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled);
+                        }
                         break;
 
                     default:

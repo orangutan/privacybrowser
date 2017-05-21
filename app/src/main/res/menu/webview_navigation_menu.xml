@@ -23,7 +23,7 @@
     <item
         android:id="@+id/home"
         android:title="@string/home"
-        android:icon="@drawable/home"
+        android:icon="@drawable/home_enabled"
         android:orderInCategory="10" />
 
     <item
