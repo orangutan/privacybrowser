@@ -1277,10 +1277,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 }, 200);
                 return true;
 
-            case R.id.refresh:
-                mainWebView.reload();
-                return true;
-
             case R.id.print:
                 // Get a `PrintManager` instance.
                 PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
@@ -1298,6 +1294,10 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.create_shortcut));
 
                 //Everything else will be handled by `CreateHomeScreenShortcutDialog` and the associated listener below.
+                return true;
+
+            case R.id.refresh:
+                mainWebView.reload();
                 return true;
 
             default:
