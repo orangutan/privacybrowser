@@ -88,7 +88,7 @@
     <string name="url">URL</string>
     <string name="url_label">URL:</string>
 
-    <!-- MainWebView Navigation Drawer. -->
+    <!-- MainWebViewActivity Navigation Drawer. -->
     <string name="navigation_drawer">Navigation Drawer</string>
     <string name="navigation">Navigation</string>
     <string name="home">Home</string>
@@ -103,7 +103,7 @@
     <string name="about">About</string>
     <string name="clear_and_exit">Clear and Exit</string>
 
-    <!-- MainWebView Options Menu. -->
+    <!-- MainWebViewActivity Options Menu. -->
     <string name="javascript">JavaScript</string>
     <string name="first_party_cookies">First-Party Cookies</string>
     <string name="third_party_cookies">Third-Party Cookies</string>

@@ -86,7 +86,7 @@
     <string name="url">URL</string>
     <string name="url_label">URL:</string>
 
-    <!-- MainWebView Navigation Drawer. -->
+    <!-- MainWebViewActivity Navigation Drawer. -->
     <string name="navigation_drawer">Menù di navigazione</string>
     <string name="navigation">Navigazione</string>
     <string name="home">Home</string>
@@ -101,16 +101,16 @@
     <string name="about">Informazioni</string>
     <string name="clear_and_exit">Elimina dati ed esci</string>
 
-    <!-- MainWebView Options Menu. -->
+    <!-- MainWebViewActivity Options Menu. -->
     <string name="javascript">JavaScript</string>
     <string name="first_party_cookies">Cookies proprietari</string>
     <string name="third_party_cookies">Cookies di terze parti</string>
-    <string name="dom_storage">DOM Storage</string>
+    <string name="dom_storage">DOM storage</string>
     <string name="form_data">Dati dei moduli</string>
-    <string name="clear_cookies">Elimina Cookies</string>
-    <string name="clear_dom_storage">Elimina DOM Storage</string>
+    <string name="clear_cookies">Elimina cookies</string>
+    <string name="clear_dom_storage">Elimina DOM storage</string>
     <string name="clear_form_data">Elimina dati dei moduli</string>
-    <string name="font_size">Dimensione Font</string>
+    <string name="font_size">Dimensione font</string>
         <string name="twenty_five_percent">25%</string>
         <string name="fifty_percent">50%</string>
         <string name="seventy_five_percent">75%</string>
@@ -119,11 +119,12 @@
         <string name="one_hundred_fifty_percent">150%</string>
         <string name="one_hundred_seventy_five_percent">175%</string>
         <string name="two_hundred_percent">200%</string>
+    <string name="display_images">Mostra immagini</string>
     <string name="find_on_page">Cerca nella pagina</string>
     <string name="share">Condividi</string>
     <string name="add_to_home_screen">Aggiungi collegamento</string>
     <string name="print">Stampa</string>
-        <string name="privacy_browser_web_page">Pagina Web di Privacy Browser</string>
+        <string name="privacy_browser_web_page">Pagina web di Privacy Browser</string>
     <string name="refresh">Aggiorna</string>
 
     <!-- Context Menus. -->
@@ -191,6 +192,11 @@
     <string name="domain_settings_saved">Impostazioni Domini Salvate</string>
     <string name="domain_deleted">Dominio Eliminato</string>
     <string name="domain_name_instructions">è possibile anteporre *. a un dominio per includere tutti i sottodomini (es. *.stoutner.com)</string>
+    <string-array name="display_website_images_array">
+        <item>Impostazioni di default</item>
+        <item>Abilita Immagini</item>
+        <item>Disabilita Immagini</item>
+    </string-array>
 
     <!-- Guide. -->
     <string name="privacy_browser_guide">Guida di Privacy Browser</string>
@@ -285,6 +291,8 @@
         <string name="swipe_to_refresh_enabled_summary">Alcuni siti non funzionano correttamente se questa opzione è abilitata.</string>
         <string name="display_additional_app_bar_icons">Mostra icone addizionali nella barra dell\'applicazione</string>
         <string name="display_additional_app_bar_icons_summary">Mostra le icone per l\'abilitazione dei cookies, del DOM storage, e dei dati dei moduli nella barra dell\'applicazione se c\'è spazio disponibile.</string>
+        <string name="display_webpage_images">Mostra immagini delle pagine web</string>
+        <string name="display_webpage_images_summary">Disabilita per ridurre il consumo di dati.</string>
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Il Proxy con Orbot funziona solo se è installato Orbot.</string>

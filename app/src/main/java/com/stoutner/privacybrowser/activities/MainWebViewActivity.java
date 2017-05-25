@@ -205,7 +205,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     private boolean adBlockerEnabled;
 
     // `privacyBrowserRuntime` is used in `onCreate()` and `applyAppSettings()`.
-    Runtime privacyBrowserRuntime;
+    private Runtime privacyBrowserRuntime;
 
     // `incognitoModeEnabled` is used in `onCreate()` and `applyAppSettings()`.
     private boolean incognitoModeEnabled;
@@ -236,6 +236,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
     // `onTheFlyDisplayImagesSet` is used in `applyDomainSettings()` and `setDisplayWebpageImages()`.
     private boolean onTheFlyDisplayImagesSet;
+
+    // `loadingNewIntentBoolean` is used in `onNewIntent()` and `onRestart()`.
+    private boolean loadingNewIntentBoolean;
 
     // `waitingForOrbotData` is used in `onCreate()` and `applyAppSettings()`.
     private String waitingForOrbotHTMLString;
@@ -907,6 +910,32 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        // Set `loadingNewIntentBoolean`.
+        loadingNewIntentBoolean = true;
+
+        // Sets the new intent as the activity intent, so that any future `getIntent()`s pick up this one instead of creating a new activity.
+        setIntent(intent);
+
+        if (intent.getData() != null) {
+            // Get the intent data and convert it to a string.
+            final Uri intentUriData = intent.getData();
+            formattedUrlString = intentUriData.toString();
+        }
+
+        // Close the navigation drawer if it is open.
+        if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+
+        // Load the website.
+        loadUrl(formattedUrlString);
+
+        // Clear the keyboard if displayed and remove the focus on the urlTextBar if it has it.
+        mainWebView.requestFocus();
+    }
+
+    @Override
     public void onRestart() {
         super.onRestart();
 
@@ -919,8 +948,14 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Set the display webpage images mode.
         setDisplayWebpageImages();
 
-        // Reload the webpage to remove images if `setDisplayWebpageImages` has turned them off.
-        mainWebView.reload();
+        // Only reload `mainWebView` if not loading a new intent.
+        if (!loadingNewIntentBoolean) {
+            // Reload the webpage to remove images if `setDisplayWebpageImages` has turned them off.
+            mainWebView.reload();
+        } else {
+            // Reset `loadingNewIntentBoolean`.
+            loadingNewIntentBoolean = false;
+        }
     }
 
     // `onResume()` runs after `onStart()`, which runs after `onCreate()` and `onRestart()`.
@@ -954,29 +989,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         }
 
         super.onPause();
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        // Sets the new intent as the activity intent, so that any future `getIntent()`s pick up this one instead of creating a new activity.
-        setIntent(intent);
-
-        if (intent.getData() != null) {
-            // Get the intent data and convert it to a string.
-            final Uri intentUriData = intent.getData();
-            formattedUrlString = intentUriData.toString();
-        }
-
-        // Close the navigation drawer if it is open.
-        if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        }
-
-        // Load the website.
-        loadUrl(formattedUrlString);
-
-        // Clear the keyboard if displayed and remove the focus on the urlTextBar if it has it.
-        mainWebView.requestFocus();
     }
 
     @Override

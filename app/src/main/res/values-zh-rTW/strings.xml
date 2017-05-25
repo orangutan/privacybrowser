@@ -88,7 +88,7 @@
     <string name="url">URL</string>
     <string name="url_label">URL:</string>
 
-    <!-- MainWebView Navigation Drawer. -->
+    <!-- MainWebViewActivity Navigation Drawer. -->
     <string name="navigation_drawer">Navigation Drawer</string>
     <string name="navigation">Navigation</string>
     <string name="home">Home</string>
@@ -103,7 +103,7 @@
     <string name="about">About</string>
     <string name="clear_and_exit">Clear and Exit</string>
 
-    <!-- MainWebView Options Menu. -->
+    <!-- MainWebViewActivity Options Menu. -->
     <string name="javascript">JavaScript</string>
     <string name="first_party_cookies">First-Party Cookies</string>
     <string name="third_party_cookies">Third-Party Cookies</string>
@@ -121,6 +121,7 @@
         <string name="one_hundred_fifty_percent">150%</string>
         <string name="one_hundred_seventy_five_percent">175%</string>
         <string name="two_hundred_percent">200%</string>
+    <string name="display_images">Display Images</string>
     <string name="find_on_page">Find on Page</string>
     <string name="share">Share</string>
     <string name="add_to_home_screen">Add to Home Screen</string>
@@ -193,6 +194,11 @@
     <string name="domain_settings_saved">Domain settings saved</string>
     <string name="domain_deleted">Domain deleted</string>
     <string name="domain_name_instructions">*. may be prepended to a domain to include all subdomains (eg. *.stoutner.com)</string>
+    <string-array name="display_website_images_array">
+        <item>System default</item>
+        <item>Images enabled</item>
+        <item>Images disabled</item>
+    </string-array>
 
     <!-- Guide. -->
     <string name="privacy_browser_guide">Privacy Browser Guide</string>
@@ -287,6 +293,8 @@
         <string name="swipe_to_refresh_enabled_summary">Some websites don\'t work well if swipe to refresh is enabled.</string>
         <string name="display_additional_app_bar_icons">Display additional app bar icons</string>
         <string name="display_additional_app_bar_icons_summary">Display icons for toggling cookies, DOM storage, and form data in the app bar if there is room.</string>
+        <string name="display_webpage_images">Display webpage images</string>
+        <string name="display_webpage_images_summary">Disable to conserve bandwidth.</string>
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Orbot proxy will not work unless Orbot is installed.</string>
