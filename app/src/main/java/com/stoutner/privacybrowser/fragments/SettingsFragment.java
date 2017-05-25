@@ -67,6 +67,7 @@ public class SettingsFragment extends PreferenceFragment {
         final Preference defaultFontSizePreference = findPreference("default_font_size");
         final Preference swipeToRefreshPreference = findPreference("swipe_to_refresh");
         final Preference displayAdditionalAppBarIconsPreference = findPreference("display_additional_app_bar_icons");
+        final Preference displayWebpageImagesPreference = findPreference("display_webpage_images");
 
         // Set dependencies.
         domStoragePreference.setDependency("javascript_enabled");
@@ -288,7 +289,7 @@ public class SettingsFragment extends PreferenceFragment {
                     translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled);
                 }
             }
-        } else {  // `fullScreenBrwosingModeBoolean` is false.
+        } else {  // `fullScreenBrowsingModeBoolean` is false.
             fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled);
             hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_ghosted);
             translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted);
@@ -307,6 +308,14 @@ public class SettingsFragment extends PreferenceFragment {
         } else {
             displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled);
         }
+
+        // Set the `displayWebpageImagesPreference` icon.
+        if (savedPreferences.getBoolean("display_webpage_images", true)) {
+            displayWebpageImagesPreference.setIcon(R.drawable.images_enabled);
+        } else {
+            displayWebpageImagesPreference.setIcon(R.drawable.images_disabled);
+        }
+
 
         // Listen for preference changes.
         preferencesListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
@@ -636,6 +645,15 @@ public class SettingsFragment extends PreferenceFragment {
                             displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled);
                         } else {
                             displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled);
+                        }
+                        break;
+
+                    case "display_webpage_images":
+                        // Update the icon.
+                        if (sharedPreferences.getBoolean("display_webpage_images", true)) {
+                            displayWebpageImagesPreference.setIcon(R.drawable.images_enabled);
+                        } else {
+                            displayWebpageImagesPreference.setIcon(R.drawable.images_disabled);
                         }
                         break;
 

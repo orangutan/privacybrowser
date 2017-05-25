@@ -41,6 +41,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 
 public class DomainSettingsFragment extends Fragment {
@@ -85,6 +86,8 @@ public class DomainSettingsFragment extends Fragment {
         final TextView userAgentTextView = (TextView) domainSettingsView.findViewById(R.id.domain_settings_user_agent_textview);
         final EditText customUserAgentEditText = (EditText) domainSettingsView.findViewById(R.id.domain_settings_custom_user_agent_edittext);
         Spinner fontSizeSpinner = (Spinner) domainSettingsView.findViewById(R.id.domain_settings_font_size_spinner);
+        final ImageView displayWebpageImagesImageView = (ImageView) domainSettingsView.findViewById(R.id.domain_settings_display_webpage_images_imageview);
+        Spinner displayWebpageImagesSpinner = (Spinner) domainSettingsView.findViewById(R.id.domain_settings_display_webpage_images_spinner);
 
         // Initialize the database handler.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
         // The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
@@ -103,20 +106,24 @@ public class DomainSettingsFragment extends Fragment {
         int formDataEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA));
         final String currentUserAgentString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
         int fontSizeInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
+        int displayImagesInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
 
         // Create `ArrayAdapters` for the `Spinners`and their `entry values`.
         ArrayAdapter<CharSequence> userAgentArrayAdapter = ArrayAdapter.createFromResource(context, R.array.user_agent_entries, android.R.layout.simple_spinner_item);
         final ArrayAdapter<CharSequence> userAgentEntryValuesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.user_agent_entry_values, android.R.layout.simple_spinner_item);
         ArrayAdapter<CharSequence> fontSizeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.default_font_size_entries, android.R.layout.simple_spinner_item);
         ArrayAdapter<CharSequence> fontSizeEntryValuesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.default_font_size_entry_values, android.R.layout.simple_spinner_item);
+        final ArrayAdapter<CharSequence> displayImagesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.display_website_images_array, android.R.layout.simple_spinner_item);
 
         // Set the drop down style for the `ArrayAdapters`.
         userAgentArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         fontSizeArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        displayImagesArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         // Set the `ArrayAdapters` for the `Spinners`.
         userAgentSpinner.setAdapter(userAgentArrayAdapter);
         fontSizeSpinner.setAdapter(fontSizeArrayAdapter);
+        displayWebpageImagesSpinner.setAdapter(displayImagesArrayAdapter);
 
         // Set the domain name from the the database cursor.
         domainNameEditText.setText(domainNameString);
@@ -179,16 +186,16 @@ public class DomainSettingsFragment extends Fragment {
                 domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_disabled));
             }
         } else {  // JavaScript is disabled.
-            // Set the status of DOM storage, but disable it.
+            // Set the checked status of DOM storage.
             if (domStorageEnabledInt == 1) {  // DOM storage is enabled but JavaScript is disabled.
                 domStorageEnabledSwitch.setChecked(true);
-                domStorageEnabledSwitch.setEnabled(false);
-                domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_ghosted));
             } else {  // Both JavaScript and DOM storage are disabled.
                 domStorageEnabledSwitch.setChecked(false);
-                domStorageEnabledSwitch.setEnabled(false);
-                domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_ghosted));
             }
+
+            // Disable `domStorageEnabledSwitch` and set the icon to be ghosted.
+            domStorageEnabledSwitch.setEnabled(false);
+            domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_ghosted));
         }
 
         // Set the form data status.  Once minimum API >= 21 we can use a selector as the tint mode instead of specifying different icons.
@@ -245,6 +252,29 @@ public class DomainSettingsFragment extends Fragment {
         // Set the selected font size.
         int fontSizeArrayPosition = fontSizeEntryValuesArrayAdapter.getPosition(String.valueOf(fontSizeInt));
         fontSizeSpinner.setSelection(fontSizeArrayPosition);
+
+        // Set the selected display website images mode.
+        displayWebpageImagesSpinner.setSelection(displayImagesInt);
+
+        // Set the display website images icon.
+        switch (displayImagesInt) {
+            case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT:
+                if (MainWebViewActivity.displayWebpageImagesBoolean) {
+                    displayWebpageImagesImageView.setImageDrawable(getResources().getDrawable(R.drawable.images_enabled));
+                } else {
+                    displayWebpageImagesImageView.setImageDrawable(getResources().getDrawable(R.drawable.images_disabled));
+                }
+                break;
+
+            case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_ENABLED:
+                displayWebpageImagesImageView.setImageDrawable(getResources().getDrawable(R.drawable.images_enabled));
+                break;
+
+            case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_DISABLED:
+                displayWebpageImagesImageView.setImageDrawable(getResources().getDrawable(R.drawable.images_disabled));
+                break;
+        }
+
 
         // Set the `javaScriptEnabledSwitch` `OnCheckedChangeListener()`.
         javaScriptEnabledSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -379,6 +409,36 @@ public class DomainSettingsFragment extends Fragment {
 
                         // Hide `customUserAgentEditText`.
                         customUserAgentEditText.setVisibility(View.GONE);
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing.
+            }
+        });
+
+        // Set the `displayImagesSwitch` `onItemClickListener()`.
+        displayWebpageImagesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Update the icon.
+                switch (position) {
+                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT:
+                        if (MainWebViewActivity.displayWebpageImagesBoolean) {
+                            displayWebpageImagesImageView.setImageDrawable(getResources().getDrawable(R.drawable.images_enabled));
+                        } else {
+                            displayWebpageImagesImageView.setImageDrawable(getResources().getDrawable(R.drawable.images_disabled));
+                        }
+                        break;
+
+                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_ENABLED:
+                        displayWebpageImagesImageView.setImageDrawable(getResources().getDrawable(R.drawable.images_enabled));
+                        break;
+
+                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_DISABLED:
+                        displayWebpageImagesImageView.setImageDrawable(getResources().getDrawable(R.drawable.images_disabled));
                         break;
                 }
             }

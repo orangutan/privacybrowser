@@ -187,20 +187,22 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                 Spinner userAgentSpinner = (Spinner) findViewById(R.id.domain_settings_user_agent_spinner);
                 EditText customUserAgentEditText = (EditText) findViewById(R.id.domain_settings_custom_user_agent_edittext);
                 Spinner fontSizeSpinner = (Spinner) findViewById(R.id.domain_settings_font_size_spinner);
+                Spinner displayWebpageImagesSpinner = (Spinner) findViewById(R.id.domain_settings_display_webpage_images_spinner);
 
                 // Extract the data for the domain settings.
                 String domainNameString = domainNameEditText.getText().toString();
-                boolean javaScriptEnabled = javaScriptEnabledSwitch.isChecked();
-                boolean firstPartyCookiesEnabled = firstPartyCookiesEnabledSwitch.isChecked();
-                boolean thirdPartyCookiesEnabled = thirdPartyCookiesEnabledSwitch.isChecked();
-                boolean domStorageEnabledEnabled = domStorageEnabledSwitch.isChecked();
-                boolean formDataEnabled = formDataEnabledSwitch.isChecked();
-                int userAgentPosition = userAgentSpinner.getSelectedItemPosition();
-                int fontSizePosition = fontSizeSpinner.getSelectedItemPosition();
+                boolean javaScriptEnabledBoolean = javaScriptEnabledSwitch.isChecked();
+                boolean firstPartyCookiesEnabledBoolean = firstPartyCookiesEnabledSwitch.isChecked();
+                boolean thirdPartyCookiesEnabledBoolean = thirdPartyCookiesEnabledSwitch.isChecked();
+                boolean domStorageEnabledEnabledBoolean  = domStorageEnabledSwitch.isChecked();
+                boolean formDataEnabledBoolean = formDataEnabledSwitch.isChecked();
+                int userAgentPositionInt = userAgentSpinner.getSelectedItemPosition();
+                int fontSizePositionInt = fontSizeSpinner.getSelectedItemPosition();
+                int displayWebpageImagesInt = displayWebpageImagesSpinner.getSelectedItemPosition();
 
                 // Get the data for the `Spinners` from the entry values string arrays.
-                String userAgentString = getResources().getStringArray(R.array.user_agent_entry_values)[userAgentPosition];
-                int fontSizeInt = Integer.parseInt(getResources().getStringArray(R.array.default_font_size_entry_values)[fontSizePosition]);
+                String userAgentString = getResources().getStringArray(R.array.user_agent_entry_values)[userAgentPositionInt];
+                int fontSizeInt = Integer.parseInt(getResources().getStringArray(R.array.default_font_size_entry_values)[fontSizePositionInt]);
 
                 // Check to see if we are using a custom user agent.
                 if (userAgentString.equals("Custom user agent")) {
@@ -209,7 +211,8 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                 }
 
                 // Save the domain settings.
-                domainsDatabaseHelper.saveDomain(databaseId, domainNameString, javaScriptEnabled, firstPartyCookiesEnabled, thirdPartyCookiesEnabled, domStorageEnabledEnabled, formDataEnabled, userAgentString, fontSizeInt);
+                domainsDatabaseHelper.saveDomain(databaseId, domainNameString, javaScriptEnabledBoolean, firstPartyCookiesEnabledBoolean, thirdPartyCookiesEnabledBoolean, domStorageEnabledEnabledBoolean, formDataEnabledBoolean, userAgentString, fontSizeInt,
+                        displayWebpageImagesInt);
 
                 // Display a `Snackbar`.
                 Snackbar.make(domainsListView, R.string.domain_settings_saved, Snackbar.LENGTH_SHORT).show();

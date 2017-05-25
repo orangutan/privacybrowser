@@ -40,7 +40,7 @@
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical" >
 
             <LinearLayout
                 android:layout_height="wrap_content"
@@ -94,7 +94,6 @@
                 android:layout_width="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/privacy_mode"
                 tools:ignore="contentDescription" />
 
             <Switch
@@ -121,7 +120,6 @@
                 android:layout_marginTop="1dp"
                 android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/cookies_disabled"
                 tools:ignore="contentDescription" />
 
             <Switch
@@ -149,7 +147,6 @@
                 android:layout_marginTop="1dp"
                 android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/cookies_disabled"
                 tools:ignore="contentDescription" />
 
             <Switch
@@ -176,7 +173,6 @@
                 android:layout_marginTop="1dp"
                 android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/dom_storage_disabled"
                 tools:ignore="contentDescription" />
 
             <Switch
@@ -194,7 +190,7 @@
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal">
+            android:orientation="horizontal" >
 
             <ImageView
                 android:id="@+id/domain_settings_form_data_imageview"
@@ -203,7 +199,6 @@
                 android:layout_marginTop="1dp"
                 android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/form_data_disabled"
                 tools:ignore="contentDescription" />
 
             <Switch
@@ -228,7 +223,7 @@
             <LinearLayout
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:orientation="horizontal">
+                android:orientation="horizontal" >
 
                 <ImageView
                     android:layout_height="wrap_content"
@@ -243,7 +238,7 @@
                     android:id="@+id/domain_settings_user_agent_spinner"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
-                    android:labelFor="@+id/domain_settings_custom_user_agent_edittext"/>
+                    android:labelFor="@+id/domain_settings_custom_user_agent_edittext" />
             </LinearLayout>
 
             <TextView
@@ -252,7 +247,7 @@
                 android:layout_width="match_parent"
                 android:layout_marginStart="43dp"
                 android:layout_marginEnd="36dp"
-                android:textSize="13sp"/>
+                android:textSize="13sp" />
 
             <EditText
                 android:id="@id/domain_settings_custom_user_agent_edittext"
@@ -283,7 +278,30 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginTop="14dp"
-                android:layout_marginBottom="14dp"/>
+                android:layout_marginBottom="14dp" />
+        </LinearLayout>
+
+        <!-- Display Images. -->
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/domain_settings_display_webpage_images_imageview"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="1dp"
+                android:layout_marginEnd="10dp"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@string/display_webpage_images" />
+
+            <Spinner
+                android:id="@+id/domain_settings_display_webpage_images_spinner"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="14dp" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

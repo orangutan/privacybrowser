@@ -138,6 +138,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `webViewTitle` is public static so it can be accessed from `CreateBookmarkDialog` and `CreateHomeScreenShortcutDialog`.  It is also used in `onCreate()`.
     public static String webViewTitle;
 
+    // `displayWebpageImagesBoolean` is public static so it can be accessed from `DomainSettingsFragment`.  It is also used in `applyAppSettings` and `applyDomainSettings()`.
+    public static boolean displayWebpageImagesBoolean;
+
 
     // `navigatingHistory` is used in `onCreate()`, `onNavigationItemSelected()`, and `applyDomainSettings()`.
     private boolean navigatingHistory;
@@ -151,7 +154,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `rootCoordinatorLayout` is used in `onCreate()` and `applyAppSettings()`.
     private CoordinatorLayout rootCoordinatorLayout;
 
-    // 'mainWebView' is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`, `findNextOnPage()`, `closeFindOnPage()`, and `loadUrlFromTextBox()`.
+    // `mainWebView` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`, `findNextOnPage()`, `closeFindOnPage()`, `loadUrlFromTextBox()`
+    // and `setDisplayWebpageImages()`.
     private WebView mainWebView;
 
     // `fullScreenVideoFrameLayout` is used in `onCreate()` and `onConfigurationChanged()`.
@@ -218,11 +222,20 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `translucentNavigationBarOnFullscreen` is used in `onCreate()` and `applyAppSettings()`.
     private boolean translucentNavigationBarOnFullscreen;
 
-    // `currentDomainName` is used in `onCreate(), `onNavigationItemSelected()`, and `applyDomainSettings()`.
+    // `currentDomainName` is used in `onCreate()`, `onNavigationItemSelected()`, and `applyDomainSettings()`.
     private String currentDomainName;
 
     // `waitingForOrbot` is used in `onCreate()` and `applyAppSettings()`.
     private boolean waitingForOrbot;
+
+    // `domainSettingsApplied` is used in `applyDomainSettings()` and `setDisplayWebpageImages()`.
+    private boolean domainSettingsApplied;
+
+    // `displayWebpageImagesInt` is used in `applyDomainSettings()` and `setDisplayWebpageImages()`.
+    private int displayWebpageImagesInt;
+
+    // `onTheFlyDisplayImagesSet` is used in `applyDomainSettings()` and `setDisplayWebpageImages()`.
+    private boolean onTheFlyDisplayImagesSet;
 
     // `waitingForOrbotData` is used in `onCreate()` and `applyAppSettings()`.
     private String waitingForOrbotHTMLString;
@@ -893,6 +906,55 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         }
     }
 
+    @Override
+    public void onRestart() {
+        super.onRestart();
+
+        // Apply the app settings, which may have been changed in `SettingsActivity`.
+        applyAppSettings();
+
+        // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
+        updatePrivacyIcons(true);
+
+        // Set the display webpage images mode.
+        setDisplayWebpageImages();
+
+        // Reload the webpage to remove images if `setDisplayWebpageImages` has turned them off.
+        mainWebView.reload();
+    }
+
+    // `onResume()` runs after `onStart()`, which runs after `onCreate()` and `onRestart()`.
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Resume JavaScript (if enabled).
+        mainWebView.resumeTimers();
+
+        // Resume `mainWebView`.
+        mainWebView.onResume();
+
+        // Resume the adView for the free flavor.
+        if (BuildConfig.FLAVOR.contentEquals("free")) {
+            BannerAd.resumeAd(adView);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        // Pause `mainWebView`.
+        mainWebView.onPause();
+
+        // Stop all JavaScript.
+        mainWebView.pauseTimers();
+
+        // Pause the adView or it will continue to consume resources in the background on the free flavor.
+        if (BuildConfig.FLAVOR.contentEquals("free")) {
+            BannerAd.pauseAd(adView);
+        }
+
+        super.onPause();
+    }
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -929,26 +991,26 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         updatePrivacyIcons(false);
 
         // Get handles for the menu items.
-        MenuItem toggleFirstPartyCookies = menu.findItem(R.id.toggleFirstPartyCookies);
-        MenuItem toggleThirdPartyCookies = menu.findItem(R.id.toggleThirdPartyCookies);
-        MenuItem toggleDomStorage = menu.findItem(R.id.toggleDomStorage);
-        MenuItem toggleSaveFormData = menu.findItem(R.id.toggleSaveFormData);
+        MenuItem toggleFirstPartyCookiesMenuItem = menu.findItem(R.id.toggle_first_party_cookies);
+        MenuItem toggleThirdPartyCookiesMenuItem = menu.findItem(R.id.toggle_third_party_cookies);
+        MenuItem toggleDomStorageMenuItem = menu.findItem(R.id.toggle_dom_storage);
+        MenuItem toggleSaveFormDataMenuItem = menu.findItem(R.id.toggle_save_form_data);
 
         // Only display third-party cookies if SDK >= 21
-        toggleThirdPartyCookies.setVisible(Build.VERSION.SDK_INT >= 21);
+        toggleThirdPartyCookiesMenuItem.setVisible(Build.VERSION.SDK_INT >= 21);
 
         // Get the shared preference values.  `this` references the current context.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Set the status of the additional app bar icons.  The default is `false`.
         if (sharedPreferences.getBoolean("display_additional_app_bar_icons", false)) {
-            toggleFirstPartyCookies.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-            toggleDomStorage.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-            toggleSaveFormData.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            toggleFirstPartyCookiesMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            toggleDomStorageMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            toggleSaveFormDataMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         } else { //Do not display the additional icons.
-            toggleFirstPartyCookies.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-            toggleDomStorage.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-            toggleSaveFormData.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            toggleFirstPartyCookiesMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            toggleDomStorageMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            toggleSaveFormDataMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
 
         return true;
@@ -957,35 +1019,35 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // Get handles for the menu items.
-        MenuItem toggleFirstPartyCookies = menu.findItem(R.id.toggleFirstPartyCookies);
-        MenuItem toggleThirdPartyCookies = menu.findItem(R.id.toggleThirdPartyCookies);
-        MenuItem toggleDomStorage = menu.findItem(R.id.toggleDomStorage);
-        MenuItem toggleSaveFormData = menu.findItem(R.id.toggleSaveFormData);
-        MenuItem clearCookies = menu.findItem(R.id.clearCookies);
-        MenuItem clearFormData = menu.findItem(R.id.clearFormData);
+        MenuItem toggleFirstPartyCookiesMenuItem = menu.findItem(R.id.toggle_first_party_cookies);
+        MenuItem toggleThirdPartyCookiesMenuItem = menu.findItem(R.id.toggle_third_party_cookies);
+        MenuItem toggleDomStorageMenuItem = menu.findItem(R.id.toggle_dom_storage);
+        MenuItem toggleSaveFormDataMenuItem = menu.findItem(R.id.toggle_save_form_data);
+        MenuItem clearCookiesMenuItem = menu.findItem(R.id.clear_cookies);
+        MenuItem clearFormDataMenuItem = menu.findItem(R.id.clear_form_data);
+        MenuItem fontSizeMenuItem = menu.findItem(R.id.font_size);
+        MenuItem displayImagesMenuItem = menu.findItem(R.id.display_images);
         MenuItem refreshMenuItem = menu.findItem(R.id.refresh);
 
         // Set the status of the menu item checkboxes.
-        toggleFirstPartyCookies.setChecked(firstPartyCookiesEnabled);
-        toggleThirdPartyCookies.setChecked(thirdPartyCookiesEnabled);
-        toggleDomStorage.setChecked(domStorageEnabled);
-        toggleSaveFormData.setChecked(saveFormDataEnabled);
+        toggleFirstPartyCookiesMenuItem.setChecked(firstPartyCookiesEnabled);
+        toggleThirdPartyCookiesMenuItem.setChecked(thirdPartyCookiesEnabled);
+        toggleDomStorageMenuItem.setChecked(domStorageEnabled);
+        toggleSaveFormDataMenuItem.setChecked(saveFormDataEnabled);
+        displayImagesMenuItem.setChecked(mainWebView.getSettings().getLoadsImagesAutomatically());
 
         // Enable third-party cookies if first-party cookies are enabled.
-        toggleThirdPartyCookies.setEnabled(firstPartyCookiesEnabled);
+        toggleThirdPartyCookiesMenuItem.setEnabled(firstPartyCookiesEnabled);
 
         // Enable DOM Storage if JavaScript is enabled.
-        toggleDomStorage.setEnabled(javaScriptEnabled);
+        toggleDomStorageMenuItem.setEnabled(javaScriptEnabled);
 
         // Enable Clear Cookies if there are any.
-        clearCookies.setEnabled(cookieManager.hasCookies());
+        clearCookiesMenuItem.setEnabled(cookieManager.hasCookies());
 
         // Enable Clear Form Data is there is any.
         WebViewDatabase mainWebViewDatabase = WebViewDatabase.getInstance(this);
-        clearFormData.setEnabled(mainWebViewDatabase.hasFormData());
-
-        // Only show `Refresh` if `swipeToRefresh` is disabled.
-        refreshMenuItem.setVisible(!swipeToRefreshEnabled);
+        clearFormDataMenuItem.setEnabled(mainWebViewDatabase.hasFormData());
 
         // Initialize font size variables.
         int fontSize = mainWebView.getSettings().getTextZoom();
@@ -996,54 +1058,56 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         switch (fontSize) {
             case 25:
                 fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.twenty_five_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeTwentyFivePercent);
+                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_twenty_five_percent);
                 break;
 
             case 50:
                 fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.fifty_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeFiftyPercent);
+                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_fifty_percent);
                 break;
 
             case 75:
                 fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.seventy_five_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeSeventyFivePercent);
+                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_seventy_five_percent);
                 break;
 
             case 100:
                 fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.one_hundred_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeOneHundredPercent);
+                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_one_hundred_percent);
                 break;
 
             case 125:
                 fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.one_hundred_twenty_five_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeOneHundredTwentyFivePercent);
+                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_one_hundred_twenty_five_percent);
                 break;
 
             case 150:
                 fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.one_hundred_fifty_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeOneHundredFiftyPercent);
+                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_one_hundred_fifty_percent);
                 break;
 
             case 175:
                 fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.one_hundred_seventy_five_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeOneHundredSeventyFivePercent);
+                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_one_hundred_seventy_five_percent);
                 break;
 
             case 200:
                 fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.two_hundred_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeTwoHundredPercent);
+                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_two_hundred_percent);
                 break;
 
             default:
                 fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.one_hundred_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.fontSizeOneHundredPercent);
+                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_one_hundred_percent);
                 break;
         }
 
         // Set the font size title and select the current size menu item.
-        MenuItem fontSizeMenuItem = menu.findItem(R.id.fontSize);
         fontSizeMenuItem.setTitle(fontSizeTitle);
         selectedFontSizeMenuItem.setChecked(true);
+
+        // Only show `Refresh` if `swipeToRefresh` is disabled.
+        refreshMenuItem.setVisible(!swipeToRefreshEnabled);
 
         // Run all the other default commands.
         super.onPrepareOptionsMenu(menu);
@@ -1062,7 +1126,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
         // Set the commands that relate to the menu entries.
         switch (menuItemId) {
-            case R.id.toggleJavaScript:
+            case R.id.toggle_javascript:
                 // Switch the status of javaScriptEnabled.
                 javaScriptEnabled = !javaScriptEnabled;
 
@@ -1085,7 +1149,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 mainWebView.reload();
                 return true;
 
-            case R.id.toggleFirstPartyCookies:
+            case R.id.toggle_first_party_cookies:
                 // Switch the status of firstPartyCookiesEnabled.
                 firstPartyCookiesEnabled = !firstPartyCookiesEnabled;
 
@@ -1111,7 +1175,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 mainWebView.reload();
                 return true;
 
-            case R.id.toggleThirdPartyCookies:
+            case R.id.toggle_third_party_cookies:
                 if (Build.VERSION.SDK_INT >= 21) {
                     // Switch the status of thirdPartyCookiesEnabled.
                     thirdPartyCookiesEnabled = !thirdPartyCookiesEnabled;
@@ -1134,7 +1198,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 } // Else do nothing because SDK < 21.
                 return true;
 
-            case R.id.toggleDomStorage:
+            case R.id.toggle_dom_storage:
                 // Switch the status of domStorageEnabled.
                 domStorageEnabled = !domStorageEnabled;
 
@@ -1158,7 +1222,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 mainWebView.reload();
                 return true;
 
-            case R.id.toggleSaveFormData:
+            case R.id.toggle_save_form_data:
                 // Switch the status of saveFormDataEnabled.
                 saveFormDataEnabled = !saveFormDataEnabled;
 
@@ -1182,7 +1246,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 mainWebView.reload();
                 return true;
 
-            case R.id.clearCookies:
+            case R.id.clear_cookies:
                 if (Build.VERSION.SDK_INT < 21) {
                     cookieManager.removeAllCookie();
                 } else {
@@ -1191,48 +1255,60 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 Snackbar.make(findViewById(R.id.main_webview), R.string.cookies_deleted, Snackbar.LENGTH_SHORT).show();
                 return true;
 
-            case R.id.clearDomStorage:
+            case R.id.clear_dom_storage:
                 WebStorage webStorage = WebStorage.getInstance();
                 webStorage.deleteAllData();
                 Snackbar.make(findViewById(R.id.main_webview), R.string.dom_storage_deleted, Snackbar.LENGTH_SHORT).show();
                 return true;
 
-            case R.id.clearFormData:
+            case R.id.clear_form_data:
                 WebViewDatabase mainWebViewDatabase = WebViewDatabase.getInstance(this);
                 mainWebViewDatabase.clearFormData();
                 Snackbar.make(findViewById(R.id.main_webview), R.string.form_data_deleted, Snackbar.LENGTH_SHORT).show();
                 return true;
 
-            case R.id.fontSizeTwentyFivePercent:
+            case R.id.font_size_twenty_five_percent:
                 mainWebView.getSettings().setTextZoom(25);
                 return true;
 
-            case R.id.fontSizeFiftyPercent:
+            case R.id.font_size_fifty_percent:
                 mainWebView.getSettings().setTextZoom(50);
                 return true;
 
-            case R.id.fontSizeSeventyFivePercent:
+            case R.id.font_size_seventy_five_percent:
                 mainWebView.getSettings().setTextZoom(75);
                 return true;
 
-            case R.id.fontSizeOneHundredPercent:
+            case R.id.font_size_one_hundred_percent:
                 mainWebView.getSettings().setTextZoom(100);
                 return true;
 
-            case R.id.fontSizeOneHundredTwentyFivePercent:
+            case R.id.font_size_one_hundred_twenty_five_percent:
                 mainWebView.getSettings().setTextZoom(125);
                 return true;
 
-            case R.id.fontSizeOneHundredFiftyPercent:
+            case R.id.font_size_one_hundred_fifty_percent:
                 mainWebView.getSettings().setTextZoom(150);
                 return true;
 
-            case R.id.fontSizeOneHundredSeventyFivePercent:
+            case R.id.font_size_one_hundred_seventy_five_percent:
                 mainWebView.getSettings().setTextZoom(175);
                 return true;
 
-            case R.id.fontSizeTwoHundredPercent:
+            case R.id.font_size_two_hundred_percent:
                 mainWebView.getSettings().setTextZoom(200);
+                return true;
+
+            case R.id.display_images:
+                if (mainWebView.getSettings().getLoadsImagesAutomatically()) {  // Images are currently loaded automatically.
+                    mainWebView.getSettings().setLoadsImagesAutomatically(false);
+                    mainWebView.reload();
+                } else {  // Images are not currently loaded automatically.
+                    mainWebView.getSettings().setLoadsImagesAutomatically(true);
+                }
+
+                // Set `onTheFlyDisplayImagesSet`.
+                onTheFlyDisplayImagesSet = true;
                 return true;
 
             case R.id.share:
@@ -1288,7 +1364,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 printManager.print(getResources().getString(R.string.privacy_browser_web_page), printDocumentAdapter, null);
                 return true;
 
-            case R.id.addToHomescreen:
+            case R.id.add_to_homescreen:
                 // Show the `CreateHomeScreenShortcutDialog` `AlertDialog` and name this instance `R.string.create_shortcut`.
                 AppCompatDialogFragment createHomeScreenShortcutDialogFragment = new CreateHomeScreenShortcutDialog();
                 createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.create_shortcut));
@@ -1832,50 +1908,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         }
     }
 
-    @Override
-    public void onPause() {
-        // Pause `mainWebView`.
-        mainWebView.onPause();
-
-        // Stop all JavaScript.
-        mainWebView.pauseTimers();
-
-        // Pause the adView or it will continue to consume resources in the background on the free flavor.
-        if (BuildConfig.FLAVOR.contentEquals("free")) {
-            BannerAd.pauseAd(adView);
-        }
-
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {  // `onResume()` also runs every time the app starts after `onCreate()` and `onStart()`.
-        super.onResume();
-
-        // Resume JavaScript (if enabled).
-        mainWebView.resumeTimers();
-
-        // Resume `mainWebView`.
-        mainWebView.onResume();
-
-        // Resume the adView for the free flavor.
-        if (BuildConfig.FLAVOR.contentEquals("free")) {
-            BannerAd.resumeAd(adView);
-        }
-    }
-
-    @Override
-    public void onRestart() {
-        super.onRestart();
-
-        // Apply the settings from shared preferences, which might have been changed in `SettingsActivity`.
-        applyAppSettings();
-
-        // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
-        updatePrivacyIcons(true);
-
-    }
-
     private void loadUrlFromTextBox() throws UnsupportedEncodingException {
         // Get the text from urlTextBox and convert it to a string.  trim() removes white spaces from the beginning and end of the string.
         String unformattedUrlString = urlTextBox.getText().toString().trim();
@@ -1933,185 +1965,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         mainWebView.loadUrl(url, customHeaders);
     }
 
-    // We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
-    @SuppressWarnings("deprecation")
-    private void applyDomainSettings(String url) {
-        // Reset `navigatingHistory`.
-        navigatingHistory = false;
-
-        // Parse the URL into a URI.
-        Uri uri = Uri.parse(url);
-
-        // Extract the domain from `uri`.
-        String hostName = uri.getHost();
-
-        // Initialize `loadingNewDomainName`.
-        boolean loadingNewDomainName;
-
-        // If either `hostName` or `currentDomainName` are `null`, run the options for loading a new domain name.
-        // The lint suggestion to simplify the `if` statement is incorrect, because `hostName.equals(currentDomainName)` can produce a `null object reference.`
-        //noinspection SimplifiableIfStatement
-        if ((hostName == null) || (currentDomainName == null)) {
-            loadingNewDomainName = true;
-        } else {  // Determine if `hostName` equals `currentDomainName`.
-            loadingNewDomainName = !hostName.equals(currentDomainName);
-        }
-
-        // Only apply the domain settings if we are loading a new domain.  This allows the user to set temporary settings for JavaScript, cookies, DOM storage, etc.
-        if (loadingNewDomainName) {
-            // Set the new `hostname` as the `currentDomainName`.
-            currentDomainName = hostName;
-
-            // Reset `favoriteIconBitmap` and display it in the `appbar`.
-            favoriteIconBitmap = favoriteIconDefaultBitmap;
-            favoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(favoriteIconBitmap, 64, 64, true));
-
-            // Initialize the database handler.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
-            // The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
-            DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
-
-            // Get a full cursor from `domainsDatabaseHelper`.
-            Cursor domainNameCursor = domainsDatabaseHelper.getDomainNameCursorOrderedByDomain();
-
-            // Initialize `domainSettingsSet`.
-            Set<String> domainSettingsSet = new HashSet<>();
-
-            // Get the domain name column index.
-            int domainNameColumnIndex = domainNameCursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME);
-
-            // Populate `domainSettingsSet`.
-            for (int i = 0; i < domainNameCursor.getCount(); i++) {
-                // Move `domainsCursor` to the current row.
-                domainNameCursor.moveToPosition(i);
-
-                // Store the domain name in `domainSettingsSet`.
-                domainSettingsSet.add(domainNameCursor.getString(domainNameColumnIndex));
-            }
-
-            // Close `domainNameCursor.
-            domainNameCursor.close();
-
-            // Initialize variables to track if this domain has stored domain settings, and if so, under which name.
-            boolean hostHasDomainSettings = false;
-            String domainNameInDatabase = null;
-
-            // Check the hostname.
-            if (domainSettingsSet.contains(hostName)) {
-                hostHasDomainSettings = true;
-                domainNameInDatabase = hostName;
-            }
-
-            // If `hostName` is not `null`, check all the subdomains of `hostName` against wildcard domains in `domainCursor`.
-            if (hostName != null) {
-                while (hostName.contains(".") && !hostHasDomainSettings) {  // Stop checking if we run out of  `.` or if we already know that `hostHasDomainSettings` is `true`.
-                    if (domainSettingsSet.contains("*." + hostName)) {  // Check the host name prepended by `*.`.
-                        hostHasDomainSettings = true;
-                        domainNameInDatabase = "*." + hostName;
-                    }
-
-                    // Strip out the lowest subdomain of `host`.
-                    hostName = hostName.substring(hostName.indexOf(".") + 1);
-                }
-            }
-
-            if (hostHasDomainSettings) {  // The url we are loading has custom domain settings.
-                // Get a cursor for the current host and move it to the first position.
-                Cursor currentHostDomainSettingsCursor = domainsDatabaseHelper.getCursorForDomainName(domainNameInDatabase);
-                currentHostDomainSettingsCursor.moveToFirst();
-
-                // Get the settings from the cursor.
-                javaScriptEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)) == 1);
-                firstPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES)) == 1);
-                thirdPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES)) == 1);
-                domStorageEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)) == 1);
-                saveFormDataEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA)) == 1);
-                String userAgentString = (currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT)));
-                int fontSize = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE)));
-
-                // Close `currentHostDomainSettingsCursor`.
-                currentHostDomainSettingsCursor.close();
-
-                // Apply the domain settings.
-                mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
-                cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
-                mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
-                mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
-                mainWebView.getSettings().setTextZoom(fontSize);
-
-                // Set third-party cookies status if API >= 21.
-                if (Build.VERSION.SDK_INT >= 21) {
-                    cookieManager.setAcceptThirdPartyCookies(mainWebView, thirdPartyCookiesEnabled);
-                }
-
-                // Set the user agent.
-                if (userAgentString.equals("WebView default user agent")) {
-                    // Set the user agent to `""`, which uses the default value.
-                    mainWebView.getSettings().setUserAgentString("");
-                } else {
-                    // Use the selected user agent.
-                    mainWebView.getSettings().setUserAgentString(userAgentString);
-                }
-
-                // Set a green background on `urlTextBox` to indicate that custom domain settings are being used.  We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
-                urlAppBarRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_green));
-            } else {  // The URL we are loading does not have custom domain settings.  Load the defaults.
-                // Get the shared preference values.  `this` references the current context.
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-                // Store the values from `sharedPreferences` in variables.
-                javaScriptEnabled = sharedPreferences.getBoolean("javascript_enabled", false);
-                firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies_enabled", false);
-                thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies_enabled", false);
-                domStorageEnabled = sharedPreferences.getBoolean("dom_storage_enabled", false);
-                saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data_enabled", false);
-                String userAgentString = sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0");
-                String customUserAgentString = sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0");
-                String defaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
-
-                // Apply the default settings.
-                mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
-                cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
-                mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
-                mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
-                mainWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
-
-                // Set third-party cookies status if API >= 21.
-                if (Build.VERSION.SDK_INT >= 21) {
-                    cookieManager.setAcceptThirdPartyCookies(mainWebView, thirdPartyCookiesEnabled);
-                }
-
-                // Set the default user agent.
-                switch (userAgentString) {
-                    case "WebView default user agent":
-                        // Set the user agent to `""`, which uses the default value.
-                        mainWebView.getSettings().setUserAgentString("");
-                        break;
-
-                    case "Custom user agent":
-                        // Set the custom user agent.
-                        mainWebView.getSettings().setUserAgentString(customUserAgentString);
-                        break;
-
-                    default:
-                        // Use the selected user agent.
-                        mainWebView.getSettings().setUserAgentString(userAgentString);
-                        break;
-                }
-
-                // Set a transparent background on `urlTextBox`.  We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
-                urlAppBarRelativeLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.url_bar_background_transparent));
-            }
-
-            // Close `domainsDatabaseHelper`.
-            domainsDatabaseHelper.close();
-
-            // Update the privacy icons, but only if `mainMenu` has already been populated.
-            if (mainMenu != null) {
-                updatePrivacyIcons(true);
-            }
-        }
-    }
-
     public void findPreviousOnPage(View view) {
         // Go to the previous highlighted phrase on the page.  `false` goes backwards instead of forwards.
         mainWebView.findNext(false);
@@ -2158,6 +2011,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         hideSystemBarsOnFullscreen = sharedPreferences.getBoolean("hide_system_bars", false);
         translucentNavigationBarOnFullscreen = sharedPreferences.getBoolean("translucent_navigation_bar", true);
         swipeToRefreshEnabled = sharedPreferences.getBoolean("swipe_to_refresh", false);
+        displayWebpageImagesBoolean = sharedPreferences.getBoolean("display_webpage_images", true);
 
         // Set the homepage, search, and proxy options.
         if (proxyThroughOrbot) {  // Set the Tor options.
@@ -2281,43 +2135,249 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         }
     }
 
+    // We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
+    @SuppressWarnings("deprecation")
+    private void applyDomainSettings(String url) {
+        // Reset `navigatingHistory`.
+        navigatingHistory = false;
+
+        // Parse the URL into a URI.
+        Uri uri = Uri.parse(url);
+
+        // Extract the domain from `uri`.
+        String hostName = uri.getHost();
+
+        // Initialize `loadingNewDomainName`.
+        boolean loadingNewDomainName;
+
+        // If either `hostName` or `currentDomainName` are `null`, run the options for loading a new domain name.
+        // The lint suggestion to simplify the `if` statement is incorrect, because `hostName.equals(currentDomainName)` can produce a `null object reference.`
+        //noinspection SimplifiableIfStatement
+        if ((hostName == null) || (currentDomainName == null)) {
+            loadingNewDomainName = true;
+        } else {  // Determine if `hostName` equals `currentDomainName`.
+            loadingNewDomainName = !hostName.equals(currentDomainName);
+        }
+
+        // Only apply the domain settings if we are loading a new domain.  This allows the user to set temporary settings for JavaScript, cookies, DOM storage, etc.
+        if (loadingNewDomainName) {
+            // Set the new `hostname` as the `currentDomainName`.
+            currentDomainName = hostName;
+
+            // Reset `favoriteIconBitmap` and display it in the `appbar`.
+            favoriteIconBitmap = favoriteIconDefaultBitmap;
+            favoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(favoriteIconBitmap, 64, 64, true));
+
+            // Initialize the database handler.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
+            // The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
+            DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
+
+            // Get a full cursor from `domainsDatabaseHelper`.
+            Cursor domainNameCursor = domainsDatabaseHelper.getDomainNameCursorOrderedByDomain();
+
+            // Initialize `domainSettingsSet`.
+            Set<String> domainSettingsSet = new HashSet<>();
+
+            // Get the domain name column index.
+            int domainNameColumnIndex = domainNameCursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME);
+
+            // Populate `domainSettingsSet`.
+            for (int i = 0; i < domainNameCursor.getCount(); i++) {
+                // Move `domainsCursor` to the current row.
+                domainNameCursor.moveToPosition(i);
+
+                // Store the domain name in `domainSettingsSet`.
+                domainSettingsSet.add(domainNameCursor.getString(domainNameColumnIndex));
+            }
+
+            // Close `domainNameCursor.
+            domainNameCursor.close();
+
+            // Initialize variables to track if domain settings will be applied and, if so, under which name.
+            domainSettingsApplied = false;
+            String domainNameInDatabase = null;
+
+            // Check the hostname.
+            if (domainSettingsSet.contains(hostName)) {
+                domainSettingsApplied = true;
+                domainNameInDatabase = hostName;
+            }
+
+            // If `hostName` is not `null`, check all the subdomains of `hostName` against wildcard domains in `domainCursor`.
+            if (hostName != null) {
+                while (hostName.contains(".") && !domainSettingsApplied) {  // Stop checking if we run out of  `.` or if we already know that `domainSettingsApplied` is `true`.
+                    if (domainSettingsSet.contains("*." + hostName)) {  // Check the host name prepended by `*.`.
+                        domainSettingsApplied = true;
+                        domainNameInDatabase = "*." + hostName;
+                    }
+
+                    // Strip out the lowest subdomain of `host`.
+                    hostName = hostName.substring(hostName.indexOf(".") + 1);
+                }
+            }
+
+            // Get a handle for the shared preference.  `this` references the current context.
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+            if (domainSettingsApplied) {  // The url we are loading has custom domain settings.
+                // Get a cursor for the current host and move it to the first position.
+                Cursor currentHostDomainSettingsCursor = domainsDatabaseHelper.getCursorForDomainName(domainNameInDatabase);
+                currentHostDomainSettingsCursor.moveToFirst();
+
+                // Get the settings from the cursor.
+                javaScriptEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)) == 1);
+                firstPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES)) == 1);
+                thirdPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES)) == 1);
+                domStorageEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)) == 1);
+                saveFormDataEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA)) == 1);
+                String userAgentString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
+                int fontSize = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
+                displayWebpageImagesInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
+
+                // Close `currentHostDomainSettingsCursor`.
+                currentHostDomainSettingsCursor.close();
+
+                // Apply the domain settings.
+                mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
+                cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
+                mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
+                mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
+                mainWebView.getSettings().setTextZoom(fontSize);
+
+                // Set third-party cookies status if API >= 21.
+                if (Build.VERSION.SDK_INT >= 21) {
+                    cookieManager.setAcceptThirdPartyCookies(mainWebView, thirdPartyCookiesEnabled);
+                }
+
+                // Set the user agent.
+                if (userAgentString.equals("WebView default user agent")) {
+                    // Set the user agent to `""`, which uses the default value.
+                    mainWebView.getSettings().setUserAgentString("");
+                } else {
+                    // Use the selected user agent.
+                    mainWebView.getSettings().setUserAgentString(userAgentString);
+                }
+
+                // Set a green background on `urlTextBox` to indicate that custom domain settings are being used.  We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
+                urlAppBarRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_green));
+            } else {  // The URL we are loading does not have custom domain settings.  Load the defaults.
+                // Store the values from `sharedPreferences` in variables.
+                javaScriptEnabled = sharedPreferences.getBoolean("javascript_enabled", false);
+                firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies_enabled", false);
+                thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies_enabled", false);
+                domStorageEnabled = sharedPreferences.getBoolean("dom_storage_enabled", false);
+                saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data_enabled", false);
+                String userAgentString = sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0");
+                String customUserAgentString = sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0");
+                String defaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
+
+                // Apply the default settings.
+                mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
+                cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
+                mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
+                mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
+                mainWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
+
+                // Set third-party cookies status if API >= 21.
+                if (Build.VERSION.SDK_INT >= 21) {
+                    cookieManager.setAcceptThirdPartyCookies(mainWebView, thirdPartyCookiesEnabled);
+                }
+
+                // Set the default user agent.
+                switch (userAgentString) {
+                    case "WebView default user agent":
+                        // Set the user agent to `""`, which uses the default value.
+                        mainWebView.getSettings().setUserAgentString("");
+                        break;
+
+                    case "Custom user agent":
+                        // Set the custom user agent.
+                        mainWebView.getSettings().setUserAgentString(customUserAgentString);
+                        break;
+
+                    default:
+                        // Use the selected user agent.
+                        mainWebView.getSettings().setUserAgentString(userAgentString);
+                        break;
+                }
+
+                // Set a transparent background on `urlTextBox`.  We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
+                urlAppBarRelativeLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.url_bar_background_transparent));
+            }
+
+            // Close `domainsDatabaseHelper`.
+            domainsDatabaseHelper.close();
+
+            // Remove the `onTheFlyDisplayImagesSet` flag and set the display webpage images mode.  `true` indicates that custom domain settings are applied.
+            onTheFlyDisplayImagesSet = false;
+            setDisplayWebpageImages();
+
+            // Update the privacy icons, but only if `mainMenu` has already been populated.
+            if (mainMenu != null) {
+                updatePrivacyIcons(true);
+            }
+        }
+    }
+
+    private void setDisplayWebpageImages() {
+        if (!onTheFlyDisplayImagesSet) {
+            if (domainSettingsApplied) {  // Custom domain settings are applied.
+                switch (displayWebpageImagesInt) {
+                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT:
+                        mainWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImagesBoolean);
+                        break;
+
+                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_ENABLED:
+                        mainWebView.getSettings().setLoadsImagesAutomatically(true);
+                        break;
+
+                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_DISABLED:
+                        mainWebView.getSettings().setLoadsImagesAutomatically(false);
+                        break;
+                }
+            } else {  // Default settings are applied.
+                mainWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImagesBoolean);
+            }
+        }
+    }
+
     private void updatePrivacyIcons(boolean runInvalidateOptionsMenu) {
         // Get handles for the icons.
-        MenuItem privacyIcon = mainMenu.findItem(R.id.toggleJavaScript);
-        MenuItem firstPartyCookiesIcon = mainMenu.findItem(R.id.toggleFirstPartyCookies);
-        MenuItem domStorageIcon = mainMenu.findItem(R.id.toggleDomStorage);
-        MenuItem formDataIcon = mainMenu.findItem(R.id.toggleSaveFormData);
+        MenuItem privacyIconMenuItem = mainMenu.findItem(R.id.toggle_javascript);
+        MenuItem firstPartyCookiesIconMenuItem = mainMenu.findItem(R.id.toggle_first_party_cookies);
+        MenuItem domStorageIconMenuItem = mainMenu.findItem(R.id.toggle_dom_storage);
+        MenuItem formDataIconMenuItem = mainMenu.findItem(R.id.toggle_save_form_data);
 
         // Update `privacyIcon`.
         if (javaScriptEnabled) {  // JavaScript is enabled.
-            privacyIcon.setIcon(R.drawable.javascript_enabled);
+            privacyIconMenuItem.setIcon(R.drawable.javascript_enabled);
         } else if (firstPartyCookiesEnabled) {  // JavaScript is disabled but cookies are enabled.
-            privacyIcon.setIcon(R.drawable.warning);
+            privacyIconMenuItem.setIcon(R.drawable.warning);
         } else {  // All the dangerous features are disabled.
-            privacyIcon.setIcon(R.drawable.privacy_mode);
+            privacyIconMenuItem.setIcon(R.drawable.privacy_mode);
         }
 
         // Update `firstPartyCookiesIcon`.
         if (firstPartyCookiesEnabled) {  // First-party cookies are enabled.
-            firstPartyCookiesIcon.setIcon(R.drawable.cookies_enabled);
+            firstPartyCookiesIconMenuItem.setIcon(R.drawable.cookies_enabled);
         } else {  // First-party cookies are disabled.
-            firstPartyCookiesIcon.setIcon(R.drawable.cookies_disabled);
+            firstPartyCookiesIconMenuItem.setIcon(R.drawable.cookies_disabled);
         }
 
         // Update `domStorageIcon`.
         if (javaScriptEnabled && domStorageEnabled) {  // Both JavaScript and DOM storage are enabled.
-            domStorageIcon.setIcon(R.drawable.dom_storage_enabled);
+            domStorageIconMenuItem.setIcon(R.drawable.dom_storage_enabled);
         } else if (javaScriptEnabled) {  // JavaScript is enabled but DOM storage is disabled.
-            domStorageIcon.setIcon(R.drawable.dom_storage_disabled);
+            domStorageIconMenuItem.setIcon(R.drawable.dom_storage_disabled);
         } else {  // JavaScript is disabled, so DOM storage is ghosted.
-            domStorageIcon.setIcon(R.drawable.dom_storage_ghosted);
+            domStorageIconMenuItem.setIcon(R.drawable.dom_storage_ghosted);
         }
 
         // Update `formDataIcon`.
         if (saveFormDataEnabled) {  // Form data is enabled.
-            formDataIcon.setIcon(R.drawable.form_data_enabled);
+            formDataIconMenuItem.setIcon(R.drawable.form_data_enabled);
         } else {  // Form data is disabled.
-            formDataIcon.setIcon(R.drawable.form_data_disabled);
+            formDataIconMenuItem.setIcon(R.drawable.form_data_disabled);
         }
 
         // `invalidateOptionsMenu` calls `onPrepareOptionsMenu()` and redraws the icons in the `AppBar`.  `this` references the current activity.

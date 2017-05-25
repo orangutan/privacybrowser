@@ -121,10 +121,11 @@
         <string name="one_hundred_fifty_percent">150%</string>
         <string name="one_hundred_seventy_five_percent">175%</string>
         <string name="two_hundred_percent">200%</string>
-    <string name="find_on_page">Find on Page</string>
+    <string name="display_images">Display Images</string>
     <string name="share">Share</string>
-    <string name="add_to_home_screen">Add to Home Screen</string>
+    <string name="find_on_page">Find on Page</string>
     <string name="print">Print</string>
+    <string name="add_to_home_screen">Add to Home Screen</string>
         <string name="privacy_browser_web_page">Privacy Browser Web Page</string>
     <string name="refresh">Refresh</string>
 
@@ -194,6 +195,11 @@
     <string name="domain_settings_saved">Domain settings saved</string>
     <string name="domain_deleted">Domain deleted</string>
     <string name="domain_name_instructions">*. may be prepended to a domain to include all subdomains (eg. *.stoutner.com)</string>
+    <string-array name="display_website_images_array">
+        <item>System default</item>
+        <item>Images enabled</item>
+        <item>Images disabled</item>
+    </string-array>
 
     <!-- Guide. -->
     <string name="privacy_browser_guide">Privacy Browser Guide</string>
@@ -331,6 +337,8 @@
         <string name="swipe_to_refresh_enabled_summary">Some websites don’t work well if swipe to refresh is enabled.</string>
         <string name="display_additional_app_bar_icons">Display additional app bar icons</string>
         <string name="display_additional_app_bar_icons_summary">Display icons for toggling cookies, DOM storage, and form data in the app bar if there is room.</string>
+        <string name="display_webpage_images">Display webpage images</string>
+        <string name="display_webpage_images_summary">Disable to conserve bandwidth.</string>
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Orbot proxy will not work unless Orbot is installed.</string>

@@ -26,7 +26,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DomainsDatabaseHelper extends SQLiteOpenHelper {
-    private static final int SCHEMA_VERSION = 1;
+    private static final int SCHEMA_VERSION = 2;
     private static final String DOMAINS_DATABASE = "domains.db";
     private static final String DOMAINS_TABLE = "domains";
 
@@ -39,6 +39,11 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
     public static final String ENABLE_FORM_DATA = "enableformdata";
     public static final String USER_AGENT = "useragent";
     public static final String FONT_SIZE = "fontsize";
+    public static final String DISPLAY_IMAGES = "displayimages";
+
+    public static final int DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT = 0;
+    public static final int DISPLAY_WEBPAGE_IMAGES_ENABLED = 1;
+    public static final int DISPLAY_WEBPAGE_IMAGES_DISABLED = 2;
 
     // Initialize the database.  The lint warnings for the unused parameters are suppressed.
     public DomainsDatabaseHelper(Context context, @SuppressWarnings("UnusedParameters") String name, SQLiteDatabase.CursorFactory cursorFactory, @SuppressWarnings("UnusedParameters") int version) {
@@ -49,15 +54,16 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase domainsDatabase) {
         // Setup the SQL string to create the `domains` table.
         final String CREATE_DOMAINS_TABLE = "CREATE TABLE " + DOMAINS_TABLE + " (" +
-                _ID + " integer primary key, " +
-                DOMAIN_NAME + " text, " +
-                ENABLE_JAVASCRIPT + " boolean, " +
-                ENABLE_FIRST_PARTY_COOKIES + " boolean, " +
-                ENABLE_THIRD_PARTY_COOKIES + " boolean, " +
-                ENABLE_DOM_STORAGE + " boolean, " +
-                ENABLE_FORM_DATA + " boolean, " +
-                USER_AGENT + " text, " +
-                FONT_SIZE + " integer);";
+                _ID + " INTEGER PRIMARY KEY, " +
+                DOMAIN_NAME + " TEXT, " +
+                ENABLE_JAVASCRIPT + " BOOLEAN, " +
+                ENABLE_FIRST_PARTY_COOKIES + " BOOLEAN, " +
+                ENABLE_THIRD_PARTY_COOKIES + " BOOLEAN, " +
+                ENABLE_DOM_STORAGE + " BOOLEAN, " +
+                ENABLE_FORM_DATA + " BOOLEAN, " +
+                USER_AGENT + " TEXT, " +
+                FONT_SIZE + " INTEGER, " +
+                DISPLAY_IMAGES + " INTEGER);";
 
         // Create the `domains` table if it doesn't exist.
         domainsDatabase.execSQL(CREATE_DOMAINS_TABLE);
@@ -65,7 +71,13 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase domainsDatabase, int oldVersion, int newVersion) {
-        // Code for upgrading the database will be added here when the schema version > 1.
+        // Upgrade `DOMAINS_TABLE`.
+        switch (oldVersion) {
+            // Upgrade from `SCHEMA_VERSION` 1.
+            case 1:
+                // Add the `DISPLAY_IMAGES` column.
+                domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + DISPLAY_IMAGES + " INTEGER");
+        }
     }
 
     public Cursor getDomainNameCursorOrderedByDomain() {
@@ -132,6 +144,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainContentValues.put(ENABLE_FORM_DATA, false);
         domainContentValues.put(USER_AGENT, "PrivacyBrowser/1.0");
         domainContentValues.put(FONT_SIZE, "100");
+        domainContentValues.put(DISPLAY_IMAGES, 0);
 
         // Get a writable database handle.
         SQLiteDatabase domainsDatabase = this.getWritableDatabase();
@@ -143,7 +156,8 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainsDatabase.close();
     }
 
-    public void saveDomain(int databaseId, String domainName, boolean javaScriptEnabled, boolean firstPartyCookiesEnabled, boolean thirdPartyCookiesEnabled, boolean domStorageEnabled, boolean formDataEnabled, String userAgent, int fontSize) {
+    public void saveDomain(int databaseId, String domainName, boolean javaScriptEnabled, boolean firstPartyCookiesEnabled, boolean thirdPartyCookiesEnabled, boolean domStorageEnabled, boolean formDataEnabled, String userAgent, int fontSize,
+                           int displayImages) {
         // Store the domain data in a `ContentValues`.
         ContentValues domainContentValues = new ContentValues();
 
@@ -156,6 +170,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainContentValues.put(ENABLE_FORM_DATA, formDataEnabled);
         domainContentValues.put(USER_AGENT, userAgent);
         domainContentValues.put(FONT_SIZE, fontSize);
+        domainContentValues.put(DISPLAY_IMAGES, displayImages);
 
         // Get a writable database handle.
         SQLiteDatabase domainsDatabase = this.getWritableDatabase();

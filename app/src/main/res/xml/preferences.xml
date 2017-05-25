@@ -189,5 +189,11 @@
             android:title="@string/display_additional_app_bar_icons"
             android:summary="@string/display_additional_app_bar_icons_summary"
             android:defaultValue="false" />
+
+        <SwitchPreference
+            android:key="display_webpage_images"
+            android:title="@string/display_webpage_images"
+            android:summary="@string/display_webpage_images_summary"
+            android:defaultValue="true" />
     </PreferenceCategory>
 </PreferenceScreen>
