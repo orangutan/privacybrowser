@@ -1,0 +1,8 @@
+*Don’t include URL redirects in the WebView history.
+*Add the option to disable loading of images to conserve bandwidth.
+*Fix the layout of some web pages by using a wide viewport.
+*Allow loading of host only URLs.
+*Add icons to the settings screen.
+*Add the title to the URL when sharing through the options menu.
+*Hide the third-party cookies setting on KitKat because it only works on Lollipop or newer.
+*Move Refresh to the bottom of the options menu.

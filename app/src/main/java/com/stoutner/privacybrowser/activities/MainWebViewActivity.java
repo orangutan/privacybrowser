@@ -948,12 +948,11 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Set the display webpage images mode.
         setDisplayWebpageImages();
 
-        // Only reload `mainWebView` if not loading a new intent.
-        if (!loadingNewIntentBoolean) {
+        // Only reload `mainWebView` if not loading a new intent and not waiting for Orbot.
+        if (!loadingNewIntentBoolean && !waitingForOrbot) {
             // Reload the webpage to remove images if `setDisplayWebpageImages` has turned them off.
             mainWebView.reload();
-        } else {
-            // Reset `loadingNewIntentBoolean`.
+        } else if (loadingNewIntentBoolean) {  // Reset `loadingNewIntentBoolean` if this run comes from a new intent.
             loadingNewIntentBoolean = false;
         }
     }
