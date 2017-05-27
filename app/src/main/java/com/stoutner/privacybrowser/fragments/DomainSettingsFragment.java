@@ -117,16 +117,16 @@ public class DomainSettingsFragment extends Fragment {
         ArrayAdapter<CharSequence> fontSizeEntryValuesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.default_font_size_entry_values, android.R.layout.simple_spinner_item);
         final ArrayAdapter<CharSequence> displayImagesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.display_website_images_array, android.R.layout.simple_spinner_item);
 
-        // Set the drop down style for the `ArrayAdapters`.
-        fontSizeArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        displayImagesArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // Some phones running Huawei's customized Android 7.0 don't display a spinner that requires scrolling correctly with the default `simple_spinner_dropdown_item`.  The Huawei P9 Lite is known to be affected.
+        // Some phones running Huawei's customized Android 7.0 have layout problems displaying a spinner with the default `simple_spinner_dropdown_item`.  The Huawei P9 Lite is known to be affected.
         if (Build.BRAND.equals("HUAWEI") && (Build.VERSION.SDK_INT == 24)) {  // The device is manufactured by Huawei and is running Android 7.0.
             // Use a customized `simple_spinner_dropdown_item`.  Huawei spinner code fix contributed 2017 Thomas Jensen <lianergoist@vongriffen.dk>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
             userAgentArrayAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item_huawei_fix);
+            fontSizeArrayAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item_huawei_fix);
+            displayImagesArrayAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item_huawei_fix);
         } else {  // Use the standard `android.R.layout.simple_spinner_dropdown_item` on all other devices.
             userAgentArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            fontSizeArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            displayImagesArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         }
 
         // Set the `ArrayAdapters` for the `Spinners`.
