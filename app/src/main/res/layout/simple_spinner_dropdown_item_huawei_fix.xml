@@ -2,6 +2,8 @@
 <!--
     Modifications copyright © 2017 Soren Stoutner <soren@stoutner.com>.
 
+    `android:layout_height="wrap_content` fix contributed 2017 Thomas Jensen <lianergoist@vongriffen.dk>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+
     `simple_spinner_dropdown_item_huawei_fix.xml` comes from the Android API 25 platform SDK, and is usually referenced as `android.R.layout.simple_spinner_dropdown_item`.
 
     The licensing information for the original file is below:

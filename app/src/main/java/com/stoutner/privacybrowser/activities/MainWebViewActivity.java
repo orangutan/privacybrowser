@@ -1785,6 +1785,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             DownloadManager.Request downloadRequest = new DownloadManager.Request(Uri.parse(imageUrl));
 
             // Pass cookies to download manager if cookies are enabled.  This is required to download images from websites that require a login.
+            // Code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
             if (firstPartyCookiesEnabled) {
                 // Get the cookies for `imageUrl`.
                 String cookies = cookieManager.getCookie(imageUrl);
@@ -1832,6 +1833,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             DownloadManager.Request downloadRequest = new DownloadManager.Request(Uri.parse(downloadUrl));
 
             // Pass cookies to download manager if cookies are enabled.  This is required to download files from websites that require a login.
+            // Code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
             if (firstPartyCookiesEnabled) {
                 // Get the cookies for `downloadUrl`.
                 String cookies = cookieManager.getCookie(downloadUrl);

@@ -1,6 +1,8 @@
 /*
  * Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
  *
+ * Huawei spinner code fix contributed 2017 Thomas Jensen <lianergoist@vongriffen.dk>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+ *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
  * Privacy Browser is free software: you can redistribute it and/or modify
@@ -121,7 +123,7 @@ public class DomainSettingsFragment extends Fragment {
 
         // Some phones running Huawei's customized Android 7.0 don't display a spinner that requires scrolling correctly with the default `simple_spinner_dropdown_item`.  The Huawei P9 Lite is known to be affected.
         if (Build.BRAND.equals("HUAWEI") && (Build.VERSION.SDK_INT == 24)) {  // The device is manufactured by Huawei and is running Android 7.0.
-            // Use a customized `simple_spinner_dropdown_item`.
+            // Use a customized `simple_spinner_dropdown_item`.  Huawei spinner code fix contributed 2017 Thomas Jensen <lianergoist@vongriffen.dk>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
             userAgentArrayAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item_huawei_fix);
         } else {  // Use the standard `android.R.layout.simple_spinner_dropdown_item` on all other devices.
             userAgentArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
