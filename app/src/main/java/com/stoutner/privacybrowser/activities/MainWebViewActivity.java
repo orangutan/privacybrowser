@@ -1258,24 +1258,91 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 return true;
 
             case R.id.clear_cookies:
-                if (Build.VERSION.SDK_INT < 21) {
-                    cookieManager.removeAllCookie();
-                } else {
-                    cookieManager.removeAllCookies(null);
-                }
-                Snackbar.make(findViewById(R.id.main_webview), R.string.cookies_deleted, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.main_webview), R.string.cookies_deleted, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.undo, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // Do nothing because everything will be handled by `onDismissed()` below.
+                            }
+                        })
+                        .addCallback(new Snackbar.Callback() {
+                            @Override
+                            public void onDismissed(Snackbar snackbar, int event) {
+                                switch (event) {
+                                    // The user pushed the `Undo` button.
+                                    case Snackbar.Callback.DISMISS_EVENT_ACTION:
+                                        // Do nothing.
+                                        break;
+
+                                    // The `Snackbar` was dismissed without the `Undo` button being pushed.
+                                    default:
+                                        // `cookieManager.removeAllCookie()` varies by SDK.
+                                        if (Build.VERSION.SDK_INT < 21) {
+                                            cookieManager.removeAllCookie();
+                                        } else {
+                                            // `null` indicates no callback.
+                                            cookieManager.removeAllCookies(null);
+                                        }
+                                }
+                            }
+                        })
+                        .show();
                 return true;
 
             case R.id.clear_dom_storage:
-                WebStorage webStorage = WebStorage.getInstance();
-                webStorage.deleteAllData();
-                Snackbar.make(findViewById(R.id.main_webview), R.string.dom_storage_deleted, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.main_webview), R.string.dom_storage_deleted, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.undo, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // Do nothing because everything will be handled by `onDismissed()` below.
+                            }
+                        })
+                        .addCallback(new Snackbar.Callback() {
+                            @Override
+                            public void onDismissed(Snackbar snackbar, int event) {
+                                switch (event) {
+                                    // The user pushed the `Undo` button.
+                                    case Snackbar.Callback.DISMISS_EVENT_ACTION:
+                                        // Do nothing.
+                                        break;
+
+                                    // The `Snackbar` was dismissed without the `Undo` button being pushed.
+                                    default:
+                                        // Delete the DOM Storage.
+                                        WebStorage webStorage = WebStorage.getInstance();
+                                        webStorage.deleteAllData();
+                                }
+                            }
+                        })
+                        .show();
                 return true;
 
             case R.id.clear_form_data:
-                WebViewDatabase mainWebViewDatabase = WebViewDatabase.getInstance(this);
-                mainWebViewDatabase.clearFormData();
-                Snackbar.make(findViewById(R.id.main_webview), R.string.form_data_deleted, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(R.id.main_webview), R.string.form_data_deleted, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.undo, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // Do nothing because everything will be handled by `onDismissed()` below.
+                            }
+                        })
+                        .addCallback(new Snackbar.Callback() {
+                            @Override
+                            public void onDismissed(Snackbar snackbar, int event) {
+                                switch (event) {
+                                    // The user pushed the `Undo` button.
+                                    case Snackbar.Callback.DISMISS_EVENT_ACTION:
+                                        // Do nothing.
+                                        break;
+
+                                    // The `Snackbar` was dismissed without the `Undo` button being pushed.
+                                    default:
+                                        // Delete the form data.
+                                        WebViewDatabase mainWebViewDatabase = WebViewDatabase.getInstance(getApplicationContext());
+                                        mainWebViewDatabase.clearFormData();
+                                }
+                            }
+                        })
+                        .show();
                 return true;
 
             case R.id.font_size_twenty_five_percent:
