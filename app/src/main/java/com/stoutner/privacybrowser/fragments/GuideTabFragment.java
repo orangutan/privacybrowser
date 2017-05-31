@@ -86,14 +86,6 @@ public class GuideTabFragment extends Fragment {
             case 6:
                 tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_tracking_ids.html");
                 break;
-
-            case 7:
-                tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_clear_and_exit.html");
-                break;
-
-            case 8:
-                tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_planned_features.html");
-                break;
         }
 
         return tabLayout;

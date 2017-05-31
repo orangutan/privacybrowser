@@ -66,7 +66,7 @@ public class GuideActivity extends AppCompatActivity {
         @Override
         // Get the count of the number of tabs.
         public int getCount() {
-            return 9;
+            return 7;
         }
 
         @Override
@@ -93,12 +93,6 @@ public class GuideActivity extends AppCompatActivity {
 
                 case 6:
                     return getString(R.string.tracking_ids);
-
-                case 7:
-                    return getString(R.string.clear_and_exit);
-
-                case 8:
-                    return getString(R.string.planned_features);
 
                 default:
                     return "";
