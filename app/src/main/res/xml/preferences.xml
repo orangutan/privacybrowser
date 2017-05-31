@@ -119,7 +119,7 @@
 
     <PreferenceCategory
         android:key="search_category"
-        android:title="@string/search">
+        android:title="@string/search" >
 
         <ListPreference
             android:key="search"
@@ -138,7 +138,7 @@
 
     <PreferenceCategory
         android:key="full_screen"
-        android:title="@string/full_screen">
+        android:title="@string/full_screen" >
 
         <SwitchPreference
             android:key="full_screen_browsing_mode"
@@ -156,6 +156,41 @@
             android:key="translucent_navigation_bar"
             android:title="@string/translucent_navigation_bar"
             android:summary="@string/translucent_navigation_bar_summary"
+            android:defaultValue="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="clean_and_exit"
+        android:title="@string/clear_and_exit" >
+
+        <SwitchPreference
+            android:key="clear_everything"
+            android:title="@string/clear_everything"
+            android:summary="@string/clear_everything_summary"
+            android:defaultValue="true" />
+
+        <SwitchPreference
+            android:key="clear_cookies"
+            android:title="@string/clear_cookies_preference"
+            android:summary="@string/clear_cookies_summary"
+            android:defaultValue="true" />
+
+        <SwitchPreference
+            android:key="clear_dom_storage"
+            android:title="@string/clear_dom_storage_preference"
+            android:summary="@string/clear_dom_storage_summary"
+            android:defaultValue="true" />
+
+        <SwitchPreference
+            android:key="clear_form_data"
+            android:title="@string/clear_form_data_preference"
+            android:summary="@string/clear_form_data_summary"
+            android:defaultValue="true" />
+
+        <SwitchPreference
+            android:key="clear_cache"
+            android:title="@string/clear_cache"
+            android:summary="@string/clear_cache_summary"
             android:defaultValue="true" />
     </PreferenceCategory>
 

@@ -1547,29 +1547,82 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 break;
 
             case R.id.clearAndExit:
-                // Clear cookies.  The commands changed slightly in API 21.
-                if (Build.VERSION.SDK_INT >= 21) {
-                    cookieManager.removeAllCookies(null);
-                } else {
-                    cookieManager.removeAllCookie();
+                // Get a handle for `sharedPreferences`.  `this` references the current context.
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+                boolean clearEverything = sharedPreferences.getBoolean("clear_everything", true);
+
+                // Clear cookies.
+                if (clearEverything || sharedPreferences.getBoolean("clear_cookies", true)) {
+                    // The command to remove cookies changed slightly in API 21.
+                    if (Build.VERSION.SDK_INT >= 21) {
+                        cookieManager.removeAllCookies(null);
+                    } else {
+                        cookieManager.removeAllCookie();
+                    }
+
+                    // Manually delete the cookies database, as `CookieManager` sometimes will not flush its changes to disk before `System.exit(0)` is run.
+                    try {
+                        // We have to use two commands because `Runtime.exec()` does not like `*`.
+                        privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/Cookies");
+                        privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/Cookies-journal");
+                    } catch (IOException e) {
+                        // Do nothing if an error is thrown.
+                    }
                 }
 
                 // Clear DOM storage.
-                WebStorage domStorage = WebStorage.getInstance();
-                domStorage.deleteAllData();
+                if (clearEverything || sharedPreferences.getBoolean("clear_dom_storage", true)) {
+                    // Ask `WebStorage` to clear the DOM storage.
+                    WebStorage webStorage = WebStorage.getInstance();
+                    webStorage.deleteAllData();
+
+                    // Manually delete the DOM storage directory, as `WebStorage` sometimes will not flush its changes to disk before `System.exit(0)` is run.
+                    try {
+                        // We have to use a `String[]` because the directory contains a space and `Runtime.exec` will not escape the string correctly otherwise.
+                        privacyBrowserRuntime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Local Storage/"});
+                    } catch (IOException e) {
+                        // Do nothing if an error is thrown.
+                    }
+                }
 
                 // Clear form data.
-                WebViewDatabase webViewDatabase = WebViewDatabase.getInstance(this);
-                webViewDatabase.clearFormData();
+                if (clearEverything || sharedPreferences.getBoolean("clear_form_data", true)) {
+                    WebViewDatabase webViewDatabase = WebViewDatabase.getInstance(this);
+                    webViewDatabase.clearFormData();
 
-                // Clear the cache.  `true` includes disk files.
-                mainWebView.clearCache(true);
+                    // Manually delete the form data database, as `WebViewDatabase` sometimes will not flush its changes to disk before `System.exit(0)` is run.
+                    try {
+                        // We have to use a `String[]` because the database contains a space and `Runtime.exec` will not escape the string correctly otherwise.
+                        privacyBrowserRuntime.exec(new String[] {"rm", "-f", privateDataDirectoryString + "/app_webview/Web Data"});
+                        privacyBrowserRuntime.exec(new String[] {"rm", "-f", privateDataDirectoryString + "/app_webview/Web Data-journal"});
+                    } catch (IOException e) {
+                        // Do nothing if an error is thrown.
+                    }
+                }
+
+                // Clear the cache.
+                if (clearEverything || sharedPreferences.getBoolean("clear_cache", true)) {
+                    // `true` includes disk files.
+                    mainWebView.clearCache(true);
+
+                    // Manually delete the cache directories.
+                    try {
+                        // Delete the main cache directory.
+                        privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/cache");
+
+                        // Delete the secondary `Service Worker` cache directory.  We have to use a `String[]` because the directory contains a space and `Runtime.exec` will not escape the string correctly otherwise.
+                        privacyBrowserRuntime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Service Worker/"});
+                    } catch (IOException e) {
+                        // Do nothing if an error is thrown.
+                    }
+                }
+
+                // Clear SSL certificate preferences.
+                mainWebView.clearSslPreferences();
 
                 // Clear the back/forward history.
                 mainWebView.clearHistory();
-
-                // Clear any SSL certificate preferences.
-                mainWebView.clearSslPreferences();
 
                 // Clear `formattedUrlString`.
                 formattedUrlString = null;
@@ -1583,15 +1636,14 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 // Destroy the internal state of `mainWebView`.
                 mainWebView.destroy();
 
-                // Manually delete cache folders.
-                try {
-                    // Delete the main `cache` folder.
-                    privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/cache");
-
-                    // Delete the `app_webview` folder, which contains an additional `WebView` cache.  See `https://code.google.com/p/android/issues/detail?id=233826&thanks=233826&ts=1486670530`.
-                    privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview");
-                } catch (IOException e) {
-                    // Do nothing if an error is thrown.
+                // Manually delete the `app_webview` folder, which contains the cookies, DOM storage, form data, and `Service Worker` cache.
+                // See `https://code.google.com/p/android/issues/detail?id=233826&thanks=233826&ts=1486670530`.
+                if (clearEverything) {
+                    try {
+                        privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview");
+                    } catch (IOException e) {
+                        // Do nothing if an error is thrown.
+                    }
                 }
 
                 // Close Privacy Browser.  `finishAndRemoveTask` also removes Privacy Browser from the recent app list.
@@ -1603,9 +1655,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
                 // Remove the terminated program from RAM.  The status code is `0`.
                 System.exit(0);
-                break;
-
-            default:
                 break;
         }
 
@@ -2073,7 +2122,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     }
 
     private void applyAppSettings() {
-        // Get the shared preference values.  `this` references the current context.
+        // Get a handle for `sharedPreferences`.  `this` references the current context.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Store the values from `sharedPreferences` in variables.

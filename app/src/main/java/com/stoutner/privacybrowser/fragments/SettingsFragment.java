@@ -63,6 +63,11 @@ public class SettingsFragment extends PreferenceFragment {
         final Preference fullScreenBrowsingModePreference = findPreference("full_screen_browsing_mode");
         final Preference hideSystemBarsPreference = findPreference("hide_system_bars");
         final Preference translucentNavigationBarPreference = findPreference("translucent_navigation_bar");
+        final Preference clearEverythingPreference = findPreference("clear_everything");
+        final Preference clearCookiesPreference = findPreference("clear_cookies");
+        final Preference clearDomStoragePreference = findPreference("clear_dom_storage");
+        final Preference clearFormDataPreference = findPreference("clear_form_data");
+        final Preference clearCachePreference = findPreference("clear_cache");
         final Preference homepagePreference = findPreference("homepage");
         final Preference defaultFontSizePreference = findPreference("default_font_size");
         final Preference swipeToRefreshPreference = findPreference("swipe_to_refresh");
@@ -86,6 +91,7 @@ public class SettingsFragment extends PreferenceFragment {
         boolean proxyThroughOrbotBoolean = savedPreferences.getBoolean("proxy_through_orbot", false);
         boolean fullScreenBrowsingModeBoolean = savedPreferences.getBoolean("full_screen_browsing_mode", false);
         boolean hideSystemBarsBoolean = savedPreferences.getBoolean("hide_system_bars", false);
+        boolean clearEverythingBoolean = savedPreferences.getBoolean("clear_everything", true);
 
         // Only enable `thirdPartyCookiesPreference` if `firstPartyCookiesEnabledBoolean` is `true` and API >= 21.
         thirdPartyCookiesPreference.setEnabled(firstPartyCookiesEnabledBoolean && (Build.VERSION.SDK_INT >= 21));
@@ -156,6 +162,11 @@ public class SettingsFragment extends PreferenceFragment {
         // Enable `translucentNavigationBarPreference` only if full screen browsing mode is enabled and `hide_system_bars` is disabled.
         translucentNavigationBarPreference.setEnabled(fullScreenBrowsingModeBoolean && !hideSystemBarsBoolean);
 
+        // Set the status of the `Clear and Exit` preferences.
+        clearCookiesPreference.setEnabled(!clearEverythingBoolean);
+        clearDomStoragePreference.setEnabled(!clearEverythingBoolean);
+        clearFormDataPreference.setEnabled(!clearEverythingBoolean);
+        clearCachePreference.setEnabled(!clearEverythingBoolean);
 
         // Set the homepage URL as the summary text for the `Homepage` preference when the preference screen is loaded.  The default is `https://duckduckgo.com`.
         homepagePreference.setSummary(savedPreferences.getString("homepage", "https://duckduckgo.com"));
@@ -293,6 +304,41 @@ public class SettingsFragment extends PreferenceFragment {
             fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled);
             hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_ghosted);
             translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted);
+        }
+
+        // Set the `clearEverythingPreference` icon.
+        if (clearEverythingBoolean) {
+            clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled);
+        } else {
+            clearEverythingPreference.setIcon(R.drawable.clear_everything_disabled);
+        }
+
+        // Set the `clearCookiesPreference` icon.
+        if (clearEverythingBoolean || savedPreferences.getBoolean("clear_cookies", true)) {
+            clearCookiesPreference.setIcon(R.drawable.cookies_cleared);
+        } else {
+            clearCookiesPreference.setIcon(R.drawable.cookies_warning);
+        }
+
+        // Set the `clearDomStoragePreference` icon.
+        if (clearEverythingBoolean || savedPreferences.getBoolean("clear_dom_storage", true)) {
+            clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared);
+        } else {
+            clearDomStoragePreference.setIcon(R.drawable.dom_storage_warning);
+        }
+
+        // Set the `clearFormDataPreference` icon.
+        if (clearEverythingBoolean || savedPreferences.getBoolean("clear_form_data", true)) {
+            clearFormDataPreference.setIcon(R.drawable.form_data_cleared);
+        } else {
+            clearFormDataPreference.setIcon(R.drawable.form_data_warning);
+        }
+
+        // Set the `clearCachePreference` icon.
+        if (clearEverythingBoolean || savedPreferences.getBoolean("clear_cache", true)) {
+            clearCachePreference.setIcon(R.drawable.cache_cleared);
+        } else {
+            clearCachePreference.setIcon(R.drawable.cache_warning);
         }
 
         // Set the `swipeToRefreshPreference` icon.
@@ -617,6 +663,88 @@ public class SettingsFragment extends PreferenceFragment {
                             translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled);
                         } else {
                             translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled);
+                        }
+                        break;
+
+                    case "clear_everything":
+                        // Store the new `clear_everything` status
+                        boolean newClearEverythingBoolean = sharedPreferences.getBoolean("clear_everything", true);
+
+                        // Update the status of the `Clear and Exit` preferences.
+                        clearCookiesPreference.setEnabled(!newClearEverythingBoolean);
+                        clearDomStoragePreference.setEnabled(!newClearEverythingBoolean);
+                        clearFormDataPreference.setEnabled(!newClearEverythingBoolean);
+                        clearCachePreference.setEnabled(!newClearEverythingBoolean);
+
+                        // Update the `clearEverythingPreference` icon.
+                        if (newClearEverythingBoolean) {
+                            clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled);
+                        } else {
+                            clearEverythingPreference.setIcon(R.drawable.clear_everything_disabled);
+                        }
+
+                        // Update the `clearCookiesPreference` icon.
+                        if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_cookies", true)) {
+                            clearCookiesPreference.setIcon(R.drawable.cookies_cleared);
+                        } else {
+                            clearCookiesPreference.setIcon(R.drawable.cookies_warning);
+                        }
+
+                        // Update the `clearDomStoragePreference` icon.
+                        if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_dom_storage", true)) {
+                            clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared);
+                        } else {
+                            clearDomStoragePreference.setIcon(R.drawable.dom_storage_warning);
+                        }
+
+                        // Update the `clearFormDataPreference` icon.
+                        if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_form_data", true)) {
+                            clearFormDataPreference.setIcon(R.drawable.form_data_cleared);
+                        } else {
+                            clearFormDataPreference.setIcon(R.drawable.form_data_warning);
+                        }
+
+                        // Update the `clearCachePreference` icon.
+                        if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_cache", true)) {
+                            clearCachePreference.setIcon(R.drawable.cache_cleared);
+                        } else {
+                            clearCachePreference.setIcon(R.drawable.cache_warning);
+                        }
+                        break;
+
+                    case "clear_cookies":
+                        // Update the icon.
+                        if (sharedPreferences.getBoolean("clear_cookies", true)) {
+                            clearCookiesPreference.setIcon(R.drawable.cookies_cleared);
+                        } else {
+                            clearCookiesPreference.setIcon(R.drawable.cookies_warning);
+                        }
+                        break;
+
+                    case "clear_dom_storage":
+                        // Update the icon.
+                        if (sharedPreferences.getBoolean("clear_dom_storage", true)) {
+                            clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared);
+                        } else {
+                            clearDomStoragePreference.setIcon(R.drawable.dom_storage_warning);
+                        }
+                        break;
+
+                    case "clear_form_data":
+                        // Update the icon.
+                        if (sharedPreferences.getBoolean("clear_form_data", true)) {
+                            clearFormDataPreference.setIcon(R.drawable.form_data_cleared);
+                        } else {
+                            clearFormDataPreference.setIcon(R.drawable.form_data_warning);
+                        }
+                        break;
+
+                    case "clear_cache":
+                        // Update the icon.
+                        if (sharedPreferences.getBoolean("clear_cache", true)) {
+                            clearCachePreference.setIcon(R.drawable.cache_cleared);
+                        } else {
+                            clearCachePreference.setIcon(R.drawable.cache_warning);
                         }
                         break;
 
