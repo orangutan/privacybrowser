@@ -2124,7 +2124,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Store the values from `sharedPreferences` in variables.
-        String homepageString = sharedPreferences.getString("homepage", "https://duckduckgo.com");
+        String homepageString = sharedPreferences.getString("homepage", "https://start.duckduckgo.com");
         String torHomepageString = sharedPreferences.getString("tor_homepage", "https://3g2upl4pq6kufc4m.onion");
         String torSearchString = sharedPreferences.getString("tor_search", "https://3g2upl4pq6kufc4m.onion/html/?q=");
         String torSearchCustomURLString = sharedPreferences.getString("tor_search_custom_url", "");
