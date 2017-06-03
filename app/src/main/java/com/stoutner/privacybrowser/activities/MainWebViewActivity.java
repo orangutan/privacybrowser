@@ -138,8 +138,11 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `webViewTitle` is public static so it can be accessed from `CreateBookmarkDialog` and `CreateHomeScreenShortcutDialog`.  It is also used in `onCreate()`.
     public static String webViewTitle;
 
-    // `displayWebpageImagesBoolean` is public static so it can be accessed from `DomainSettingsFragment`.  It is also used in `applyAppSettings` and `applyDomainSettings()`.
+    // `displayWebpageImagesBoolean` is public static so it can be accessed from `DomainSettingsFragment`.  It is also used in `applyAppSettings()` and `applyDomainSettings()`.
     public static boolean displayWebpageImagesBoolean;
+
+    // `reloadOnRestartBoolean` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onRestart()`
+    public static boolean reloadOnRestartBoolean;
 
 
     // `navigatingHistory` is used in `onCreate()`, `onNavigationItemSelected()`, and `applyDomainSettings()`.
@@ -236,9 +239,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
     // `onTheFlyDisplayImagesSet` is used in `applyDomainSettings()` and `setDisplayWebpageImages()`.
     private boolean onTheFlyDisplayImagesSet;
-
-    // `loadingNewIntentBoolean` is used in `onNewIntent()` and `onRestart()`.
-    private boolean loadingNewIntentBoolean;
 
     // `waitingForOrbotData` is used in `onCreate()` and `applyAppSettings()`.
     private String waitingForOrbotHTMLString;
@@ -911,9 +911,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
     @Override
     protected void onNewIntent(Intent intent) {
-        // Set `loadingNewIntentBoolean`.
-        loadingNewIntentBoolean = true;
-
         // Sets the new intent as the activity intent, so that any future `getIntent()`s pick up this one instead of creating a new activity.
         setIntent(intent);
 
@@ -948,12 +945,13 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Set the display webpage images mode.
         setDisplayWebpageImages();
 
-        // Only reload `mainWebView` if not loading a new intent and not waiting for Orbot.
-        if (!loadingNewIntentBoolean && !waitingForOrbot) {
-            // Reload the webpage to remove images if `setDisplayWebpageImages` has turned them off.
+        // Reload the webpage if displaying of images has been disabled in `SettingsFragment`.
+        if (reloadOnRestartBoolean) {
+            // Reload `mainWebView`.
             mainWebView.reload();
-        } else if (loadingNewIntentBoolean) {  // Reset `loadingNewIntentBoolean` if this run comes from a new intent.
-            loadingNewIntentBoolean = false;
+
+            // Reset `reloadOnRestartBoolean`.
+            reloadOnRestartBoolean = false;
         }
     }
 

@@ -38,9 +38,9 @@
     <string name="dom_storage_disabled">Almacenamiento DOM deshabilitado</string>
     <string name="form_data_enabled">Datos de formulario habilitados</string>
     <string name="form_data_disabled">Datos de fromulario deshabilitados</string>
-    <string name="cookies_deleted">Cookies eliminadas</string>
-    <string name="dom_storage_deleted">Almacenamiento DOM eliminado</string>
-    <string name="form_data_deleted">Datos de formulario eliminados</string>
+    <string name="cookies_deleted">Cookies borradas</string>
+    <string name="dom_storage_deleted">Almacenamiento DOM borrado</string>
+    <string name="form_data_deleted">Datos de formulario borrado</string>
     <string name="open_navigation_drawer">Abrir la caja de navegación</string>
     <string name="close_navigation_drawer">Cerrar la caja de navegación</string>
     <string name="no_title">Sin título</string>
@@ -91,13 +91,13 @@
     <string name="back">Atrás</string>
     <string name="forward">Adelante</string>
     <string name="history">Historial</string>
-        <string name="clear_history">Eliminar historial</string>
+        <string name="clear_history">Borrar historial</string>
     <string name="bookmarks">Marcadores</string>
     <string name="downloads">Descargas</string>
     <string name="settings">Configuración</string>
     <string name="guide">Guía</string>
     <string name="about">Acerca de</string>
-    <string name="clear_and_exit">Eliminar y salir</string>
+    <string name="clear_and_exit">Borrar y salir</string>
 
     <!-- MainWebViewActivity Options Menu. -->
     <string name="javascript">Javascript</string>
@@ -105,8 +105,8 @@
     <string name="third_party_cookies">Cookies de terceras partes</string>
     <string name="dom_storage">Almacenamiento DOM</string>
     <string name="form_data">Datos de formulario</string>
-    <string name="clear_cookies">Eliminar cookies</string>
-    <string name="clear_dom_storage">Eliminar almacenamiento DOM</string>
+    <string name="clear_cookies">Borrar cookies</string>
+    <string name="clear_dom_storage">Borrar almacenamiento DOM</string>
     <string name="clear_form_data">Borrar datos de formulario</string>
     <string name="font_size">Tamaño de fuente</string>
         <string name="twenty_five_percent">25%</string>
@@ -171,10 +171,10 @@
     <string name="move_up">Subir</string>
     <string name="move_down">Bajar</string>
     <string name="edit">Editar</string>
-    <string name="delete">Eliminar</string>
+    <string name="delete">Borrar</string>
     <string name="select_all">Selectionar todo</string>
-    <string name="one_bookmark_deleted">1 marcador eliminado</string>
-    <string name="bookmarks_deleted">Marcadores eliminados</string>
+    <string name="one_bookmark_deleted">1 marcador borrado</string>
+    <string name="bookmarks_deleted">Marcadores borrados</string>
     <string name="undo">Deshacer</string>
 
     <!-- Bookmarks Database View. -->
@@ -188,7 +188,7 @@
     <string name="add">Añadir</string>
     <string name="domain_name">Nombre de dominio</string>
     <string name="domain_settings_saved">Configuración de dominio guardada</string>
-    <string name="domain_deleted">Dominio eliminado</string>
+    <string name="domain_deleted">Dominio borrado</string>
     <string name="domain_name_instructions">*. puede ser añadido a un dominio para incluir todos los subdominios (p.ej. *.stoutner.com)</string>
     <string-array name="display_website_images_array">
         <item>Por defecto del sistema</item>
@@ -272,6 +272,16 @@
         <string name="hide_system_bars_summary">Esconder las barras de estado y de navegación en el modo de navegación a pantalla completa.  Esto no funciona bien si el teclado es mostrado durante el modo de navegación a pantalla completa.</string>
         <string name="translucent_navigation_bar">Barra de navegación translúcida</string>
         <string name="translucent_navigation_bar_summary">Hacer la barra de navegación translúcida en el modo de navegación a pantalla completa.</string>
+    <string name="clear_everything">Borrar todo</string>
+    <string name="clear_everything_summary">Borra cookies, almacenamiento DOM, datos de formulario y la caché de  WebView.  A continuación borra manualmente los directorios “app_webview” y “cache”.</string>
+    <string name="clear_cookies_preference">Borrar cookies</string>
+    <string name="clear_cookies_summary">Borra las cookies de primera y terceras partes.</string>
+    <string name="clear_dom_storage_preference">Borrar almacenamiento DOM</string>
+    <string name="clear_dom_storage_summary">Borra el almacenamiento DOM.</string>
+    <string name="clear_form_data_preference">Borrar datos de formulario</string>
+    <string name="clear_form_data_summary">Borra los datos de formulario.</string>
+    <string name="clear_cache">Borrar caché</string>
+    <string name="clear_cache_summary">Borra la caché de WebView’.</string>
     <string name="general">General</string>
         <string name="homepage">Página de inicio</string>
         <string name="default_font_size">Tamaño de fuente por defecto</string>

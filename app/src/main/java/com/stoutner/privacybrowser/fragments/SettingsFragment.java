@@ -30,6 +30,7 @@ import android.view.View;
 import android.webkit.WebView;
 
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
 public class SettingsFragment extends PreferenceFragment {
     private SharedPreferences.OnSharedPreferenceChangeListener preferencesListener;
@@ -777,11 +778,18 @@ public class SettingsFragment extends PreferenceFragment {
                         break;
 
                     case "display_webpage_images":
-                        // Update the icon.
                         if (sharedPreferences.getBoolean("display_webpage_images", true)) {
+                            // Update the icon.
                             displayWebpageImagesPreference.setIcon(R.drawable.images_enabled);
+
+                            // `mainWebView` does not need to be reloaded because unloaded images will load automatically.
+                            MainWebViewActivity.reloadOnRestartBoolean = false;
                         } else {
+                            // Update the icon.
                             displayWebpageImagesPreference.setIcon(R.drawable.images_disabled);
+
+                            // Set `mainWebView` to reload on restart to remove the current images.
+                            MainWebViewActivity.reloadOnRestartBoolean = true;
                         }
                         break;
 
