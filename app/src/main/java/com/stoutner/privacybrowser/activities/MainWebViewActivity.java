@@ -34,6 +34,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -59,7 +60,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.Patterns;
 import android.view.ContextMenu;
 import android.view.GestureDetector;
@@ -298,8 +303,32 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         appBar.setCustomView(R.layout.url_app_bar);
         appBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 
-        // Set the "go" button on the keyboard to load the URL in urlTextBox.
+        // Create a `ForegroundColorSpan` and `StyleSpan` for formatting of `urlTextBox`.  We have to use the deprecated `getColor()` until API >= 23.
+        @SuppressWarnings("deprecation") final ForegroundColorSpan redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
+        final StyleSpan boldStyleSpan = new StyleSpan(Typeface.BOLD);
+
+        // Get a handle for `urlTextBox`.
         urlTextBox = (EditText) appBar.getCustomView().findViewById(R.id.url_edittext);
+
+        // Remove the formatting from `urlTextBar` when the user is editing the text.
+        urlTextBox.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {  // The user is editing `urlTextBox`.
+                    // Remove the formatting.
+                    urlTextBox.getText().removeSpan(redColorSpan);
+                    urlTextBox.getText().removeSpan(boldStyleSpan);
+                } else {  // The user has stopped editing `urlTextBox`.
+                    // Highlight connections that are not encrypted.
+                    if (urlTextBox.getText().toString().startsWith("http://")) {
+                        urlTextBox.getText().setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                        urlTextBox.getText().setSpan(boldStyleSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    }
+                }
+            }
+        });
+
+        // Set the `Go` button on the keyboard to load the URL in `urlTextBox`.
         urlTextBox.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -549,6 +578,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
                     // Hide the keyboard so we can see the navigation menu.  `0` indicates no additional flags.
                     inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
+
+                    // Clear the focus from `urlTextBox` if it has it.
+                    urlTextBox.clearFocus();
                 }
             }
         });
@@ -656,8 +688,17 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     // We need to update `formattedUrlString` at the beginning of the load, so that if the user toggles JavaScript during the load the new website is reloaded.
                     formattedUrlString = url;
 
-                    // Display the loading URL is the URL text box.
-                    urlTextBox.setText(url);
+                    // Setup a `formattedUrlStringBuilder` to format the text in `urlTextBox`.
+                    SpannableStringBuilder formattedUrlStringBuilder = new SpannableStringBuilder(formattedUrlString);
+
+                    // Highlight connections that are not encrypted.
+                    if (formattedUrlString.startsWith("http://")) {
+                        formattedUrlStringBuilder.setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                        formattedUrlStringBuilder.setSpan(boldStyleSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    }
+
+                    // Display the formatted URL text.
+                    urlTextBox.setText(formattedUrlStringBuilder);
 
                     // Apply any custom domain settings if the URL was loaded by navigating history.
                     if (navigatingHistory) {
@@ -696,7 +737,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                         // Set `formattedUrlString` to `""`.
                         formattedUrlString = "";
 
-                        // Update `urlTextBox`.
                         urlTextBox.setText(formattedUrlString);
 
                         // Request focus for `urlTextBox`.
@@ -705,7 +745,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                         // Display the keyboard.
                         inputMethodManager.showSoftInput(urlTextBox, 0);
 
-                        // Apply the domain settings.
+                        // Apply the domain settings.  This clears any settings from the previous domain.
                         applyDomainSettings(formattedUrlString);
                     } else {  // `WebView` has loaded a webpage.
                         // Set `formattedUrlString`.
@@ -713,7 +753,17 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
                         // Only update `urlTextBox` if the user is not typing in it.
                         if (!urlTextBox.hasFocus()) {
-                            urlTextBox.setText(formattedUrlString);
+                            // Setup a `formattedUrlStringBuilder` to format the text in `urlTextBox`.
+                            SpannableStringBuilder formattedUrlStringBuilder = new SpannableStringBuilder(formattedUrlString);
+
+                            // Highlight connections that are not encrypted.
+                            if (formattedUrlString.startsWith("http://")) {
+                                formattedUrlStringBuilder.setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                                formattedUrlStringBuilder.setSpan(boldStyleSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                            }
+
+                            // Display the formatted URL text.
+                            urlTextBox.setText(formattedUrlStringBuilder);
                         }
                     }
 
