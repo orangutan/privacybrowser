@@ -60,7 +60,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
@@ -266,8 +265,20 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `supportAppBar` is used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
     private Toolbar supportAppBar;
 
-    // `urlTextBox` is used in `onCreate()`, `onOptionsItemSelected()`, `loadUrlFromTextBox()`, and `loadUrl()`.
+    // `urlTextBox` is used in `onCreate()`, `onOptionsItemSelected()`, `loadUrlFromTextBox()`, `loadUrl()`, and `highlightUrlText()`.
     private EditText urlTextBox;
+
+    // `redColorSpan` is used in `onCreate()` and `highlightUrlText()`.
+    private ForegroundColorSpan redColorSpan;
+
+    // `initialGrayColorSpan` is sued in `onCreate()` and `highlightUrlText()`.
+    private ForegroundColorSpan initialGrayColorSpan;
+
+    // `finalGrayColorSpam` is used in `onCreate()` and `highlightUrlText()`.
+    private ForegroundColorSpan finalGrayColorSpan;
+
+    // `boldStyleSpan` is used in `onCreate()` and `highlightUrlText()`.
+    private StyleSpan boldStyleSpan;
 
     // `adView` is used in `onCreate()` and `onConfigurationChanged()`.
     private View adView;
@@ -284,6 +295,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     @Override
     // Remove Android Studio's warning about the dangers of using SetJavaScriptEnabled.  The whole premise of Privacy Browser is built around an understanding of these dangers.
     @SuppressLint("SetJavaScriptEnabled")
+    // Remove Android Studio's warning about deprecations.  We have to use the deprecated `getColor()` until API >= 23.
+    @SuppressWarnings("deprecation")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_drawerlayout);
@@ -303,9 +316,11 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         appBar.setCustomView(R.layout.url_app_bar);
         appBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 
-        // Create a `ForegroundColorSpan` and `StyleSpan` for formatting of `urlTextBox`.  We have to use the deprecated `getColor()` until API >= 23.
-        @SuppressWarnings("deprecation") final ForegroundColorSpan redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
-        final StyleSpan boldStyleSpan = new StyleSpan(Typeface.BOLD);
+        // Initialize the `ForegroundColorSpans` and `StyleSpan` for highlighting `urlTextBox`.  We have to use the deprecated `getColor()` until API >= 23.
+        redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
+        initialGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
+        finalGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
+        boldStyleSpan = new StyleSpan(Typeface.BOLD);
 
         // Get a handle for `urlTextBox`.
         urlTextBox = (EditText) appBar.getCustomView().findViewById(R.id.url_edittext);
@@ -315,15 +330,17 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {  // The user is editing `urlTextBox`.
-                    // Remove the formatting.
+                    // Remove the highlighting.
                     urlTextBox.getText().removeSpan(redColorSpan);
+                    urlTextBox.getText().removeSpan(initialGrayColorSpan);
+                    urlTextBox.getText().removeSpan(finalGrayColorSpan);
                     urlTextBox.getText().removeSpan(boldStyleSpan);
                 } else {  // The user has stopped editing `urlTextBox`.
-                    // Highlight connections that are not encrypted.
-                    if (urlTextBox.getText().toString().startsWith("http://")) {
-                        urlTextBox.getText().setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                        urlTextBox.getText().setSpan(boldStyleSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                    }
+                    // Reapply the highlighting.
+                    highlightUrlText();
+
+                    // Scroll to the beginning of the text.
+                    urlTextBox.scrollTo(0, 0);
                 }
             }
         });
@@ -688,17 +705,11 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     // We need to update `formattedUrlString` at the beginning of the load, so that if the user toggles JavaScript during the load the new website is reloaded.
                     formattedUrlString = url;
 
-                    // Setup a `formattedUrlStringBuilder` to format the text in `urlTextBox`.
-                    SpannableStringBuilder formattedUrlStringBuilder = new SpannableStringBuilder(formattedUrlString);
-
-                    // Highlight connections that are not encrypted.
-                    if (formattedUrlString.startsWith("http://")) {
-                        formattedUrlStringBuilder.setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                        formattedUrlStringBuilder.setSpan(boldStyleSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                    }
-
                     // Display the formatted URL text.
-                    urlTextBox.setText(formattedUrlStringBuilder);
+                    urlTextBox.setText(formattedUrlString);
+
+                    // Apply text highlighting to `urlTextBox`.
+                    highlightUrlText();
 
                     // Apply any custom domain settings if the URL was loaded by navigating history.
                     if (navigatingHistory) {
@@ -753,17 +764,11 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
                         // Only update `urlTextBox` if the user is not typing in it.
                         if (!urlTextBox.hasFocus()) {
-                            // Setup a `formattedUrlStringBuilder` to format the text in `urlTextBox`.
-                            SpannableStringBuilder formattedUrlStringBuilder = new SpannableStringBuilder(formattedUrlString);
-
-                            // Highlight connections that are not encrypted.
-                            if (formattedUrlString.startsWith("http://")) {
-                                formattedUrlStringBuilder.setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                                formattedUrlStringBuilder.setSpan(boldStyleSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                            }
-
                             // Display the formatted URL text.
-                            urlTextBox.setText(formattedUrlStringBuilder);
+                            urlTextBox.setText(formattedUrlString);
+
+                            // Apply text highlighting to `urlTextBox`.
+                            highlightUrlText();
                         }
                     }
 
@@ -2560,6 +2565,25 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // `invalidateOptionsMenu` calls `onPrepareOptionsMenu()` and redraws the icons in the `AppBar`.  `this` references the current activity.
         if (runInvalidateOptionsMenu) {
             ActivityCompat.invalidateOptionsMenu(this);
+        }
+    }
+
+    private void highlightUrlText() {
+        String urlString = urlTextBox.getText().toString();
+
+        if (urlString.startsWith("http://")) {  // Highlight connections that are not encrypted.
+            urlTextBox.getText().setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            urlTextBox.getText().setSpan(boldStyleSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        } else if (urlString.startsWith("https://")) {  // Highlight connections that are encrypted.
+            urlTextBox.getText().setSpan(initialGrayColorSpan, 0, 8, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        }
+
+        // Get the index of the `/` immediately after the domain name.
+        int endOfDomainName = urlString.indexOf("/", (urlString.indexOf("//") + 2));
+
+        // De-emphasize the text after the domain name.
+        if (endOfDomainName > 0) {
+            urlTextBox.getText().setSpan(finalGrayColorSpan, endOfDomainName, urlString.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         }
     }
 }
