@@ -340,7 +340,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     highlightUrlText();
 
                     // Scroll to the beginning of the text.
-                    urlTextBox.scrollTo(0, 0);
+                    urlTextBox.setScrollX(0);
                 }
             }
         });
@@ -593,7 +593,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     navigationForwardMenuItem.setEnabled(mainWebView.canGoForward());
                     navigationHistoryMenuItem.setEnabled((mainWebView.canGoBack() || mainWebView.canGoForward()));
 
-                    // Hide the keyboard so we can see the navigation menu.  `0` indicates no additional flags.
+                    // Hide the keyboard (if displayed) so we can see the navigation menu.  `0` indicates no additional flags.
                     inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
 
                     // Clear the focus from `urlTextBox` if it has it.
@@ -1082,6 +1082,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        // Hide the keyboard (if displayed) so we can see the options menu.  `0` indicates no additional flags.
+        inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
+
         // Get handles for the menu items.
         MenuItem toggleFirstPartyCookiesMenuItem = menu.findItem(R.id.toggle_first_party_cookies);
         MenuItem toggleThirdPartyCookiesMenuItem = menu.findItem(R.id.toggle_third_party_cookies);
