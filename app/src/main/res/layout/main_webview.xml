@@ -26,8 +26,7 @@
     android:layout_height="0dp"
     android:layout_width="match_parent"
     android:layout_weight="1"
-    tools:context="com.stoutner.privacybrowser.activities.MainWebViewActivity"
-    tools:showIn="@layout/main_drawerlayout" >
+    tools:context="com.stoutner.privacybrowser.activities.MainWebViewActivity" >
 
     <!-- This `TextView` has an id of `adView` so that the ad commands (which do nothing in the standard flavor) don't produce errors. -->
     <TextView

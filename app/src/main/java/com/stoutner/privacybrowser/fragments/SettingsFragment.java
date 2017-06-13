@@ -73,6 +73,7 @@ public class SettingsFragment extends PreferenceFragment {
         final Preference defaultFontSizePreference = findPreference("default_font_size");
         final Preference swipeToRefreshPreference = findPreference("swipe_to_refresh");
         final Preference displayAdditionalAppBarIconsPreference = findPreference("display_additional_app_bar_icons");
+        final Preference darkThemePreference = findPreference("dark_theme");
         final Preference displayWebpageImagesPreference = findPreference("display_webpage_images");
 
         // Set dependencies.
@@ -354,6 +355,13 @@ public class SettingsFragment extends PreferenceFragment {
             displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled);
         } else {
             displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled);
+        }
+
+        // Set the `darkThemePreference` icon.
+        if (savedPreferences.getBoolean("dark_theme", false)) {
+            darkThemePreference.setIcon(R.drawable.theme_dark);
+        } else {
+            darkThemePreference.setIcon(R.drawable.theme_light);
         }
 
         // Set the `displayWebpageImagesPreference` icon.
@@ -777,6 +785,15 @@ public class SettingsFragment extends PreferenceFragment {
                         }
                         break;
 
+                    case "dark_theme":
+                        // Update the icon.
+                        if (sharedPreferences.getBoolean("dark_theme", false)) {
+                            darkThemePreference.setIcon(R.drawable.theme_dark);
+                        } else {
+                            darkThemePreference.setIcon(R.drawable.theme_light);
+                        }
+                        break;
+
                     case "display_webpage_images":
                         if (sharedPreferences.getBoolean("display_webpage_images", true)) {
                             // Update the icon.
@@ -791,10 +808,6 @@ public class SettingsFragment extends PreferenceFragment {
                             // Set `mainWebView` to reload on restart to remove the current images.
                             MainWebViewActivity.reloadOnRestartBoolean = true;
                         }
-                        break;
-
-                    default:
-                        // If no match, do nothing.
                         break;
                 }
             }

@@ -39,7 +39,7 @@
             android:id="@+id/bookmarks_database_view_appbarlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:theme="@style/AppBarOverlay" >
+            android:theme="@style/PrivacyBrowserAppBarOverlayLight" >
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/bookmarks_database_view_toolbar"
@@ -47,7 +47,7 @@
                 android:layout_width="match_parent"
                 android:background="@color/blue_700"
                 android:theme="@style/DarkAppBar"
-                app:popupTheme="@style/LightPopupOverlay" />
+                app:popupTheme="@style/PrivacyBrowserPopupOverlayLight" />
         </android.support.design.widget.AppBarLayout>
 
         <ListView

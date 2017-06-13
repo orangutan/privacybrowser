@@ -19,9 +19,11 @@
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
 <resources>
+    <!-- Light theme styles. -->
+
     <!-- `android:windowTranslucentStatus` makes the system status bar translucent.
-        When it is specified the root layout should include android:fitsSystemWindows="true". -->
-    <style name="PrivacyBrowser" parent="Theme.AppCompat.Light.NoActionBar">
+        When it is specified the root layout should include `android:fitsSystemWindows="true"`. -->
+    <style name="PrivacyBrowserLight" parent="Theme.AppCompat.Light.NoActionBar" >
         <item name="android:windowTranslucentStatus">true</item>
         <item name="colorAccent">@color/blue_700</item>
         <item name="android:textColorHighlight">@color/blue_200</item>
@@ -29,18 +31,18 @@
 
     <!-- `colorPrimaryDark` goes behind the status bar, which is then darkened by the overlay.
         `windowActionModeOverlay` makes the contextual app bar cover the support app bar. -->
-    <style name="PrivacyBrowser.SecondaryActivity">
+    <style name="PrivacyBrowserLight.SecondaryActivity" >
         <item name="colorPrimaryDark">@color/blue_700</item>
         <item name="android:textColorHighlight">@color/blue_200</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="android:actionModeBackground">@color/blue_700</item>
-        <item name="actionBarPopupTheme">@style/LightPopupOverlay</item>
+        <item name="actionBarPopupTheme">@style/PrivacyBrowserPopupOverlayLight</item>
         <item name="android:spinnerItemStyle">@style/spinnerItemStyle</item>
         <item name="android:spinnerDropDownItemStyle">@style/spinnerDropDownItemStyle</item>
     </style>
 
     <!-- `colorPrimaryDark` is the color of the status bar. -->
-    <style name="Settings" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="Settings" parent="Theme.AppCompat.Light.DarkActionBar" >
         <item name="colorPrimary">@color/blue_700</item>
         <item name="colorPrimaryDark">@color/blue_900</item>
         <item name="colorAccent">@color/blue_700</item>
@@ -49,21 +51,24 @@
     <!-- `ThemeOverlay.AppCompat.Dark.ActionBar` makes the text and the icons in the AppBar white. -->
     <style name="DarkAppBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppBarOverlay" parent="ThemeOverlay.AppCompat.ActionBar" />
+    <!-- `ThemeOverlay.AppCompat.ActionBar` makes the hamburger icons dark. -->
+    <style name="PrivacyBrowserAppBarOverlayLight" parent="ThemeOverlay.AppCompat.ActionBar" />
 
-    <!-- `ThemeOverlay.AppCompat.Light` makes the popups have a white background with black text. -->
-    <style name="LightPopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <!-- `ThemeOverlay.AppCompat.Light` makes the popups have a light background with dark text. -->
+    <style name="PrivacyBrowserPopupOverlayLight" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="LightAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert" >
         <item name="colorAccent">@color/blue_700</item>
     </style>
 
+    <!-- This `Spinner` style is needed to fix a layout bug in Huawei devices running Android 7.0. -->
     <style name="spinnerItemStyle" >
         <item name="android:paddingStart">8dp</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">18sp</item>
     </style>
 
+    <!-- This `Spinner` style is needed to fix a layout bug in Huawei devices running Android 7.0. -->
     <style name="spinnerDropDownItemStyle" >
         <item name="android:paddingStart">16dp</item>
         <item name="android:paddingEnd">16dp</item>
@@ -72,4 +77,29 @@
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">18sp</item>
     </style>
+
+
+    <!-- Dark theme styles. -->
+
+    <!-- `android:windowTranslucentStatus` makes the system status bar translucent.
+        When it is specified the root layout should include `android:fitsSystemWindows="true"`. -->
+    <style name="PrivacyBrowserDark" parent="Theme.AppCompat.NoActionBar" >
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:textColorPrimary">@color/dark_primary_text_color_selector</item>
+        <item name="colorAccent">@color/blue_900</item>
+        <item name="android:textColorHighlight">@color/blue_800</item>
+    </style>
+
+    <!-- `ThemeOverlay.AppCompat.Dark.ActionBar` makes the hamburger icons light. -->
+    <!-- <style name="PrivacyBrowserAppBarOverlayDark" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >
+        <item name="android:background">@color/gray_900</item>
+    </style> -->
+
+    <!-- `ThemeOverlay.AppCompat.Dark` makes the popups have a dark background with light text. -->
+    <!-- <style name="PrivacyBrowserPopupOverlayDark" parent="ThemeOverlay.AppCompat.Dark" /> -->
+
+    <!-- -->
+    <!--<style name="PrivacyBrowserToolbarDark" parent="Widget.AppCompat.Toolbar" >
+        <item name="android:background">@color/gray_900</item>
+    </style> -->
 </resources>

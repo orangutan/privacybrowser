@@ -37,7 +37,6 @@
     <application
         android:label="@string/privacy_browser"
         android:icon="@mipmap/privacy_browser"
-        android:theme="@style/PrivacyBrowser"
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:supportsRtl="true" >
@@ -47,7 +46,8 @@
             android:name="android.webkit.WebView.MetricsOptOut"
             android:value="true" />
 
-        <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes, which preserves scroll location in the WebView.
+        <!-- The theme has to be defined here or an ugly title bar is displayed when the app launches.
+            `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes, which preserves scroll location in the WebView.
             `android:launchMode="singleTask"` makes the app launch in a new task instead of inside the task of the program that sends it an intent.
             It also makes it reuse an existing Privacy Browser activity if available instead of launching a new one.
             `android:persistableMode="persistNever"` removes Privacy Browser from the recents screen on a device reboot.
@@ -55,6 +55,7 @@
         <activity
             android:name=".activities.MainWebViewActivity"
             android:label="@string/privacy_browser"
+            android:theme="@style/PrivacyBrowserLight"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="fullUser"
@@ -83,7 +84,7 @@
         <activity
             android:name=".activities.BookmarksActivity"
             android:label="@string/bookmarks"
-            android:theme="@style/PrivacyBrowser.SecondaryActivity"
+            android:theme="@style/PrivacyBrowserLight.SecondaryActivity"
             android:parentActivityName=".activities.MainWebViewActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullUser"
@@ -96,7 +97,7 @@
         <activity
             android:name=".activities.BookmarksDatabaseViewActivity"
             android:label="@string/bookmarks_database_view"
-            android:theme="@style/PrivacyBrowser.SecondaryActivity"
+            android:theme="@style/PrivacyBrowserLight.SecondaryActivity"
             android:parentActivityName=".activities.BookmarksActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullUser"
@@ -121,7 +122,7 @@
         <activity
             android:name=".activities.DomainsActivity"
             android:label="@string/domains"
-            android:theme="@style/PrivacyBrowser.SecondaryActivity"
+            android:theme="@style/PrivacyBrowserLight.SecondaryActivity"
             android:parentActivityName=".activities.MainWebViewActivity"
             android:screenOrientation="fullUser"
             android:persistableMode="persistNever"
@@ -134,7 +135,7 @@
         <activity
             android:name=".activities.DomainSettingsActivity"
             android:label="@string/domain_settings"
-            android:theme="@style/PrivacyBrowser.SecondaryActivity"
+            android:theme="@style/PrivacyBrowserLight.SecondaryActivity"
             android:parentActivityName=".activities.DomainsActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullUser"
@@ -148,7 +149,7 @@
         <activity
             android:name=".activities.GuideActivity"
             android:label="@string/privacy_browser_guide"
-            android:theme="@style/PrivacyBrowser.SecondaryActivity"
+            android:theme="@style/PrivacyBrowserLight.SecondaryActivity"
             android:parentActivityName=".activities.MainWebViewActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullUser"
@@ -161,7 +162,7 @@
         <activity
             android:name=".activities.AboutActivity"
             android:label="@string/about_privacy_browser"
-            android:theme="@style/PrivacyBrowser.SecondaryActivity"
+            android:theme="@style/PrivacyBrowserLight.SecondaryActivity"
             android:parentActivityName=".activities.MainWebViewActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullUser"

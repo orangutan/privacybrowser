@@ -18,7 +18,7 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<!-- These color resources are hardcoded for vector drawables.  Once the minimum API is >= 22 we can remove the hardcoded colors and reference these entries. -->
+<!-- Colors are currently hardcoded in the vector drawables.  Once the minimum API is >= 22 we can remove the hardcoded colors and reference these entries. -->
 <resources>
     <color name="semi_transparent_black">#66000000</color>
 
@@ -38,11 +38,22 @@
 
     <color name="blue_gray_500">#FF607D8B</color>
 
+    <color name="dark_blue_65">#FF1766A6</color>
+    <color name="dark_blue_55">#FF14568C</color>
+    <color name="dark_blue_40">#FF0E3F66</color>
+    <color name="dark_blue_30">#FF002A4D</color>
+    <color name="dark_blue_15">#FF001C33</color>
+
+    <color name="dark_green_15">#FF163317</color>
+
     <color name="gray_100">#FFF5F5F5</color>
+    <color name="gray_300">#FFE0E0E0</color>
     <color name="gray_500">#FF9E9E9E</color>
+    <color name="gray_900">#FF212121</color>
 
     <color name="green_50">#FFE8F5E9</color>
     <color name="green_100">#FFC8E6C9</color>
+    <color name="green_200">#FFA5D6A7</color>
 
     <color name="light_green_100">#FFDCEDC8</color>
     <color name="light_green_a700">#FF64DD17</color>

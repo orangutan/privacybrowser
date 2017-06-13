@@ -347,6 +347,8 @@
         <string name="swipe_to_refresh_enabled_summary">Some websites don’t work well if swipe to refresh is enabled.</string>
         <string name="display_additional_app_bar_icons">Display additional app bar icons</string>
         <string name="display_additional_app_bar_icons_summary">Display icons for toggling cookies, DOM storage, and form data in the app bar if there is room.</string>
+        <string name="dark_theme">Dark theme</string>
+        <string name="dark_theme_summary">Privacy Browser must be restarted for the new theme to take effect.</string>
         <string name="display_webpage_images">Display webpage images</string>
         <string name="display_webpage_images_summary">Disable to conserve bandwidth.</string>
 

@@ -226,6 +226,12 @@
             android:defaultValue="false" />
 
         <SwitchPreference
+            android:key="dark_theme"
+            android:title="@string/dark_theme"
+            android:summary="@string/dark_theme_summary"
+            android:defaultValue="false" />
+
+        <SwitchPreference
             android:key="display_webpage_images"
             android:title="@string/display_webpage_images"
             android:summary="@string/display_webpage_images_summary"

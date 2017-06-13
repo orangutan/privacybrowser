@@ -122,9 +122,6 @@ import java.util.Set;
 public class MainWebViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CreateHomeScreenShortcutDialog.CreateHomeScreenSchortcutListener,
         SslCertificateErrorDialog.SslCertificateErrorListener, DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, UrlHistoryDialog.UrlHistoryListener {
 
-    // `appBar` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onOptionsItemSelected()`, `closeFindOnPage()`, and `applyAppSettings()`.
-    public static ActionBar appBar;
-
     // `favoriteIconBitmap` is public static so it can be accessed from `CreateHomeScreenShortcutDialog`, `BookmarksActivity`, `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`, `ViewSslCertificateDialog`.
     // It is also used in `onCreate()`, `onCreateHomeScreenShortcutCreate()`, and `applyDomainSettings`.
     public static Bitmap favoriteIconBitmap;
@@ -148,6 +145,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `reloadOnRestartBoolean` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onRestart()`
     public static boolean reloadOnRestartBoolean;
 
+
+    // `appBar` is used in `onCreate()`, `onOptionsItemSelected()`, `closeFindOnPage()`, and `applyAppSettings()`.
+    private ActionBar appBar;
 
     // `navigatingHistory` is used in `onCreate()`, `onNavigationItemSelected()`, and `applyDomainSettings()`.
     private boolean navigatingHistory;
@@ -292,14 +292,37 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `mainWebViewRelativeLayout` is used in `onCreate()` and `onNavigationItemSelected()`.
     private RelativeLayout mainWebViewRelativeLayout;
 
+    // `darkTheme` is used in `onCreate()`, `applyAppSettings()`, and `applyDomainSettings()`.
+    private boolean darkTheme;
+
     @Override
     // Remove Android Studio's warning about the dangers of using SetJavaScriptEnabled.  The whole premise of Privacy Browser is built around an understanding of these dangers.
     @SuppressLint("SetJavaScriptEnabled")
     // Remove Android Studio's warning about deprecations.  We have to use the deprecated `getColor()` until API >= 23.
     @SuppressWarnings("deprecation")
     protected void onCreate(Bundle savedInstanceState) {
+        // Get a handle for `sharedPreferences`.  `this` references the current context.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Get the theme preference.
+        darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+
+        // Set the activity theme.
+        if (darkTheme) {
+            setTheme(R.style.PrivacyBrowserDark);
+        } else {
+            setTheme(R.style.PrivacyBrowserLight);
+        }
+
+        // Run the default commands.
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_drawerlayout);
+
+        // Set the content view according to the theme..
+        if (darkTheme) {
+            setContentView(R.layout.main_drawerlayout_dark);
+        } else {
+            setContentView(R.layout.main_drawerlayout_light);
+        }
 
         // Get a handle for `inputMethodManager`.
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -2218,6 +2241,13 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             // Set the proxy.  `this` refers to the current activity where an `AlertDialog` might be displayed.
             OrbotProxyHelper.setProxy(getApplicationContext(), this, "localhost", "8118");
 
+            // Set the `appBar` background to indicate proxying through Orbot is enabled.  `this` refers to the context.
+            if (darkTheme) {
+                appBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.dark_blue_30));
+            } else {
+                appBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.blue_50));
+            }
+
             // Display a message to the user if we are waiting on Orbot.
             if (!orbotStatus.equals("ON")) {
                 // Set `waitingForOrbot`.
@@ -2244,6 +2274,13 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
             // Reset the proxy to default.  The host is `""` and the port is `"0"`.
             OrbotProxyHelper.setProxy(getApplicationContext(), this, "", "0");
+
+            // Set the default `appBar` background.  `this` refers to the context.
+            if (darkTheme) {
+                appBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.gray_900));
+            } else {
+                appBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.gray_100));
+            }
 
             // Reset `waitingForOrbot.
             waitingForOrbot = false;
@@ -2444,7 +2481,11 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 }
 
                 // Set a green background on `urlTextBox` to indicate that custom domain settings are being used.  We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
-                urlAppBarRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_green));
+                if (darkTheme) {
+                    urlAppBarRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_dark_blue));
+                } else {
+                    urlAppBarRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_light_green));
+                }
             } else {  // The URL we are loading does not have custom domain settings.  Load the defaults.
                 // Store the values from `sharedPreferences` in variables.
                 javaScriptEnabled = sharedPreferences.getBoolean("javascript_enabled", false);

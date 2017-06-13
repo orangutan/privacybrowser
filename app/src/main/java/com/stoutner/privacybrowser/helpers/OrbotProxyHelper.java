@@ -25,7 +25,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Proxy;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.ArrayMap;
 import android.util.Log;
@@ -77,9 +76,6 @@ public class OrbotProxyHelper {
         }
 
         if (proxyPort.equals("8118")) {  // Orbot proxy was turned on.
-            // Set the `appBar` background to be light blue if Orbot proxy support is enabled.
-            MainWebViewActivity.appBar.setBackgroundDrawable(ContextCompat.getDrawable(privacyBrowserContext, R.color.blue_50));
-
             try {  // Check to see if Orbot is installed.
                 PackageManager packageManager = privacyBrowserContext.getPackageManager();
                 packageManager.getPackageInfo("org.torproject.android", PackageManager.GET_ACTIVITIES);
@@ -113,8 +109,6 @@ public class OrbotProxyHelper {
                 AlertDialog alertDialog = dialogBuilder.create();
                 alertDialog.show();
             }
-        } else {  // Otherwise set the default grey `appBar` background.
-            MainWebViewActivity.appBar.setBackgroundDrawable(ContextCompat.getDrawable(privacyBrowserContext, R.color.gray_100));
         }
     }
 }

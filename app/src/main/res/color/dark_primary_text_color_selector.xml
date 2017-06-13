@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright 2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -18,13 +18,9 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<shape
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle" >
-
-        <solid
-            android:color="@color/green_100" />
-
-        <corners
-            android:radius="10dp" />
-</shape>
+<!-- Change the dark theme enabled text from white to gray. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!-- `#4Dffffff` comes from the built-in `@color/primary_text_disabled_material_dark`. -->
+    <item android:state_enabled="false" android:color="#4Dffffff" />
+    <item android:color="@color/gray_300" />
+</selector>

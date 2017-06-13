@@ -44,11 +44,12 @@
             android:layout_width="match_parent"
             android:orientation="vertical" >
 
+            <!-- The `AppBarLayout` theme has to be defined here because the activity uses a `NoActionBar` theme. -->
             <android.support.design.widget.AppBarLayout
                 android:id="@+id/app_bar_layout"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:theme="@style/AppBarOverlay" >
+                android:theme="@style/PrivacyBrowserAppBarOverlayLight" >
 
                 <!-- The `FrameLayout` allows `appBar` and `find_on_page_app_bar` to occupy the same space. -->
                 <FrameLayout
@@ -58,9 +59,7 @@
                     <android.support.v7.widget.Toolbar
                         android:id="@+id/app_bar"
                         android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:background="@color/gray_100"
-                        app:popupTheme="@style/LightPopupOverlay" />
+                        android:layout_width="match_parent" />
 
                     <!-- `android:max` changes the maximum `ProgressBar` value from 10000 to 100 to match progress percentage.
                         `android:layout_height="2dp"` works best for API >= 23, but `3dp` is required for visibility on API <= 22.
@@ -99,7 +98,7 @@
         android:layout_height="match_parent"
         android:layout_width="wrap_content"
         android:layout_gravity="start"
-        app:headerLayout="@layout/navigation_header"
+        app:headerLayout="@layout/navigation_header_light"
         app:menu="@menu/webview_navigation_menu"
         app:itemIconTint="@color/blue_800" />
 </android.support.v4.widget.DrawerLayout>
