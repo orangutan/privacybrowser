@@ -149,7 +149,6 @@
         <activity
             android:name=".activities.GuideActivity"
             android:label="@string/privacy_browser_guide"
-            android:theme="@style/PrivacyBrowserLight.SecondaryActivity"
             android:parentActivityName=".activities.MainWebViewActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullUser"

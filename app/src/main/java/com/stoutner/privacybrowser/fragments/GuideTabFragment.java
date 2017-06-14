@@ -19,6 +19,8 @@
 
 package com.stoutner.privacybrowser.fragments;
 
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -27,6 +29,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
 public class GuideTabFragment extends Fragment {
     // `tabNumber` is used in `onCreate()` and `onCreateView()`.
@@ -52,10 +55,34 @@ public class GuideTabFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.
-        // The fragment will take care of attaching the root automatically.
-        View tabLayout = inflater.inflate(R.layout.guide_tab_webview, container, false);
+        // Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.  The fragment will take care of attaching the root automatically.
+        View tabLayout = inflater.inflate(R.layout.bare_webview, container, false);
+
+        // Get a handle for `tabWebView`.
         WebView tabWebView = (WebView) tabLayout;
+
+        // Filter the colors if `darkTheme` is `true`.
+        if (MainWebViewActivity.darkTheme) {
+            // Initialize `darkPaint`.
+            Paint darkPaint = new Paint();
+
+            // Setup a float array that inverts and tempers the colors (no hard whites or blacks).
+            float[] darkFilterFloatArray = {
+                    -.8f, 0, 0, 0, 255,  // Red.
+                    0, -.8f, 0, 0, 255,  // Green.
+                    0, 0, -.8f, 0, 255,  // Blue.
+                    0, 0, 0, .8f, 0      // Alpha.
+            };
+
+            // Set `darkPaint` to use `darkFilterFloatArray`.
+            darkPaint.setColorFilter(new ColorMatrixColorFilter(darkFilterFloatArray));
+
+            // Apply `darkPaint` to `tabWebView`.
+            tabWebView.setLayerType(View.LAYER_TYPE_HARDWARE, darkPaint);
+        } else {
+            // Reset `tabWebView` to use the normal colors.
+            tabWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        }
 
         // Tab numbers start at 0.
         switch (tabNumber) {

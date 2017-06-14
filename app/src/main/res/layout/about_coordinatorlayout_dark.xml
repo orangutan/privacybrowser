@@ -28,19 +28,20 @@
     android:layout_width="match_parent"
     android:fitsSystemWindows="true" >
 
-    <!-- the LinearLayout with orientation="vertical" moves the ViewPager below the AppBarLayout. -->
+    <!-- The `LinearLayout` with `orientation="vertical"` moves the `ViewPager` below the `AppBarLayout`. -->
     <LinearLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:orientation="vertical" >
 
-        <!-- We need to set android:background="@color/blue_700" here or any space to the right of the TabLayout on large devices will be white. -->
+        <!-- We need to set `android:background="?attr/colorPrimaryDark"` here or any space to the right of the `TabLayout` on large devices will be black. -->
         <android.support.design.widget.AppBarLayout
             android:id="@+id/about_appbarlayout"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent" >
+            android:layout_width="match_parent"
+            android:background="?attr/colorPrimaryDark" >
 
-            <!-- android:theme="@style/PrivacyBrowser.AppBarDark" makes the text and icons in the AppBar white. -->
+            <!-- `android:theme="@style/PrivacyBrowserAppBarDark"` makes the text and icons in the `AppBar` gray. -->
             <android.support.v7.widget.Toolbar
                 android:id="@+id/about_toolbar"
                 android:layout_height="wrap_content"
@@ -48,19 +49,18 @@
                 android:background="?attr/colorPrimaryDark"
                 android:theme="@style/PrivacyBrowserAppBarDark" />
 
+            <!-- For some reason `tabIndicatorColor` does not pull from the style unless specified explicitly here. -->
             <android.support.design.widget.TabLayout
                 android:id="@+id/about_tablayout"
                 xmlns:android.support.design="http://schemas.android.com/apk/res-auto"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android.support.design:tabBackground="?attr/colorPrimaryDark"
-                android.support.design:tabTextColor="@color/blue_700"
-                android.support.design:tabSelectedTextColor="?android:attr/textColorPrimary"
-                android.support.design:tabIndicatorColor="?android:attr/textColorPrimary"
-                android.support.design:tabMode="scrollable" />
+                android.support.design:tabMode="scrollable"
+                android.support.design:tabIndicatorColor="?attr/tabIndicatorColor"
+                android:theme="@style/PrivacyBrowserTabLayoutDark" />
         </android.support.design.widget.AppBarLayout>
 
-        <!-- android:layout_weight="1" makes about_viewpager fill the rest of the screen. -->
+        <!-- `android:layout_weight="1"` makes `about_viewpager` fill the rest of the screen. -->
         <android.support.v4.view.ViewPager
             android:id="@+id/about_viewpager"
             android:layout_width="match_parent"

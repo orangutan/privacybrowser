@@ -55,6 +55,13 @@
     <!-- `ThemeOverlay.AppCompat.Light` makes the popups have a light background with dark text. -->
     <style name="PrivacyBrowserPopupsLight" parent="ThemeOverlay.AppCompat.Light" />
 
+    <!-- Configure the About and Guide `TabLayouts`. -->
+    <style name="PrivacyBrowserTabLayoutLight" parent="Widget.Design.TabLayout" >
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/blue_100</item>
+        <item name="tabIndicatorColor">@color/white</item>
+    </style>
+
     <style name="LightAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert" >
         <item name="colorAccent">@color/blue_700</item>
     </style>
@@ -77,6 +84,13 @@
     <!-- `ThemeOverlay.AppCompat.Dark.ActionBar` makes the text and the icons in the AppBar white. -->
     <style name="PrivacyBrowserAppBarDark" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >
         <item name="android:textColorPrimary">@color/gray_300</item>
+    </style>
+
+    <!-- Configure the About and Guide `TabLayouts`. -->
+    <style name="PrivacyBrowserTabLayoutDark" parent="Widget.Design.TabLayout" >
+        <item name="tabBackground">@color/blue_900</item>
+        <item name="android:textColorSecondary">@color/blue_700</item>
+        <item name="tabIndicatorColor">@color/gray_300</item>
     </style>
 
     <!-- `ThemeOverlay.AppCompat.Dark` makes the popups have a dark background with light text. -->

@@ -35,8 +35,22 @@ import com.stoutner.privacybrowser.R;
 public class GuideActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Set the theme.
+        if (MainWebViewActivity.darkTheme) {
+            setTheme(R.style.PrivacyBrowserDark_SecondaryActivity);
+        } else {
+            setTheme(R.style.PrivacyBrowserLight_SecondaryActivity);
+        }
+
+        // Run the default commands.
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.guide_coordinatorlayout);
+
+        // Set the content view according to the theme.
+        if (MainWebViewActivity.darkTheme) {
+            setContentView(R.layout.guide_coordinatorlayout_dark);
+        } else {
+            setContentView(R.layout.guide_coordinatorlayout_light);
+        }
 
         // We need to use `SupportActionBar` from `android.support.v7.app.ActionBar` until the minimum API is >= 21.
         Toolbar guideAppBar = (Toolbar) findViewById(R.id.guide_toolbar);

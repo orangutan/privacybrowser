@@ -6,7 +6,7 @@
     android:viewportHeight="24.0"
     android:viewportWidth="24.0" >
 
-    <!-- We have to use a hard coded color code until API >= 21.  Then we can use `@color`. -->
+    <!-- We have to use a hard coded color until API >= 21.  Then we can use `@color`. -->
     <path
         android:fillColor="#FFBBDEFB"
         android:pathData="M8,11h3v10h2V11h3l-4,-4 -4,4zM4,3v2h16V3H4z"/>

@@ -11,7 +11,7 @@
     android:autoMirrored="true"
     tools:ignore="VectorRaster" >
 
-    <!-- We have to use a hard coded color code until API >= 21.  Then we can use `@color`. -->
+    <!-- We have to use a hard coded color until API >= 21.  Then we can use `@color`. -->
     <path
         android:fillColor="#FF000000"
         android:pathData="M12,4l-1.41,1.41L16.17,11H4v2h12.17l-5.58,5.59L12,20l8,-8z" />
