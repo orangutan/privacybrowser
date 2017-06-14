@@ -122,6 +122,9 @@ import java.util.Set;
 public class MainWebViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CreateHomeScreenShortcutDialog.CreateHomeScreenSchortcutListener,
         SslCertificateErrorDialog.SslCertificateErrorListener, DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, UrlHistoryDialog.UrlHistoryListener {
 
+    // `darkTheme` is public static so it can be accessed from `AboutActivity`.  It is also used in `onCreate()`, `applyAppSettings()`, and `applyDomainSettings()`.
+    public static boolean darkTheme;
+
     // `favoriteIconBitmap` is public static so it can be accessed from `CreateHomeScreenShortcutDialog`, `BookmarksActivity`, `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`, `ViewSslCertificateDialog`.
     // It is also used in `onCreate()`, `onCreateHomeScreenShortcutCreate()`, and `applyDomainSettings`.
     public static Bitmap favoriteIconBitmap;
@@ -292,9 +295,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `mainWebViewRelativeLayout` is used in `onCreate()` and `onNavigationItemSelected()`.
     private RelativeLayout mainWebViewRelativeLayout;
 
-    // `darkTheme` is used in `onCreate()`, `applyAppSettings()`, and `applyDomainSettings()`.
-    private boolean darkTheme;
-
     @Override
     // Remove Android Studio's warning about the dangers of using SetJavaScriptEnabled.  The whole premise of Privacy Browser is built around an understanding of these dangers.
     @SuppressLint("SetJavaScriptEnabled")
@@ -317,7 +317,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Run the default commands.
         super.onCreate(savedInstanceState);
 
-        // Set the content view according to the theme..
+        // Set the content view according to the theme.
         if (darkTheme) {
             setContentView(R.layout.main_drawerlayout_dark);
         } else {

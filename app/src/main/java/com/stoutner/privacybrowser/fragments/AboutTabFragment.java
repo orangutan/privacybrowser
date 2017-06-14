@@ -22,6 +22,8 @@ package com.stoutner.privacybrowser.fragments;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -36,6 +38,7 @@ import android.widget.TextView;
 
 import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -74,9 +77,12 @@ public class AboutTabFragment extends Fragment {
 
         // Load the tabs.  Tab numbers start at 0.
         if (tabNumber == 0) {  // Load the about tab.
-            // Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.
-            // The fragment will take care of attaching the root automatically.
-            tabLayout = inflater.inflate(R.layout.about_tab_version, container, false);
+            // Inflate the layout according to the theme.  Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.  The fragment will take care of attaching the root automatically.
+            if (MainWebViewActivity.darkTheme) {
+                tabLayout = inflater.inflate(R.layout.about_tab_version_dark, container, false);
+            } else {
+                tabLayout = inflater.inflate(R.layout.about_tab_version_light, container, false);
+            }
 
             // Get handles for the `TextViews`.
             TextView versionNumberTextView = (TextView) tabLayout.findViewById(R.id.about_version_number);
@@ -158,8 +164,17 @@ public class AboutTabFragment extends Fragment {
             SpannableStringBuilder webKitStringBuilder = new SpannableStringBuilder(webKitLabel + webKit);
             SpannableStringBuilder chromeStringBuilder = new SpannableStringBuilder(chromeLabel + chrome);
 
-            // Create a blue `ForegroundColorSpan`.  We have to use the deprecated `getColor()` until API >= 23.
-            @SuppressWarnings("deprecation") ForegroundColorSpan blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
+            // Create the `blueColorSpan` variable.
+            ForegroundColorSpan blueColorSpan;
+
+            // Set `blueColorSpan` according to the theme.  We have to use the deprecated `getColor()` until API >= 23.
+            if (MainWebViewActivity.darkTheme) {
+                //noinspection deprecation
+                blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
+            } else {
+                //noinspection deprecation
+                blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
+            }
 
             // Setup the spans to display the device information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
             brandStringBuilder.setSpan(blueColorSpan, brandLabel.length(), brandStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
@@ -273,10 +288,34 @@ public class AboutTabFragment extends Fragment {
                 // Do nothing if `PackageManager` says Privacy Browser isn't installed.
             }
         } else { // load a WebView for all the other tabs.  Tab numbers start at 0.
-            // Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.
-            // The fragment will take care of attaching the root automatically.
+            // Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.  The fragment will take care of attaching the root automatically.
             tabLayout = inflater.inflate(R.layout.bare_webview, container, false);
+
+            // Get a handle for `tabWebView`.
             WebView tabWebView = (WebView) tabLayout;
+
+            // Filter the colors if `darkTheme` is `true`.
+            if (MainWebViewActivity.darkTheme) {
+                // Initialize `darkPaint`.
+                Paint darkPaint = new Paint();
+
+                // Setup a float array that inverts and tempers the colors (no hard whites or blacks).
+                float[] darkFilterFloatArray = {
+                        -.8f, 0, 0, 0, 255,  // Red.
+                        0, -.8f, 0, 0, 255,  // Green.
+                        0, 0, -.8f, 0, 255,  // Blue.
+                        0, 0, 0, .8f, 0      // Alpha.
+                };
+
+                // Set `darkPaint` to use `darkFilterFloatArray`.
+                darkPaint.setColorFilter(new ColorMatrixColorFilter(darkFilterFloatArray));
+
+                // Apply `darkPaint` to `tabWebView`.
+                tabWebView.setLayerType(View.LAYER_TYPE_HARDWARE, darkPaint);
+            } else {
+                // Reset `tabWebView` to use the normal colors.
+                tabWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            }
 
             switch (tabNumber) {
                 case 1:

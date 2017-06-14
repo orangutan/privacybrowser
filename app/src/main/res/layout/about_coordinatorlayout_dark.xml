@@ -22,51 +22,47 @@
   When it is specified the theme should include <item name="android:windowTranslucentStatus">true</item>
   to make the status bar a transparent, darkened overlay. -->
 <android.support.design.widget.CoordinatorLayout
-    android:id="@+id/guide_coordinatorlayout"
+    android:id="@+id/about_coordinatorlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:fitsSystemWindows="true" >
 
     <!-- the LinearLayout with orientation="vertical" moves the ViewPager below the AppBarLayout. -->
     <LinearLayout
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_width="match_parent"
         android:orientation="vertical" >
 
         <!-- We need to set android:background="@color/blue_700" here or any space to the right of the TabLayout on large devices will be white. -->
         <android.support.design.widget.AppBarLayout
-            android:id="@+id/guide_appbarlayout"
+            android:id="@+id/about_appbarlayout"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:background="@color/blue_700"
-            android:theme="@style/PrivacyBrowserAppBarLight" >
+            android:layout_width="match_parent" >
 
-            <!-- android:theme="@style/PrivacyBrowser.DarkAppBar" makes the text and icons in the AppBar white. -->
+            <!-- android:theme="@style/PrivacyBrowser.AppBarDark" makes the text and icons in the AppBar white. -->
             <android.support.v7.widget.Toolbar
-                android:id="@+id/guide_toolbar"
-                android:layout_width="match_parent"
+                android:id="@+id/about_toolbar"
                 android:layout_height="wrap_content"
-                android:background="@color/blue_700"
-                android:theme="@style/PrivacyBrowserAppBarWhiteText"
-                app:popupTheme="@style/PrivacyBrowserPopupsLight" />
+                android:layout_width="match_parent"
+                android:background="?attr/colorPrimaryDark"
+                android:theme="@style/PrivacyBrowserAppBarDark" />
 
             <android.support.design.widget.TabLayout
-                android:id="@+id/guide_tablayout"
+                android:id="@+id/about_tablayout"
                 xmlns:android.support.design="http://schemas.android.com/apk/res-auto"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android.support.design:tabBackground="@color/blue_700"
-                android.support.design:tabTextColor="@color/blue_100"
-                android.support.design:tabSelectedTextColor="@color/white"
-                android.support.design:tabIndicatorColor="@color/white"
+                android.support.design:tabBackground="?attr/colorPrimaryDark"
+                android.support.design:tabTextColor="@color/blue_700"
+                android.support.design:tabSelectedTextColor="?android:attr/textColorPrimary"
+                android.support.design:tabIndicatorColor="?android:attr/textColorPrimary"
                 android.support.design:tabMode="scrollable" />
         </android.support.design.widget.AppBarLayout>
 
         <!-- android:layout_weight="1" makes about_viewpager fill the rest of the screen. -->
         <android.support.v4.view.ViewPager
-            android:id="@+id/guide_viewpager"
+            android:id="@+id/about_viewpager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />

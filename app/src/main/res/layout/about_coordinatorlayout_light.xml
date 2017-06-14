@@ -24,7 +24,6 @@
 <android.support.design.widget.CoordinatorLayout
     android:id="@+id/about_coordinatorlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:fitsSystemWindows="true" >
@@ -39,25 +38,22 @@
         <android.support.design.widget.AppBarLayout
             android:id="@+id/about_appbarlayout"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:background="@color/blue_700"
-            android:theme="@style/PrivacyBrowserAppBarOverlayLight" >
+            android:layout_width="match_parent" >
 
-            <!-- android:theme="@style/PrivacyBrowser.DarkAppBar" makes the text and icons in the AppBar white. -->
+            <!-- android:theme="@style/PrivacyBrowser.AppBarDark" makes the text and icons in the AppBar white. -->
             <android.support.v7.widget.Toolbar
                 android:id="@+id/about_toolbar"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:background="@color/blue_700"
-                android:theme="@style/DarkAppBar"
-                app:popupTheme="@style/PrivacyBrowserPopupOverlayLight" />
+                android:background="?attr/colorPrimaryDark"
+                android:theme="@style/PrivacyBrowserAppBarWhiteText" />
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/about_tablayout"
                 xmlns:android.support.design="http://schemas.android.com/apk/res-auto"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android.support.design:tabBackground="@color/blue_700"
+                android.support.design:tabBackground="?attr/colorPrimaryDark"
                 android.support.design:tabTextColor="@color/blue_100"
                 android.support.design:tabSelectedTextColor="@color/white"
                 android.support.design:tabIndicatorColor="@color/white"

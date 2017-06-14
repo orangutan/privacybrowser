@@ -49,7 +49,7 @@
                 android:id="@+id/app_bar_layout"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:theme="@style/PrivacyBrowserAppBarOverlayLight" >
+                android:theme="@style/PrivacyBrowserAppBarLight" >
 
                 <!-- The `FrameLayout` allows `appBar` and `find_on_page_app_bar` to occupy the same space. -->
                 <FrameLayout

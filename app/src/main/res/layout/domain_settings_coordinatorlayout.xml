@@ -36,7 +36,7 @@
         <android.support.design.widget.AppBarLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:theme="@style/PrivacyBrowserAppBarOverlayLight" >
+            android:theme="@style/PrivacyBrowserAppBarLight" >
 
             <!-- `android:theme="@style/PrivacyBrowser.DarkAppBar"1 makes the text and icons in the `AppBar` white. -->
             <android.support.v7.widget.Toolbar
@@ -44,8 +44,8 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:background="@color/blue_700"
-                android:theme="@style/DarkAppBar"
-                app:popupTheme="@style/PrivacyBrowserPopupOverlayLight" />
+                android:theme="@style/PrivacyBrowserAppBarWhiteText"
+                app:popupTheme="@style/PrivacyBrowserPopupsLight" />
         </android.support.design.widget.AppBarLayout>
 
         <ScrollView
