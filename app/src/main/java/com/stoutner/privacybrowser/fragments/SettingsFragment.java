@@ -20,6 +20,7 @@
 package com.stoutner.privacybrowser.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -792,6 +793,18 @@ public class SettingsFragment extends PreferenceFragment {
                         } else {
                             darkThemePreference.setIcon(R.drawable.theme_light);
                         }
+
+                        // Create an `Intent` to restart Privacy Browser.
+                        Intent intent = getActivity().getParentActivityIntent();
+
+                        // Assert that `intent` is not `null` to remove the lint error below.
+                        assert intent != null;
+
+                        // `Intent.FLAG_ACTIVITY_CLEAR_TASK` removes all activities from the stack.  It requires `Intent.FLAG_ACTIVITY_NEW_TASK`.
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+                        // Make it so.
+                        startActivity(intent);
                         break;
 
                     case "display_webpage_images":

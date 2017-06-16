@@ -34,20 +34,20 @@
         android:layout_width="match_parent"
         android:orientation="vertical" >
 
-        <!-- We need to set `android:background="?attr/colorPrimaryDark"` here or any space to the right of the `TabLayout` on large devices will be black. -->
+        <!-- We need to set `android:background="?attr/colorPrimaryDark"` here or any space to the right of the `TabLayout` on large devices will be the theme background color. -->
         <android.support.design.widget.AppBarLayout
             android:id="@+id/about_appbarlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:background="?attr/colorPrimaryDark" >
 
-            <!-- `android:theme="@style/PrivacyBrowserAppBarDark"` makes the text and icons in the `AppBar` gray. -->
+            <!-- `android:theme="?attr/appBarTextTheme"` sets the color of the text and icons in the `AppBar`. -->
             <android.support.v7.widget.Toolbar
                 android:id="@+id/about_toolbar"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:background="?attr/colorPrimaryDark"
-                android:theme="@style/PrivacyBrowserAppBarDark" />
+                android:theme="?attr/appBarTextTheme" />
 
             <!-- For some reason `tabIndicatorColor` does not pull from the style unless specified explicitly here. -->
             <android.support.design.widget.TabLayout
@@ -57,7 +57,7 @@
                 android:layout_width="match_parent"
                 android.support.design:tabMode="scrollable"
                 android.support.design:tabIndicatorColor="?attr/tabIndicatorColor"
-                android:theme="@style/PrivacyBrowserTabLayoutDark" />
+                android:theme="?attr/tabLayoutTheme" />
         </android.support.design.widget.AppBarLayout>
 
         <!-- `android:layout_weight="1"` makes `about_viewpager` fill the rest of the screen. -->

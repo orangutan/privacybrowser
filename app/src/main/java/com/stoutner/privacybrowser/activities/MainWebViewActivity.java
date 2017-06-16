@@ -317,12 +317,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Run the default commands.
         super.onCreate(savedInstanceState);
 
-        // Set the content view according to the theme.
-        if (darkTheme) {
-            setContentView(R.layout.main_drawerlayout_dark);
-        } else {
-            setContentView(R.layout.main_drawerlayout_light);
-        }
+        // Set the content view.
+        setContentView(R.layout.main_drawerlayout);
 
         // Get a handle for `inputMethodManager`.
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -2525,7 +2521,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 }
 
                 // Set a transparent background on `urlTextBox`.  We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
-                urlAppBarRelativeLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.url_bar_background_transparent));
+                urlAppBarRelativeLayout.setBackgroundDrawable(getResources().getDrawable(R.color.transparent));
             }
 
             // Close `domainsDatabaseHelper`.

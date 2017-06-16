@@ -77,12 +77,8 @@ public class AboutTabFragment extends Fragment {
 
         // Load the tabs.  Tab numbers start at 0.
         if (tabNumber == 0) {  // Load the about tab.
-            // Inflate the layout according to the theme.  Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.  The fragment will take care of attaching the root automatically.
-            if (MainWebViewActivity.darkTheme) {
-                tabLayout = inflater.inflate(R.layout.about_tab_version_dark, container, false);
-            } else {
-                tabLayout = inflater.inflate(R.layout.about_tab_version_light, container, false);
-            }
+            // Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.  The fragment will take care of attaching the root automatically.
+            tabLayout = inflater.inflate(R.layout.about_tab_version, container, false);
 
             // Get handles for the `TextViews`.
             TextView versionNumberTextView = (TextView) tabLayout.findViewById(R.id.about_version_number);

@@ -45,12 +45,8 @@ public class AboutActivity extends AppCompatActivity {
         // Run the default commands.
         super.onCreate(savedInstanceState);
 
-        // Set the content view according to the theme.
-        if (MainWebViewActivity.darkTheme) {
-            setContentView(R.layout.about_coordinatorlayout_dark);
-        } else {
-            setContentView(R.layout.about_coordinatorlayout_light);
-        }
+        // Set the content view.
+        setContentView(R.layout.about_coordinatorlayout);
 
         // We need to use the SupportActionBar from android.support.v7.app.ActionBar until the minimum API is >= 21.
         Toolbar aboutAppBar = (Toolbar) findViewById(R.id.about_toolbar);

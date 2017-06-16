@@ -57,8 +57,9 @@
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
         android:layout_gravity="center_vertical"
+        android:tint="?attr/findOnPageIconTintColor"
         android:contentDescription="@string/previous"
-        android:onClick="findPreviousOnPage"/>
+        android:onClick="findPreviousOnPage" />
 
     <ImageView
         android:id="@+id/find_next"
@@ -68,8 +69,9 @@
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
         android:layout_gravity="center_vertical"
+        android:tint="?attr/findOnPageIconTintColor"
         android:contentDescription="@string/next"
-        android:onClick="findNextOnPage"/>
+        android:onClick="findNextOnPage" />
 
     <ImageView
         android:id="@+id/close_find"
@@ -79,6 +81,7 @@
         android:layout_marginStart="4dp"
         android:layout_marginEnd="8dp"
         android:layout_gravity="center_vertical"
+        android:tint="?attr/findOnPageIconTintColor"
         android:contentDescription="@string/close"
         android:onClick="closeFindOnPage" />
 </LinearLayout>

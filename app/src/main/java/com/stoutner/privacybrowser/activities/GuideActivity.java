@@ -45,12 +45,8 @@ public class GuideActivity extends AppCompatActivity {
         // Run the default commands.
         super.onCreate(savedInstanceState);
 
-        // Set the content view according to the theme.
-        if (MainWebViewActivity.darkTheme) {
-            setContentView(R.layout.guide_coordinatorlayout_dark);
-        } else {
-            setContentView(R.layout.guide_coordinatorlayout_light);
-        }
+        // Set the content view.
+        setContentView(R.layout.guide_coordinatorlayout);
 
         // We need to use `SupportActionBar` from `android.support.v7.app.ActionBar` until the minimum API is >= 21.
         Toolbar guideAppBar = (Toolbar) findViewById(R.id.guide_toolbar);

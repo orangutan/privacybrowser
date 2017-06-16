@@ -36,8 +36,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
-            <!--`tools:ignore="ContentDescription"` suppresses the lint warning about supplying a content description for the `ImageView`,
-              which isn't needed in this case because the `ImageView` is only decorative. -->
+            <!-- `tools:ignore="ContentDescription"` suppresses the lint warning about supplying a content description for the `ImageView`,
+                 which isn't needed in this case because the `ImageView` is only decorative. -->
             <ImageView
                 android:id="@+id/about_version_icon"
                 android:layout_height="wrap_content"
@@ -53,20 +53,20 @@
                 android:text="@string/privacy_browser"
                 android:textStyle="bold"
                 android:textSize="22sp"
-                android:textColor="@color/blue_900"
+                android:textColor="?attr/aboutTitle"
                 android:layout_toEndOf="@id/about_version_icon" />
 
             <TextView
                 android:id="@+id/about_version_number"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:textColor="@color/blue_700"
+                android:textColor="?attr/aboutText"
                 android:layout_below="@id/about_version_privacy_browser_textview"
                 android:layout_toEndOf="@id/about_version_icon" />
         </RelativeLayout>
 
         <!-- The purpose of this `LinearLayout` is to provide padding on the start of the `TextViews` to make them line up with `about_version_icon`.
-          Although we don't need it, we have to include `android:paddingEnd` to make lint happy. -->
+             Although we don't need it, we have to include `android:paddingEnd` to make lint happy. -->
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
@@ -82,7 +82,7 @@
                 android:text="@string/hardware"
                 android:textStyle="bold"
                 android:textSize="18sp"
-                android:textColor="@color/blue_900" />
+                android:textColor="?attr/aboutTitle" />
 
             <TextView
                 android:id="@+id/about_version_brand"
@@ -121,7 +121,7 @@
                 android:text="@string/software"
                 android:textStyle="bold"
                 android:textSize="18sp"
-                android:textColor="@color/blue_900"
+                android:textColor="?attr/aboutTitle"
                 android:paddingTop="12dp" />
 
             <TextView
@@ -161,7 +161,7 @@
                 android:text="@string/package_signature"
                 android:textStyle="bold"
                 android:textSize="18sp"
-                android:textColor="@color/blue_900"
+                android:textColor="?attr/aboutTitle"
                 android:paddingTop="12dp" />
 
             <TextView

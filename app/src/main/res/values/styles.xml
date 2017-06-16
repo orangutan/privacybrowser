@@ -22,21 +22,31 @@
     <!-- Light theme styles. -->
 
     <!-- `android:windowTranslucentStatus` makes the system status bar translucent.
-        When it is specified the root layout should include `android:fitsSystemWindows="true"`. -->
+         When it is specified the root layout should include `android:fitsSystemWindows="true"`. -->
     <style name="PrivacyBrowserLight" parent="Theme.AppCompat.Light.NoActionBar" >
         <item name="android:windowTranslucentStatus">true</item>
         <item name="colorAccent">@color/blue_700</item>
         <item name="android:textColorHighlight">@color/blue_200</item>
+        <item name="navigationHeaderBackground">@color/blue_700</item>
+        <item name="navigationHeaderTextColor">@color/white</item>
+        <item name="appBarTheme">@style/PrivacyBrowserAppBarLight</item>
+        <item name="progressTintColor">@color/blue_700</item>
+        <item name="navigationIconTintColor">@color/blue_800</item>
+        <item name="findOnPageIconTintColor">@color/blue_700</item>
     </style>
 
-    <!-- `colorPrimaryDark` goes behind the status bar, which is then darkened by the overlay.
-        `windowActionModeOverlay` makes the contextual app bar cover the support app bar. -->
+    <!-- `windowActionModeOverlay` makes the contextual app bar cover the support app bar.
+         `colorPrimaryDark` goes behind the status bar, which is then darkened by the overlay.-->
     <style name="PrivacyBrowserLight.SecondaryActivity" >
+        <item name="windowActionModeOverlay">true</item>
         <item name="colorPrimaryDark">@color/blue_700</item>
         <item name="android:textColorHighlight">@color/blue_200</item>
-        <item name="windowActionModeOverlay">true</item>
         <item name="android:actionModeBackground">@color/blue_700</item>
+        <item name="aboutTitle">@color/blue_900</item>
+        <item name="aboutText">@color/blue_700</item>
         <item name="actionBarPopupTheme">@style/PrivacyBrowserPopupsLight</item>
+        <item name="appBarTextTheme">@style/PrivacyBrowserAppBarWhiteText</item>
+        <item name="tabLayoutTheme">@style/PrivacyBrowserTabLayoutLight</item>
     </style>
 
     <!-- `colorPrimaryDark` is the color of the status bar. -->
@@ -69,16 +79,26 @@
     <!-- Dark theme styles. -->
 
     <!-- `android:windowTranslucentStatus` makes the system status bar translucent.
-        When it is specified the root layout should include `android:fitsSystemWindows="true"`. -->
+         When it is specified the root layout should include `android:fitsSystemWindows="true"`. -->
     <style name="PrivacyBrowserDark" parent="Theme.AppCompat.NoActionBar" >
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:textColorPrimary">@color/dark_primary_text_color_selector</item>
         <item name="colorAccent">@color/blue_900</item>
         <item name="android:textColorHighlight">@color/blue_800</item>
+        <item name="navigationHeaderBackground">@color/blue_900</item>
+        <item name="navigationHeaderTextColor">@color/gray_300</item>
+        <item name="appBarTheme">@style/PrivacyBrowserAppBarDark</item>
+        <item name="progressTintColor">@color/blue_800</item>
+        <item name="navigationIconTintColor">@color/blue_900</item>
+        <item name="findOnPageIconTintColor">@color/blue_900</item>
     </style>
 
     <style name="PrivacyBrowserDark.SecondaryActivity" >
         <item name="colorPrimaryDark">@color/blue_900</item>
+        <item name="aboutTitle">@color/blue_700</item>
+        <item name="aboutText">@color/blue_400</item>
+        <item name="appBarTextTheme">@style/PrivacyBrowserAppBarDark</item>
+        <item name="tabLayoutTheme">@style/PrivacyBrowserTabLayoutDark</item>
     </style>
 
     <!-- `ThemeOverlay.AppCompat.Dark.ActionBar` makes the text and the icons in the AppBar white. -->

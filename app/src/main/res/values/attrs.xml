@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -18,17 +18,19 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<TextView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/navigationText"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="@string/navigation"
-    android:paddingTop="35dp"
-    android:paddingBottom="8dp"
-    android:paddingStart="15dp"
-    android:paddingEnd="15dp"
-    android:textStyle="bold"
-    android:textSize="20sp"
-    android:background="@color/blue_700"
-    android:textColor="@color/white" />
+<resources>
+    <attr name="appBarTheme" format="reference" />
+    <attr name="appBarTextTheme" format="reference" />
+    <attr name="tabLayoutTheme" format="reference" />
+
+    <attr name="aboutTitle" format="reference" />
+    <attr name="aboutText" format="reference" />
+
+    <attr name="navigationHeaderBackground" format="reference" />
+    <attr name="navigationHeaderTextColor" format="reference" />
+
+    <attr name="progressTintColor" format="reference" />
+    <attr name="navigationIconTintColor" format="reference" />
+
+    <attr name="findOnPageIconTintColor" format="reference" />
+</resources>
