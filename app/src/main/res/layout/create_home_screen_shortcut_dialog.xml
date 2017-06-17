@@ -33,7 +33,7 @@
         android:layout_marginEnd="4dp" >
 
         <!-- `android:imeOptions="actionGo"` sets the keyboard to have a `go` key instead of a `new line` key.
-            `android:inputType="textUri"` disables spell check in the `EditText`. -->
+             `android:inputType="textUri"` disables spell check in the `EditText`. -->
         <android.support.design.widget.TextInputEditText
             android:id="@+id/shortcut_name_edittext"
             android:layout_width="match_parent"

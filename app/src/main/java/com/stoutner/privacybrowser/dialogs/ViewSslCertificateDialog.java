@@ -50,8 +50,17 @@ public class ViewSslCertificateDialog extends DialogFragment {
         // Create a drawable version of the favorite icon.
         Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), MainWebViewActivity.favoriteIconBitmap);
 
-        // Use `AlertDialog.Builder` to create the `AlertDialog`.  `R.style.LightAlertDialog` formats the color of the button text.
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.LightAlertDialog);
+        // Use `AlertDialog.Builder` to create the `AlertDialog`.
+        AlertDialog.Builder dialogBuilder;
+
+        // Set the style according to the theme.
+        if (MainWebViewActivity.darkTheme) {
+            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
+        } else {
+            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
+        }
+
+        // Set the icon.
         dialogBuilder.setIcon(favoriteIconDrawable);
 
         // Set an `onClick` listener on the negative button.  Using `null` closes the dialog without doing anything else.
@@ -127,9 +136,20 @@ public class ViewSslCertificateDialog extends DialogFragment {
             SpannableStringBuilder startDateStringBuilder = new SpannableStringBuilder(startDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(startDate));
             SpannableStringBuilder endDateStringBuilder = new SpannableStringBuilder(endDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(endDate));
 
-            // Create a blue `ForegroundColorSpan`.  We have to use the deprecated `getColor` until API >= 23.
-            @SuppressWarnings("deprecation") ForegroundColorSpan blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
+            // Create a red `ForegroundColorSpan`.  We have to use the deprecated `getColor` until API >= 23.
             @SuppressWarnings("deprecation") ForegroundColorSpan redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
+
+            // Create a blue `ForegroundColorSpan`.
+            ForegroundColorSpan blueColorSpan;
+
+            // Set `blueColorSpan` according to the theme.  We have to use the deprecated `getColor()` until API >= 23.
+            if (MainWebViewActivity.darkTheme) {
+                //noinspection deprecation
+                blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
+            } else {
+                //noinspection deprecation
+                blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
+            }
 
             // Setup the spans to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
             issuedToCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), issuedToCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);

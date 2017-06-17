@@ -36,7 +36,7 @@
             android:text="@string/issued_to"
             android:textAllCaps="true"
             android:textStyle="bold"
-            android:textColor="@color/blue_900" />
+            android:textColor="?attr/sslTitle" />
 
         <TextView
             android:id="@+id/issued_to_cname"
@@ -62,7 +62,7 @@
             android:text="@string/issued_by"
             android:textAllCaps="true"
             android:textStyle="bold"
-            android:textColor="@color/blue_900"/>
+            android:textColor="?attr/sslTitle"/>
 
         <TextView
             android:id="@+id/issued_by_cname"
@@ -88,7 +88,7 @@
             android:text="@string/valid_dates"
             android:textAllCaps="true"
             android:textStyle="bold"
-            android:textColor="@color/blue_900"/>
+            android:textColor="?attr/sslTitle"/>
 
         <TextView
             android:id="@+id/start_date"

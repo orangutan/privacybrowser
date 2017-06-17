@@ -62,10 +62,20 @@ public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use `AlertDialog.Builder` to create the `AlertDialog`.  The style formats the color of the button text.
-        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.LightAlertDialog);
+        // Use `AlertDialog.Builder` to create the `AlertDialog`.
+        AlertDialog.Builder dialogBuilder;
+
+        // Set the style according to the theme.
+        if (MainWebViewActivity.darkTheme) {
+            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
+        } else {
+            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
+        }
+
+        // Set the title.
         dialogBuilder.setTitle(R.string.create_folder);
-        // The parent view is `null` because it will be assigned by the `AlertDialog`.
+
+        // Set the view.  The parent view is `null` because it will be assigned by the `AlertDialog`.
         dialogBuilder.setView(getActivity().getLayoutInflater().inflate(R.layout.create_bookmark_folder_dialog, null));
 
         // Set an `onClick()` listener for the negative button.

@@ -46,6 +46,7 @@ import android.widget.TextView;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.BookmarksActivity;
+import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 
 import java.io.ByteArrayOutputStream;
@@ -78,10 +79,20 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use `AlertDialog.Builder` to create the `AlertDialog`.  The style formats the color of the button text.
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.LightAlertDialog);
+        // Use `AlertDialog.Builder` to create the `AlertDialog`.
+        AlertDialog.Builder dialogBuilder;
+
+        // Set the style according to the theme.
+        if (MainWebViewActivity.darkTheme) {
+            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
+        } else {
+            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
+        }
+
+        // Set the title.
         dialogBuilder.setTitle(R.string.move_to_folder);
-        // The parent view is `null` because it will be assigned by `AlertDialog`.
+
+        // Set the view.  The parent view is `null` because it will be assigned by `AlertDialog`.
         dialogBuilder.setView(getActivity().getLayoutInflater().inflate(R.layout.move_to_folder_dialog, null));
 
         // Set an `onClick()` listener for the negative button.

@@ -75,10 +75,20 @@ public class EditBookmarkFolderDialog extends AppCompatDialogFragment {
         Cursor bookmarkCursor = BookmarksActivity.bookmarksDatabaseHelper.getBookmarkCursor(selectedBookmarkDatabaseId);
         bookmarkCursor.moveToFirst();
 
-        // Use `AlertDialog.Builder` to create the `AlertDialog`.  The style formats the color of the button text.
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.LightAlertDialog);
+        // Use `AlertDialog.Builder` to create the `AlertDialog`.
+        AlertDialog.Builder dialogBuilder;
+
+        // Set the style according to the theme.
+        if (MainWebViewActivity.darkTheme) {
+            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
+        } else {
+            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
+        }
+
+        // Set the title.
         dialogBuilder.setTitle(R.string.edit_folder);
-        // The parent view is `null` because it will be assigned by `AlertDialog`.
+
+        // Set the view.  The parent view is `null` because it will be assigned by `AlertDialog`.
         dialogBuilder.setView(getActivity().getLayoutInflater().inflate(R.layout.edit_bookmark_folder_dialog, null));
 
         // Set an `onClick()` listener for the negative button.

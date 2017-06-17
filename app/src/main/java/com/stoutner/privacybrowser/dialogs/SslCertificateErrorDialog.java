@@ -37,6 +37,7 @@ import android.view.LayoutInflater;
 import android.widget.TextView;
 
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -134,10 +135,20 @@ public class SslCertificateErrorDialog extends AppCompatDialogFragment {
         // Get the activity's layout inflater.
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
 
-        // Use `AlertDialog.Builder` to create the `AlertDialog`.  `R.style.LightAlertDialog` formats the color of the button text.
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.LightAlertDialog);
+        // Use `AlertDialog.Builder` to create the `AlertDialog`.
+        AlertDialog.Builder dialogBuilder;
+
+        // Set the style according to the theme.
+        if (MainWebViewActivity.darkTheme) {
+            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
+        } else {
+            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
+        }
+
+        // Set the title.
         dialogBuilder.setTitle(R.string.ssl_certificate_error);
-        // The parent view is `null` because it will be assigned by `AlertDialog`.
+
+        // Set the view.  The parent view is `null` because it will be assigned by `AlertDialog`.
         dialogBuilder.setView(layoutInflater.inflate(R.layout.ssl_certificate_error, null));
 
         // Set an `onClick` listener on the negative button.  `null` doesn't do anything extra when the button is pressed.  The `Dialog` will automatically close.
@@ -196,9 +207,20 @@ public class SslCertificateErrorDialog extends AppCompatDialogFragment {
         SpannableStringBuilder startDateStringBuilder = new SpannableStringBuilder(startDateLabel + startDate);
         SpannableStringBuilder endDateStringBuilder = new SpannableStringBuilder((endDateLabel + endDate));
 
-        // Create the `ForegroundColorSpan`.  We have to use the deprecated `getColor` until API >= 23.
-        ForegroundColorSpan blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
-        ForegroundColorSpan redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
+        // Create a red `ForegroundColorSpan`.  We have to use the deprecated `getColor` until API >= 23.
+        @SuppressWarnings("deprecation") ForegroundColorSpan redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
+
+        // Create a blue `ForegroundColorSpan`.
+        ForegroundColorSpan blueColorSpan;
+
+        // Set `blueColorSpan` according to the theme.  We have to use the deprecated `getColor()` until API >= 23.
+        if (MainWebViewActivity.darkTheme) {
+            //noinspection deprecation
+            blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
+        } else {
+            //noinspection deprecation
+            blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
+        }
 
         // Setup the spans to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
         urlStringBuilder.setSpan(blueColorSpan, urlLabel.length(), urlStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);

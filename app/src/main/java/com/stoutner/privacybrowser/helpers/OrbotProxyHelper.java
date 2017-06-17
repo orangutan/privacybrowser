@@ -95,9 +95,20 @@ public class OrbotProxyHelper {
                     privacyBrowserContext.sendBroadcast(orbotIntent);
                 }
             } catch (PackageManager.NameNotFoundException exception){  // If an exception is thrown, Orbot is not installed.
-                // Build an `AlertDialog`.  `R.style.LightAlertDialog` formats the color of the button text.
-                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(parentActivity, R.style.LightAlertDialog);
+                // Use `AlertDialog.Builder` to create the `AlertDialog`.
+                AlertDialog.Builder dialogBuilder;
+
+                // Set the style according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    dialogBuilder = new AlertDialog.Builder(parentActivity, R.style.PrivacyBrowserAlertDialogDark);
+                } else {
+                    dialogBuilder = new AlertDialog.Builder(parentActivity, R.style.PrivacyBrowserAlertDialogLight);
+                }
+
+                // Set the message.
                 dialogBuilder.setMessage(R.string.orbot_proxy_not_installed);
+
+                // Set the positive button.
                 dialogBuilder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -105,8 +116,10 @@ public class OrbotProxyHelper {
                     }
                 });
 
-                // Convert `dialogBuilder` to `alertDialog` and display it on the screen.
+                // Convert `dialogBuilder` to `alertDialog`.
                 AlertDialog alertDialog = dialogBuilder.create();
+
+                // Make it so.
                 alertDialog.show();
             }
         }
