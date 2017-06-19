@@ -122,9 +122,9 @@ import java.util.Set;
 public class MainWebViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CreateHomeScreenShortcutDialog.CreateHomeScreenSchortcutListener,
         SslCertificateErrorDialog.SslCertificateErrorListener, DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, UrlHistoryDialog.UrlHistoryListener {
 
-    // `darkTheme` is public static so it can be accessed from `AboutActivity`, `GuideActivity`, `AddDomainDialog`, `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, `DownloadFileDialog`, `DownloadImageDialog`, `EditBookmarkDialog`,
+    // `darkTheme` is public static so it can be accessed from `AboutActivity`, `GuideActivity`, `AddDomainDialog`, `SettingsActivity`, `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, `DownloadFileDialog`, `DownloadImageDialog`, `EditBookmarkDialog`,
     // `EditBookmarkFolderDialog`, `MoveToFolderDialog`, `SslCertificateErrorDialog`, `UrlHistoryDialog`, `ViewSslCertificateDialog`, `CreateHomeScreenShortcutDialog`, and `OrbotProxyHelper`.
-    // It is also used in `onCreate()`, `applyAppSettings()`, and `applyDomainSettings()`.
+    // It is also used in `onCreate()`, `applyAppSettings()`, `applyDomainSettings()`, and `updatePrivacyIcons()`.
     public static boolean darkTheme;
 
     // `favoriteIconBitmap` is public static so it can be accessed from `CreateHomeScreenShortcutDialog`, `BookmarksActivity`, `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`, `ViewSslCertificateDialog`.
@@ -2582,23 +2582,39 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         if (firstPartyCookiesEnabled) {  // First-party cookies are enabled.
             firstPartyCookiesIconMenuItem.setIcon(R.drawable.cookies_enabled);
         } else {  // First-party cookies are disabled.
-            firstPartyCookiesIconMenuItem.setIcon(R.drawable.cookies_disabled);
+            if (darkTheme) {
+                firstPartyCookiesIconMenuItem.setIcon(R.drawable.cookies_disabled_dark);
+            } else {
+                firstPartyCookiesIconMenuItem.setIcon(R.drawable.cookies_disabled_light);
+            }
         }
 
         // Update `domStorageIcon`.
         if (javaScriptEnabled && domStorageEnabled) {  // Both JavaScript and DOM storage are enabled.
             domStorageIconMenuItem.setIcon(R.drawable.dom_storage_enabled);
         } else if (javaScriptEnabled) {  // JavaScript is enabled but DOM storage is disabled.
-            domStorageIconMenuItem.setIcon(R.drawable.dom_storage_disabled);
+            if (darkTheme) {
+                domStorageIconMenuItem.setIcon(R.drawable.dom_storage_disabled_dark);
+            } else {
+                domStorageIconMenuItem.setIcon(R.drawable.dom_storage_disabled_light);
+            }
         } else {  // JavaScript is disabled, so DOM storage is ghosted.
-            domStorageIconMenuItem.setIcon(R.drawable.dom_storage_ghosted);
+            if (darkTheme) {
+                domStorageIconMenuItem.setIcon(R.drawable.dom_storage_ghosted_dark);
+            } else {
+                domStorageIconMenuItem.setIcon(R.drawable.dom_storage_ghosted_light);
+            }
         }
 
         // Update `formDataIcon`.
         if (saveFormDataEnabled) {  // Form data is enabled.
             formDataIconMenuItem.setIcon(R.drawable.form_data_enabled);
         } else {  // Form data is disabled.
-            formDataIconMenuItem.setIcon(R.drawable.form_data_disabled);
+            if (darkTheme) {
+                formDataIconMenuItem.setIcon(R.drawable.form_data_disabled_dark);
+            } else {
+                formDataIconMenuItem.setIcon(R.drawable.form_data_disabled_light);
+            }
         }
 
         // `invalidateOptionsMenu` calls `onPrepareOptionsMenu()` and redraws the icons in the `AppBar`.  `this` references the current activity.

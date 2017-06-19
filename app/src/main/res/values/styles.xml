@@ -52,10 +52,14 @@
     </style>
 
     <!-- `colorPrimaryDark` is the color of the status bar. -->
-    <style name="Settings" parent="Theme.AppCompat.Light.DarkActionBar" >
+    <style name="PrivacyBrowserSettingsLight" parent="Theme.AppCompat.Light.DarkActionBar" >
         <item name="colorPrimary">@color/blue_700</item>
         <item name="colorPrimaryDark">@color/blue_900</item>
         <item name="colorAccent">@color/blue_700</item>
+        <item name="userAgentIcon">@drawable/user_agent_light</item>
+        <item name="searchIcon">@drawable/search_enabled_light</item>
+        <item name="homepageIcon">@drawable/home_enabled_light</item>
+        <item name="fontSizeIcon">@drawable/font_size_light</item>
     </style>
 
     <!-- `ThemeOverlay.AppCompat.ActionBar` makes the hamburger icons dark. -->
@@ -85,14 +89,14 @@
     <style name="PrivacyBrowserDark" parent="Theme.AppCompat.NoActionBar" >
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:textColorPrimary">@color/dark_primary_text_color_selector</item>
-        <item name="colorAccent">@color/blue_900</item>
+        <item name="colorAccent">@color/blue_600</item>
         <item name="android:textColorHighlight">@color/blue_800</item>
-        <item name="navigationHeaderBackground">@color/blue_900</item>
+        <item name="navigationHeaderBackground">@color/blue_800</item>
         <item name="navigationHeaderTextColor">@color/gray_300</item>
         <item name="appBarTheme">@style/PrivacyBrowserAppBarDark</item>
         <item name="progressTintColor">@color/blue_800</item>
-        <item name="navigationIconTintColor">@color/blue_900</item>
-        <item name="findOnPageIconTintColor">@color/blue_900</item>
+        <item name="navigationIconTintColor">@color/blue_600</item>
+        <item name="findOnPageIconTintColor">@color/blue_600</item>
         <item name="sslTitle">@color/blue_700</item>
         <item name="urlHistoryText">@color/gray_200</item>
     </style>
@@ -105,6 +109,15 @@
         <item name="tabLayoutTheme">@style/PrivacyBrowserTabLayoutDark</item>
     </style>
 
+    <style name="PrivacyBrowserSettingsDark" parent="Theme.AppCompat" >
+        <item name="android:textColorPrimary">@color/dark_primary_text_color_selector</item>
+        <item name="colorAccent">@color/blue_600</item>
+        <item name="userAgentIcon">@drawable/user_agent_dark</item>
+        <item name="searchIcon">@drawable/search_enabled_dark</item>
+        <item name="homepageIcon">@drawable/home_enabled_dark</item>
+        <item name="fontSizeIcon">@drawable/font_size_dark</item>
+    </style>
+
     <!-- `ThemeOverlay.AppCompat.Dark.ActionBar` makes the text and the icons in the AppBar white. -->
     <style name="PrivacyBrowserAppBarDark" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >
         <item name="android:textColorPrimary">@color/gray_300</item>
@@ -113,7 +126,7 @@
     <!-- Configure the About and Guide `TabLayouts`. -->
     <style name="PrivacyBrowserTabLayoutDark" parent="Widget.Design.TabLayout" >
         <item name="tabBackground">@color/blue_900</item>
-        <item name="android:textColorSecondary">@color/blue_700</item>
+        <item name="android:textColorSecondary">@color/blue_400</item>
         <item name="tabIndicatorColor">@color/gray_300</item>
     </style>
 

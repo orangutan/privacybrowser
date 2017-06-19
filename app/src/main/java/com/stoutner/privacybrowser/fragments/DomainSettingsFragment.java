@@ -152,7 +152,7 @@ public class DomainSettingsFragment extends Fragment {
             firstPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_enabled));
         } else {  // First-party cookies are disabled.
             firstPartyCookiesEnabledSwitch.setChecked(false);
-            firstPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_disabled));
+            firstPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_disabled_light));
         }
 
         // Only display third-party cookies if SDK_INT >= 21.
@@ -165,18 +165,18 @@ public class DomainSettingsFragment extends Fragment {
                     thirdPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_warning));
                 } else {  // First party cookies are enabled but third-party cookies are disabled.
                     thirdPartyCookiesEnabledSwitch.setChecked(false);
-                    thirdPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_disabled));
+                    thirdPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_disabled_light));
                 }
             } else {  // First-party cookies are disabled.
                 // Set the status of third-party cookies, but disable it.
                 if (thirdPartyCookiesEnabledInt == 1) {  // Third-party cookies are enabled but first-party cookies are disabled.
                     thirdPartyCookiesEnabledSwitch.setChecked(true);
                     thirdPartyCookiesEnabledSwitch.setEnabled(false);
-                    thirdPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_ghosted));
+                    thirdPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_ghosted_light));
                 } else {  // Both first party and third-party cookies are disabled.
                     thirdPartyCookiesEnabledSwitch.setChecked(false);
                     thirdPartyCookiesEnabledSwitch.setEnabled(false);
-                    thirdPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_ghosted));
+                    thirdPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_ghosted_light));
                 }
             }
         } else {  // Third-party cookies cannot be configured for API <= 21.
@@ -192,7 +192,7 @@ public class DomainSettingsFragment extends Fragment {
                 domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_enabled));
             } else {  // JavaScript is enabled but DOM storage is disabled.
                 domStorageEnabledSwitch.setChecked(false);
-                domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_disabled));
+                domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_disabled_light));
             }
         } else {  // JavaScript is disabled.
             // Set the checked status of DOM storage.
@@ -204,7 +204,7 @@ public class DomainSettingsFragment extends Fragment {
 
             // Disable `domStorageEnabledSwitch` and set the icon to be ghosted.
             domStorageEnabledSwitch.setEnabled(false);
-            domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_ghosted));
+            domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_ghosted_light));
         }
 
         // Set the form data status.  Once minimum API >= 21 we can use a selector as the tint mode instead of specifying different icons.
@@ -213,7 +213,7 @@ public class DomainSettingsFragment extends Fragment {
             formDataImageView.setImageDrawable(getResources().getDrawable(R.drawable.form_data_enabled));
         } else {  // Form data is disabled.
             formDataEnabledSwitch.setChecked(false);
-            formDataImageView.setImageDrawable(getResources().getDrawable(R.drawable.form_data_disabled));
+            formDataImageView.setImageDrawable(getResources().getDrawable(R.drawable.form_data_disabled_light));
         }
 
         // We need to inflated a `WebView` to get the default user agent.
@@ -269,18 +269,18 @@ public class DomainSettingsFragment extends Fragment {
         switch (displayImagesInt) {
             case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT:
                 if (MainWebViewActivity.displayWebpageImagesBoolean) {
-                    displayWebpageImagesImageView.setImageDrawable(getResources().getDrawable(R.drawable.images_enabled));
+                    displayWebpageImagesImageView.setImageDrawable(getResources().getDrawable(R.drawable.images_enabled_light));
                 } else {
-                    displayWebpageImagesImageView.setImageDrawable(getResources().getDrawable(R.drawable.images_disabled));
+                    displayWebpageImagesImageView.setImageDrawable(getResources().getDrawable(R.drawable.images_disabled_light));
                 }
                 break;
 
             case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_ENABLED:
-                displayWebpageImagesImageView.setImageDrawable(getResources().getDrawable(R.drawable.images_enabled));
+                displayWebpageImagesImageView.setImageDrawable(getResources().getDrawable(R.drawable.images_enabled_light));
                 break;
 
             case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_DISABLED:
-                displayWebpageImagesImageView.setImageDrawable(getResources().getDrawable(R.drawable.images_disabled));
+                displayWebpageImagesImageView.setImageDrawable(getResources().getDrawable(R.drawable.images_disabled_light));
                 break;
         }
 
@@ -300,7 +300,7 @@ public class DomainSettingsFragment extends Fragment {
                     if (domStorageEnabledSwitch.isChecked()) {  // DOM storage is enabled.
                         domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_enabled));
                     } else {  // DOM storage is disabled.
-                        domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_disabled));
+                        domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_disabled_light));
                     }
                 } else {  // JavaScript is disabled.
                     // Update the JavaScript icon.
@@ -310,7 +310,7 @@ public class DomainSettingsFragment extends Fragment {
                     domStorageEnabledSwitch.setEnabled(false);
 
                     // Set the DOM storage icon to be ghosted.
-                    domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_ghosted));
+                    domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_ghosted_light));
                 }
             }
         });
@@ -330,17 +330,17 @@ public class DomainSettingsFragment extends Fragment {
                     if (thirdPartyCookiesEnabledSwitch.isChecked()) {  // Third-party cookies are enabled.
                         thirdPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_warning));
                     } else {  // Third-party cookies are disabled.
-                        thirdPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_disabled));
+                        thirdPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_disabled_light));
                     }
                 } else {  // First-party cookies are disabled.
                     // Update the first-party cookies icon.
-                    firstPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_disabled));
+                    firstPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_disabled_light));
 
                     // Disable the third-party cookies `Switch`.
                     thirdPartyCookiesEnabledSwitch.setEnabled(false);
 
                     // Set the third-party cookies icon to be ghosted.
-                    thirdPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_ghosted));
+                    thirdPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_ghosted_light));
                 }
             }
         });
@@ -353,7 +353,7 @@ public class DomainSettingsFragment extends Fragment {
                 if (isChecked) {
                     thirdPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_warning));
                 } else {
-                    thirdPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_disabled));
+                    thirdPartyCookiesImageView.setImageDrawable(getResources().getDrawable(R.drawable.cookies_disabled_light));
                 }
             }
         });
@@ -366,7 +366,7 @@ public class DomainSettingsFragment extends Fragment {
                 if (isChecked) {
                     domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_enabled));
                 } else {
-                    domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_disabled));
+                    domStorageImageView.setImageDrawable(getResources().getDrawable(R.drawable.dom_storage_disabled_light));
                 }
             }
         });
@@ -379,7 +379,7 @@ public class DomainSettingsFragment extends Fragment {
                 if (isChecked) {
                     formDataImageView.setImageDrawable(getResources().getDrawable(R.drawable.form_data_enabled));
                 } else {
-                    formDataImageView.setImageDrawable(getResources().getDrawable(R.drawable.form_data_disabled));
+                    formDataImageView.setImageDrawable(getResources().getDrawable(R.drawable.form_data_disabled_light));
                 }
             }
         });
@@ -436,18 +436,18 @@ public class DomainSettingsFragment extends Fragment {
                 switch (position) {
                     case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT:
                         if (MainWebViewActivity.displayWebpageImagesBoolean) {
-                            displayWebpageImagesImageView.setImageDrawable(getResources().getDrawable(R.drawable.images_enabled));
+                            displayWebpageImagesImageView.setImageDrawable(getResources().getDrawable(R.drawable.images_enabled_light));
                         } else {
-                            displayWebpageImagesImageView.setImageDrawable(getResources().getDrawable(R.drawable.images_disabled));
+                            displayWebpageImagesImageView.setImageDrawable(getResources().getDrawable(R.drawable.images_disabled_light));
                         }
                         break;
 
                     case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_ENABLED:
-                        displayWebpageImagesImageView.setImageDrawable(getResources().getDrawable(R.drawable.images_enabled));
+                        displayWebpageImagesImageView.setImageDrawable(getResources().getDrawable(R.drawable.images_enabled_light));
                         break;
 
                     case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_DISABLED:
-                        displayWebpageImagesImageView.setImageDrawable(getResources().getDrawable(R.drawable.images_disabled));
+                        displayWebpageImagesImageView.setImageDrawable(getResources().getDrawable(R.drawable.images_disabled_light));
                         break;
                 }
             }

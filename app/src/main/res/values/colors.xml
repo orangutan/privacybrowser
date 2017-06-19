@@ -63,6 +63,7 @@
     <color name="light_green_100">#FFDCEDC8</color>
     <color name="light_green_a700">#FF64DD17</color>
 
+    <color name="red_900">#FFB71C1C</color>
     <color name="red_a700">#FFD50000</color>
 
     <color name="transparent">#00000000</color>

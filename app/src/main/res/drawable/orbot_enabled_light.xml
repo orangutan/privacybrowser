@@ -1,0 +1,19 @@
+<!-- `orbot_enabled_light.xml` comes from the Orbot project.  It is a modified version of <https://gitweb.torproject.org/orbot.git/tree/app/src/main/res/drawable-xxxhdpi/ic_stat_tor.png>, which is released under the 3-clause BSD license.
+    Modifications copyright Soren Stoutner <soren@stoutner.com> 2017.  The resulting image is released under the GPLv3+ license. -->
+
+<!-- `tools:ignore="VectorRaster"` removes the lint warning about `android:autoMirrored="true"` not applying to API < 21. -->
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:autoMirrored="true"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportHeight="33.86667"
+    android:viewportWidth="33.866665"
+    tools:ignore="VectorRaster" >
+
+    <!-- We have to use a hard coded color until API >= 21.  Then we can use `@color`. -->
+    <path
+        android:fillColor="#FF1565C0"
+        android:pathData="m12.18,32.04c-4.14,-1.92 -6.77,-6.03 -6.77,-10.58 0,-4.35 1.64,-7.16 5.91,-10.12 1.46,-1.01 2.25,-1.97 2.45,-2.98 0.21,-1.03 0.52,-1.41 1.02,-1.22 0.4,0.15 1.72,0.28 2.93,0.28 1.94,0 2.24,0.15 2.52,1.27 0.18,0.7 1.25,1.92 2.39,2.7 4.22,2.92 5.84,5.75 5.82,10.17 -0.02,4.59 -2.89,8.88 -7.12,10.64 -2.51,1.05 -6.7,0.97 -9.17,-0.18zM14.95,5.83c-1.05,-1.13 -1.48,-4.92 -0.56,-4.92 0.96,0 2.54,2.69 2.54,4.33 0,1.96 -0.56,2.13 -1.99,0.59zM17.44,6.25c0,-0.68 1.54,-2.33 2.17,-2.33 0.68,0 0.31,1.37 -0.58,2.18 -1.11,1.01 -1.59,1.05 -1.59,0.16z" android:strokeWidth="0.50134861"/>
+</vector>

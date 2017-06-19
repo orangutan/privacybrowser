@@ -231,7 +231,7 @@
                     android:layout_marginTop="1dp"
                     android:layout_marginEnd="10dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/user_agent"
+                    android:src="@drawable/user_agent_light"
                     android:contentDescription="@string/user_agent" />
 
                 <Spinner
@@ -270,7 +270,7 @@
                 android:layout_marginTop="1dp"
                 android:layout_marginEnd="10dp"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/font_size"
+                android:src="@drawable/font_size_light"
                 android:contentDescription="@string/font_size" />
 
             <Spinner

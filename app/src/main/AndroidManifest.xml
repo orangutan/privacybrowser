@@ -110,7 +110,6 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/privacy_browser_settings"
-            android:theme="@style/Settings"
             android:parentActivityName=".activities.MainWebViewActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullUser"

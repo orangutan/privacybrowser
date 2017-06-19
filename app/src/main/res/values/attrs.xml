@@ -35,4 +35,9 @@
     <attr name="navigationIconTintColor" format="reference" />
 
     <attr name="findOnPageIconTintColor" format="reference" />
+
+    <attr name="userAgentIcon" format="reference" />
+    <attr name="searchIcon" format="reference" />
+    <attr name="homepageIcon" format="reference" />
+    <attr name="fontSizeIcon" format="reference" />
 </resources>

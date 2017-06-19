@@ -189,7 +189,11 @@ public class SettingsFragment extends PreferenceFragment {
         if (firstPartyCookiesEnabledBoolean) {
             firstPartyCookiesPreference.setIcon(R.drawable.cookies_enabled);
         } else {
-            firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled);
+            if (MainWebViewActivity.darkTheme) {
+                firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_dark);
+            } else {
+                firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_light);
+            }
         }
 
         // Set the `thirdPartyCookiesPreference` icon.
@@ -197,10 +201,18 @@ public class SettingsFragment extends PreferenceFragment {
             if (thirdPartyCookiesEnabledBoolean) {
                 thirdPartyCookiesPreference.setIcon(R.drawable.cookies_warning);
             } else {
-                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled);
+                if (MainWebViewActivity.darkTheme) {
+                    thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_dark);
+                } else {
+                    thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_light);
+                }
             }
         } else {
-            thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted);
+            if (MainWebViewActivity.darkTheme) {
+                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_dark);
+            } else {
+                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_light);
+            }
         }
 
         // Set the `domStoragePreference` icon.
@@ -208,154 +220,283 @@ public class SettingsFragment extends PreferenceFragment {
             if (savedPreferences.getBoolean("dom_storage_enabled", false)) {
                 domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
             } else {
-                domStoragePreference.setIcon(R.drawable.dom_storage_disabled);
+                if (MainWebViewActivity.darkTheme) {
+                    domStoragePreference.setIcon(R.drawable.dom_storage_disabled_dark);
+                } else {
+                    domStoragePreference.setIcon(R.drawable.dom_storage_disabled_light);
+                }
             }
         } else {
-            domStoragePreference.setIcon(R.drawable.dom_storage_ghosted);
+            if (MainWebViewActivity.darkTheme) {
+                domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_dark);
+            } else {
+                domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_light);
+            }
         }
 
         // Set the `saveFormDataPreference` icon.
         if (savedPreferences.getBoolean("save_form_data_enabled", false)) {
             saveFormDataPreference.setIcon(R.drawable.form_data_enabled);
         } else {
-            saveFormDataPreference.setIcon(R.drawable.form_data_disabled);
+            if (MainWebViewActivity.darkTheme) {
+                saveFormDataPreference.setIcon(R.drawable.form_data_disabled_dark);
+            } else {
+                saveFormDataPreference.setIcon(R.drawable.form_data_disabled_light);
+            }
         }
 
         // Set the `customUserAgentPreference` icon.
         if (customUserAgentPreference.isEnabled()) {
-            customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled);
+            if (MainWebViewActivity.darkTheme) {
+                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled_dark);
+            } else {
+                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled_light);
+            }
         } else {
-            customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted);
+            if (MainWebViewActivity.darkTheme) {
+                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_dark);
+            } else {
+                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_light);
+            }
         }
 
         // Set the `blockAdsPreference` icon.
         if (savedPreferences.getBoolean("block_ads", true)) {
-            blockAdsPreference.setIcon(R.drawable.block_ads_enabled);
+            if (MainWebViewActivity.darkTheme) {
+                blockAdsPreference.setIcon(R.drawable.block_ads_enabled_dark);
+            } else {
+                blockAdsPreference.setIcon(R.drawable.block_ads_enabled_light);
+            }
         } else {
-            blockAdsPreference.setIcon(R.drawable.block_ads_disabled);
+            if (MainWebViewActivity.darkTheme) {
+                blockAdsPreference.setIcon(R.drawable.block_ads_disabled_dark);
+            } else {
+                blockAdsPreference.setIcon(R.drawable.block_ads_disabled_light);
+            }
         }
 
         // Set the `incognitoModePreference` icon.
         if (savedPreferences.getBoolean("incognito_mode", false)) {
-            incognitoModePreference.setIcon(R.drawable.incognito_mode_enabled);
+            if (MainWebViewActivity.darkTheme) {
+                incognitoModePreference.setIcon(R.drawable.incognito_mode_enabled_dark);
+            } else {
+                incognitoModePreference.setIcon(R.drawable.incognito_mode_enabled_light);
+            }
         } else {
-            incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled);
+            if (MainWebViewActivity.darkTheme) {
+                incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled_dark);
+            } else {
+                incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled_light);
+            }
         }
 
         // Set the `doNotTrackPreference` icon.
         if (savedPreferences.getBoolean("do_not_track", false)) {
-            doNotTrackPreference.setIcon(R.drawable.do_not_track_enabled);
-        } else {
-            doNotTrackPreference.setIcon(R.drawable.do_not_track_disabled);
-        }
-
-        // Set the `proxyThroughOrbotPreference` icon.
-        if (proxyThroughOrbotBoolean) {
-            proxyThroughOrbotPreference.setIcon(R.drawable.orbot_enabled);
-        } else {
-            proxyThroughOrbotPreference.setIcon(R.drawable.orbot_disabled);
-        }
-
-        // Set the `torSearchPreference` and `torSearchCustomURLPreference` icons.
-        if (proxyThroughOrbotBoolean) {
-            // Set the `torHomepagePreference` and `torSearchPreference` icons.
-            torHomepagePreference.setIcon(R.drawable.home_enabled);
-            torSearchPreference.setIcon(R.drawable.search_enabled);
-
-            // Set the `torSearchCustomURLPreference` icon.
-            if (torSearchCustomURLPreference.isEnabled()) {
-                torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled);
+            if (MainWebViewActivity.darkTheme) {
+                doNotTrackPreference.setIcon(R.drawable.do_not_track_enabled_dark);
             } else {
-                torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_disabled);
+                doNotTrackPreference.setIcon(R.drawable.do_not_track_enabled_light);
             }
-        } else {  // Proxy through Orbot is disabled.
-            torHomepagePreference.setIcon(R.drawable.home_ghosted);
-            torSearchPreference.setIcon(R.drawable.search_ghosted);
-            torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted);
+        } else {
+            if (MainWebViewActivity.darkTheme) {
+                doNotTrackPreference.setIcon(R.drawable.do_not_track_disabled_dark);
+            } else {
+                doNotTrackPreference.setIcon(R.drawable.do_not_track_disabled_light);
+            }
+        }
+
+        // Set the Tor icons according to the theme.
+        if (proxyThroughOrbotBoolean) {  // Proxying is enabled.
+            if (MainWebViewActivity.darkTheme) {
+                proxyThroughOrbotPreference.setIcon(R.drawable.orbot_enabled_dark);
+                torHomepagePreference.setIcon(R.drawable.home_enabled_dark);
+                torSearchPreference.setIcon(R.drawable.search_enabled_dark);
+
+                // Set the custom search icon.
+                if (torSearchCustomURLPreference.isEnabled()) {
+                    torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_dark);
+                } else {
+                    torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_dark);
+                }
+            } else {
+                proxyThroughOrbotPreference.setIcon(R.drawable.orbot_enabled_light);
+                torHomepagePreference.setIcon(R.drawable.home_enabled_light);
+                torSearchPreference.setIcon(R.drawable.search_enabled_light);
+
+                // Set the custom search icon.
+                if (torSearchCustomURLPreference.isEnabled()) {
+                    torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_light);
+                } else {
+                    torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_light);
+                }
+            }
+        } else {  // Proxying is disabled.
+            if (MainWebViewActivity.darkTheme) {
+                proxyThroughOrbotPreference.setIcon(R.drawable.orbot_disabled_dark);
+                torHomepagePreference.setIcon(R.drawable.home_ghosted_dark);
+                torSearchPreference.setIcon(R.drawable.search_ghosted_dark);
+                torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_dark);
+            } else {
+                proxyThroughOrbotPreference.setIcon(R.drawable.orbot_disabled_light);
+                torHomepagePreference.setIcon(R.drawable.home_ghosted_light);
+                torSearchPreference.setIcon(R.drawable.search_ghosted_light);
+                torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_light);
+            }
         }
 
         // Set the `searchCustomURLPreference` icon.
         if (searchCustomURLPreference.isEnabled()) {
-            searchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled);
+            if (MainWebViewActivity.darkTheme) {
+                searchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_dark);
+            } else {
+                searchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_light);
+            }
         } else {
-            searchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted);
+            if (MainWebViewActivity.darkTheme) {
+                searchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_dark);
+            } else {
+                searchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_light);
+            }
         }
 
         // Set the full screen browsing mode icons.
-        if (fullScreenBrowsingModeBoolean) {
-            // Set the `fullScreenBrowsingModePreference` icon.
-            fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled);
+        if (fullScreenBrowsingModeBoolean) {  // `fullScreenBrowsingModeBoolean` is `true`.
+            // Set the `fullScreenBrowsingModePreference` icon according to the theme.
+            if (MainWebViewActivity.darkTheme) {
+                fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled_dark);
+            } else {
+                fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled_light);
+            }
 
-            if (hideSystemBarsBoolean) {
-                // Set `hideSystemBarsPreference` to use the enabled icon.
-                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_enabled);
-
-                // Set `translucentNavigationBarPreference` to use the ghosted icon.
-                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted);
-            } else {  // `hideSystemBarsBoolean` is false.
-                // Set `hideSystemBarsPreference` to use the disabled icon.
-                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_disabled);
-
-                // Set the correct icon for `translucentNavigationBarPreference`.
-                if (savedPreferences.getBoolean("translucent_navigation_bar", true)) {
-                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled);
+            if (hideSystemBarsBoolean) {  // `hideSystemBarsBoolean` is `true`.
+                // Set the icons according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_enabled_dark);
+                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_dark);
                 } else {
-                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled);
+                    hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_enabled_light);
+                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_light);
+                }
+            } else {  // `hideSystemBarsBoolean` is `false`.
+                // Set the `hideSystemBarsPreference` icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    // Set the icon for `hideSystemBarsPreference`.
+                    hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_disabled_dark);
+
+                    // Set the icon for `translucentNavigationBarPreference`.
+                    if (savedPreferences.getBoolean("translucent_navigation_bar", true)) {
+                        translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled_dark);
+                    } else {
+                        translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled_dark);
+                    }
+                } else {
+                    // Set the icon for `hideSystemBarsPreference`.
+                    hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_disabled_light);
+
+                    // Set the icon for `translucentNavigationBarPreference`.
+                    if (savedPreferences.getBoolean("translucent_navigation_bar", true)) {
+                        translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled_light);
+                    } else {
+                        translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled_light);
+                    }
                 }
             }
-        } else {  // `fullScreenBrowsingModeBoolean` is false.
-            fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled);
-            hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_ghosted);
-            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted);
+        } else {  // `fullScreenBrowsingModeBoolean` is `false`.
+            // Set the icons according to the theme.
+            if (MainWebViewActivity.darkTheme) {
+                fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled_dark);
+                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_ghosted_dark);
+                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_dark);
+            } else {
+                fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled_light);
+                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_ghosted_light);
+                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_light);
+            }
         }
 
         // Set the `clearEverythingPreference` icon.
         if (clearEverythingBoolean) {
-            clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled);
+            if (MainWebViewActivity.darkTheme) {
+                clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled_dark);
+            } else {
+                clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled_light);
+            }
         } else {
             clearEverythingPreference.setIcon(R.drawable.clear_everything_disabled);
         }
 
         // Set the `clearCookiesPreference` icon.
         if (clearEverythingBoolean || savedPreferences.getBoolean("clear_cookies", true)) {
-            clearCookiesPreference.setIcon(R.drawable.cookies_cleared);
+            if (MainWebViewActivity.darkTheme) {
+                clearCookiesPreference.setIcon(R.drawable.cookies_cleared_dark);
+            } else {
+                clearCookiesPreference.setIcon(R.drawable.cookies_cleared_light);
+            }
         } else {
             clearCookiesPreference.setIcon(R.drawable.cookies_warning);
         }
 
         // Set the `clearDomStoragePreference` icon.
         if (clearEverythingBoolean || savedPreferences.getBoolean("clear_dom_storage", true)) {
-            clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared);
+            if (MainWebViewActivity.darkTheme) {
+                clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_dark);
+            } else {
+                clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_light);
+            }
         } else {
             clearDomStoragePreference.setIcon(R.drawable.dom_storage_warning);
         }
 
         // Set the `clearFormDataPreference` icon.
         if (clearEverythingBoolean || savedPreferences.getBoolean("clear_form_data", true)) {
-            clearFormDataPreference.setIcon(R.drawable.form_data_cleared);
+            if (MainWebViewActivity.darkTheme) {
+                clearFormDataPreference.setIcon(R.drawable.form_data_cleared_dark);
+            } else {
+                clearFormDataPreference.setIcon(R.drawable.form_data_cleared_light);
+            }
         } else {
             clearFormDataPreference.setIcon(R.drawable.form_data_warning);
         }
 
         // Set the `clearCachePreference` icon.
         if (clearEverythingBoolean || savedPreferences.getBoolean("clear_cache", true)) {
-            clearCachePreference.setIcon(R.drawable.cache_cleared);
+            if (MainWebViewActivity.darkTheme) {
+                clearCachePreference.setIcon(R.drawable.cache_cleared_dark);
+            } else {
+                clearCachePreference.setIcon(R.drawable.cache_cleared_light);
+            }
         } else {
             clearCachePreference.setIcon(R.drawable.cache_warning);
         }
 
         // Set the `swipeToRefreshPreference` icon.
         if (savedPreferences.getBoolean("swipe_to_refresh", false)) {
-            swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled);
+            if (MainWebViewActivity.darkTheme) {
+                swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled_dark);
+            } else {
+                swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled_light);
+            }
         } else {
-            swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled);
+            if (MainWebViewActivity.darkTheme) {
+                swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled_dark);
+            } else {
+                swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled_light);
+            }
         }
 
         // Set the `displayAdditionalAppBarIconsPreference` icon.
         if (savedPreferences.getBoolean("display_additional_app_bar_icons", false)) {
-            displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled);
+            if (MainWebViewActivity.darkTheme) {
+                displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled_dark);
+            } else {
+                displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled_light);
+            }
         } else {
-            displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled);
+            if (MainWebViewActivity.darkTheme) {
+                displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_dark);
+            } else {
+                displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_light);
+            }
         }
 
         // Set the `darkThemePreference` icon.
@@ -367,9 +508,17 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the `displayWebpageImagesPreference` icon.
         if (savedPreferences.getBoolean("display_webpage_images", true)) {
-            displayWebpageImagesPreference.setIcon(R.drawable.images_enabled);
+            if (MainWebViewActivity.darkTheme) {
+                displayWebpageImagesPreference.setIcon(R.drawable.images_enabled_dark);
+            } else {
+                displayWebpageImagesPreference.setIcon(R.drawable.images_enabled_light);
+            }
         } else {
-            displayWebpageImagesPreference.setIcon(R.drawable.images_disabled);
+            if (MainWebViewActivity.darkTheme) {
+                displayWebpageImagesPreference.setIcon(R.drawable.images_disabled_dark);
+            } else {
+                displayWebpageImagesPreference.setIcon(R.drawable.images_disabled_light);
+            }
         }
 
 
@@ -391,14 +540,22 @@ public class SettingsFragment extends PreferenceFragment {
                             if (sharedPreferences.getBoolean("dom_storage_enabled", false)) {
                                 domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
                             } else {
-                                domStoragePreference.setIcon(R.drawable.dom_storage_disabled);
+                                if (MainWebViewActivity.darkTheme) {
+                                    domStoragePreference.setIcon(R.drawable.dom_storage_disabled_dark);
+                                } else {
+                                    domStoragePreference.setIcon(R.drawable.dom_storage_disabled_light);
+                                }
                             }
                         } else {  // `javascript_enabled` is `false`.
                             // Update the icon for `javascript_enabled`.
                             javaScriptPreference.setIcon(R.drawable.privacy_mode);
 
                             // Set the icon for `dom_storage_disabled` to be ghosted.
-                            domStoragePreference.setIcon(R.drawable.dom_storage_ghosted);
+                            if (MainWebViewActivity.darkTheme) {
+                                domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_dark);
+                            } else {
+                                domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_light);
+                            }
                         }
                         break;
 
@@ -413,17 +570,33 @@ public class SettingsFragment extends PreferenceFragment {
                                 if (sharedPreferences.getBoolean("third_party_cookies_enabled", false)) {
                                     thirdPartyCookiesPreference.setIcon(R.drawable.cookies_warning);
                                 } else {
-                                    thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled);
+                                    if (MainWebViewActivity.darkTheme) {
+                                        thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_dark);
+                                    } else {
+                                        thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_light);
+                                    }
                                 }
                             } else {
-                                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted);
+                                if (MainWebViewActivity.darkTheme) {
+                                    thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_dark);
+                                } else {
+                                    thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_light);
+                                }
                             }
                         } else {  // `first_party_cookies_enabled` is `false`.
                             // Update the icon for `first_party_cookies_enabled`.
-                            firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled);
+                            if (MainWebViewActivity.darkTheme) {
+                                firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_dark);
+                            } else {
+                                firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_light);
+                            }
 
                             // Set the icon for `third_party_cookies_enabled` to be ghosted.
-                            thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted);
+                            if (MainWebViewActivity.darkTheme) {
+                                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_dark);
+                            } else {
+                                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_light);
+                            }
                         }
 
                         // Enable `third_party_cookies_enabled` if `first_party_cookies_enabled` is `true` and API >= 21.
@@ -435,7 +608,11 @@ public class SettingsFragment extends PreferenceFragment {
                         if (sharedPreferences.getBoolean("third_party_cookies_enabled", false)) {
                             thirdPartyCookiesPreference.setIcon(R.drawable.cookies_warning);
                         } else {
-                            thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled);
+                            if (MainWebViewActivity.darkTheme) {
+                                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_dark);
+                            } else {
+                                thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_light);
+                            }
                         }
                         break;
 
@@ -444,7 +621,11 @@ public class SettingsFragment extends PreferenceFragment {
                         if (sharedPreferences.getBoolean("dom_storage_enabled", false)) {
                             domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
                         } else {
-                            domStoragePreference.setIcon(R.drawable.dom_storage_disabled);
+                            if (MainWebViewActivity.darkTheme) {
+                                domStoragePreference.setIcon(R.drawable.dom_storage_disabled_dark);
+                            } else {
+                                domStoragePreference.setIcon(R.drawable.dom_storage_disabled_light);
+                            }
                         }
                         break;
 
@@ -453,7 +634,11 @@ public class SettingsFragment extends PreferenceFragment {
                         if (sharedPreferences.getBoolean("save_form_data_enabled", false)) {
                             saveFormDataPreference.setIcon(R.drawable.form_data_enabled);
                         } else {
-                            saveFormDataPreference.setIcon(R.drawable.form_data_disabled);
+                            if (MainWebViewActivity.darkTheme) {
+                                saveFormDataPreference.setIcon(R.drawable.form_data_disabled_dark);
+                            } else {
+                                saveFormDataPreference.setIcon(R.drawable.form_data_disabled_light);
+                            }
                         }
 
                     case "user_agent":
@@ -464,27 +649,45 @@ public class SettingsFragment extends PreferenceFragment {
                                 // Display the user agent as the summary text for `userAgentPreference`.
                                 userAgentPreference.setSummary(bareWebView.getSettings().getUserAgentString());
 
-                                // Update `customUserAgentPreference`.
+                                // Disable `customUserAgentPreference`.
                                 customUserAgentPreference.setEnabled(false);
-                                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted);
+
+                                // Set the `customUserAgentPreference` icon according to the theme.
+                                if (MainWebViewActivity.darkTheme) {
+                                    customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_dark);
+                                } else {
+                                    customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_light);
+                                }
                                 break;
 
                             case "Custom user agent":
                                 // Display `Custom user agent` as the summary text for `userAgentPreference`.
                                 userAgentPreference.setSummary(R.string.custom_user_agent);
 
-                                // Update `customUserAgentPreference`.
+                                // Enable `customUserAgentPreference`.
                                 customUserAgentPreference.setEnabled(true);
-                                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled);
+
+                                // Set the `customUserAgentPreference` icon according to the theme.
+                                if (MainWebViewActivity.darkTheme) {
+                                    customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled_dark);
+                                } else {
+                                    customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled_light);
+                                }
                                 break;
 
                             default:
                                 // Display the user agent as the summary text for `userAgentPreference`.
                                 userAgentPreference.setSummary(sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0"));
 
-                                // Update `customUserAgentPreference`.
+                                // Disable `customUserAgentPreference`.
                                 customUserAgentPreference.setEnabled(false);
-                                customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted);
+
+                                // Set the `customUserAgentPreference` icon according to the theme.
+                                if (MainWebViewActivity.darkTheme) {
+                                    customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_dark);
+                                } else {
+                                    customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_light);
+                                }
                                 break;
                         }
                         break;
@@ -497,27 +700,51 @@ public class SettingsFragment extends PreferenceFragment {
                     case "block_ads":
                         // Update the icon.
                         if (sharedPreferences.getBoolean("block_ads", true)) {
-                            blockAdsPreference.setIcon(R.drawable.block_ads_enabled);
+                            if (MainWebViewActivity.darkTheme) {
+                                blockAdsPreference.setIcon(R.drawable.block_ads_enabled_dark);
+                            } else {
+                                blockAdsPreference.setIcon(R.drawable.block_ads_enabled_light);
+                            }
                         } else {
-                            blockAdsPreference.setIcon(R.drawable.block_ads_disabled);
+                            if (MainWebViewActivity.darkTheme) {
+                                blockAdsPreference.setIcon(R.drawable.block_ads_disabled_dark);
+                            } else {
+                                blockAdsPreference.setIcon(R.drawable.block_ads_disabled_light);
+                            }
                         }
                         break;
 
                     case "incognito_mode":
                         // Update the icon.
                         if (sharedPreferences.getBoolean("incognito_mode", false)) {
-                            incognitoModePreference.setIcon(R.drawable.incognito_mode_enabled);
+                            if (MainWebViewActivity.darkTheme) {
+                                incognitoModePreference.setIcon(R.drawable.incognito_mode_enabled_dark);
+                            } else {
+                                incognitoModePreference.setIcon(R.drawable.incognito_mode_enabled_light);
+                            }
                         } else {
-                            incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled);
+                            if (MainWebViewActivity.darkTheme) {
+                                incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled_dark);
+                            } else {
+                                incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled_light);
+                            }
                         }
                         break;
 
                     case "do_not_track":
                         // Update the icon.
                         if (sharedPreferences.getBoolean("do_not_track", false)) {
-                            doNotTrackPreference.setIcon(R.drawable.do_not_track_enabled);
+                            if (MainWebViewActivity.darkTheme) {
+                                doNotTrackPreference.setIcon(R.drawable.do_not_track_enabled_dark);
+                            } else {
+                                doNotTrackPreference.setIcon(R.drawable.do_not_track_enabled_light);
+                            }
                         } else {
-                            doNotTrackPreference.setIcon(R.drawable.do_not_track_disabled);
+                            if (MainWebViewActivity.darkTheme) {
+                                doNotTrackPreference.setIcon(R.drawable.do_not_track_disabled_dark);
+                            } else {
+                                doNotTrackPreference.setIcon(R.drawable.do_not_track_disabled_light);
+                            }
                         }
 
                         break;
@@ -532,22 +759,42 @@ public class SettingsFragment extends PreferenceFragment {
 
                         // Update the icons.
                         if (currentProxyThroughOrbot) {
-                            // Set the `proxyThroughOrbotPreference`, `torHomepagePreference`, and `torSearchPreference` icons.
-                            proxyThroughOrbotPreference.setIcon(R.drawable.orbot_enabled);
-                            torHomepagePreference.setIcon(R.drawable.home_enabled);
-                            torSearchPreference.setIcon(R.drawable.search_enabled);
+                            // Set the Tor icons according to the theme.
+                            if (MainWebViewActivity.darkTheme) {
+                                proxyThroughOrbotPreference.setIcon(R.drawable.orbot_enabled_dark);
+                                torHomepagePreference.setIcon(R.drawable.home_enabled_dark);
+                                torSearchPreference.setIcon(R.drawable.search_enabled_dark);
 
-                            // Set the `torSearchCustomURLPreference` icon.
-                            if (torSearchCustomURLPreference.isEnabled()) {
-                                torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled);
+                                // Set the `torSearchCustomURLPreference` icon.
+                                if (torSearchCustomURLPreference.isEnabled()) {
+                                    torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_dark);
+                                } else {
+                                    torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_dark);
+                                }
                             } else {
-                                torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_disabled);
+                                proxyThroughOrbotPreference.setIcon(R.drawable.orbot_enabled_light);
+                                torHomepagePreference.setIcon(R.drawable.home_enabled_light);
+                                torSearchPreference.setIcon(R.drawable.search_enabled_light);
+
+                                // Set the `torSearchCustomURLPreference` icon.
+                                if (torSearchCustomURLPreference.isEnabled()) {
+                                    torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_light);
+                                } else {
+                                    torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_light);
+                                }
                             }
                         } else {  // Proxy through Orbot is disabled.
-                            proxyThroughOrbotPreference.setIcon(R.drawable.orbot_disabled);
-                            torHomepagePreference.setIcon(R.drawable.home_ghosted);
-                            torSearchPreference.setIcon(R.drawable.search_ghosted);
-                            torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted);
+                            if (MainWebViewActivity.darkTheme) {
+                                proxyThroughOrbotPreference.setIcon(R.drawable.orbot_disabled_dark);
+                                torHomepagePreference.setIcon(R.drawable.home_ghosted_dark);
+                                torSearchPreference.setIcon(R.drawable.search_ghosted_dark);
+                                torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_dark);
+                            } else {
+                                proxyThroughOrbotPreference.setIcon(R.drawable.orbot_disabled_light);
+                                torHomepagePreference.setIcon(R.drawable.home_ghosted_light);
+                                torSearchPreference.setIcon(R.drawable.search_ghosted_light);
+                                torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_light);
+                            }
                         }
                         break;
 
@@ -565,16 +812,28 @@ public class SettingsFragment extends PreferenceFragment {
                             // Use `R.string.custom_url`, which is translated, as the summary instead of the array value, which isn't.
                             torSearchPreference.setSummary(R.string.custom_url);
 
-                            // Update `torSearchCustomURLPreference`.
+                            // Enable `torSearchCustomURLPreference`.
                             torSearchCustomURLPreference.setEnabled(true);
-                            torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled);
+
+                            // Update the `torSearchCustomURLPreference` icon.
+                            if (MainWebViewActivity.darkTheme) {
+                                torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_dark);
+                            } else {
+                                torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_light);
+                            }
                         } else {
                             // Set the array value as the summary text.
                             torSearchPreference.setSummary(presentTorSearchString);
 
-                            // Update `torSearchCustomURLPreference`.
+                            // Disable `torSearchCustomURLPreference`.
                             torSearchCustomURLPreference.setEnabled(false);
-                            torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_disabled);
+
+                            // Update the `torSearchCustomURLPreference` icon.
+                            if (MainWebViewActivity.darkTheme) {
+                                torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_dark);
+                            } else {
+                                torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_light);
+                            }
                         }
                         break;
 
@@ -592,16 +851,28 @@ public class SettingsFragment extends PreferenceFragment {
                             // Set the summary text to `R.string.custom_url`, which is translated.
                             searchPreference.setSummary(R.string.custom_url);
 
-                            // Update `searchCustomURLPreference`.
+                            // Enable `searchCustomURLPreference`.
                             searchCustomURLPreference.setEnabled(true);
-                            searchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled);
+
+                            // Set the `searchCustomURLPreference` according to the theme.
+                            if (MainWebViewActivity.darkTheme) {
+                                searchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_dark);
+                            } else {
+                                searchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_light);
+                            }
                         } else {  // `Custom URL` is not selected.
                             // Set the summary text to `newSearchString`.
                             searchPreference.setSummary(newSearchString);
 
-                            // Update `searchCustomURLPreference`.
+                            // Disable `searchCustomURLPreference`.
                             searchCustomURLPreference.setEnabled(false);
-                            searchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted);
+
+                            // Set the `searchCustomURLPreference` according to the theme.
+                            if (MainWebViewActivity.darkTheme) {
+                                searchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_dark);
+                            } else {
+                                searchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_light);
+                            }
                         }
                         break;
 
@@ -612,57 +883,107 @@ public class SettingsFragment extends PreferenceFragment {
 
                     case "full_screen_browsing_mode":
                         if (sharedPreferences.getBoolean("full_screen_browsing_mode", false)) {
-                            // Set `fullScreenBrowsingModePreference` to use the enabled icon.
-                            fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled);
+                            // Set the `fullScreenBrowsingModePreference` icon according to the theme.
+                            if (MainWebViewActivity.darkTheme) {
+                                fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled_dark);
+                            } else {
+                                fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled_light);
+                            }
 
-                            if (sharedPreferences.getBoolean("hide_system_bars", false)) {
-                                // Set `hideSystemBarsPreference` to use the enabled icon.
-                                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_enabled);
-
-                                // Update `translucentNavigationBarPreference`.
+                            if (sharedPreferences.getBoolean("hide_system_bars", false)) {  // `hide_system_bars` is `true`.
+                                // Disable `translucentNavigationBarPreference`.
                                 translucentNavigationBarPreference.setEnabled(false);
-                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted);
-                            } else {  // `hide_system_bars` is false.
-                                // Set `hideSystemBarsPreference` to use the disabled icon.
-                                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_disabled);
 
-                                // Update `translucentNavigationBarPreference`.
-                                translucentNavigationBarPreference.setEnabled(true);
-                                if (sharedPreferences.getBoolean("translucent_navigation_bar", true)) {
-                                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled);
+                                // Set the icons according to the theme.
+                                if (MainWebViewActivity.darkTheme) {
+                                    hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_enabled_dark);
+                                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_dark);
                                 } else {
-                                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled);
+                                    hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_enabled_light);
+                                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_light);
+                                }
+                            } else {  // `hide_system_bars` is `false`.
+                                // Enable `translucentNavigationBarPreference`.
+                                translucentNavigationBarPreference.setEnabled(true);
+
+                                // Set the icons according to the theme.
+                                if (MainWebViewActivity.darkTheme) {  // Use the dark theme.
+                                    // Set the `hideSystemBarsPreference` icon.
+                                    hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_disabled_dark);
+
+                                    // Set the `translucentNavigationBarPreference` icon.
+                                    if (sharedPreferences.getBoolean("translucent_navigation_bar", true)) {
+                                        translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled_dark);
+                                    } else {
+                                        translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled_dark);
+                                    }
+                                } else {  // Use the light theme.
+                                    // Set the `hideSystemBarsPreference` icon.
+                                    hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_disabled_light);
+
+                                    // Set the `translucentNavigationBarPreference` icon.
+                                    if (sharedPreferences.getBoolean("translucent_navigation_bar", true)) {
+                                        translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled_light);
+                                    } else {
+                                        translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled_light);
+                                    }
                                 }
                             }
                         } else {  // `full_screen_browsing_mode` is false.
                             // Disable `translucentNavigationBarPreference`.
                             translucentNavigationBarPreference.setEnabled(false);
 
-                            // Update the icons.
-                            fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled);
-                            hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_ghosted);
-                            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted);
+                            // Update the icons according to the theme.
+                            if (MainWebViewActivity.darkTheme) {
+                                fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled_dark);
+                                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_ghosted_dark);
+                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_dark);
+                            } else {
+                                fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled_light);
+                                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_ghosted_light);
+                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_light);
+                            }
                         }
                         break;
 
                     case "hide_system_bars":
                         if (sharedPreferences.getBoolean("hide_system_bars", false)) {
-                            // Set `hideSystemBarsPreference` to use the enabled icon.
-                            hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_enabled);
-
-                            // Update `translucentNavigationBarPreference`.
+                            // Disable `translucentNavigationBarPreference`.
                             translucentNavigationBarPreference.setEnabled(false);
-                            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted);
-                        } else {  // `hide_system_bars` is false.
-                            // Set `hideSystemBarsPreference` to use the disabled icon.
-                            hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_disabled);
 
-                            // Update `translucentNavigationBarPreference`.
-                            translucentNavigationBarPreference.setEnabled(true);
-                            if (sharedPreferences.getBoolean("translucent_navigation_bar", true)) {
-                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled);
+                            // Set the icons according to the theme.
+                            if (MainWebViewActivity.darkTheme) {
+                                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_enabled_dark);
+                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_dark);
                             } else {
-                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled);
+                                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_enabled_light);
+                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_light);
+                            }
+                        } else {  // `hide_system_bars` is false.
+                            // Enable `translucentNavigationBarPreference`.
+                            translucentNavigationBarPreference.setEnabled(true);
+
+                            // Set the icons according to the theme.
+                            if (MainWebViewActivity.darkTheme) {
+                                // Set the `hideSystemBarsPreference` icon.
+                                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_disabled_dark);
+
+                                // Set the `translucentNavigationBarPreference` icon.
+                                if (sharedPreferences.getBoolean("translucent_navigation_bar", true)) {
+                                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled_dark);
+                                } else {
+                                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled_dark);
+                                }
+                            } else {
+                                // Set the `hideSystemBarsPreference` icon.
+                                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_disabled_light);
+
+                                // Set the `translucentNavigationBarPreference` icon.
+                                if (sharedPreferences.getBoolean("translucent_navigation_bar", true)) {
+                                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled_light);
+                                } else {
+                                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled_light);
+                                }
                             }
                         }
                         break;
@@ -670,9 +991,17 @@ public class SettingsFragment extends PreferenceFragment {
                     case "translucent_navigation_bar":
                         // Update the icon.
                         if (sharedPreferences.getBoolean("translucent_navigation_bar", true)) {
-                            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled);
+                            if (MainWebViewActivity.darkTheme) {
+                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled_dark);
+                            } else {
+                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled_light);
+                            }
                         } else {
-                            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled);
+                            if (MainWebViewActivity.darkTheme) {
+                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled_dark);
+                            } else {
+                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled_light);
+                            }
                         }
                         break;
 
@@ -688,35 +1017,55 @@ public class SettingsFragment extends PreferenceFragment {
 
                         // Update the `clearEverythingPreference` icon.
                         if (newClearEverythingBoolean) {
-                            clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled);
+                            if (MainWebViewActivity.darkTheme) {
+                                clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled_dark);
+                            } else {
+                                clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled_light);
+                            }
                         } else {
                             clearEverythingPreference.setIcon(R.drawable.clear_everything_disabled);
                         }
 
                         // Update the `clearCookiesPreference` icon.
                         if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_cookies", true)) {
-                            clearCookiesPreference.setIcon(R.drawable.cookies_cleared);
+                            if (MainWebViewActivity.darkTheme) {
+                                clearCookiesPreference.setIcon(R.drawable.cookies_cleared_dark);
+                            } else {
+                                clearCookiesPreference.setIcon(R.drawable.cookies_cleared_light);
+                            }
                         } else {
                             clearCookiesPreference.setIcon(R.drawable.cookies_warning);
                         }
 
                         // Update the `clearDomStoragePreference` icon.
                         if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_dom_storage", true)) {
-                            clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared);
+                            if (MainWebViewActivity.darkTheme) {
+                                clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_dark);
+                            } else {
+                                clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_light);
+                            }
                         } else {
                             clearDomStoragePreference.setIcon(R.drawable.dom_storage_warning);
                         }
 
                         // Update the `clearFormDataPreference` icon.
                         if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_form_data", true)) {
-                            clearFormDataPreference.setIcon(R.drawable.form_data_cleared);
+                            if (MainWebViewActivity.darkTheme) {
+                                clearFormDataPreference.setIcon(R.drawable.form_data_cleared_dark);
+                            } else {
+                                clearFormDataPreference.setIcon(R.drawable.form_data_cleared_light);
+                            }
                         } else {
                             clearFormDataPreference.setIcon(R.drawable.form_data_warning);
                         }
 
                         // Update the `clearCachePreference` icon.
                         if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_cache", true)) {
-                            clearCachePreference.setIcon(R.drawable.cache_cleared);
+                            if (MainWebViewActivity.darkTheme) {
+                                clearCachePreference.setIcon(R.drawable.cache_cleared_dark);
+                            } else {
+                                clearCachePreference.setIcon(R.drawable.cache_cleared_light);
+                            }
                         } else {
                             clearCachePreference.setIcon(R.drawable.cache_warning);
                         }
@@ -725,7 +1074,11 @@ public class SettingsFragment extends PreferenceFragment {
                     case "clear_cookies":
                         // Update the icon.
                         if (sharedPreferences.getBoolean("clear_cookies", true)) {
-                            clearCookiesPreference.setIcon(R.drawable.cookies_cleared);
+                            if (MainWebViewActivity.darkTheme) {
+                                clearCookiesPreference.setIcon(R.drawable.cookies_cleared_dark);
+                            } else {
+                                clearCookiesPreference.setIcon(R.drawable.cookies_cleared_light);
+                            }
                         } else {
                             clearCookiesPreference.setIcon(R.drawable.cookies_warning);
                         }
@@ -734,7 +1087,11 @@ public class SettingsFragment extends PreferenceFragment {
                     case "clear_dom_storage":
                         // Update the icon.
                         if (sharedPreferences.getBoolean("clear_dom_storage", true)) {
-                            clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared);
+                            if (MainWebViewActivity.darkTheme) {
+                                clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_dark);
+                            } else {
+                                clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_light);
+                            }
                         } else {
                             clearDomStoragePreference.setIcon(R.drawable.dom_storage_warning);
                         }
@@ -743,7 +1100,11 @@ public class SettingsFragment extends PreferenceFragment {
                     case "clear_form_data":
                         // Update the icon.
                         if (sharedPreferences.getBoolean("clear_form_data", true)) {
-                            clearFormDataPreference.setIcon(R.drawable.form_data_cleared);
+                            if (MainWebViewActivity.darkTheme) {
+                                clearFormDataPreference.setIcon(R.drawable.form_data_cleared_dark);
+                            } else {
+                                clearFormDataPreference.setIcon(R.drawable.form_data_cleared_light);
+                            }
                         } else {
                             clearFormDataPreference.setIcon(R.drawable.form_data_warning);
                         }
@@ -752,7 +1113,11 @@ public class SettingsFragment extends PreferenceFragment {
                     case "clear_cache":
                         // Update the icon.
                         if (sharedPreferences.getBoolean("clear_cache", true)) {
-                            clearCachePreference.setIcon(R.drawable.cache_cleared);
+                            if (MainWebViewActivity.darkTheme) {
+                                clearCachePreference.setIcon(R.drawable.cache_cleared_dark);
+                            } else {
+                                clearCachePreference.setIcon(R.drawable.cache_cleared_light);
+                            }
                         } else {
                             clearCachePreference.setIcon(R.drawable.cache_warning);
                         }
@@ -771,18 +1136,34 @@ public class SettingsFragment extends PreferenceFragment {
                     case "swipe_to_refresh":
                         // Update the icon.
                         if (sharedPreferences.getBoolean("swipe_to_refresh", false)) {
-                            swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled);
+                            if (MainWebViewActivity.darkTheme) {
+                                swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled_dark);
+                            } else {
+                                swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled_light);
+                            }
                         } else {
-                            swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled);
+                            if (MainWebViewActivity.darkTheme) {
+                                swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled_dark);
+                            } else {
+                                swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled_light);
+                            }
                         }
                         break;
 
                     case "display_additional_app_bar_icons":
                         // Update the icon.
                         if (sharedPreferences.getBoolean("display_additional_app_bar_icons", false)) {
-                            displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled);
+                            if (MainWebViewActivity.darkTheme) {
+                                displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled_dark);
+                            } else {
+                                displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled_light);
+                            }
                         } else {
-                            displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled);
+                            if (MainWebViewActivity.darkTheme) {
+                                displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_dark);
+                            } else {
+                                displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_light);
+                            }
                         }
                         break;
 
@@ -810,13 +1191,21 @@ public class SettingsFragment extends PreferenceFragment {
                     case "display_webpage_images":
                         if (sharedPreferences.getBoolean("display_webpage_images", true)) {
                             // Update the icon.
-                            displayWebpageImagesPreference.setIcon(R.drawable.images_enabled);
+                            if (MainWebViewActivity.darkTheme) {
+                                displayWebpageImagesPreference.setIcon(R.drawable.images_enabled_dark);
+                            } else {
+                                displayWebpageImagesPreference.setIcon(R.drawable.images_enabled_light);
+                            }
 
                             // `mainWebView` does not need to be reloaded because unloaded images will load automatically.
                             MainWebViewActivity.reloadOnRestartBoolean = false;
                         } else {
                             // Update the icon.
-                            displayWebpageImagesPreference.setIcon(R.drawable.images_disabled);
+                            if (MainWebViewActivity.darkTheme) {
+                                displayWebpageImagesPreference.setIcon(R.drawable.images_disabled_dark);
+                            } else {
+                                displayWebpageImagesPreference.setIcon(R.drawable.images_disabled_light);
+                            }
 
                             // Set `mainWebView` to reload on restart to remove the current images.
                             MainWebViewActivity.reloadOnRestartBoolean = true;

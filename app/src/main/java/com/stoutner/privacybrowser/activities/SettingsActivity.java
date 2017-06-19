@@ -21,14 +21,22 @@ package com.stoutner.privacybrowser.activities;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 
+import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.fragments.SettingsFragment;
 
 public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Set the activity theme.
+        if (MainWebViewActivity.darkTheme) {
+            setTheme(R.style.PrivacyBrowserSettingsDark);
+        } else {
+            setTheme(R.style.PrivacyBrowserSettingsLight);
+        }
+
+        // Run the default commands.
         super.onCreate(savedInstanceState);
 
         // Display SettingsFragment.
