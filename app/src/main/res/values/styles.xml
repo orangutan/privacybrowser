@@ -154,8 +154,10 @@
     </style>
 
     <style name="PrivacyBrowserAlertDialogDark" parent="Theme.AppCompat.Dialog.Alert" >
-        <item name="android:windowBackground">@color/gray_900</item>
-        <item name="android:textColor">@color/gray_300</item>
+        <item name="android:windowBackground">@color/gray_850</item>
+        <item name="android:textColorPrimary">@color/gray_300</item>
+        <item name="android:textColorSecondary">@color/gray_300</item>
+        <item name="colorAccent">@color/blue_600</item>
     </style>
 
     <style name="PrivacyBrowserSpinnerDropDownItemStyleDark" parent="Base.Widget.AppCompat.TextView.SpinnerItem" >
