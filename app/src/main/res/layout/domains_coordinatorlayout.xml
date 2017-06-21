@@ -21,7 +21,6 @@
 <!-- `android:fitsSystemWindows="true"` moves the AppBar below the status bar.  When it is specified the theme should include `<item name="android:windowTranslucentStatus">true</item>` to make the status bar a transparent, darkened overlay. -->
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:fitsSystemWindows="true" >
@@ -34,17 +33,14 @@
 
         <android.support.design.widget.AppBarLayout
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:theme="@style/PrivacyBrowserAppBarLight" >
+            android:layout_width="match_parent" >
 
-            <!-- `android:theme="@style/PrivacyBrowser.DarkAppBar"` makes the text and icons in the `AppBar` white. -->
             <android.support.v7.widget.Toolbar
                 android:id="@+id/domains_toolbar"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:background="@color/blue_700"
-                android:theme="@style/PrivacyBrowserAppBarWhiteText"
-                app:popupTheme="@style/PrivacyBrowserPopupsLight" />
+                android:background="?attr/colorPrimaryDark"
+                android:theme="?attr/appBarTextTheme" />
         </android.support.design.widget.AppBarLayout>
 
         <include layout="@layout/domains_list" />
@@ -56,5 +52,5 @@
         android:layout_width="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:src="@drawable/add" />
+        android:src="?attr/addIcon" />
 </android.support.design.widget.CoordinatorLayout>

@@ -45,7 +45,17 @@ public class DomainSettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Set the activity theme.
+        if (MainWebViewActivity.darkTheme) {
+            setTheme(R.style.PrivacyBrowserDark_SecondaryActivity);
+        } else {
+            setTheme(R.style.PrivacyBrowserLight_SecondaryActivity);
+        }
+
+        // Run the default commands.
         super.onCreate(savedInstanceState);
+
+        // Set the content view.
         setContentView(R.layout.domain_settings_coordinatorlayout);
 
         // We ned to use `SupportActionBar` from `android.support.v7.app.ActionBar` until the minimum API is >= 21.

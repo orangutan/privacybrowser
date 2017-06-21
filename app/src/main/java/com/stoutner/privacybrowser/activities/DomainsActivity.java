@@ -71,15 +71,25 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Set the activity theme.
+        if (MainWebViewActivity.darkTheme) {
+            setTheme(R.style.PrivacyBrowserDark_SecondaryActivity);
+        } else {
+            setTheme(R.style.PrivacyBrowserLight_SecondaryActivity);
+        }
+
+        // Run the default commands.
         super.onCreate(savedInstanceState);
+
+        // Set the content view.
         setContentView(R.layout.domains_coordinatorlayout);
 
         // Get a handle for the context.
         context = this;
 
         // We need to use the `SupportActionBar` from `android.support.v7.app.ActionBar` until the minimum API is >= 21.
-        final Toolbar bookmarksAppBar = (Toolbar) findViewById(R.id.domains_toolbar);
-        setSupportActionBar(bookmarksAppBar);
+        final Toolbar domainsAppBar = (Toolbar) findViewById(R.id.domains_toolbar);
+        setSupportActionBar(domainsAppBar);
 
         // Display the home arrow on `SupportActionBar`.
         ActionBar appBar = getSupportActionBar();
@@ -90,7 +100,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         // The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
         domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
 
-        // Determine if we are in two pane mode.  `domains_settings_linearlayout` is only populated if two panes are present.
+        // Determine if we are in two pane mode.  `domains_settings_scrollview` is only populated if two panes are present.
         twoPaneMode = ((findViewById(R.id.domain_settings_scrollview)) != null);
 
         // Initialize `domainsListView`.
@@ -104,10 +114,6 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
                 // Display the Domain Settings.
                 if (twoPaneMode) {  // Display a fragment in two paned mode.
-                    // Enable the options `MenuItems`.
-                    saveMenuItem.setEnabled(true);
-                    deleteMenuItem.setEnabled(true);
-
                     // Store `databaseId` in `argumentsBundle`.
                     Bundle argumentsBundle = new Bundle();
                     argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, databaseId);
@@ -118,11 +124,6 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
                     // Display `domainSettingsFragment`.
                     getSupportFragmentManager().beginTransaction().replace(R.id.domain_settings_scrollview, domainSettingsFragment).commit();
-
-                    // Enable the options `MenuItems`.
-                    deleteMenuItem.setEnabled(true);
-                    deleteMenuItem.setIcon(R.drawable.delete);
-                    saveMenuItem.setEnabled(true);
                 } else { // Load the second activity on smaller screens.
                     // Create `domainSettingsActivityIntent` with the `databaseId`.
                     Intent domainSettingsActivityIntent = new Intent(context, DomainSettingsActivity.class);
@@ -309,7 +310,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
                                         // Enable the options `MenuItems`.
                                         deleteMenuItem.setEnabled(true);
-                                        deleteMenuItem.setIcon(R.drawable.delete);
+                                        deleteMenuItem.setIcon(R.drawable.delete_light);
                                         saveMenuItem.setEnabled(true);
                                         break;
 
@@ -399,8 +400,14 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
             // Enable the options `MenuItems`.
             deleteMenuItem.setEnabled(true);
-            deleteMenuItem.setIcon(R.drawable.delete);
             saveMenuItem.setEnabled(true);
+
+            // Set the delete icon according to the theme.
+            if (MainWebViewActivity.darkTheme) {
+                deleteMenuItem.setIcon(R.drawable.delete_dark);
+            } else {
+                deleteMenuItem.setIcon(R.drawable.delete_light);
+            }
         } else {
             // Disable the options `MenuItems`.
             deleteMenuItem.setEnabled(false);

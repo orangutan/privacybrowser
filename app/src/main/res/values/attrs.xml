@@ -27,6 +27,7 @@
     <attr name="aboutText" format="reference" />
     <attr name="sslTitle" format="reference" />
     <attr name="urlHistoryText" format="reference" />
+    <attr name="primaryTextColorSelector" format="reference" />
 
     <attr name="navigationHeaderBackground" format="reference" />
     <attr name="navigationHeaderTextColor" format="reference" />
@@ -36,8 +37,14 @@
 
     <attr name="findOnPageIconTintColor" format="reference" />
 
+    <attr name="domainsListSelectorColor" format="reference" />
+
+    <attr name="iconTintColor" format="reference" />
+
     <attr name="userAgentIcon" format="reference" />
     <attr name="searchIcon" format="reference" />
     <attr name="homepageIcon" format="reference" />
     <attr name="fontSizeIcon" format="reference" />
+    <attr name="deleteIcon" format="reference" />
+    <attr name="addIcon" format="reference" />
 </resources>

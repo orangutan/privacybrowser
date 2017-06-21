@@ -20,7 +20,6 @@
 
 <!-- Change the dark theme enabled text from white to gray. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android" >
-    <!-- `#4Dffffff` comes from the built-in `@color/primary_text_disabled_material_dark`. -->
-    <item android:state_enabled="false" android:color="#4Dffffff" />
-    <item android:color="@color/gray_300" />
+    <item android:state_enabled="false" android:color="@color/gray_400" />
+    <item android:color="@color/black" />
 </selector>

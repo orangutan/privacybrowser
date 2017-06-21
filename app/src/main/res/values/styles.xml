@@ -44,8 +44,13 @@
         <item name="colorPrimaryDark">@color/blue_700</item>
         <item name="android:textColorHighlight">@color/blue_200</item>
         <item name="android:actionModeBackground">@color/blue_700</item>
+        <item name="primaryTextColorSelector">@color/primary_text_color_selector_light</item>
+        <item name="domainsListSelectorColor">@drawable/domains_list_selector_light</item>
         <item name="aboutTitle">@color/blue_900</item>
         <item name="aboutText">@color/blue_700</item>
+        <item name="iconTintColor">@color/blue_800</item>
+        <item name="deleteIcon">@drawable/delete_light</item>
+        <item name="addIcon">@drawable/add_light</item>
         <item name="actionBarPopupTheme">@style/PrivacyBrowserPopupsLight</item>
         <item name="appBarTextTheme">@style/PrivacyBrowserAppBarWhiteText</item>
         <item name="tabLayoutTheme">@style/PrivacyBrowserTabLayoutLight</item>
@@ -88,7 +93,7 @@
          When it is specified the root layout should include `android:fitsSystemWindows="true"`. -->
     <style name="PrivacyBrowserDark" parent="Theme.AppCompat.NoActionBar" >
         <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:textColorPrimary">@color/dark_primary_text_color_selector</item>
+        <item name="android:textColorPrimary">@color/primary_text_color_selector_dark</item>
         <item name="colorAccent">@color/blue_600</item>
         <item name="android:textColorHighlight">@color/blue_800</item>
         <item name="navigationHeaderBackground">@color/blue_800</item>
@@ -102,15 +107,23 @@
     </style>
 
     <style name="PrivacyBrowserDark.SecondaryActivity" >
-        <item name="colorPrimaryDark">@color/blue_900</item>
-        <item name="aboutTitle">@color/blue_700</item>
+        <item name="colorPrimaryDark">@color/blue_800</item>
+        <item name="primaryTextColorSelector">@color/primary_text_color_selector_dark</item>
+        <item name="aboutTitle">@color/blue_600</item>
         <item name="aboutText">@color/blue_400</item>
+        <item name="domainsListSelectorColor">@drawable/domains_list_selector_dark</item>
+        <item name="iconTintColor">@color/blue_600</item>
+        <item name="deleteIcon">@drawable/delete_dark</item>
+        <item name="addIcon">@drawable/add_dark</item>
         <item name="appBarTextTheme">@style/PrivacyBrowserAppBarDark</item>
         <item name="tabLayoutTheme">@style/PrivacyBrowserTabLayoutDark</item>
+        <item name="android:spinnerDropDownItemStyle">@style/PrivacyBrowserSpinnerDropDownItemStyleDark</item>
     </style>
 
     <style name="PrivacyBrowserSettingsDark" parent="Theme.AppCompat" >
-        <item name="android:textColorPrimary">@color/dark_primary_text_color_selector</item>
+        <item name="colorPrimary">@color/blue_800</item>
+        <item name="colorPrimaryDark">@color/blue_900</item>
+        <item name="android:textColorPrimary">@color/primary_text_color_selector_dark</item>
         <item name="colorAccent">@color/blue_600</item>
         <item name="userAgentIcon">@drawable/user_agent_dark</item>
         <item name="searchIcon">@drawable/search_enabled_dark</item>
@@ -126,12 +139,16 @@
     <!-- Configure the About and Guide `TabLayouts`. -->
     <style name="PrivacyBrowserTabLayoutDark" parent="Widget.Design.TabLayout" >
         <item name="tabBackground">@color/blue_900</item>
-        <item name="android:textColorSecondary">@color/blue_400</item>
+        <item name="android:textColorSecondary">@color/blue_300</item>
         <item name="tabIndicatorColor">@color/gray_300</item>
     </style>
 
     <style name="PrivacyBrowserAlertDialogDark" parent="Theme.AppCompat.Dialog.Alert" >
         <item name="android:windowBackground">@color/gray_900</item>
+        <item name="android:textColor">@color/gray_300</item>
+    </style>
+
+    <style name="PrivacyBrowserSpinnerDropDownItemStyleDark" parent="Base.Widget.AppCompat.TextView.SpinnerItem" >
         <item name="android:textColor">@color/gray_300</item>
     </style>
 

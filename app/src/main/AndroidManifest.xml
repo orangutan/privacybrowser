@@ -121,7 +121,6 @@
         <activity
             android:name=".activities.DomainsActivity"
             android:label="@string/domains"
-            android:theme="@style/PrivacyBrowserLight.SecondaryActivity"
             android:parentActivityName=".activities.MainWebViewActivity"
             android:screenOrientation="fullUser"
             android:persistableMode="persistNever"
@@ -134,7 +133,6 @@
         <activity
             android:name=".activities.DomainSettingsActivity"
             android:label="@string/domain_settings"
-            android:theme="@style/PrivacyBrowserLight.SecondaryActivity"
             android:parentActivityName=".activities.DomainsActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullUser"

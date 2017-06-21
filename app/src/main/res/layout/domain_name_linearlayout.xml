@@ -24,13 +24,13 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:orientation="horizontal"
-    android:background="@drawable/domains_list_selector" >
+    android:background="?attr/domainsListSelectorColor" >
 
     <TextView
         android:id="@+id/domain_name_textview"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:textColor="@color/black"
+        android:textColor="?android:attr/textColorPrimary"
         android:textSize="22sp"
         android:layout_margin="10dp"
         android:maxLines="1"

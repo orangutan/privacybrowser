@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -18,13 +18,9 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<!-- `android:dividerHeight` must be specified with `android:divider` or the height will be `0dp`.  In our case we want the height to be `0dp`. -->
-<ListView
-    android:id="@+id/domains_listview"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".activities.DomainsActivity"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:divider="@color/transparent"
-    android:dividerHeight="0dp" />
+<!-- Change the dark theme enabled text from white to gray. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!-- `#4DFFFFFF` comes from the built-in `@color/primary_text_disabled_material_dark`. -->
+    <item android:state_enabled="false" android:color="#4DFFFFFF" />
+    <item android:color="@color/gray_300" />
+</selector>
