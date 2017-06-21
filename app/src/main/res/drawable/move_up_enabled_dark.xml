@@ -1,0 +1,13 @@
+<!-- `move_up_enabled_dark.xml` comes from the Android Material icon set, where it is called `ic_vertical_align_top`.  It is released under the Apache License 2.0. -->
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:height="24dp"
+    android:width="24dp"
+    android:viewportHeight="24.0"
+    android:viewportWidth="24.0" >
+
+    <!-- We have to use a hard coded color until API >= 21.  Then we can use `@color`. -->
+    <path
+        android:fillColor="#FFE0E0E0"
+        android:pathData="M8,11h3v10h2V11h3l-4,-4 -4,4zM4,3v2h16V3H4z"/>
+</vector>

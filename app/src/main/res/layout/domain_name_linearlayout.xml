@@ -24,7 +24,7 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:orientation="horizontal"
-    android:background="?attr/domainsListSelectorColor" >
+    android:background="?attr/listSelectorDrawable" >
 
     <TextView
         android:id="@+id/domain_name_textview"

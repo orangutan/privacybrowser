@@ -26,14 +26,14 @@
         android:id="@+id/create_folder"
         android:title="@string/create_folder"
         android:orderInCategory="10"
-        android:icon="@drawable/create_folder"
+        android:icon="?attr/createFolderIcon"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/options_menu_select_all_bookmarks"
         android:title="@string/select_all"
         android:orderInCategory="20"
-        android:icon="@drawable/select_all"
+        android:icon="?attr/selectAllIcon"
         app:showAsAction="ifRoom" />
 
     <item

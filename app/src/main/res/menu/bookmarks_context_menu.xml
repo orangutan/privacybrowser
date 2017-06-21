@@ -26,41 +26,39 @@
         android:id="@+id/move_bookmark_up"
         android:title="@string/move_up"
         android:orderInCategory="10"
-        android:icon="@drawable/move_bookmark_up_enabled"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/move_bookmark_down"
         android:title="@string/move_down"
         android:orderInCategory="20"
-        android:icon="@drawable/move_bookmark_down_enabled"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/move_to_folder"
         android:title="@string/move_to_folder"
         android:orderInCategory="30"
-        android:icon="@drawable/move_to_folder"
+        android:icon="?attr/moveToFolderIcon"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/edit_bookmark"
         android:title="@string/edit"
         android:orderInCategory="40"
-        android:icon="@drawable/edit"
+        android:icon="?attr/editIcon"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/delete_bookmark"
         android:title="@string/delete"
         android:orderInCategory="50"
-        android:icon="@drawable/delete_light"
+        android:icon="?attr/deleteIcon"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/context_menu_select_all_bookmarks"
         android:title="@string/select_all"
         android:orderInCategory="60"
-        android:icon="@drawable/select_all"
+        android:icon="?attr/selectAllIcon"
         app:showAsAction="ifRoom" />
 </menu>

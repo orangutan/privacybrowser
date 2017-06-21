@@ -18,8 +18,7 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<!-- `android:fitsSystemWindows="true"` moves the AppBar below the status bar.
-    When it is specified the theme should include `<item name="android:windowTranslucentStatus">true</item>` to make the status bar a transparent, darkened overlay. -->
+<!-- `android:fitsSystemWindows="true"` moves the AppBar below the status bar.  When it is specified the theme should include `<item name="android:windowTranslucentStatus">true</item>` to make the status bar a transparent, darkened overlay. -->
 <android.support.design.widget.CoordinatorLayout
     android:id="@+id/bookmarks_coordinatorlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -37,17 +36,16 @@
         <android.support.design.widget.AppBarLayout
             android:id="@+id/bookmarks_appbarlayout"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:theme="@style/PrivacyBrowserAppBarLight" >
+            android:layout_width="match_parent" >
 
             <!-- android:theme="@style/PrivacyBrowser.DarkAppBar" makes the text and icons in the AppBar white. -->
             <android.support.v7.widget.Toolbar
                 android:id="@+id/bookmarks_toolbar"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:background="@color/blue_700"
-                android:theme="@style/PrivacyBrowserAppBarWhiteText"
-                app:popupTheme="@style/PrivacyBrowserPopupsLight" />
+                android:background="?attr/colorPrimaryDark"
+                android:theme="?attr/appBarTextTheme"
+                app:popupTheme="?attr/popupsTheme" />
         </android.support.design.widget.AppBarLayout>
 
         <!-- `android:choiceMode="multipleChoiceModal"` allows the contextual action menu to select more than one item at a time.
@@ -57,7 +55,7 @@
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:choiceMode="multipleChoiceModal"
-            android:divider="@color/white"
+            android:divider="@color/transparent"
             android:dividerHeight="0dp" />
     </LinearLayout>
 

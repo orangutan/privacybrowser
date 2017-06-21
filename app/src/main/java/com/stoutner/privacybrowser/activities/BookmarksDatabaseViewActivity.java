@@ -48,6 +48,13 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // Set the activity theme.
+        if (MainWebViewActivity.darkTheme) {
+            setTheme(R.style.PrivacyBrowserDark_SecondaryActivity);
+        } else {
+            setTheme(R.style.PrivacyBrowserLight_SecondaryActivity);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bookmarks_database_view_coordinatorlayout);
 
@@ -129,7 +136,13 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity {
                 } else {
                     parentFolderImageView.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.folder_dark_blue));
                     bookmarkParentFolderTextView.setText(bookmarkParentFolder);
-                    bookmarkParentFolderTextView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+
+                    // Set the text color according to the theme.
+                    if (MainWebViewActivity.darkTheme) {
+                        bookmarkParentFolderTextView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.gray_300));
+                    } else {
+                        bookmarkParentFolderTextView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+                    }
                 }
 
                 // Get the bookmark URL form the `Cursor` and display it in `bookmarkUrlTextView`.

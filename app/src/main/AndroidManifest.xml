@@ -84,7 +84,6 @@
         <activity
             android:name=".activities.BookmarksActivity"
             android:label="@string/bookmarks"
-            android:theme="@style/PrivacyBrowserLight.SecondaryActivity"
             android:parentActivityName=".activities.MainWebViewActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullUser"
@@ -97,7 +96,6 @@
         <activity
             android:name=".activities.BookmarksDatabaseViewActivity"
             android:label="@string/bookmarks_database_view"
-            android:theme="@style/PrivacyBrowserLight.SecondaryActivity"
             android:parentActivityName=".activities.BookmarksActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullUser"

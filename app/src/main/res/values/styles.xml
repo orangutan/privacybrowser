@@ -21,8 +21,7 @@
 <resources>
     <!-- Light theme styles. -->
 
-    <!-- `android:windowTranslucentStatus` makes the system status bar translucent.
-         When it is specified the root layout should include `android:fitsSystemWindows="true"`. -->
+    <!-- `android:windowTranslucentStatus` makes the system status bar translucent.  When it is specified the root layout should include `android:fitsSystemWindows="true"`. -->
     <style name="PrivacyBrowserLight" parent="Theme.AppCompat.Light.NoActionBar" >
         <item name="android:windowTranslucentStatus">true</item>
         <item name="colorAccent">@color/blue_700</item>
@@ -37,23 +36,27 @@
         <item name="urlHistoryText">@color/black</item>
     </style>
 
-    <!-- `windowActionModeOverlay` makes the contextual app bar cover the support app bar.
-         `colorPrimaryDark` goes behind the status bar, which is then darkened by the overlay.-->
+    <!-- `windowActionModeOverlay` makes the contextual app bar cover the support app bar.  `colorPrimaryDark` goes behind the status bar, which is then darkened by the overlay.-->
     <style name="PrivacyBrowserLight.SecondaryActivity" >
         <item name="windowActionModeOverlay">true</item>
         <item name="colorPrimaryDark">@color/blue_700</item>
         <item name="android:textColorHighlight">@color/blue_200</item>
         <item name="android:actionModeBackground">@color/blue_700</item>
         <item name="primaryTextColorSelector">@color/primary_text_color_selector_light</item>
-        <item name="domainsListSelectorColor">@drawable/domains_list_selector_light</item>
+        <item name="listSelectorDrawable">@drawable/list_selector_light</item>
         <item name="aboutTitle">@color/blue_900</item>
         <item name="aboutText">@color/blue_700</item>
         <item name="iconTintColor">@color/blue_800</item>
         <item name="deleteIcon">@drawable/delete_light</item>
         <item name="addIcon">@drawable/add_light</item>
+        <item name="createFolderIcon">@drawable/create_folder_light</item>
+        <item name="selectAllIcon">@drawable/select_all_light</item>
+        <item name="editIcon">@drawable/edit_light</item>
+        <item name="moveToFolderIcon">@drawable/move_to_folder_light</item>
         <item name="actionBarPopupTheme">@style/PrivacyBrowserPopupsLight</item>
         <item name="appBarTextTheme">@style/PrivacyBrowserAppBarWhiteText</item>
         <item name="tabLayoutTheme">@style/PrivacyBrowserTabLayoutLight</item>
+        <item name="popupsTheme">@style/PrivacyBrowserPopupsLight</item>
     </style>
 
     <!-- `colorPrimaryDark` is the color of the status bar. -->
@@ -89,8 +92,7 @@
 
     <!-- Dark theme styles. -->
 
-    <!-- `android:windowTranslucentStatus` makes the system status bar translucent.
-         When it is specified the root layout should include `android:fitsSystemWindows="true"`. -->
+    <!-- `android:windowTranslucentStatus` makes the system status bar translucent.  When it is specified the root layout should include `android:fitsSystemWindows="true"`. -->
     <style name="PrivacyBrowserDark" parent="Theme.AppCompat.NoActionBar" >
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:textColorPrimary">@color/primary_text_color_selector_dark</item>
@@ -106,17 +108,25 @@
         <item name="urlHistoryText">@color/gray_200</item>
     </style>
 
+    <!-- `windowActionModeOverlay` makes the contextual app bar cover the support app bar.  `colorPrimaryDark` goes behind the status bar, which is then darkened by the overlay.-->
     <style name="PrivacyBrowserDark.SecondaryActivity" >
+        <item name="windowActionModeOverlay">true</item>
         <item name="colorPrimaryDark">@color/blue_800</item>
+        <item name="android:actionModeBackground">@color/blue_800</item>
         <item name="primaryTextColorSelector">@color/primary_text_color_selector_dark</item>
         <item name="aboutTitle">@color/blue_600</item>
         <item name="aboutText">@color/blue_400</item>
-        <item name="domainsListSelectorColor">@drawable/domains_list_selector_dark</item>
+        <item name="listSelectorDrawable">@drawable/list_selector_dark</item>
         <item name="iconTintColor">@color/blue_600</item>
         <item name="deleteIcon">@drawable/delete_dark</item>
         <item name="addIcon">@drawable/add_dark</item>
+        <item name="createFolderIcon">@drawable/create_folder_dark</item>
+        <item name="selectAllIcon">@drawable/select_all_dark</item>
+        <item name="editIcon">@drawable/edit_dark</item>
+        <item name="moveToFolderIcon">@drawable/move_to_folder_dark</item>
         <item name="appBarTextTheme">@style/PrivacyBrowserAppBarDark</item>
         <item name="tabLayoutTheme">@style/PrivacyBrowserTabLayoutDark</item>
+        <item name="popupsTheme">@style/PrivacyBrowserPopupsDark</item>
         <item name="android:spinnerDropDownItemStyle">@style/PrivacyBrowserSpinnerDropDownItemStyleDark</item>
     </style>
 
@@ -153,10 +163,7 @@
     </style>
 
     <!-- `ThemeOverlay.AppCompat.Dark` makes the popups have a dark background with light text. -->
-    <!-- <style name="PrivacyBrowserPopupOverlayDark" parent="ThemeOverlay.AppCompat.Dark" /> -->
-
-    <!-- -->
-    <!--<style name="PrivacyBrowserToolbarDark" parent="Widget.AppCompat.Toolbar" >
-        <item name="android:background">@color/gray_900</item>
-    </style> -->
+    <style name="PrivacyBrowserPopupsDark" parent="ThemeOverlay.AppCompat.Dark" >
+        <item name="android:textColorPrimary">@color/primary_text_color_selector_dark</item>
+    </style>
 </resources>

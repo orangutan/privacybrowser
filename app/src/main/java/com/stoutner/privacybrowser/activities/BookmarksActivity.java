@@ -97,7 +97,17 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Set the activity theme.
+        if (MainWebViewActivity.darkTheme) {
+            setTheme(R.style.PrivacyBrowserDark_SecondaryActivity);
+        } else {
+            setTheme(R.style.PrivacyBrowserLight_SecondaryActivity);
+        }
+
+        // Run the default commands.
         super.onCreate(savedInstanceState);
+
+        // Set the content view.
         setContentView(R.layout.bookmarks_coordinatorlayout);
 
         // We need to use the `SupportActionBar` from `android.support.v7.app.ActionBar` until the minimum API is >= 21.
@@ -185,7 +195,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                 editBookmarkMenuItem = menu.findItem(R.id.edit_bookmark);
                 selectAllBookmarksMenuItem = menu.findItem(R.id.context_menu_select_all_bookmarks);
 
-                // Get a handle for `contextualActionMode` so we can close it programatically.
+                // Store `contextualActionMode` so we can close it programatically.
                 contextualActionMode = mode;
 
                 return true;
@@ -225,19 +235,31 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                     // Disable `moveBookmarkUpMenuItem` if the selected bookmark is at the top of the ListView.
                     if (selectedBookmarkDatabaseId == firstBookmarkDatabaseId) {
                         moveBookmarkUpMenuItem.setEnabled(false);
-                        moveBookmarkUpMenuItem.setIcon(R.drawable.move_bookmark_up_disabled);
+                        moveBookmarkUpMenuItem.setIcon(R.drawable.move_up_disabled);
                     } else {  // Otherwise enable `moveBookmarkUpMenuItem`.
                         moveBookmarkUpMenuItem.setEnabled(true);
-                        moveBookmarkUpMenuItem.setIcon(R.drawable.move_bookmark_up_enabled);
+
+                        // Set the icon according to the theme.
+                        if (MainWebViewActivity.darkTheme) {
+                            moveBookmarkUpMenuItem.setIcon(R.drawable.move_up_enabled_dark);
+                        } else {
+                            moveBookmarkUpMenuItem.setIcon(R.drawable.move_up_enabled_light);
+                        }
                     }
 
                     // Disable `moveBookmarkDownMenuItem` if the selected bookmark is at the bottom of the ListView.
                     if (selectedBookmarkDatabaseId == lastBookmarkDatabaseId) {
                         moveBookmarkDownMenuItem.setEnabled(false);
-                        moveBookmarkDownMenuItem.setIcon(R.drawable.move_bookmark_down_disabled);
+                        moveBookmarkDownMenuItem.setIcon(R.drawable.move_down_disabled);
                     } else {  // Otherwise enable `moveBookmarkDownMenuItem`.
                         moveBookmarkDownMenuItem.setEnabled(true);
-                        moveBookmarkDownMenuItem.setIcon(R.drawable.move_bookmark_down_enabled);
+
+                        // Set the icon according to the theme.
+                        if (MainWebViewActivity.darkTheme) {
+                            moveBookmarkDownMenuItem.setIcon(R.drawable.move_down_enabled_dark);
+                        } else {
+                            moveBookmarkDownMenuItem.setIcon(R.drawable.move_down_enabled_light);
+                        }
                     }
                 } else {  // More than one bookmark is selected.
                     // List the number of selected bookmarks in the subtitle.

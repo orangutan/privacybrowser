@@ -25,7 +25,7 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:orientation="horizontal"
-    android:background="@drawable/listview_item_background_selector" >
+    android:background="?attr/listSelectorDrawable" >
 
     <ImageView
         android:id="@+id/bookmark_favorite_icon"
@@ -39,7 +39,7 @@
         android:id="@+id/bookmark_name"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:textColor="@color/black"
+        android:textColor="?android:attr/textColorPrimary"
         android:textSize="22sp"
         android:layout_margin="10dp"
         android:maxLines="1"
