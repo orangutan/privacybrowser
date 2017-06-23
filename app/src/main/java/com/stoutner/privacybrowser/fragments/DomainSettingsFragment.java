@@ -115,7 +115,7 @@ public class DomainSettingsFragment extends Fragment {
         ArrayAdapter<CharSequence> fontSizeEntryValuesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.default_font_size_entry_values, R.layout.spinner_item);
         final ArrayAdapter<CharSequence> displayImagesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.display_website_images_array, R.layout.spinner_item);
 
-        // Set the drop down view resource.
+        // Set the `DropDownViewResource` on the `Spinners`.
         userAgentArrayAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         fontSizeArrayAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         displayImagesArrayAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);

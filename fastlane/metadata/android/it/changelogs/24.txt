@@ -1,1 +1,10 @@
-• 
+• Aggiunta dell'opzione di un tema “Dark”.
+• Colorazione di http:// in rosso se il dominio non è criptato.
+• Colorazione del dominio nella casella della URL.
+• Aggiunta dell'impostazione dicontrollo del comportamento del comando Elimina Dati ed Esci.
+• Modifica della homepage di default in https://start.duckduckgo.com.
+• Aggiunta una azione di annullamento alla “snackbar” quando i cookie, il DOM storage, o i dati dei moduli vengono cancellati dal menu delle impostazioni.
+• Correzione di un baco che provocava la perdita di modifiche pendenti al momento del riavvio.
+• Correzione di un baco che si verificava con lo spinner layout di alcuni dispositivi Huawei.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León Becerra.

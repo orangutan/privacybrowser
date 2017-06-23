@@ -1,1 +1,10 @@
-• 
+• Añadir una opción de tema oscuro.
+• Destacar http:// en rojo si el dominio no está cifrado.
+• Destacar el dominio en el cuadro de texto de la URL.
+• Añadir configuración para controlar lo que ocurre en Borrar y Salir.
+• Cambiar la página de inicio por defecto a https://start.duckduckgo.com.
+• Añadir una acción de deshacer a la snackbar cuando las cookies, el almacenamiento DOM, o los datos de formulario sean limpiados desde el menú de opciones.
+• Arreglar un error que causaba que se perdieran los cambios pendientes al reiniciar.
+• Arreglar un error con el diseño spinner en algunos dispositivos Huawei.
+• Traducción al español actualizada proporcionada por Jose A. León Becerra.
+• Traducción al italiano actualizada proporcionada por Francesco Buratti.
