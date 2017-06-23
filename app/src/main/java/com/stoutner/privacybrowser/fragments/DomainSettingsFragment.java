@@ -1,8 +1,6 @@
 /*
  * Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
  *
- * Huawei spinner code fix contributed 2017 Thomas Jensen <lianergoist@vongriffen.dk>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
- *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
  * Privacy Browser is free software: you can redistribute it and/or modify
@@ -111,23 +109,16 @@ public class DomainSettingsFragment extends Fragment {
         int displayImagesInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
 
         // Create `ArrayAdapters` for the `Spinners`and their `entry values`.
-        ArrayAdapter<CharSequence> userAgentArrayAdapter = ArrayAdapter.createFromResource(context, R.array.user_agent_entries, android.R.layout.simple_spinner_item);
-        final ArrayAdapter<CharSequence> userAgentEntryValuesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.user_agent_entry_values, android.R.layout.simple_spinner_item);
-        ArrayAdapter<CharSequence> fontSizeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.default_font_size_entries, android.R.layout.simple_spinner_item);
-        ArrayAdapter<CharSequence> fontSizeEntryValuesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.default_font_size_entry_values, android.R.layout.simple_spinner_item);
-        final ArrayAdapter<CharSequence> displayImagesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.display_website_images_array, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> userAgentArrayAdapter = ArrayAdapter.createFromResource(context, R.array.user_agent_entries, R.layout.spinner_item);
+        final ArrayAdapter<CharSequence> userAgentEntryValuesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.user_agent_entry_values, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> fontSizeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.default_font_size_entries, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> fontSizeEntryValuesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.default_font_size_entry_values, R.layout.spinner_item);
+        final ArrayAdapter<CharSequence> displayImagesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.display_website_images_array, R.layout.spinner_item);
 
-        // Some phones running Huawei's customized Android 7.0 have layout problems displaying a spinner with the default `simple_spinner_dropdown_item`.  The Huawei P9 Lite is known to be affected.
-        if (Build.BRAND.equals("HUAWEI") && (Build.VERSION.SDK_INT == 24)) {  // The device is manufactured by Huawei and is running Android 7.0.
-            // Use a customized `simple_spinner_dropdown_item`.  Huawei spinner code fix contributed 2017 Thomas Jensen <lianergoist@vongriffen.dk>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
-            userAgentArrayAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item_huawei_fix);
-            fontSizeArrayAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item_huawei_fix);
-            displayImagesArrayAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item_huawei_fix);
-        } else {  // Use the standard `android.R.layout.simple_spinner_dropdown_item` on all other devices.
-            userAgentArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            fontSizeArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            displayImagesArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        }
+        // Set the drop down view resource.
+        userAgentArrayAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        fontSizeArrayAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        displayImagesArrayAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
 
         // Set the `ArrayAdapters` for the `Spinners`.
         userAgentSpinner.setAdapter(userAgentArrayAdapter);

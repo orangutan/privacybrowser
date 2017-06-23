@@ -301,6 +301,8 @@
         <string name="swipe_to_refresh_enabled_summary">Alcuni siti non funzionano correttamente se questa opzione è abilitata.</string>
         <string name="display_additional_app_bar_icons">Mostra icone addizionali nella barra dell\'applicazione</string>
         <string name="display_additional_app_bar_icons_summary">Mostra le icone per l\'abilitazione dei cookies, del DOM storage, e dei dati dei moduli nella barra dell\'applicazione se c\'è spazio disponibile.</string>
+        <string name="dark_theme">Tema Dark</string>
+        <string name="dark_theme_summary">La modifica del tema provocherà il riavvio di Privacy Browser.</string>
         <string name="display_webpage_images">Mostra immagini delle pagine web</string>
         <string name="display_webpage_images_summary">Disabilita per ridurre il consumo di dati.</string>
 

@@ -1,8 +1,10 @@
-*Esclusione dei reindirizzamenti nella cronologia di WebView.
-*Aggiunta l'opzione per la disabilitazione del caricamento delle immagini per ridurre il traffico dati.
-*Aggiustamento del layout di alcune pagine web utilizzando un ampio viewport.
-*Permesso per il caricamento di indirizzi che hanno il solo host.
-*Aggiunte icone nella schermata delle impostazioni.
-*Aggiunta del titolo alla URL quando viene condivisa attraverso il menu delle impostazioni.
-*Nascosta l'impostazione relativa ai cookie di terze parti in KitKat perchè disponibile solo con Lollipop o successivi.
-*Spostato il comando di Refresh in fondo al menu delle impostazioni.
+• Esclusione dei reindirizzamenti nella cronologia di WebView.
+• Aggiunta l'opzione per la disabilitazione del caricamento delle immagini per ridurre il traffico dati.
+• Aggiustamento del layout di alcune pagine web utilizzando un ampio viewport.
+• Permesso per il caricamento di indirizzi che hanno il solo host.
+• Aggiunte icone nella schermata delle impostazioni.
+• Aggiunta del titolo alla URL quando viene condivisa attraverso il menu delle impostazioni.
+• Disabilita l'impostazione relativa ai cookie di terze parti in KitKat perchè disponibile solo con Lollipop o successivi.
+• Spostato il comando di Refresh in fondo al menu delle impostazioni.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León Becerra.

@@ -90,6 +90,7 @@
         <item name="colorAccent">@color/blue_700</item>
     </style>
 
+
     <!-- Dark theme styles. -->
 
     <!-- `android:windowTranslucentStatus` makes the system status bar translucent.  When it is specified the root layout should include `android:fitsSystemWindows="true"`. -->
@@ -101,7 +102,7 @@
         <item name="navigationHeaderBackground">@color/blue_800</item>
         <item name="navigationHeaderTextColor">@color/gray_300</item>
         <item name="appBarTheme">@style/PrivacyBrowserAppBarDark</item>
-        <item name="progressTintColor">@color/blue_800</item>
+        <item name="progressTintColor">@color/blue_600</item>
         <item name="navigationIconTintColor">@color/blue_600</item>
         <item name="findOnPageIconTintColor">@color/blue_600</item>
         <item name="sslTitle">@color/blue_700</item>

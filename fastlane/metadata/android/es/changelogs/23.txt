@@ -1,8 +1,10 @@
-*No incluir redirecciones URL en el historial de WebView.
-*Añadir la opción de deshabilitar la carga de imágenes para conservar ancho de banda.
-*Corregir la disposición de algunas páginas webs usando una ventana de visualización amplia.
-*Permitir cargar las URLs de host solamente.
-*Añadir iconos a la pantalla de configuración.
-*Añadir el título a la URL al compartir a través del menú de opciones.
-*Ocultar los ajustes de cookies de terceras partes en KitKat porque sólo funciona en Lollipop o más nuevo.
-*Mover Actualizar a la parte inferior del menú de opciones.
+• No incluir redirecciones URL en el historial de WebView.
+• Añadir la opción de deshabilitar la carga de imágenes para conservar ancho de banda.
+• Corregir la disposición de algunas páginas webs usando una ventana de visualización amplia.
+• Permitir cargar las URLs de host solamente.
+• Añadir iconos a la pantalla de configuración.
+• Añadir el título a la URL al compartir a través del menú de opciones.
+• Deshabilitar los ajustes de cookies de terceras partes en KitKat porque sólo funciona en Lollipop o más nuevo.
+• Mover Actualizar a la parte inferior del menú de opciones.
+• Traducción al español actualizada proporcionada por Jose A. León Becerra.
+• Traducción al italiano actualizada proporcionada por Francesco Buratti.

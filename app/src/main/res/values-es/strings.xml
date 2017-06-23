@@ -299,6 +299,8 @@
         <string name="swipe_to_refresh_enabled_summary">Algunas webs no funcionan bien si la opción deslizar para actualizar está habilitada.</string>
         <string name="display_additional_app_bar_icons">Mostrar iconos adicionales en la barra de aplicación</string>
         <string name="display_additional_app_bar_icons_summary">Mostrar iconos para alternar entre cookies, almacenamiento DOM, y datos de formulario en la barra de aplicación, si hay espacio.</string>
+        <string name="dark_theme">Tema oscuro</string>
+        <string name="dark_theme_summary">Cambiar el tema reiniciará Navegador Privado.</string>
         <string name="display_webpage_images">Mostrar imágenes de la página web</string>
         <string name="display_webpage_images_summary">Deshabilitar para conservar ancho de banda.</string>
 

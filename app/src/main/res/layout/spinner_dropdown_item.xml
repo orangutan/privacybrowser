@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -18,30 +18,16 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<LinearLayout
-    android:id="@+id/move_to_folder_item_linearlayout"
+<CheckedTextView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@android:id/text1"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:orientation="horizontal"
-    android:background="?attr/listSelectorDrawable"
-    tools:ignore="UseCompoundDrawables">
-
-    <ImageView
-        android:id="@+id/move_to_folder_icon"
-        android:layout_height="30dp"
-        android:layout_width="30dp"
-        android:layout_gravity="center_vertical"
-        android:layout_marginStart="10dp"
-        tools:ignore="ContentDescription" />
-
-    <TextView
-        android:id="@+id/move_to_folder_name_textview"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_margin="10dp"
-        android:maxLines="1"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="22sp" />
-</LinearLayout>
+    android:maxLines="1"
+    android:ellipsize="end"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:textSize="18sp"
+    android:textColor="?attr/primaryTextColorSelector" />

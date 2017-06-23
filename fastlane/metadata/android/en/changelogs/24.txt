@@ -1,0 +1,10 @@
+• Add a dark theme option.
+• Highlight the http:// in red if a domain is not encrypted.
+• Highlight the domain in the URL text box.
+• Add settings to control what happens on Clear and Exit.
+• Change the default homepage to https://start.duckduckgo.com.
+• Add an undo action to the snackbar when cookies, DOM storage, or form data are cleared from the options menu.
+• Fix a bug that caused pending changes to be lost on restart.
+• Fix a bug with the spinner layout on some Huawei devices.
+• Updated Italian translation provided by Francesco Buratti.
+• Updated Spanish translation provided by Jose A. León Becerra.
