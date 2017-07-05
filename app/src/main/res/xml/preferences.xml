@@ -100,7 +100,7 @@
         <EditTextPreference
             android:key="tor_homepage"
             android:title="@string/tor_homepage"
-            android:defaultValue="https://3g2upl4pq6kufc4m.onion"
+            android:defaultValue="https://3g2upl4pq6kufc4m.onion/"
             android:inputType="textUri" />
 
         <ListPreference
@@ -201,7 +201,7 @@
         <EditTextPreference
             android:key="homepage"
             android:title="@string/homepage"
-            android:defaultValue="https://start.duckduckgo.com"
+            android:defaultValue="https://start.duckduckgo.com/"
             android:inputType="textUri"
             android:icon="?attr/homepageIcon" />
 

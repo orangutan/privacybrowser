@@ -2644,7 +2644,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
         if (urlString.startsWith("http://")) {  // Highlight connections that are not encrypted.
             urlTextBox.getText().setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            urlTextBox.getText().setSpan(boldStyleSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            // urlTextBox.getText().setSpan(boldStyleSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         } else if (urlString.startsWith("https://")) {  // Highlight connections that are encrypted.
             urlTextBox.getText().setSpan(initialGrayColorSpan, 0, 8, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         }

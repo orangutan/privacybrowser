@@ -257,12 +257,13 @@
             <item>DuckDuckGo - JavaScript disabilitato</item>
             <item>DuckDuckGo - JavaScript abilitato</item>
             <item>StartPage</item>
+            <item>Qwant - JavaScript disabilitato</item>
+            <item>Qwant - JavaScript abilitato</item>
+            <item>Searx</item>
             <item>Google</item>
             <item>Bing</item>
             <item>Yahoo - JavaScript disabilitato</item>
             <item>Yahoo - JavaScript abilitato</item>
-            <item>Qwant - JavaScript disabilitato</item>
-            <item>Qwant - JavaScript abilitato</item>
             <item>Personalizzata</item>
         </string-array>
         <string name="search_custom_url">Ricerca personalizzata</string>

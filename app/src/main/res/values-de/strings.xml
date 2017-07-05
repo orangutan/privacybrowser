@@ -224,12 +224,13 @@
             <item>DuckDuckGo - JavaScript disabled</item>
             <item>DuckDuckGo - JavaScript enabled</item>
             <item>StartPage</item>
+            <item>Qwant - JavaScript disabled</item>
+            <item>Qwant - JavaScript enabled</item>
+            <item>Searx</item>
             <item>Google</item>
             <item>Bing</item>
             <item>Yahoo - JavaScript disabled</item>
             <item>Yahoo - JavaScript enabled</item>
-            <item>Qwant - JavaScript disabled</item>
-            <item>Qwant - JavaScript enabled</item>
             <item>Eigene</item>
         </string-array>
         <string name="search_custom_url">Suchmaschinen-URL</string>
