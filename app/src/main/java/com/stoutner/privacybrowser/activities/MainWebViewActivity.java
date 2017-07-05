@@ -297,6 +297,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `mainWebViewRelativeLayout` is used in `onCreate()` and `onNavigationItemSelected()`.
     private RelativeLayout mainWebViewRelativeLayout;
 
+    // `urlIsLoading` is used in `onCreate()`, `loadUrl()`, and `applyDomainSettings()`.
+    private boolean urlIsLoading;
+
     @Override
     // Remove Android Studio's warning about the dangers of using SetJavaScriptEnabled.  The whole premise of Privacy Browser is built around an understanding of these dangers.
     @SuppressLint("SetJavaScriptEnabled")
@@ -736,12 +739,18 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     if (navigatingHistory) {
                         applyDomainSettings(url);
                     }
+
+                    // Set `urlIsLoading` to `true`, so that redirects while loading do not trigger changes in the user agent, which forces another reload of the existing page.
+                    urlIsLoading = true;
                 }
             }
 
             // Update formattedUrlString and urlTextBox.  It is necessary to do this after the page finishes loading because the final URL can change during load.
             @Override
             public void onPageFinished(WebView view, String url) {
+                // Reset `urlIsLoading`, which is used to prevent reloads on redirect if the user agent changes.
+                urlIsLoading = false;
+
                 // Clear the cache and history if Incognito Mode is enabled.
                 if (incognitoModeEnabled) {
                     // Clear the cache.  `true` includes disk files.
@@ -2166,6 +2175,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
         // Load the URL.
         mainWebView.loadUrl(url, customHeaders);
+
+        // Set `urlIsLoading` to prevent changes in the user agent on websites with redirects from reloading the current website.
+        urlIsLoading = true;
     }
 
     public void findPreviousOnPage(View view) {
@@ -2466,13 +2478,15 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     cookieManager.setAcceptThirdPartyCookies(mainWebView, thirdPartyCookiesEnabled);
                 }
 
-                // Set the user agent.
-                if (userAgentString.equals("WebView default user agent")) {
-                    // Set the user agent to `""`, which uses the default value.
-                    mainWebView.getSettings().setUserAgentString("");
-                } else {
-                    // Use the selected user agent.
-                    mainWebView.getSettings().setUserAgentString(userAgentString);
+                // Only set the user agent if the webpage is not currently loading.  Otherwise, changing the user agent on redirects can cause the original website to reload.  <https://redmine.stoutner.com/issues/160>
+                if (!urlIsLoading) {
+                    if (userAgentString.equals("WebView default user agent")) {
+                        // Set the user agent to `""`, which uses the default value.
+                        mainWebView.getSettings().setUserAgentString("");
+                    } else {
+                        // Use the selected user agent.
+                        mainWebView.getSettings().setUserAgentString(userAgentString);
+                    }
                 }
 
                 // Set a green background on `urlTextBox` to indicate that custom domain settings are being used.  We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
@@ -2504,22 +2518,24 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     cookieManager.setAcceptThirdPartyCookies(mainWebView, thirdPartyCookiesEnabled);
                 }
 
-                // Set the default user agent.
-                switch (userAgentString) {
-                    case "WebView default user agent":
-                        // Set the user agent to `""`, which uses the default value.
-                        mainWebView.getSettings().setUserAgentString("");
-                        break;
+                // Only set the user agent if the webpage is not currently loading.  Otherwise, changing the user agent on redirects can cause the original website to reload.  <https://redmine.stoutner.com/issues/160>
+                if (!urlIsLoading) {
+                    switch (userAgentString) {
+                        case "WebView default user agent":
+                            // Set the user agent to `""`, which uses the default value.
+                            mainWebView.getSettings().setUserAgentString("");
+                            break;
 
-                    case "Custom user agent":
-                        // Set the custom user agent.
-                        mainWebView.getSettings().setUserAgentString(customUserAgentString);
-                        break;
+                        case "Custom user agent":
+                            // Set the custom user agent.
+                            mainWebView.getSettings().setUserAgentString(customUserAgentString);
+                            break;
 
-                    default:
-                        // Use the selected user agent.
-                        mainWebView.getSettings().setUserAgentString(userAgentString);
-                        break;
+                        default:
+                            // Use the selected user agent.
+                            mainWebView.getSettings().setUserAgentString(userAgentString);
+                            break;
+                    }
                 }
 
                 // Set a transparent background on `urlTextBox`.  We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
