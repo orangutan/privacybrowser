@@ -362,9 +362,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 } else {  // The user has stopped editing `urlTextBox`.
                     // Reapply the highlighting.
                     highlightUrlText();
-
-                    // Scroll to the beginning of the text.
-                    urlTextBox.setScrollX(0);
                 }
             }
         });
