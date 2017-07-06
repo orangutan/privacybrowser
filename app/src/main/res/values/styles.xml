@@ -34,6 +34,7 @@
         <item name="findOnPageIconTintColor">@color/blue_700</item>
         <item name="sslTitle">@color/blue_900</item>
         <item name="urlHistoryText">@color/black</item>
+        <item name="redText">@color/red_a700</item>
     </style>
 
     <!-- `windowActionModeOverlay` makes the contextual app bar cover the support app bar.  `colorPrimaryDark` goes behind the status bar, which is then darkened by the overlay.-->
@@ -107,6 +108,7 @@
         <item name="findOnPageIconTintColor">@color/blue_600</item>
         <item name="sslTitle">@color/blue_700</item>
         <item name="urlHistoryText">@color/gray_200</item>
+        <item name="redText">@color/red_900</item>
     </style>
 
     <!-- `windowActionModeOverlay` makes the contextual app bar cover the support app bar.  `colorPrimaryDark` goes behind the status bar, which is then darkened by the overlay.-->

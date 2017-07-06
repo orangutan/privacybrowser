@@ -64,7 +64,7 @@
     <!-- View SSL Certificate. -->
     <string name="view_ssl_certificate">View SSL Certificate</string>
     <string name="unencrypted_website">Unencrypted Website</string>
-    <string name="no_ssl_certificate">Communication with this website is not encrypted by an SSL certificate.</string>
+    <string name="no_ssl_certificate">Communication with this website is not encrypted. This allows third parties to intercept information, track your browsing, and inject malicious content.</string>
     <string name="ssl_certificate">SSL Certificate</string>
     <string name="close">Close</string>
     <string name="issued_to">Issued To</string>

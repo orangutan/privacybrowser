@@ -29,6 +29,7 @@
     <attr name="sslTitle" format="reference" />
     <attr name="urlHistoryText" format="reference" />
     <attr name="primaryTextColorSelector" format="reference" />
+    <attr name="redText" format="reference" />
 
     <attr name="navigationHeaderBackground" format="reference" />
     <attr name="navigationHeaderTextColor" format="reference" />
