@@ -134,8 +134,8 @@ public class DomainSettingsActivity extends AppCompatActivity {
                 int displayWebpageImagesInt = displayWebpageImagesSpinner.getSelectedItemPosition();
 
                 // Get the data for the `Spinners` from the entry values string arrays.
-                String userAgentString = getResources().getStringArray(R.array.user_agent_entry_values)[userAgentPositionInt];
-                int fontSizeInt = Integer.parseInt(getResources().getStringArray(R.array.default_font_size_entry_values)[fontSizePositionInt]);
+                String userAgentString = getResources().getStringArray(R.array.domain_settings_user_agent_entry_values)[userAgentPositionInt];
+                int fontSizeInt = Integer.parseInt(getResources().getStringArray(R.array.domain_settings_font_size_entry_values)[fontSizePositionInt]);
 
                 // Check to see if we are using a custom user agent.
                 if (userAgentString.equals("Custom user agent")) {

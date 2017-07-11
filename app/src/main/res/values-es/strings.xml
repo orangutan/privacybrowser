@@ -60,7 +60,7 @@
     <!-- View SSL Certificate. -->
     <string name="view_ssl_certificate">Ver certificado SSL</string>
     <string name="unencrypted_website">Web sin cifrar</string>
-    <string name="no_ssl_certificate">La comunicación con esta web no está cifrada por un certificado SSL.</string>
+    <string name="no_ssl_certificate">La comunicación con esta página web no está cifrada. Esto permite a terceras partes interceptar información, rastrear su navegación e inyectar contenido malicioso.</string>
     <string name="ssl_certificate">Certificado SSL</string>
     <string name="close">Cerrar</string>
     <string name="issued_to">Emitido a</string>
@@ -232,6 +232,23 @@
             <item>Safari 10.0.2 en macOS 10.12.2</item>
             <item>Personalizado</item>
         </string-array>
+            <string-array name="domain_settings_user_agent_entries">
+                <item>Por defecto del sistema</item>
+                <item>Navegador Privado 1.0</item>
+                <item>WebView por defecto</item>
+                <item>Firefox 50 en Android 7.1.1</item>
+                <item>Chrome 55 en Android 7.1.1</item>
+                <item>Safari 10 en iOS 10.2.1</item>
+                <item>Firefox 45 en Linux</item>
+                <item>Chromium 55 en Linux</item>
+                <item>Konqueror 4.14.26 en Linux</item>
+                <item>Firefox 50 en Windows 10</item>
+                <item>Chrome 55 en Windows 10</item>
+                <item>Edge 14 en Windows 10</item>
+                <item>Internet Explorer 11 en Windows 10</item>
+                <item>Safari 10.0.2 en macOS 10.12.2</item>
+                <item>Personalizado</item>
+            </string-array>
         <string name="custom_user_agent">Agente de usuario personalizado</string>
         <string name="block_ads">Bloquear anuncios</string>
         <string name="block_ads_summary">Usar la lista de servidores de anuncios de pgl.yoyo.org para bloquear anuncios.</string>
@@ -296,6 +313,17 @@
             <item>175%</item>
             <item>200%</item>
         </string-array>
+            <string-array name="domain_settings_font_size_entries">
+                <item>Por defecto del sistema</item>
+                <item>25%</item>
+                <item>50%</item>
+                <item>75%</item>
+                <item>100%</item>
+                <item>125%</item>
+                <item>150%</item>
+                <item>175%</item>
+                <item>200%</item>
+            </string-array>
         <string name="swipe_to_refresh_enabled">Deslizar para actualizar</string>
         <string name="swipe_to_refresh_enabled_summary">Algunas webs no funcionan bien si la opción deslizar para actualizar está habilitada.</string>
         <string name="display_additional_app_bar_icons">Mostrar iconos adicionales en la barra de aplicación</string>

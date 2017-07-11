@@ -142,8 +142,8 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainContentValues.put(ENABLE_THIRD_PARTY_COOKIES, false);
         domainContentValues.put(ENABLE_DOM_STORAGE, false);
         domainContentValues.put(ENABLE_FORM_DATA, false);
-        domainContentValues.put(USER_AGENT, "PrivacyBrowser/1.0");
-        domainContentValues.put(FONT_SIZE, "100");
+        domainContentValues.put(USER_AGENT, "System default user agent");
+        domainContentValues.put(FONT_SIZE, 0);
         domainContentValues.put(DISPLAY_IMAGES, 0);
 
         // Get a writable database handle.

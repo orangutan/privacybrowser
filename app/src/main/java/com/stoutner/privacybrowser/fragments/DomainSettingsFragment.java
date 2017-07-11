@@ -21,10 +21,12 @@ package com.stoutner.privacybrowser.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 // We have to use `android.support.v4.app.Fragment` until minimum API >= 23.  Otherwise we cannot call `getContext()`.
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -109,10 +111,10 @@ public class DomainSettingsFragment extends Fragment {
         int displayImagesInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
 
         // Create `ArrayAdapters` for the `Spinners`and their `entry values`.
-        ArrayAdapter<CharSequence> userAgentArrayAdapter = ArrayAdapter.createFromResource(context, R.array.user_agent_entries, R.layout.spinner_item);
-        final ArrayAdapter<CharSequence> userAgentEntryValuesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.user_agent_entry_values, R.layout.spinner_item);
-        ArrayAdapter<CharSequence> fontSizeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.default_font_size_entries, R.layout.spinner_item);
-        ArrayAdapter<CharSequence> fontSizeEntryValuesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.default_font_size_entry_values, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> userAgentArrayAdapter = ArrayAdapter.createFromResource(context, R.array.domain_settings_user_agent_entries, R.layout.spinner_item);
+        final ArrayAdapter<CharSequence> userAgentEntryValuesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.domain_settings_user_agent_entry_values, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> fontSizeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.domain_settings_font_size_entries, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> fontSizeEntryValuesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.domain_settings_font_size_entry_values, R.layout.spinner_item);
         final ArrayAdapter<CharSequence> displayImagesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.display_website_images_array, R.layout.spinner_item);
 
         // Set the `DropDownViewResource` on the `Spinners`.
@@ -251,6 +253,13 @@ public class DomainSettingsFragment extends Fragment {
         WebView bareWebView = (WebView) bareWebViewLayout.findViewById(R.id.bare_webview);
         final String webViewDefaultUserAgentString = bareWebView.getSettings().getUserAgentString();
 
+        // Get a handle for the shared preference.  `this` references the current context.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Store the default user agent string values.
+        final String defaultUserAgentString = sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0");
+        final String defaultCustomUserAgentString = sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0");
+
         // Get the position of the user agent in `userAgentEntryValuesArrayAdapter`.
         int userAgentArrayPosition = userAgentEntryValuesArrayAdapter.getPosition(currentUserAgentString);
 
@@ -265,26 +274,46 @@ public class DomainSettingsFragment extends Fragment {
             // Show `customUserAgentEditText` and set `userAgentString` as the text.
             customUserAgentEditText.setVisibility(View.VISIBLE);
             customUserAgentEditText.setText(currentUserAgentString);
-        } else if (currentUserAgentString.equals("WebView default user agent")) {  // We are using the `WebView` default user agent.
+        } else{  // We are using one of the preset user agents.
             // Set the `userAgentSpinner` selection.
             userAgentSpinner.setSelection(userAgentArrayPosition);
 
-            // Show `userAgentTextView` and set the text.
+            // Show `userAgentTextView`.
             userAgentTextView.setVisibility(View.VISIBLE);
-            userAgentTextView.setText(webViewDefaultUserAgentString);
 
             // Hide `customUserAgentEditText`.
             customUserAgentEditText.setVisibility(View.GONE);
-        } else {  // We are using a standard user agent.
-            // Set the `userAgentSpinner` selection.
-            userAgentSpinner.setSelection(userAgentArrayPosition);
 
-            // Show `userAgentTextView` and set the text.
-            userAgentTextView.setVisibility(View.VISIBLE);
-            userAgentTextView.setText(currentUserAgentString);
+            // Set the user agent text.
+            switch (currentUserAgentString) {
+                case "System default user agent":
+                    // Display the user agent text string.
+                    switch (defaultUserAgentString) {
+                        case "WebView default user agent":
+                            // Display the `WebView` default user agent.
+                            userAgentTextView.setText(webViewDefaultUserAgentString);
+                            break;
 
-            // Hide `customUserAgentEditText`.
-            customUserAgentEditText.setVisibility(View.GONE);
+                        case "Custom user agent":
+                            // Display the custom user agent.
+                            userAgentTextView.setText(defaultCustomUserAgentString);
+                            break;
+
+                        default:
+                            // Display the text from `defaultUserAgentString`.
+                            userAgentTextView.setText(defaultUserAgentString);
+                    }
+                    break;
+
+                case "WebView default user agent":
+                    // Display the `WebView` default user agent.
+                    userAgentTextView.setText(webViewDefaultUserAgentString);
+                    break;
+
+                default:
+                    // Display the text from `currentUserAgentString`.
+                    userAgentTextView.setText(currentUserAgentString);
+            }
         }
 
         // Set the selected font size.
@@ -475,17 +504,33 @@ public class DomainSettingsFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // Store the new user agent string.
-                String newUserAgentString = getResources().getStringArray(R.array.user_agent_entry_values)[position];
+                String newUserAgentString = getResources().getStringArray(R.array.domain_settings_user_agent_entry_values)[position];
 
                 // Set the new user agent.
                 switch (newUserAgentString) {
-                    case "Custom user agent":
-                        // Hide `userAgentTextView`.
-                        userAgentTextView.setVisibility(View.GONE);
+                    case "System default user agent":
+                        // Show `userAgentTextView`.
+                        userAgentTextView.setVisibility(View.VISIBLE);
 
-                        // Show `customUserAgentEditText` and set `userAgentString` as the text.
-                        customUserAgentEditText.setVisibility(View.VISIBLE);
-                        customUserAgentEditText.setText(currentUserAgentString);
+                        // Hide `customUserAgentEditText`.
+                        customUserAgentEditText.setVisibility(View.GONE);
+
+                        // Set the user text.
+                        switch (defaultUserAgentString) {
+                            case "WebView default user agent":
+                                // Display the `WebView` default user agent.
+                                userAgentTextView.setText(webViewDefaultUserAgentString);
+                                break;
+
+                            case "Custom user agent":
+                                // Display the custom user agent.
+                                userAgentTextView.setText(defaultCustomUserAgentString);
+                                break;
+
+                            default:
+                                // Display the text from `defaultUserAgentString`.
+                                userAgentTextView.setText(defaultUserAgentString);
+                        }
                         break;
 
                     case "WebView default user agent":
@@ -497,14 +542,22 @@ public class DomainSettingsFragment extends Fragment {
                         customUserAgentEditText.setVisibility(View.GONE);
                         break;
 
+                    case "Custom user agent":
+                        // Hide `userAgentTextView`.
+                        userAgentTextView.setVisibility(View.GONE);
+
+                        // Show `customUserAgentEditText` and set `userAgentString` as the text.
+                        customUserAgentEditText.setVisibility(View.VISIBLE);
+                        customUserAgentEditText.setText(currentUserAgentString);
+                        break;
+
                     default:
                         // Show `userAgentTextView` and set the text.
                         userAgentTextView.setVisibility(View.VISIBLE);
-                        userAgentTextView.setText(getResources().getStringArray(R.array.user_agent_entry_values)[position]);
+                        userAgentTextView.setText(newUserAgentString);
 
                         // Hide `customUserAgentEditText`.
                         customUserAgentEditText.setVisibility(View.GONE);
-                        break;
                 }
             }
 

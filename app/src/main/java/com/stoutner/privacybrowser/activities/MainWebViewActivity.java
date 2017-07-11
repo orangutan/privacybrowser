@@ -2445,6 +2445,11 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             // Get a handle for the shared preference.  `this` references the current context.
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
+            // Store the default font size and user agent information.
+            String defaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
+            String defaultUserAgentString = sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0");
+            String defaultCustomUserAgentString = sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0");
+
             if (domainSettingsApplied) {  // The url we are loading has custom domain settings.
                 // Get a cursor for the current host and move it to the first position.
                 Cursor currentHostDomainSettingsCursor = domainsDatabaseHelper.getCursorForDomainName(domainNameInDatabase);
@@ -2468,7 +2473,13 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
                 mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
                 mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
-                mainWebView.getSettings().setTextZoom(fontSize);
+
+                // Apply the font size.
+                if (fontSize == 0) {  // Apply the default font size.
+                    mainWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
+                } else {  // Apply the specified font size.
+                    mainWebView.getSettings().setTextZoom(fontSize);
+                }
 
                 // Set third-party cookies status if API >= 21.
                 if (Build.VERSION.SDK_INT >= 21) {
@@ -2477,12 +2488,34 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
                 // Only set the user agent if the webpage is not currently loading.  Otherwise, changing the user agent on redirects can cause the original website to reload.  <https://redmine.stoutner.com/issues/160>
                 if (!urlIsLoading) {
-                    if (userAgentString.equals("WebView default user agent")) {
-                        // Set the user agent to `""`, which uses the default value.
-                        mainWebView.getSettings().setUserAgentString("");
-                    } else {
-                        // Use the selected user agent.
-                        mainWebView.getSettings().setUserAgentString(userAgentString);
+                    switch (userAgentString) {
+                        case "System default user agent":
+                            // Set the user agent according to the system default.
+                            switch (defaultUserAgentString) {
+                                case "WebView default user agent":
+                                    // Set the user agent to `""`, which uses the default value.
+                                    mainWebView.getSettings().setUserAgentString("");
+                                    break;
+
+                                case "Custom user agent":
+                                    // Set the custom user agent.
+                                    mainWebView.getSettings().setUserAgentString(defaultCustomUserAgentString);
+                                    break;
+
+                                default:
+                                    // Use the selected user agent.
+                                    mainWebView.getSettings().setUserAgentString(defaultUserAgentString);
+                            }
+                            break;
+
+                        case "WebView default user agent":
+                            // Set the user agent to `""`, which uses the default value.
+                            mainWebView.getSettings().setUserAgentString("");
+                            break;
+
+                        default:
+                            // Use the selected user agent.
+                            mainWebView.getSettings().setUserAgentString(userAgentString);
                     }
                 }
 
@@ -2499,9 +2532,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies_enabled", false);
                 domStorageEnabled = sharedPreferences.getBoolean("dom_storage_enabled", false);
                 saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data_enabled", false);
-                String userAgentString = sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0");
-                String customUserAgentString = sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0");
-                String defaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
 
                 // Apply the default settings.
                 mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
@@ -2517,7 +2547,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
                 // Only set the user agent if the webpage is not currently loading.  Otherwise, changing the user agent on redirects can cause the original website to reload.  <https://redmine.stoutner.com/issues/160>
                 if (!urlIsLoading) {
-                    switch (userAgentString) {
+                    switch (defaultUserAgentString) {
                         case "WebView default user agent":
                             // Set the user agent to `""`, which uses the default value.
                             mainWebView.getSettings().setUserAgentString("");
@@ -2525,13 +2555,12 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
                         case "Custom user agent":
                             // Set the custom user agent.
-                            mainWebView.getSettings().setUserAgentString(customUserAgentString);
+                            mainWebView.getSettings().setUserAgentString(defaultCustomUserAgentString);
                             break;
 
                         default:
                             // Use the selected user agent.
-                            mainWebView.getSettings().setUserAgentString(userAgentString);
-                            break;
+                            mainWebView.getSettings().setUserAgentString(defaultUserAgentString);
                     }
                 }
 

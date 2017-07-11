@@ -62,7 +62,7 @@
     <!-- View SSL Certificate. -->
     <string name="view_ssl_certificate">Visualizza il certificato SSL</string>
     <string name="unencrypted_website">Sito non criptato</string>
-    <string name="no_ssl_certificate">La comunicazione con il sito non è criptata attraverso un certificato SSL.</string>
+    <string name="no_ssl_certificate">La comunicazione con questo sito web non è criptata. Questo consente a terze parti la possibilità di intercettare le informazioni scambiate, di tracciare la navigazione e di inviare contenuto maligno.</string>
     <string name="ssl_certificate">Certificato SSL</string>
     <string name="close">Chiudi</string>
     <string name="issued_to">Emesso a</string>
@@ -234,6 +234,23 @@
             <item>Safari 10.0.2 su macOS 10.12.2</item>
             <item>Personalizzato</item>
         </string-array>
+            <string-array name="domain_settings_user_agent_entries">
+                <item>Impostazioni di default</item>
+                <item>Privacy Browser 1.0</item>
+                <item>WebView Default</item>
+                <item>Firefox 50 su Android 7.1.1</item>
+                <item>Chrome 55 su Android 7.1.1</item>
+                <item>Safari 10 su iOS 10.2.1</item>
+                <item>Firefox 45 su Linux</item>
+                <item>Chromium 55 su Linux</item>
+                <item>Konqueror 4.14.26 su Linux</item>
+                <item>Firefox 50 su Windows 10</item>
+                <item>Chrome 55 su Windows 10</item>
+                <item>Edge 14 su Windows 10</item>
+                <item>Internet Explorer 11 su Windows 10</item>
+                <item>Safari 10.0.2 su macOS 10.12.2</item>
+                <item>Personalizzato</item>
+            </string-array>
         <string name="custom_user_agent">User agent personalizzato</string>
         <string name="block_ads">Blocca annunci</string>
         <string name="block_ads_summary">Per bloccare gli annunci utilizza la lista dei server di pgl.yoyo.org.</string>
@@ -298,6 +315,17 @@
             <item>175%</item>
             <item>200%</item>
         </string-array>
+            <string-array name="domain_settings_font_size_entries">
+                <item>Impostazioni di default</item>
+                <item>25%</item>
+                <item>50%</item>
+                <item>75%</item>
+                <item>100%</item>
+                <item>125%</item>
+                <item>150%</item>
+                <item>175%</item>
+                <item>200%</item>
+            </string-array>
         <string name="swipe_to_refresh_enabled">Swipe per aggiornare</string>
         <string name="swipe_to_refresh_enabled_summary">Alcuni siti non funzionano correttamente se questa opzione è abilitata.</string>
         <string name="display_additional_app_bar_icons">Mostra icone addizionali nella barra dell\'applicazione</string>
