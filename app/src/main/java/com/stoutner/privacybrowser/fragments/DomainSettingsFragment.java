@@ -65,8 +65,8 @@ public class DomainSettingsFragment extends Fragment {
     @SuppressWarnings("deprecation")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate `domain_settings`.  `false` does not attach it to the root `container`.
-        View domainSettingsView = inflater.inflate(R.layout.domain_settings, container, false);
+        // Inflate `domain_settings_fragment`.  `false` does not attach it to the root `container`.
+        View domainSettingsView = inflater.inflate(R.layout.domain_settings_fragment, container, false);
 
         // Get a handle for the `Context`.
         Context context = getContext();
@@ -91,9 +91,8 @@ public class DomainSettingsFragment extends Fragment {
         final ImageView displayWebpageImagesImageView = (ImageView) domainSettingsView.findViewById(R.id.domain_settings_display_webpage_images_imageview);
         Spinner displayWebpageImagesSpinner = (Spinner) domainSettingsView.findViewById(R.id.domain_settings_display_webpage_images_spinner);
 
-        // Initialize the database handler.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
-        // The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
-        DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(getContext(), null, null, 0);
+        // Initialize the database handler.  The two `nulls` do not specify the database name or a `CursorFactory`.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
+        DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(context, null, null, 0);
 
         // Get the database `Cursor` for this ID and move it to the first row.
         Cursor domainCursor = domainsDatabaseHelper.getCursorForId(databaseId);
@@ -253,8 +252,8 @@ public class DomainSettingsFragment extends Fragment {
         WebView bareWebView = (WebView) bareWebViewLayout.findViewById(R.id.bare_webview);
         final String webViewDefaultUserAgentString = bareWebView.getSettings().getUserAgentString();
 
-        // Get a handle for the shared preference.  `this` references the current context.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        // Get a handle for the shared preference.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         // Store the default user agent string values.
         final String defaultUserAgentString = sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0");

@@ -18,14 +18,8 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<menu
+<RelativeLayout
+    android:id="@+id/domains_listview_fragment_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <item
-        android:id="@+id/delete_domain"
-        android:title="@string/delete"
-        android:orderInCategory="10"
-        android:icon="?attr/deleteIcon"
-        app:showAsAction="ifRoom" />
-</menu>
+    android:layout_height="match_parent"
+    android:layout_width="match_parent" />
