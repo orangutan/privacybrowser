@@ -377,11 +377,33 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         EditText domainNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.domain_name_edittext);
         String domainNameString = domainNameEditText.getText().toString();
 
-        // Create the domain.
-        domainsDatabaseHelper.addDomain(domainNameString);
+        // Create the domain and store the database ID in `currentDomainDatabaseId`.
+        currentDomainDatabaseId = domainsDatabaseHelper.addDomain(domainNameString);
 
-        // Populate the `ListView`.
-        populateDomainsListView();
+        // Add `currentDomainDatabaseId` to `argumentsBundle`.
+        Bundle argumentsBundle = new Bundle();
+        argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, currentDomainDatabaseId);
+
+        // Add `argumentsBundle` to `domainSettingsFragment`.
+        DomainSettingsFragment domainSettingsFragment = new DomainSettingsFragment();
+        domainSettingsFragment.setArguments(argumentsBundle);
+
+        // Display the newly created domain.
+        if (twoPanedMode) {
+
+        } else {
+            // Hide `add_domain_fab`.
+            addDomainFAB.setVisibility(View.GONE);
+
+            // Show and enable `deleteMenuItem`.
+            DomainsActivity.deleteMenuItem.setVisible(true);
+
+            // Set `domainSettingsFragmentDisplayed`.
+            DomainsActivity.domainSettingsFragmentDisplayed = true;
+
+            // Display `domainSettingsFragment`.
+            supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
+        }
     }
 
     private void saveDomainSettings() {

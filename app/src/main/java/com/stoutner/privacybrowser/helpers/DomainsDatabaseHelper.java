@@ -131,7 +131,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         return domainsDatabase.rawQuery(GET_CURSOR_FOR_DOMAIN_NAME, null);
     }
 
-    public void addDomain(String domainName) {
+    public int addDomain(String domainName) {
         // Store the domain data in a `ContentValues`.
         ContentValues domainContentValues = new ContentValues();
 
@@ -149,11 +149,13 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         // Get a writable database handle.
         SQLiteDatabase domainsDatabase = this.getWritableDatabase();
 
-        // Insert a new row.  The second argument is `null`, which makes it so that a completely null row cannot be created.
-        domainsDatabase.insert(DOMAINS_TABLE, null, domainContentValues);
+        // Insert a new row and store the resulting database ID.  The second argument is `null`, which makes it so that a completely null row cannot be created.
+        int newDomainDatabaseId  = (int) domainsDatabase.insert(DOMAINS_TABLE, null, domainContentValues);
 
         // Close the database handle.
         domainsDatabase.close();
+
+        return newDomainDatabaseId;
     }
 
     public void saveDomain(int databaseId, String domainName, boolean javaScriptEnabled, boolean firstPartyCookiesEnabled, boolean thirdPartyCookiesEnabled, boolean domStorageEnabled, boolean formDataEnabled, String userAgent, int fontSize,
