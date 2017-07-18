@@ -111,9 +111,6 @@ public class DomainsListFragment extends Fragment {
 
                 // Display the domain settings fragment.
                 if (DomainsActivity.twoPanedMode) {  // The device in in two-paned mode.
-                    // Display `domainSettingsFragment`.
-                    supportFragmentManager.beginTransaction().replace(R.id.domain_settings_fragment_container, domainSettingsFragment).commit();
-
                     // Enable the options `MenuItems`.
                     DomainsActivity.deleteMenuItem.setEnabled(true);
 
@@ -123,6 +120,9 @@ public class DomainsListFragment extends Fragment {
                     } else {
                         DomainsActivity.deleteMenuItem.setIcon(R.drawable.delete_light);
                     }
+
+                    // Display `domainSettingsFragment`.
+                    supportFragmentManager.beginTransaction().replace(R.id.domain_settings_fragment_container, domainSettingsFragment).commit();
                 } else { // The device in in single-paned mode
                     // Hide `add_domain_fab`.
                     FloatingActionButton addDomainFAB = (FloatingActionButton) getActivity().findViewById(R.id.add_domain_fab);

@@ -139,8 +139,8 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         // Only display `deleteMenuItem` (initially) in two-paned mode.
         deleteMenuItem.setVisible(twoPanedMode);
 
-        // Populate the list of domains.  We have to do this from `onCreateOptionsMenu()` instead of `onCreate()` because `populateDomainsListView()` needs the `deleteMenuItem` to be inflated.
-        populateDomainsListView();
+        // Populate the list of domains.  We have to do this from `onCreateOptionsMenu()` instead of `onCreate()` because `populateDomainsListView()` needs the `deleteMenuItem` to be inflated.  `-1` highlights the first domain.
+        populateDomainsListView(-1);
 
         // Success!
         return true;
@@ -170,8 +170,8 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                     supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainsListFragment).commit();
                     supportFragmentManager.executePendingTransactions();
 
-                    // Populate the list of domains.
-                    populateDomainsListView();
+                    // Populate the list of domains.  `-1` highlights the first domain if in two-paned mode.  It has no effect in single-paned mode.
+                    populateDomainsListView(-1);
 
                     // Update `domainSettingsFragmentDisplayed`.
                     domainSettingsFragmentDisplayed = false;
@@ -354,8 +354,8 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainsListFragment).commit();
             supportFragmentManager.executePendingTransactions();
 
-            // Populate the list of domains.
-            populateDomainsListView();
+            // Populate the list of domains.  `-1` highlights the first domain if in two-paned mode.  It has no effect in single-paned mode.
+            populateDomainsListView(-1);
 
             // Update `domainSettingsFragmentDisplayed`.
             domainSettingsFragmentDisplayed = false;
@@ -380,18 +380,10 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         // Create the domain and store the database ID in `currentDomainDatabaseId`.
         currentDomainDatabaseId = domainsDatabaseHelper.addDomain(domainNameString);
 
-        // Add `currentDomainDatabaseId` to `argumentsBundle`.
-        Bundle argumentsBundle = new Bundle();
-        argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, currentDomainDatabaseId);
-
-        // Add `argumentsBundle` to `domainSettingsFragment`.
-        DomainSettingsFragment domainSettingsFragment = new DomainSettingsFragment();
-        domainSettingsFragment.setArguments(argumentsBundle);
-
         // Display the newly created domain.
-        if (twoPanedMode) {
-
-        } else {
+        if (twoPanedMode) {  // The device in in two-paned mode.
+            populateDomainsListView(currentDomainDatabaseId);
+        } else {  // The device is in single-paned mode.
             // Hide `add_domain_fab`.
             addDomainFAB.setVisibility(View.GONE);
 
@@ -400,6 +392,14 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
             // Set `domainSettingsFragmentDisplayed`.
             DomainsActivity.domainSettingsFragmentDisplayed = true;
+
+            // Add `currentDomainDatabaseId` to `argumentsBundle`.
+            Bundle argumentsBundle = new Bundle();
+            argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, currentDomainDatabaseId);
+
+            // Add `argumentsBundle` to `domainSettingsFragment`.
+            DomainSettingsFragment domainSettingsFragment = new DomainSettingsFragment();
+            domainSettingsFragment.setArguments(argumentsBundle);
 
             // Display `domainSettingsFragment`.
             supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
@@ -445,7 +445,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                 displayWebpageImagesInt);
     }
 
-    private void populateDomainsListView() {
+    private void populateDomainsListView(final int highlightedDomainDatabaseId) {
         // get a handle for the current `domains_listview`.
         domainsListView = (ListView) findViewById(R.id.domains_listview);
 
@@ -474,11 +474,28 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
         // Display the domain settings in the second pane if operating in two pane mode and the database contains at least one domain.
         if (DomainsActivity.twoPanedMode && (domainsCursor.getCount() > 0)) {  // Two-paned mode is enabled and there is at least one domain.
-            // Select the first domain.
-            domainsListView.setItemChecked(0, true);
+            // Initialize `highlightedDomainPosition`.
+            int highlightedDomainPosition = 0;
 
-            // Get the `databaseId` for the first domain.
-            domainsCursor.moveToPosition(0);
+            // Get the cursor position for the highlighted domain.
+            for (int i = 0; i < domainsCursor.getCount(); i++) {
+                // Move to position `i` in the cursor.
+                domainsCursor.moveToPosition(i);
+
+                // Get the database ID for this position.
+                int currentDatabaseId = domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper._ID));
+
+                // Set `highlightedDomainPosition` if the database ID for this matches `highlightedDomainDatabaseId`.
+                if (highlightedDomainDatabaseId == currentDatabaseId) {
+                    highlightedDomainPosition = i;
+                }
+            }
+
+            // Select the highlighted domain.
+            domainsListView.setItemChecked(highlightedDomainPosition, true);
+
+            // Get the `databaseId` for the highlighted domain.
+            domainsCursor.moveToPosition(highlightedDomainPosition);
             currentDomainDatabaseId = domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper._ID));
 
             // Store `databaseId` in `argumentsBundle`.
