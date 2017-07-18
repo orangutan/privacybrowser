@@ -55,7 +55,14 @@ public class DomainsListFragment extends Fragment {
         domainsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Save the current domain settings if operating in two-paned mode a domain is currently selected.
+                // Dismiss `undoDeleteSnackbar` if it is currently displayed (because a domain has just been deleted).
+                if ((DomainsActivity.undoDeleteSnackbar != null) && (DomainsActivity.undoDeleteSnackbar.isShown())) {
+                    DomainsActivity.dismissingSnackbar = true;
+
+                    DomainsActivity.undoDeleteSnackbar.dismiss();
+                }
+
+                // Save the current domain settings if operating in two-paned mode and a domain is currently selected.
                 if (DomainsActivity.twoPanedMode && DomainsActivity.deleteMenuItem.isEnabled()) {
                     View domainSettingsFragmentView = supportFragmentManager.findFragmentById(R.id.domain_settings_fragment_container).getView();
                     assert domainSettingsFragmentView != null;
@@ -111,25 +118,30 @@ public class DomainsListFragment extends Fragment {
 
                 // Display the domain settings fragment.
                 if (DomainsActivity.twoPanedMode) {  // The device in in two-paned mode.
-                    // Enable the options `MenuItems`.
-                    DomainsActivity.deleteMenuItem.setEnabled(true);
+                    // enable `deleteMenuItem` if the system is not waiting for a `Snackbar` to be dismissed.
+                    if (!DomainsActivity.dismissingSnackbar) {
+                        // Enable `deleteMenuItem`.
+                        DomainsActivity.deleteMenuItem.setEnabled(true);
 
-                    // Set the delete icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
-                        DomainsActivity.deleteMenuItem.setIcon(R.drawable.delete_dark);
-                    } else {
-                        DomainsActivity.deleteMenuItem.setIcon(R.drawable.delete_light);
+                        // Set the delete icon according to the theme.
+                        if (MainWebViewActivity.darkTheme) {
+                            DomainsActivity.deleteMenuItem.setIcon(R.drawable.delete_dark);
+                        } else {
+                            DomainsActivity.deleteMenuItem.setIcon(R.drawable.delete_light);
+                        }
                     }
 
                     // Display `domainSettingsFragment`.
                     supportFragmentManager.beginTransaction().replace(R.id.domain_settings_fragment_container, domainSettingsFragment).commit();
                 } else { // The device in in single-paned mode
+                    // Show `deleteMenuItem` if the system is not waiting for a `Snackbar` to be dismissed.
+                    if (!DomainsActivity.dismissingSnackbar) {
+                        DomainsActivity.deleteMenuItem.setVisible(true);
+                    }
+
                     // Hide `add_domain_fab`.
                     FloatingActionButton addDomainFAB = (FloatingActionButton) getActivity().findViewById(R.id.add_domain_fab);
                     addDomainFAB.setVisibility(View.GONE);
-
-                    // Show and enable `deleteMenuItem`.
-                    DomainsActivity.deleteMenuItem.setVisible(true);
 
                     // Set `domainSettingsFragmentDisplayed`.
                     DomainsActivity.domainSettingsFragmentDisplayed = true;
