@@ -63,7 +63,6 @@ import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.util.Patterns;
 import android.view.ContextMenu;
 import android.view.GestureDetector;
@@ -282,9 +281,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `finalGrayColorSpam` is used in `onCreate()` and `highlightUrlText()`.
     private ForegroundColorSpan finalGrayColorSpan;
 
-    // `boldStyleSpan` is used in `onCreate()` and `highlightUrlText()`.
-    private StyleSpan boldStyleSpan;
-
     // `adView` is used in `onCreate()` and `onConfigurationChanged()`.
     private View adView;
 
@@ -344,7 +340,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
         initialGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
         finalGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
-        boldStyleSpan = new StyleSpan(Typeface.BOLD);
 
         // Get a handle for `urlTextBox`.
         urlTextBox = (EditText) appBar.getCustomView().findViewById(R.id.url_edittext);
@@ -358,7 +353,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     urlTextBox.getText().removeSpan(redColorSpan);
                     urlTextBox.getText().removeSpan(initialGrayColorSpan);
                     urlTextBox.getText().removeSpan(finalGrayColorSpan);
-                    urlTextBox.getText().removeSpan(boldStyleSpan);
                 } else {  // The user has stopped editing `urlTextBox`.
                     // Reapply the highlighting.
                     highlightUrlText();
@@ -2670,7 +2664,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
         if (urlString.startsWith("http://")) {  // Highlight connections that are not encrypted.
             urlTextBox.getText().setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            // urlTextBox.getText().setSpan(boldStyleSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         } else if (urlString.startsWith("https://")) {  // Highlight connections that are encrypted.
             urlTextBox.getText().setSpan(initialGrayColorSpan, 0, 8, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         }
