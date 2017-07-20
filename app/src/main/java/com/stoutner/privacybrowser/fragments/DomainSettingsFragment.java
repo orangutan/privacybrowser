@@ -50,8 +50,8 @@ public class DomainSettingsFragment extends Fragment {
     // `DATABASE_ID` is used by activities calling this fragment.
     public static final String DATABASE_ID = "database_id";
 
-    // `databaseId` is used in `onCreate()` and `onCreateView()`.
-    private int databaseId;
+    // `databaseId` is public statis so it can be accessed from `DomainsActivity`. It is also used in `onCreate()` and `onCreateView()`.
+    public static int databaseId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

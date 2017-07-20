@@ -143,9 +143,6 @@ public class DomainsListFragment extends Fragment {
                     FloatingActionButton addDomainFAB = (FloatingActionButton) getActivity().findViewById(R.id.add_domain_fab);
                     addDomainFAB.setVisibility(View.GONE);
 
-                    // Set `domainSettingsFragmentDisplayed`.
-                    DomainsActivity.domainSettingsFragmentDisplayed = true;
-
                     // Display `domainSettingsFragment`.
                     supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
                 }
