@@ -104,6 +104,7 @@ import com.stoutner.privacybrowser.dialogs.SslCertificateErrorDialog;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -214,7 +215,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `adBlockerEnabled` is used in `onCreate()` and `applyAppSettings()`.
     private boolean adBlockerEnabled;
 
-    // `privacyBrowserRuntime` is used in `onCreate()` and `applyAppSettings()`.
+    // `privacyBrowserRuntime` is used in `onCreate()`, `onOptionsItemSelected()`, and `applyAppSettings()`.
     private Runtime privacyBrowserRuntime;
 
     // `incognitoModeEnabled` is used in `onCreate()` and `applyAppSettings()`.
@@ -250,7 +251,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `waitingForOrbotData` is used in `onCreate()` and `applyAppSettings()`.
     private String waitingForOrbotHTMLString;
 
-    // `privateDataDirectoryString` is used in `onCreate()` and `onNavigationItemSelected()`.
+    // `privateDataDirectoryString` is used in `onCreate()`, `onOptionsItemSelected()`, and `onNavigationItemSelected()`.
     private String privateDataDirectoryString;
 
     // `findOnPageLinearLayout` is used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
@@ -1108,6 +1109,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         MenuItem toggleDomStorageMenuItem = menu.findItem(R.id.toggle_dom_storage);
         MenuItem toggleSaveFormDataMenuItem = menu.findItem(R.id.toggle_save_form_data);
         MenuItem clearCookiesMenuItem = menu.findItem(R.id.clear_cookies);
+        MenuItem clearDOMStorageMenuItem = menu.findItem(R.id.clear_dom_storage);
         MenuItem clearFormDataMenuItem = menu.findItem(R.id.clear_form_data);
         MenuItem fontSizeMenuItem = menu.findItem(R.id.font_size);
         MenuItem displayImagesMenuItem = menu.findItem(R.id.display_images);
@@ -1123,13 +1125,30 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Enable third-party cookies if first-party cookies are enabled.
         toggleThirdPartyCookiesMenuItem.setEnabled(firstPartyCookiesEnabled);
 
-        // Enable DOM Storage if JavaScript is enabled.
+        // Enable `DOM Storage` if JavaScript is enabled.
         toggleDomStorageMenuItem.setEnabled(javaScriptEnabled);
 
-        // Enable Clear Cookies if there are any.
+        // Enable `Clear Cookies` if there are any.
         clearCookiesMenuItem.setEnabled(cookieManager.hasCookies());
 
-        // Enable Clear Form Data is there is any.
+        // Get a count of the number of files in the `Local Storage` directory.
+        File localStorageDirectory = new File (privateDataDirectoryString + "/app_webview/Local Storage/");
+        int localStorageDirectoryNumberOfFiles = 0;
+        if (localStorageDirectory.exists()) {
+            localStorageDirectoryNumberOfFiles = localStorageDirectory.list().length;
+        }
+
+        // Get a count of the number of files in the `IndexedDB` directory.
+        File indexedDBDirectory = new File (privateDataDirectoryString + "/app_webview/IndexedDB");
+        int indexedDBDirectoryNumberOfFiles = 0;
+        if (indexedDBDirectory.exists()) {
+            indexedDBDirectoryNumberOfFiles = indexedDBDirectory.list().length;
+        }
+
+        // Enable `Clear DOM Storage` if there is any.
+        clearDOMStorageMenuItem.setEnabled(localStorageDirectoryNumberOfFiles > 0 || indexedDBDirectoryNumberOfFiles > 0);
+
+        // Enable `Clear Form Data` is there is any.
         WebViewDatabase mainWebViewDatabase = WebViewDatabase.getInstance(this);
         clearFormDataMenuItem.setEnabled(mainWebViewDatabase.hasFormData());
 
@@ -1384,6 +1403,13 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                                         // Delete the DOM Storage.
                                         WebStorage webStorage = WebStorage.getInstance();
                                         webStorage.deleteAllData();
+
+                                        // Manually remove `IndexedDB` if it exists.
+                                        try {
+                                            privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/IndexedDB");
+                                        } catch (IOException e) {
+                                            // Do nothing if an error is thrown.
+                                        }
                                 }
                             }
                         })
@@ -1650,10 +1676,16 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     WebStorage webStorage = WebStorage.getInstance();
                     webStorage.deleteAllData();
 
-                    // Manually delete the DOM storage directory, as `WebStorage` sometimes will not flush its changes to disk before `System.exit(0)` is run.
+                    // Manually delete the DOM storage files and directories, as `WebStorage` sometimes will not flush its changes to disk before `System.exit(0)` is run.
                     try {
                         // We have to use a `String[]` because the directory contains a space and `Runtime.exec` will not escape the string correctly otherwise.
                         privacyBrowserRuntime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Local Storage/"});
+
+                        // We have to use multiple commands because `Runtime.exec()` does not like `*`.
+                        privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/IndexedDB");
+                        privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager");
+                        privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager-journal");
+                        privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/databases");
                     } catch (IOException e) {
                         // Do nothing if an error is thrown.
                     }

@@ -421,6 +421,9 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
     protected void onSaveInstanceState(Bundle outState) {
         // Store the current `DomainSettingsFragment` state in `outState`.
         if (findViewById(R.id.domain_settings_scrollview) != null) {  // `DomainSettingsFragment` is displayed.
+            // Save any changes that have been made to the domain settings.
+            saveDomainSettings();
+
             // Store `DomainSettingsDisplayed`.
             outState.putBoolean("domainSettingsDisplayed", true);
             outState.putInt("domainSettingsDatabaseId", DomainSettingsFragment.databaseId);
