@@ -712,9 +712,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             // Update the URL in urlTextBox when the page starts to load.
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                // Reset `webViewTitle`
-                webViewTitle = getString(R.string.no_title);
-
                 // Check to see if we are waiting on Orbot.
                 if (!waitingForOrbot) {  // We are not waiting on Orbot, so we need to process the URL.
                     // We need to update `formattedUrlString` at the beginning of the load, so that if the user toggles JavaScript during the load the new website is reloaded.
@@ -1490,12 +1487,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
             case R.id.share:
                 // Setup the share string.
-                String shareString;
-                if (webViewTitle != null) {
-                    shareString = webViewTitle + " – " + urlTextBox.getText().toString();
-                } else {
-                    shareString = urlTextBox.getText().toString();
-                }
+                String shareString = webViewTitle + " – " + urlTextBox.getText().toString();
 
                 // Create the share intent.
                 Intent shareIntent = new Intent();
@@ -1514,8 +1506,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 // Show the Find on Page `RelativeLayout`.
                 findOnPageLinearLayout.setVisibility(View.VISIBLE);
 
-                // Display the keyboard.  We have to wait 200 ms before running the command to work around a bug in Android.
-                // http://stackoverflow.com/questions/5520085/android-show-softkeyboard-with-showsoftinput-is-not-working
+                // Display the keyboard.  We have to wait 200 ms before running the command to work around a bug in Android.  http://stackoverflow.com/questions/5520085/android-show-softkeyboard-with-showsoftinput-is-not-working
                 findOnPageEditText.postDelayed(new Runnable()
                 {
                     @Override
@@ -1524,7 +1515,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                         // Set the focus on `findOnPageEditText`.
                         findOnPageEditText.requestFocus();
 
-                        // Display the keyboard.
+                        // Display the keyboard.  `0` sets no input flags.
                         inputMethodManager.showSoftInput(findOnPageEditText, 0);
                     }
                 }, 200);
