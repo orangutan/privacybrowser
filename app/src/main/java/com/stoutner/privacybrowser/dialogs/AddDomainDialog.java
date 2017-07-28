@@ -29,13 +29,18 @@ import android.os.Bundle;
 // We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <= 22.
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatDialogFragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
+import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 
 public class AddDomainDialog extends AppCompatDialogFragment {
     // The public interface is used to send information back to the parent activity.
@@ -105,11 +110,46 @@ public class AddDomainDialog extends AppCompatDialogFragment {
         // Show the keyboard when the `AlertDialog` is displayed on the screen.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
-        // We need to show the `AlertDialog` before we can edit the contents.
+        // The `AlertDialog` must be shown before the contents can be edited.
         alertDialog.show();
 
-        // Get a handle for `domain_name_edittext`.
-        EditText addDomainEditText = (EditText) alertDialog.findViewById(R.id.domain_name_edittext);
+        // Initialize `domainsDatabaseHelper`.  The two `nulls` do not specify the database name or a `CursorFactory`.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
+        final DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(getContext(), null, null, 0);
+
+        // Get handles for the views in `alertDialog`.
+        final EditText addDomainEditText = (EditText) alertDialog.findViewById(R.id.domain_name_edittext);
+        final TextView domainNameAlreadyExistsTextView = (TextView) alertDialog.findViewById(R.id.domain_name_already_exists_textview);
+        final Button addButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+
+        //  Update the status of the warning text and the `add` button.
+        addDomainEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing.
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Do nothing.
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (domainsDatabaseHelper.getCursorForDomainName(addDomainEditText.getText().toString()).getCount() >0) {  // The domain already exists.
+                    // Show the warning text.
+                    domainNameAlreadyExistsTextView.setVisibility(View.VISIBLE);
+
+                    // Disable the `add` button.
+                    addButton.setEnabled(false);
+                } else {  // The domain do not yet exist.
+                    // Hide the warning text.
+                    domainNameAlreadyExistsTextView.setVisibility(View.GONE);
+
+                    // Enable the `add` button.
+                    addButton.setEnabled(true);
+                }
+            }
+        });
 
         // Get the current domain from `formattedUrlString`.
         Uri currentUri = Uri.parse(MainWebViewActivity.formattedUrlString);
