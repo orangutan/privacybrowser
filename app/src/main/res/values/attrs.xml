@@ -23,10 +23,12 @@
     <attr name="appBarTextTheme" format="reference" />
     <attr name="popupsTheme" format="reference" />
     <attr name="tabLayoutTheme" format="reference" />
+    <attr name="dialogTabLayoutTheme" format="reference" />
 
     <attr name="aboutTitle" format="reference" />
     <attr name="aboutText" format="reference" />
     <attr name="sslTitle" format="reference" />
+    <attr name="sslHeader" format="reference" />
     <attr name="urlHistoryText" format="reference" />
     <attr name="primaryTextColorSelector" format="reference" />
     <attr name="redText" format="reference" />

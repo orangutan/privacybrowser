@@ -21,6 +21,7 @@ package com.stoutner.privacybrowser.activities;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.http.SslCertificate;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -38,6 +39,7 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -518,6 +520,9 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         EditText customUserAgentEditText = (EditText) findViewById(R.id.domain_settings_custom_user_agent_edittext);
         Spinner fontSizeSpinner = (Spinner) findViewById(R.id.domain_settings_font_size_spinner);
         Spinner displayWebpageImagesSpinner = (Spinner) findViewById(R.id.domain_settings_display_webpage_images_spinner);
+        Switch pinnedSslCertificateSwitch = (Switch) findViewById(R.id.domain_settings_pinned_ssl_certificate_switch);
+        RadioButton savedSslCertificateRadioButton = (RadioButton) findViewById(R.id.saved_ssl_certificate_radiobutton);
+        RadioButton currentWebsiteCertificateRadioButton = (RadioButton) findViewById(R.id.current_website_certificate_radiobutton);
 
         // Extract the data for the domain settings.
         String domainNameString = domainNameEditText.getText().toString();
@@ -529,6 +534,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         int userAgentPositionInt = userAgentSpinner.getSelectedItemPosition();
         int fontSizePositionInt = fontSizeSpinner.getSelectedItemPosition();
         int displayWebpageImagesInt = displayWebpageImagesSpinner.getSelectedItemPosition();
+        boolean pinnedSslCertificate = pinnedSslCertificateSwitch.isChecked();
 
         // Get the data for the `Spinners` from the entry values string arrays.
         String userAgentString = getResources().getStringArray(R.array.domain_settings_user_agent_entry_values)[userAgentPositionInt];
@@ -541,8 +547,33 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         }
 
         // Save the domain settings.
-        domainsDatabaseHelper.saveDomain(currentDomainDatabaseId, domainNameString, javaScriptEnabledBoolean, firstPartyCookiesEnabledBoolean, thirdPartyCookiesEnabledBoolean, domStorageEnabledEnabledBoolean, formDataEnabledBoolean, userAgentString, fontSizeInt,
-                displayWebpageImagesInt);
+        if (savedSslCertificateRadioButton.isChecked()) {  // The current certificate is being used.
+            // Update the database except for the certificate.
+            domainsDatabaseHelper.updateDomainExceptCertificate(DomainsActivity.currentDomainDatabaseId, domainNameString, javaScriptEnabledBoolean, firstPartyCookiesEnabledBoolean, thirdPartyCookiesEnabledBoolean, domStorageEnabledEnabledBoolean,
+                    formDataEnabledBoolean, userAgentString, fontSizeInt, displayWebpageImagesInt, pinnedSslCertificate);
+        } else if (currentWebsiteCertificateRadioButton.isChecked()) {  // The certificate is being updated with the current website certificate.
+            // Get the current website SSL certificate.
+            SslCertificate currentWebsiteSslCertificate = MainWebViewActivity.sslCertificate;
+
+            // Store the values from the SSL certificate.
+            String issuedToCommonName = currentWebsiteSslCertificate.getIssuedTo().getCName();
+            String issuedToOrganization = currentWebsiteSslCertificate.getIssuedTo().getOName();
+            String issuedToOrganizationalUnit = currentWebsiteSslCertificate.getIssuedTo().getUName();
+            String issuedByCommonName = currentWebsiteSslCertificate.getIssuedBy().getCName();
+            String issuedByOrganization = currentWebsiteSslCertificate.getIssuedBy().getOName();
+            String issuedByOrganizationalUnit = currentWebsiteSslCertificate.getIssuedBy().getUName();
+            long startDateLong = currentWebsiteSslCertificate.getValidNotBeforeDate().getTime();
+            long endDateLong = currentWebsiteSslCertificate.getValidNotAfterDate().getTime();
+
+            // Update the database.
+            domainsDatabaseHelper.updateDomainWithCertificate(currentDomainDatabaseId, domainNameString, javaScriptEnabledBoolean, firstPartyCookiesEnabledBoolean, thirdPartyCookiesEnabledBoolean, domStorageEnabledEnabledBoolean, formDataEnabledBoolean,
+                    userAgentString, fontSizeInt, displayWebpageImagesInt, pinnedSslCertificate, issuedToCommonName, issuedToOrganization, issuedToOrganizationalUnit, issuedByCommonName, issuedByOrganization, issuedByOrganizationalUnit, startDateLong,
+                    endDateLong);
+        } else {  // No certificate is selected.
+            // Update the database, with PINNED_SSL_CERTIFICATE set to false.
+            domainsDatabaseHelper.updateDomainExceptCertificate(currentDomainDatabaseId, domainNameString, javaScriptEnabledBoolean, firstPartyCookiesEnabledBoolean, thirdPartyCookiesEnabledBoolean, domStorageEnabledEnabledBoolean, formDataEnabledBoolean,
+                    userAgentString, fontSizeInt, displayWebpageImagesInt, false);
+        }
     }
 
     private void populateDomainsListView(final int highlightedDomainDatabaseId) {

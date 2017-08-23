@@ -32,9 +32,11 @@
         <item name="progressTintColor">@color/blue_700</item>
         <item name="navigationIconTintColor">@color/blue_800</item>
         <item name="findOnPageIconTintColor">@color/blue_800</item>
+        <item name="sslHeader">@color/blue_700</item>
         <item name="sslTitle">@color/blue_900</item>
         <item name="urlHistoryText">@color/black</item>
         <item name="redText">@color/red_a700</item>
+        <item name="dialogTabLayoutTheme">@style/PrivacyBrowserTabLayoutDialogLight</item>
     </style>
 
     <!-- `windowActionModeOverlay` makes the contextual app bar cover the support app bar.  `colorPrimaryDark` goes behind the status bar, which is then darkened by the overlay.-->
@@ -87,6 +89,11 @@
         <item name="tabIndicatorColor">@color/white</item>
     </style>
 
+    <style name="PrivacyBrowserTabLayoutDialogLight" parent="Widget.Design.TabLayout" >
+        <item name="android:textColorPrimary">@color/blue_700</item>
+        <item name="android:textColorSecondary">@color/blue_700_50</item>
+    </style>
+
     <style name="PrivacyBrowserAlertDialogLight" parent="Theme.AppCompat.Light.Dialog.Alert" >
         <item name="colorAccent">@color/blue_700</item>
     </style>
@@ -106,6 +113,7 @@
         <item name="progressTintColor">@color/blue_600</item>
         <item name="navigationIconTintColor">@color/blue_600</item>
         <item name="findOnPageIconTintColor">@color/blue_600</item>
+        <item name="sslHeader">@color/blue_400</item>
         <item name="sslTitle">@color/blue_700</item>
         <item name="urlHistoryText">@color/gray_200</item>
         <item name="redText">@color/red_900</item>

@@ -19,6 +19,7 @@
 
 package com.stoutner.privacybrowser.fragments;
 
+import android.net.http.SslCertificate;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 // We have to use `android.support.v4.app.Fragment` until minimum API >= 23.  Otherwise we cannot call `getContext()`.
@@ -30,6 +31,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 
@@ -78,6 +80,9 @@ public class DomainsListFragment extends Fragment {
                     EditText customUserAgentEditText = (EditText) domainSettingsFragmentView.findViewById(R.id.domain_settings_custom_user_agent_edittext);
                     Spinner fontSizeSpinner = (Spinner) domainSettingsFragmentView.findViewById(R.id.domain_settings_font_size_spinner);
                     Spinner displayWebpageImagesSpinner = (Spinner) domainSettingsFragmentView.findViewById(R.id.domain_settings_display_webpage_images_spinner);
+                    Switch pinnedSslCertificateSwitch = (Switch) domainSettingsFragmentView.findViewById(R.id.domain_settings_pinned_ssl_certificate_switch);
+                    RadioButton savedSslCertificateRadioButton = (RadioButton) domainSettingsFragmentView.findViewById(R.id.saved_ssl_certificate_radiobutton);
+                    RadioButton currentWebsiteCertificateRadioButton = (RadioButton) domainSettingsFragmentView.findViewById(R.id.current_website_certificate_radiobutton);
 
                     // Extract the data for the domain settings.
                     String domainNameString = domainNameEditText.getText().toString();
@@ -89,6 +94,7 @@ public class DomainsListFragment extends Fragment {
                     int userAgentPositionInt = userAgentSpinner.getSelectedItemPosition();
                     int fontSizePositionInt = fontSizeSpinner.getSelectedItemPosition();
                     int displayWebpageImagesInt = displayWebpageImagesSpinner.getSelectedItemPosition();
+                    boolean pinnedSslCertificate = pinnedSslCertificateSwitch.isChecked();
 
                     // Get the data for the `Spinners` from the entry values string arrays.
                     String userAgentString = getResources().getStringArray(R.array.domain_settings_user_agent_entry_values)[userAgentPositionInt];
@@ -101,8 +107,33 @@ public class DomainsListFragment extends Fragment {
                     }
 
                     // Save the domain settings.
-                    domainsDatabaseHelper.saveDomain(DomainsActivity.currentDomainDatabaseId, domainNameString, javaScriptEnabledBoolean, firstPartyCookiesEnabledBoolean, thirdPartyCookiesEnabledBoolean, domStorageEnabledEnabledBoolean, formDataEnabledBoolean, userAgentString, fontSizeInt,
-                            displayWebpageImagesInt);
+                    if (savedSslCertificateRadioButton.isChecked()) {  // The current certificate is being used.
+                        // Update the database except for the certificate.
+                        domainsDatabaseHelper.updateDomainExceptCertificate(DomainsActivity.currentDomainDatabaseId, domainNameString, javaScriptEnabledBoolean, firstPartyCookiesEnabledBoolean, thirdPartyCookiesEnabledBoolean, domStorageEnabledEnabledBoolean,
+                                formDataEnabledBoolean, userAgentString, fontSizeInt, displayWebpageImagesInt, pinnedSslCertificate);
+                    } else if (currentWebsiteCertificateRadioButton.isChecked()) {  // The certificate is being updated with the current website certificate.
+                        // Get the current website SSL certificate.
+                        SslCertificate currentWebsiteSslCertificate = MainWebViewActivity.sslCertificate;
+
+                        // Store the values from the SSL certificate.
+                        String issuedToCommonName = currentWebsiteSslCertificate.getIssuedTo().getCName();
+                        String issuedToOrganization = currentWebsiteSslCertificate.getIssuedTo().getOName();
+                        String issuedToOrganizationalUnit = currentWebsiteSslCertificate.getIssuedTo().getUName();
+                        String issuedByCommonName = currentWebsiteSslCertificate.getIssuedBy().getCName();
+                        String issuedByOrganization = currentWebsiteSslCertificate.getIssuedBy().getOName();
+                        String issuedByOrganizationalUnit = currentWebsiteSslCertificate.getIssuedBy().getUName();
+                        long startDateLong = currentWebsiteSslCertificate.getValidNotBeforeDate().getTime();
+                        long endDateLong = currentWebsiteSslCertificate.getValidNotAfterDate().getTime();
+
+                        // Update the database.
+                        domainsDatabaseHelper.updateDomainWithCertificate(DomainsActivity.currentDomainDatabaseId, domainNameString, javaScriptEnabledBoolean, firstPartyCookiesEnabledBoolean, thirdPartyCookiesEnabledBoolean, domStorageEnabledEnabledBoolean,
+                                formDataEnabledBoolean, userAgentString, fontSizeInt, displayWebpageImagesInt, pinnedSslCertificate, issuedToCommonName, issuedToOrganization, issuedToOrganizationalUnit, issuedByCommonName, issuedByOrganization,
+                                issuedByOrganizationalUnit, startDateLong, endDateLong);
+                    } else {  // No certificate is selected.
+                        // Update the database, with PINNED_SSL_CERTIFICATE set to false.
+                        domainsDatabaseHelper.updateDomainExceptCertificate(DomainsActivity.currentDomainDatabaseId, domainNameString, javaScriptEnabledBoolean, firstPartyCookiesEnabledBoolean, thirdPartyCookiesEnabledBoolean, domStorageEnabledEnabledBoolean,
+                                formDataEnabledBoolean, userAgentString, fontSizeInt, displayWebpageImagesInt, false);
+                    }
                 }
 
                 // Store the new `currentDomainDatabaseId`, converting it from `long` to `int` to match the format of the domains database.

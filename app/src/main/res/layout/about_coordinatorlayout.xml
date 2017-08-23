@@ -63,8 +63,8 @@
         <!-- `android:layout_weight="1"` makes `about_viewpager` fill the rest of the screen. -->
         <android.support.v4.view.ViewPager
             android:id="@+id/about_viewpager"
-            android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_width="match_parent"
             android:layout_weight="1" />
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

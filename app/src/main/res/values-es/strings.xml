@@ -185,6 +185,7 @@
     <string name="domains">Dominios</string>
     <string name="domain_settings">Configuración de dominio</string>
     <string name="add_domain">Añadir dominio</string>
+    <string name="domain_name_already_exists">El nombre de dominio ya existe</string>
     <string name="add">Añadir</string>
     <string name="domain_name">Nombre de dominio</string>
     <string name="domain_settings_saved">Configuración de dominio guardada</string>

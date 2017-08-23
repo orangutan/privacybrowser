@@ -95,6 +95,7 @@ import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.dialogs.CreateHomeScreenShortcutDialog;
 import com.stoutner.privacybrowser.dialogs.DownloadImageDialog;
+import com.stoutner.privacybrowser.dialogs.PinnedSslCertificateMismatchDialog;
 import com.stoutner.privacybrowser.dialogs.UrlHistoryDialog;
 import com.stoutner.privacybrowser.dialogs.ViewSslCertificateDialog;
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
@@ -112,6 +113,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -119,22 +121,22 @@ import java.util.Set;
 
 // We need to use AppCompatActivity from android.support.v7.app.AppCompatActivity to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CreateHomeScreenShortcutDialog.CreateHomeScreenSchortcutListener,
-        SslCertificateErrorDialog.SslCertificateErrorListener, DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, UrlHistoryDialog.UrlHistoryListener {
+        PinnedSslCertificateMismatchDialog.PinnedSslCertificateMismatchListener, SslCertificateErrorDialog.SslCertificateErrorListener, DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, UrlHistoryDialog.UrlHistoryListener {
 
     // `darkTheme` is public static so it can be accessed from `AboutActivity`, `GuideActivity`, `AddDomainDialog`, `SettingsActivity`, `DomainsActivity`, `DomainsListFragment`, `BookmarksActivity`, `BookmarksDatabaseViewActivity`,
     // `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, `DownloadFileDialog`, `DownloadImageDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`, `MoveToFolderDialog`, `SslCertificateErrorDialog`, `UrlHistoryDialog`, `ViewSslCertificateDialog`,
     // `CreateHomeScreenShortcutDialog`, and `OrbotProxyHelper`. It is also used in `onCreate()`, `applyAppSettings()`, `applyDomainSettings()`, and `updatePrivacyIcons()`.
     public static boolean darkTheme;
 
-    // `favoriteIconBitmap` is public static so it can be accessed from `CreateHomeScreenShortcutDialog`, `BookmarksActivity`, `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`, `ViewSslCertificateDialog`.
-    // It is also used in `onCreate()`, `onCreateHomeScreenShortcutCreate()`, and `applyDomainSettings`.
+    // `favoriteIconBitmap` is public static so it can be accessed from `CreateHomeScreenShortcutDialog`, `BookmarksActivity`, `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`,
+    // and `ViewSslCertificateDialog`.  It is also used in `onCreate()`, `onCreateHomeScreenShortcutCreate()`, and `applyDomainSettings`.
     public static Bitmap favoriteIconBitmap;
 
     // `formattedUrlString` is public static so it can be accessed from `BookmarksActivity`, `CreateBookmarkDialog`, and `AddDomainDialog`.
     // It is also used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onCreateHomeScreenShortcutCreate()`, and `loadUrlFromTextBox()`.
     public static String formattedUrlString;
 
-    // `sslCertificate` is public static so it can be accessed from `ViewSslCertificateDialog`.  It is also used in `onCreate()`.
+    // `sslCertificate` is public static so it can be accessed from `DomainsActivity`, `DomainsListFragment`, `DomainSettingsFragment`, `PinnedSslCertificateMismatchDialog`, and `ViewSslCertificateDialog`.  It is also used in `onCreate()`.
     public static SslCertificate sslCertificate;
 
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`.
@@ -149,11 +151,23 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `reloadOnRestartBoolean` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onRestart()`
     public static boolean reloadOnRestartBoolean;
 
+    // The pinned domain SSL Certificate variables are public static so they can be accessed from `PinnedSslCertificateMismatchDialog`.  They are also used in `onCreate()` and `applyDomainSettings()`.
+    public static int domainSettingsDatabaseId;
+    public static boolean pinnedDomainSslCertificate;
+    public static String pinnedDomainSslIssuedToCNameString;
+    public static String pinnedDomainSslIssuedToONameString;
+    public static String pinnedDomainSslIssuedToUNameString;
+    public static String pinnedDomainSslIssuedByCNameString;
+    public static String pinnedDomainSslIssuedByONameString;
+    public static String pinnedDomainSslIssuedByUNameString;
+    public static Date pinnedDomainSslStartDate;
+    public static Date pinnedDomainSslEndDate;
+
 
     // `appBar` is used in `onCreate()`, `onOptionsItemSelected()`, `closeFindOnPage()`, and `applyAppSettings()`.
     private ActionBar appBar;
 
-    // `navigatingHistory` is used in `onCreate()`, `onNavigationItemSelected()`, and `applyDomainSettings()`.
+    // `navigatingHistory` is used in `onCreate()`, `onNavigationItemSelected()`, `onSslMismatchBack()`, and `applyDomainSettings()`.
     private boolean navigatingHistory;
 
     // `favoriteIconDefaultBitmap` is used in `onCreate()` and `applyDomainSettings`.
@@ -166,7 +180,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     private CoordinatorLayout rootCoordinatorLayout;
 
     // `mainWebView` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`, `findNextOnPage()`, `closeFindOnPage()`, `loadUrlFromTextBox()`
-    // and `setDisplayWebpageImages()`.
+    // `onSslMismatchBack()`, and `setDisplayWebpageImages()`.
     private WebView mainWebView;
 
     // `fullScreenVideoFrameLayout` is used in `onCreate()` and `onConfigurationChanged()`.
@@ -233,8 +247,11 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `translucentNavigationBarOnFullscreen` is used in `onCreate()` and `applyAppSettings()`.
     private boolean translucentNavigationBarOnFullscreen;
 
-    // `currentDomainName` is used in `onCreate()`, `onNavigationItemSelected()`, and `applyDomainSettings()`.
+    // `currentDomainName` is used in `onCreate()`, `onNavigationItemSelected()`, `onSslMismatchProceed()`, and `applyDomainSettings()`.
     private String currentDomainName;
+
+    // `ignorePinnedSslCertificateForDomain` is used in `onCreate()`, `onSslMismatchProceed()`, and `applyDomainSettings()`.
+    private boolean ignorePinnedSslCertificate;
 
     // `waitingForOrbot` is used in `onCreate()` and `applyAppSettings()`.
     private boolean waitingForOrbot;
@@ -295,6 +312,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
     // `urlIsLoading` is used in `onCreate()`, `loadUrl()`, and `applyDomainSettings()`.
     private boolean urlIsLoading;
+
 
     @Override
     // Remove Android Studio's warning about the dangers of using SetJavaScriptEnabled.  The whole premise of Privacy Browser is built around an understanding of these dangers.
@@ -790,20 +808,100 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                         }
                     }
 
-                    // Store the SSL certificate so it can be accessed from `ViewSslCertificateDialog`.
+                    // Store the SSL certificate so it can be accessed from `ViewSslCertificateDialog` and `PinnedSslCertificateMismatchDialog`.
                     sslCertificate = mainWebView.getCertificate();
+
+                    // Check the current website SSL certificate against the pinned SSL certificate if there is a pinned SSL certificate the user has not chosen to ignore it for this session.
+                    if (pinnedDomainSslCertificate && !ignorePinnedSslCertificate) {
+                        // Initialize the current SSL certificate variables.
+                        String currentWebsiteIssuedToCName = "";
+                        String currentWebsiteIssuedToOName = "";
+                        String currentWebsiteIssuedToUName = "";
+                        String currentWebsiteIssuedByCName = "";
+                        String currentWebsiteIssuedByOName = "";
+                        String currentWebsiteIssuedByUName = "";
+                        Date currentWebsiteSslStartDate = null;
+                        Date currentWebsiteSslEndDate = null;
+
+
+                        // Extract the individual pieces of information from the current website SSL certificate if it is not null.
+                        if (sslCertificate != null) {
+                            currentWebsiteIssuedToCName = sslCertificate.getIssuedTo().getCName();
+                            currentWebsiteIssuedToOName = sslCertificate.getIssuedTo().getOName();
+                            currentWebsiteIssuedToUName = sslCertificate.getIssuedTo().getUName();
+                            currentWebsiteIssuedByCName = sslCertificate.getIssuedBy().getCName();
+                            currentWebsiteIssuedByOName = sslCertificate.getIssuedBy().getOName();
+                            currentWebsiteIssuedByUName = sslCertificate.getIssuedBy().getUName();
+                            currentWebsiteSslStartDate = sslCertificate.getValidNotBeforeDate();
+                            currentWebsiteSslEndDate = sslCertificate.getValidNotAfterDate();
+                        }
+
+                        // Initialize `String` variables to store the SSL certificate dates.  `Strings` are needed to compare the values below, which doesn't work with `Dates` if they are `null`.
+                        String currentWebsiteSslStartDateString = "";
+                        String currentWebsiteSslEndDateString = "";
+                        String pinnedDomainSslStartDateString = "";
+                        String pinnedDomainSslEndDateString = "";
+
+                        // Convert the `Dates` to `Strings` if they are not `null`.
+                        if (currentWebsiteSslStartDate != null) {
+                            currentWebsiteSslStartDateString = currentWebsiteSslStartDate.toString();
+                        }
+
+                        if (currentWebsiteSslEndDate != null) {
+                            currentWebsiteSslEndDateString = currentWebsiteSslEndDate.toString();
+                        }
+
+                        if (pinnedDomainSslStartDate != null) {
+                            pinnedDomainSslStartDateString = pinnedDomainSslStartDate.toString();
+                        }
+
+                        if (pinnedDomainSslEndDate != null) {
+                            pinnedDomainSslEndDateString = pinnedDomainSslEndDate.toString();
+                        }
+
+                        // Check to see if the pinned SSL certificate matches the current website certificate.
+                        if (!currentWebsiteIssuedToCName.equals(pinnedDomainSslIssuedToCNameString) || !currentWebsiteIssuedToOName.equals(pinnedDomainSslIssuedToONameString) || !currentWebsiteIssuedToUName.equals(pinnedDomainSslIssuedToUNameString) ||
+                                !currentWebsiteIssuedByCName.equals(pinnedDomainSslIssuedByCNameString) || !currentWebsiteIssuedByOName.equals(pinnedDomainSslIssuedByONameString) || !currentWebsiteIssuedByUName.equals(pinnedDomainSslIssuedByUNameString) ||
+                                !currentWebsiteSslStartDateString.equals(pinnedDomainSslStartDateString) || !currentWebsiteSslEndDateString.equals(pinnedDomainSslEndDateString)) {  // The pinned SSL certificate doesn't match the current domain certificate.
+                            //Display the pinned SSL certificate mismatch `AlertDialog`.
+                            AppCompatDialogFragment pinnedSslCertificateMismatchDialogFragment = new PinnedSslCertificateMismatchDialog();
+                            pinnedSslCertificateMismatchDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.ssl_certificate_mismatch));
+                        }
+                    }
                 }
             }
 
             // Handle SSL Certificate errors.
             @Override
             public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-                // Store `handler` so it can be accesses from `onSslErrorCancel()` and `onSslErrorProceed()`.
-                sslErrorHandler = handler;
+                // Get the current website SSL certificate.
+                SslCertificate currentWebsiteSslCertificate = error.getCertificate();
 
-                // Display the SSL error `AlertDialog`.
-                AppCompatDialogFragment sslCertificateErrorDialogFragment = SslCertificateErrorDialog.displayDialog(error);
-                sslCertificateErrorDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.ssl_certificate_error));
+                // Extract the individual pieces of information from the current website SSL certificate.
+                String currentWebsiteIssuedToCName = currentWebsiteSslCertificate.getIssuedTo().getCName();
+                String currentWebsiteIssuedToOName = currentWebsiteSslCertificate.getIssuedTo().getOName();
+                String currentWebsiteIssuedToUName = currentWebsiteSslCertificate.getIssuedTo().getUName();
+                String currentWebsiteIssuedByCName = currentWebsiteSslCertificate.getIssuedBy().getCName();
+                String currentWebsiteIssuedByOName = currentWebsiteSslCertificate.getIssuedBy().getOName();
+                String currentWebsiteIssuedByUName = currentWebsiteSslCertificate.getIssuedBy().getUName();
+                Date currentWebsiteSslStartDate = currentWebsiteSslCertificate.getValidNotBeforeDate();
+                Date currentWebsiteSslEndDate = currentWebsiteSslCertificate.getValidNotAfterDate();
+
+                // Proceed to the website if the current SSL website certificate matches the pinned domain certificate.
+                if (pinnedDomainSslCertificate &&
+                        currentWebsiteIssuedToCName.equals(pinnedDomainSslIssuedToCNameString) && currentWebsiteIssuedToOName.equals(pinnedDomainSslIssuedToONameString) && currentWebsiteIssuedToUName.equals(pinnedDomainSslIssuedToUNameString) &&
+                        currentWebsiteIssuedByCName.equals(pinnedDomainSslIssuedByCNameString) && currentWebsiteIssuedByOName.equals(pinnedDomainSslIssuedByONameString) && currentWebsiteIssuedByUName.equals(pinnedDomainSslIssuedByUNameString) &&
+                        currentWebsiteSslStartDate.equals(pinnedDomainSslStartDate) && currentWebsiteSslEndDate.equals(pinnedDomainSslEndDate)) {  // An SSL certificate is pinned and matches the current domain certificate.
+                    // Proceed to the website without displaying an error.
+                    handler.proceed();
+                } else {  // Either there isn't a pinned SSL certificate or it doesn't match the current website certificate.
+                    // Store `handler` so it can be accesses from `onSslErrorCancel()` and `onSslErrorProceed()`.
+                    sslErrorHandler = handler;
+
+                    // Display the SSL error `AlertDialog`.
+                    AppCompatDialogFragment sslCertificateErrorDialogFragment = SslCertificateErrorDialog.displayDialog(error);
+                    sslCertificateErrorDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.ssl_certificate_error));
+                }
             }
         });
 
@@ -1507,8 +1605,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 findOnPageLinearLayout.setVisibility(View.VISIBLE);
 
                 // Display the keyboard.  We have to wait 200 ms before running the command to work around a bug in Android.  http://stackoverflow.com/questions/5520085/android-show-softkeyboard-with-showsoftinput-is-not-working
-                findOnPageEditText.postDelayed(new Runnable()
-                {
+                findOnPageEditText.postDelayed(new Runnable() {
                     @Override
                     public void run()
                     {
@@ -2098,6 +2195,26 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     }
 
     @Override
+    public void onSslMismatchBack() {
+        if (mainWebView.canGoBack()) {  // There is a back page in the history.
+            // Set `navigatingHistory` so that the domain settings are applied when the new URL is loaded.
+            navigatingHistory = true;
+
+            // Go back.
+            mainWebView.goBack();
+        } else {  // There are no pages to go back to.
+            // Load a blank page
+            loadUrl("");
+        }
+    }
+
+    @Override
+    public void onSslMismatchProceed() {
+        // Do not check the pinned SSL certificate for this domain again until the domain changes.
+        ignorePinnedSslCertificate = true;
+    }
+
+    @Override
     public void onUrlHistoryEntrySelected(int moveBackOrForwardSteps) {
         // Set `navigatingHistory` so that the domain settings are applied when the new URL is loaded.
         navigatingHistory = true;
@@ -2406,6 +2523,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             // Set the new `hostname` as the `currentDomainName`.
             currentDomainName = hostName;
 
+            // Reset `ignorePinnedSslCertificate`.
+            ignorePinnedSslCertificate = false;
+
             // Reset `favoriteIconBitmap` and display it in the `appbar`.
             favoriteIconBitmap = favoriteIconDefaultBitmap;
             favoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(favoriteIconBitmap, 64, 64, true));
@@ -2472,6 +2592,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 currentHostDomainSettingsCursor.moveToFirst();
 
                 // Get the settings from the cursor.
+                domainSettingsDatabaseId = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper._ID)));
                 javaScriptEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)) == 1);
                 firstPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES)) == 1);
                 thirdPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES)) == 1);
@@ -2480,6 +2601,27 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 String userAgentString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
                 int fontSize = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
                 displayWebpageImagesInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
+                pinnedDomainSslCertificate = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE)) == 1);
+                pinnedDomainSslIssuedToCNameString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME));
+                pinnedDomainSslIssuedToONameString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION));
+                pinnedDomainSslIssuedToUNameString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT));
+                pinnedDomainSslIssuedByCNameString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME));
+                pinnedDomainSslIssuedByONameString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION));
+                pinnedDomainSslIssuedByUNameString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT));
+
+                // Set the pinned SSL certificate start date to `null` if the saved date `long` is 0.
+                if (currentHostDomainSettingsCursor.getLong(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)) == 0) {
+                    pinnedDomainSslStartDate = null;
+                } else {
+                    pinnedDomainSslStartDate = new Date(currentHostDomainSettingsCursor.getLong(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)));
+                }
+
+                // Set the pinned SSL certificate end date to `null` if the saved date `long` is 0.
+                if (currentHostDomainSettingsCursor.getLong(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)) == 0) {
+                    pinnedDomainSslEndDate = null;
+                } else {
+                    pinnedDomainSslEndDate = new Date(currentHostDomainSettingsCursor.getLong(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)));
+                }
 
                 // Close `currentHostDomainSettingsCursor`.
                 currentHostDomainSettingsCursor.close();
@@ -2555,6 +2697,18 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
                 mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
                 mainWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
+
+                // Reset the pinned SSL certificate information.
+                domainSettingsDatabaseId = -1;
+                pinnedDomainSslCertificate = false;
+                pinnedDomainSslIssuedToCNameString = "";
+                pinnedDomainSslIssuedToONameString = "";
+                pinnedDomainSslIssuedToUNameString = "";
+                pinnedDomainSslIssuedByCNameString = "";
+                pinnedDomainSslIssuedByONameString = "";
+                pinnedDomainSslIssuedByUNameString = "";
+                pinnedDomainSslStartDate = null;
+                pinnedDomainSslEndDate = null;
 
                 // Set third-party cookies status if API >= 21.
                 if (Build.VERSION.SDK_INT >= 21) {

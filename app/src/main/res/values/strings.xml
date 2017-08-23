@@ -88,6 +88,12 @@
     <string name="url">URL</string>
     <string name="url_label">URL:</string>
 
+    <!-- Pinned SSL Certificate Mismatch. -->
+    <string name="update_ssl">Update SSL</string>
+    <string name="ssl_certificate_mismatch">SSL Certificate Mismatch</string>
+    <string name="current_ssl">Current SSL</string>
+    <string name="pinned_ssl">Pinned SSL</string>
+
     <!-- MainWebViewActivity Navigation Drawer. -->
     <string name="navigation_drawer">Navigation Drawer</string>
     <string name="navigation">Navigation</string>
@@ -201,6 +207,10 @@
         <item>Images enabled</item>
         <item>Images disabled</item>
     </string-array>
+    <string name="pinned_ssl_certificate">Pinned SSL certificate</string>
+    <string name="saved_ssl_certificate">Saved SSL certificate</string>
+    <string name="current_website_ssl_certificate">Current website SSL certificate</string>
+    <string name="load_an_encrypted_website">Load an encrypted website before opening Domain Settings to populate the current website SSL certificate.</string>
 
     <!-- Guide. -->
     <string name="privacy_browser_guide">Privacy Browser Guide</string>

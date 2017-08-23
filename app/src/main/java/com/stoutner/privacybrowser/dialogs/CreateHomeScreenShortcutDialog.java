@@ -86,13 +86,8 @@ public class CreateHomeScreenShortcutDialog extends AppCompatDialogFragment {
         // Set the view.  The parent view is `null` because it will be assigned by `AlertDialog`.
         dialogBuilder.setView(layoutInflater.inflate(R.layout.create_home_screen_shortcut_dialog, null));
 
-        // Set an `onClick` listener on the negative button.
-        dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Do nothing if `Cancel` is clicked.
-            }
-        });
+        // Setup the negative button.  Using `null` closes the dialog without doing anything else.
+        dialogBuilder.setNegativeButton(R.string.cancel, null);
 
         // Set an `onClick` listener on the positive button.
         dialogBuilder.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {

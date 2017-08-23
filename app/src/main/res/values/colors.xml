@@ -32,6 +32,7 @@
     <color name="blue_500">#FF2196F3</color>
     <color name="blue_600">#FF1E88E5</color>
     <color name="blue_700">#FF1976D2</color>
+    <color name="blue_700_50">#881976D2</color>
     <color name="blue_800">#FF1565C0</color>
     <color name="blue_900">#FF0D47A1</color>
     <color name="blue_1000">#FF082B61</color>

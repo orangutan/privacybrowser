@@ -77,6 +77,7 @@
       <w>panopticlick</w>
       <w>parameterized</w>
       <w>parentfolder</w>
+      <w>pinnedsslcertificate</w>
       <w>programatically</w>
       <w>proxying</w>
       <w>qwant</w>
@@ -96,6 +97,14 @@
       <w>snackbar</w>
       <w>snackbars</w>
       <w>softkeyboard</w>
+      <w>sslenddate</w>
+      <w>sslissuedbycommonname</w>
+      <w>sslissuedbyorganization</w>
+      <w>sslissuedbyorganizationalunit</w>
+      <w>sslissuedtocommonname</w>
+      <w>sslissuedtoorganization</w>
+      <w>sslissuedtoorganizationalunit</w>
+      <w>sslstartdate</w>
       <w>subdomain</w>
       <w>subdomains</w>
       <w>subfolders</w>
@@ -107,6 +116,7 @@
       <w>uidh</w>
       <w>uids</w>
       <w>uname</w>
+      <w>uncheck</w>
       <w>useragent</w>
       <w>useragentname</w>
       <w>useragentstring</w>

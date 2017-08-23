@@ -138,11 +138,19 @@ public class SslCertificateErrorDialog extends AppCompatDialogFragment {
         // Use `AlertDialog.Builder` to create the `AlertDialog`.
         AlertDialog.Builder dialogBuilder;
 
-        // Set the style according to the theme.
+        // Set the style and icon according to the theme.
         if (MainWebViewActivity.darkTheme) {
+            // Set the style.
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
+
+            // Set the icon.
+            dialogBuilder.setIcon(R.drawable.ssl_certificate_enabled_dark);
         } else {
+            // Set the style.
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
+
+            // Set the icon.
+            dialogBuilder.setIcon(R.drawable.ssl_certificate_enabled_light);
         }
 
         // Set the title.
