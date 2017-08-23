@@ -182,7 +182,6 @@
     <string name="overview">Übersicht</string>
     <string name="local_storage">Lokale Speicherung</string>
     <string name="tracking_ids">Verolgungs-IDs</string>
-    <string name="planned_features">Geplante Features</string>
 
     <!-- Preferences. -->
     <string name="privacy">Privatsphäre</string>

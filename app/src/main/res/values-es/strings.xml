@@ -84,6 +84,12 @@
     <string name="url">URL</string>
     <string name="url_label">URL:</string>
 
+    <!-- Pinned SSL Certificate Mismatch. -->
+    <string name="update_ssl">Actualizar SSL</string>
+    <string name="ssl_certificate_mismatch">No coincide el certificado SSL</string>
+    <string name="current_ssl">SSL actual</string>
+    <string name="pinned_ssl">SSL fijado</string>
+
     <!-- MainWebViewActivity Navigation Drawer. -->
     <string name="navigation_drawer">Caja de navegación</string>
     <string name="navigation">Navegación</string>
@@ -196,13 +202,16 @@
         <item>Imágenes habilitadas</item>
         <item>Imágenes deshabilitadas</item>
     </string-array>
+    <string name="pinned_ssl_certificate">Certificado SSL fijado</string>
+    <string name="saved_ssl_certificate">Certificado SSL guardado</string>
+    <string name="current_website_ssl_certificate">Certificado SSL actual de la web</string>
+    <string name="load_an_encrypted_website">Cargar una página web cifrada antes de abrir la configuración de dominio para rellenar el certificado SSL de la página web actual.</string>
 
     <!-- Guide. -->
     <string name="privacy_browser_guide">Guía de Navegador Privado</string>
     <string name="overview">Visión general</string>
     <string name="local_storage">Almacenamiento local</string>
     <string name="tracking_ids">Rastreo de IDs</string>
-    <string name="planned_features">Funciones planeadas</string>
 
     <!-- Preferences. -->
     <string name="privacy">Privacidad</string>
@@ -300,7 +309,7 @@
     <string name="clear_form_data_preference">Borrar datos de formulario</string>
     <string name="clear_form_data_summary">Borra los datos de formulario.</string>
     <string name="clear_cache">Borrar caché</string>
-    <string name="clear_cache_summary">Borra la caché de WebView’.</string>
+    <string name="clear_cache_summary">Borra la caché de WebView.</string>
     <string name="general">General</string>
         <string name="homepage">Página de inicio</string>
         <string name="default_font_size">Tamaño de fuente por defecto</string>

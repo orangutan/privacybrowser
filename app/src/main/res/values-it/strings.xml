@@ -204,7 +204,6 @@
     <string name="overview">Descrizione</string>
     <string name="local_storage">Archiviazione Locale</string>
     <string name="tracking_ids">Tracciamento utenti</string>
-    <string name="planned_features">Funzionalità future</string>
 
     <!-- Preferences. -->
     <string name="privacy">Privacy</string>

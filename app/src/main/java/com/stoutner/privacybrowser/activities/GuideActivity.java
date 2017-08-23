@@ -99,9 +99,12 @@ public class GuideActivity extends AppCompatActivity {
                     return getString(R.string.domain_settings);
 
                 case 5:
-                    return getString(R.string.tor);
+                    return getString(R.string.ssl_certificate_pinning);
 
                 case 6:
+                    return getString(R.string.tor);
+
+                case 7:
                     return getString(R.string.tracking_ids);
 
                 default:
