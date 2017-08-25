@@ -51,7 +51,7 @@ import java.util.ArrayList;
 public class UrlHistoryDialog extends AppCompatDialogFragment{
 
     // `historyArrayList`  and `currentPageId` pass information from `onCreate()` to `onCreateDialog()`.
-    private ArrayList<History> historyArrayList = new ArrayList<>();
+    private final ArrayList<History> historyArrayList = new ArrayList<>();
     private int currentPageId;
 
     public static UrlHistoryDialog loadBackForwardList(Context context, WebBackForwardList webBackForwardList) {

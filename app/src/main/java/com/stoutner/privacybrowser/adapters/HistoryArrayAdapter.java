@@ -37,7 +37,7 @@ import java.util.ArrayList;
 public class HistoryArrayAdapter extends ArrayAdapter<History> {
 
     // `currentPage` is used in `HistoryArrayAdapter` and `getView()`.
-    private int currentPage;
+    private final int currentPage;
 
     public HistoryArrayAdapter(Context context, ArrayList<History> historyArrayList, int currentPageId) {
         // We need to call `super` from the base `ArrayAdapter`.  `0` is the `textViewResourceId`.

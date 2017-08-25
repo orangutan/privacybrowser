@@ -153,7 +153,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
     // The pinned domain SSL Certificate variables are public static so they can be accessed from `PinnedSslCertificateMismatchDialog`.  They are also used in `onCreate()` and `applyDomainSettings()`.
     public static int domainSettingsDatabaseId;
-    public static boolean pinnedDomainSslCertificate;
     public static String pinnedDomainSslIssuedToCNameString;
     public static String pinnedDomainSslIssuedToONameString;
     public static String pinnedDomainSslIssuedToUNameString;
@@ -312,6 +311,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
     // `urlIsLoading` is used in `onCreate()`, `loadUrl()`, and `applyDomainSettings()`.
     private boolean urlIsLoading;
+
+    // `pinnedDomainSslCertificate` is used in `onCreate()` and `applyDomainSettings()`.
+    private boolean pinnedDomainSslCertificate;
 
 
     @Override

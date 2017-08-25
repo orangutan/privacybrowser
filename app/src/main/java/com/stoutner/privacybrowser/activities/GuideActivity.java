@@ -76,7 +76,7 @@ public class GuideActivity extends AppCompatActivity {
         @Override
         // Get the count of the number of tabs.
         public int getCount() {
-            return 7;
+            return 8;
         }
 
         @Override

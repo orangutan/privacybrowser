@@ -24,8 +24,8 @@ import android.graphics.Bitmap;
 // Create a `History` object.
 public class History {
     // Create the `History` package-local variables.
-    public Bitmap entryFavoriteIcon;
-    public String entryUrl;
+    public final Bitmap entryFavoriteIcon;
+    public final String entryUrl;
 
     public History(Bitmap entryFavoriteIcon, String entryUrl){
         // Populate the package-local variables.

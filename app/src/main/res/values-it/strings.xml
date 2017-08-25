@@ -190,7 +190,6 @@
     <string name="domain_name_already_exists">Il nome del Dominio è già esistente</string>
     <string name="add">Aggiungi</string>
     <string name="domain_name">Nome del Dominio</string>
-    <string name="domain_settings_saved">Impostazioni Domini Salvate</string>
     <string name="domain_deleted">Dominio Eliminato</string>
     <string name="domain_name_instructions">è possibile anteporre *. a un dominio per includere tutti i sottodomini (es. *.stoutner.com)</string>
     <string-array name="display_website_images_array">
