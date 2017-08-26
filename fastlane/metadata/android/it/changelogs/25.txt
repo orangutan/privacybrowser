@@ -1,0 +1,11 @@
+• Add SSL certificate pinning to domain settings.
+• Add search.me to the list of search engines.
+• Update the default homepage to work with both JavaScript enabled or disabled.
+• Fix a bug that caused the website title to be lost on rotate.
+• Ghost the “Clear DOM Storage” options menu item if there is nothing to delete.
+• Use non-bolded red text to indicate unencrypted websites.
+• Fix a bug that sometimes caused custom domain user agents to fail.
+• Fix a bug that caused website modifications (like the sorting of a list) to be lost if Privacy Browser was moved to the background.
+• Many small improvements were made to the Domains activity.
+• Updated Italian translation provided by Francesco Buratti.
+• Updated Spanish translation provided by Jose A. León Becerra.

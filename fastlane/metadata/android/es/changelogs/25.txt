@@ -1,0 +1,11 @@
+• Añadir fijación de certificado SSL a la configuración de dominios.
+• Añadir searx.me a la lista de motores de búsqueda.
+• Actualizar la página de inicio por defecto para funcionar tanto con Javascript activado como desactivado.
+• Arreglar un error que provocaba que el título de la página web se perdiera al rotar.
+• Ocultar el elemento del menú de opciones “Borrar almacenamiento DOM” si no hay nada que borrar.
+• Usar texto rojo sin negrita para indicar páginas web no cifradas.
+• Arreglar un error que algunas veces provocaba que fallaran los agentes de usuario de un dominio personalizado.
+• Arreglar un error que provocaba que la modificación de una página web (como la clasificación de una lista) se perdiera si Navegador Privado se llevaba a segundo plano.
+• Muchas pequeñas mejoras se han hecho a la actividad de los Dominios.
+• Traducción al español actualizada proporcionada por Jose A. León Becerra.
+• Traducción al italiano actualizada proporcionada por Francesco Buratti.
