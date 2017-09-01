@@ -1135,7 +1135,7 @@ public class DomainSettingsFragment extends Fragment {
                 // Setup a copy of `certificateCommonName` to test subdomains.
                 String certificateCommonNameSubdomain = certificateCommonName;
 
-                // Check all the subdomains in `certificateCommonNameSubdomains` against `baseDomainName`.
+                // Check all the subdomains in `certificateCommonNameSubdomain` against `baseDomainName`.
                 while (!domainNamesMatch && certificateCommonNameSubdomain.contains(".")) {  // Stop checking if we know that `domainNamesMatch` is `true` or if we run out of  `.`.
                     // Test the `certificateCommonNameSubdomain` against `baseDomainName`.
                     if (certificateCommonNameSubdomain.equals(baseDomainName)) {

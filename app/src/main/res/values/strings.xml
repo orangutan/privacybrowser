@@ -67,6 +67,8 @@
     <string name="no_ssl_certificate">Communication with this website is not encrypted. This allows third parties to intercept information, track your browsing, and inject malicious content.</string>
     <string name="ssl_certificate">SSL Certificate</string>
     <string name="close">Close</string>
+    <string name="domain">Domain</string>
+    <string name="domain_label">Domain:</string>
     <string name="issued_to">Issued To</string>
     <string name="issued_by">Issued By</string>
     <string name="common_name">Common Name (CN):</string>

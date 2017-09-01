@@ -29,10 +29,26 @@
         android:padding="10dp"
         android:orientation="vertical" >
 
+        <!-- Domain. -->
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/domain"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textColor="?attr/sslTitle" />
+
+        <TextView
+            android:id="@+id/domain"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
         <!-- Issued To. -->
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_marginTop="15dp"
             android:text="@string/issued_to"
             android:textAllCaps="true"
             android:textStyle="bold"

@@ -25,6 +25,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.net.http.SslCertificate;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
@@ -93,10 +94,11 @@ public class ViewSslCertificateDialog extends DialogFragment {
             // Create an `AlertDialog` from the `AlertDialog.Builder`
             final AlertDialog alertDialog = dialogBuilder.create();
 
-            // We need to show the `AlertDialog` before we can modify items in the layout.
+            // The `AlertDialog` must be shown before items in the layout can be modified.
             alertDialog.show();
 
             // Get handles for the `TextViews`.
+            TextView domainTextView = (TextView) alertDialog.findViewById(R.id.domain);
             TextView issuedToCNameTextView = (TextView) alertDialog.findViewById(R.id.issued_to_cname);
             TextView issuedToONameTextView = (TextView) alertDialog.findViewById(R.id.issued_to_oname);
             TextView issuedToUNameTextView = (TextView) alertDialog.findViewById(R.id.issued_to_uname);
@@ -107,11 +109,18 @@ public class ViewSslCertificateDialog extends DialogFragment {
             TextView endDateTextView = (TextView) alertDialog.findViewById(R.id.end_date);
 
             // Setup the labels.
+            String domainLabel = getString(R.string.domain_label) + "  ";
             String cNameLabel = getString(R.string.common_name) + "  ";
             String oNameLabel = getString(R.string.organization) + "  ";
             String uNameLabel = getString(R.string.organizational_unit) + "  ";
             String startDateLabel = getString(R.string.start_date) + "  ";
             String endDateLabel = getString(R.string.end_date) + "  ";
+
+            // Parse `formattedUrlString` to a `URI`.
+            Uri uri = Uri.parse(MainWebViewActivity.formattedUrlString);
+
+            // Extract the domain name from `uri`.
+            String domainString = uri.getHost();
 
             // Get the SSL certificate.
             SslCertificate sslCertificate = MainWebViewActivity.sslCertificate;
@@ -127,6 +136,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
             Date endDate = sslCertificate.getValidNotAfterDate();
 
             // Create a `SpannableStringBuilder` for each `TextView` that needs multiple colors of text.
+            SpannableStringBuilder domainStringBuilder = new SpannableStringBuilder(domainLabel + domainString);
             SpannableStringBuilder issuedToCNameStringBuilder = new SpannableStringBuilder(cNameLabel + issuedToCNameString);
             SpannableStringBuilder issuedToONameStringBuilder = new SpannableStringBuilder(oNameLabel + issuedToONameString);
             SpannableStringBuilder issuedToUNameStringBuilder = new SpannableStringBuilder(uNameLabel + issuedToUNameString);
@@ -151,8 +161,49 @@ public class ViewSslCertificateDialog extends DialogFragment {
                 blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
             }
 
-            // Setup the spans to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
-            issuedToCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), issuedToCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            // Formet the `domainString` and `issuedToCName` colors.
+            if (domainString.equals(issuedToCNameString)) {  // `domainString` and `issuedToCNameString` match.
+                // Set the strings to be blue.
+                domainStringBuilder.setSpan(blueColorSpan, domainLabel.length(), domainStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                issuedToCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), issuedToCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            } else if(issuedToCNameString.startsWith("*.")){  // `issuedToCNameString` begins with a wildcard.
+                // Remove the initial `*.`.
+                String baseCertificateDomain = issuedToCNameString.substring(2);
+
+                // Setup a copy of `domainString` to test subdomains.
+                String domainStringSubdomain = domainString;
+
+                // Initialize `domainNamesMatch`.
+                boolean domainNamesMatch = false;
+
+                // Check all the subdomains in `domainStringSubdomain` against `baseCertificateDomain`.
+                while (!domainNamesMatch && domainStringSubdomain.contains(".")) {  // Stop checking if we know that `domainNamesMatch` is `true` or if we run out of  `.`.
+                    // Test the `domainStringSubdomain` against `baseCertificateDomain`.
+                    if (domainStringSubdomain.equals(baseCertificateDomain)) {
+                        domainNamesMatch = true;
+                    }
+
+                    // Strip out the lowest subdomain of `certificateCommonNameSubdomain`.
+                    domainStringSubdomain = domainStringSubdomain.substring(domainStringSubdomain.indexOf(".") + 1);
+                }
+
+                // Format the domain and issued to Common Name according to `domainNamesMatch`.
+                if (domainNamesMatch) {  // `domainString` is a subdomain of the wildcard `issuedToCNameString`.
+                    // Set the strings to be blue.
+                    domainStringBuilder.setSpan(blueColorSpan, domainLabel.length(), domainStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    issuedToCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), issuedToCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                } else {  // `domainString` is not a subdomain of the wildcard `issuedToCNameString`.
+                    // Set the string to be red.
+                    domainStringBuilder.setSpan(redColorSpan, domainLabel.length(), domainStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    issuedToCNameStringBuilder.setSpan(redColorSpan, cNameLabel.length(), issuedToCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                }
+            } else {  // The strings do not match and `issuedToCNameString` does not begin with a wildcard.
+                // Set the strings to be red.
+                domainStringBuilder.setSpan(redColorSpan, domainLabel.length(), domainStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                issuedToCNameStringBuilder.setSpan(redColorSpan, cNameLabel.length(), issuedToCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            }
+
+            // Setup the issued to and issued by spans to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
             issuedToONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length(), issuedToONameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             issuedToUNameStringBuilder.setSpan(blueColorSpan, uNameLabel.length(), issuedToUNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             issuedByCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), issuedByCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
@@ -176,6 +227,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
             }
 
             // Display the strings.
+            domainTextView.setText(domainStringBuilder);
             issuedToCNameTextView.setText(issuedToCNameStringBuilder);
             issuedToONameTextView.setText(issuedToONameStringBuilder);
             issuedToUNameTextView.setText(issuedToUNameStringBuilder);
