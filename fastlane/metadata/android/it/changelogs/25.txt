@@ -1,5 +1,5 @@
 • Add SSL certificate pinning to domain settings.
-• Add search.me to the list of search engines.
+• Add searx.me to the list of search engines.
 • Update the default homepage to work with both JavaScript enabled or disabled.
 • Fix a bug that caused the website title to be lost on rotate.
 • Ghost the “Clear DOM Storage” options menu item if there is nothing to delete.

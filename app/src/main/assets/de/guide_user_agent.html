@@ -80,6 +80,8 @@
             besser auf modernen Smartphones läuft als die mobile Seite. Für diesen Zweck funktioniert PrivacyBrowser/1.0 sehr gut, da Webserver für gewöhnlich
             die Desktopversion als Standardversion anzeigen, wenn sie keinen mobilen Browser als User Agent erhalten.</p>
 
-        <p>Androids WebView erlaubt keinen leeren User Agent. Wenn das der Fall ist, wird der Standard-User Agent an den Server gesandt.</p>
+        <p>Some websites <a href="https://www.stoutner.com/user-agent-problems/">do not function correctly</a> if they do not recognize the user agent.
+            Using domain settings to set the user agent to <strong>WebView Default</strong>, or another user agent that is commonly recognized, usually resolves the problem.
+            Androids WebView erlaubt keinen leeren User Agent. Wenn das der Fall ist, wird der Standard-User Agent an den Server gesandt.</p>
     </body>
 </html>

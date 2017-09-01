@@ -1021,6 +1021,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Set `mainWebView` to load in overview mode (zoomed out to the maximum width).
         mainWebView.getSettings().setLoadWithOverviewMode(true);
 
+        // Explicitly disable geolocation.
+        mainWebView.getSettings().setGeolocationEnabled(false);
+
         // Initialize cookieManager.
         cookieManager = CookieManager.getInstance();
 

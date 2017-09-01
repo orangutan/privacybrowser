@@ -63,7 +63,7 @@
             If the user agent is combined with another piece of non-unique identifying information, often it results in a unique fingerprint.
             The Electronic Frontier Foundation created a tool called <a href="https://panopticlick.eff.org/">Panopticlick</a> to demonstrate how much information can be gleaned from these sources.
             If this test is run with JavaScript enabled the amount of information that is disclosed increases greatly.
-            <a href="https://www.browserleaks.com">Browser Leaks</a> and <a href="https://amiunique.org/">Am I Unique</a> are also good sources of information.</p>
+            <a href="https://www.browserleaks.com">Browser Leaks</a> and <a href="https://amiunique.org/">Am I Unique</a> are also good sources of information on this topic.</p>
 
         <img class="center" src="images/panopticlick.png">
 
@@ -72,6 +72,8 @@
             Firefox or Chrome are the most common user agents, but they auto-update and their version numbers change so quickly that it is likely the user agents included in Privacy Browser
             will often be out of step with the majority of user agents in the server logs.</p>
 
-        <p>Android’s WebView does not allow the user agent to be blank. If it is, WebView simply sends the default user agent to the server.</p>
+        <p>Some websites <a href="https://www.stoutner.com/user-agent-problems/">do not function correctly</a> if they do not recognize the user agent.
+            Using domain settings to set the user agent to <strong>WebView Default</strong>, or another user agent that is commonly recognized, usually resolves the problem.
+            Android’s WebView does not allow the user agent to be blank. If it is, WebView simply sends the default user agent to the server.</p>
     </body>
 </html>
