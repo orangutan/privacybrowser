@@ -74,6 +74,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.CookieManager;
 import android.webkit.DownloadListener;
+import android.webkit.HttpAuthHandler;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
@@ -95,6 +96,7 @@ import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.dialogs.CreateHomeScreenShortcutDialog;
 import com.stoutner.privacybrowser.dialogs.DownloadImageDialog;
+import com.stoutner.privacybrowser.dialogs.HttpAuthenticationDialog;
 import com.stoutner.privacybrowser.dialogs.PinnedSslCertificateMismatchDialog;
 import com.stoutner.privacybrowser.dialogs.UrlHistoryDialog;
 import com.stoutner.privacybrowser.dialogs.ViewSslCertificateDialog;
@@ -121,11 +123,12 @@ import java.util.Set;
 
 // We need to use AppCompatActivity from android.support.v7.app.AppCompatActivity to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CreateHomeScreenShortcutDialog.CreateHomeScreenSchortcutListener,
-        PinnedSslCertificateMismatchDialog.PinnedSslCertificateMismatchListener, SslCertificateErrorDialog.SslCertificateErrorListener, DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, UrlHistoryDialog.UrlHistoryListener {
+        HttpAuthenticationDialog.HttpAuthenticationListener, PinnedSslCertificateMismatchDialog.PinnedSslCertificateMismatchListener, SslCertificateErrorDialog.SslCertificateErrorListener, DownloadFileDialog.DownloadFileListener,
+        DownloadImageDialog.DownloadImageListener, UrlHistoryDialog.UrlHistoryListener {
 
     // `darkTheme` is public static so it can be accessed from `AboutActivity`, `GuideActivity`, `AddDomainDialog`, `SettingsActivity`, `DomainsActivity`, `DomainsListFragment`, `BookmarksActivity`, `BookmarksDatabaseViewActivity`,
-    // `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, `DownloadFileDialog`, `DownloadImageDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`, `MoveToFolderDialog`, `SslCertificateErrorDialog`, `UrlHistoryDialog`, `ViewSslCertificateDialog`,
-    // `CreateHomeScreenShortcutDialog`, and `OrbotProxyHelper`. It is also used in `onCreate()`, `applyAppSettings()`, `applyDomainSettings()`, and `updatePrivacyIcons()`.
+    // `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, `DownloadFileDialog`, `DownloadImageDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`, `HttpAuthenticationDialog`, `MoveToFolderDialog`, `SslCertificateErrorDialog`, `UrlHistoryDialog`,
+    // `ViewSslCertificateDialog`, `CreateHomeScreenShortcutDialog`, and `OrbotProxyHelper`. It is also used in `onCreate()`, `applyAppSettings()`, `applyDomainSettings()`, and `updatePrivacyIcons()`.
     public static boolean darkTheme;
 
     // `favoriteIconBitmap` is public static so it can be accessed from `CreateHomeScreenShortcutDialog`, `BookmarksActivity`, `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`,
@@ -302,6 +305,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
     // `sslErrorHandler` is used in `onCreate()`, `onSslErrorCancel()`, and `onSslErrorProceed`.
     private SslErrorHandler sslErrorHandler;
+
+    // `httpAuthHandler` is used in `onCreate()`, `onHttpAuthenticationCancel()`, and `onHttpAuthenticationProceed()`.
+    private static HttpAuthHandler httpAuthHandler;
 
     // `inputMethodManager` is used in `onOptionsItemSelected()`, `loadUrlFromTextBox()`, and `closeFindOnPage()`.
     private InputMethodManager inputMethodManager;
@@ -729,6 +735,17 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 }
             }
 
+            // Handle HTTP authentication requests.
+            @Override
+            public void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm) {
+                // Store `handler` so it can be accessed from `onHttpAuthenticationCancel()` and `onHttpAuthenticationProceed()`.
+                httpAuthHandler = handler;
+
+                // Display the HTTP authentication dialog.
+                AppCompatDialogFragment httpAuthenticationDialogFragment = HttpAuthenticationDialog.displayDialog(host, realm);
+                httpAuthenticationDialogFragment.show(getSupportFragmentManager(), getString(R.string.http_authentication));
+            }
+
             // Update the URL in urlTextBox when the page starts to load.
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -867,7 +884,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                                 !currentWebsiteSslStartDateString.equals(pinnedDomainSslStartDateString) || !currentWebsiteSslEndDateString.equals(pinnedDomainSslEndDateString)) {  // The pinned SSL certificate doesn't match the current domain certificate.
                             //Display the pinned SSL certificate mismatch `AlertDialog`.
                             AppCompatDialogFragment pinnedSslCertificateMismatchDialogFragment = new PinnedSslCertificateMismatchDialog();
-                            pinnedSslCertificateMismatchDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.ssl_certificate_mismatch));
+                            pinnedSslCertificateMismatchDialogFragment.show(getSupportFragmentManager(), getString(R.string.ssl_certificate_mismatch));
                         }
                     }
                 }
@@ -902,7 +919,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
                     // Display the SSL error `AlertDialog`.
                     AppCompatDialogFragment sslCertificateErrorDialogFragment = SslCertificateErrorDialog.displayDialog(error);
-                    sslCertificateErrorDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.ssl_certificate_error));
+                    sslCertificateErrorDialogFragment.show(getSupportFragmentManager(), getString(R.string.ssl_certificate_error));
                 }
             }
         });
@@ -1005,7 +1022,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
                 // Show the `DownloadFileDialog` `AlertDialog` and name this instance `@string/download`.
                 AppCompatDialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(url, contentDisposition, contentLength);
-                downloadFileDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.download));
+                downloadFileDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
             }
         });
 
@@ -1260,47 +1277,47 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Prepare the font size title and current size menu item.
         switch (fontSize) {
             case 25:
-                fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.twenty_five_percent);
+                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.twenty_five_percent);
                 selectedFontSizeMenuItem = menu.findItem(R.id.font_size_twenty_five_percent);
                 break;
 
             case 50:
-                fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.fifty_percent);
+                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.fifty_percent);
                 selectedFontSizeMenuItem = menu.findItem(R.id.font_size_fifty_percent);
                 break;
 
             case 75:
-                fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.seventy_five_percent);
+                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.seventy_five_percent);
                 selectedFontSizeMenuItem = menu.findItem(R.id.font_size_seventy_five_percent);
                 break;
 
             case 100:
-                fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.one_hundred_percent);
+                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.one_hundred_percent);
                 selectedFontSizeMenuItem = menu.findItem(R.id.font_size_one_hundred_percent);
                 break;
 
             case 125:
-                fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.one_hundred_twenty_five_percent);
+                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.one_hundred_twenty_five_percent);
                 selectedFontSizeMenuItem = menu.findItem(R.id.font_size_one_hundred_twenty_five_percent);
                 break;
 
             case 150:
-                fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.one_hundred_fifty_percent);
+                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.one_hundred_fifty_percent);
                 selectedFontSizeMenuItem = menu.findItem(R.id.font_size_one_hundred_fifty_percent);
                 break;
 
             case 175:
-                fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.one_hundred_seventy_five_percent);
+                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.one_hundred_seventy_five_percent);
                 selectedFontSizeMenuItem = menu.findItem(R.id.font_size_one_hundred_seventy_five_percent);
                 break;
 
             case 200:
-                fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.two_hundred_percent);
+                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.two_hundred_percent);
                 selectedFontSizeMenuItem = menu.findItem(R.id.font_size_two_hundred_percent);
                 break;
 
             default:
-                fontSizeTitle = getResources().getString(R.string.font_size) + " - " + getResources().getString(R.string.one_hundred_percent);
+                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.one_hundred_percent);
                 selectedFontSizeMenuItem = menu.findItem(R.id.font_size_one_hundred_percent);
                 break;
         }
@@ -1631,13 +1648,13 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 PrintDocumentAdapter printDocumentAdapter = mainWebView.createPrintDocumentAdapter();
 
                 // Print the document.  The print attributes are `null`.
-                printManager.print(getResources().getString(R.string.privacy_browser_web_page), printDocumentAdapter, null);
+                printManager.print(getString(R.string.privacy_browser_web_page), printDocumentAdapter, null);
                 return true;
 
             case R.id.add_to_homescreen:
                 // Show the `CreateHomeScreenShortcutDialog` `AlertDialog` and name this instance `R.string.create_shortcut`.
                 AppCompatDialogFragment createHomeScreenShortcutDialogFragment = new CreateHomeScreenShortcutDialog();
-                createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.create_shortcut));
+                createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getString(R.string.create_shortcut));
 
                 //Everything else will be handled by `CreateHomeScreenShortcutDialog` and the associated listener below.
                 return true;
@@ -1689,7 +1706,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
                 // Show the `UrlHistoryDialog` `AlertDialog` and name this instance `R.string.history`.  `this` is the `Context`.
                 AppCompatDialogFragment urlHistoryDialogFragment = UrlHistoryDialog.loadBackForwardList(this, webBackForwardList);
-                urlHistoryDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.history));
+                urlHistoryDialogFragment.show(getSupportFragmentManager(), getString(R.string.history));
                 break;
 
             case R.id.bookmarks:
@@ -1921,7 +1938,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         // Save the link URL in a `ClipData`.
-                        ClipData srcAnchorTypeClipData = ClipData.newPlainText(getResources().getString(R.string.url), linkUrl);
+                        ClipData srcAnchorTypeClipData = ClipData.newPlainText(getString(R.string.url), linkUrl);
 
                         // Set the `ClipData` as the clipboard's primary clip.
                         clipboardManager.setPrimaryClip(srcAnchorTypeClipData);
@@ -1964,7 +1981,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         // Save the email address in a `ClipData`.
-                        ClipData srcEmailTypeClipData = ClipData.newPlainText(getResources().getString(R.string.email_address), linkUrl);
+                        ClipData srcEmailTypeClipData = ClipData.newPlainText(getString(R.string.email_address), linkUrl);
 
                         // Set the `ClipData` as the clipboard's primary clip.
                         clipboardManager.setPrimaryClip(srcEmailTypeClipData);
@@ -1999,7 +2016,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     public boolean onMenuItemClick(MenuItem item) {
                         // Show the `DownloadImageDialog` `AlertDialog` and name this instance `@string/download`.
                         AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
-                        downloadImageDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.download));
+                        downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
                         return false;
                     }
                 });
@@ -2009,7 +2026,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         // Save the image URL in a `ClipData`.
-                        ClipData srcImageTypeClipData = ClipData.newPlainText(getResources().getString(R.string.url), imageUrl);
+                        ClipData srcImageTypeClipData = ClipData.newPlainText(getString(R.string.url), imageUrl);
 
                         // Set the `ClipData` as the clipboard's primary clip.
                         clipboardManager.setPrimaryClip(srcImageTypeClipData);
@@ -2045,7 +2062,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     public boolean onMenuItemClick(MenuItem item) {
                         // Show the `DownloadImageDialog` `AlertDialog` and name this instance `@string/download`.
                         AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
-                        downloadImageDialogFragment.show(getSupportFragmentManager(), getResources().getString(R.string.download));
+                        downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
                         return false;
                     }
                 });
@@ -2055,7 +2072,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         // Save the image URL in a `ClipData`.
-                        ClipData srcImageAnchorTypeClipData = ClipData.newPlainText(getResources().getString(R.string.url), imageUrl);
+                        ClipData srcImageAnchorTypeClipData = ClipData.newPlainText(getString(R.string.url), imageUrl);
 
                         // Set the `ClipData` as the clipboard's primary clip.
                         clipboardManager.setPrimaryClip(srcImageAnchorTypeClipData);
@@ -2183,10 +2200,26 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         }
     }
 
+    @Override
+    public void onHttpAuthenticationCancel() {
+        // Cancel the `HttpAuthHandler`.
+        httpAuthHandler.cancel();
+    }
+
+    @Override
+    public void onHttpAuthenticationProceed(AppCompatDialogFragment dialogFragment) {
+        // Get handles for the `EditTexts`.
+        EditText usernameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.http_authentication_username);
+        EditText passwordEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.http_authentication_password);
+
+        // Proceed with the HTTP authentication.
+        httpAuthHandler.proceed(usernameEditText.getText().toString(), passwordEditText.getText().toString());
+    }
+
     public void viewSslCertificate(View view) {
         // Show the `ViewSslCertificateDialog` `AlertDialog` and name this instance `@string/view_ssl_certificate`.
         DialogFragment viewSslCertificateDialogFragment = new ViewSslCertificateDialog();
-        viewSslCertificateDialogFragment.show(getFragmentManager(), getResources().getString(R.string.view_ssl_certificate));
+        viewSslCertificateDialogFragment.show(getFragmentManager(), getString(R.string.view_ssl_certificate));
     }
 
     @Override

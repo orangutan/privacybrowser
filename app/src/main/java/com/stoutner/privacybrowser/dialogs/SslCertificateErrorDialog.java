@@ -28,7 +28,7 @@ import android.net.http.SslCertificate;
 import android.net.http.SslError;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-// We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <= 22.
+// `AppCompatDialogFragment` is used instead of `DialogFragment` to avoid an error on API <=22.
 import android.support.v7.app.AppCompatDialogFragment;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -44,6 +44,7 @@ import java.util.Date;
 
 public class SslCertificateErrorDialog extends AppCompatDialogFragment {
 
+    // The private variables are used in `onCreate()` and `onCreateDialog()`.
     private int primaryErrorInt;
     private String urlWithError;
     private String issuedToCName;

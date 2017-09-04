@@ -96,7 +96,7 @@ public class CreateBookmarkDialog extends AppCompatDialogFragment {
         dialogBuilder.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // Return the `DialogFragment` to the parent activity on create.
+                // Return the `DialogFragment` to the parent activity.
                 createBookmarkListener.onCreateBookmark(CreateBookmarkDialog.this);
             }
         });
@@ -111,7 +111,7 @@ public class CreateBookmarkDialog extends AppCompatDialogFragment {
         // Show the keyboard when the `AlertDialog` is displayed on the screen.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
-        // We need to show the `AlertDialog` before we can call `setOnKeyListener()` below.
+        // The `AlertDialog` needs to be shown before `setOnKeyListener()` can be called.
         alertDialog.show();
 
         // Get a handle for `create_bookmark_name_edittext`.
@@ -127,8 +127,10 @@ public class CreateBookmarkDialog extends AppCompatDialogFragment {
                 if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)) {
                     // Trigger `createBookmarkListener` and return the `DialogFragment` to the parent activity.
                     createBookmarkListener.onCreateBookmark(CreateBookmarkDialog.this);
+
                     // Manually dismiss the `AlertDialog`.
                     alertDialog.dismiss();
+
                     // Consume the event.
                     return true;
                 } else {  // If any other key was pressed, do not consume the event.
@@ -148,8 +150,10 @@ public class CreateBookmarkDialog extends AppCompatDialogFragment {
                 if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)) {
                     // Trigger `createBookmarkListener` and return the DialogFragment to the parent activity.
                     createBookmarkListener.onCreateBookmark(CreateBookmarkDialog.this);
+
                     // Manually dismiss the `AlertDialog`.
                     alertDialog.dismiss();
+
                     // Consume the event.
                     return true;
                 } else { // If any other key was pressed, do not consume the event.

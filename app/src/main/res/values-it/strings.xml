@@ -65,6 +65,8 @@
     <string name="no_ssl_certificate">La comunicazione con questo sito web non è criptata. Questo consente a terze parti la possibilità di intercettare le informazioni scambiate, di tracciare la navigazione e di inviare contenuto maligno.</string>
     <string name="ssl_certificate">Certificato SSL</string>
     <string name="close">Chiudi</string>
+    <string name="domain">Dominio</string>
+    <string name="domain_label">Dominio:</string>
     <string name="issued_to">Emesso a</string>
     <string name="issued_by">Emesso da</string>
     <string name="common_name">Nome comune (NC):</string>

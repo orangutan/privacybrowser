@@ -96,6 +96,12 @@
     <string name="current_ssl">Current SSL</string>
     <string name="pinned_ssl">Pinned SSL</string>
 
+    <!-- HTTP Authentication. -->
+    <string name="http_authentication">HTTP Authentication</string>
+    <string name="host">Host:</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+
     <!-- MainWebViewActivity Navigation Drawer. -->
     <string name="navigation_drawer">Navigation Drawer</string>
     <string name="navigation">Navigation</string>

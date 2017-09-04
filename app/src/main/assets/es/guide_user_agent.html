@@ -75,6 +75,8 @@
             Firefox o Chrome son los usuarios de agente más comunes, pero se actualizan automáticamente y sus números de versión cambian tan rápidamente que es probable que los usuarios de agente incluídos
             en Privacy Browser no estén ya en sintonía con la mayoría de agentes de usuario en los registros del servidor.</p>
 
-        <p>El WebView de android no permite que el agente de usuario esté en blanco. Si lo está, WebView simplemente envía el agente de usuario por defecto al servidor.</p>
+        <p>Algunas páginas web<a href="https://www.stoutner.com/user-agent-problems/">no funcionan correctamente</a> si no reconocen el agente de usuario.
+            Usando la configuración de dominios para establecer el agente de usuario a <strong>WebView por defecto</strong>, o a otro agente de usuario que sea normalmente reconocido, suele resolver el problema.
+            El WebView de android no permite que el agente de usuario esté en blanco. Si lo está, WebView simplemente envía el agente de usuario por defecto al servidor.</p>
     </body>
 </html>

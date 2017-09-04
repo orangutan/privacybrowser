@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent" >
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp" >
+
+        <TextView
+            android:id="@+id/http_authentication_realm"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_gravity="center_horizontal"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/http_authentication_host"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp" />
+
+        <!-- `android.support.design.widget.TextInputLayout` makes the `android:hint` float above the `EditText`. -->
+        <android.support.design.widget.TextInputLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginTop="6dp" >
+
+            <!-- `android:imeOptions="actionGo"` sets the keyboard to have a `go` key instead of a `new line` key.  `android:inputType="textUri"` disables spell check in the `EditText`. -->
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/http_authentication_username"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:hint="@string/username"
+                android:imeOptions="actionGo"
+                android:inputType="textUri"
+                android:selectAllOnFocus="true" />
+        </android.support.design.widget.TextInputLayout>
+
+        <!-- `android.support.design.widget.TextInputLayout` makes the `android:hint` float above the `EditText`. -->
+        <android.support.design.widget.TextInputLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent" >
+
+            <!-- `android:imeOptions="actionGo"` sets the keyboard to have a `go` key instead of a `new line` key. -->
+            <EditText
+                android:id="@+id/http_authentication_password"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:hint="@string/password"
+                android:imeOptions="actionGo"
+                android:inputType="textPassword" />
+        </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
+</ScrollView>

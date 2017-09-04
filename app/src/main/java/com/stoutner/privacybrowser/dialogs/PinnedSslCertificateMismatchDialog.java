@@ -29,7 +29,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
-// We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <=22.
+// `AppCompatDialogFragment` is used instead of `DialogFragment` to avoid an error on API <=22.
 import android.support.v7.app.AppCompatDialogFragment;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -47,8 +47,6 @@ import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 import java.text.DateFormat;
 import java.util.Date;
 
-// `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
-@SuppressLint("InflateParams")
 public class PinnedSslCertificateMismatchDialog extends AppCompatDialogFragment {
     // `layoutInflater` is used in `onCreateDialog()` and `pagerAdapter`.
     private LayoutInflater layoutInflater;
@@ -84,6 +82,9 @@ public class PinnedSslCertificateMismatchDialog extends AppCompatDialogFragment 
         }
     }
 
+    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
+    @SuppressLint("InflateParams")
+    @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Get the activity's layout inflater.
