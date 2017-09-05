@@ -88,6 +88,18 @@
     <string name="url">URL</string>
     <string name="url_label">URL:</string>
 
+    <!-- Pinned SSL Certificate Mismatch. -->
+    <string name="update_ssl">Aggiorna SSL</string>
+    <string name="ssl_certificate_mismatch">Incompatibilità certificato SSL</string>
+    <string name="current_ssl">SSL attuale</string>
+    <string name="pinned_ssl">SSL appuntato</string>
+
+    <!-- HTTP Authentication. -->
+    <string name="http_authentication">Autenticazione HTTP</string>
+    <string name="host">Host:</string>
+    <string name="username">Nome utente</string>
+    <string name="password">Password</string>
+
     <!-- MainWebViewActivity Navigation Drawer. -->
     <string name="navigation_drawer">Menù di navigazione</string>
     <string name="navigation">Navigazione</string>
@@ -199,11 +211,16 @@
         <item>Abilita Immagini</item>
         <item>Disabilita Immagini</item>
     </string-array>
+    <string name="pinned_ssl_certificate">Certificato SSL appuntato</string>
+    <string name="saved_ssl_certificate">Certificato SSL salvato</string>
+    <string name="current_website_ssl_certificate">Certificato SSL di questo sito</string>
+    <string name="load_an_encrypted_website">Carica un sito Web criptato prima di aprire le impostazioni dei domini per popolare il certificato SSL del sito attuale.</string>
 
     <!-- Guide. -->
     <string name="privacy_browser_guide">Guida di Privacy Browser</string>
     <string name="overview">Descrizione</string>
     <string name="local_storage">Archiviazione Locale</string>
+    <string name="ssl_certificate_pinning">Appuntare il certificato SSL</string>
     <string name="tracking_ids">Tracciamento utenti</string>
 
     <!-- Preferences. -->

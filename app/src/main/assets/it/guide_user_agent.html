@@ -73,6 +73,8 @@
             Firefox o Chrome sono gli user agents più comuni, ma vengono aggiornati spesso e il loro numero di versione cambia così di frequente che lo user agent incluso in Privacy Browser molto facilmente
             sarà rimasto indietro rispetto alla maggior parte degli user agent tracciati nei log dei server.</p>
 
-        <p>WebView di Android non permette che lo user agent non sia specificato. In tal caso infatti, WebView invia al server lo user agent di default.</p>
+        <p>Alcuni siti web <a href="https://www.stoutner.com/user-agent-problems/">non funzionano correttamente</a> se non riconoscono lo User Agent.
+            L'utilizzo delle impostazioni dei domini per impostare come User Agent <strong>WebView Default</strong>, oppure un altro che sia riconosciuto comunemente generalmente risolve il problema.
+            WebView di Android non permette che lo user agent non sia specificato. In tal caso infatti, WebView invia al server lo user agent di default.</p>
     </body>
 </html>

@@ -1,11 +1,11 @@
-• Add SSL certificate pinning to domain settings.
-• Add searx.me to the list of search engines.
-• Update the default homepage to work with both JavaScript enabled or disabled.
-• Fix a bug that caused the website title to be lost on rotate.
-• Ghost the “Clear DOM Storage” options menu item if there is nothing to delete.
-• Use non-bolded red text to indicate unencrypted websites.
-• Fix a bug that sometimes caused custom domain user agents to fail.
-• Fix a bug that caused website modifications (like the sorting of a list) to be lost if Privacy Browser was moved to the background.
-• Many small improvements were made to the Domains activity.
-• Updated Italian translation provided by Francesco Buratti.
-• Updated Spanish translation provided by Jose A. León Becerra.
+• Aggiunta la possibilità di appuntare i certificati SSL alle impostazioni dei domini.
+• Aggiunto searx.me alla lista dei motori di ricerca.
+• Aggiornata la pagina iniziale di default in modo da funzionare sia con JavaScript abilitato che disabilitato.
+• Corretto un baco che provocava, in caso di rotazione dello schermo, la perdita del titolo dei siti web.
+• Disabilitata l'opzione del menu “Elimina DOM Storage” quando non c'è nulla da cancellare.
+• Utilizzo di un carattere rosso per indicare i siti non criptati.
+• Correzione di un baco che a volte provocava il malfunzionamento degli user agent personalizzati per i domini.
+• Correzione di un baco che provocava modifiche ai siti web (visualizzati come semplici elenchi) nel caso in cui Privacy Browser venisse messo in background.
+• Svariati piccoli miglioramenti sono stati apportati alla schermata dei domini.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León Becerra.
