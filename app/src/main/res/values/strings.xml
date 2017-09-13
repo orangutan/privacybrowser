@@ -209,10 +209,15 @@
     <string name="domain_name">Domain name</string>
     <string name="domain_deleted">Domain deleted</string>
     <string name="domain_name_instructions">*. may be prepended to a domain to include all subdomains (eg. *.stoutner.com)</string>
-    <string-array name="display_website_images_array">
+    <string-array name="display_webpage_images_array">
         <item>System default</item>
         <item>Images enabled</item>
         <item>Images disabled</item>
+    </string-array>
+    <string-array name="night_mode_array">
+        <item>System default</item>
+        <item>Night mode enabled</item>
+        <item>Night mode disabled</item>
     </string-array>
     <string name="pinned_ssl_certificate">Pinned SSL certificate</string>
     <string name="saved_ssl_certificate">Saved SSL certificate</string>
@@ -425,6 +430,8 @@
         <string name="display_additional_app_bar_icons_summary">Display icons for toggling cookies, DOM storage, and form data in the app bar if there is room.</string>
         <string name="dark_theme">Dark theme</string>
         <string name="dark_theme_summary">Changing the theme will restart Privacy Browser.</string>
+        <string name="night_mode">Night mode</string>
+        <string name="night_mode_summary">Enabling night mode will also enable JavaScript for all web pages.</string>
         <string name="display_webpage_images">Display webpage images</string>
         <string name="display_webpage_images_summary">Disable to conserve bandwidth.</string>
 

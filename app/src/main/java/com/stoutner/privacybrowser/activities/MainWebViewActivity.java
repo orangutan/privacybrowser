@@ -41,6 +41,7 @@ import android.net.http.SslCertificate;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
@@ -151,8 +152,11 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `displayWebpageImagesBoolean` is public static so it can be accessed from `DomainSettingsFragment`.  It is also used in `applyAppSettings()` and `applyDomainSettings()`.
     public static boolean displayWebpageImagesBoolean;
 
-    // `reloadOnRestartBoolean` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onRestart()`
-    public static boolean reloadOnRestartBoolean;
+    // `reloadOnRestart` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onRestart()`
+    public static boolean reloadOnRestart;
+
+    // `reloadUrlOnRestart` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onRestart()`.
+    public static boolean loadUrlOnRestart;
 
     // The pinned domain SSL Certificate variables are public static so they can be accessed from `PinnedSslCertificateMismatchDialog`.  They are also used in `onCreate()` and `applyDomainSettings()`.
     public static int domainSettingsDatabaseId;
@@ -203,21 +207,23 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `customHeader` is used in `onCreate()`, `onOptionsItemSelected()`, `onCreateContextMenu()`, and `loadUrl()`.
     private final Map<String, String> customHeaders = new HashMap<>();
 
-    // `javaScriptEnabled` is also used in `onCreate()`, `onCreateOptionsMenu()`, `onOptionsItemSelected()`, `loadUrlFromTextBox()`, and `applyAppSettings()`.
-    // It is `Boolean` instead of `boolean` because `applyAppSettings()` needs to know if it is `null`.
-    private Boolean javaScriptEnabled;
+    // `javaScriptEnabled` is also used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `applyDomainSettings()`, and `updatePrivacyIcons()`.
+    private boolean javaScriptEnabled;
 
-    // `firstPartyCookiesEnabled` is used in `onCreate()`, `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onDownloadImage()`, `onDownloadFile()`, and `applyAppSettings()`.
+    // `firstPartyCookiesEnabled` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onDownloadImage()`, `onDownloadFile()`, and `applyDomainSettings()`.
     private boolean firstPartyCookiesEnabled;
 
-    // `thirdPartyCookiesEnabled` used in `onCreate()`, `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applyAppSettings()`.
+    // `thirdPartyCookiesEnabled` used in `onCreate()`, `onPrepareOptionsMenu()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applyDomainSettings()`.
     private boolean thirdPartyCookiesEnabled;
 
-    // `domStorageEnabled` is used in `onCreate()`, `onCreateOptionsMenu()`, `onOptionsItemSelected()`, and `applyAppSettings()`.
+    // `domStorageEnabled` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applyDomainSettings()`.
     private boolean domStorageEnabled;
 
-    // `saveFormDataEnabled` is used in `onCreate()`, `onCreateOptionsMenu()`, `onOptionsItemSelected()`, and `applyAppSettings()`.
+    // `saveFormDataEnabled` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applyDomainSettings()`.
     private boolean saveFormDataEnabled;
+
+    // `nightMode` is used in `onCreate()` and  `applyDomainSettings()`.
+    private boolean nightMode;
 
     // `swipeToRefreshEnabled` is used in `onPrepareOptionsMenu()` and `applyAppSettings()`.
     private boolean swipeToRefreshEnabled;
@@ -749,6 +755,11 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             // Update the URL in urlTextBox when the page starts to load.
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                // If night mode is enabled, hide `mainWebView` until after the night mode CSS is applied.
+                if (nightMode) {
+                    mainWebView.setVisibility(View.INVISIBLE);
+                }
+
                 // Check to see if we are waiting on Orbot.
                 if (!waitingForOrbot) {  // We are not waiting on Orbot, so we need to process the URL.
                     // We need to update `formattedUrlString` at the beginning of the load, so that if the user toggles JavaScript during the load the new website is reloaded.
@@ -770,7 +781,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 }
             }
 
-            // Update formattedUrlString and urlTextBox.  It is necessary to do this after the page finishes loading because the final URL can change during load.
+            // It is necessary to update `formattedUrlString` and `urlTextBox` after the page finishes loading because the final URL can change during load.
             @Override
             public void onPageFinished(WebView view, String url) {
                 // Reset `urlIsLoading`, which is used to prevent reloads on redirect if the user agent changes.
@@ -933,9 +944,35 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             public void onProgressChanged(WebView view, int progress) {
                 progressBar.setProgress(progress);
                 if (progress < 100) {
+                    // Show the progress bar.
                     progressBar.setVisibility(View.VISIBLE);
                 } else {
+                    // Hide the progress bar.
                     progressBar.setVisibility(View.GONE);
+
+                    // Inject the night mode CSS if night mode is enabled.
+                    if (nightMode) {
+                        // `background-color: #212121` sets the background to be dark gray.  `color: #BDBDBD` sets the text color to be light gray.  `box-shadow: none` removes a lower underline on links used by WordPress.
+                        // `text-decoration: none` removes all text underlines.  `text-shadow: none` removes text shadows, which usually have a hard coded color.  `border: none` removes all borders, which can also be used to underline text.
+                        // `a {color: #1565C0}` sets links to be a dark blue.  `!important` takes precedent over any existing sub-settings.
+                        mainWebView.evaluateJavascript("(function() {var parent = document.getElementsByTagName('head').item(0); var style = document.createElement('style'); style.type = 'text/css'; style.innerHTML = '" +
+                                "* {background-color: #212121 !important; color: #BDBDBD !important; box-shadow: none !important; text-decoration: none !important; text-shadow: none !important; border: none !important}" +
+                                "a {color: #1565C0 !important;}" +
+                                "'; parent.appendChild(style)})()", null);
+                    }
+
+                    // Initialize a `Handler` to display `mainWebView`, which may have been hid by a night mode domain setting even if night mode is not currently enabled.
+                    Handler displayWebViewHandler = new Handler();
+
+                    // Setup a `Runnable` to display `mainWebView` after a delay to allow the CSS to be applied.
+                    Runnable displayWebViewRunnable = new Runnable() {
+                        public void run() {
+                            mainWebView.setVisibility(View.VISIBLE);
+                        }
+                    };
+
+                    // Use `displayWebViewHandler` to delay the displaying of `mainWebView` for 1000 milliseconds.
+                    displayWebViewHandler.postDelayed(displayWebViewRunnable, 1000);
 
                     //Stop the `SwipeToRefresh` indicator if it is running
                     swipeRefreshLayout.setRefreshing(false);
@@ -1079,6 +1116,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         thirdPartyCookiesEnabled = false;
         domStorageEnabled = false;
         saveFormDataEnabled = false;
+        nightMode = false;
 
         // Initialize `webViewTitle`.
         webViewTitle = getString(R.string.no_title);
@@ -1139,12 +1177,21 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         setDisplayWebpageImages();
 
         // Reload the webpage if displaying of images has been disabled in `SettingsFragment`.
-        if (reloadOnRestartBoolean) {
+        if (reloadOnRestart) {
             // Reload `mainWebView`.
             mainWebView.reload();
 
             // Reset `reloadOnRestartBoolean`.
-            reloadOnRestartBoolean = false;
+            reloadOnRestart = false;
+        }
+
+        // Load the URL on restart to apply changes to night mode.
+        if (loadUrlOnRestart) {
+            // Load the current `formattedUrlString`.
+            loadUrl(formattedUrlString);
+
+            // Reset `loadUrlOnRestart.
+            loadUrlOnRestart = false;
         }
     }
 
@@ -2619,10 +2666,11 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             // Get a handle for the shared preference.  `this` references the current context.
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-            // Store the default font size and user agent information.
+            // Store the general preference information.
             String defaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
             String defaultUserAgentString = sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0");
             String defaultCustomUserAgentString = sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0");
+            nightMode = sharedPreferences.getBoolean("night_mode", false);
 
             if (domainSettingsApplied) {  // The url we are loading has custom domain settings.
                 // Get a cursor for the current host and move it to the first position.
@@ -2639,6 +2687,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 String userAgentString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
                 int fontSize = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
                 displayWebpageImagesInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
+                int nightModeInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.NIGHT_MODE));
                 pinnedDomainSslCertificate = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE)) == 1);
                 pinnedDomainSslIssuedToCNameString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME));
                 pinnedDomainSslIssuedToONameString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION));
@@ -2646,6 +2695,22 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 pinnedDomainSslIssuedByCNameString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME));
                 pinnedDomainSslIssuedByONameString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION));
                 pinnedDomainSslIssuedByUNameString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT));
+
+                // Set `nightMode` according to `nightModeInt`.  If `nightModeInt` is `DomainsDatabaseHelper.NIGHT_MODE_SYSTEM_DEFAULT` the current setting from `sharedPreferences` will be used.
+                switch (nightModeInt) {
+                    case DomainsDatabaseHelper.NIGHT_MODE_ENABLED:
+                        nightMode = true;
+                        break;
+
+                    case DomainsDatabaseHelper.NIGHT_MODE_DISABLED:
+                        nightMode = false;
+                        break;
+                }
+
+                // Set `javaScriptEnabled` to be `true` if `night_mode` is `true`.
+                if (nightMode) {
+                    javaScriptEnabled = true;
+                }
 
                 // Set the pinned SSL certificate start date to `null` if the saved date `long` is 0.
                 if (currentHostDomainSettingsCursor.getLong(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)) == 0) {
@@ -2728,6 +2793,11 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies_enabled", false);
                 domStorageEnabled = sharedPreferences.getBoolean("dom_storage_enabled", false);
                 saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data_enabled", false);
+
+                // Set `javaScriptEnabled` to be `true` if `night_mode` is `true`.
+                if (nightMode) {
+                    javaScriptEnabled = true;
+                }
 
                 // Apply the default settings.
                 mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);

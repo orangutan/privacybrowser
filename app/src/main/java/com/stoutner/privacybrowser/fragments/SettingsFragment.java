@@ -75,29 +75,33 @@ public class SettingsFragment extends PreferenceFragment {
         final Preference swipeToRefreshPreference = findPreference("swipe_to_refresh");
         final Preference displayAdditionalAppBarIconsPreference = findPreference("display_additional_app_bar_icons");
         final Preference darkThemePreference = findPreference("dark_theme");
+        final Preference nightModePreference = findPreference("night_mode");
         final Preference displayWebpageImagesPreference = findPreference("display_webpage_images");
 
         // Set dependencies.
-        domStoragePreference.setDependency("javascript_enabled");
         torHomepagePreference.setDependency("proxy_through_orbot");
         torSearchPreference.setDependency("proxy_through_orbot");
         hideSystemBarsPreference.setDependency("full_screen_browsing_mode");
 
-        // Get strings from the preferences.
+        // Get Strings from the preferences.
         String torSearchString = savedPreferences.getString("tor_search", "https://3g2upl4pq6kufc4m.onion/html/?q=");
         String searchString = savedPreferences.getString("search", "https://duckduckgo.com/html/?q=");
 
         // Get booleans from the preferences.
-        boolean javaScriptEnabledBoolean = savedPreferences.getBoolean("javascript_enabled", false);
+        final boolean javaScriptEnabledBoolean = savedPreferences.getBoolean("javascript_enabled", false);
         boolean firstPartyCookiesEnabledBoolean = savedPreferences.getBoolean("first_party_cookies_enabled", false);
         boolean thirdPartyCookiesEnabledBoolean = savedPreferences.getBoolean("third_party_cookies_enabled", false);
         boolean proxyThroughOrbotBoolean = savedPreferences.getBoolean("proxy_through_orbot", false);
         boolean fullScreenBrowsingModeBoolean = savedPreferences.getBoolean("full_screen_browsing_mode", false);
         boolean hideSystemBarsBoolean = savedPreferences.getBoolean("hide_system_bars", false);
         boolean clearEverythingBoolean = savedPreferences.getBoolean("clear_everything", true);
+        final boolean nightModeBoolean = savedPreferences.getBoolean("night_mode", false);
 
         // Only enable `thirdPartyCookiesPreference` if `firstPartyCookiesEnabledBoolean` is `true` and API >= 21.
         thirdPartyCookiesPreference.setEnabled(firstPartyCookiesEnabledBoolean && (Build.VERSION.SDK_INT >= 21));
+
+        // Only enable `domStoragePreference` if either `javaScriptEnabledBoolean` or `nightModeBoolean` is true.
+        domStoragePreference.setEnabled(javaScriptEnabledBoolean || nightModeBoolean);
 
         // We need to inflated a `WebView` to get the default user agent.
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -177,9 +181,11 @@ public class SettingsFragment extends PreferenceFragment {
         // Set the default font size as the summary text for the `Default Font Size` preference when the preference screen is loaded.  The default is `100`.
         defaultFontSizePreference.setSummary(savedPreferences.getString("default_font_size", "100") + "%%");
 
+        // Disable `javaScriptPreference` if `nightModeBoolean` is true.  JavaScript will be enabled for all web pages.
+        javaScriptPreference.setEnabled(!nightModeBoolean);
 
         // Set the `javaScriptPreference` icon.
-        if (javaScriptEnabledBoolean) {
+        if (javaScriptEnabledBoolean || nightModeBoolean) {
             javaScriptPreference.setIcon(R.drawable.javascript_enabled);
         } else {
             javaScriptPreference.setIcon(R.drawable.privacy_mode);
@@ -216,17 +222,17 @@ public class SettingsFragment extends PreferenceFragment {
         }
 
         // Set the `domStoragePreference` icon.
-        if (javaScriptEnabledBoolean) {
-            if (savedPreferences.getBoolean("dom_storage_enabled", false)) {
+        if (javaScriptEnabledBoolean || nightModeBoolean) {  // The preference is enabled.
+            if (savedPreferences.getBoolean("dom_storage_enabled", false)) {  // DOM storage is enabled.
                 domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
-            } else {
+            } else {  // DOM storage is disabled.
                 if (MainWebViewActivity.darkTheme) {
                     domStoragePreference.setIcon(R.drawable.dom_storage_disabled_dark);
                 } else {
                     domStoragePreference.setIcon(R.drawable.dom_storage_disabled_light);
                 }
             }
-        } else {
+        } else {  // The preference is disabled.  The icon should be ghosted.
             if (MainWebViewActivity.darkTheme) {
                 domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_dark);
             } else {
@@ -506,6 +512,21 @@ public class SettingsFragment extends PreferenceFragment {
             darkThemePreference.setIcon(R.drawable.theme_light);
         }
 
+        // Set the `nightModePreference` icon.
+        if (nightModeBoolean) {
+            if (MainWebViewActivity.darkTheme) {
+                nightModePreference.setIcon(R.drawable.night_mode_enabled_dark);
+            } else {
+                nightModePreference.setIcon(R.drawable.night_mode_enabled_light);
+            }
+        } else {
+            if (MainWebViewActivity.darkTheme) {
+                nightModePreference.setIcon(R.drawable.night_mode_disabled_dark);
+            } else {
+                nightModePreference.setIcon(R.drawable.night_mode_disabled_light);
+            }
+        }
+
         // Set the `displayWebpageImagesPreference` icon.
         if (savedPreferences.getBoolean("display_webpage_images", true)) {
             if (MainWebViewActivity.darkTheme) {
@@ -531,12 +552,15 @@ public class SettingsFragment extends PreferenceFragment {
 
                 switch (key) {
                     case "javascript_enabled":
-                        // Update the icons.
-                        if (sharedPreferences.getBoolean("javascript_enabled", false)) {
-                            // Update the icon for `javascript_enabled`.
+                        // Update the icons and the DOM storage preference status.
+                        if (sharedPreferences.getBoolean("javascript_enabled", false)) {  // The JavaScript preference is enabled.
+                            // Update the icon for the JavaScript preference.
                             javaScriptPreference.setIcon(R.drawable.javascript_enabled);
 
-                            // Update the icon for `dom_storage_enabled`.
+                            // Update the status of the DOM storage preference.
+                            domStoragePreference.setEnabled(true);
+
+                            // Update the icon for the DOM storage preference.
                             if (sharedPreferences.getBoolean("dom_storage_enabled", false)) {
                                 domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
                             } else {
@@ -546,11 +570,14 @@ public class SettingsFragment extends PreferenceFragment {
                                     domStoragePreference.setIcon(R.drawable.dom_storage_disabled_light);
                                 }
                             }
-                        } else {  // `javascript_enabled` is `false`.
-                            // Update the icon for `javascript_enabled`.
+                        } else {  // The JavaScript preference is disabled.
+                            // Update the icon for the JavaScript preference.
                             javaScriptPreference.setIcon(R.drawable.privacy_mode);
 
-                            // Set the icon for `dom_storage_disabled` to be ghosted.
+                            // Update the status of the DOM storage preference.
+                            domStoragePreference.setEnabled(false);
+
+                            // Set the icon for DOM storage preference to be ghosted.
                             if (MainWebViewActivity.darkTheme) {
                                 domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_dark);
                             } else {
@@ -1188,6 +1215,60 @@ public class SettingsFragment extends PreferenceFragment {
                         startActivity(intent);
                         break;
 
+                    case "night_mode":
+                        // Set the URL to be reloaded on restart to apply the new night mode setting.
+                        MainWebViewActivity.loadUrlOnRestart = true;
+
+                        // Store the current night mode status.
+                        boolean currentNightModeBoolean = sharedPreferences.getBoolean("night_mode", false);
+                        boolean currentJavaScriptBoolean = sharedPreferences.getBoolean("javascript_enabled", false);
+
+                        // Update the icon.
+                        if (currentNightModeBoolean) {
+                            if (MainWebViewActivity.darkTheme) {
+                                nightModePreference.setIcon(R.drawable.night_mode_enabled_dark);
+                            } else {
+                                nightModePreference.setIcon(R.drawable.night_mode_enabled_light);
+                            }
+                        } else {
+                            if (MainWebViewActivity.darkTheme) {
+                                nightModePreference.setIcon(R.drawable.night_mode_disabled_dark);
+                            } else {
+                                nightModePreference.setIcon(R.drawable.night_mode_disabled_light);
+                            }
+                        }
+
+                        // Update the status of `javaScriptPreference` and `domStoragePreference`.
+                        javaScriptPreference.setEnabled(!currentNightModeBoolean);
+                        domStoragePreference.setEnabled(currentNightModeBoolean || currentJavaScriptBoolean);
+
+                        // Update the `javaScriptPreference` icon.
+                        if (currentNightModeBoolean || currentJavaScriptBoolean) {
+                            javaScriptPreference.setIcon(R.drawable.javascript_enabled);
+                        } else {
+                            javaScriptPreference.setIcon(R.drawable.privacy_mode);
+                        }
+
+                        // Update the `domStoragePreference` icon.
+                        if (currentNightModeBoolean || currentJavaScriptBoolean) {  // The preference is enabled.
+                            if (sharedPreferences.getBoolean("dom_storage_enabled", false)) {  // DOM storage is enabled.
+                                domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
+                            } else {  // DOM storage is disabled.
+                                if (MainWebViewActivity.darkTheme) {
+                                    domStoragePreference.setIcon(R.drawable.dom_storage_disabled_dark);
+                                } else {
+                                    domStoragePreference.setIcon(R.drawable.dom_storage_disabled_light);
+                                }
+                            }
+                        } else {  // The preference is disabled.  The icon should be ghosted.
+                            if (MainWebViewActivity.darkTheme) {
+                                domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_dark);
+                            } else {
+                                domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_light);
+                            }
+                        }
+                        break;
+
                     case "display_webpage_images":
                         if (sharedPreferences.getBoolean("display_webpage_images", true)) {
                             // Update the icon.
@@ -1198,7 +1279,7 @@ public class SettingsFragment extends PreferenceFragment {
                             }
 
                             // `mainWebView` does not need to be reloaded because unloaded images will load automatically.
-                            MainWebViewActivity.reloadOnRestartBoolean = false;
+                            MainWebViewActivity.reloadOnRestart = false;
                         } else {
                             // Update the icon.
                             if (MainWebViewActivity.darkTheme) {
@@ -1208,7 +1289,7 @@ public class SettingsFragment extends PreferenceFragment {
                             }
 
                             // Set `mainWebView` to reload on restart to remove the current images.
-                            MainWebViewActivity.reloadOnRestartBoolean = true;
+                            MainWebViewActivity.reloadOnRestart = true;
                         }
                         break;
                 }

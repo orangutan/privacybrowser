@@ -520,6 +520,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         EditText customUserAgentEditText = (EditText) findViewById(R.id.domain_settings_custom_user_agent_edittext);
         Spinner fontSizeSpinner = (Spinner) findViewById(R.id.domain_settings_font_size_spinner);
         Spinner displayWebpageImagesSpinner = (Spinner) findViewById(R.id.domain_settings_display_webpage_images_spinner);
+        Spinner nightModeSpinner = (Spinner) findViewById(R.id.domain_settings_night_mode_spinner);
         Switch pinnedSslCertificateSwitch = (Switch) findViewById(R.id.domain_settings_pinned_ssl_certificate_switch);
         RadioButton savedSslCertificateRadioButton = (RadioButton) findViewById(R.id.saved_ssl_certificate_radiobutton);
         RadioButton currentWebsiteCertificateRadioButton = (RadioButton) findViewById(R.id.current_website_certificate_radiobutton);
@@ -534,6 +535,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         int userAgentPositionInt = userAgentSpinner.getSelectedItemPosition();
         int fontSizePositionInt = fontSizeSpinner.getSelectedItemPosition();
         int displayWebpageImagesInt = displayWebpageImagesSpinner.getSelectedItemPosition();
+        int nightModeInt = nightModeSpinner.getSelectedItemPosition();
         boolean pinnedSslCertificate = pinnedSslCertificateSwitch.isChecked();
 
         // Get the data for the `Spinners` from the entry values string arrays.
@@ -550,7 +552,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         if (savedSslCertificateRadioButton.isChecked()) {  // The current certificate is being used.
             // Update the database except for the certificate.
             domainsDatabaseHelper.updateDomainExceptCertificate(DomainsActivity.currentDomainDatabaseId, domainNameString, javaScriptEnabledBoolean, firstPartyCookiesEnabledBoolean, thirdPartyCookiesEnabledBoolean, domStorageEnabledEnabledBoolean,
-                    formDataEnabledBoolean, userAgentString, fontSizeInt, displayWebpageImagesInt, pinnedSslCertificate);
+                    formDataEnabledBoolean, userAgentString, fontSizeInt, displayWebpageImagesInt, nightModeInt, pinnedSslCertificate);
         } else if (currentWebsiteCertificateRadioButton.isChecked()) {  // The certificate is being updated with the current website certificate.
             // Get the current website SSL certificate.
             SslCertificate currentWebsiteSslCertificate = MainWebViewActivity.sslCertificate;
@@ -567,12 +569,12 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
             // Update the database.
             domainsDatabaseHelper.updateDomainWithCertificate(currentDomainDatabaseId, domainNameString, javaScriptEnabledBoolean, firstPartyCookiesEnabledBoolean, thirdPartyCookiesEnabledBoolean, domStorageEnabledEnabledBoolean, formDataEnabledBoolean,
-                    userAgentString, fontSizeInt, displayWebpageImagesInt, pinnedSslCertificate, issuedToCommonName, issuedToOrganization, issuedToOrganizationalUnit, issuedByCommonName, issuedByOrganization, issuedByOrganizationalUnit, startDateLong,
-                    endDateLong);
+                    userAgentString, fontSizeInt, displayWebpageImagesInt, nightModeInt, pinnedSslCertificate, issuedToCommonName, issuedToOrganization, issuedToOrganizationalUnit, issuedByCommonName, issuedByOrganization, issuedByOrganizationalUnit,
+                    startDateLong, endDateLong);
         } else {  // No certificate is selected.
             // Update the database, with PINNED_SSL_CERTIFICATE set to false.
             domainsDatabaseHelper.updateDomainExceptCertificate(currentDomainDatabaseId, domainNameString, javaScriptEnabledBoolean, firstPartyCookiesEnabledBoolean, thirdPartyCookiesEnabledBoolean, domStorageEnabledEnabledBoolean, formDataEnabledBoolean,
-                    userAgentString, fontSizeInt, displayWebpageImagesInt, false);
+                    userAgentString, fontSizeInt, displayWebpageImagesInt, nightModeInt, false);
         }
     }
 

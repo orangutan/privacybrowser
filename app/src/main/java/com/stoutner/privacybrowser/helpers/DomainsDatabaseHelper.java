@@ -26,7 +26,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DomainsDatabaseHelper extends SQLiteOpenHelper {
-    private static final int SCHEMA_VERSION = 3;
+    private static final int SCHEMA_VERSION = 4;
     private static final String DOMAINS_DATABASE = "domains.db";
     private static final String DOMAINS_TABLE = "domains";
 
@@ -40,6 +40,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
     public static final String USER_AGENT = "useragent";
     public static final String FONT_SIZE = "fontsize";
     public static final String DISPLAY_IMAGES = "displayimages";
+    public static final String NIGHT_MODE = "nightmode";
     public static final String PINNED_SSL_CERTIFICATE = "pinnedsslcertificate";
     public static final String SSL_ISSUED_TO_COMMON_NAME = "sslissuedtocommonname";
     public static final String SSL_ISSUED_TO_ORGANIZATION = "sslissuedtoorganization";
@@ -50,9 +51,15 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
     public static final String SSL_START_DATE = "sslstartdate";
     public static final String SSL_END_DATE = "sslenddate";
 
+    // Display webpage images constants.
     public static final int DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT = 0;
     public static final int DISPLAY_WEBPAGE_IMAGES_ENABLED = 1;
     public static final int DISPLAY_WEBPAGE_IMAGES_DISABLED = 2;
+
+    // Night mode constants.
+    public static final int NIGHT_MODE_SYSTEM_DEFAULT = 0;
+    public static final int NIGHT_MODE_ENABLED = 1;
+    public static final int NIGHT_MODE_DISABLED = 2;
 
     // Initialize the database.  The lint warnings for the unused parameters are suppressed.
     public DomainsDatabaseHelper(Context context, @SuppressWarnings("UnusedParameters") String name, SQLiteDatabase.CursorFactory cursorFactory, @SuppressWarnings("UnusedParameters") int version) {
@@ -73,6 +80,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
                 USER_AGENT + " TEXT, " +
                 FONT_SIZE + " INTEGER, " +
                 DISPLAY_IMAGES + " INTEGER, " +
+                NIGHT_MODE + " INTEGER, " +
                 PINNED_SSL_CERTIFICATE + " BOOLEAN, " +
                 SSL_ISSUED_TO_COMMON_NAME + " TEXT, " +
                 SSL_ISSUED_TO_ORGANIZATION + " TEXT, " +
@@ -108,6 +116,11 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
                 domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + SSL_ISSUED_BY_ORGANIZATIONAL_UNIT + " TEXT");
                 domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + SSL_START_DATE + " INTEGER");
                 domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + SSL_END_DATE + " INTEGER");
+
+            // Upgrade from `SCHEMA_VERSION` 3.
+            case 3:
+                // Add the `NIGHT_MODE` column.
+                domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + NIGHT_MODE + " INTEGER");
         }
     }
 
@@ -166,7 +179,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         // Store the domain data in a `ContentValues`.
         ContentValues domainContentValues = new ContentValues();
 
-        // Create entries for each field in the database.  The ID is created automatically.
+        // Create entries for the database fields.  The ID is created automatically.  The pinned SSL certificate information is not created unless added by the user.
         domainContentValues.put(DOMAIN_NAME, domainName);
         domainContentValues.put(ENABLE_JAVASCRIPT, false);
         domainContentValues.put(ENABLE_FIRST_PARTY_COOKIES, false);
@@ -176,6 +189,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainContentValues.put(USER_AGENT, "System default user agent");
         domainContentValues.put(FONT_SIZE, 0);
         domainContentValues.put(DISPLAY_IMAGES, 0);
+        domainContentValues.put(NIGHT_MODE, 0);
 
         // Get a writable database handle.
         SQLiteDatabase domainsDatabase = this.getWritableDatabase();
@@ -186,11 +200,12 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         // Close the database handle.
         domainsDatabase.close();
 
+        // Return the new domain database ID.
         return newDomainDatabaseId;
     }
 
     public void updateDomainExceptCertificate(int databaseId, String domainName, boolean javaScriptEnabled, boolean firstPartyCookiesEnabled, boolean thirdPartyCookiesEnabled, boolean domStorageEnabled, boolean formDataEnabled, String userAgent, int fontSize,
-                                              int displayImages, boolean pinnedSslCertificate) {
+                                              int displayImages, int nightMode, boolean pinnedSslCertificate) {
         // Store the domain data in a `ContentValues`.
         ContentValues domainContentValues = new ContentValues();
 
@@ -204,6 +219,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainContentValues.put(USER_AGENT, userAgent);
         domainContentValues.put(FONT_SIZE, fontSize);
         domainContentValues.put(DISPLAY_IMAGES, displayImages);
+        domainContentValues.put(NIGHT_MODE, nightMode);
         domainContentValues.put(PINNED_SSL_CERTIFICATE, pinnedSslCertificate);
 
         // Get a writable database handle.
@@ -217,7 +233,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void updateDomainWithCertificate(int databaseId, String domainName, boolean javaScriptEnabled, boolean firstPartyCookiesEnabled, boolean thirdPartyCookiesEnabled, boolean domStorageEnabled, boolean formDataEnabled, String userAgent, int fontSize,
-                                            int displayImages, boolean pinnedSslCertificate, String sslIssuedToCommonName, String sslIssuedToOrganization, String sslIssuedToOrganizationalUnit, String sslIssuedByCommonName, String sslIssuedByOrganization,
+                                            int displayImages, int nightMode, boolean pinnedSslCertificate, String sslIssuedToCommonName, String sslIssuedToOrganization, String sslIssuedToOrganizationalUnit, String sslIssuedByCommonName, String sslIssuedByOrganization,
                                             String sslIssuedByOrganizationalUnit, long sslStartDate, long sslEndDate) {
         // Store the domain data in a `ContentValues`.
         ContentValues domainContentValues = new ContentValues();
@@ -232,6 +248,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainContentValues.put(USER_AGENT, userAgent);
         domainContentValues.put(FONT_SIZE, fontSize);
         domainContentValues.put(DISPLAY_IMAGES, displayImages);
+        domainContentValues.put(NIGHT_MODE, nightMode);
         domainContentValues.put(PINNED_SSL_CERTIFICATE, pinnedSslCertificate);
         domainContentValues.put(SSL_ISSUED_TO_COMMON_NAME, sslIssuedToCommonName);
         domainContentValues.put(SSL_ISSUED_TO_ORGANIZATION, sslIssuedToOrganization);

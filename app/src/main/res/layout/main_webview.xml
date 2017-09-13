@@ -19,6 +19,7 @@
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
 <!-- `android:layout_weight="1"` sets the `RelativeLayout` to fill the rest of the screen because it is encapsulated in a `LinearLayout` with `android:orientation="vertical"`. -->
+<!-- `android:background=@color/gray_900` sets the background color that is displayed when a website is loading in night mode. -->
 <RelativeLayout
     android:id="@+id/main_webview_relativelayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -26,6 +27,7 @@
     android:layout_height="0dp"
     android:layout_width="match_parent"
     android:layout_weight="1"
+    android:background="@color/gray_900"
     tools:context="com.stoutner.privacybrowser.activities.MainWebViewActivity" >
 
     <!-- This `TextView` has an id of `adView` so that the ad commands (which do nothing in the standard flavor) don't produce errors. -->

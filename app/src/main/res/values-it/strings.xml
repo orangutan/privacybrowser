@@ -206,7 +206,7 @@
     <string name="domain_name">Nome del Dominio</string>
     <string name="domain_deleted">Dominio Eliminato</string>
     <string name="domain_name_instructions">è possibile anteporre *. a un dominio per includere tutti i sottodomini (es. *.stoutner.com)</string>
-    <string-array name="display_website_images_array">
+    <string-array name="display_webpage_images_array">
         <item>Impostazioni di default</item>
         <item>Abilita Immagini</item>
         <item>Disabilita Immagini</item>

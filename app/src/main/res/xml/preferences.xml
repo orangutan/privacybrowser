@@ -232,6 +232,12 @@
             android:defaultValue="false" />
 
         <SwitchPreference
+            android:key="night_mode"
+            android:title="@string/night_mode"
+            android:summary="@string/night_mode_summary"
+            android:defaultValue="false" />
+
+        <SwitchPreference
             android:key="display_webpage_images"
             android:title="@string/display_webpage_images"
             android:summary="@string/display_webpage_images_summary"
