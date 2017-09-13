@@ -55,10 +55,10 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:design:25.4.0'
 
     // Only compile `com.google.firebase:firebase-ads:9.8.0` for the free flavor.
-    freeCompile 'com.google.firebase:firebase-ads:9.8.0'
+    freeCompile 'com.google.firebase:firebase-ads:11.2.2'
 }
 
 // Google's documentation says the following line is required for `firebase-ads` but things work correctly without it.  I have no interest in applying the Google Mobile Services plugin in the standard flavor if I don't have to.

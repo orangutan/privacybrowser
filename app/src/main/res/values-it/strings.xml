@@ -220,7 +220,7 @@
     <string name="privacy_browser_guide">Guida di Privacy Browser</string>
     <string name="overview">Descrizione</string>
     <string name="local_storage">Archiviazione Locale</string>
-    <string name="ssl_certificate_pinning">Appuntare il certificato SSL</string>
+    <string name="ssl_certificates">Certificatos SSL</string>
     <string name="tracking_ids">Tracciamento utenti</string>
 
     <!-- Preferences. -->

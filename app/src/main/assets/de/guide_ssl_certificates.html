@@ -49,7 +49,7 @@
             Android has a list of trusted certificate authorities, and will accept any of their certificates for any website.
             It isn’t supposed to be possible for an organization to acquire an SSL certificate for a domain they do not control, but in practice many governments and large corporations have been able to do so.</p>
 
-        <p>The purpose of SSL certificate pinning is to tell the browser that only one specific SSL certificate is to be trusted for a particular domain. Any other certificate, even if it is valid, will be rejected.</p>
+        <p>Pinning an SSL certificate tells the browser that only one specific SSL certificate is to be trusted for a particular domain. Any other certificate, even if it is valid, will be rejected.</p>
 
         <p><img class="center" src="images/ssl_certificate_mismatch.png"></p>
 
@@ -60,6 +60,7 @@
         <p><img class="center" src="images/pinned_ssl_certificate.png"></p>
 
         <p>SSL certificates can be pinned in Domain Settings.
-            Besides protecting against MITM attacks, pinning a self-signed certificate for a device like a wireless router or access point will remove the error message that is normally presented every time its website is loaded.</p>
+            Besides protecting against MITM attacks, pinning a self-signed certificate for a device like a wireless router or access point will remove the error message that is normally presented every time its website is loaded.
+            To view the current website SSL certificate, tap on the favorite icon next to the URL bar.</p>
     </body>
 </html>

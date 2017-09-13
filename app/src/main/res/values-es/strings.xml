@@ -218,7 +218,7 @@
     <string name="privacy_browser_guide">Guía de Navegador Privado</string>
     <string name="overview">Visión general</string>
     <string name="local_storage">Almacenamiento local</string>
-    <string name="ssl_certificate_pinning">Fijación de certificados SSL</string>
+    <string name="ssl_certificates">Certificados SSL</string>
     <string name="tracking_ids">Rastreo de IDs</string>
 
     <!-- Preferences. -->
