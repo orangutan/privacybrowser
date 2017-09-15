@@ -19,8 +19,7 @@
 
 package com.stoutner.privacybrowser.fragments;
 
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Paint;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -53,6 +52,7 @@ public class GuideTabFragment extends Fragment {
         tabNumber = getArguments().getInt("Tab");
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.  The fragment will take care of attaching the root automatically.
@@ -61,64 +61,84 @@ public class GuideTabFragment extends Fragment {
         // Get a handle for `tabWebView`.
         WebView tabWebView = (WebView) tabLayout;
 
-        // Filter the colors if `darkTheme` is `true`.
-        if (MainWebViewActivity.darkTheme) {
-            // Initialize `darkPaint`.
-            Paint darkPaint = new Paint();
+        // Load the tabs according to the theme.
+        if (MainWebViewActivity.darkTheme) {  // The dark theme is applied.
+            // Set the background color.  We have to use the deprecated `.getColor()` until API >= 23.
+            //noinspection deprecation
+            tabWebView.setBackgroundColor(getResources().getColor(R.color.gray_850));
 
-            // Setup a float array that inverts and tempers the colors (no hard whites or blacks).
-            float[] darkFilterFloatArray = {
-                    -.8f, 0, 0, 0, 255,  // Red.
-                    0, -.8f, 0, 0, 255,  // Green.
-                    0, 0, -.8f, 0, 255,  // Blue.
-                    0, 0, 0, .8f, 0      // Alpha.
-            };
+            // Tab numbers start at 0.
+            switch (tabNumber) {
+                case 0:
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_overview_dark.html");
+                    break;
 
-            // Set `darkPaint` to use `darkFilterFloatArray`.
-            darkPaint.setColorFilter(new ColorMatrixColorFilter(darkFilterFloatArray));
+                case 1:
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_javascript_dark.html");
+                    break;
 
-            // Apply `darkPaint` to `tabWebView`.
-            tabWebView.setLayerType(View.LAYER_TYPE_HARDWARE, darkPaint);
-        } else {
-            // Reset `tabWebView` to use the normal colors.
-            tabWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+                case 2:
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_local_storage_dark.html");
+                    break;
+
+                case 3:
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_user_agent_dark.html");
+                    break;
+
+                case 4:
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_domain_settings_dark.html");
+                    break;
+
+                case 5:
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_ssl_certificates_dark.html");
+                    break;
+
+                case 6:
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_tor_dark.html");
+                    break;
+
+                case 7:
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_tracking_ids_dark.html");
+                    break;
+            }
+        } else {  // The light theme is applied.
+            // Tab numbers start at 0.
+            switch (tabNumber) {
+                case 0:
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_overview_light.html");
+                    break;
+
+                case 1:
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_javascript_light.html");
+                    break;
+
+                case 2:
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_local_storage_light.html");
+                    break;
+
+                case 3:
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_user_agent_light.html");
+                    break;
+
+                case 4:
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_domain_settings_light.html");
+                    break;
+
+                case 5:
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_ssl_certificates_light.html");
+                    break;
+
+                case 6:
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_tor_light.html");
+                    break;
+
+                case 7:
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_tracking_ids_light.html");
+                    break;
+            }
         }
 
-        // Tab numbers start at 0.
-        switch (tabNumber) {
-            case 0:
-                tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_overview.html");
-                break;
-
-            case 1:
-                tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_javascript.html");
-                break;
-
-            case 2:
-                tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_local_storage.html");
-                break;
-
-            case 3:
-                tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_user_agent.html");
-                break;
-
-            case 4:
-                tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_domain_settings.html");
-                break;
-
-            case 5:
-                tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_ssl_certificates.html");
-                break;
-
-            case 6:
-                tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_tor.html");
-                break;
-
-            case 7:
-                tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_tracking_ids.html");
-                break;
-        }
-
+        // Return the formatted `tabLayout`.
         return tabLayout;
     }
 }

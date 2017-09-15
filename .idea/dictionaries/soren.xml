@@ -52,7 +52,9 @@
       <w>firebase</w>
       <w>fontsize</w>
       <w>framelayout</w>
+      <w>freitas</w>
       <w>gerlach</w>
+      <w>gitweb</w>
       <w>googleplay</w>
       <w>huawei</w>
       <w>imageview</w>
@@ -69,6 +71,7 @@
       <w>listview</w>
       <w>logins</w>
       <w>lossless</w>
+      <w>materialdesignicons</w>
       <w>mitm</w>
       <w>mozilla</w>
       <w>navigationview</w>
@@ -97,6 +100,7 @@
       <w>securitypatch</w>
       <w>sendto</w>
       <w>showsoftinput</w>
+      <w>smartphone</w>
       <w>snackbar</w>
       <w>snackbars</w>
       <w>softkeyboard</w>

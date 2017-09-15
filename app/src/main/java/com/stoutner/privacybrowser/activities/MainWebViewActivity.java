@@ -956,7 +956,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                         // `text-decoration: none` removes all text underlines.  `text-shadow: none` removes text shadows, which usually have a hard coded color.  `border: none` removes all borders, which can also be used to underline text.
                         // `a {color: #1565C0}` sets links to be a dark blue.  `!important` takes precedent over any existing sub-settings.
                         mainWebView.evaluateJavascript("(function() {var parent = document.getElementsByTagName('head').item(0); var style = document.createElement('style'); style.type = 'text/css'; style.innerHTML = '" +
-                                "* {background-color: #212121 !important; color: #BDBDBD !important; box-shadow: none !important; text-decoration: none !important; text-shadow: none !important; border: none !important}" +
+                                "* {background-color: #212121 !important; color: #BDBDBD !important; box-shadow: none !important; text-decoration: none !important; text-shadow: none !important; border: none !important;}" +
                                 "a {color: #1565C0 !important;}" +
                                 "'; parent.appendChild(style)})()", null);
                     }

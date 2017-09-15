@@ -1,0 +1,77 @@
+/*
+ * Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
+ *
+ * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+ *
+ * Privacy Browser is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Privacy Browser is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+body {
+    background-color: #313131;
+    color: #BDBDBD;
+}
+
+a {
+    color: #1976D2;
+    text-decoration: none;
+}
+
+h3 {
+    color: #1E88E5;
+}
+
+strong.red {
+    color: #B71C1C;
+}
+
+strong.blue {
+    color: #1E88E5;
+}
+
+item {
+    color: #42A5F5;
+    font-weight: bold;
+}
+
+img.inline {
+    height: 16;
+    width: 16;
+}
+
+img.title {
+    vertical-align: bottom;
+    height: 32;
+    width: 32;
+}
+
+img.icon {
+    vertical-align: middle;
+    height: 32;
+    width: 32;
+}
+
+img.left {
+    float: left;
+    height: 32;
+    width: 32;
+}
+
+/* An image must be a block to be centered. */
+img.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 640;
+    width: 360;
+}

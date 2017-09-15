@@ -1,0 +1,63 @@
+<!--
+  Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
+
+  Translation 2017 Jose A. León Becerra <emails@joseleon.me>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+
+  Este archivo es parte de Navegador Privado (Privacy Browser) <https://www.stoutner.com/privacy-browser>.
+
+  Navegador Privado (Privacy Browser) es software libre: puedes redistribuirlo y/o modificarlo
+  bajo los términos de la Licencia Pública General GNU, como se ha publicado por
+  la Fundación del Software Libre, tanto la versión 3 de la Licencia, o
+  (a su opción) cualquier versión posterior.
+
+  Navegador Privado (Privacy Browser) es distribuído con la esperanza de que será útil,
+  pero SIN NINGUNA GARANTÍA; ni siquiera la garantía implícita de
+  MERCANTILIDAD o APTITUD PARA UN PROPÓSITO PARTICULAR.  Vea la
+  Licencia Pública General para más detalles.
+
+  Usted debería haber recibido una copia de la Licencia Pública General GNU
+  junto con Navegador Privado (Privacy Browser).  Si no es así, vea <http://www.gnu.org/licenses/>. -->
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+
+        <link rel="stylesheet" href="../en/css/dark_theme.css">
+    </head>
+
+    <body>
+        <h3><img class="title" src="../en/images/ic_devices_other_blue_dark.png"> Identificación del navegador</h3>
+
+        <p>Cuando los navegadores web se conectan a las páginas web, envían un agente de usuario, que identifica al navegador y a las capacidades de rendering que posee.
+            El servidor web puede usar esta información para decidir qué versión de página web enviar al navegador.
+            Por ejemplo, muchas páginas web tienen diferentes versiones para escritorio y para navegadores móviles.</p>
+
+        <p>Por defecto, Navegador Privado usa su propio agente de usuario, que es PrivacyBrowser/1.0. Éste envía un mínimo de información al servidor web.
+            Ya que los servidores web no lo reconocen como un agente de usuario móvil, lo que normalmente muestran es la versión de escritorio del sitio.</p>
+
+        <p>En comparación, el agente de usuario por defecto de WebView divulga una gran cantidad de información sobre el hardware y el software del dispositivo.
+            En la ventana <strong>Configuración</strong>, seleccionando <strong>WebView por defecto</strong> como el <strong>Agente de usuario</strong> muestra el agente de usuario que se enviará.
+            La captura de pantalla de abajo muestra un Nexus 6P corriendo Android 7.1.2 con el sistema de android WebView 60.0.3112.107 instalado.
+            La mayoría de servidores web reconocerán esto como un navegador móvil y mostrará la versión móvil del sitio si dispone de ella.</p>
+
+        <img class="center" src="images/user_agent.png">
+
+        <p>Existe tanta información en el agente de usuario que algunas veces será el mismo con sólo unos pocos visitantes a una página web.
+            Si el agente de usuario es combinado con otra pieza de información identificativa que no es única, esto da lugar a menudo a una huella única.
+            La Fundación de Frontera Electrónica (EFF) creó una herramienta llamada <a href="https://panopticlick.eff.org/">Panopticlick</a> para demostrar cuánta información puede ser recogida de estas fuentes.
+            Si esta prueba se realiza con javascript habilitado, la cantidad de información que es revelada aumenta grandemente.
+            <a href="https://www.browserleaks.com">Browser Leaks (Fugas del navegador)</a> y <a href="https://amiunique.org/">Am I Unique (¿Soy único?)</a> son también buenas fuentes de información.</p>
+
+        <img class="center" src="../en/images/panopticlick.png">
+
+        <p>Existen varios agentes de usuario preestablecidos que coinciden con los más comunes navegadores y sistemas operativos.
+            A los efectos de huellas del navegador, todo lo que sea extraño es más fácil de rastrear.
+            Si Navegador Privado se vuelve común y mucha gente usa PrivacyBrowser/1.0 como su usuario de agente, será entonces una buena elección para su privacidad.
+            Firefox o Chrome son los usuarios de agente más comunes, pero se actualizan automáticamente y sus números de versión cambian tan rápidamente que es probable que los usuarios de agente incluídos
+            en Privacy Browser no estén ya en sintonía con la mayoría de agentes de usuario en los registros del servidor.</p>
+
+        <p>Algunas páginas web<a href="https://www.stoutner.com/user-agent-problems/">no funcionan correctamente</a> si no reconocen el agente de usuario.
+            Usando la configuración de dominios para establecer el agente de usuario a <strong>WebView por defecto</strong>, o a otro agente de usuario que sea normalmente reconocido, suele resolver el problema.
+            El WebView de android no permite que el agente de usuario esté en blanco. Si lo está, WebView simplemente envía el agente de usuario por defecto al servidor.</p>
+    </body>
+</html>

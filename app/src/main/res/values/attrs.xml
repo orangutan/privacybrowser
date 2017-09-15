@@ -27,6 +27,7 @@
 
     <attr name="aboutTitle" format="reference" />
     <attr name="aboutText" format="reference" />
+    <attr name="aboutBackground" format="reference" />
     <attr name="sslTitle" format="reference" />
     <attr name="sslHeader" format="reference" />
     <attr name="urlHistoryText" format="reference" />

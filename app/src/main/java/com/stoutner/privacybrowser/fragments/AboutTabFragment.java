@@ -283,66 +283,74 @@ public class AboutTabFragment extends Fragment {
             } catch (PackageManager.NameNotFoundException e) {
                 // Do nothing if `PackageManager` says Privacy Browser isn't installed.
             }
-        } else { // load a WebView for all the other tabs.  Tab numbers start at 0.
+        } else { // load a `WebView` for all the other tabs.  Tab numbers start at 0.
             // Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.  The fragment will take care of attaching the root automatically.
             tabLayout = inflater.inflate(R.layout.bare_webview, container, false);
 
             // Get a handle for `tabWebView`.
             WebView tabWebView = (WebView) tabLayout;
 
-            // Filter the colors if `darkTheme` is `true`.
-            if (MainWebViewActivity.darkTheme) {
-                // Initialize `darkPaint`.
-                Paint darkPaint = new Paint();
+            // Load the tabs according to the theme.
+            if (MainWebViewActivity.darkTheme) {  // The dark theme is applied.
+                // Set the background color.  We have to use the deprecated `.getColor()` until API >= 23.
+                //noinspection deprecation
+                tabWebView.setBackgroundColor(getResources().getColor(R.color.gray_850));
 
-                // Setup a float array that inverts and tempers the colors (no hard whites or blacks).
-                float[] darkFilterFloatArray = {
-                        -.8f, 0, 0, 0, 255,  // Red.
-                        0, -.8f, 0, 0, 255,  // Green.
-                        0, 0, -.8f, 0, 255,  // Blue.
-                        0, 0, 0, .8f, 0      // Alpha.
-                };
+                switch (tabNumber) {
+                    case 1:
+                        tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_permissions_dark.html");
+                        break;
 
-                // Set `darkPaint` to use `darkFilterFloatArray`.
-                darkPaint.setColorFilter(new ColorMatrixColorFilter(darkFilterFloatArray));
+                    case 2:
+                        tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_privacy_policy_dark.html");
+                        break;
 
-                // Apply `darkPaint` to `tabWebView`.
-                tabWebView.setLayerType(View.LAYER_TYPE_HARDWARE, darkPaint);
-            } else {
-                // Reset `tabWebView` to use the normal colors.
-                tabWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            }
+                    case 3:
+                        tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_changelog_dark.html");
+                        break;
 
-            switch (tabNumber) {
-                case 1:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_permissions.html");
-                    break;
+                    case 4:
+                        tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_licenses_dark.html");
+                        break;
 
-                case 2:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_privacy_policy.html");
-                    break;
+                    case 5:
+                        tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_contributors_dark.html");
+                        break;
 
-                case 3:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_changelog.html");
-                    break;
+                    case 6:
+                        tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_links_dark.html");
+                        break;
+                }
+            } else {  // The light theme is applied.
+                switch (tabNumber) {
+                    case 1:
+                        tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_permissions_light.html");
+                        break;
 
-                case 4:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_licenses.html");
-                    break;
+                    case 2:
+                        tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_privacy_policy_light.html");
+                        break;
 
-                case 5:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_contributors.html");
-                    break;
+                    case 3:
+                        tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_changelog_light.html");
+                        break;
 
-                case 6:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_links.html");
-                    break;
+                    case 4:
+                        tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_licenses_light.html");
+                        break;
 
-                default:
-                    break;
+                    case 5:
+                        tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_contributors_light.html");
+                        break;
+
+                    case 6:
+                        tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/about_links_light.html");
+                        break;
+                }
             }
         }
 
+        // Return the formatted `tabLayout`.
         return tabLayout;
     }
 }

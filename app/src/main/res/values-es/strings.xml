@@ -209,6 +209,11 @@
         <item>Imágenes habilitadas</item>
         <item>Imágenes deshabilitadas</item>
     </string-array>
+    <string-array name="night_mode_array">
+        <item>Por defecto del sistema</item>
+        <item>Modo noche habilitado</item>
+        <item>Modo noche deshabilitado</item>
+    </string-array>
     <string name="pinned_ssl_certificate">Certificado SSL fijado</string>
     <string name="saved_ssl_certificate">Certificado SSL guardado</string>
     <string name="current_website_ssl_certificate">Certificado SSL actual de la web</string>
@@ -348,6 +353,8 @@
         <string name="display_additional_app_bar_icons_summary">Mostrar iconos para alternar entre cookies, almacenamiento DOM, y datos de formulario en la barra de aplicación, si hay espacio.</string>
         <string name="dark_theme">Tema oscuro</string>
         <string name="dark_theme_summary">Cambiar el tema reiniciará Navegador Privado.</string>
+        <string name="night_mode">Modo noche</string>
+        <string name="night_mode_summary">Activar el modo noche también activará javascript para todas las páginas web.</string>
         <string name="display_webpage_images">Mostrar imágenes de la página web</string>
         <string name="display_webpage_images_summary">Deshabilitar para conservar ancho de banda.</string>
 

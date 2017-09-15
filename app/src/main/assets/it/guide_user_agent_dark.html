@@ -1,0 +1,61 @@
+<!--
+  Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
+
+  Translation 2017 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+
+        <link rel="stylesheet" href="../en/css/dark_theme.css">
+    </head>
+
+    <body>
+        <h3><img class="title" src="../en/images/ic_devices_other_blue_dark.png"> Identificazione del Browser</h3>
+
+        <p>Nel momento in cui un browser si connette ai siti web, invia uno user agent che identifica il browser e le sue caratteristiche di rendering. Il web server può utilizzare tali informazioni per decidere quale versione
+            del sito inviare al browser. Molti siti web infatti sono disponibili in versioni diverse a seconda che vi si acceda con browser da PC (desktop) o da dispositivo mobile.</p>
+
+        <p>Per default Privacy Browser utilizza un proprio user agent (o identificazione), ovvero PrivacyBrowser/1.0. Questo invia un set minimo di informazioni al web server.
+            Dal momento che i web server non lo riconoscono come uno user agent di un dispositivo mobile, generalmente inviano la versione desktop del sito.</p>
+
+        <p>In confronto, lo user agent di default di WebView invia una grande quantità di informazioni sull'hardware e sul software del dispositivo.
+            Sulla schermata <strong>Settings</strong>, selezionando <strong>WebView Default</strong> come <strong>User agent</strong> viene mostrato lo user agent che sarà inviato al web server.
+            Lo screenshot sottostante mostra un Nexus 6P con Android 7.1.2 con installato Android System WebView 60.0.3112.107.
+            La maggior parte dei web server lo riconoscerà come browser mobile e invierà la versione mobile del sito, se disponibile.</p>
+
+        <img class="center" src="images/user_agent.png">
+
+        <p>Nello user agent sono presenti informazioni sufficienti a far sì che solo di tanto in tanto a un sito web risulteranno visitatori identici.
+            Se allo user agent viene aggiunto qualche altro pezzetto di informazione anche non univoca, spesso il risultato sarà quello di avere una impronta digitale unica.
+            La Electronic Frontier Foundation ha creato un tool dal nome <a href="https://panopticlick.eff.org/">Panopticlick</a> per dimostrare quante informazioni possono essere raccolte.
+            Se si esegue questo test con JavaScript abilitato la quantità di informazioni è poi ancora maggiore.
+            <a href="https://www.browserleaks.com">Browser Leaks</a> e <a href="https://amiunique.org/">Am I Unique</a> possono fornire ulteriori interessanti informazioni al riguardo.</p>
+
+        <img class="center" src="../en/images/panopticlick.png">
+
+        <p>Sono disponibili diversi user agent predefiniti che identificano i browser e i sistemi operativi più comuni. Dal punto di vista dell'impronta digitale del browser, più è rara, più è facile da tracciare.
+            Nel caso in cui Privacy Browser diventi di uso comune, e molti utenti utilizzino PrivacyBrowser/1.0 come user agent, sarà una buona scelta dal punto di vista della privacy.
+            Firefox o Chrome sono gli user agents più comuni, ma vengono aggiornati spesso e il loro numero di versione cambia così di frequente che lo user agent incluso in Privacy Browser molto facilmente
+            sarà rimasto indietro rispetto alla maggior parte degli user agent tracciati nei log dei server.</p>
+
+        <p>Alcuni siti web <a href="https://www.stoutner.com/user-agent-problems/">non funzionano correttamente</a> se non riconoscono lo User Agent.
+            L'utilizzo delle impostazioni dei domini per impostare come User Agent <strong>WebView Default</strong>, oppure un altro che sia riconosciuto comunemente generalmente risolve il problema.
+            WebView di Android non permette che lo user agent non sia specificato. In tal caso infatti, WebView invia al server lo user agent di default.</p>
+    </body>
+</html>

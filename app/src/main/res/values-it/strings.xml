@@ -211,6 +211,11 @@
         <item>Abilita Immagini</item>
         <item>Disabilita Immagini</item>
     </string-array>
+    <string-array name="night_mode_array">
+        <item>Impostazioni di default</item>
+        <item>Modalità Notte abilitata</item>
+        <item>Modalità Notte disabilitata</item>
+    </string-array>
     <string name="pinned_ssl_certificate">Certificato SSL appuntato</string>
     <string name="saved_ssl_certificate">Certificato SSL salvato</string>
     <string name="current_website_ssl_certificate">Certificato SSL di questo sito</string>
@@ -220,7 +225,7 @@
     <string name="privacy_browser_guide">Guida di Privacy Browser</string>
     <string name="overview">Descrizione</string>
     <string name="local_storage">Archiviazione Locale</string>
-    <string name="ssl_certificates">Certificatos SSL</string>
+    <string name="ssl_certificates">Certificati SSL</string>
     <string name="tracking_ids">Tracciamento utenti</string>
 
     <!-- Preferences. -->
@@ -350,6 +355,8 @@
         <string name="display_additional_app_bar_icons_summary">Mostra le icone per l\'abilitazione dei cookies, del DOM storage, e dei dati dei moduli nella barra dell\'applicazione se c\'è spazio disponibile.</string>
         <string name="dark_theme">Tema Dark</string>
         <string name="dark_theme_summary">La modifica del tema provocherà il riavvio di Privacy Browser.</string>
+        <string name="night_mode">Modalità Notte</string>
+        <string name="night_mode_summary">L\'abilitazione della modalità notte attiva anche JavaScript per tutte le pagine web.</string>
         <string name="display_webpage_images">Mostra immagini delle pagine web</string>
         <string name="display_webpage_images_summary">Disabilita per ridurre il consumo di dati.</string>
 

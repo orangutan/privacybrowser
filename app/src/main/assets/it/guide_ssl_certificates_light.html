@@ -1,0 +1,50 @@
+<!--
+  Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+
+        <link rel="stylesheet" href="../en/css/light_theme.css">
+    </head>
+
+    <body>
+        <h3><img class="title" src="../en/images/ic_vpn_lock_blue_light.png"> Connettiti in sicurezza</h3>
+
+        <p>Quando si accede ad una URL criptata (quelle che iniziano con HTTPS), il server web utilizza un certificato SSL con lo scopo di criptare le informazioni inviate al browser e di identificare il server stesso.
+            Lo scopo di questa identificazione è quello di impedire che una macchina situata tra il browser e il server web tenti di decriptare le informazioni in transito.
+            Questo tipo di attacco è conosciuto come attacco “Man In The Middle (MITM)”.
+            I certificati SSL sono generati dalle autorità di certificazione: sono aziende che verificano l'identità dei server e producono il certificato (a pagamento).
+            Android ha una lista di autorità di certificazione fidate, e pertanto accetterà qualsiasi loro certificato fornito dai siti web.
+            Non dovrebbe essere possibile che una organizzazione qualsiasi possa acquisire un certificato SSL per un dominio che non sia sotto il proprio controllo, ma in pratica alcuni governi e grosse multinazionali sono in grado di farlo.</p>
+
+        <p>Lo scopo di appuntare un certificato SSL è quello di dire al browser che solo un determinato certificato SSL è fidato per un particolare dominio. Qualsiasi altro certificato, per quanto valido, sarà rifiutato.</p>
+
+        <p><img class="center" src="images/ssl_certificate_mismatch.png"></p>
+
+        <p>I certificati SSL scadono in corrispondenza di una data specifica, così anche i certificati che sono stati appuntati dovranno essere aggiornati regolarmente.
+            Come regola generale, nella maggioranza dei casi, appuntare un certificato SSL non dovrebbe essere necessario.
+            Per coloro che sospettano però di essere sorvegliati da qualche organizzazione, appuntare il certificato SSL può permettere di scoprire e sventare un attacco "MITM".</p>
+
+        <p><img class="center" src="images/pinned_ssl_certificate.png"></p>
+
+        <p>I certificati SSL possono essere appuntati nelle impostazioni dei domini.
+            Oltre a proteggere dagli attacchi “MITM”, appuntare un certificato auto-firmato per un dispositivo come un router wireless o un access point eliminerà il messaggio di errore che si presenta ogni volta che viene caricato un sito web.
+            Per vedere il certificato del sito visualizzato tocca la Favicon vicino alla barra degli indirizzi.</p>
+    </body>
+</html>

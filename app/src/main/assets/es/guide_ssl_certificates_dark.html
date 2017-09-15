@@ -1,0 +1,50 @@
+<!--
+  Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+
+        <link rel="stylesheet" href="../en/css/dark_theme.css">
+    </head>
+
+    <body>
+        <h3><img class="title" src="../en/images/ic_vpn_lock_blue_dark.png"> Conectar con confianza</h3>
+
+        <p>Al visitar una URL cifrada (que empieza con HTTPS), el servidor web usa un certificado SSL para cifrar tanto la información enviada al navegador como asimismo para identificar al servidor.
+            El propósito de la identificación del servidor es para prevenir que una máquina ubicada entre el navegador y el servidor web pretenda ser el servidor y descifrar la información en tránsito.
+            Este clase de ataque es conocido como Hombre en Medio (MITM en sus iniciales en inglés).
+            Los certificados SSL son generados por las autoridades certificadoras: compañías que verifican la identidad de un servidor y producen un certificado a cambio de una tarifa.
+            Android tiene una lista de autoridades certificadoras de confianza y aceptará cualquiera de sus certificados para cualquier página web.
+            Se supone que no es posible que una organización adquiera un certificado SSL para un dominio que no controla, pero en la práctica muchos gobiernos y grandes corporaciones han sido capaces de hacerlo.</p>
+
+        <p>Al fijar un certificado SSL se le indica al navegador que sólo se puede confiar en un certificado SSL específico para un dominio en particular. Cualquier otro certificado, aunque sea válido, será rechazado.</p>
+
+        <p><img class="center" src="images/ssl_certificate_mismatch.png"></p>
+
+        <p>Los certificados SSL expiran en una fecha especificada, por lo que incluso los certificados SSL fijados necesitarán legítimamente ser actualizados de vez en cuando.
+            Como regla general, fijar los certificados SSL probablemente no sea necesario en la mayoría de los casos.
+            Pero para aquellos que sospechan que organizaciones poderosas puedan estar aputando hacia ellos, la fijación de certificados SSL puede detectar y frustar un ataque MITM.</p>
+
+        <p><img class="center" src="images/pinned_ssl_certificate.png"></p>
+
+        <p>Los certificados SSL pueden ser fijados en Configuración de Dominios.
+            Además de proteger contra ataques MITM, fijar un certificado autofirmado para un dispositivo como un router inalámbrico o punto de acceso eliminará el mensaje de error que se presenta normalmente cada vez que se carga su página web.
+            Para ver el certificado SSL de la página web actual, pulse sobre el icono favorito próximo a la barrra URL.</p>
+    </body>
+</html>

@@ -49,6 +49,7 @@
         <item name="listSelectorDrawable">@drawable/list_selector_light</item>
         <item name="aboutTitle">@color/blue_900</item>
         <item name="aboutText">@color/blue_700</item>
+        <item name="aboutBackground">@color/white</item>
         <item name="iconTintColor">@color/blue_800</item>
         <item name="deleteIcon">@drawable/delete_light</item>
         <item name="addIcon">@drawable/add_light</item>
@@ -127,6 +128,7 @@
         <item name="primaryTextColorSelector">@color/primary_text_color_selector_dark</item>
         <item name="aboutTitle">@color/blue_600</item>
         <item name="aboutText">@color/blue_400</item>
+        <item name="aboutBackground">@color/gray_850</item>
         <item name="listSelectorDrawable">@drawable/list_selector_dark</item>
         <item name="iconTintColor">@color/blue_600</item>
         <item name="deleteIcon">@drawable/delete_dark</item>

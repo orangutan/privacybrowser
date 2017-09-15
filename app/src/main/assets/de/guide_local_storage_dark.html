@@ -1,0 +1,95 @@
+<!--
+  Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+
+  Translation 2016 Aaron Gerlach <aaron@gerlach.com>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+
+  Diese Datei ist Teil von Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser ist eine kostenlose Software: Sie können sie
+  unter den Bedingungen der GNU General Public License weiterverteilen
+  mit Berufung auf die veröffentlichte Fassung der Free Software
+  Foundation, entweder Version 3 der Lizenz oder (nach Ihrer
+  Möglichkeit) jede neuere Version.
+
+  Privacy Browser wird in der Hoffnung vertrieben nützlich zu sein,
+  jedoch OHNE JEGLICHE GARANTIE; auch ohne die implizierte
+  Garantie auf MARKTGÄNGLICHKEIT oder BEREITSCHAFT FÜR
+  BESTIMMTE ANWENDUNGEN. Nutzen Sie die GNU General Public
+  License für mehr Details.
+
+  Sie sollten eine Kopie der GNU General Public License zusammen mit
+  Privacy Browser erhalten haben. Wenn nicht, besuchen Sie
+  <http://www.gnu.org/licenses/>. -->
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+
+        <link rel="stylesheet" href="../en/css/dark_theme.css">
+    </head>
+
+    <body>
+        <h3><img class="title" src="../en/images/cookie_blue_dark.png"> Erstanbieter-Cookies</h3>
+
+        <p>Cookies können in zwei Typen unterteilt werden. Erstanbieter-Cookies sind Cookies, die von aktuell besuchten Website gesetzt werden.</p>
+
+        <p>In den frühen Tagen des Internets stellte sich heraus, dass es nützlich sein könnte, wenn Websites Informationen für einen
+            späteren Zugriff auf dem Computer speichern können. Zum Beispiel könnte eine Website, die Informationen zum Wetter bietet, den Benutzer nach der
+            Postleitzahl fragen und sie dann in einem Cookie speichern.  Beim nächsten Besuch des Benutzers würden die Informationen automatisch für diese
+            Postleitzahl geladen werden, ohne dass der Benutzer sie erneut eingibt oder einen Benutzeraccount für diese Website erstellt (was völlig überzogen für solch
+            eine simple Aufgabe wäre).</p>
+
+        <p>Wie bei allem im Web fanden kluge Leute alle möglichen Wege, Cookies für Dinge zu nutzen, die der Nutzer niemals grstatten würde, wenn er davon wüsste.
+            zum Beispiel kann eine Website einen Cookie mit einem einmaligen Schlüsselcode auf einem Gerät hinterlegen.
+            Dann kann er, jedes Mal wenn der Benutzer die Seite auf diesem Gerät besucht, diesen Benutzer einem bestimmten Profil
+            zuordnen welches der Server anlegt, selbst wenn der Nutzer - wie es auf einem Handy oft der Fall ist - mit einer anderen IP-Adresse surft.</p>
+
+        <p>Einige Websites mit Login-Funktion benötigen Erstanbieter-Cookies, damit der Benutzer eingeloggt bleibt.  Cookies sind nicht die einzige Möglichkeit
+            für eine Website, den User während des Umherklickens auf der Website eingeloggt zu lassen; wenn eine bestimmte Website sich jedoch dazu entschieden hat,
+            aktive Logins nur über Cookies zu verwalten, sind eingeschaltetem Erstanbieter-Cookies die einzige Möglichkeit, diese Funktion zu nutzen.</p>
+
+        <p>Wenn Erstanbieter-Cookies aktiviert sind aber Javascript deaktiviert, ist das Privatsphäre-Icon gelb <img class="inline" src="../en/images/warning.png">
+            als Warnung.</p>
+
+
+        <h3><img class="title" src="../en/images/cookie_blue_dark.png"> Drittanbieter-Cookies</h3>
+
+        <p>Drittanbieter-Cookies werden von Teilen einer Website gesetzt, die von einem anderen Server als dem aktuell besuchten.
+            Beispielsweise laden viele Websites Werbungen von einem Drittanbieter-Broker wie Googles
+            <a href="https://www.google.com/adsense/start/#?modal_active=none">Ad Sense</a>. Jedes Mal wenn die Website lädt, fragt bei dem
+            Werbe-Broker an, dass er Werbung zeigen soll.  Der Werbe-Broker analysiert jegliche information, die er über den Nutzer hat, vergleicht mit dem aktuell gezahlten Satz der Werbenden
+            Firmen, die die Werbung platziert haben wollen, und wählt die anzuzeigenden Werbungen aus. Der Bereich der Website, auf dem die Werbung
+            angezeigt wird, wird vom Drittanbieter-Broker statt von der eigentlich besuchten Website geladen.</p>
+
+        <p>Weil die meisten Werbungen im Internet von ein paar wenigen Brokern betrieben werden hat es nicht lange gedauert, bis sie gemerkt haben,
+            dass sie einfach einen Tracking-Cookie auf dem Gerät des Benutzers hinterlassen können um immer bescheid zu wissen, wohin er geht. Jedes Mal, wenn eine Werbung von einem Broker geladen wird,
+            ist es seine erste Aufgabe, das Gerät auf eine einmalige Seriennummer in einem cookie zu überprüfen. Wenn es den hat, sucht er
+            das Profil für diese Seriennummer heraus und merkt sich die neu besuchte Seite. Deshalb kann der Nutzer auf der einen Seite nach einem Produkt suchen,
+            nach dem er normalerweise nicht sucht, wie z. B. Walnüsse, und plötzlich auf jeder anderen besuchten Website Werbungen für Walnüsse angezeigt bekommen.</p>
+
+        <p>Zusätzlich zu Werbe-Brokern machen Social-Media-Plattformen das Gleiche. Vor ein paar Jahren haben die großen Plattformen wie
+            Facebook und Twitter eine große Auswahl von Websites ausgemacht, auf denen es in ihrem größten Interesse wäre, kleine Social Media-Icons zu platzieren.
+            Das sind nicht nur Bilder. Sie beinhalten <a href="https://developers.facebook.com/docs/plugins/like-button/">eingebettete Codes</a>, welche
+            zurück auf die Social-Media-Plattform verlinken und - neben anderen Dingen - einen Drittanbieter-Cookie auf dem Gerät hinterlassen. Diese Cookies werden selbst dann gesetzt,
+            wenn der Benutzer keinen Account bei der Social-Media-Plattform hat. Mit der Zeit bauten Firmen wie Facebook (welche ebenfalls einen Werbe-Broker betreiben) eine große Anzahl von
+            detaillierten Profilen über Personen an, die <a href="http://www.theverge.com/2016/5/27/11795248/facebook-ad-network-non-users-cookies-plug-ins">niemals einen Account
+                auf ihrer Seite erstellt haben</a>.</p>
+
+        <p>Es gibt kaum gute Gründe, Drittanbieter-Cookies zu aktivieren. Auf Android-Geräten mit Android-Version KitKat oder ältere (Version <= 4.4.4 oder API <=20)
+            <a href="https://developer.android.com/reference/android/webkit/CookieManager.html#acceptThirdPartyCookies(android.webkit.WebView)">unterscheidet Webview Erstanbieter- und Drittanbieter-Cookies nicht</a>.
+            Deshalb aktiviert das Aktivieren von Erstanbieter-Cookies zugleich auch Drittanbieter-Cookies.</p>
+
+
+        <h3><img class="title" src="../en/images/ic_web_blue_dark.png"> DOM-Speicher</h3>
+
+        <p>Der Document Object Model-Speicher, auch bekannt als Web-Speicher, ist wie Cookies auf Steroiden. Während die maximale Gesamtspeichergrße für alle Cookies von
+            einer einzigen URL 4kb beträgt, kann der DOM-Speicher zwischen <a href="https://en.wikipedia.org/wiki/Web_storage#Storage_size">5-25 Megabytes pro Seite</a> betragen.
+            Da der DOM-Speicher Javascript zum Lesen und Schreiben von Daten nutzt, ändert das Aktivieren also nichts, solange nicht auch Javascript aktiviert ist.</p>
+
+
+        <h3><img class="title" src="../en/images/ic_subtitles_blue_dark.png"> Formulardaten</h3>
+
+        <p>Formulardaten beinhalten die Informationen, die in Web-Formularen eingegeben werden, wie Benutzernamen, Adressen, Telefonnummern etc. und listet sie als Auswahlmenü auf künftig besuchten Websites auf.
+            Ungleich der anderen Arten der lokalen Datenspeicherung werden Formulardaten nicht ohne die explizite Handlung des Nutzers an den Webserver gesendet.</p>
+    </body>
+</html>
