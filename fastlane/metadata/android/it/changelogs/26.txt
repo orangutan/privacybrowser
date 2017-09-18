@@ -1,0 +1,6 @@
+• Aggiunta la Modalità Notte.
+• Aggiornamento dell'aspetto del tema “Dark” delle sezioni “Informazioni” e “Guida”.
+• Aggiunta del supporto per l'autenticazione HTTP.
+• Codifica del colore del nome comune nella finestra di dialogo per la visione del certificato SSL.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León Becerra.

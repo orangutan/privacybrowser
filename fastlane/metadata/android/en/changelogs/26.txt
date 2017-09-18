@@ -1,0 +1,6 @@
+• Add night mode rendering.
+• Update the dark theme rendering of the About and Guide sections.
+• Add support for HTTP authentication.
+• Color code the Common Name in the view SSL certificate dialog.
+• Updated Italian translation provided by Francesco Buratti.
+• Updated Spanish translation provided by Jose A. León Becerra.
