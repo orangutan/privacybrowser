@@ -173,7 +173,6 @@
     <string name="bookmark_url">URL Segnalibro</string>
     <string name="folder_names_must_be_unique">I nomi delle cartelle devono essere unici</string>
     <string name="cannot_save_folder">Non è possibile salvare la cartella perché già esistente:</string>
-    <string name="cannot_move_bookmarks">Non è possibile spostare il segnalibro, nessuna cartella selezionata.</string>
     <string name="edit_bookmark">Modifica Segnalibro</string>
     <string name="edit_folder">Modifica Cartella</string>
     <string name="move_to_folder">Sposta nella Cartella</string>

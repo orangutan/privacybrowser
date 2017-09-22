@@ -176,7 +176,6 @@
     <string name="bookmark_url">Bookmark URL</string>
     <string name="folder_names_must_be_unique">Folder names must be unique</string>
     <string name="cannot_save_folder">Cannot save the folder because the new name is not unique:</string>
-    <string name="cannot_move_bookmarks">Cannot move the selected bookmarks because no new folder was selected.</string>
     <string name="edit_bookmark">Edit Bookmark</string>
     <string name="edit_folder">Edit Folder</string>
     <string name="move_to_folder">Move to Folder</string>

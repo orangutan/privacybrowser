@@ -203,7 +203,17 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
             @Override
             public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                return false;
+                // Get a handle for the move to folder menu item.
+                MenuItem moveToFolderMenuItem = menu.findItem(R.id.move_to_folder);
+
+                // Get a `Cursor` with all of the folders.
+                Cursor folderCursor = bookmarksDatabaseHelper.getAllFoldersCursor();
+
+                // Enable the move to folder menu item if at least one folder exists.
+                moveToFolderMenuItem.setVisible(folderCursor.getCount() > 0);
+
+                // `return true` indicates that the menu has been updated.
+                return true;
             }
 
             @Override
@@ -759,39 +769,35 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         ListView folderListView = (ListView) dialogFragment.getDialog().findViewById(R.id.move_to_folder_listview);
         long[] newFolderLongArray = folderListView.getCheckedItemIds();
 
-        if (newFolderLongArray.length == 0) {  // No new folder was selected.
-            Snackbar.make(findViewById(R.id.bookmarks_coordinatorlayout), getString(R.string.cannot_move_bookmarks), Snackbar.LENGTH_INDEFINITE).show();
-        } else {  // Move the selected bookmarks.
-            // Get the new folder database ID.
-            int newFolderDatabaseId = (int) newFolderLongArray[0];
+        // Get the new folder database ID.
+        int newFolderDatabaseId = (int) newFolderLongArray[0];
 
-            // Instantiate `newFolderName`.
-            String newFolderName;
+        // Instantiate `newFolderName`.
+        String newFolderName;
 
-            if (newFolderDatabaseId == 0) {
-                // The new folder is the home folder, represented as `""` in the database.
-                newFolderName = "";
-            } else {
-                // Get the new folder name from the database.
-                newFolderName = bookmarksDatabaseHelper.getFolderName(newFolderDatabaseId);
-            }
-
-            // Get a long array with the the database ID of the selected bookmarks.
-            long[] selectedBookmarksLongArray = bookmarksListView.getCheckedItemIds();
-            for (long databaseIdLong : selectedBookmarksLongArray) {
-                // Get `databaseIdInt` for each selected bookmark.
-                int databaseIdInt = (int) databaseIdLong;
-
-                // Move the selected bookmark to the new folder.
-                bookmarksDatabaseHelper.moveToFolder(databaseIdInt, newFolderName);
-            }
-
-            // Refresh the `ListView`.
-            updateBookmarksListView(currentFolder);
-
-            // Close the contextual app bar.
-            contextualActionMode.finish();
+        if (newFolderDatabaseId == 0) {
+            // The new folder is the home folder, represented as `""` in the database.
+            newFolderName = "";
+        } else {
+            // Get the new folder name from the database.
+            newFolderName = bookmarksDatabaseHelper.getFolderName(newFolderDatabaseId);
         }
+
+        // Get a long array with the the database ID of the selected bookmarks.
+        long[] selectedBookmarksLongArray = bookmarksListView.getCheckedItemIds();
+        for (long databaseIdLong : selectedBookmarksLongArray) {
+            // Get `databaseIdInt` for each selected bookmark.
+            int databaseIdInt = (int) databaseIdLong;
+
+            // Move the selected bookmark to the new folder.
+            bookmarksDatabaseHelper.moveToFolder(databaseIdInt, newFolderName);
+        }
+
+        // Refresh the `ListView`.
+        updateBookmarksListView(currentFolder);
+
+        // Close the contextual app bar.
+        contextualActionMode.finish();
     }
 
     private void updateBookmarksListView(String folderName) {

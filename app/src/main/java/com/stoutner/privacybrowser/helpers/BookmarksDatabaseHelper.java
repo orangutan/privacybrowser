@@ -216,6 +216,19 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         return parentFolder;
     }
 
+    public Cursor getAllFoldersCursor() {
+        // Get a readable database handle.
+        SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
+
+        // Prepare the SQL statement to get the `Cursor` for all the folders.
+        final String GET_ALL_FOLDERS = "SELECT * FROM " + BOOKMARKS_TABLE +
+                " WHERE " + IS_FOLDER + " = " + 1;
+
+        // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.
+        // We can't close the `Cursor` because we need to use it in the parent activity.
+        return bookmarksDatabase.rawQuery(GET_ALL_FOLDERS, null);
+    }
+
     public Cursor getAllBookmarksCursor() {
         // Get a readable database handle.
         SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
