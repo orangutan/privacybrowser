@@ -476,6 +476,20 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                                                     // Delete `databaseIdInt`.
                                                     bookmarksDatabaseHelper.deleteBookmark(databaseIdInt);
                                                 }
+
+                                                // Update the display order.
+                                                for (int i = 0; i < bookmarksListView.getCount(); i++) {
+                                                    // Get the database ID for the current bookmark.
+                                                    int currentBookmarkDatabaseId = (int) bookmarksListView.getItemIdAtPosition(i);
+
+                                                    // Move `bookmarksCursor` to the current bookmark position.
+                                                    bookmarksCursor.moveToPosition(i);
+
+                                                    // Update the display order only if it is not correct in the database.
+                                                    if (bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER)) != i) {
+                                                        bookmarksDatabaseHelper.updateBookmarkDisplayOrder(currentBookmarkDatabaseId, i);
+                                                    }
+                                                }
                                                 break;
                                         }
                                     }
