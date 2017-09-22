@@ -28,14 +28,20 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 // We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <=22.
 import android.support.v7.app.AppCompatDialogFragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.stoutner.privacybrowser.activities.BookmarksActivity;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
@@ -61,6 +67,14 @@ public class EditBookmarkDialog extends AppCompatDialogFragment {
             throw new ClassCastException(context.toString() + " must implement EditBookmarkListener.");
         }
     }
+
+    // Instantiate the class variables.
+    EditText nameEditText;
+    EditText urlEditText;
+    RadioButton newIconRadioButton;
+    Button editButton;
+    String currentName;
+    String currentUrl;
 
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
@@ -108,7 +122,6 @@ public class EditBookmarkDialog extends AppCompatDialogFragment {
             }
         });
 
-
         // Create an `AlertDialog` from the `AlertDialog.Builder`.
         final AlertDialog alertDialog = dialogBuilder.create();
 
@@ -118,59 +131,118 @@ public class EditBookmarkDialog extends AppCompatDialogFragment {
         // Show the keyboard when `alertDialog` is displayed on the screen.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
-        // We need to show the `AlertDialog` before we can modify items in the layout.
+        // The `AlertDialog` must be shown before items in the layout can be modified.
         alertDialog.show();
+
+        // Get handles for the layout items.
+        RadioGroup iconRadioGroup = (RadioGroup) alertDialog.findViewById(R.id.edit_bookmark_icon_radiogroup);
+        ImageView currentIconImageView = (ImageView) alertDialog.findViewById(R.id.edit_bookmark_current_icon);
+        ImageView newFavoriteIconImageView = (ImageView) alertDialog.findViewById(R.id.edit_bookmark_web_page_favorite_icon);
+        newIconRadioButton = (RadioButton) alertDialog.findViewById(R.id.edit_bookmark_web_page_favorite_icon_radiobutton);
+        nameEditText = (EditText) alertDialog.findViewById(R.id.edit_bookmark_name_edittext);
+        urlEditText = (EditText) alertDialog.findViewById(R.id.edit_bookmark_url_edittext);
+        editButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
         // Get the current favorite icon byte array from the `Cursor`.
         byte[] currentIconByteArray = bookmarkCursor.getBlob(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON));
+
         // Convert the byte array to a `Bitmap` beginning at the first byte and ending at the last.
         Bitmap currentIconBitmap = BitmapFactory.decodeByteArray(currentIconByteArray, 0, currentIconByteArray.length);
+
         // Display `currentIconBitmap` in `edit_bookmark_current_icon`.
-        ImageView currentIconImageView = (ImageView) alertDialog.findViewById(R.id.edit_bookmark_current_icon);
         currentIconImageView.setImageBitmap(currentIconBitmap);
 
         // Get a `Bitmap` of the favorite icon from `MainWebViewActivity` and display it in `edit_bookmark_web_page_favorite_icon`.
-        ImageView newFavoriteIconImageView = (ImageView) alertDialog.findViewById(R.id.edit_bookmark_web_page_favorite_icon);
         newFavoriteIconImageView.setImageBitmap(MainWebViewActivity.favoriteIconBitmap);
 
-        // Load the text for `edit_bookmark_name_edittext`.
-        EditText bookmarkNameEditText = (EditText) alertDialog.findViewById(R.id.edit_bookmark_name_edittext);
-        bookmarkNameEditText.setText(bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME)));
+        // Store the current bookmark name and URL.
+        currentName = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
+        currentUrl = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL));
+
+        // Populate the `EditTexts`.
+        nameEditText.setText(currentName);
+        urlEditText.setText(currentUrl);
+
+        // Initially disable the edit button.
+        editButton.setEnabled(false);
+
+        // Update the edit button if the icon selection changes.
+        iconRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                // Update the edit button.
+                updateEditButton();
+            }
+        });
+
+        // Update the edit button if the bookmark name changes.
+        nameEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing.
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Do nothing.
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Update the edit button.
+                updateEditButton();
+            }
+        });
+
+        // Update the edit button if the URL changes.
+        urlEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing.
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Do nothing.
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Update the edit button.
+                updateEditButton();
+            }
+        });
 
         // Allow the `enter` key on the keyboard to save the bookmark from `edit_bookmark_name_edittext`.
-        bookmarkNameEditText.setOnKeyListener(new View.OnKeyListener() {
+        nameEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // If the event is an `ACTION_DOWN` on the `enter` key, save the bookmark.
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER) && editButton.isEnabled()) {  // The enter key was pressed and the edit button is enabled.
                     // Trigger `onSaveEditBookmark()` and return the `DialogFragment` to the parent activity.
                     editBookmarkListener.onSaveEditBookmark(EditBookmarkDialog.this);
                     // Manually dismiss `alertDialog`.
                     alertDialog.dismiss();
                     // Consume the event.
                     return true;
-                } else {  // If any other key was pressed, do not consume the event.
+                } else {  // If any other key was pressed, or if the edit button is currently disabled, do not consume the event.
                     return false;
                 }
             }
         });
 
-        // Load the text for `edit_bookmark_url_edittext`.
-        EditText bookmarkUrlEditText = (EditText) alertDialog.findViewById(R.id.edit_bookmark_url_edittext);
-        bookmarkUrlEditText.setText(bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL)));
-
         // Allow the "enter" key on the keyboard to save the bookmark from `edit_bookmark_url_edittext`.
-        bookmarkUrlEditText.setOnKeyListener(new View.OnKeyListener() {
+        urlEditText.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // If the event is a key-down on the `enter` button, select the PositiveButton `Save`.
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER) && editButton.isEnabled()) {  // The enter key was pressed and the edit button is enabled.
                     // Trigger `editBookmarkListener` and return the DialogFragment to the parent activity.
                     editBookmarkListener.onSaveEditBookmark(EditBookmarkDialog.this);
                     // Manually dismiss the `AlertDialog`.
                     alertDialog.dismiss();
                     // Consume the event.
                     return true;
-                } else { // If any other key was pressed, do not consume the event.
+                } else { // If any other key was pressed, or if the edit button is currently disabled, do not consume the event.
                     return false;
                 }
             }
@@ -178,5 +250,22 @@ public class EditBookmarkDialog extends AppCompatDialogFragment {
 
         // `onCreateDialog` requires the return of an `AlertDialog`.
         return alertDialog;
+    }
+
+    private void updateEditButton() {
+        // Get the text from the `EditTexts`.
+        String newName = nameEditText.getText().toString();
+        String newUrl = urlEditText.getText().toString();
+
+        // Has the favorite icon changed?
+        boolean iconChanged = newIconRadioButton.isChecked();
+
+        // Has the name changed?
+        boolean nameChanged = !newName.equals(currentName);
+
+        // Has the URL changed?
+        boolean urlChanged = !newUrl.equals(currentUrl);
+
+        editButton.setEnabled(iconChanged || nameChanged || urlChanged);
     }
 }

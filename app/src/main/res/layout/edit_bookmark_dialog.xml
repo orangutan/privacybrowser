@@ -63,6 +63,7 @@
 
             <!-- The column with the `RadioGroup`. -->
             <RadioGroup
+                android:id="@+id/edit_bookmark_icon_radiogroup"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:checkedButton="@+id/edit_bookmark_current_icon_radiobutton" >
@@ -103,7 +104,8 @@
                 android:layout_width="match_parent"
                 android:hint="@string/bookmark_name"
                 android:imeOptions="actionGo"
-                android:inputType="textUri" />
+                android:inputType="textUri"
+                android:selectAllOnFocus="true" />
         </android.support.design.widget.TextInputLayout>
 
         <!-- `android.support.design.widget.TextInputLayout` makes the `android:hint` float above the `EditText`. -->
@@ -116,15 +118,15 @@
             android:layout_marginEnd="4dp" >
 
             <!-- `android:imeOptions="actionGo"` sets the keyboard to have a "go" key instead of a "new line" key.
-                `android:inputType="textUri"` disables spell check in the EditText.
-                `android:singleLine="true"` is not needed in a Dialog.-->
+                `android:inputType="textUri"` disables spell check in the EditText. -->
             <EditText
                 android:id="@+id/edit_bookmark_url_edittext"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:hint="@string/bookmark_url"
                 android:imeOptions="actionGo"
-                android:inputType="textUri" />
+                android:inputType="textUri"
+                android:selectAllOnFocus="true" />
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>
 </ScrollView>
