@@ -110,7 +110,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Set the content view.
         setContentView(R.layout.bookmarks_coordinatorlayout);
 
-        // We need to use the `SupportActionBar` from `android.support.v7.app.ActionBar` until the minimum API is >= 21.
+        // Use the `SupportActionBar` from `android.support.v7.app.ActionBar` until the minimum API is >= 21.
         final Toolbar bookmarksAppBar = (Toolbar) findViewById(R.id.bookmarks_toolbar);
         setSupportActionBar(bookmarksAppBar);
 
@@ -281,45 +281,46 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                // Get the menu item ID.
                 int menuItemId = item.getItemId();
 
-                // `numberOfBookmarks` is used in `R.id.move_bookmark_up_enabled`, `R.id.move_bookmark_down_enabled`, and `R.id.context_menu_select_all_bookmarks`.
+                // Instantiate the common variables.
                 int numberOfBookmarks;
-
-                // `selectedBookmarkLongArray` is used in `R.id.move_bookmark_up`, `R.id.move_bookmark_down`, and `R.id.edit_bookmark`.
-                long[]selectedBookmarkLongArray;
-                // `selectedBookmarkDatabaseId` is used in `R.id.move_bookmark_up`, `R.id.move_bookmark_down`, and `R.id.edit_bookmark`.
-                int selectedBookmarkDatabaseId;
-                // `selectedBookmarkNewPosition` is used in `R.id.move_bookmark_up` and `R.id.move_bookmark_down`.
                 int selectedBookmarkNewPosition;
-                // `bookmarkPositionSparseBooleanArray` is used in `R.id.edit_bookmark` and `R.id.delete_bookmark`.
                 SparseBooleanArray bookmarkPositionSparseBooleanArray;
 
                 switch (menuItemId) {
                     case R.id.move_bookmark_up:
-                        // Get the selected bookmark database ID.
-                        selectedBookmarkLongArray = bookmarksListView.getCheckedItemIds();
-                        selectedBookmarkDatabaseId = (int) selectedBookmarkLongArray[0];
+                        // Get the array of checked bookmarks.
+                        bookmarkPositionSparseBooleanArray = bookmarksListView.getCheckedItemPositions();
+
+                        // Store the position of the selected bookmark.
+                        selectedBookmarkPosition = bookmarkPositionSparseBooleanArray.keyAt(0);
 
                         // Initialize `selectedBookmarkNewPosition`.
                         selectedBookmarkNewPosition = 0;
 
+                        // Iterate through the bookmarks.
                         for (int i = 0; i < bookmarksListView.getCount(); i++) {
-                            int databaseId = (int) bookmarksListView.getItemIdAtPosition(i);
-                            int nextBookmarkDatabaseId = (int) bookmarksListView.getItemIdAtPosition(i + 1);
+                            // Get the database ID for the current bookmark.
+                            int currentBookmarkDatabaseId = (int) bookmarksListView.getItemIdAtPosition(i);
 
-                            if (databaseId == selectedBookmarkDatabaseId || nextBookmarkDatabaseId == selectedBookmarkDatabaseId) {
-                                if (databaseId == selectedBookmarkDatabaseId) {
-                                    // Move the selected bookmark up one and store the new bookmark position.
-                                    bookmarksDatabaseHelper.updateBookmarkDisplayOrder(databaseId, i - 1);
-                                    selectedBookmarkNewPosition = i - 1;
-                                } else {  // Move the bookmark above the selected bookmark down one.
-                                    bookmarksDatabaseHelper.updateBookmarkDisplayOrder(databaseId, i + 1);
+                            // Update the display order for the current bookmark.
+                            if (i == selectedBookmarkPosition) {  // The current bookmark is the selected bookmark.
+                                // Move the current bookmark up one.
+                                bookmarksDatabaseHelper.updateBookmarkDisplayOrder(currentBookmarkDatabaseId, i - 1);
+                                selectedBookmarkNewPosition = i - 1;
+                            } else if ((i + 1) == selectedBookmarkPosition){  // The current bookmark is immediately above the selected bookmark.
+                                // Move the current bookmark down one.
+                                bookmarksDatabaseHelper.updateBookmarkDisplayOrder(currentBookmarkDatabaseId, i + 1);
+                            } else {  // The current bookmark is not changing positions.
+                                // Move `bookmarksCursor` to the current bookmark position.
+                                bookmarksCursor.moveToPosition(i);
+
+                                // Update the display order only if it is not correct in the database.
+                                if (bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER)) != i) {
+                                    bookmarksDatabaseHelper.updateBookmarkDisplayOrder(currentBookmarkDatabaseId, i);
                                 }
-                            } else {
-                                // Reset the rest of the bookmarks' DISPLAY_ORDER to match the position in the ListView.
-                                // This isn't necessary, but it clears out any stray values that might have crept into the database.
-                                bookmarksDatabaseHelper.updateBookmarkDisplayOrder(databaseId, i);
                             }
                         }
 
@@ -335,29 +336,36 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                         break;
 
                     case R.id.move_bookmark_down:
-                        // Get the selected bookmark database ID.
-                        selectedBookmarkLongArray = bookmarksListView.getCheckedItemIds();
-                        selectedBookmarkDatabaseId = (int) selectedBookmarkLongArray[0];
+                        // Get the array of checked bookmarks.
+                        bookmarkPositionSparseBooleanArray = bookmarksListView.getCheckedItemPositions();
+
+                        // Store the position of the selected bookmark.
+                        selectedBookmarkPosition = bookmarkPositionSparseBooleanArray.keyAt(0);
 
                         // Initialize `selectedBookmarkNewPosition`.
                         selectedBookmarkNewPosition = 0;
 
+                        // Iterate through the bookmarks.
                         for (int i = 0; i <bookmarksListView.getCount(); i++) {
-                            int databaseId = (int) bookmarksListView.getItemIdAtPosition(i);
-                            int previousBookmarkDatabaseId = (int) bookmarksListView.getItemIdAtPosition(i - 1);
+                            // Get the database ID for the current bookmark.
+                            int currentBookmarkDatabaseId = (int) bookmarksListView.getItemIdAtPosition(i);
 
-                            if (databaseId == selectedBookmarkDatabaseId || previousBookmarkDatabaseId == selectedBookmarkDatabaseId) {
-                                if (databaseId == selectedBookmarkDatabaseId) {
-                                    // Move the selected bookmark down one and store the new bookmark position.
-                                    bookmarksDatabaseHelper.updateBookmarkDisplayOrder(databaseId, i + 1);
-                                    selectedBookmarkNewPosition = i + 1;
-                                } else {  // Move the bookmark below the selected bookmark up one.
-                                    bookmarksDatabaseHelper.updateBookmarkDisplayOrder(databaseId, i - 1);
+                            // Update the display order for the current bookmark.
+                            if (i == selectedBookmarkPosition) {  // The current bookmark is the selected bookmark.
+                                // Move the current bookmark down one.
+                                bookmarksDatabaseHelper.updateBookmarkDisplayOrder(currentBookmarkDatabaseId, i + 1);
+                                selectedBookmarkNewPosition = i + 1;
+                            } else if ((i - 1) == selectedBookmarkPosition) {  // The current bookmark is immediately below the selected bookmark.
+                                // Move the bookmark below the selected bookmark up one.
+                                bookmarksDatabaseHelper.updateBookmarkDisplayOrder(currentBookmarkDatabaseId, i - 1);
+                            } else {  // The current bookmark is not changing positions.
+                                // Move `bookmarksCursor` to the current bookmark position.
+                                bookmarksCursor.moveToPosition(i);
+
+                                // Update the display order only if it is not correct in the database.
+                                if (bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER)) != i) {
+                                    bookmarksDatabaseHelper.updateBookmarkDisplayOrder(currentBookmarkDatabaseId, i);
                                 }
-                            } else {
-                                // Reset the rest of the bookmark' DISPLAY_ORDER to match the position in the ListView.
-                                // This isn't necessary, but it clears out any stray values that might have crept into the database.
-                                bookmarksDatabaseHelper.updateBookmarkDisplayOrder(databaseId, i);
                             }
                         }
 
@@ -381,13 +389,11 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                         break;
 
                     case R.id.edit_bookmark:
-                        // Get a handle for `selectedBookmarkPosition` so we can scroll to it after refreshing the ListView.
+                        // Get the array of checked bookmarks.
                         bookmarkPositionSparseBooleanArray = bookmarksListView.getCheckedItemPositions();
-                        for (int i = 0; i < bookmarkPositionSparseBooleanArray.size(); i++) {
-                            // Find the bookmark that is selected and save the position to `selectedBookmarkPosition`.
-                            if (bookmarkPositionSparseBooleanArray.valueAt(i))
-                                selectedBookmarkPosition = bookmarkPositionSparseBooleanArray.keyAt(i);
-                        }
+
+                        // Store the position of the selected bookmark.
+                        selectedBookmarkPosition = bookmarkPositionSparseBooleanArray.keyAt(0);
 
                         // Move to the selected database ID and find out if it is a folder.
                         bookmarksCursor.moveToPosition(selectedBookmarkPosition);
@@ -414,20 +420,18 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                         // Get an array of the selected rows.
                         final long[] selectedBookmarksLongArray = bookmarksListView.getCheckedItemIds();
 
-                        // Get a handle for `selectedBookmarkPosition` so we can scroll to it after refreshing the ListView.
+                        // Get the array of checked bookmarks.
                         bookmarkPositionSparseBooleanArray = bookmarksListView.getCheckedItemPositions();
-                        for (int i = 0; i < bookmarkPositionSparseBooleanArray.size(); i++) {
-                            // Find the bookmark that is selected and save the position to `selectedBookmarkPosition`.
-                            if (bookmarkPositionSparseBooleanArray.valueAt(i))
-                                selectedBookmarkPosition = bookmarkPositionSparseBooleanArray.keyAt(i);
-                        }
+
+                        // Store the position of the first selected bookmark.
+                        selectedBookmarkPosition = bookmarkPositionSparseBooleanArray.keyAt(0);
 
                         updateBookmarksListViewExcept(selectedBookmarksLongArray, currentFolder);
 
-                        // Scroll to where the deleted bookmark was located.
+                        // Scroll to where the first deleted bookmark was located.
                         bookmarksListView.setSelection(selectedBookmarkPosition - 5);
 
-                        // Initialize `snackbarMessage`.
+                        // Create `snackbarMessage`.
                         String snackbarMessage;
 
                         // Determine how many items are in the array and prepare an appropriate Snackbar message.
@@ -454,7 +458,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                                                 // Refresh the ListView to show the rows again.
                                                 updateBookmarksListView(currentFolder);
 
-                                                // Scroll to where the deleted bookmark was located.
+                                                // Scroll to where the first deleted bookmark was located.
                                                 bookmarksListView.setSelection(selectedBookmarkPosition - 5);
                                                 break;
 

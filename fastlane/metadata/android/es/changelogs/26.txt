@@ -1,6 +1,6 @@
 • Añadir renderizado en modo nocturno.
-• Actualizar el renderizado del tema oscuro de lassecciones Acerca de y Guía
-• Añadir soporte para autenticación HTTP .
-• Colorear el Nombre Comúnen el cuadro de diálogo Ver certificado SSL.
+• Actualizar el renderizado del tema oscuro de las secciones Acerca de y Guía.
+• Añadir soporte para autenticación HTTP.
+• Colorear el Nombre Común en el cuadro de diálogo Ver certificado SSL.
 • Traducción al español actualizada proporcionada por Jose A. León Becerra.
 • Traducción al italiano actualizada proporcionada por Francesco Buratti.
