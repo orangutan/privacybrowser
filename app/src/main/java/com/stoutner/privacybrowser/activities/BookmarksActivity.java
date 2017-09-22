@@ -120,7 +120,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         appBar.setDisplayHomeAsUpEnabled(true);
 
 
-        // Initialize the database handler and the `ListView`.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
+        // Initialize the database helper and the `ListView`.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
         // The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
         bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this, null, null, 0);
         bookmarksListView = (ListView) findViewById(R.id.bookmarks_listview);

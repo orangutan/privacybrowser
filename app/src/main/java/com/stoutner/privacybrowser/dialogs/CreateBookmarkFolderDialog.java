@@ -24,18 +24,23 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 // We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <=22.
 import android.support.v7.app.AppCompatDialogFragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 
 public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
     // The public interface is used to send information back to the parent activity.
@@ -105,22 +110,56 @@ public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
         // Show the keyboard when the `Dialog` is displayed on the screen.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
-        // We need to show the `AlertDialog` before we can call `setOnKeyListener()` below.
+        // The `AlertDialog` must be shown before items in the alert dialog can be modified.
         alertDialog.show();
 
+        // Initialize the database helper.  The two `nulls` do not specify the database name or a `CursorFactory`.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
+        final BookmarksDatabaseHelper bookmarksDatabaseHelper = new BookmarksDatabaseHelper(getContext(), null, null, 0);
+
+        // Get a handle for the create button.
+        final Button createButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        EditText folderNameEditText = (EditText) alertDialog.findViewById(R.id.create_folder_name_edittext);
+
+        // Initially disable the create button.
+        createButton.setEnabled(false);
+
+        // Enable the create button if the new folder name is unique.
+        folderNameEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing.
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Do nothing.
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Convert the current text to a string.
+                String folderName = s.toString();
+
+                // Check if a folder with the name already exists.
+                Cursor folderExistsCursor = bookmarksDatabaseHelper.getFolderCursor(folderName);
+
+                // Enable the create button if the new folder name is not empty and doesn't already exist.
+                createButton.setEnabled(!folderName.isEmpty() && (folderExistsCursor.getCount() == 0));
+            }
+        });
+
         // Allow the `enter` key on the keyboard to create the folder from `create_folder_name_edittext`.
-        EditText createFolderNameEditText = (EditText) alertDialog.findViewById(R.id.create_folder_name_edittext);
-        createFolderNameEditText.setOnKeyListener(new View.OnKeyListener() {
+        folderNameEditText.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // If the event is a key-down on the `enter` key, select the `PositiveButton` `Create`.
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER) && createButton.isEnabled()) {  // The enter key was pressed and the create button is enabled.
                     // Trigger `createBookmarkFolderListener` and return the `DialogFragment` to the parent activity.
                     createBookmarkFolderListener.onCreateBookmarkFolder(CreateBookmarkFolderDialog.this);
                     // Manually dismiss the `AlertDialog`.
                     alertDialog.dismiss();
                     // Consume the event.
                     return true;
-                } else {  // If any other key was pressed do not consume the event.
+                } else {  // If any other key was pressed, or if the create button is currently disabled, do not consume the event.
                     return false;
                 }
             }
