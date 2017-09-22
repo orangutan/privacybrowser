@@ -626,44 +626,35 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         EditText createFolderNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.create_folder_name_edittext);
         String folderNameString = createFolderNameEditText.getText().toString();
 
-        // Check to see if the folder already exists.
-        Cursor bookmarkFolderCursor = bookmarksDatabaseHelper.getFolderCursor(folderNameString);
-        int existingFoldersWithNewName = bookmarkFolderCursor.getCount();
-        bookmarkFolderCursor.close();
-        if (folderNameString.isEmpty() || (existingFoldersWithNewName > 0)) {
-            String cannotCreateFolder = getResources().getString(R.string.cannot_create_folder) + " \"" + folderNameString + "\"";
-            Snackbar.make(findViewById(R.id.bookmarks_coordinatorlayout), cannotCreateFolder, Snackbar.LENGTH_INDEFINITE).show();
-        } else {  // Create the folder.
-            // Get the new folder icon `Bitmap`.
-            RadioButton defaultFolderIconRadioButton = (RadioButton) dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon_radiobutton);
-            Bitmap folderIconBitmap;
-            if (defaultFolderIconRadioButton.isChecked()) {
-                // Get the default folder icon `ImageView` from the `Dialog` and convert it to a `Bitmap`.
-                ImageView folderIconImageView = (ImageView) dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon);
-                Drawable folderIconDrawable = folderIconImageView.getDrawable();
-                BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
-                folderIconBitmap = folderIconBitmapDrawable.getBitmap();
-            } else {  // Assign `favoriteIcon` from the `WebView`.
-                folderIconBitmap = MainWebViewActivity.favoriteIconBitmap;
-            }
-
-            // Convert `folderIconBitmap` to a byte array.  `0` is for lossless compression (the only option for a PNG).
-            ByteArrayOutputStream folderIconByteArrayOutputStream = new ByteArrayOutputStream();
-            folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, folderIconByteArrayOutputStream);
-            byte[] folderIconByteArray = folderIconByteArrayOutputStream.toByteArray();
-
-            // Move all the bookmarks down one in the display order.
-            for (int i = 0; i < bookmarksListView.getCount(); i++) {
-                int databaseId = (int) bookmarksListView.getItemIdAtPosition(i);
-                bookmarksDatabaseHelper.updateBookmarkDisplayOrder(databaseId, i + 1);
-            }
-
-            // Create the folder, placing it at the top of the ListView
-            bookmarksDatabaseHelper.createFolder(folderNameString, 0, currentFolder, folderIconByteArray);
-
-            // Refresh the ListView.
-            updateBookmarksListView(currentFolder);
+        // Get the new folder icon `Bitmap`.
+        RadioButton defaultFolderIconRadioButton = (RadioButton) dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon_radiobutton);
+        Bitmap folderIconBitmap;
+        if (defaultFolderIconRadioButton.isChecked()) {
+            // Get the default folder icon `ImageView` from the `Dialog` and convert it to a `Bitmap`.
+            ImageView folderIconImageView = (ImageView) dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon);
+            Drawable folderIconDrawable = folderIconImageView.getDrawable();
+            BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
+            folderIconBitmap = folderIconBitmapDrawable.getBitmap();
+        } else {  // Assign `favoriteIcon` from the `WebView`.
+            folderIconBitmap = MainWebViewActivity.favoriteIconBitmap;
         }
+
+        // Convert `folderIconBitmap` to a byte array.  `0` is for lossless compression (the only option for a PNG).
+        ByteArrayOutputStream folderIconByteArrayOutputStream = new ByteArrayOutputStream();
+        folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, folderIconByteArrayOutputStream);
+        byte[] folderIconByteArray = folderIconByteArrayOutputStream.toByteArray();
+
+        // Move all the bookmarks down one in the display order.
+        for (int i = 0; i < bookmarksListView.getCount(); i++) {
+            int databaseId = (int) bookmarksListView.getItemIdAtPosition(i);
+            bookmarksDatabaseHelper.updateBookmarkDisplayOrder(databaseId, i + 1);
+        }
+
+        // Create the folder, placing it at the top of the ListView
+        bookmarksDatabaseHelper.createFolder(folderNameString, 0, currentFolder, folderIconByteArray);
+
+        // Refresh the ListView.
+        updateBookmarksListView(currentFolder);
     }
 
     @Override

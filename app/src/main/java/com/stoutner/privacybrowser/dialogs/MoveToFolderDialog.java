@@ -35,10 +35,12 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-// We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <=22.
+// `AppCompatDialogFragment` must be used instead of `DialogFragment` or an error is produced on API <=22.
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -115,8 +117,14 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
         // Create an `AlertDialog` from the `AlertDialog.Builder`.
         final AlertDialog alertDialog = dialogBuilder.create();
 
-        // We need to show the `AlertDialog` before we can modify items in the layout.
+        // Show the `AlertDialog` so the items in the layout can be modified.
         alertDialog.show();
+
+        // Get a handle for the positive button.
+        final Button moveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+
+        // Initially disable the positive button.
+        moveButton.setEnabled(false);
 
         // Initialize the `Cursor` and `CursorAdapter` variables.
         Cursor foldersCursor;
@@ -250,6 +258,15 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
         // Display the ListView
         ListView foldersListView = (ListView) alertDialog.findViewById(R.id.move_to_folder_listview);
         foldersListView.setAdapter(foldersCursorAdapter);
+
+        // Enable the move button when a folder is selected.
+        foldersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Enable the move button.
+                moveButton.setEnabled(true);
+            }
+        });
 
         // `onCreateDialog` requires the return of an `AlertDialog`.
         return alertDialog;
