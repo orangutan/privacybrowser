@@ -170,7 +170,6 @@
     <string name="folder_name">Nombre de carpeta</string>
     <string name="bookmark_url">Marcador URL</string>
     <string name="folder_names_must_be_unique">Los nombres de carpetas deben ser únicos</string>
-    <string name="cannot_save_folder">No se guardó la carpeta porque el nuevo nombre no fue único:</string>
     <string name="edit_bookmark">Editar marcador</string>
     <string name="edit_folder">Editar carpeta</string>
     <string name="move_to_folder">Mover a carpeta</string>

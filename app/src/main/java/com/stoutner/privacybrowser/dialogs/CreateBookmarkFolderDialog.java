@@ -38,9 +38,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.stoutner.privacybrowser.activities.BookmarksActivity;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 
 public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
     // The public interface is used to send information back to the parent activity.
@@ -113,9 +113,6 @@ public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
         // The `AlertDialog` must be shown before items in the alert dialog can be modified.
         alertDialog.show();
 
-        // Initialize the database helper.  The two `nulls` do not specify the database name or a `CursorFactory`.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
-        final BookmarksDatabaseHelper bookmarksDatabaseHelper = new BookmarksDatabaseHelper(getContext(), null, null, 0);
-
         // Get a handle for the create button.
         final Button createButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
         EditText folderNameEditText = (EditText) alertDialog.findViewById(R.id.create_folder_name_edittext);
@@ -141,7 +138,7 @@ public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
                 String folderName = s.toString();
 
                 // Check if a folder with the name already exists.
-                Cursor folderExistsCursor = bookmarksDatabaseHelper.getFolderCursor(folderName);
+                Cursor folderExistsCursor = BookmarksActivity.bookmarksDatabaseHelper.getFolderCursor(folderName);
 
                 // Enable the create button if the new folder name is not empty and doesn't already exist.
                 createButton.setEnabled(!folderName.isEmpty() && (folderExistsCursor.getCount() == 0));

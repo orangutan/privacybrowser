@@ -153,7 +153,6 @@
     <string name="folder_name">Name des Ordners</string>
     <string name="bookmark_url">URL für das Lesezeichen</string>
     <string name="folder_names_must_be_unique">Ordnernamen müssen einmalig sein</string>
-    <string name="cannot_save_folder">Kann diesen Ordner nicht umbenennen, da der neue Name bereits existiert:</string>
     <string name="edit_bookmark">Lesezeichen Bearbeiten</string>
     <string name="edit_folder">Ordner Bearbeiten</string>
     <string name="move_to_folder">In Ordner verschieben</string>

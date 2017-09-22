@@ -64,7 +64,7 @@ import java.io.ByteArrayOutputStream;
 public class BookmarksActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener, EditBookmarkDialog.EditBookmarkListener, EditBookmarkFolderDialog.EditBookmarkFolderListener,
         MoveToFolderDialog.MoveToFolderListener {
 
-    // `bookmarksDatabaseHelper` is public static so it can be accessed from `EditBookmarkDialog` and `MoveToFolderDialog`.  It is also used in `onCreate()`,
+    // `bookmarksDatabaseHelper` is public static so it can be accessed from `CreateBookmarkFolderDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog` and `MoveToFolderDialog`.  It is also used in `onCreate()`,
     // `onCreateBookmarkCreate()`, `updateBookmarksListView()`, and `updateBookmarksListViewExcept()`.
     public static BookmarksDatabaseHelper bookmarksDatabaseHelper;
 
@@ -318,18 +318,18 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                             // Update the display order for the current bookmark.
                             if (i == selectedBookmarkPosition) {  // The current bookmark is the selected bookmark.
                                 // Move the current bookmark up one.
-                                bookmarksDatabaseHelper.updateBookmarkDisplayOrder(currentBookmarkDatabaseId, i - 1);
+                                bookmarksDatabaseHelper.updateDisplayOrder(currentBookmarkDatabaseId, i - 1);
                                 selectedBookmarkNewPosition = i - 1;
                             } else if ((i + 1) == selectedBookmarkPosition){  // The current bookmark is immediately above the selected bookmark.
                                 // Move the current bookmark down one.
-                                bookmarksDatabaseHelper.updateBookmarkDisplayOrder(currentBookmarkDatabaseId, i + 1);
+                                bookmarksDatabaseHelper.updateDisplayOrder(currentBookmarkDatabaseId, i + 1);
                             } else {  // The current bookmark is not changing positions.
                                 // Move `bookmarksCursor` to the current bookmark position.
                                 bookmarksCursor.moveToPosition(i);
 
                                 // Update the display order only if it is not correct in the database.
                                 if (bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER)) != i) {
-                                    bookmarksDatabaseHelper.updateBookmarkDisplayOrder(currentBookmarkDatabaseId, i);
+                                    bookmarksDatabaseHelper.updateDisplayOrder(currentBookmarkDatabaseId, i);
                                 }
                             }
                         }
@@ -363,18 +363,18 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                             // Update the display order for the current bookmark.
                             if (i == selectedBookmarkPosition) {  // The current bookmark is the selected bookmark.
                                 // Move the current bookmark down one.
-                                bookmarksDatabaseHelper.updateBookmarkDisplayOrder(currentBookmarkDatabaseId, i + 1);
+                                bookmarksDatabaseHelper.updateDisplayOrder(currentBookmarkDatabaseId, i + 1);
                                 selectedBookmarkNewPosition = i + 1;
                             } else if ((i - 1) == selectedBookmarkPosition) {  // The current bookmark is immediately below the selected bookmark.
                                 // Move the bookmark below the selected bookmark up one.
-                                bookmarksDatabaseHelper.updateBookmarkDisplayOrder(currentBookmarkDatabaseId, i - 1);
+                                bookmarksDatabaseHelper.updateDisplayOrder(currentBookmarkDatabaseId, i - 1);
                             } else {  // The current bookmark is not changing positions.
                                 // Move `bookmarksCursor` to the current bookmark position.
                                 bookmarksCursor.moveToPosition(i);
 
                                 // Update the display order only if it is not correct in the database.
                                 if (bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER)) != i) {
-                                    bookmarksDatabaseHelper.updateBookmarkDisplayOrder(currentBookmarkDatabaseId, i);
+                                    bookmarksDatabaseHelper.updateDisplayOrder(currentBookmarkDatabaseId, i);
                                 }
                             }
                         }
@@ -497,7 +497,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
                                                     // Update the display order only if it is not correct in the database.
                                                     if (bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER)) != i) {
-                                                        bookmarksDatabaseHelper.updateBookmarkDisplayOrder(currentBookmarkDatabaseId, i);
+                                                        bookmarksDatabaseHelper.updateDisplayOrder(currentBookmarkDatabaseId, i);
                                                     }
                                                 }
                                                 break;
@@ -657,7 +657,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Move all the bookmarks down one in the display order.
         for (int i = 0; i < bookmarksListView.getCount(); i++) {
             int databaseId = (int) bookmarksListView.getItemIdAtPosition(i);
-            bookmarksDatabaseHelper.updateBookmarkDisplayOrder(databaseId, i + 1);
+            bookmarksDatabaseHelper.updateDisplayOrder(databaseId, i + 1);
         }
 
         // Create the folder, placing it at the top of the ListView
@@ -702,62 +702,68 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     }
 
     @Override
-    public void onSaveEditBookmarkFolder(AppCompatDialogFragment dialogFragment) {
+    public void onEditBookmarkFolder(AppCompatDialogFragment dialogFragment) {
         // Get the new folder name.
         EditText editFolderNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.edit_folder_name_edittext);
         String newFolderNameString = editFolderNameEditText.getText().toString();
 
-        // Check to see if the new folder name is unique.
-        Cursor bookmarkFolderCursor = bookmarksDatabaseHelper.getFolderCursor(newFolderNameString);
-        int existingFoldersWithNewName = bookmarkFolderCursor.getCount();
-        bookmarkFolderCursor.close();
-        if ( ((existingFoldersWithNewName == 0) || newFolderNameString.equals(oldFolderNameString)) && !newFolderNameString.isEmpty()) {
-            // Get a long array with the the database ID of the selected folder and convert it to an `int`.
-            long[] selectedFolderLongArray = bookmarksListView.getCheckedItemIds();
-            int selectedFolderDatabaseId = (int) selectedFolderLongArray[0];
+        // Get a long array with the the database ID of the selected folder and convert it to an `int`.
+        long[] selectedFolderLongArray = bookmarksListView.getCheckedItemIds();
+        int selectedFolderDatabaseId = (int) selectedFolderLongArray[0];
 
-            // Get the `RadioButtons` from the `Dialog`.
-            RadioButton currentFolderIconRadioButton = (RadioButton) dialogFragment.getDialog().findViewById(R.id.edit_folder_current_icon_radiobutton);
-            RadioButton defaultFolderIconRadioButton = (RadioButton) dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_radiobutton);
+        // Get the `RadioButtons` from the `Dialog`.
+        RadioButton currentFolderIconRadioButton = (RadioButton) dialogFragment.getDialog().findViewById(R.id.edit_folder_current_icon_radiobutton);
+        RadioButton defaultFolderIconRadioButton = (RadioButton) dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_radiobutton);
 
-            // Check if the favorite icon has changed.
-            if (currentFolderIconRadioButton.isChecked()) {
-                // Update the folder name if it has changed without modifying the favorite icon.
-                if (!newFolderNameString.equals(oldFolderNameString)) {
-                    bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, oldFolderNameString, newFolderNameString);
-
-                    // Refresh the `ListView`.  `setSelection` scrolls to the position of the folder that was edited.
-                    updateBookmarksListView(currentFolder);
-                    bookmarksListView.setSelection(selectedBookmarkPosition);
-                }
-            } else {  // Update the folder icon.
-                // Get the new folder icon `Bitmap`.
-                Bitmap folderIconBitmap;
-                if (defaultFolderIconRadioButton.isChecked()) {
-                    // Get the default folder icon `ImageView` from the `Drawable` and convert it to a `Bitmap`.
-                    ImageView folderIconImageView = (ImageView) dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon);
-                    Drawable folderIconDrawable = folderIconImageView.getDrawable();
-                    BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
-                    folderIconBitmap = folderIconBitmapDrawable.getBitmap();
-                } else {  // Get the web page icon `ImageView` from the `Dialog`.
-                    folderIconBitmap = MainWebViewActivity.favoriteIconBitmap;
-                }
-
-                // Convert the folder `Bitmap` to a byte array.  `0` is for lossless compression (the only option for a PNG).
-                ByteArrayOutputStream folderIconByteArrayOutputStream = new ByteArrayOutputStream();
-                folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, folderIconByteArrayOutputStream);
-                byte[] folderIconByteArray = folderIconByteArrayOutputStream.toByteArray();
-
-                bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, oldFolderNameString, newFolderNameString, folderIconByteArray);
-
-                // Refresh the `ListView`.  `setSelection` scrolls to the position of the folder that was edited.
-                updateBookmarksListView(currentFolder);
-                bookmarksListView.setSelection(selectedBookmarkPosition);
+        // Check if the favorite icon has changed.
+        if (currentFolderIconRadioButton.isChecked()) {  // Only the name has changed.
+            // Update the name in the database.
+            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, oldFolderNameString, newFolderNameString);
+        } else if (!currentFolderIconRadioButton.isChecked() && newFolderNameString.equals(oldFolderNameString)) {  // Only the icon has changed.
+            // Get the new folder icon `Bitmap`.
+            Bitmap folderIconBitmap;
+            if (defaultFolderIconRadioButton.isChecked()) {
+                // Get the default folder icon `ImageView` from the `Drawable` and convert it to a `Bitmap`.
+                ImageView folderIconImageView = (ImageView) dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon);
+                Drawable folderIconDrawable = folderIconImageView.getDrawable();
+                BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
+                folderIconBitmap = folderIconBitmapDrawable.getBitmap();
+            } else {  // Get the web page icon `ImageView` from the `Dialog`.
+                folderIconBitmap = MainWebViewActivity.favoriteIconBitmap;
             }
-        } else {  // Don't edit the folder because the new name is not unique.
-            String cannot_rename_folder = getResources().getString(R.string.cannot_save_folder) + " \"" + newFolderNameString + "\"";
-            Snackbar.make(findViewById(R.id.bookmarks_coordinatorlayout), cannot_rename_folder, Snackbar.LENGTH_INDEFINITE).show();
+
+            // Convert the folder `Bitmap` to a byte array.  `0` is for lossless compression (the only option for a PNG).
+            ByteArrayOutputStream folderIconByteArrayOutputStream = new ByteArrayOutputStream();
+            folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, folderIconByteArrayOutputStream);
+            byte[] folderIconByteArray = folderIconByteArrayOutputStream.toByteArray();
+
+            // Update the folder icon in the database.
+            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, folderIconByteArray);
+        } else {  // The folder icon and the name have changed.
+            // Get the new folder icon `Bitmap`.
+            Bitmap folderIconBitmap;
+            if (defaultFolderIconRadioButton.isChecked()) {
+                // Get the default folder icon `ImageView` from the `Drawable` and convert it to a `Bitmap`.
+                ImageView folderIconImageView = (ImageView) dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon);
+                Drawable folderIconDrawable = folderIconImageView.getDrawable();
+                BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
+                folderIconBitmap = folderIconBitmapDrawable.getBitmap();
+            } else {  // Get the web page icon `ImageView` from the `Dialog`.
+                folderIconBitmap = MainWebViewActivity.favoriteIconBitmap;
+            }
+
+            // Convert the folder `Bitmap` to a byte array.  `0` is for lossless compression (the only option for a PNG).
+            ByteArrayOutputStream folderIconByteArrayOutputStream = new ByteArrayOutputStream();
+            folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, folderIconByteArrayOutputStream);
+            byte[] folderIconByteArray = folderIconByteArrayOutputStream.toByteArray();
+
+            // Update the folder name and icon in the database.
+            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, oldFolderNameString, newFolderNameString, folderIconByteArray);
         }
+
+        // Refresh the `ListView`.  `setSelection` scrolls to the position of the folder that was edited.
+        updateBookmarksListView(currentFolder);
+        bookmarksListView.setSelection(selectedBookmarkPosition - 5);
 
         // Close the contextual action mode.
         contextualActionMode.finish();
