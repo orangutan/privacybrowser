@@ -1,4 +1,5 @@
-<!-- `move_to_folder_dark.xml` comes from the Android Material icon set, where it is called `ic_folder_special`.  It is released under the Apache License 2.0. -->
+<!-- `move_to_folder_dark.xml` is derived from elements of `ic_folder` and `ic_exit_to_app`, which are part of the Android Material icon set.  They are released under the Apache License 2.0.
+    Modifications copyright © 2017 Soren Stoutner <soren@stoutner.com>.  The resulting image is released under the GPLv3+ license. -->
 
 <!-- `tools:ignore="VectorRaster"` removes the lint warning about `android:autoMirrored="true"` not applying to API < 21. -->
 <vector
@@ -14,5 +15,5 @@
     <!-- A hard coded color must be used until API >= 21.  Then `@color` may be used. -->
     <path
         android:fillColor="#FFE0E0E0"
-        android:pathData="M20,6h-8l-2,-2L4,4c-1.1,0 -2,0.9 -2,2v12c0,1.1 0.9,2 2,2h16c1.1,0 2,-0.9 2,-2L22,8c0,-1.1 -0.9,-2 -2,-2zM17.94,17L15,15.28 12.06,17l0.78,-3.33 -2.59,-2.24 3.41,-0.29L15,8l1.34,3.14 3.41,0.29 -2.59,2.24 0.78,3.33z"/>
+        android:pathData="M4,4C2.9,4 2.01,4.9 2.01,6L2,18C2,19.1 2.9,20 4,20L20,20C21.1,20 22,19.1 22,18L22,8C22,6.9 21.1,6 20,6L12,6L10,4L4,4zM13.75,7.83L18.75,12.83L13.75,17.83L12.34,16.421L14.92,13.83L5.25,13.83L5.25,11.83L14.92,11.83L12.34,9.24L13.75,7.83z" />
 </vector>
