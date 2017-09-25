@@ -52,7 +52,8 @@
     <attr name="fontSizeIcon" format="reference" />
     <attr name="deleteIcon" format="reference" />
     <attr name="addIcon" format="reference" />
-    <attr name="createFolderIcon" format="reference" />
+    <attr name="addBookmarkIcon" format="reference" />
+    <attr name="addFolderIcon" format="reference" />
     <attr name="selectAllIcon" format="reference" />
     <attr name="editIcon" format="reference" />
     <attr name="moveToFolderIcon" format="reference" />

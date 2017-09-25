@@ -528,9 +528,22 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             }
         });
 
-        // Set a FloatingActionButton for creating new bookmarks.
-        FloatingActionButton createBookmarkFAB = (FloatingActionButton) findViewById(R.id.create_bookmark_fab);
-        createBookmarkFAB.setOnClickListener(new View.OnClickListener() {
+        // Get handles for the `FloatingActionButtons.
+        FloatingActionButton createBookmarkFolderFab = (FloatingActionButton) findViewById(R.id.create_bookmark_folder_fab);
+        FloatingActionButton createBookmarkFab = (FloatingActionButton) findViewById(R.id.create_bookmark_fab);
+
+        // Set the create new bookmark folder FAB to display the dialog box.
+        createBookmarkFolderFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Show the `CreateBookmarkFolderDialog` `AlertDialog` and name the instance `@string/create_folder`.
+                AppCompatDialogFragment createBookmarkFolderDialog = new CreateBookmarkFolderDialog();
+                createBookmarkFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_folder));
+            }
+        });
+
+        // Set the create new bookmark FAB to display the dialog box.
+        createBookmarkFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Show the `CreateBookmarkDialog` `AlertDialog` and name the instance `@string/create_bookmark`.
@@ -565,12 +578,6 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                     // Update `bookmarksListView`.
                     updateBookmarksListView(currentFolder);
                 }
-                break;
-
-            case R.id.create_folder:
-                // Show the `CreateBookmarkFolderDialog` `AlertDialog` and name the instance `@string/create_folder`.
-                AppCompatDialogFragment createBookmarkFolderDialog = new CreateBookmarkFolderDialog();
-                createBookmarkFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_folder));
                 break;
 
             case R.id.options_menu_select_all_bookmarks:

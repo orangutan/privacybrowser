@@ -23,22 +23,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/create_folder"
-        android:title="@string/create_folder"
-        android:orderInCategory="10"
-        android:icon="?attr/createFolderIcon"
-        app:showAsAction="ifRoom" />
-
-    <item
         android:id="@+id/options_menu_select_all_bookmarks"
         android:title="@string/select_all"
-        android:orderInCategory="20"
+        android:orderInCategory="10"
         android:icon="?attr/selectAllIcon"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/bookmarks_database_view"
         android:title="@string/database_view"
-        android:orderInCategory="30"
+        android:orderInCategory="20"
         app:showAsAction="never" />
 </menu>

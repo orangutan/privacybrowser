@@ -1,0 +1,15 @@
+<!-- `create_bookmark_dark.xml` is derived from elements of `ic_bookmark` and `ic_create_new_folder`, which are part of the Android Material icon set.  They are released under the Apache License 2.0.
+    Modifications copyright © 2017 Soren Stoutner <soren@stoutner.com>.  The resulting image is released under the GPLv3+ license. -->
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:height="24dp"
+    android:width="24dp"
+    android:viewportHeight="24.0"
+    android:viewportWidth="24.0" >
+
+    <!-- A hard coded color must be used until API >= 21.  Then `@color` may be used. -->
+    <path
+        android:fillColor="#FFE0E0E0"
+        android:pathData="M7,3C5.9,3 5.01,3.9 5.01,5L5,21L12,18L19,21L19,5C19,3.9 18.1,3 17,3L7,3zM11,7L13,7L13,10L16,10L16,12L13,12L13,15L11,15L11,12L8,12L8,10L11,10L11,7z" />
+
+</vector>
