@@ -83,8 +83,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     // `contextualActionMode` is used in `onCreate()` and `onEditBookmarkSave()`.
     private ActionMode contextualActionMode;
 
-    // `selectedBookmarkPosition` is used in `onCreate()` and `onEditBookmarkSave()`.
-    private int selectedBookmarkPosition;
+    // `bookmarkListViewPosition` is used in `onCreate()`, `onSaveEditBookmark()`, and `onSaveEditBookmarkFolder()`.
+    private int bookmarksListViewPosition;
 
     // `appBar` is used in `onCreate()` and `updateBookmarksListView()`.
     private ActionBar appBar;
@@ -296,16 +296,17 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
                 // Instantiate the common variables.
                 int numberOfBookmarks;
+                int selectedBookmarkPosition;
                 int selectedBookmarkNewPosition;
-                SparseBooleanArray bookmarkPositionSparseBooleanArray;
+                final SparseBooleanArray selectedBookmarksPositionsSparseBooleanArray;
 
                 switch (menuItemId) {
                     case R.id.move_bookmark_up:
                         // Get the array of checked bookmarks.
-                        bookmarkPositionSparseBooleanArray = bookmarksListView.getCheckedItemPositions();
+                        selectedBookmarksPositionsSparseBooleanArray = bookmarksListView.getCheckedItemPositions();
 
                         // Store the position of the selected bookmark.
-                        selectedBookmarkPosition = bookmarkPositionSparseBooleanArray.keyAt(0);
+                        selectedBookmarkPosition = selectedBookmarksPositionsSparseBooleanArray.keyAt(0);
 
                         // Initialize `selectedBookmarkNewPosition`.
                         selectedBookmarkNewPosition = 0;
@@ -347,10 +348,10 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
                     case R.id.move_bookmark_down:
                         // Get the array of checked bookmarks.
-                        bookmarkPositionSparseBooleanArray = bookmarksListView.getCheckedItemPositions();
+                        selectedBookmarksPositionsSparseBooleanArray = bookmarksListView.getCheckedItemPositions();
 
                         // Store the position of the selected bookmark.
-                        selectedBookmarkPosition = bookmarkPositionSparseBooleanArray.keyAt(0);
+                        selectedBookmarkPosition = selectedBookmarksPositionsSparseBooleanArray.keyAt(0);
 
                         // Initialize `selectedBookmarkNewPosition`.
                         selectedBookmarkNewPosition = 0;
@@ -399,11 +400,14 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                         break;
 
                     case R.id.edit_bookmark:
-                        // Get the array of checked bookmarks.
-                        bookmarkPositionSparseBooleanArray = bookmarksListView.getCheckedItemPositions();
+                        // Store the scroll position of the bookmarks `ListView`.
+                        bookmarksListViewPosition = bookmarksListView.getFirstVisiblePosition();
 
-                        // Store the position of the selected bookmark.
-                        selectedBookmarkPosition = bookmarkPositionSparseBooleanArray.keyAt(0);
+                        // Get the array of checked bookmarks.
+                        selectedBookmarksPositionsSparseBooleanArray = bookmarksListView.getCheckedItemPositions();
+
+                        // Get the position of the selected bookmark.
+                        selectedBookmarkPosition = selectedBookmarksPositionsSparseBooleanArray.keyAt(0);
 
                         // Move to the selected database ID and find out if it is a folder.
                         bookmarksCursor.moveToPosition(selectedBookmarkPosition);
@@ -427,28 +431,32 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                         break;
 
                     case R.id.delete_bookmark:
-                        // Get an array of the selected rows.
-                        final long[] selectedBookmarksLongArray = bookmarksListView.getCheckedItemIds();
+                        // Get an array of the selected rows IDs.
+                        final long[] selectedBookmarksIdsLongArray = bookmarksListView.getCheckedItemIds();
 
-                        // Get the array of checked bookmarks.
-                        bookmarkPositionSparseBooleanArray = bookmarksListView.getCheckedItemPositions();
+                        // Get the array of checked bookmarks.  `.clone()` makes a copy that won't change if `bookmarksListView` is reloaded, which is needed for re-selecting the bookmarks on undelete.
+                        selectedBookmarksPositionsSparseBooleanArray = bookmarksListView.getCheckedItemPositions().clone();
 
-                        // Store the position of the first selected bookmark.
-                        selectedBookmarkPosition = bookmarkPositionSparseBooleanArray.keyAt(0);
+                        // Store the current scroll position for the purpose of restoring it on undelete.
+                        final int scrollPositionBeforeDelete = bookmarksListView.getFirstVisiblePosition();
 
-                        updateBookmarksListViewExcept(selectedBookmarksLongArray, currentFolder);
+                        // Store the scroll position of the bookmarks `ListView`.
+                        bookmarksListViewPosition = bookmarksListView.getFirstVisiblePosition();
 
-                        // Scroll to where the first deleted bookmark was located.
-                        bookmarksListView.setSelection(selectedBookmarkPosition - 5);
+                        // Display the bookmarks except for those that are going to be deleted.
+                        updateBookmarksListViewExcept(selectedBookmarksIdsLongArray, currentFolder);
+
+                        // Restore the scroll position.
+                        bookmarksListView.setSelection(bookmarksListViewPosition);
 
                         // Create `snackbarMessage`.
                         String snackbarMessage;
 
                         // Determine how many items are in the array and prepare an appropriate Snackbar message.
-                        if (selectedBookmarksLongArray.length == 1) {
+                        if (selectedBookmarksIdsLongArray.length == 1) {
                             snackbarMessage = getString(R.string.one_bookmark_deleted);
                         } else {
-                            snackbarMessage = selectedBookmarksLongArray.length + " " + getString(R.string.bookmarks_deleted);
+                            snackbarMessage = selectedBookmarksIdsLongArray.length + " " + getString(R.string.bookmarks_deleted);
                         }
 
                         // Show a SnackBar.
@@ -468,14 +476,19 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                                                 // Refresh the ListView to show the rows again.
                                                 updateBookmarksListView(currentFolder);
 
-                                                // Scroll to where the first deleted bookmark was located.
-                                                bookmarksListView.setSelection(selectedBookmarkPosition - 5);
+                                                // Select the previously selected bookmarks.
+                                                for (int i = 0; i < selectedBookmarksPositionsSparseBooleanArray.size(); i++) {
+                                                    bookmarksListView.setItemChecked(selectedBookmarksPositionsSparseBooleanArray.keyAt(i), true);
+                                                }
+
+                                                // Restore the scroll position.
+                                                bookmarksListView.setSelection(scrollPositionBeforeDelete);
                                                 break;
 
                                             // The `Snackbar` was dismissed without the `Undo` button being pushed.
                                             default:
                                                 // Delete each selected row.
-                                                for (long databaseIdLong : selectedBookmarksLongArray) {
+                                                for (long databaseIdLong : selectedBookmarksIdsLongArray) {
                                                     // Convert `databaseIdLong` to an int.
                                                     int databaseIdInt = (int) databaseIdLong;
 
@@ -703,13 +716,13 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Close the contextual action mode.
         contextualActionMode.finish();
 
-        // Refresh the `ListView`.  `setSelection` scrolls to the position of the bookmark that was edited.
+        // Refresh the `ListView`.  `setSelection` scrolls to the previous `ListView` position.
         updateBookmarksListView(currentFolder);
-        bookmarksListView.setSelection(selectedBookmarkPosition);
+        bookmarksListView.setSelection(bookmarksListViewPosition);
     }
 
     @Override
-    public void onEditBookmarkFolder(AppCompatDialogFragment dialogFragment) {
+    public void onSaveEditBookmarkFolder(AppCompatDialogFragment dialogFragment) {
         // Get the new folder name.
         EditText editFolderNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.edit_folder_name_edittext);
         String newFolderNameString = editFolderNameEditText.getText().toString();
@@ -768,9 +781,9 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, oldFolderNameString, newFolderNameString, folderIconByteArray);
         }
 
-        // Refresh the `ListView`.  `setSelection` scrolls to the position of the folder that was edited.
+        // Refresh the `ListView`.  `setSelection` scrolls to the previous `ListView` position.
         updateBookmarksListView(currentFolder);
-        bookmarksListView.setSelection(selectedBookmarkPosition - 5);
+        bookmarksListView.setSelection(bookmarksListViewPosition);
 
         // Close the contextual action mode.
         contextualActionMode.finish();

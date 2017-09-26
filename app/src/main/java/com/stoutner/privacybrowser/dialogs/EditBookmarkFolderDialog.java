@@ -51,7 +51,7 @@ import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 public class EditBookmarkFolderDialog extends AppCompatDialogFragment {
     // The public interface is used to send information back to the parent activity.
     public interface EditBookmarkFolderListener {
-        void onEditBookmarkFolder(AppCompatDialogFragment dialogFragment);
+        void onSaveEditBookmarkFolder(AppCompatDialogFragment dialogFragment);
     }
 
     // `editFolderListener` is used in `onAttach()` and `onCreateDialog`.
@@ -110,7 +110,7 @@ public class EditBookmarkFolderDialog extends AppCompatDialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // Return the `DialogFragment` to the parent activity on save.
-                editBookmarkFolderListener.onEditBookmarkFolder(EditBookmarkFolderDialog.this);
+                editBookmarkFolderListener.onSaveEditBookmarkFolder(EditBookmarkFolderDialog.this);
             }
         });
 
@@ -224,7 +224,7 @@ public class EditBookmarkFolderDialog extends AppCompatDialogFragment {
                 // If the event is a key-down on the "enter" button, select the PositiveButton `Save`.
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER) && editButton.isEnabled()) {  // The enter key was pressed and the edit button is enabled.
                     // Trigger `editBookmarkListener` and return the DialogFragment to the parent activity.
-                    editBookmarkFolderListener.onEditBookmarkFolder(EditBookmarkFolderDialog.this);
+                    editBookmarkFolderListener.onSaveEditBookmarkFolder(EditBookmarkFolderDialog.this);
                     // Manually dismiss the `AlertDialog`.
                     alertDialog.dismiss();
                     // Consume the event.
