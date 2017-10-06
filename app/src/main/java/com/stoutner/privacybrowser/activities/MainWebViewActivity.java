@@ -682,11 +682,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     // Load the new folder.
                     loadBookmarksFolder();
                 } else {  // The selected bookmark is not a folder.
-                    // Get the bookmark URL and assign it to `formattedUrlString`.
-                    String bookmarkUrl = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL));
-
                     // Load the bookmark URL.
-                    loadUrl(bookmarkUrl);
+                    loadUrl(bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL)));
 
                     // Close the bookmarks drawer.
                     drawerLayout.closeDrawer(GravityCompat.END);
@@ -838,6 +835,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 if (nightMode) {
                     mainWebView.setVisibility(View.INVISIBLE);
                 }
+
+                // Hide the keyboard.  `0` indicates no additional flags.
+                inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
 
                 // Check to see if we are waiting on Orbot.
                 if (!waitingForOrbot) {  // We are not waiting on Orbot, so we need to process the URL.
@@ -2478,9 +2478,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         }
 
         loadUrl(formattedUrlString);
-
-        // Hide the keyboard so we can see the webpage.  `0` indicates no additional flags.
-        inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
     }
 
 
