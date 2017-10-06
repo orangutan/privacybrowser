@@ -1021,6 +1021,36 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             // Update the progress bar when a page is loading.
             @Override
             public void onProgressChanged(WebView view, int progress) {
+                // Inject the night mode CSS if night mode is enabled.
+                if (nightMode) {
+                    // `background-color: #212121` sets the background to be dark gray.  `color: #BDBDBD` sets the text color to be light gray.  `box-shadow: none` removes a lower underline on links used by WordPress.
+                    // `text-decoration: none` removes all text underlines.  `text-shadow: none` removes text shadows, which usually have a hard coded color.  `border: none` removes all borders, which can also be used to underline text.
+                    // `a {color: #1565C0}` sets links to be a dark blue.  `!important` takes precedent over any existing sub-settings.
+                    mainWebView.evaluateJavascript("(function() {var parent = document.getElementsByTagName('head').item(0); var style = document.createElement('style'); style.type = 'text/css'; style.innerHTML = '" +
+                            "* {background-color: #212121 !important; color: #BDBDBD !important; box-shadow: none !important; text-decoration: none !important; text-shadow: none !important; border: none !important;}" +
+                            "a {color: #1565C0 !important;}" +
+                            "'; parent.appendChild(style)})()", new ValueCallback<String>() {
+                        @Override
+                        public void onReceiveValue(String value) {
+                            // Initialize a `Handler` to display `mainWebView`.
+                            Handler displayWebViewHandler = new Handler();
+
+                            // Setup a `Runnable` to display `mainWebView` after a delay to allow the CSS to be applied.
+                            Runnable displayWebViewRunnable = new Runnable() {
+                                public void run() {
+                                    // Only display `mainWebView` if the progress bar is one.  This prevents the display of the `WebView` while it is still loading.
+                                    if (progressBar.getVisibility() == View.GONE) {
+                                        mainWebView.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                            };
+
+                            // Use `displayWebViewHandler` to delay the displaying of `mainWebView` for 500 milliseconds.
+                            displayWebViewHandler.postDelayed(displayWebViewRunnable, 500);
+                        }
+                    });
+                }
+
                 progressBar.setProgress(progress);
                 if (progress < 100) {
                     // Show the progress bar.
@@ -1029,33 +1059,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                     // Hide the progress bar.
                     progressBar.setVisibility(View.GONE);
 
-                    // Inject the night mode CSS if night mode is enabled.
-                    if (nightMode) {  // Night mode is enabled.
-                        // `background-color: #212121` sets the background to be dark gray.  `color: #BDBDBD` sets the text color to be light gray.  `box-shadow: none` removes a lower underline on links used by WordPress.
-                        // `text-decoration: none` removes all text underlines.  `text-shadow: none` removes text shadows, which usually have a hard coded color.  `border: none` removes all borders, which can also be used to underline text.
-                        // `a {color: #1565C0}` sets links to be a dark blue.  `!important` takes precedent over any existing sub-settings.
-                        mainWebView.evaluateJavascript("(function() {var parent = document.getElementsByTagName('head').item(0); var style = document.createElement('style'); style.type = 'text/css'; style.innerHTML = '" +
-                                "* {background-color: #212121 !important; color: #BDBDBD !important; box-shadow: none !important; text-decoration: none !important; text-shadow: none !important; border: none !important;}" +
-                                "a {color: #1565C0 !important;}" +
-                                "'; parent.appendChild(style)})()", new ValueCallback<String>() {
-                            @Override
-                            public void onReceiveValue(String value) {
-                                // Initialize a `Handler` to display `mainWebView`.
-                                Handler displayWebViewHandler = new Handler();
-
-                                // Setup a `Runnable` to display `mainWebView` after a delay to allow the CSS to be applied.
-                                Runnable displayWebViewRunnable = new Runnable() {
-                                    public void run() {
-                                        mainWebView.setVisibility(View.VISIBLE);
-                                    }
-                                };
-
-                                // Use `displayWebViewHandler` to delay the displaying of `mainWebView` for 500 milliseconds.
-                                displayWebViewHandler.postDelayed(displayWebViewRunnable, 500);
-                            }
-                        });
-                    } else {  // Night mode is disabled.
-                        // Display `mainWebView` in case it was hidden before loading domain settings.
+                    // Display `mainWebView` if night mode is disabled.
+                    // Because of a race condition between `applyDomainSettings` and `onPageStarted`, when night mode is set by domain settings the `WebView` may be hidden even if night mode is not currently enabled.
+                    if (!nightMode) {
                         mainWebView.setVisibility(View.VISIBLE);
                     }
 
