@@ -132,7 +132,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Display the home arrow on `SupportActionBar`.
         appBar.setDisplayHomeAsUpEnabled(true);
 
-        // Initialize the database helper and the `ListView`.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
+        // Initialize the database helper.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
         // The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
         bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this, null, null, 0);
 
@@ -931,7 +931,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             @Override
             public View newView(Context context, Cursor cursor, ViewGroup parent) {
                 // Inflate the individual item layout.  `false` does not attach it to the root.
-                return getLayoutInflater().inflate(R.layout.bookmarks_item_linearlayout, parent, false);
+                return getLayoutInflater().inflate(R.layout.bookmarks_activity_item_linearlayout, parent, false);
             }
 
             @Override

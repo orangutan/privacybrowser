@@ -18,6 +18,7 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
+<!-- `tools:ignore="UseCompoundDrawables"` removes the lint warning about using a compound drawable, which doesn't work well with the layout options on the `ImageView`. -->
 <LinearLayout
     android:id="@+id/bookmarks_item_linearlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -25,7 +26,7 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:orientation="horizontal"
-    android:background="?attr/listSelectorDrawable" >
+    tools:ignore="UseCompoundDrawables" >
 
     <ImageView
         android:id="@+id/bookmark_favorite_icon"
@@ -38,7 +39,7 @@
     <TextView
         android:id="@+id/bookmark_name"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="22sp"
         android:layout_margin="10dp"

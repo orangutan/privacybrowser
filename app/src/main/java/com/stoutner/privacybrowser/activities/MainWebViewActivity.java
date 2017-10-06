@@ -34,6 +34,8 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -47,6 +49,7 @@ import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -71,6 +74,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.CookieManager;
@@ -85,10 +89,13 @@ import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebViewDatabase;
+import android.widget.AdapterView;
+import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -102,6 +109,7 @@ import com.stoutner.privacybrowser.dialogs.HttpAuthenticationDialog;
 import com.stoutner.privacybrowser.dialogs.PinnedSslCertificateMismatchDialog;
 import com.stoutner.privacybrowser.dialogs.UrlHistoryDialog;
 import com.stoutner.privacybrowser.dialogs.ViewSslCertificateDialog;
+import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 import com.stoutner.privacybrowser.helpers.OrbotProxyHelper;
 import com.stoutner.privacybrowser.dialogs.DownloadFileDialog;
@@ -328,6 +336,17 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `pinnedDomainSslCertificate` is used in `onCreate()` and `applyDomainSettings()`.
     private boolean pinnedDomainSslCertificate;
 
+    // `bookmarksDatabaseHelper` is used in `onCreate()` and `loadBookmarksFolder()`.
+    private BookmarksDatabaseHelper bookmarksDatabaseHelper;
+
+    // `bookmarksListView` is used in `onCreate()` and `loadBookmarksFolder()`.
+    private ListView bookmarksListView;
+
+    // `currentBookmarksFolder` is used in `onCreate()`, `onBackPressed()`, and `loadBookmarksFolder()`.
+    private String currentBookmarksFolder;
+
+    // `bookmarksTitleTextView` is used in `onCreate()` and `loadBookmarksFolder()`.
+    private TextView bookmarksTitleTextView;
 
     @Override
     // Remove Android Studio's warning about the dangers of using SetJavaScriptEnabled.  The whole premise of Privacy Browser is built around an understanding of these dangers.
@@ -357,7 +376,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Get a handle for `inputMethodManager`.
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        // We need to use the `SupportActionBar` from `android.support.v7.app.ActionBar` until the minimum API is >= 21.
+        // `SupportActionBar` from `android.support.v7.app.ActionBar` must be used until the minimum API is >= 21.
         supportAppBar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(supportAppBar);
         appBar = getSupportActionBar();
@@ -446,6 +465,10 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // Get handles for views that need to be accessed.
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerlayout);
         rootCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.root_coordinatorlayout);
+        bookmarksListView = (ListView) findViewById(R.id.bookmarks_drawer_listview);
+        bookmarksTitleTextView = (TextView) findViewById(R.id.bookmarks_title_textview);
+        FloatingActionButton createBookmarksFolderFab = (FloatingActionButton) findViewById(R.id.create_bookmark_folder_fab);
+        FloatingActionButton createBookmarkFab = (FloatingActionButton) findViewById(R.id.create_bookmark_fab);
         mainWebViewRelativeLayout = (RelativeLayout) findViewById(R.id.main_webview_relativelayout);
         mainWebView = (WebView) findViewById(R.id.main_webview);
         findOnPageLinearLayout = (LinearLayout) findViewById(R.id.find_on_page_linearlayout);
@@ -453,6 +476,17 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         fullScreenVideoFrameLayout = (FrameLayout) findViewById(R.id.full_screen_video_framelayout);
         urlAppBarRelativeLayout = (RelativeLayout) findViewById(R.id.url_app_bar_relativelayout);
         favoriteIconImageView = (ImageView) findViewById(R.id.favorite_icon);
+
+        // Set the bookmarks drawer resources according to the theme.  This can't be done in the layout due to compatibility issues with the `DrawerLayout` support widget.
+        if (darkTheme) {
+            createBookmarksFolderFab.setImageDrawable(getResources().getDrawable(R.drawable.create_folder_dark));
+            createBookmarkFab.setImageDrawable(getResources().getDrawable(R.drawable.create_bookmark_dark));
+            bookmarksListView.setBackgroundColor(getResources().getColor(R.color.gray_850));
+        } else {
+            createBookmarksFolderFab.setImageDrawable(getResources().getDrawable(R.drawable.create_folder_light));
+            createBookmarkFab.setImageDrawable(getResources().getDrawable(R.drawable.create_bookmark_light));
+            bookmarksListView.setBackgroundColor(getResources().getColor(R.color.white));
+        }
 
         // Create a double-tap listener to toggle full-screen mode.
         final GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
@@ -606,8 +640,9 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             }
         });
 
-        // `DrawerTitle` identifies the `DrawerLayout` in accessibility mode.
+        // `DrawerTitle` identifies the `DrawerLayouts` in accessibility mode.
         drawerLayout.setDrawerTitle(GravityCompat.START, getString(R.string.navigation_drawer));
+        drawerLayout.setDrawerTitle(GravityCompat.END, getString(R.string.bookmarks));
 
         // Listen for touches on the navigation menu.
         final NavigationView navigationView = (NavigationView) findViewById(R.id.navigationview);
@@ -618,6 +653,49 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         final MenuItem navigationBackMenuItem = navigationMenu.getItem(1);
         final MenuItem navigationForwardMenuItem = navigationMenu.getItem(2);
         final MenuItem navigationHistoryMenuItem = navigationMenu.getItem(3);
+
+        // Initialize the bookmarks database helper.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
+        // The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
+        bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this, null, null, 0);
+
+        // Initialize `currentBookmarksFolder`.  `""` is the home folder in the database.
+        currentBookmarksFolder = "";
+
+        // Load the home folder, which is `""` in the database.
+        loadBookmarksFolder();
+
+        bookmarksListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Convert the id from long to int to match the format of the bookmarks database.
+                int databaseID = (int) id;
+
+                // Get the bookmark `Cursor` for this ID and move it to the first row.
+                Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmarkCursor(databaseID);
+                bookmarkCursor.moveToFirst();
+
+                // Act upon the bookmark according to the type.
+                if (bookmarkCursor.getInt(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.IS_FOLDER)) == 1) {  // The selected bookmark is a folder.
+                    // Store the new folder name in `currentBookmarksFolder`.
+                    currentBookmarksFolder = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
+
+                    // Load the new folder.
+                    loadBookmarksFolder();
+                } else {  // The selected bookmark is not a folder.
+                    // Get the bookmark URL and assign it to `formattedUrlString`.
+                    String bookmarkUrl = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL));
+
+                    // Load the bookmark URL.
+                    loadUrl(bookmarkUrl);
+
+                    // Close the bookmarks drawer.
+                    drawerLayout.closeDrawer(GravityCompat.END);
+                }
+
+                // Close the `Cursor`.
+                bookmarkCursor.close();
+            }
+        });
 
         // The `DrawerListener` allows us to update the Navigation Menu.
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
@@ -2324,21 +2402,30 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // Override `onBackPressed` to handle the navigation drawer and `mainWebView`.
     @Override
     public void onBackPressed() {
-        // Close the navigation drawer if it is available.  GravityCompat.START is the drawer on the left on Left-to-Right layout text.
-        if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
+        if (drawerLayout.isDrawerVisible(GravityCompat.START)) {  // The navigation drawer is open.
+            // Close the navigation drawer.
             drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            // Load the previous URL if available.
-            if (mainWebView.canGoBack()) {
-                // Set `navigatingHistory` so that the domain settings are applied when the new URL is loaded.
-                navigatingHistory = true;
+        } else if (drawerLayout.isDrawerVisible(GravityCompat.END)){  // The bookmarks drawer is open.
+            if (currentBookmarksFolder.isEmpty()) {  // The home folder is displayed.
+                // close the bookmarks drawer.
+                drawerLayout.closeDrawer(GravityCompat.END);
+            } else {  // A subfolder is displayed.
+                // Place the former parent folder in `currentFolder`.
+                currentBookmarksFolder = bookmarksDatabaseHelper.getParentFolder(currentBookmarksFolder);
 
-                // Go back.
-                mainWebView.goBack();
-            } else {
-                // Pass `onBackPressed()` to the system.
-                super.onBackPressed();
+                // Load the new folder.
+                loadBookmarksFolder();
             }
+
+        } else if (mainWebView.canGoBack()) {  // There is at least one item in the `WebView` history.
+            // Set `navigatingHistory` so that the domain settings are applied when the new URL is loaded.
+            navigatingHistory = true;
+
+            // Go back.
+            mainWebView.goBack();
+        } else {  // There isn't anything to do in Privacy Browser.
+            // Pass `onBackPressed()` to the system.
+            super.onBackPressed();
         }
     }
 
@@ -2965,6 +3052,57 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         // De-emphasize the text after the domain name.
         if (endOfDomainName > 0) {
             urlTextBox.getText().setSpan(finalGrayColorSpan, endOfDomainName, urlString.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        }
+    }
+
+    private void loadBookmarksFolder() {
+        // Update `bookmarksCursor` with the contents of the bookmarks database for the current folder.
+        Cursor bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentBookmarksFolder);
+
+        // Setup a `CursorAdapter`.  `this` specifies the `Context`.  `false` disables `autoRequery`.
+        CursorAdapter bookmarksCursorAdapter = new CursorAdapter(this, bookmarksCursor, false) {
+            @Override
+            public View newView(Context context, Cursor cursor, ViewGroup parent) {
+                // Inflate the individual item layout.  `false` does not attach it to the root.
+                return getLayoutInflater().inflate(R.layout.bookmarks_drawer_item_linearlayout, parent, false);
+            }
+
+            @Override
+            public void bindView(View view, Context context, Cursor cursor) {
+                // Get handles for the views.
+                ImageView bookmarkFavoriteIcon = (ImageView) view.findViewById(R.id.bookmark_favorite_icon);
+                TextView bookmarkNameTextView = (TextView) view.findViewById(R.id.bookmark_name);
+
+                // Get the favorite icon byte array from the `Cursor`.
+                byte[] favoriteIconByteArray = cursor.getBlob(cursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON));
+
+                // Convert the byte array to a `Bitmap` beginning at the first byte and ending at the last.
+                Bitmap favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.length);
+
+                // Display the bitmap in `bookmarkFavoriteIcon`.
+                bookmarkFavoriteIcon.setImageBitmap(favoriteIconBitmap);
+
+                // Get the bookmark name from the cursor and display it in `bookmarkNameTextView`.
+                String bookmarkNameString = cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
+                bookmarkNameTextView.setText(bookmarkNameString);
+
+                // Make the font bold for folders.
+                if (cursor.getInt(cursor.getColumnIndex(BookmarksDatabaseHelper.IS_FOLDER)) == 1) {
+                    bookmarkNameTextView.setTypeface(Typeface.DEFAULT_BOLD);
+                } else {  // Reset the font to default for normal bookmarks.
+                    bookmarkNameTextView.setTypeface(Typeface.DEFAULT);
+                }
+            }
+        };
+
+        // Populate the `ListView` with the adapter.
+        bookmarksListView.setAdapter(bookmarksCursorAdapter);
+
+        // Set the bookmarks drawer title.
+        if (currentBookmarksFolder.isEmpty()) {
+            bookmarksTitleTextView.setText(R.string.bookmarks);
+        } else {
+            bookmarksTitleTextView.setText(currentBookmarksFolder);
         }
     }
 }
