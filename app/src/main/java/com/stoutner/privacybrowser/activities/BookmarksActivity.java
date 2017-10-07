@@ -64,16 +64,15 @@ import java.io.ByteArrayOutputStream;
 public class BookmarksActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener, EditBookmarkDialog.EditBookmarkListener,
         EditBookmarkFolderDialog.EditBookmarkFolderListener, MoveToFolderDialog.MoveToFolderListener {
 
-    // `bookmarksDatabaseHelper` is public static so it can be accessed from `CreateBookmarkFolderDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog` and `MoveToFolderDialog`.  It is also used in `onCreate()`, `onOptionsItemSelected()`,
-    // `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, `onMoveToFolder()`, `deleteBookmarkFolderContents()`, and `loadFolder().
+    // `bookmarksDatabaseHelper` is public static so it can be accessed from `MoveToFolderDialog`.  It is also used in `onCreate()`, `onOptionsItemSelected()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`,
+    // `onSaveEditBookmarkFolder()`, `onMoveToFolder()`, `deleteBookmarkFolderContents()`, and `loadFolder().
     public static BookmarksDatabaseHelper bookmarksDatabaseHelper;
 
     // `currentFolder` is public static so it can be accessed from `MoveToFolderDialog`.
     // It is used in `onCreate`, `onOptionsItemSelected()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, `onMoveToFolder()`, and `loadFolder()`.
     public static String currentFolder;
 
-    // `checkedItemIds` is public static so it can be accessed from `EditBookmarkDialog`, `EditBookmarkFolderDialog`, and `MoveToFolderDialog`.
-    // It is also used in `onCreate()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, `onMoveToFolder()`, and `updateMoveIcons()`.
+    // `checkedItemIds` is public static so it can be accessed from `MoveToFolderDialog`.  It is also used in `onCreate()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, `onMoveToFolder()`, and `updateMoveIcons()`.
     public static long[] checkedItemIds;
 
 
@@ -114,6 +113,12 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Run the default commands.
         super.onCreate(savedInstanceState);
 
+        // Get the intent that launched the activity.
+        Intent launchingIntent = getIntent();
+
+        // Get the current folder from the `Intent`.
+        currentFolder = launchingIntent.getStringExtra("Current Folder");
+
         // Set the content view.
         setContentView(R.layout.bookmarks_coordinatorlayout);
 
@@ -135,9 +140,6 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Initialize the database helper.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
         // The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
         bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this, null, null, 0);
-
-        // Set currentFolder to the home folder, which is `""` in the database.
-        currentFolder = "";
 
         // Load the home folder.
         loadFolder();
@@ -163,6 +165,12 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                 } else {  // The selected bookmark is not a folder.
                     // Get the bookmark URL and assign it to `formattedUrlString`.  `mainWebView` will automatically reload when `BookmarksActivity` closes.
                     MainWebViewActivity.formattedUrlString = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL));
+
+                    // Update the bookmarks folder for the bookmarks drawer in `MainWebViewActivity`.
+                    MainWebViewActivity.currentBookmarksFolder = currentFolder;
+
+                    // Close the bookmarks drawer and reload the bookmarks `ListView` when returning to `MainWebViewActivity`.
+                    MainWebViewActivity.restartFromBookmarksActivity = true;
 
                     // Return to `MainWebViewActivity`.
                     NavUtils.navigateUpFromSameTask(bookmarksActivity);
@@ -380,23 +388,23 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                         // Get the position of the selected bookmark.  Only one bookmark is selected when `edit_bookmark_down` is enabled.
                         selectedBookmarkPosition = selectedBookmarksPositionsSparseBooleanArray.keyAt(0);
 
-                        // Move to the selected database ID and find out if it is a folder.
+                        // Move to the selected position and find out if it is a folder.
                         bookmarksCursor.moveToPosition(selectedBookmarkPosition);
                         boolean isFolder = (bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.IS_FOLDER)) == 1);
 
-                        // Store `checkedItemIds` for use by the `AlertDialog`.
-                        checkedItemIds = bookmarksListView.getCheckedItemIds();
+                        // Get the selected bookmark database ID.
+                        int databaseId = bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper._ID));
 
                         if (isFolder) {
                             // Save the current folder name, which is used in `onSaveEditBookmarkFolder()`.
                             oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
-                            // Show the `EditBookmarkFolderDialog` `AlertDialog` and name the instance `@string/edit_folder`.
-                            AppCompatDialogFragment editFolderDialog = new EditBookmarkFolderDialog();
+                            // Show the edit bookmark folder `AlertDialog` and name the instance `@string/edit_folder`.
+                            AppCompatDialogFragment editFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId);
                             editFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_folder));
                         } else {
-                            // Show the `EditBookmarkDialog` `AlertDialog` and name the instance `@string/edit_bookmark`.
-                            AppCompatDialogFragment editBookmarkDialog = new EditBookmarkDialog();
+                            // Show the edit bookmark `AlertDialog` and name the instance `@string/edit_bookmark`.
+                            AppCompatDialogFragment editBookmarkDialog = EditBookmarkDialog.bookmarkDatabaseId(databaseId);
                             editBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_bookmark));
                         }
                         break;
@@ -553,6 +561,12 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         switch (menuItemId) {
             case android.R.id.home:  // The home arrow is identified as `android.R.id.home`, not just `R.id.home`.
                 if (currentFolder.isEmpty()) {  // Currently in the home folder.
+                    // Update the bookmarks folder for the bookmarks drawer in `MainWebViewActivity`.
+                    MainWebViewActivity.currentBookmarksFolder = "";
+
+                    // Close the bookmarks drawer and reload the bookmarks `ListView` when returning to `MainWebViewActivity`.
+                    MainWebViewActivity.restartFromBookmarksActivity = true;
+
                     // Return to `MainWebViewActivity`.
                     NavUtils.navigateUpFromSameTask(this);
                 } else {  // Currently in a subfolder.
@@ -586,6 +600,12 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     @Override
     public void onBackPressed() {
         if (currentFolder.isEmpty()) {  // Currently in the home folder.
+            // Update the bookmarks folder for the bookmarks drawer in `MainWebViewActivity`.
+            MainWebViewActivity.currentBookmarksFolder = "";
+
+            // Close the bookmarks drawer and reload the bookmarks `ListView` when returning to `MainWebViewActivity`.
+            MainWebViewActivity.restartFromBookmarksActivity = true;
+
             // Exit `BookmarksActivity`.
             super.onBackPressed();
         } else {  // Currently in a subfolder.
@@ -607,9 +627,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         String bookmarkNameString = createBookmarkNameEditText.getText().toString();
         String bookmarkUrlString = createBookmarkUrlEditText.getText().toString();
 
-        // Convert the favoriteIcon Bitmap to a byte array.
+        // Convert the favoriteIcon Bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
         ByteArrayOutputStream favoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
-        // `0` is for lossless compression (the only option for a PNG).
         MainWebViewActivity.favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
         byte[] favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray();
 
@@ -675,7 +694,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     }
 
     @Override
-    public void onSaveEditBookmark(AppCompatDialogFragment dialogFragment) {
+    public void onSaveEditBookmark(AppCompatDialogFragment dialogFragment, int selectedBookmarkDatabaseId) {
         // Get handles for the views from `dialogFragment`.
         EditText editBookmarkNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.edit_bookmark_name_edittext);
         EditText editBookmarkUrlEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.edit_bookmark_url_edittext);
@@ -684,12 +703,6 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Store the bookmark strings.
         String bookmarkNameString = editBookmarkNameEditText.getText().toString();
         String bookmarkUrlString = editBookmarkUrlEditText.getText().toString();
-
-        // Get an array of the selected row IDs.
-        long[] selectedBookmarksLongArray = bookmarksListView.getCheckedItemIds();
-
-        // Get the database ID of the selected bookmark.  Editing a bookmark is only possible where only one item is selected.
-        int selectedBookmarkDatabaseId = (int) selectedBookmarksLongArray[0];
 
         // Update the bookmark.
         if (currentBookmarkIconRadioButton.isChecked()) {  // Update the bookmark without changing the favorite icon.
@@ -715,7 +728,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     }
 
     @Override
-    public void onSaveEditBookmarkFolder(AppCompatDialogFragment dialogFragment) {
+    public void onSaveEditBookmarkFolder(AppCompatDialogFragment dialogFragment, int selectedFolderDatabaseId) {
         // Get handles for the views from `dialogFragment`.
         EditText editFolderNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.edit_folder_name_edittext);
         RadioButton currentFolderIconRadioButton = (RadioButton) dialogFragment.getDialog().findViewById(R.id.edit_folder_current_icon_radiobutton);
@@ -724,12 +737,6 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
         // Get the new folder name.
         String newFolderNameString = editFolderNameEditText.getText().toString();
-
-        // Get an array of the selected row IDs.
-        long[] selectedBookmarksLongArray = bookmarksListView.getCheckedItemIds();
-
-        // Get the database ID of the selected bookmark.  Editing a folder is only possible where only one item is selected.
-        int selectedFolderDatabaseId = (int) selectedBookmarksLongArray[0];
 
         // Check if the favorite icon has changed.
         if (currentFolderIconRadioButton.isChecked()) {  // Only the name has changed.

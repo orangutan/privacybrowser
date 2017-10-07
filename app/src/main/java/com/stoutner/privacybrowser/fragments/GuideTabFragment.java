@@ -34,21 +34,28 @@ public class GuideTabFragment extends Fragment {
     // `tabNumber` is used in `onCreate()` and `onCreateView()`.
     private int tabNumber;
 
-    // GuideTabFragment.createTab stores the tab number in the bundle arguments so it can be referenced from onCreate().
+    // Store the tab number in the arguments bundle.
     public static GuideTabFragment createTab (int tab) {
-        Bundle thisTabArguments = new Bundle();
-        thisTabArguments.putInt("Tab", tab);
+        // Create a bundle.
+        Bundle bundle = new Bundle();
 
-        GuideTabFragment thisTab = new GuideTabFragment();
-        thisTab.setArguments(thisTabArguments);
-        return thisTab;
+        // Store the tab number in the bundle.
+        bundle.putInt("Tab", tab);
+
+        // Add the bundle to the fragment.
+        GuideTabFragment guideTabFragment = new GuideTabFragment();
+        guideTabFragment.setArguments(bundle);
+
+        // Return the new fragment.
+        return guideTabFragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // Run the default commands.
         super.onCreate(savedInstanceState);
 
-        // Store the tab number in `tabNumber`.
+        // Store the tab number in a class variable.
         tabNumber = getArguments().getInt("Tab");
     }
 

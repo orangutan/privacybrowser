@@ -97,14 +97,19 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.stoutner.privacybrowser.BannerAd;
 import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.dialogs.CreateBookmarkDialog;
+import com.stoutner.privacybrowser.dialogs.CreateBookmarkFolderDialog;
 import com.stoutner.privacybrowser.dialogs.CreateHomeScreenShortcutDialog;
 import com.stoutner.privacybrowser.dialogs.DownloadImageDialog;
+import com.stoutner.privacybrowser.dialogs.EditBookmarkDialog;
+import com.stoutner.privacybrowser.dialogs.EditBookmarkFolderDialog;
 import com.stoutner.privacybrowser.dialogs.HttpAuthenticationDialog;
 import com.stoutner.privacybrowser.dialogs.PinnedSslCertificateMismatchDialog;
 import com.stoutner.privacybrowser.dialogs.UrlHistoryDialog;
@@ -117,6 +122,7 @@ import com.stoutner.privacybrowser.dialogs.SslCertificateErrorDialog;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -132,9 +138,9 @@ import java.util.Map;
 import java.util.Set;
 
 // We need to use AppCompatActivity from android.support.v7.app.AppCompatActivity to have access to the SupportActionBar until the minimum API is >= 21.
-public class MainWebViewActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CreateHomeScreenShortcutDialog.CreateHomeScreenSchortcutListener,
-        HttpAuthenticationDialog.HttpAuthenticationListener, PinnedSslCertificateMismatchDialog.PinnedSslCertificateMismatchListener, SslCertificateErrorDialog.SslCertificateErrorListener, DownloadFileDialog.DownloadFileListener,
-        DownloadImageDialog.DownloadImageListener, UrlHistoryDialog.UrlHistoryListener {
+public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener, CreateHomeScreenShortcutDialog.CreateHomeScreenSchortcutListener,
+        DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, EditBookmarkDialog.EditBookmarkListener, EditBookmarkFolderDialog.EditBookmarkFolderListener, HttpAuthenticationDialog.HttpAuthenticationListener,
+        NavigationView.OnNavigationItemSelectedListener, PinnedSslCertificateMismatchDialog.PinnedSslCertificateMismatchListener, SslCertificateErrorDialog.SslCertificateErrorListener, UrlHistoryDialog.UrlHistoryListener {
 
     // `darkTheme` is public static so it can be accessed from `AboutActivity`, `GuideActivity`, `AddDomainDialog`, `SettingsActivity`, `DomainsActivity`, `DomainsListFragment`, `BookmarksActivity`, `BookmarksDatabaseViewActivity`,
     // `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, `DownloadFileDialog`, `DownloadImageDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`, `HttpAuthenticationDialog`, `MoveToFolderDialog`, `SslCertificateErrorDialog`, `UrlHistoryDialog`,
@@ -142,7 +148,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     public static boolean darkTheme;
 
     // `favoriteIconBitmap` is public static so it can be accessed from `CreateHomeScreenShortcutDialog`, `BookmarksActivity`, `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`,
-    // and `ViewSslCertificateDialog`.  It is also used in `onCreate()`, `onCreateHomeScreenShortcutCreate()`, and `applyDomainSettings`.
+    // and `ViewSslCertificateDialog`.  It is also used in `onCreate()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onCreateHomeScreenShortcutCreate()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `applyDomainSettings()`.
     public static Bitmap favoriteIconBitmap;
 
     // `formattedUrlString` is public static so it can be accessed from `BookmarksActivity`, `CreateBookmarkDialog`, and `AddDomainDialog`.
@@ -167,6 +173,13 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `reloadUrlOnRestart` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onRestart()`.
     public static boolean loadUrlOnRestart;
 
+    // `restartFromBookmarksActivity` is public static so it can be accessed from `BookmarksActivity`.  It is also used in `onRestart()`.
+    public static boolean restartFromBookmarksActivity;
+
+    // `currentBookmarksFolder` is public static so it can be accessed from `BookmarksActivity`.  It is also used in `onCreate()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and
+    // `loadBookmarksFolder()`.
+    public static String currentBookmarksFolder;
+
     // The pinned domain SSL Certificate variables are public static so they can be accessed from `PinnedSslCertificateMismatchDialog`.  They are also used in `onCreate()` and `applyDomainSettings()`.
     public static int domainSettingsDatabaseId;
     public static String pinnedDomainSslIssuedToCNameString;
@@ -188,7 +201,7 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `favoriteIconDefaultBitmap` is used in `onCreate()` and `applyDomainSettings`.
     private Bitmap favoriteIconDefaultBitmap;
 
-    // `drawerLayout` is used in `onCreate()`, `onNewIntent()`, and `onBackPressed()`.
+    // `drawerLayout` is used in `onCreate()`, `onNewIntent()`, `onBackPressed()`, and `onRestart()`.
     private DrawerLayout drawerLayout;
 
     // `rootCoordinatorLayout` is used in `onCreate()` and `applyAppSettings()`.
@@ -336,17 +349,23 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     // `pinnedDomainSslCertificate` is used in `onCreate()` and `applyDomainSettings()`.
     private boolean pinnedDomainSslCertificate;
 
-    // `bookmarksDatabaseHelper` is used in `onCreate()` and `loadBookmarksFolder()`.
+    // `bookmarksDatabaseHelper` is used in `onCreate()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `loadBookmarksFolder()`.
     private BookmarksDatabaseHelper bookmarksDatabaseHelper;
 
-    // `bookmarksListView` is used in `onCreate()` and `loadBookmarksFolder()`.
+    // `bookmarksListView` is used in `onCreate()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, and `loadBookmarksFolder()`.
     private ListView bookmarksListView;
-
-    // `currentBookmarksFolder` is used in `onCreate()`, `onBackPressed()`, and `loadBookmarksFolder()`.
-    private String currentBookmarksFolder;
 
     // `bookmarksTitleTextView` is used in `onCreate()` and `loadBookmarksFolder()`.
     private TextView bookmarksTitleTextView;
+
+    // `bookmarksCursor` is used in `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `loadBookmarksFolder()`.
+    private Cursor bookmarksCursor;
+
+    // `bookmarksCursorAdapter` is used in `onCreateBookmark()`, `onCreateBookmarkFolder()` `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `loadBookmarksFolder()`.
+    private CursorAdapter bookmarksCursorAdapter;
+
+    // `oldFolderNameString` is used in `onCreate()` and `onSaveEditBookmarkFolder()`.
+    private String oldFolderNameString;
 
     @Override
     // Remove Android Studio's warning about the dangers of using SetJavaScriptEnabled.  The whole premise of Privacy Browser is built around an understanding of these dangers.
@@ -467,7 +486,8 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         rootCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.root_coordinatorlayout);
         bookmarksListView = (ListView) findViewById(R.id.bookmarks_drawer_listview);
         bookmarksTitleTextView = (TextView) findViewById(R.id.bookmarks_title_textview);
-        FloatingActionButton createBookmarksFolderFab = (FloatingActionButton) findViewById(R.id.create_bookmark_folder_fab);
+        FloatingActionButton launchBookmarksActivityFab = (FloatingActionButton) findViewById(R.id.launch_bookmarks_activity_fab);
+        FloatingActionButton createBookmarkFolderFab = (FloatingActionButton) findViewById(R.id.create_bookmark_folder_fab);
         FloatingActionButton createBookmarkFab = (FloatingActionButton) findViewById(R.id.create_bookmark_fab);
         mainWebViewRelativeLayout = (RelativeLayout) findViewById(R.id.main_webview_relativelayout);
         mainWebView = (WebView) findViewById(R.id.main_webview);
@@ -479,14 +499,51 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
         // Set the bookmarks drawer resources according to the theme.  This can't be done in the layout due to compatibility issues with the `DrawerLayout` support widget.
         if (darkTheme) {
-            createBookmarksFolderFab.setImageDrawable(getResources().getDrawable(R.drawable.create_folder_dark));
+            launchBookmarksActivityFab.setImageDrawable(getResources().getDrawable(R.drawable.bookmarks_dark));
+            createBookmarkFolderFab.setImageDrawable(getResources().getDrawable(R.drawable.create_folder_dark));
             createBookmarkFab.setImageDrawable(getResources().getDrawable(R.drawable.create_bookmark_dark));
             bookmarksListView.setBackgroundColor(getResources().getColor(R.color.gray_850));
         } else {
-            createBookmarksFolderFab.setImageDrawable(getResources().getDrawable(R.drawable.create_folder_light));
+            launchBookmarksActivityFab.setImageDrawable(getResources().getDrawable(R.drawable.bookmarks_light));
+            createBookmarkFolderFab.setImageDrawable(getResources().getDrawable(R.drawable.create_folder_light));
             createBookmarkFab.setImageDrawable(getResources().getDrawable(R.drawable.create_bookmark_light));
             bookmarksListView.setBackgroundColor(getResources().getColor(R.color.white));
         }
+
+        // Set the launch bookmarks activity FAB to launch the bookmarks activity.
+        launchBookmarksActivityFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an intent to launch the bookmarks activity.
+                Intent bookmarksIntent = new Intent(getApplicationContext(), BookmarksActivity.class);
+
+                // Include the current folder with the `Intent`.
+                bookmarksIntent.putExtra("Current Folder", currentBookmarksFolder);
+
+                // Make it so.
+                startActivity(bookmarksIntent);
+            }
+        });
+
+        // Set the create new bookmark folder FAB to display the `AlertDialog`.
+        createBookmarkFolderFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Show the `CreateBookmarkFolderDialog` `AlertDialog` and name the instance `@string/create_folder`.
+                AppCompatDialogFragment createBookmarkFolderDialog = new CreateBookmarkFolderDialog();
+                createBookmarkFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_folder));
+            }
+        });
+
+        // Set the create new bookmark FAB to display the `AlertDialog`.
+        createBookmarkFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Show the `CreateBookmarkDialog` `AlertDialog` and name the instance `@string/create_bookmark`.
+                AppCompatDialogFragment createBookmarkDialog = new CreateBookmarkDialog();
+                createBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_bookmark));
+            }
+        });
 
         // Create a double-tap listener to toggle full-screen mode.
         final GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
@@ -691,6 +748,33 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
                 // Close the `Cursor`.
                 bookmarkCursor.close();
+            }
+        });
+
+        bookmarksListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                // Convert the database ID from `long` to `int`.
+                int databaseId = (int) id;
+
+                // Find out if the selected bookmark is a folder.
+                boolean isFolder = bookmarksDatabaseHelper.isFolder(databaseId);
+
+                if (isFolder) {
+                    // Save the current folder name, which is used in `onSaveEditBookmarkFolder()`.
+                    oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
+
+                    // Show the edit bookmark folder `AlertDialog` and name the instance `@string/edit_folder`.
+                    AppCompatDialogFragment editFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId);
+                    editFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_folder));
+                } else {
+                    // Show the edit bookmark `AlertDialog` and name the instance `@string/edit_bookmark`.
+                    AppCompatDialogFragment editBookmarkDialog = EditBookmarkDialog.bookmarkDatabaseId(databaseId);
+                    editBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_bookmark));
+                }
+
+                // Consume the event.
+                return true;
             }
         });
 
@@ -1284,6 +1368,18 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
             // Reset `loadUrlOnRestart.
             loadUrlOnRestart = false;
         }
+
+        //
+        if (restartFromBookmarksActivity) {
+            // Close the bookmarks drawer.
+            drawerLayout.closeDrawer(GravityCompat.END);
+
+            // Reload the bookmarks drawer.
+            loadBookmarksFolder();
+
+            // Reset `restartFromBookmarksActivity`.
+            restartFromBookmarksActivity = false;
+        }
     }
 
     // `onResume()` runs after `onStart()`, which runs after `onCreate()` and `onRestart()`.
@@ -1847,12 +1943,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 urlHistoryDialogFragment.show(getSupportFragmentManager(), getString(R.string.history));
                 break;
 
-            case R.id.bookmarks:
-                // Launch BookmarksActivity.
-                Intent bookmarksIntent = new Intent(this, BookmarksActivity.class);
-                startActivity(bookmarksIntent);
-                break;
-
             case R.id.downloads:
                 // Launch the system Download Manager.
                 Intent downloadManagerIntent = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
@@ -1863,15 +1953,6 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 startActivity(downloadManagerIntent);
                 break;
 
-            case R.id.settings:
-                // Reset `currentDomainName` so that domain settings are reapplied after returning to `MainWebViewActivity`.
-                currentDomainName = "";
-
-                // Launch `SettingsActivity`.
-                Intent settingsIntent = new Intent(this, SettingsActivity.class);
-                startActivity(settingsIntent);
-                break;
-
             case R.id.domains:
                 // Reset `currentDomainName` so that domain settings are reapplied after returning to `MainWebViewActivity`.
                 currentDomainName = "";
@@ -1879,6 +1960,15 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
                 // Launch `DomainsActivity`.
                 Intent domainsIntent = new Intent(this, DomainsActivity.class);
                 startActivity(domainsIntent);
+                break;
+
+            case R.id.settings:
+                // Reset `currentDomainName` so that domain settings are reapplied after returning to `MainWebViewActivity`.
+                currentDomainName = "";
+
+                // Launch `SettingsActivity`.
+                Intent settingsIntent = new Intent(this, SettingsActivity.class);
+                startActivity(settingsIntent);
                 break;
 
             case R.id.guide:
@@ -2225,6 +2315,82 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
     }
 
     @Override
+    public void onCreateBookmark(AppCompatDialogFragment dialogFragment) {
+        // Get the `EditTexts` from the `dialogFragment`.
+        EditText createBookmarkNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.create_bookmark_name_edittext);
+        EditText createBookmarkUrlEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.create_bookmark_url_edittext);
+
+        // Extract the strings from the `EditTexts`.
+        String bookmarkNameString = createBookmarkNameEditText.getText().toString();
+        String bookmarkUrlString = createBookmarkUrlEditText.getText().toString();
+
+        // Convert the favoriteIcon Bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
+        ByteArrayOutputStream favoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
+        favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
+        byte[] favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray();
+
+        // Display the new bookmark below the current items in the (0 indexed) list.
+        int newBookmarkDisplayOrder = bookmarksListView.getCount();
+
+        // Create the bookmark.
+        bookmarksDatabaseHelper.createBookmark(bookmarkNameString, bookmarkUrlString, newBookmarkDisplayOrder, currentBookmarksFolder, favoriteIconByteArray);
+
+        // Update `bookmarksCursor` with the current contents of this folder.
+        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentBookmarksFolder);
+
+        // Update the `ListView`.
+        bookmarksCursorAdapter.changeCursor(bookmarksCursor);
+
+        // Scroll to the new bookmark.
+        bookmarksListView.setSelection(newBookmarkDisplayOrder);
+    }
+
+    @Override
+    public void onCreateBookmarkFolder(AppCompatDialogFragment dialogFragment) {
+        // Get handles for the views in `dialogFragment`.
+        EditText createFolderNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.create_folder_name_edittext);
+        RadioButton defaultFolderIconRadioButton = (RadioButton) dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon_radiobutton);
+        ImageView folderIconImageView = (ImageView) dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon);
+
+        // Get new folder name string.
+        String folderNameString = createFolderNameEditText.getText().toString();
+
+        // Get the new folder icon `Bitmap`.
+        Bitmap folderIconBitmap;
+        if (defaultFolderIconRadioButton.isChecked()) {  // Use the default folder icon.
+            // Get the default folder icon and convert it to a `Bitmap`.
+            Drawable folderIconDrawable = folderIconImageView.getDrawable();
+            BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
+            folderIconBitmap = folderIconBitmapDrawable.getBitmap();
+        } else {  // Use the `WebView` favorite icon.
+            folderIconBitmap = favoriteIconBitmap;
+        }
+
+        // Convert `folderIconBitmap` to a byte array.  `0` is for lossless compression (the only option for a PNG).
+        ByteArrayOutputStream folderIconByteArrayOutputStream = new ByteArrayOutputStream();
+        folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, folderIconByteArrayOutputStream);
+        byte[] folderIconByteArray = folderIconByteArrayOutputStream.toByteArray();
+
+        // Move all the bookmarks down one in the display order.
+        for (int i = 0; i < bookmarksListView.getCount(); i++) {
+            int databaseId = (int) bookmarksListView.getItemIdAtPosition(i);
+            bookmarksDatabaseHelper.updateDisplayOrder(databaseId, i + 1);
+        }
+
+        // Create the folder, placing it at the top of the ListView
+        bookmarksDatabaseHelper.createFolder(folderNameString, 0, currentBookmarksFolder, folderIconByteArray);
+
+        // Update `bookmarksCursor` with the current contents of this folder.
+        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentBookmarksFolder);
+
+        // Update the `ListView`.
+        bookmarksCursorAdapter.changeCursor(bookmarksCursor);
+
+        // Scroll to the new folder.
+        bookmarksListView.setSelection(0);
+    }
+
+    @Override
     public void onCreateHomeScreenShortcut(AppCompatDialogFragment dialogFragment) {
         // Get shortcutNameEditText from the alert dialog.
         EditText shortcutNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.shortcut_name_edittext);
@@ -2336,6 +2502,99 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
         } else {  // The download is not an HTTP or HTTPS URI.
             Snackbar.make(mainWebView, R.string.cannot_download_file, Snackbar.LENGTH_INDEFINITE).show();
         }
+    }
+
+    @Override
+    public void onSaveEditBookmark(AppCompatDialogFragment dialogFragment, int selectedBookmarkDatabaseId) {
+        // Get handles for the views from `dialogFragment`.
+        EditText editBookmarkNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.edit_bookmark_name_edittext);
+        EditText editBookmarkUrlEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.edit_bookmark_url_edittext);
+        RadioButton currentBookmarkIconRadioButton = (RadioButton) dialogFragment.getDialog().findViewById(R.id.edit_bookmark_current_icon_radiobutton);
+
+        // Store the bookmark strings.
+        String bookmarkNameString = editBookmarkNameEditText.getText().toString();
+        String bookmarkUrlString = editBookmarkUrlEditText.getText().toString();
+
+        // Update the bookmark.
+        if (currentBookmarkIconRadioButton.isChecked()) {  // Update the bookmark without changing the favorite icon.
+            bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString);
+        } else {  // Update the bookmark using the `WebView` favorite icon.
+            // Convert the favorite icon to a byte array.  `0` is for lossless compression (the only option for a PNG).
+            ByteArrayOutputStream newFavoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
+            favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, newFavoriteIconByteArrayOutputStream);
+            byte[] newFavoriteIconByteArray = newFavoriteIconByteArrayOutputStream.toByteArray();
+
+            //  Update the bookmark and the favorite icon.
+            bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString, newFavoriteIconByteArray);
+        }
+
+        // Update `bookmarksCursor` with the current contents of this folder.
+        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentBookmarksFolder);
+
+        // Update the `ListView`.
+        bookmarksCursorAdapter.changeCursor(bookmarksCursor);
+    }
+
+    @Override
+    public void onSaveEditBookmarkFolder(AppCompatDialogFragment dialogFragment, int selectedFolderDatabaseId) {
+        // Get handles for the views from `dialogFragment`.
+        EditText editFolderNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.edit_folder_name_edittext);
+        RadioButton currentFolderIconRadioButton = (RadioButton) dialogFragment.getDialog().findViewById(R.id.edit_folder_current_icon_radiobutton);
+        RadioButton defaultFolderIconRadioButton = (RadioButton) dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_radiobutton);
+        ImageView folderIconImageView = (ImageView) dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon);
+
+        // Get the new folder name.
+        String newFolderNameString = editFolderNameEditText.getText().toString();
+
+        // Check if the favorite icon has changed.
+        if (currentFolderIconRadioButton.isChecked()) {  // Only the name has changed.
+            // Update the name in the database.
+            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, oldFolderNameString, newFolderNameString);
+        } else if (!currentFolderIconRadioButton.isChecked() && newFolderNameString.equals(oldFolderNameString)) {  // Only the icon has changed.
+            // Get the new folder icon `Bitmap`.
+            Bitmap folderIconBitmap;
+            if (defaultFolderIconRadioButton.isChecked()) {
+                // Get the default folder icon and convert it to a `Bitmap`.
+                Drawable folderIconDrawable = folderIconImageView.getDrawable();
+                BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
+                folderIconBitmap = folderIconBitmapDrawable.getBitmap();
+            } else {  // Use the `WebView` favorite icon.
+                folderIconBitmap = favoriteIconBitmap;
+            }
+
+            // Convert the folder `Bitmap` to a byte array.  `0` is for lossless compression (the only option for a PNG).
+            ByteArrayOutputStream folderIconByteArrayOutputStream = new ByteArrayOutputStream();
+            folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, folderIconByteArrayOutputStream);
+            byte[] folderIconByteArray = folderIconByteArrayOutputStream.toByteArray();
+
+            // Update the folder icon in the database.
+            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, folderIconByteArray);
+        } else {  // The folder icon and the name have changed.
+            // Get the new folder icon `Bitmap`.
+            Bitmap folderIconBitmap;
+            if (defaultFolderIconRadioButton.isChecked()) {
+                // Get the default folder icon and convert it to a `Bitmap`.
+                Drawable folderIconDrawable = folderIconImageView.getDrawable();
+                BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
+                folderIconBitmap = folderIconBitmapDrawable.getBitmap();
+            } else {  // Use the `WebView` favorite icon.
+                folderIconBitmap = MainWebViewActivity.favoriteIconBitmap;
+            }
+
+            // Convert the folder `Bitmap` to a byte array.  `0` is for lossless compression (the only option for a PNG).
+            ByteArrayOutputStream folderIconByteArrayOutputStream = new ByteArrayOutputStream();
+            folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, folderIconByteArrayOutputStream);
+            byte[] folderIconByteArray = folderIconByteArrayOutputStream.toByteArray();
+
+            // Update the folder name and icon in the database.
+            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, oldFolderNameString, newFolderNameString, folderIconByteArray);
+        }
+
+        // Update `bookmarksCursor` with the current contents of this folder.
+        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentBookmarksFolder);
+
+        // Update the `ListView`.
+        bookmarksCursorAdapter.changeCursor(bookmarksCursor);
     }
 
     @Override
@@ -3060,10 +3319,10 @@ public class MainWebViewActivity extends AppCompatActivity implements Navigation
 
     private void loadBookmarksFolder() {
         // Update `bookmarksCursor` with the contents of the bookmarks database for the current folder.
-        Cursor bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentBookmarksFolder);
+        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentBookmarksFolder);
 
-        // Setup a `CursorAdapter`.  `this` specifies the `Context`.  `false` disables `autoRequery`.
-        CursorAdapter bookmarksCursorAdapter = new CursorAdapter(this, bookmarksCursor, false) {
+        // Populate the bookmarks cursor adapter.  `this` specifies the `Context`.  `false` disables `autoRequery`.
+        bookmarksCursorAdapter = new CursorAdapter(this, bookmarksCursor, false) {
             @Override
             public View newView(Context context, Cursor cursor, ViewGroup parent) {
                 // Inflate the individual item layout.  `false` does not attach it to the root.

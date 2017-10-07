@@ -38,9 +38,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.stoutner.privacybrowser.activities.BookmarksActivity;
-import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.activities.MainWebViewActivity;
+import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 
 public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
     // The public interface is used to send information back to the parent activity.
@@ -113,12 +113,16 @@ public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
         // The `AlertDialog` must be shown before items in the alert dialog can be modified.
         alertDialog.show();
 
-        // Get a handle for the create button.
+        // Get handles for the views in the dialog.
         final Button createButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
         EditText folderNameEditText = (EditText) alertDialog.findViewById(R.id.create_folder_name_edittext);
+        ImageView webPageIconImageView = (ImageView) alertDialog.findViewById(R.id.create_folder_web_page_icon);
 
         // Initially disable the create button.
         createButton.setEnabled(false);
+
+        // Initialize the database helper.  The two `nulls` do not specify the database name or a `CursorFactory`.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
+        final BookmarksDatabaseHelper bookmarksDatabaseHelper = new BookmarksDatabaseHelper(getContext(), null, null, 0);
 
         // Enable the create button if the new folder name is unique.
         folderNameEditText.addTextChangedListener(new TextWatcher() {
@@ -138,7 +142,7 @@ public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
                 String folderName = s.toString();
 
                 // Check if a folder with the name already exists.
-                Cursor folderExistsCursor = BookmarksActivity.bookmarksDatabaseHelper.getFolderCursor(folderName);
+                Cursor folderExistsCursor = bookmarksDatabaseHelper.getFolderCursor(folderName);
 
                 // Enable the create button if the new folder name is not empty and doesn't already exist.
                 createButton.setEnabled(!folderName.isEmpty() && (folderExistsCursor.getCount() == 0));
@@ -163,7 +167,6 @@ public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
         });
 
         // Display the current favorite icon.
-        ImageView webPageIconImageView = (ImageView) alertDialog.findViewById(R.id.create_folder_web_page_icon);
         webPageIconImageView.setImageBitmap(MainWebViewActivity.favoriteIconBitmap);
 
         // `onCreateDialog()` requires the return of an `AlertDialog`.

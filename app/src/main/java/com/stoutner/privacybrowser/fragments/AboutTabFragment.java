@@ -22,8 +22,6 @@ package com.stoutner.privacybrowser.fragments;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -53,21 +51,28 @@ import java.util.Date;
 public class AboutTabFragment extends Fragment {
     private int tabNumber;
 
-    // `AboutTabFragment.createTab` stores the tab number in the bundle arguments so it can be referenced from `onCreate()`.
+    // Store the tab number in the arguments bundle.
     public static AboutTabFragment createTab(int tab) {
-        Bundle thisTabArguments = new Bundle();
-        thisTabArguments.putInt("Tab", tab);
+        // Create a bundle.
+        Bundle bundle = new Bundle();
 
-        AboutTabFragment thisTab = new AboutTabFragment();
-        thisTab.setArguments(thisTabArguments);
-        return thisTab;
+        // Store the tab number in the bundle.
+        bundle.putInt("Tab", tab);
+
+        // Add the bundle to the fragment.
+        AboutTabFragment aboutTabFragment = new AboutTabFragment();
+        aboutTabFragment.setArguments(bundle);
+
+        // Return the new fragment.
+        return aboutTabFragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // Run the default commands.
         super.onCreate(savedInstanceState);
 
-        // Store the tab number in `tabNumber`.
+        // Store the tab number in a class variable.
         tabNumber = getArguments().getInt("Tab");
     }
 

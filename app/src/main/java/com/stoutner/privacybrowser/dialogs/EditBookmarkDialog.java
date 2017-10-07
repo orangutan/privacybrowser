@@ -30,7 +30,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
-// We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <=22.
+// `AppCompatDialogFragment` is required instead of `DialogFragment` or an error is produced on API <=22.
 import android.support.v7.app.AppCompatDialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -43,21 +43,28 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.stoutner.privacybrowser.activities.BookmarksActivity;
-import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 
 public class EditBookmarkDialog extends AppCompatDialogFragment {
     // The public interface is used to send information back to the parent activity.
     public interface EditBookmarkListener {
-        void onSaveEditBookmark(AppCompatDialogFragment dialogFragment);
+        void onSaveEditBookmark(AppCompatDialogFragment dialogFragment, int selectedBookmarkDatabaseId);
     }
 
-    // `editBookmarkListener` is used in `onAttach()` and `onCreateDialog()`
+    // Instantiate the class variables.
     private EditBookmarkListener editBookmarkListener;
+    private int selectedBookmarkDatabaseId;
+    private EditText nameEditText;
+    private EditText urlEditText;
+    private RadioButton newIconRadioButton;
+    private Button editButton;
+    private String currentName;
+    private String currentUrl;
 
     public void onAttach(Context context) {
+        // Run the default commands.
         super.onAttach(context);
 
         // Get a handle for `EditBookmarkListener` from `context`.
@@ -68,25 +75,41 @@ public class EditBookmarkDialog extends AppCompatDialogFragment {
         }
     }
 
-    // Instantiate the class variables.
-    EditText nameEditText;
-    EditText urlEditText;
-    RadioButton newIconRadioButton;
-    Button editButton;
-    String currentName;
-    String currentUrl;
+    // Store the database ID in the arguments bundle.
+    public static EditBookmarkDialog bookmarkDatabaseId(int databaseId) {
+        // Create a bundle.
+        Bundle bundle = new Bundle();
+
+        // Store the bookmark database ID in the bundle.
+        bundle.putInt("Database ID", databaseId);
+
+        // Add the bundle to the dialog.
+        EditBookmarkDialog editBookmarkDialog = new EditBookmarkDialog();
+        editBookmarkDialog.setArguments(bundle);
+
+        // Return the new dialog.
+        return editBookmarkDialog;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        // Run the default commands.
+        super.onCreate(savedInstanceState);
+
+        // Store the bookmark database ID in the class variable.
+        selectedBookmarkDatabaseId = getArguments().getInt("Database ID");
+    }
 
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Get a long array with the the databaseId of the selected bookmark and convert it to an `int`.
-        long[] selectedBookmarkLongArray = BookmarksActivity.checkedItemIds;
-        int selectedBookmarkDatabaseId = (int) selectedBookmarkLongArray[0];
+        // Initialize the database helper.  The two `nulls` do not specify the database name or a `CursorFactory`.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
+        BookmarksDatabaseHelper bookmarksDatabaseHelper = new BookmarksDatabaseHelper(getContext(), null, null, 0);
 
-        // Get a `Cursor` with the specified bookmark and move it to the first position.
-        Cursor bookmarkCursor = BookmarksActivity.bookmarksDatabaseHelper.getBookmarkCursor(selectedBookmarkDatabaseId);
+        // Get a `Cursor` with the selected bookmark and move it to the first position.
+        Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmarkCursor(selectedBookmarkDatabaseId);
         bookmarkCursor.moveToFirst();
 
         // Use `AlertDialog.Builder` to create the `AlertDialog`.
@@ -118,7 +141,7 @@ public class EditBookmarkDialog extends AppCompatDialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // Return the `DialogFragment` to the parent activity on save.
-                editBookmarkListener.onSaveEditBookmark(EditBookmarkDialog.this);
+                editBookmarkListener.onSaveEditBookmark(EditBookmarkDialog.this, selectedBookmarkDatabaseId);
             }
         });
 
@@ -220,7 +243,7 @@ public class EditBookmarkDialog extends AppCompatDialogFragment {
                 // If the event is an `ACTION_DOWN` on the `enter` key, save the bookmark.
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER) && editButton.isEnabled()) {  // The enter key was pressed and the edit button is enabled.
                     // Trigger `onSaveEditBookmark()` and return the `DialogFragment` to the parent activity.
-                    editBookmarkListener.onSaveEditBookmark(EditBookmarkDialog.this);
+                    editBookmarkListener.onSaveEditBookmark(EditBookmarkDialog.this, selectedBookmarkDatabaseId);
                     // Manually dismiss `alertDialog`.
                     alertDialog.dismiss();
                     // Consume the event.
@@ -237,7 +260,7 @@ public class EditBookmarkDialog extends AppCompatDialogFragment {
                 // If the event is a key-down on the `enter` button, select the PositiveButton `Save`.
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER) && editButton.isEnabled()) {  // The enter key was pressed and the edit button is enabled.
                     // Trigger `editBookmarkListener` and return the DialogFragment to the parent activity.
-                    editBookmarkListener.onSaveEditBookmark(EditBookmarkDialog.this);
+                    editBookmarkListener.onSaveEditBookmark(EditBookmarkDialog.this, selectedBookmarkDatabaseId);
                     // Manually dismiss the `AlertDialog`.
                     alertDialog.dismiss();
                     // Consume the event.
