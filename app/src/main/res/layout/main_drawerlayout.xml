@@ -76,10 +76,12 @@
                         android:visibility="gone"
                         tools:ignore="UnusedAttribute" />
 
+                    <!-- Include the Find on Page search bar. -->
                     <include layout="@layout/find_on_page_app_bar" />
                 </FrameLayout>
             </android.support.design.widget.AppBarLayout>
 
+            <!-- Include the main `WebView`. -->
             <include layout="@layout/main_webview" />
         </LinearLayout>
 
@@ -102,61 +104,6 @@
         app:menu="@menu/webview_navigation_menu"
         app:itemIconTint="?attr/navigationIconTintColor" />
 
-    <!-- The bookmarks drawer. -->
-    <FrameLayout
-        android:id="@+id/bookmarks_framelayout"
-        android:layout_height="match_parent"
-        android:layout_width="wrap_content"
-        android:layout_gravity="end" >
-
-        <LinearLayout
-            android:layout_height="match_parent"
-            android:layout_width="wrap_content"
-            android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/bookmarks_title_textview"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:paddingTop="35dp"
-                android:paddingBottom="8dp"
-                android:paddingStart="15dp"
-                android:paddingEnd="35dp"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:background="?attr/navigationHeaderBackground"
-                android:textColor="?attr/navigationHeaderTextColor" />
-
-            <ListView
-                android:id="@+id/bookmarks_drawer_listview"
-                android:layout_height="0dp"
-                android:layout_width="match_parent"
-                android:layout_weight="1"
-                android:divider="@color/transparent"
-                android:dividerHeight="0dp" />
-        </LinearLayout>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/launch_bookmarks_activity_fab"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="155dp" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/create_bookmark_folder_fab"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="85dp" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/create_bookmark_fab"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="16dp" />
-    </FrameLayout>
+    <!-- Include the bookmarks drawer. -->
+    <include layout="@layout/bookmarks_drawer" />
 </android.support.v4.widget.DrawerLayout>
