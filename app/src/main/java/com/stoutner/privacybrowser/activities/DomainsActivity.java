@@ -377,7 +377,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                                         domainsDatabaseHelper.deleteDomain(databaseIdToDelete);
 
                                         // enable `deleteMenuItem` if the system was waiting for a `Snackbar` to be dismissed.
-                                        if (DomainsActivity.dismissingSnackbar) {
+                                        if (dismissingSnackbar) {
                                             // Create a `Runnable` to enable the delete menu item.
                                             Runnable enableDeleteMenuItemRunnable = new Runnable() {
                                                 @Override

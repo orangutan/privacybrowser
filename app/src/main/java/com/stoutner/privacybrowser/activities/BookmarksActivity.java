@@ -185,7 +185,9 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         bookmarksListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             // Instantiate the common variables.
             MenuItem editBookmarkMenuItem;
+            MenuItem deleteBookmarksMenuItem;
             MenuItem selectAllBookmarksMenuItem;
+            boolean deletingBookmarks;
 
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -204,7 +206,13 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                 moveBookmarkUpMenuItem = menu.findItem(R.id.move_bookmark_up);
                 moveBookmarkDownMenuItem = menu.findItem(R.id.move_bookmark_down);
                 editBookmarkMenuItem = menu.findItem(R.id.edit_bookmark);
+                deleteBookmarksMenuItem = menu.findItem(R.id.delete_bookmark);
                 selectAllBookmarksMenuItem = menu.findItem(R.id.context_menu_select_all_bookmarks);
+
+                // Disable the delete bookmarks menu item if a delete is pending.
+                if (deletingBookmarks) {
+                    deleteBookmarksMenuItem.setEnabled(false);
+                }
 
                 // Store `contextualActionMode` so it can be closed programatically.
                 contextualActionMode = mode;
@@ -410,6 +418,9 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                         break;
 
                     case R.id.delete_bookmark:
+                        // Set the deleting bookmarks flag, which prevents the delete menu item from being enabled until the current process finishes.
+                        deletingBookmarks = true;
+
                         // Get an array of the selected row IDs.
                         final long[] selectedBookmarksIdsLongArray = bookmarksListView.getCheckedItemIds();
 
@@ -456,6 +467,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                                                 for (int i = 0; i < selectedBookmarksPositionsSparseBooleanArray.size(); i++) {
                                                     bookmarksListView.setItemChecked(selectedBookmarksPositionsSparseBooleanArray.keyAt(i), true);
                                                 }
+
                                                 break;
 
                                             // The `Snackbar` was dismissed without the `Undo` button being pushed.
@@ -487,8 +499,13 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                                                         bookmarksDatabaseHelper.updateDisplayOrder(currentBookmarkDatabaseId, i);
                                                     }
                                                 }
-                                                break;
                                         }
+
+                                        // Enable the delete bookmarks menu item.
+                                        deleteBookmarksMenuItem.setEnabled(true);
+
+                                        // Reset the deleting bookmarks flag.
+                                        deletingBookmarks = false;
                                     }
                                 })
                                 //Show the `SnackBar`.
