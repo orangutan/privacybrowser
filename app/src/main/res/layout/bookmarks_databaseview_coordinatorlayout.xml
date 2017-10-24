@@ -28,7 +28,7 @@
     android:layout_width="match_parent"
     android:fitsSystemWindows="true" >
 
-    <!-- the `LinearLayout` with `orientation="vertical"` moves the content below the `AppBarLayout`. -->
+    <!-- The `LinearLayout` with `orientation="vertical"` moves the `ListView` below the `AppBarLayout`. -->
     <LinearLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"

@@ -231,7 +231,8 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
 
         // Prepare the SQL statement to get the `Cursor` for all the folders.
         final String GET_ALL_FOLDERS = "SELECT * FROM " + BOOKMARKS_TABLE +
-                " WHERE " + IS_FOLDER + " = " + 1;
+                " WHERE " + IS_FOLDER + " = " + 1 +
+                " ORDER BY " + BOOKMARK_NAME + " ASC";
 
         // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.
         // We can't close the `Cursor` because we need to use it in the parent activity.
@@ -248,6 +249,22 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
 
         // Return the results as a Cursor.  The second argument is `null` because there are no selectionArgs.
         // We can't close the Cursor because we need to use it in the parent activity.
+        return bookmarksDatabase.rawQuery(GET_ALL_BOOKMARKS, null);
+    }
+
+    // Get a `Cursor` for all bookmarks and folders in the specified folder.
+    public Cursor getAllBookmarksCursor(String folderName) {
+        // Get a readable database handle.
+        SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
+
+        // SQL escape `folderName`.
+        folderName = DatabaseUtils.sqlEscapeString(folderName);
+
+        // Get everything in the `BOOKMARKS_TABLE` with `folderName` as the `PARENT_FOLDER`.
+        final String GET_ALL_BOOKMARKS = "SELECT * FROM " + BOOKMARKS_TABLE +
+                " WHERE " + PARENT_FOLDER + " = " + folderName;
+
+        // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.  We can't close the `Cursor` because we need to use it in the parent activity.
         return bookmarksDatabase.rawQuery(GET_ALL_BOOKMARKS, null);
     }
 

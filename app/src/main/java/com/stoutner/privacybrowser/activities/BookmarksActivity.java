@@ -116,8 +116,12 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Get the intent that launched the activity.
         Intent launchingIntent = getIntent();
 
-        // Get the current folder from the `Intent`.
-        currentFolder = launchingIntent.getStringExtra("Current Folder");
+        // Set the current folder variable.
+        if (launchingIntent.getStringExtra("Current Folder") != null) {  // Set the current folder from the intent.
+            currentFolder = launchingIntent.getStringExtra("Current Folder");
+        } else {  // Set the current folder to be `""`, which is the home folder.
+            currentFolder = "";
+        }
 
         // Set the content view.
         setContentView(R.layout.bookmarks_coordinatorlayout);

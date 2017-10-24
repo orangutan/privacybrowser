@@ -192,18 +192,18 @@ public class DomainSettingsFragment extends Fragment {
         }
 
         // Create `ArrayAdapters` for the `Spinners`and their `entry values`.
-        ArrayAdapter<CharSequence> userAgentArrayAdapter = ArrayAdapter.createFromResource(context, R.array.domain_settings_user_agent_entries, R.layout.spinner_item);
-        final ArrayAdapter<CharSequence> userAgentEntryValuesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.domain_settings_user_agent_entry_values, R.layout.spinner_item);
-        ArrayAdapter<CharSequence> fontSizeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.domain_settings_font_size_entries, R.layout.spinner_item);
-        ArrayAdapter<CharSequence> fontSizeEntryValuesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.domain_settings_font_size_entry_values, R.layout.spinner_item);
-        final ArrayAdapter<CharSequence> displayImagesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.display_webpage_images_array, R.layout.spinner_item);
-        ArrayAdapter<CharSequence> nightModeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.night_mode_array, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> userAgentArrayAdapter = ArrayAdapter.createFromResource(context, R.array.domain_settings_user_agent_entries, R.layout.domain_settings_spinner_item);
+        final ArrayAdapter<CharSequence> userAgentEntryValuesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.domain_settings_user_agent_entry_values, R.layout.domain_settings_spinner_item);
+        ArrayAdapter<CharSequence> fontSizeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.domain_settings_font_size_entries, R.layout.domain_settings_spinner_item);
+        ArrayAdapter<CharSequence> fontSizeEntryValuesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.domain_settings_font_size_entry_values, R.layout.domain_settings_spinner_item);
+        final ArrayAdapter<CharSequence> displayImagesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.display_webpage_images_array, R.layout.domain_settings_spinner_item);
+        ArrayAdapter<CharSequence> nightModeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.night_mode_array, R.layout.domain_settings_spinner_item);
 
         // Set the `DropDownViewResource` on the `Spinners`.
-        userAgentArrayAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-        fontSizeArrayAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-        displayImagesArrayAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-        nightModeArrayAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+        userAgentArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_item);
+        fontSizeArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_item);
+        displayImagesArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_item);
+        nightModeArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_item);
 
         // Set the `ArrayAdapters` for the `Spinners`.
         userAgentSpinner.setAdapter(userAgentArrayAdapter);

@@ -195,6 +195,7 @@
 
     <!-- Bookmarks Database View. -->
     <string name="bookmarks_database_view">Bookmarks Database View</string>
+    <string name="all_folders">All Folders</string>
     <string name="home_folder">Home Folder</string>
 
     <!-- Domains. -->

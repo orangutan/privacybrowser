@@ -223,13 +223,13 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
                 }
             }
 
-            // Get a `foldersCursor`.
+            // Get a `Cursor` containing the folders to display.
             foldersCursor = BookmarksActivity.bookmarksDatabaseHelper.getFoldersCursorExcept(exceptFolders);
 
             // Combine `homeFolderMatrixCursor` and `foldersCursor`.
             MergeCursor foldersMergeCursor = new MergeCursor(new Cursor[]{homeFolderMatrixCursor, foldersCursor});
 
-            // Setup `foldersCursorAdaptor` with `this` context.  `false` disables autoRequery.
+            // Setup `foldersCursorAdaptor`.  `false` disables autoRequery.
             foldersCursorAdapter = new CursorAdapter(alertDialog.getContext(), foldersMergeCursor, false) {
                 @Override
                 public View newView(Context context, Cursor cursor, ViewGroup parent) {

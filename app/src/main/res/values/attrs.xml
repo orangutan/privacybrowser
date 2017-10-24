@@ -32,6 +32,9 @@
     <attr name="sslHeader" format="reference" />
     <attr name="urlHistoryText" format="reference" />
     <attr name="primaryTextColorSelector" format="reference" />
+    <attr name="bookmarksSpinnerHeaderTextColor" format="reference" />
+    <attr name="bookmarksSpinnerTextColorSelector" format="reference" />
+    <attr name="bookmarksSpinnerBackground" format="reference" />
     <attr name="redText" format="reference" />
 
     <attr name="navigationHeaderBackground" format="reference" />
