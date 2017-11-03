@@ -197,6 +197,10 @@
     <string name="bookmarks_database_view">Bookmarks Database View</string>
     <string name="all_folders">All Folders</string>
     <string name="home_folder">Home Folder</string>
+    <string name="database_id">Database ID:</string>
+    <string name="folder">Folder:</string>
+    <string name="parent_folder">Parent folder:</string>
+    <string name="display_order">Display order:</string>
 
     <!-- Domains. -->
     <string name="domains">Domains</string>

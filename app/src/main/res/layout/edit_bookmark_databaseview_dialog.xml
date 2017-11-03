@@ -23,11 +23,39 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent" >
 
+    <!-- Setting `android:focusable` and `android:focusableInTouchMode` prevent `edit_bookmark_display_order_edittext` from being autoselected. -->
     <LinearLayout
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:focusable="true"
+        android:focusableInTouchMode="true" >
+
+        <!-- Database ID. -->
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="6dp"
+            android:layout_marginStart="7dp"
+            android:layout_marginEnd="7dp" >
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/database_id"
+                android:textSize="18sp"
+                android:textColor="?attr/primaryTextColorSelector"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/edit_bookmark_database_id_textview"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textSize="18sp"
+                android:textColor="@color/gray_500" />
+        </LinearLayout>
 
         <!-- The icon selection rows. -->
         <LinearLayout
@@ -47,7 +75,7 @@
                     android:id="@+id/edit_bookmark_current_icon"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="6dp"
                     android:layout_marginBottom="6dp"
                     android:layout_gravity="center_vertical"
                     tools:ignore="ContentDescription" />
@@ -72,7 +100,7 @@
                     android:id="@id/edit_bookmark_current_icon_radiobutton"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="6dp"
                     android:layout_marginBottom="4dp"
                     android:text="@string/current_bookmark_icon"
                     android:textSize="18sp" />
@@ -87,7 +115,7 @@
             </RadioGroup>
         </LinearLayout>
 
-        <!-- `android.support.design.widget.TextInputLayout` makes the `android:hint` float above the `EditText`. -->
+        <!-- Bookmark name.  `android.support.design.widget.TextInputLayout` makes the `android:hint` float above the `EditText`. -->
         <android.support.design.widget.TextInputLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
@@ -107,7 +135,7 @@
                 android:selectAllOnFocus="true" />
         </android.support.design.widget.TextInputLayout>
 
-        <!-- `android.support.design.widget.TextInputLayout` makes the `android:hint` float above the `EditText`. -->
+        <!-- URL.  `android.support.design.widget.TextInputLayout` makes the `android:hint` float above the `EditText`. -->
         <android.support.design.widget.TextInputLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
@@ -126,5 +154,55 @@
                 android:inputType="textUri"
                 android:selectAllOnFocus="true" />
         </android.support.design.widget.TextInputLayout>
+
+        <!-- Folder. -->
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginTop="6dp"
+            android:layout_marginStart="7dp"
+            android:layout_marginEnd="7dp" >
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/folder"
+                android:textSize="18sp"
+                android:textColor="?attr/primaryTextColorSelector" />
+
+            <Spinner
+                android:id="@+id/edit_bookmark_folder_spinner"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content" />
+        </LinearLayout>
+
+        <!-- Display order. -->
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:layout_marginStart="7dp"
+            android:layout_marginEnd="7dp" >
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/display_order"
+                android:textSize="18sp"
+                android:textColor="?attr/primaryTextColorSelector"
+                android:layout_marginEnd="6dp"
+                android:labelFor="@+id/edit_bookmark_display_order_edittext"/>
+
+            <EditText
+                android:id="@id/edit_bookmark_display_order_edittext"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:imeOptions="actionGo"
+                android:inputType="number"
+                android:selectAllOnFocus="true" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

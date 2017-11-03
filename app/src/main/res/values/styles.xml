@@ -49,6 +49,7 @@
         <item name="bookmarksSpinnerHeaderTextColor">@color/white</item>
         <item name="bookmarksSpinnerTextColorSelector">@color/bookmarks_spinner_color_selector_light</item>
         <item name="bookmarksSpinnerBackground">@color/blue_750</item>
+        <item name="editBookmarkSpinnerTextColorSelector">@color/edit_bookmark_spinner_color_selector_light</item>
         <item name="listSelectorDrawable">@drawable/list_selector_light</item>
         <item name="aboutTitle">@color/blue_900</item>
         <item name="aboutText">@color/blue_700</item>
@@ -133,6 +134,7 @@
         <item name="bookmarksSpinnerHeaderTextColor">@color/gray_300</item>
         <item name="bookmarksSpinnerTextColorSelector">@color/bookmarks_spinner_color_selector_dark</item>
         <item name="bookmarksSpinnerBackground">@color/blue_830</item>
+        <item name="editBookmarkSpinnerTextColorSelector">@color/edit_bookmark_spinner_color_selector_dark</item>
         <item name="aboutTitle">@color/blue_600</item>
         <item name="aboutText">@color/blue_400</item>
         <item name="aboutBackground">@color/gray_850</item>

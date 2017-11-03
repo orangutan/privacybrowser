@@ -35,6 +35,7 @@
     <attr name="bookmarksSpinnerHeaderTextColor" format="reference" />
     <attr name="bookmarksSpinnerTextColorSelector" format="reference" />
     <attr name="bookmarksSpinnerBackground" format="reference" />
+    <attr name="editBookmarkSpinnerTextColorSelector" format="reference" />
     <attr name="redText" format="reference" />
 
     <attr name="navigationHeaderBackground" format="reference" />

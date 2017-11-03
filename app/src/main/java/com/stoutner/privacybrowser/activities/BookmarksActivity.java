@@ -34,6 +34,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+// `AppCompatDialogFragment` is required instead of `DialogFragment` or an error is produced on API <=22.
 import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseBooleanArray;
@@ -43,7 +44,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -64,26 +64,26 @@ import java.io.ByteArrayOutputStream;
 public class BookmarksActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener, EditBookmarkDialog.EditBookmarkListener,
         EditBookmarkFolderDialog.EditBookmarkFolderListener, MoveToFolderDialog.MoveToFolderListener {
 
-    // `bookmarksDatabaseHelper` is public static so it can be accessed from `MoveToFolderDialog`.  It is also used in `onCreate()`, `onOptionsItemSelected()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`,
-    // `onSaveEditBookmarkFolder()`, `onMoveToFolder()`, `deleteBookmarkFolderContents()`, and `loadFolder().
-    public static BookmarksDatabaseHelper bookmarksDatabaseHelper;
-
     // `currentFolder` is public static so it can be accessed from `MoveToFolderDialog`.
-    // It is used in `onCreate`, `onOptionsItemSelected()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, `onMoveToFolder()`, and `loadFolder()`.
+    // It is used in `onCreate`, `onOptionsItemSelected()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`, and `loadFolder()`.
     public static String currentFolder;
 
-    // `checkedItemIds` is public static so it can be accessed from `MoveToFolderDialog`.  It is also used in `onCreate()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, `onMoveToFolder()`, and `updateMoveIcons()`.
+    // `checkedItemIds` is public static so it can be accessed from `MoveToFolderDialog`.  It is also used in `onCreate()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`, and `updateMoveIcons()`.
     public static long[] checkedItemIds;
 
 
-    // `bookmarksListView` is used in `onCreate()`, `onOptionsItemSelected()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, `onMoveToFolder()`, `updateMoveIcons()`, `scrollBookmarks()`,
+    // `bookmarksDatabaseHelper` is used in `onCreate()`, `onOptionsItemSelected()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`, `deleteBookmarkFolderContents()`,
+    // and `loadFolder().
+    private BookmarksDatabaseHelper bookmarksDatabaseHelper;
+
+    // `bookmarksListView` is used in `onCreate()`, `onOptionsItemSelected()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`, `updateMoveIcons()`, `scrollBookmarks()`,
     // and `loadFolder()`.
     private ListView bookmarksListView;
 
-    // `bookmarksCursor` is used in `onCreate()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, `onMoveToFolder()`, `deleteBookmarkFolderContents()`, and `loadFolder()`.
+    // `bookmarksCursor` is used in `onCreate()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`, `deleteBookmarkFolderContents()`, and `loadFolder()`.
     private Cursor bookmarksCursor;
 
-    // `bookmarksCursorAdapter` is used in `onCreate(), `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, `onMoveToFolder()`, and `onLoadFolder()`.
+    // `bookmarksCursorAdapter` is used in `onCreate(), `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`, and `onLoadFolder()`.
     private CursorAdapter bookmarksCursorAdapter;
 
     // `contextualActionMode` is used in `onCreate()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()` and `onMoveToFolder()`.
@@ -92,7 +92,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     // `appBar` is used in `onCreate()` and `loadFolder()`.
     private ActionBar appBar;
 
-    // `oldFolderName` is used in `onCreate()` and `onSaveEditBookmarkFolder()`.
+    // `oldFolderName` is used in `onCreate()` and `onSaveBookmarkFolder()`.
     private String oldFolderNameString;
 
     // `moveBookmarkUpMenuItem` is used in `onCreate()` and `updateMoveIcons`.
@@ -127,13 +127,13 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         setContentView(R.layout.bookmarks_coordinatorlayout);
 
         // Use the `SupportActionBar` from `android.support.v7.app.ActionBar` until the minimum API is >= 21.
-        final Toolbar bookmarksAppBar = (Toolbar) findViewById(R.id.bookmarks_toolbar);
+        final Toolbar bookmarksAppBar = findViewById(R.id.bookmarks_toolbar);
         setSupportActionBar(bookmarksAppBar);
 
         // Get a handle for the activity, the app bar, and the `ListView`.
         final Activity bookmarksActivity = this;
         appBar = getSupportActionBar();
-        bookmarksListView = (ListView) findViewById(R.id.bookmarks_listview);
+        bookmarksListView = findViewById(R.id.bookmarks_listview);
 
         // This assert removes the incorrect warning in Android Studio on the following line that `appBar` might be null.
         assert appBar != null;
@@ -149,40 +149,37 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         loadFolder();
 
         // Set a listener so that tapping a list item loads the URL or folder.
-        bookmarksListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Convert the id from long to int to match the format of the bookmarks database.
-                int databaseID = (int) id;
+        bookmarksListView.setOnItemClickListener((parent, view, position, id) -> {
+            // Convert the id from long to int to match the format of the bookmarks database.
+            int databaseID = (int) id;
 
-                // Get the bookmark `Cursor` for this ID and move it to the first row.
-                Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmarkCursor(databaseID);
-                bookmarkCursor.moveToFirst();
+            // Get the bookmark `Cursor` for this ID and move it to the first row.
+            Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmarkCursor(databaseID);
+            bookmarkCursor.moveToFirst();
 
-                // Act upon the bookmark according to the type.
-                if (bookmarkCursor.getInt(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.IS_FOLDER)) == 1) {  // The selected bookmark is a folder.
-                    // Update `currentFolder`.
-                    currentFolder = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
+            // Act upon the bookmark according to the type.
+            if (bookmarkCursor.getInt(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.IS_FOLDER)) == 1) {  // The selected bookmark is a folder.
+                // Update `currentFolder`.
+                currentFolder = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
-                    // Load the new folder.
-                    loadFolder();
-                } else {  // The selected bookmark is not a folder.
-                    // Get the bookmark URL and assign it to `formattedUrlString`.  `mainWebView` will automatically reload when `BookmarksActivity` closes.
-                    MainWebViewActivity.formattedUrlString = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL));
+                // Load the new folder.
+                loadFolder();
+            } else {  // The selected bookmark is not a folder.
+                // Get the bookmark URL and assign it to `formattedUrlString`.  `mainWebView` will automatically reload when `BookmarksActivity` closes.
+                MainWebViewActivity.formattedUrlString = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL));
 
-                    // Update the bookmarks folder for the bookmarks drawer in `MainWebViewActivity`.
-                    MainWebViewActivity.currentBookmarksFolder = currentFolder;
+                // Update the bookmarks folder for the bookmarks drawer in `MainWebViewActivity`.
+                MainWebViewActivity.currentBookmarksFolder = currentFolder;
 
-                    // Close the bookmarks drawer and reload the bookmarks `ListView` when returning to `MainWebViewActivity`.
-                    MainWebViewActivity.restartFromBookmarksActivity = true;
+                // Close the bookmarks drawer and reload the bookmarks `ListView` when returning to `MainWebViewActivity`.
+                MainWebViewActivity.restartFromBookmarksActivity = true;
 
-                    // Return to `MainWebViewActivity`.
-                    NavUtils.navigateUpFromSameTask(bookmarksActivity);
-                }
-
-                // Close the `Cursor`.
-                bookmarkCursor.close();
+                // Return to `MainWebViewActivity`.
+                NavUtils.navigateUpFromSameTask(bookmarksActivity);
             }
+
+            // Close the `Cursor`.
+            bookmarkCursor.close();
         });
 
         // `MultiChoiceModeListener` handles long clicks.
@@ -400,22 +397,23 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                         // Get the position of the selected bookmark.  Only one bookmark is selected when `edit_bookmark_down` is enabled.
                         selectedBookmarkPosition = selectedBookmarksPositionsSparseBooleanArray.keyAt(0);
 
-                        // Move to the selected position and find out if it is a folder.
+                        // Move the `Cursor` to the selected position and find out if it is a folder.
                         bookmarksCursor.moveToPosition(selectedBookmarkPosition);
                         boolean isFolder = (bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.IS_FOLDER)) == 1);
 
                         // Get the selected bookmark database ID.
                         int databaseId = bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper._ID));
 
+                        // Show the edit bookmark or edit bookmark folder dialog.
                         if (isFolder) {
-                            // Save the current folder name, which is used in `onSaveEditBookmarkFolder()`.
+                            // Save the current folder name, which is used in `onSaveBookmarkFolder()`.
                             oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
-                            // Show the edit bookmark folder `AlertDialog` and name the instance `@string/edit_folder`.
+                            // Show the edit bookmark folder dialog.
                             AppCompatDialogFragment editFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId);
                             editFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_folder));
                         } else {
-                            // Show the edit bookmark `AlertDialog` and name the instance `@string/edit_bookmark`.
+                            // Show the edit bookmark dialog.
                             AppCompatDialogFragment editBookmarkDialog = EditBookmarkDialog.bookmarkDatabaseId(databaseId);
                             editBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_bookmark));
                         }
@@ -449,11 +447,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
                         // Show a SnackBar.
                         Snackbar.make(findViewById(R.id.bookmarks_coordinatorlayout), snackbarMessage, Snackbar.LENGTH_LONG)
-                                .setAction(R.string.undo, new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        // Do nothing because everything will be handled by `onDismissed()` below.
-                                    }
+                                .setAction(R.string.undo, view -> {
+                                    // Do nothing because everything will be handled by `onDismissed()` below.
                                 })
                                 .addCallback(new Snackbar.Callback() {
                                     @Override
@@ -541,27 +536,21 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         });
 
         // Get handles for the `FloatingActionButtons`.
-        FloatingActionButton createBookmarkFolderFab = (FloatingActionButton) findViewById(R.id.create_bookmark_folder_fab);
-        FloatingActionButton createBookmarkFab = (FloatingActionButton) findViewById(R.id.create_bookmark_fab);
+        FloatingActionButton createBookmarkFolderFab = findViewById(R.id.create_bookmark_folder_fab);
+        FloatingActionButton createBookmarkFab = findViewById(R.id.create_bookmark_fab);
 
         // Set the create new bookmark folder FAB to display the `AlertDialog`.
-        createBookmarkFolderFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Show the `CreateBookmarkFolderDialog` `AlertDialog` and name the instance `@string/create_folder`.
-                AppCompatDialogFragment createBookmarkFolderDialog = new CreateBookmarkFolderDialog();
-                createBookmarkFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_folder));
-            }
+        createBookmarkFolderFab.setOnClickListener(v -> {
+            // Show the `CreateBookmarkFolderDialog` `AlertDialog` and name the instance `@string/create_folder`.
+            AppCompatDialogFragment createBookmarkFolderDialog = new CreateBookmarkFolderDialog();
+            createBookmarkFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_folder));
         });
 
         // Set the create new bookmark FAB to display the `AlertDialog`.
-        createBookmarkFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Show the `CreateBookmarkDialog` `AlertDialog` and name the instance `@string/create_bookmark`.
-                AppCompatDialogFragment createBookmarkDialog = new CreateBookmarkDialog();
-                createBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_bookmark));
-            }
+        createBookmarkFab.setOnClickListener(view -> {
+            // Show the `CreateBookmarkDialog` `AlertDialog` and name the instance `@string/create_bookmark`.
+            AppCompatDialogFragment createBookmarkDialog = new CreateBookmarkDialog();
+            createBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_bookmark));
         });
     }
 
@@ -641,8 +630,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     @Override
     public void onCreateBookmark(AppCompatDialogFragment dialogFragment) {
         // Get the `EditTexts` from the `dialogFragment`.
-        EditText createBookmarkNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.create_bookmark_name_edittext);
-        EditText createBookmarkUrlEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.create_bookmark_url_edittext);
+        EditText createBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.create_bookmark_name_edittext);
+        EditText createBookmarkUrlEditText = dialogFragment.getDialog().findViewById(R.id.create_bookmark_url_edittext);
 
         // Extract the strings from the `EditTexts`.
         String bookmarkNameString = createBookmarkNameEditText.getText().toString();
@@ -657,7 +646,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         int newBookmarkDisplayOrder = bookmarksListView.getCount();
 
         // Create the bookmark.
-        bookmarksDatabaseHelper.createBookmark(bookmarkNameString, bookmarkUrlString, newBookmarkDisplayOrder, currentFolder, favoriteIconByteArray);
+        bookmarksDatabaseHelper.createBookmark(bookmarkNameString, bookmarkUrlString, currentFolder, newBookmarkDisplayOrder, favoriteIconByteArray);
 
         // Update `bookmarksCursor` with the current contents of this folder.
         bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentFolder);
@@ -672,9 +661,9 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     @Override
     public void onCreateBookmarkFolder(AppCompatDialogFragment dialogFragment) {
         // Get handles for the views in `dialogFragment`.
-        EditText createFolderNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.create_folder_name_edittext);
-        RadioButton defaultFolderIconRadioButton = (RadioButton) dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon_radiobutton);
-        ImageView folderIconImageView = (ImageView) dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon);
+        EditText createFolderNameEditText = dialogFragment.getDialog().findViewById(R.id.create_folder_name_edittext);
+        RadioButton defaultFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon_radiobutton);
+        ImageView folderIconImageView = dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon);
 
         // Get new folder name string.
         String folderNameString = createFolderNameEditText.getText().toString();
@@ -701,8 +690,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             bookmarksDatabaseHelper.updateDisplayOrder(databaseId, i + 1);
         }
 
-        // Create the folder, placing it at the top of the ListView
-        bookmarksDatabaseHelper.createFolder(folderNameString, 0, currentFolder, folderIconByteArray);
+        // Create the folder, which will be placed at the top of the `ListView`.
+        bookmarksDatabaseHelper.createFolder(folderNameString, currentFolder, folderIconByteArray);
 
         // Update `bookmarksCursor` with the current contents of this folder.
         bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentFolder);
@@ -715,11 +704,11 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     }
 
     @Override
-    public void onSaveEditBookmark(AppCompatDialogFragment dialogFragment, int selectedBookmarkDatabaseId) {
+    public void onSaveBookmark(AppCompatDialogFragment dialogFragment, int selectedBookmarkDatabaseId) {
         // Get handles for the views from `dialogFragment`.
-        EditText editBookmarkNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.edit_bookmark_name_edittext);
-        EditText editBookmarkUrlEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.edit_bookmark_url_edittext);
-        RadioButton currentBookmarkIconRadioButton = (RadioButton) dialogFragment.getDialog().findViewById(R.id.edit_bookmark_current_icon_radiobutton);
+        EditText editBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_name_edittext);
+        EditText editBookmarkUrlEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_url_edittext);
+        RadioButton currentBookmarkIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_current_icon_radiobutton);
 
         // Store the bookmark strings.
         String bookmarkNameString = editBookmarkNameEditText.getText().toString();
@@ -741,7 +730,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Close the contextual action mode.
         contextualActionMode.finish();
 
-        // Update `bookmarksCursor` with the current contents of this folder.
+        // Update `bookmarksCursor` with the contents of the current folder.
         bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentFolder);
 
         // Update the `ListView`.
@@ -749,12 +738,12 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     }
 
     @Override
-    public void onSaveEditBookmarkFolder(AppCompatDialogFragment dialogFragment, int selectedFolderDatabaseId) {
+    public void onSaveBookmarkFolder(AppCompatDialogFragment dialogFragment, int selectedFolderDatabaseId) {
         // Get handles for the views from `dialogFragment`.
-        EditText editFolderNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.edit_folder_name_edittext);
-        RadioButton currentFolderIconRadioButton = (RadioButton) dialogFragment.getDialog().findViewById(R.id.edit_folder_current_icon_radiobutton);
-        RadioButton defaultFolderIconRadioButton = (RadioButton) dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_radiobutton);
-        ImageView folderIconImageView = (ImageView) dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon);
+        RadioButton currentFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_current_icon_radiobutton);
+        RadioButton defaultFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_radiobutton);
+        ImageView defaultFolderIconImageView = dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_imageview);
+        EditText editFolderNameEditText = dialogFragment.getDialog().findViewById(R.id.edit_folder_name_edittext);
 
         // Get the new folder name.
         String newFolderNameString = editFolderNameEditText.getText().toString();
@@ -768,7 +757,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             Bitmap folderIconBitmap;
             if (defaultFolderIconRadioButton.isChecked()) {
                 // Get the default folder icon and convert it to a `Bitmap`.
-                Drawable folderIconDrawable = folderIconImageView.getDrawable();
+                Drawable folderIconDrawable = defaultFolderIconImageView.getDrawable();
                 BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
                 folderIconBitmap = folderIconBitmapDrawable.getBitmap();
             } else {  // Use the `WebView` favorite icon.
@@ -783,11 +772,13 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             // Update the folder icon in the database.
             bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, folderIconByteArray);
         } else {  // The folder icon and the name have changed.
-            // Get the new folder icon `Bitmap`.
+            // Instantiate the new folder icon `Bitmap`.
             Bitmap folderIconBitmap;
+
+            // Populate the new folder icon bitmap.
             if (defaultFolderIconRadioButton.isChecked()) {
                 // Get the default folder icon and convert it to a `Bitmap`.
-                Drawable folderIconDrawable = folderIconImageView.getDrawable();
+                Drawable folderIconDrawable = defaultFolderIconImageView.getDrawable();
                 BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
                 folderIconBitmap = folderIconBitmapDrawable.getBitmap();
             } else {  // Use the `WebView` favorite icon.
@@ -816,7 +807,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     @Override
     public void onMoveToFolder(AppCompatDialogFragment dialogFragment) {
         // Get a handle for the `ListView` from `dialogFragment`.
-        ListView folderListView = (ListView) dialogFragment.getDialog().findViewById(R.id.move_to_folder_listview);
+        ListView folderListView = dialogFragment.getDialog().findViewById(R.id.move_to_folder_listview);
 
         // Store a long array of the selected folders.
         long[] newFolderLongArray = folderListView.getCheckedItemIds();
@@ -965,8 +956,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             @Override
             public void bindView(View view, Context context, Cursor cursor) {
                 // Get handles for the views.
-                ImageView bookmarkFavoriteIcon = (ImageView) view.findViewById(R.id.bookmark_favorite_icon);
-                TextView bookmarkNameTextView = (TextView) view.findViewById(R.id.bookmark_name);
+                ImageView bookmarkFavoriteIcon = view.findViewById(R.id.bookmark_favorite_icon);
+                TextView bookmarkNameTextView = view.findViewById(R.id.bookmark_name);
 
                 // Get the favorite icon byte array from the `Cursor`.
                 byte[] favoriteIconByteArray = cursor.getBlob(cursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON));

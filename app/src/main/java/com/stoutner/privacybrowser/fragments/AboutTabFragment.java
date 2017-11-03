@@ -86,26 +86,26 @@ public class AboutTabFragment extends Fragment {
             tabLayout = inflater.inflate(R.layout.about_tab_version, container, false);
 
             // Get handles for the `TextViews`.
-            TextView versionNumberTextView = (TextView) tabLayout.findViewById(R.id.about_version_number);
-            TextView versionBrandTextView = (TextView) tabLayout.findViewById(R.id.about_version_brand);
-            TextView versionManufacturerTextView = (TextView) tabLayout.findViewById(R.id.about_version_manufacturer);
-            TextView versionModelTextView = (TextView) tabLayout.findViewById(R.id.about_version_model);
-            TextView versionDeviceTextView = (TextView) tabLayout.findViewById(R.id.about_version_device);
-            TextView versionBootloaderTextView = (TextView) tabLayout.findViewById(R.id.about_version_bootloader);
-            TextView versionRadioTextView = (TextView) tabLayout.findViewById(R.id.about_version_radio);
-            TextView versionAndroidTextView = (TextView) tabLayout.findViewById(R.id.about_version_android);
-            TextView versionBuildTextView = (TextView) tabLayout.findViewById(R.id.about_version_build);
-            TextView versionSecurityPatchTextView = (TextView) tabLayout.findViewById(R.id.about_version_securitypatch);
-            TextView versionWebKitTextView = (TextView) tabLayout.findViewById(R.id.about_version_webkit);
-            TextView versionChromeTextView = (TextView) tabLayout.findViewById(R.id.about_version_chrome);
-            TextView versionOrbotTextView = (TextView) tabLayout.findViewById(R.id.about_version_orbot);
-            TextView certificateIssuerDNTextView = (TextView) tabLayout.findViewById(R.id.about_version_certificate_issuer_dn);
-            TextView certificateSubjectDNTextView = (TextView) tabLayout.findViewById(R.id.about_version_certificate_subject_dn);
-            TextView certificateStartDateTextView = (TextView) tabLayout.findViewById(R.id.about_version_certificate_start_date);
-            TextView certificateEndDateTextView = (TextView) tabLayout.findViewById(R.id.about_version_certificate_end_date);
-            TextView certificateVersionTextView = (TextView) tabLayout.findViewById(R.id.about_version_certificate_version);
-            TextView certificateSerialNumberTextView = (TextView) tabLayout.findViewById(R.id.about_version_certificate_serial_number);
-            TextView certificateSignatureAlgorithmTextView = (TextView) tabLayout.findViewById(R.id.about_version_certificate_signature_algorithm);
+            TextView versionNumberTextView = tabLayout.findViewById(R.id.about_version_number);
+            TextView versionBrandTextView = tabLayout.findViewById(R.id.about_version_brand);
+            TextView versionManufacturerTextView = tabLayout.findViewById(R.id.about_version_manufacturer);
+            TextView versionModelTextView = tabLayout.findViewById(R.id.about_version_model);
+            TextView versionDeviceTextView = tabLayout.findViewById(R.id.about_version_device);
+            TextView versionBootloaderTextView = tabLayout.findViewById(R.id.about_version_bootloader);
+            TextView versionRadioTextView = tabLayout.findViewById(R.id.about_version_radio);
+            TextView versionAndroidTextView = tabLayout.findViewById(R.id.about_version_android);
+            TextView versionSecurityPatchTextView = tabLayout.findViewById(R.id.about_version_securitypatch);
+            TextView versionBuildTextView = tabLayout.findViewById(R.id.about_version_build);
+            TextView versionWebKitTextView = tabLayout.findViewById(R.id.about_version_webkit);
+            TextView versionChromeTextView = tabLayout.findViewById(R.id.about_version_chrome);
+            TextView versionOrbotTextView = tabLayout.findViewById(R.id.about_version_orbot);
+            TextView certificateIssuerDNTextView = tabLayout.findViewById(R.id.about_version_certificate_issuer_dn);
+            TextView certificateSubjectDNTextView = tabLayout.findViewById(R.id.about_version_certificate_subject_dn);
+            TextView certificateStartDateTextView = tabLayout.findViewById(R.id.about_version_certificate_start_date);
+            TextView certificateEndDateTextView = tabLayout.findViewById(R.id.about_version_certificate_end_date);
+            TextView certificateVersionTextView = tabLayout.findViewById(R.id.about_version_certificate_version);
+            TextView certificateSerialNumberTextView = tabLayout.findViewById(R.id.about_version_certificate_serial_number);
+            TextView certificateSignatureAlgorithmTextView = tabLayout.findViewById(R.id.about_version_certificate_signature_algorithm);
 
             // Setup the labels.
             String version = getString(R.string.version) + " " + BuildConfig.VERSION_NAME + " (" + getString(R.string.version_code) + " " + Integer.toString(BuildConfig.VERSION_CODE) + ")";
@@ -128,7 +128,7 @@ public class AboutTabFragment extends Fragment {
 
             // `webViewLayout` is only used to get the default user agent from `bare_webview`.  It is not used to render content on the screen.
             View webViewLayout = inflater.inflate(R.layout.bare_webview, container, false);
-            WebView tabLayoutWebView = (WebView) webViewLayout.findViewById(R.id.bare_webview);
+            WebView tabLayoutWebView = webViewLayout.findViewById(R.id.bare_webview);
             String userAgentString =  tabLayoutWebView.getSettings().getUserAgentString();
 
             // Get the device's information and store it in strings.

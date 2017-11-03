@@ -28,7 +28,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 // `AppCompatDialogFragment` is required instead of `DialogFragment` or an error is produced on API <=22.
 import android.support.v7.app.AppCompatDialogFragment;
@@ -50,7 +49,7 @@ import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 public class EditBookmarkFolderDialog extends AppCompatDialogFragment {
     // The public interface is used to send information back to the parent activity.
     public interface EditBookmarkFolderListener {
-        void onSaveEditBookmarkFolder(AppCompatDialogFragment dialogFragment, int selectedFolderDatabaseId);
+        void onSaveBookmarkFolder(AppCompatDialogFragment dialogFragment, int selectedFolderDatabaseId);
     }
 
     // Instantiate the class variables.
@@ -123,20 +122,14 @@ public class EditBookmarkFolderDialog extends AppCompatDialogFragment {
         dialogBuilder.setView(getActivity().getLayoutInflater().inflate(R.layout.edit_bookmark_folder_dialog, null));
 
         // Set an `onClick()` listener for the negative button.
-        dialogBuilder.setNegativeButton(R.string.cancel, new Dialog.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Do nothing.  The `AlertDialog` will close automatically.
-            }
+        dialogBuilder.setNegativeButton(R.string.cancel, (DialogInterface dialog, int which) -> {
+            // Do nothing.  The `AlertDialog` will close automatically.
         });
 
         // Set the `onClick()` listener fo the positive button.
-        dialogBuilder.setPositiveButton(R.string.save, new Dialog.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Return the `DialogFragment` to the parent activity on save.
-                editBookmarkFolderListener.onSaveEditBookmarkFolder(EditBookmarkFolderDialog.this, selectedFolderDatabaseId);
-            }
+        dialogBuilder.setPositiveButton(R.string.save, (DialogInterface dialog, int which) -> {
+            // Return the `DialogFragment` to the parent activity on save.
+            editBookmarkFolderListener.onSaveBookmarkFolder(EditBookmarkFolderDialog.this, selectedFolderDatabaseId);
         });
 
         // Create an `AlertDialog` from the `AlertDialog.Builder`.
@@ -153,8 +146,8 @@ public class EditBookmarkFolderDialog extends AppCompatDialogFragment {
 
         // Get handles for layout items in the `AlertDialog`.
         final Button editButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        final RadioButton currentIconRadioButton = (RadioButton) alertDialog.findViewById(R.id.edit_folder_current_icon_radiobutton);
-        RadioGroup iconRadioGroup = (RadioGroup) alertDialog.findViewById(R.id.edit_folder_icon_radio_group);
+        final RadioButton currentIconRadioButton = alertDialog.findViewById(R.id.edit_folder_current_icon_radiobutton);
+        RadioGroup iconRadioGroup = alertDialog.findViewById(R.id.edit_folder_icon_radio_group);
 
         // Initially disable the edit button.
         editButton.setEnabled(false);
@@ -164,18 +157,18 @@ public class EditBookmarkFolderDialog extends AppCompatDialogFragment {
         // Convert the byte array to a `Bitmap` beginning at the first byte and ending at the last.
         Bitmap currentIconBitmap = BitmapFactory.decodeByteArray(currentIconByteArray, 0, currentIconByteArray.length);
         // Display `currentIconBitmap` in `edit_folder_current_icon`.
-        ImageView currentIconImageView = (ImageView) alertDialog.findViewById(R.id.edit_folder_current_icon);
+        ImageView currentIconImageView = alertDialog.findViewById(R.id.edit_folder_current_icon_imageview);
         currentIconImageView.setImageBitmap(currentIconBitmap);
 
         // Get a `Bitmap` of the favorite icon from `MainWebViewActivity` and display it in `edit_folder_web_page_favorite_icon`.
-        ImageView webPageFavoriteIconImageView = (ImageView) alertDialog.findViewById(R.id.edit_folder_web_page_favorite_icon);
+        ImageView webPageFavoriteIconImageView = alertDialog.findViewById(R.id.edit_folder_web_page_favorite_icon_imageview);
         webPageFavoriteIconImageView.setImageBitmap(MainWebViewActivity.favoriteIconBitmap);
 
         // Get the current folder name.
         final String currentFolderName = folderCursor.getString(folderCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
         // Display the current folder name in `edit_folder_name_edittext`.
-        final EditText folderNameEditText = (EditText) alertDialog.findViewById(R.id.edit_folder_name_edittext);
+        final EditText folderNameEditText = alertDialog.findViewById(R.id.edit_folder_name_edittext);
         folderNameEditText.setText(currentFolderName);
 
         // Update the status of the edit button when the folder name is changed.
@@ -199,7 +192,7 @@ public class EditBookmarkFolderDialog extends AppCompatDialogFragment {
                 Cursor folderExistsCursor = bookmarksDatabaseHelper.getFolderCursor(newFolderName);
 
                 // Is the new folder name empty?
-                boolean folderNameEmpty = newFolderName.isEmpty();
+                boolean folderNameNotEmpty = !newFolderName.isEmpty();
 
                 // Does the folder name already exist?
                 boolean folderNameAlreadyExists = (!newFolderName.equals(currentFolderName) && (folderExistsCursor.getCount() > 0));
@@ -211,53 +204,48 @@ public class EditBookmarkFolderDialog extends AppCompatDialogFragment {
                 boolean iconChanged = (!currentIconRadioButton.isChecked() && !folderNameAlreadyExists);
 
                 // Enable the create button if something has been edited and the new folder name is valid.
-                editButton.setEnabled(!folderNameEmpty && (folderRenamed || iconChanged));
+                editButton.setEnabled(folderNameNotEmpty && (folderRenamed || iconChanged));
             }
         });
 
         // Update the status of the edit button when the icon is changed.
-        iconRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                // Get the new folder name.
-                String newFolderName = folderNameEditText.getText().toString();
+        iconRadioGroup.setOnCheckedChangeListener((RadioGroup group, int checkedId) -> {
+            // Get the new folder name.
+            String newFolderName = folderNameEditText.getText().toString();
 
-                // Get a cursor for the new folder name if it exists.
-                Cursor folderExistsCursor = bookmarksDatabaseHelper.getFolderCursor(newFolderName);
+            // Get a cursor for the new folder name if it exists.
+            Cursor folderExistsCursor = bookmarksDatabaseHelper.getFolderCursor(newFolderName);
 
-                // Is the new folder name empty?
-                boolean folderNameEmpty = newFolderName.isEmpty();
+            // Is the new folder name empty?
+            boolean folderNameEmpty = newFolderName.isEmpty();
 
-                // Does the folder name already exist?
-                boolean folderNameAlreadyExists = (!newFolderName.equals(currentFolderName) && (folderExistsCursor.getCount() > 0));
+            // Does the folder name already exist?
+            boolean folderNameAlreadyExists = (!newFolderName.equals(currentFolderName) && (folderExistsCursor.getCount() > 0));
 
-                // Has the folder been renamed?
-                boolean folderRenamed = (!newFolderName.equals(currentFolderName) && !folderNameAlreadyExists);
+            // Has the folder been renamed?
+            boolean folderRenamed = (!newFolderName.equals(currentFolderName) && !folderNameAlreadyExists);
 
-                // Has the favorite icon changed?
-                boolean iconChanged = (!currentIconRadioButton.isChecked() && !folderNameAlreadyExists);
+            // Has the favorite icon changed?
+            boolean iconChanged = (!currentIconRadioButton.isChecked() && !folderNameAlreadyExists);
 
-                // Enable the create button if something has been edited and the new folder name is valid.
-                editButton.setEnabled(!folderNameEmpty && (folderRenamed || iconChanged));
-            }
+            // Enable the create button if something has been edited and the new folder name is valid.
+            editButton.setEnabled(!folderNameEmpty && (folderRenamed || iconChanged));
         });
 
         // Allow the `enter` key on the keyboard to save the bookmark from `edit_bookmark_name_edittext`.
-        folderNameEditText.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down on the "enter" button, select the PositiveButton `Save`.
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER) && editButton.isEnabled()) {  // The enter key was pressed and the edit button is enabled.
-                    // Trigger `editBookmarkListener` and return the DialogFragment to the parent activity.
-                    editBookmarkFolderListener.onSaveEditBookmarkFolder(EditBookmarkFolderDialog.this, selectedFolderDatabaseId);
+        folderNameEditText.setOnKeyListener((View v, int keyCode, KeyEvent event) -> {
+            // If the event is a key-down on the "enter" button, select the PositiveButton `Save`.
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER) && editButton.isEnabled()) {  // The enter key was pressed and the edit button is enabled.
+                // Trigger `editBookmarkListener` and return the DialogFragment to the parent activity.
+                editBookmarkFolderListener.onSaveBookmarkFolder(EditBookmarkFolderDialog.this, selectedFolderDatabaseId);
 
-                    // Manually dismiss the `AlertDialog`.
-                    alertDialog.dismiss();
+                // Manually dismiss the `AlertDialog`.
+                alertDialog.dismiss();
 
-                    // Consume the event.
-                    return true;
-                } else {  // If any other key was pressed, or if the edit button is currently disabled, do not consume the event.
-                    return false;
-                }
+                // Consume the event.
+                return true;
+            } else {  // If any other key was pressed, or if the edit button is currently disabled, do not consume the event.
+                return false;
             }
         });
 

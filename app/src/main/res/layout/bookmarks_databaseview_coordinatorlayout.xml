@@ -22,7 +22,7 @@
     When it is specified the theme should include `<item name="android:windowTranslucentStatus">true</item>`
     to make the status bar a transparent, darkened overlay. -->
 <android.support.design.widget.CoordinatorLayout
-    android:id="@+id/bookmarks_database_view_coordinatorlayout"
+    android:id="@+id/bookmarks_databaseview_coordinatorlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
@@ -35,12 +35,12 @@
         android:orientation="vertical" >
 
         <android.support.design.widget.AppBarLayout
-            android:id="@+id/bookmarks_database_view_appbarlayout"
+            android:id="@+id/bookmarks_databaseview_appbarlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent" >
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/bookmarks_database_view_toolbar"
+                android:id="@+id/bookmarks_databaseview_toolbar"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:background="?attr/colorPrimaryDark"
@@ -48,7 +48,7 @@
         </android.support.design.widget.AppBarLayout>
 
         <ListView
-            android:id="@+id/bookmarks_database_view_listview"
+            android:id="@+id/bookmarks_databaseview_listview"
             android:layout_height="match_parent"
             android:layout_width="match_parent" />
     </LinearLayout>

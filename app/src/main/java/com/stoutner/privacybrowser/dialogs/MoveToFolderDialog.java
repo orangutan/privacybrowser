@@ -54,6 +54,10 @@ import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 import java.io.ByteArrayOutputStream;
 
 public class MoveToFolderDialog extends AppCompatDialogFragment {
+    // Instantiate class variables.
+    private BookmarksDatabaseHelper bookmarksDatabaseHelper;
+    private StringBuilder exceptFolders;
+
     // The public interface is used to send information back to the parent activity.
     public interface MoveToFolderListener {
         void onMoveToFolder(AppCompatDialogFragment dialogFragment);
@@ -73,14 +77,14 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
         }
     }
 
-    // `exceptFolders` is used in `onCreateDialog()` and `addSubfoldersToExceptFolders()`.
-    private String exceptFolders;
-
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Initialize the database helper.  The two `nulls` do not specify the database name or a `CursorFactory`.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
+        bookmarksDatabaseHelper = new BookmarksDatabaseHelper(getContext(), null, null, 0);
+
         // Use `AlertDialog.Builder` to create the `AlertDialog`.
         AlertDialog.Builder dialogBuilder;
 
@@ -98,20 +102,14 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
         dialogBuilder.setView(getActivity().getLayoutInflater().inflate(R.layout.move_to_folder_dialog, null));
 
         // Set an `onClick()` listener for the negative button.
-        dialogBuilder.setNegativeButton(R.string.cancel, new Dialog.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Do nothing.  The `AlertDialog` will close automatically.
-            }
+        dialogBuilder.setNegativeButton(R.string.cancel, (DialogInterface dialog, int which) -> {
+            // Do nothing.  The `AlertDialog` will close automatically.
         });
 
         // Set the `onClick()` listener fo the positive button.
-        dialogBuilder.setPositiveButton(R.string.move, new Dialog.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Return the `DialogFragment` to the parent activity on save.
-                moveToFolderListener.onMoveToFolder(MoveToFolderDialog.this);
-            }
+        dialogBuilder.setPositiveButton(R.string.move, (DialogInterface dialog, int which) -> {
+            // Return the `DialogFragment` to the parent activity on save.
+            moveToFolderListener.onMoveToFolder(MoveToFolderDialog.this);
         });
 
         // Create an `AlertDialog` from the `AlertDialog.Builder`.
@@ -133,7 +131,7 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
         // Check to see if we are in the `Home Folder`.
         if (BookmarksActivity.currentFolder.isEmpty()) {  // Don't display `Home Folder` at the top of the `ListView`.
             // Initialize `exceptFolders`.
-            exceptFolders = "";
+            exceptFolders = new StringBuilder();
 
             // If a folder is selected, add it and all children to the list of folders not to display.
             long[] selectedBookmarksLongArray = BookmarksActivity.checkedItemIds;
@@ -142,16 +140,18 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
                 int databaseIdInt = (int) databaseIdLong;
 
                 // If `databaseIdInt` is a folder.
-                if (BookmarksActivity.bookmarksDatabaseHelper.isFolder(databaseIdInt)) {
+                if (bookmarksDatabaseHelper.isFolder(databaseIdInt)) {
                     // Get the name of the selected folder.
-                    String folderName = BookmarksActivity.bookmarksDatabaseHelper.getFolderName(databaseIdInt);
+                    String folderName = bookmarksDatabaseHelper.getFolderName(databaseIdInt);
 
-                    if (exceptFolders.isEmpty()){
+                    // Populate the list of folders not to get.
+                    if (exceptFolders.toString().isEmpty()){
                         // Add the selected folder to the list of folders not to display.
-                        exceptFolders = DatabaseUtils.sqlEscapeString(folderName);
+                        exceptFolders.append(DatabaseUtils.sqlEscapeString(folderName));
                     } else {
                         // Add the selected folder to the end of the list of folders not to display.
-                        exceptFolders = exceptFolders + "," + DatabaseUtils.sqlEscapeString(folderName);
+                        exceptFolders.append(",");
+                        exceptFolders.append(DatabaseUtils.sqlEscapeString(folderName));
                     }
 
                     // Add the selected folder's subfolders to the list of folders not to display.
@@ -160,7 +160,7 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
             }
 
             // Get a `Cursor` containing the folders to display.
-            foldersCursor = BookmarksActivity.bookmarksDatabaseHelper.getFoldersCursorExcept(exceptFolders);
+            foldersCursor = bookmarksDatabaseHelper.getFoldersCursorExcept(exceptFolders.toString());
 
             // Setup `foldersCursorAdaptor` with `this` context.  `false` disables autoRequery.
             foldersCursorAdapter = new CursorAdapter(alertDialog.getContext(), foldersCursor, false) {
@@ -177,12 +177,12 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
                     // Convert the byte array to a `Bitmap` beginning at the first byte and ending at the last.
                     Bitmap folderIconBitmap = BitmapFactory.decodeByteArray(folderIconByteArray, 0, folderIconByteArray.length);
                     // Display `folderIconBitmap` in `move_to_folder_icon`.
-                    ImageView folderIconImageView = (ImageView) view.findViewById(R.id.move_to_folder_icon);
+                    ImageView folderIconImageView = view.findViewById(R.id.move_to_folder_icon);
                     folderIconImageView.setImageBitmap(folderIconBitmap);
 
                     // Get the folder name from `cursor` and display it in `move_to_folder_name_textview`.
                     String folderName = cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
-                    TextView folderNameTextView = (TextView) view.findViewById(R.id.move_to_folder_name_textview);
+                    TextView folderNameTextView = view.findViewById(R.id.move_to_folder_name_textview);
                     folderNameTextView.setText(folderName);
                 }
             };
@@ -202,7 +202,7 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
             homeFolderMatrixCursor.addRow(new Object[]{0, getString(R.string.home_folder), homeFolderIconByteArray});
 
             // Add the parent folder to the list of folders not to display.
-            exceptFolders = DatabaseUtils.sqlEscapeString(BookmarksActivity.currentFolder);
+            exceptFolders.append(DatabaseUtils.sqlEscapeString(BookmarksActivity.currentFolder));
 
             // If a folder is selected, add it and all children to the list of folders not to display.
             long[] selectedBookmarksLongArray = BookmarksActivity.checkedItemIds;
@@ -211,12 +211,13 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
                 int databaseIdInt = (int) databaseIdLong;
 
                 // If `databaseIdInt` is a folder.
-                if (BookmarksActivity.bookmarksDatabaseHelper.isFolder(databaseIdInt)) {
+                if (bookmarksDatabaseHelper.isFolder(databaseIdInt)) {
                     // Get the name of the selected folder.
-                    String folderName = BookmarksActivity.bookmarksDatabaseHelper.getFolderName(databaseIdInt);
+                    String folderName = bookmarksDatabaseHelper.getFolderName(databaseIdInt);
 
                     // Add the selected folder to the end of the list of folders not to display.
-                    exceptFolders = exceptFolders + "," + DatabaseUtils.sqlEscapeString(folderName);
+                    exceptFolders.append(",");
+                    exceptFolders.append(DatabaseUtils.sqlEscapeString(folderName));
 
                     // Add the selected folder's subfolders to the list of folders not to display.
                     addSubfoldersToExceptFolders(folderName);
@@ -224,7 +225,7 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
             }
 
             // Get a `Cursor` containing the folders to display.
-            foldersCursor = BookmarksActivity.bookmarksDatabaseHelper.getFoldersCursorExcept(exceptFolders);
+            foldersCursor = bookmarksDatabaseHelper.getFoldersCursorExcept(exceptFolders.toString());
 
             // Combine `homeFolderMatrixCursor` and `foldersCursor`.
             MergeCursor foldersMergeCursor = new MergeCursor(new Cursor[]{homeFolderMatrixCursor, foldersCursor});
@@ -244,28 +245,25 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
                     // Convert the byte array to a `Bitmap` beginning at the first byte and ending at the last.
                     Bitmap folderIconBitmap = BitmapFactory.decodeByteArray(folderIconByteArray, 0, folderIconByteArray.length);
                     // Display `folderIconBitmap` in `move_to_folder_icon`.
-                    ImageView folderIconImageView = (ImageView) view.findViewById(R.id.move_to_folder_icon);
+                    ImageView folderIconImageView = view.findViewById(R.id.move_to_folder_icon);
                     folderIconImageView.setImageBitmap(folderIconBitmap);
 
                     // Get the folder name from `cursor` and display it in `move_to_folder_name_textview`.
                     String folderName = cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
-                    TextView folderNameTextView = (TextView) view.findViewById(R.id.move_to_folder_name_textview);
+                    TextView folderNameTextView = view.findViewById(R.id.move_to_folder_name_textview);
                     folderNameTextView.setText(folderName);
                 }
             };
         }
 
         // Display the ListView
-        ListView foldersListView = (ListView) alertDialog.findViewById(R.id.move_to_folder_listview);
+        ListView foldersListView = alertDialog.findViewById(R.id.move_to_folder_listview);
         foldersListView.setAdapter(foldersCursorAdapter);
 
         // Enable the move button when a folder is selected.
-        foldersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Enable the move button.
-                moveButton.setEnabled(true);
-            }
+        foldersListView.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
+            // Enable the move button.
+            moveButton.setEnabled(true);
         });
 
         // `onCreateDialog` requires the return of an `AlertDialog`.
@@ -274,7 +272,7 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
 
     private void addSubfoldersToExceptFolders(String folderName) {
         // Get a `Cursor` will all the immediate subfolders.
-        Cursor subfoldersCursor = BookmarksActivity.bookmarksDatabaseHelper.getSubfoldersCursor(folderName);
+        Cursor subfoldersCursor = bookmarksDatabaseHelper.getSubfoldersCursor(folderName);
 
         for (int i = 0; i < subfoldersCursor.getCount(); i++) {
             // Move `subfolderCursor` to the current item.
@@ -283,13 +281,12 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
             // Get the name of the subfolder.
             String subfolderName = subfoldersCursor.getString(subfoldersCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
+            // Add the subfolder to `exceptFolders`.
+            exceptFolders.append(",");
+            exceptFolders.append(DatabaseUtils.sqlEscapeString(subfolderName));
+
             // Run the same tasks for any subfolders of the subfolder.
             addSubfoldersToExceptFolders(subfolderName);
-
-            // Add the subfolder to `exceptFolders`.
-            subfolderName = DatabaseUtils.sqlEscapeString(subfolderName);
-            exceptFolders = exceptFolders + "," + subfolderName;
         }
-
     }
 }

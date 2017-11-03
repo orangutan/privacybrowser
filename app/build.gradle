@@ -20,11 +20,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 26
         versionName "2.6"
     }
@@ -42,23 +42,32 @@ android {
         }
     }
 
+    // Gradle requires a `flavorDimension`, but it isn't used for anything in Privacy Browser.
+    flavorDimensions "basic"
+
     productFlavors {
         standard {
             applicationId "com.stoutner.privacybrowser.standard"
+            dimension "basic"
         }
 
         free {
             applicationId "com.stoutner.privacybrowser.free"
+            dimension "basic"
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:design:25.4.0'
-
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:design:26.1.0'
     // Only compile `com.google.firebase:firebase-ads:9.8.0` for the free flavor.
-    freeCompile 'com.google.firebase:firebase-ads:11.0.4'
+    freeImplementation 'com.google.firebase:firebase-ads:11.4.2'
 }
 
 // Google's documentation says the following line is required for `firebase-ads` but things work correctly without it.  I have no interest in applying the Google Mobile Services plugin in the standard flavor if I don't have to.

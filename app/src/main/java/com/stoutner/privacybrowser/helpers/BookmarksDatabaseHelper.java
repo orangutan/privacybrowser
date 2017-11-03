@@ -32,10 +32,10 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
     private static final String BOOKMARKS_TABLE = "bookmarks";
 
     public static final String _ID = "_id";
-    public static final String DISPLAY_ORDER = "displayorder";
     public static final String BOOKMARK_NAME = "bookmarkname";
     public static final String BOOKMARK_URL = "bookmarkurl";
     public static final String PARENT_FOLDER = "parentfolder";
+    public static final String DISPLAY_ORDER = "displayorder";
     public static final String IS_FOLDER = "isfolder";
     public static final String FAVORITE_ICON = "favoriteicon";
 
@@ -49,10 +49,10 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         // Setup the SQL string to create the `bookmarks` table.
         final String CREATE_BOOKMARKS_TABLE = "CREATE TABLE " + BOOKMARKS_TABLE + " (" +
                 _ID + " integer primary key, " +
-                DISPLAY_ORDER + " integer, " +
                 BOOKMARK_NAME + " text, " +
                 BOOKMARK_URL + " text, " +
                 PARENT_FOLDER + " text, " +
+                DISPLAY_ORDER + " integer, " +
                 IS_FOLDER + " boolean, " +
                 FAVORITE_ICON + " blob);";
 
@@ -66,15 +66,15 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
     }
 
     // Create a bookmark.
-    public void createBookmark(String bookmarkName, String bookmarkURL, int displayOrder, String parentFolder, byte[] favoriteIcon) {
+    public void createBookmark(String bookmarkName, String bookmarkURL, String parentFolder, int displayOrder, byte[] favoriteIcon) {
         // We need to store the bookmark data in a `ContentValues`.
         ContentValues bookmarkContentValues = new ContentValues();
 
         // ID is created automatically.
-        bookmarkContentValues.put(DISPLAY_ORDER, displayOrder);
         bookmarkContentValues.put(BOOKMARK_NAME, bookmarkName);
         bookmarkContentValues.put(BOOKMARK_URL, bookmarkURL);
         bookmarkContentValues.put(PARENT_FOLDER, parentFolder);
+        bookmarkContentValues.put(DISPLAY_ORDER, displayOrder);
         bookmarkContentValues.put(IS_FOLDER, false);
         bookmarkContentValues.put(FAVORITE_ICON, favoriteIcon);
 
@@ -89,13 +89,13 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
     }
 
     // Create a folder.
-    public void createFolder(String folderName, int displayOrder, String parentFolder, byte[] favoriteIcon) {
+    public void createFolder(String folderName, String parentFolder, byte[] favoriteIcon) {
         ContentValues bookmarkContentValues = new ContentValues();
 
-        // ID is created automatically.
-        bookmarkContentValues.put(DISPLAY_ORDER, displayOrder);
+        // ID is created automatically.  Folders are always created at the top of the list.
         bookmarkContentValues.put(BOOKMARK_NAME, folderName);
         bookmarkContentValues.put(PARENT_FOLDER, parentFolder);
+        bookmarkContentValues.put(DISPLAY_ORDER, 0);
         bookmarkContentValues.put(IS_FOLDER, true);
         bookmarkContentValues.put(FAVORITE_ICON, favoriteIcon);
 
@@ -144,6 +144,34 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
 
         // Return the folder name.
         return folderName;
+    }
+
+    // The the database ID for the specified folder name.
+    public int getFolderDatabaseId (String folderName) {
+        // Get a readable database handle.
+        SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
+
+        // SQL escape `folderName`.
+        folderName = DatabaseUtils.sqlEscapeString(folderName);
+
+        // Prepare the SQL statement to get the `Cursor` for the folder.
+        final String GET_FOLDER = "SELECT * FROM " + BOOKMARKS_TABLE +
+                " WHERE " + BOOKMARK_NAME + " = " + folderName +
+                " AND " + IS_FOLDER + " = " + 1;
+
+        // Get `folderCursor`.  The second argument is `null` because there are no `selectionArgs`.
+        Cursor folderCursor = bookmarksDatabase.rawQuery(GET_FOLDER, null);
+
+        // Get the database ID.
+        folderCursor.moveToFirst();
+        int databaseId = folderCursor.getInt(folderCursor.getColumnIndex(_ID));
+
+        // Close the cursor and the database handle.
+        folderCursor.close();
+        bookmarksDatabase.close();
+
+        // Return the database ID.
+        return databaseId;
     }
 
     // Get a `Cursor` for the specified folder name.
@@ -290,15 +318,17 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         // Get a readable database handle.
         SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
 
-        // Prepare a string that contains the comma-separated list of IDs not to get.
-        String doNotGetIdsString = "";
+        // Prepare a string builder that contains the comma-separated list of IDs not to get.
+        StringBuilder doNotGetIdsStringBuilder = new StringBuilder();
+
         // Extract the array to `doNotGetIdsString`.
         for (long databaseIdLong : exceptIdLongArray) {
             // If this is the first number, only add the number.
-            if (doNotGetIdsString.isEmpty()) {
-                doNotGetIdsString = String.valueOf(databaseIdLong);
-            } else {  // If there already is a number in the string, place a `,` before the number.
-                doNotGetIdsString = doNotGetIdsString + "," + databaseIdLong;
+            if (doNotGetIdsStringBuilder.toString().isEmpty()) {
+                doNotGetIdsStringBuilder.append(databaseIdLong);
+            } else {  // If there already is a number in the string, place a `,` before the new number.
+                doNotGetIdsStringBuilder.append(",");
+                doNotGetIdsStringBuilder.append(databaseIdLong);
             }
         }
 
@@ -308,7 +338,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         // Prepare the SQL statement to select all items except those with the specified IDs.
         final String GET_All_BOOKMARKS_EXCEPT_SPECIFIED = "SELECT * FROM " + BOOKMARKS_TABLE +
                 " WHERE " + PARENT_FOLDER + " = " + folderName +
-                " AND " + _ID + " NOT IN (" + doNotGetIdsString +
+                " AND " + _ID + " NOT IN (" + doNotGetIdsStringBuilder.toString() +
                 ") ORDER BY " + DISPLAY_ORDER + " ASC";
 
         // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.
@@ -341,9 +371,10 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
 
     // Update the bookmark name and URL.
     public void updateBookmark(int databaseId, String bookmarkName, String bookmarkUrl) {
-        // Store the updated values in `bookmarkContentValues`.
+        // Initialize a `ContentValues`.
         ContentValues bookmarkContentValues = new ContentValues();
 
+        // Store the updated values.
         bookmarkContentValues.put(BOOKMARK_NAME, bookmarkName);
         bookmarkContentValues.put(BOOKMARK_URL, bookmarkUrl);
 
@@ -357,13 +388,57 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         bookmarksDatabase.close();
     }
 
-    // Update the bookmark name, URL, and favorite icon.
-    public void updateBookmark(int databaseId, String bookmarkName, String bookmarkUrl, byte[] favoriteIcon) {
-        // Store the updated values in `bookmarkContentValues`.
+    // Update the bookmark name, URL, parent folder, and display order.
+    public void updateBookmark(int databaseId, String bookmarkName, String bookmarkUrl, String parentFolder, int displayOrder) {
+        // Initialize a `ContentValues`.
         ContentValues bookmarkContentValues = new ContentValues();
 
+        // Store the updated values.
         bookmarkContentValues.put(BOOKMARK_NAME, bookmarkName);
         bookmarkContentValues.put(BOOKMARK_URL, bookmarkUrl);
+        bookmarkContentValues.put(PARENT_FOLDER, parentFolder);
+        bookmarkContentValues.put(DISPLAY_ORDER, displayOrder);
+
+        // Get a writable database handle.
+        SQLiteDatabase bookmarksDatabase = this.getWritableDatabase();
+
+        // Update the bookmark.  The last argument is `null` because there are no `whereArgs`.
+        bookmarksDatabase.update(BOOKMARKS_TABLE, bookmarkContentValues, _ID + " = " + databaseId, null);
+
+        // Close the database handle.
+        bookmarksDatabase.close();
+    }
+
+    // Update the bookmark name, URL, and favorite icon.
+    public void updateBookmark(int databaseId, String bookmarkName, String bookmarkUrl, byte[] favoriteIcon) {
+        // Initialize a `ContentValues`.
+        ContentValues bookmarkContentValues = new ContentValues();
+
+        // Store the updated values.
+        bookmarkContentValues.put(BOOKMARK_NAME, bookmarkName);
+        bookmarkContentValues.put(BOOKMARK_URL, bookmarkUrl);
+        bookmarkContentValues.put(FAVORITE_ICON, favoriteIcon);
+
+        // Get a writable database handle.
+        SQLiteDatabase bookmarksDatabase = this.getWritableDatabase();
+
+        // Update the bookmark.  The last argument is `null` because there are no `whereArgs`.
+        bookmarksDatabase.update(BOOKMARKS_TABLE, bookmarkContentValues, _ID + " = " + databaseId, null);
+
+        // Close the database handle.
+        bookmarksDatabase.close();
+    }
+
+    // Update the bookmark name, URL, parent folder, display order, and favorite icon.
+    public void updateBookmark(int databaseId, String bookmarkName, String bookmarkUrl, String parentFolder, int displayOrder, byte[] favoriteIcon) {
+        // Initialize a `ContentValues`.
+        ContentValues bookmarkContentValues = new ContentValues();
+
+        // Store the updated values.
+        bookmarkContentValues.put(BOOKMARK_NAME, bookmarkName);
+        bookmarkContentValues.put(BOOKMARK_URL, bookmarkUrl);
+        bookmarkContentValues.put(PARENT_FOLDER, parentFolder);
+        bookmarkContentValues.put(DISPLAY_ORDER, displayOrder);
         bookmarkContentValues.put(FAVORITE_ICON, favoriteIcon);
 
         // Get a writable database handle.
@@ -418,6 +493,34 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         bookmarksDatabase.close();
     }
 
+    // Update the folder name, parent folder, and display order.
+    public void updateFolder(int databaseId, String oldFolderName, String newFolderName, String parentFolder, int displayOrder) {
+        // Get a writable database handle.
+        SQLiteDatabase bookmarksDatabase = this.getWritableDatabase();
+
+        // Update the folder first.  Store the new folder name in `folderContentValues`.
+        ContentValues folderContentValues = new ContentValues();
+        folderContentValues.put(BOOKMARK_NAME, newFolderName);
+        folderContentValues.put(PARENT_FOLDER, parentFolder);
+        folderContentValues.put(DISPLAY_ORDER, displayOrder);
+
+        // Run the update on the folder.  The last argument is `null` because there are no `whereArgs`.
+        bookmarksDatabase.update(BOOKMARKS_TABLE, folderContentValues, _ID + " = " + databaseId, null);
+
+        // Update the bookmarks inside the folder.  Store the new parent folder name in `bookmarkContentValues`.
+        ContentValues bookmarkContentValues = new ContentValues();
+        bookmarkContentValues.put(PARENT_FOLDER, newFolderName);
+
+        // SQL escape `oldFolderName`.
+        oldFolderName = DatabaseUtils.sqlEscapeString(oldFolderName);
+
+        // Run the update on all the bookmarks that currently list `oldFolderName` as their parent folder.  The last argument is `null` because there are no `whereArgs`.
+        bookmarksDatabase.update(BOOKMARKS_TABLE, bookmarkContentValues, PARENT_FOLDER + " = " + oldFolderName, null);
+
+        // Close the database handle.
+        bookmarksDatabase.close();
+    }
+
     // Update the folder name and icon.
     public void updateFolder(int databaseId, String oldFolderName, String newFolderName, byte[] folderIcon) {
         // Get a writable database handle.
@@ -426,6 +529,35 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         // Update the folder first.  Store the updated values in `folderContentValues`.
         ContentValues folderContentValues = new ContentValues();
         folderContentValues.put(BOOKMARK_NAME, newFolderName);
+        folderContentValues.put(FAVORITE_ICON, folderIcon);
+
+        // Run the update on the folder.  The last argument is `null` because there are no `whereArgs`.
+        bookmarksDatabase.update(BOOKMARKS_TABLE, folderContentValues, _ID + " = " + databaseId, null);
+
+        // Update the bookmarks inside the folder.  Store the new parent folder name in `bookmarkContentValues`.
+        ContentValues bookmarkContentValues = new ContentValues();
+        bookmarkContentValues.put(PARENT_FOLDER, newFolderName);
+
+        // SQL escape `oldFolderName`.
+        oldFolderName = DatabaseUtils.sqlEscapeString(oldFolderName);
+
+        // Run the update on all the bookmarks that currently list `oldFolderName` as their parent folder.  The last argument is `null` because there are no `whereArgs`.
+        bookmarksDatabase.update(BOOKMARKS_TABLE, bookmarkContentValues, PARENT_FOLDER + " = " + oldFolderName, null);
+
+        // Close the database handle.
+        bookmarksDatabase.close();
+    }
+
+    // Update the folder name and icon.
+    public void updateFolder(int databaseId, String oldFolderName, String newFolderName, String parentFolder, int displayOrder, byte[] folderIcon) {
+        // Get a writable database handle.
+        SQLiteDatabase bookmarksDatabase = this.getWritableDatabase();
+
+        // Update the folder first.  Store the updated values in `folderContentValues`.
+        ContentValues folderContentValues = new ContentValues();
+        folderContentValues.put(BOOKMARK_NAME, newFolderName);
+        folderContentValues.put(PARENT_FOLDER, parentFolder);
+        folderContentValues.put(DISPLAY_ORDER, displayOrder);
         folderContentValues.put(FAVORITE_ICON, folderIcon);
 
         // Run the update on the folder.  The last argument is `null` because there are no `whereArgs`.

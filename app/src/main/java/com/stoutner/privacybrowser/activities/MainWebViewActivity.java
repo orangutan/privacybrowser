@@ -78,10 +78,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.CookieManager;
-import android.webkit.DownloadListener;
 import android.webkit.HttpAuthHandler;
 import android.webkit.SslErrorHandler;
-import android.webkit.ValueCallback;
 import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceResponse;
@@ -89,7 +87,6 @@ import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebViewDatabase;
-import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -143,12 +140,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         NavigationView.OnNavigationItemSelectedListener, PinnedSslCertificateMismatchDialog.PinnedSslCertificateMismatchListener, SslCertificateErrorDialog.SslCertificateErrorListener, UrlHistoryDialog.UrlHistoryListener {
 
     // `darkTheme` is public static so it can be accessed from `AboutActivity`, `GuideActivity`, `AddDomainDialog`, `SettingsActivity`, `DomainsActivity`, `DomainsListFragment`, `BookmarksActivity`, `BookmarksDatabaseViewActivity`,
-    // `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, `DownloadFileDialog`, `DownloadImageDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`, `HttpAuthenticationDialog`, `MoveToFolderDialog`, `SslCertificateErrorDialog`, `UrlHistoryDialog`,
-    // `ViewSslCertificateDialog`, `CreateHomeScreenShortcutDialog`, and `OrbotProxyHelper`. It is also used in `onCreate()`, `applyAppSettings()`, `applyDomainSettings()`, and `updatePrivacyIcons()`.
+    // `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, `DownloadFileDialog`, `DownloadImageDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`, `EditBookmarkDatabaseViewDialog`, `HttpAuthenticationDialog`, `MoveToFolderDialog`,
+    // `SslCertificateErrorDialog`, `UrlHistoryDialog`, `ViewSslCertificateDialog`, `CreateHomeScreenShortcutDialog`, and `OrbotProxyHelper`. It is also used in `onCreate()`, `applyAppSettings()`, `applyDomainSettings()`, and `updatePrivacyIcons()`.
     public static boolean darkTheme;
 
-    // `favoriteIconBitmap` is public static so it can be accessed from `CreateHomeScreenShortcutDialog`, `BookmarksActivity`, `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`,
-    // and `ViewSslCertificateDialog`.  It is also used in `onCreate()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onCreateHomeScreenShortcutCreate()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `applyDomainSettings()`.
+    // `favoriteIconBitmap` is public static so it can be accessed from `CreateHomeScreenShortcutDialog`, `BookmarksActivity`, `BookmarksDatabaseViewActivity`, `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, `EditBookmarkDialog`,
+    // `EditBookmarkFolderDialog`, `EditBookmarkDatabaseViewDialog`, and `ViewSslCertificateDialog`.  It is also used in `onCreate()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onCreateHomeScreenShortcutCreate()`, `onSaveEditBookmark()`,
+    // `onSaveEditBookmarkFolder()`, and `applyDomainSettings()`.
     public static Bitmap favoriteIconBitmap;
 
     // `formattedUrlString` is public static so it can be accessed from `BookmarksActivity`, `CreateBookmarkDialog`, and `AddDomainDialog`.
@@ -369,7 +367,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     // Remove Android Studio's warning about the dangers of using SetJavaScriptEnabled.  The whole premise of Privacy Browser is built around an understanding of these dangers.
-    @SuppressLint("SetJavaScriptEnabled")
+    @SuppressLint({"SetJavaScriptEnabled"})
     // Remove Android Studio's warning about deprecations.  We have to use the deprecated `getColor()` until API >= 23.
     @SuppressWarnings("deprecation")
     protected void onCreate(Bundle savedInstanceState) {
@@ -396,7 +394,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         // `SupportActionBar` from `android.support.v7.app.ActionBar` must be used until the minimum API is >= 21.
-        supportAppBar = (Toolbar) findViewById(R.id.app_bar);
+        supportAppBar = findViewById(R.id.app_bar);
         setSupportActionBar(supportAppBar);
         appBar = getSupportActionBar();
 
@@ -413,42 +411,36 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         finalGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
 
         // Get a handle for `urlTextBox`.
-        urlTextBox = (EditText) appBar.getCustomView().findViewById(R.id.url_edittext);
+        urlTextBox = appBar.getCustomView().findViewById(R.id.url_edittext);
 
         // Remove the formatting from `urlTextBar` when the user is editing the text.
-        urlTextBox.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {  // The user is editing `urlTextBox`.
-                    // Remove the highlighting.
-                    urlTextBox.getText().removeSpan(redColorSpan);
-                    urlTextBox.getText().removeSpan(initialGrayColorSpan);
-                    urlTextBox.getText().removeSpan(finalGrayColorSpan);
-                } else {  // The user has stopped editing `urlTextBox`.
-                    // Reapply the highlighting.
-                    highlightUrlText();
-                }
+        urlTextBox.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {  // The user is editing `urlTextBox`.
+                // Remove the highlighting.
+                urlTextBox.getText().removeSpan(redColorSpan);
+                urlTextBox.getText().removeSpan(initialGrayColorSpan);
+                urlTextBox.getText().removeSpan(finalGrayColorSpan);
+            } else {  // The user has stopped editing `urlTextBox`.
+                // Reapply the highlighting.
+                highlightUrlText();
             }
         });
 
         // Set the `Go` button on the keyboard to load the URL in `urlTextBox`.
-        urlTextBox.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down event on the `enter` button, load the URL.
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    // Load the URL into the mainWebView and consume the event.
-                    try {
-                        loadUrlFromTextBox();
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-                    // If the enter key was pressed, consume the event.
-                    return true;
-                } else {
-                    // If any other key was pressed, do not consume the event.
-                    return false;
+        urlTextBox.setOnKeyListener((v, keyCode, event) -> {
+            // If the event is a key-down event on the `enter` button, load the URL.
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                // Load the URL into the mainWebView and consume the event.
+                try {
+                    loadUrlFromTextBox();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
                 }
+                // If the enter key was pressed, consume the event.
+                return true;
+            } else {
+                // If any other key was pressed, do not consume the event.
+                return false;
             }
         });
 
@@ -482,20 +474,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         this.registerReceiver(orbotStatusBroadcastReceiver, new IntentFilter("org.torproject.android.intent.action.STATUS"));
 
         // Get handles for views that need to be accessed.
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawerlayout);
-        rootCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.root_coordinatorlayout);
-        bookmarksListView = (ListView) findViewById(R.id.bookmarks_drawer_listview);
-        bookmarksTitleTextView = (TextView) findViewById(R.id.bookmarks_title_textview);
-        FloatingActionButton launchBookmarksActivityFab = (FloatingActionButton) findViewById(R.id.launch_bookmarks_activity_fab);
-        FloatingActionButton createBookmarkFolderFab = (FloatingActionButton) findViewById(R.id.create_bookmark_folder_fab);
-        FloatingActionButton createBookmarkFab = (FloatingActionButton) findViewById(R.id.create_bookmark_fab);
-        mainWebViewRelativeLayout = (RelativeLayout) findViewById(R.id.main_webview_relativelayout);
-        mainWebView = (WebView) findViewById(R.id.main_webview);
-        findOnPageLinearLayout = (LinearLayout) findViewById(R.id.find_on_page_linearlayout);
-        findOnPageEditText = (EditText) findViewById(R.id.find_on_page_edittext);
-        fullScreenVideoFrameLayout = (FrameLayout) findViewById(R.id.full_screen_video_framelayout);
-        urlAppBarRelativeLayout = (RelativeLayout) findViewById(R.id.url_app_bar_relativelayout);
-        favoriteIconImageView = (ImageView) findViewById(R.id.favorite_icon);
+        drawerLayout = findViewById(R.id.drawerlayout);
+        rootCoordinatorLayout = findViewById(R.id.root_coordinatorlayout);
+        bookmarksListView = findViewById(R.id.bookmarks_drawer_listview);
+        bookmarksTitleTextView = findViewById(R.id.bookmarks_title_textview);
+        FloatingActionButton launchBookmarksActivityFab = findViewById(R.id.launch_bookmarks_activity_fab);
+        FloatingActionButton createBookmarkFolderFab = findViewById(R.id.create_bookmark_folder_fab);
+        FloatingActionButton createBookmarkFab = findViewById(R.id.create_bookmark_fab);
+        mainWebViewRelativeLayout = findViewById(R.id.main_webview_relativelayout);
+        mainWebView = findViewById(R.id.main_webview);
+        findOnPageLinearLayout = findViewById(R.id.find_on_page_linearlayout);
+        findOnPageEditText = findViewById(R.id.find_on_page_edittext);
+        fullScreenVideoFrameLayout = findViewById(R.id.full_screen_video_framelayout);
+        urlAppBarRelativeLayout = findViewById(R.id.url_app_bar_relativelayout);
+        favoriteIconImageView = findViewById(R.id.favorite_icon);
 
         // Set the bookmarks drawer resources according to the theme.  This can't be done in the layout due to compatibility issues with the `DrawerLayout` support widget.
         if (darkTheme) {
@@ -511,38 +503,29 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
 
         // Set the launch bookmarks activity FAB to launch the bookmarks activity.
-        launchBookmarksActivityFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Create an intent to launch the bookmarks activity.
-                Intent bookmarksIntent = new Intent(getApplicationContext(), BookmarksActivity.class);
+        launchBookmarksActivityFab.setOnClickListener(v -> {
+            // Create an intent to launch the bookmarks activity.
+            Intent bookmarksIntent = new Intent(getApplicationContext(), BookmarksActivity.class);
 
-                // Include the current folder with the `Intent`.
-                bookmarksIntent.putExtra("Current Folder", currentBookmarksFolder);
+            // Include the current folder with the `Intent`.
+            bookmarksIntent.putExtra("Current Folder", currentBookmarksFolder);
 
-                // Make it so.
-                startActivity(bookmarksIntent);
-            }
+            // Make it so.
+            startActivity(bookmarksIntent);
         });
 
         // Set the create new bookmark folder FAB to display the `AlertDialog`.
-        createBookmarkFolderFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Show the `CreateBookmarkFolderDialog` `AlertDialog` and name the instance `@string/create_folder`.
-                AppCompatDialogFragment createBookmarkFolderDialog = new CreateBookmarkFolderDialog();
-                createBookmarkFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_folder));
-            }
+        createBookmarkFolderFab.setOnClickListener(v -> {
+            // Show the `CreateBookmarkFolderDialog` `AlertDialog` and name the instance `@string/create_folder`.
+            AppCompatDialogFragment createBookmarkFolderDialog = new CreateBookmarkFolderDialog();
+            createBookmarkFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_folder));
         });
 
         // Set the create new bookmark FAB to display the `AlertDialog`.
-        createBookmarkFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Show the `CreateBookmarkDialog` `AlertDialog` and name the instance `@string/create_bookmark`.
-                AppCompatDialogFragment createBookmarkDialog = new CreateBookmarkDialog();
-                createBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_bookmark));
-            }
+        createBookmarkFab.setOnClickListener(view -> {
+            // Show the `CreateBookmarkDialog` `AlertDialog` and name the instance `@string/create_bookmark`.
+            AppCompatDialogFragment createBookmarkDialog = new CreateBookmarkDialog();
+            createBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_bookmark));
         });
 
         // Create a double-tap listener to toggle full-screen mode.
@@ -623,12 +606,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         });
 
         // Pass all touch events on `mainWebView` through `gestureDetector` to check for double-taps.
-        mainWebView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                // Send the `event` to `gestureDetector`.
-                return gestureDetector.onTouchEvent(event);
-            }
+        mainWebView.setOnTouchListener((View v, MotionEvent event) -> {
+            // Call `performClick()` on the view, which is required for accessibility.
+            v.performClick();
+
+            // Send the `event` to `gestureDetector`.
+            return gestureDetector.onTouchEvent(event);
         });
 
         // Update `findOnPageCountTextView`.
@@ -645,8 +628,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // `activeMatchOrdinal` is zero-based.
                     int activeMatch = activeMatchOrdinal + 1;
 
+                    // Build the match string.
+                    String matchString = activeMatch + "/" + numberOfMatches;
+
                     // Set `findOnPageCountTextView`.
-                    findOnPageCountTextView.setText(activeMatch + "/" + numberOfMatches);
+                    findOnPageCountTextView.setText(matchString);
                 }
             }
         });
@@ -671,38 +657,30 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         });
 
         // Set the `check mark` button for the `findOnPageEditText` keyboard to close the soft keyboard.
-        findOnPageEditText.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {  // The `enter` key was pressed.
-                    // Hide the soft keyboard.  `0` indicates no additional flags.
-                    inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
+        findOnPageEditText.setOnKeyListener((v, keyCode, event) -> {
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {  // The `enter` key was pressed.
+                // Hide the soft keyboard.  `0` indicates no additional flags.
+                inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
 
-                    // Consume the event.
-                    return true;
-                } else {  // A different key was pressed.
-                    // Do not consume the event.
-                    return false;
-                }
+                // Consume the event.
+                return true;
+            } else {  // A different key was pressed.
+                // Do not consume the event.
+                return false;
             }
         });
 
         // Implement swipe to refresh
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refreshlayout);
+        swipeRefreshLayout = findViewById(R.id.swipe_refreshlayout);
         swipeRefreshLayout.setColorSchemeResources(R.color.blue_700);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mainWebView.reload();
-            }
-        });
+        swipeRefreshLayout.setOnRefreshListener(() -> mainWebView.reload());
 
         // `DrawerTitle` identifies the `DrawerLayouts` in accessibility mode.
         drawerLayout.setDrawerTitle(GravityCompat.START, getString(R.string.navigation_drawer));
         drawerLayout.setDrawerTitle(GravityCompat.END, getString(R.string.bookmarks));
 
         // Listen for touches on the navigation menu.
-        final NavigationView navigationView = (NavigationView) findViewById(R.id.navigationview);
+        final NavigationView navigationView = findViewById(R.id.navigationview);
         navigationView.setNavigationItemSelectedListener(this);
 
         // Get handles for `navigationMenu` and the back and forward menu items.  The menu is zero-based, so items 1, 2, and 3 are the second, third, and fourth entries in the menu.
@@ -721,61 +699,55 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Load the home folder, which is `""` in the database.
         loadBookmarksFolder();
 
-        bookmarksListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Convert the id from long to int to match the format of the bookmarks database.
-                int databaseID = (int) id;
+        bookmarksListView.setOnItemClickListener((parent, view, position, id) -> {
+            // Convert the id from long to int to match the format of the bookmarks database.
+            int databaseID = (int) id;
 
-                // Get the bookmark `Cursor` for this ID and move it to the first row.
-                Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmarkCursor(databaseID);
-                bookmarkCursor.moveToFirst();
+            // Get the bookmark `Cursor` for this ID and move it to the first row.
+            Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmarkCursor(databaseID);
+            bookmarkCursor.moveToFirst();
 
-                // Act upon the bookmark according to the type.
-                if (bookmarkCursor.getInt(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.IS_FOLDER)) == 1) {  // The selected bookmark is a folder.
-                    // Store the new folder name in `currentBookmarksFolder`.
-                    currentBookmarksFolder = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
+            // Act upon the bookmark according to the type.
+            if (bookmarkCursor.getInt(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.IS_FOLDER)) == 1) {  // The selected bookmark is a folder.
+                // Store the new folder name in `currentBookmarksFolder`.
+                currentBookmarksFolder = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
-                    // Load the new folder.
-                    loadBookmarksFolder();
-                } else {  // The selected bookmark is not a folder.
-                    // Load the bookmark URL.
-                    loadUrl(bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL)));
+                // Load the new folder.
+                loadBookmarksFolder();
+            } else {  // The selected bookmark is not a folder.
+                // Load the bookmark URL.
+                loadUrl(bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL)));
 
-                    // Close the bookmarks drawer.
-                    drawerLayout.closeDrawer(GravityCompat.END);
-                }
-
-                // Close the `Cursor`.
-                bookmarkCursor.close();
+                // Close the bookmarks drawer.
+                drawerLayout.closeDrawer(GravityCompat.END);
             }
+
+            // Close the `Cursor`.
+            bookmarkCursor.close();
         });
 
-        bookmarksListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                // Convert the database ID from `long` to `int`.
-                int databaseId = (int) id;
+        bookmarksListView.setOnItemLongClickListener((parent, view, position, id) -> {
+            // Convert the database ID from `long` to `int`.
+            int databaseId = (int) id;
 
-                // Find out if the selected bookmark is a folder.
-                boolean isFolder = bookmarksDatabaseHelper.isFolder(databaseId);
+            // Find out if the selected bookmark is a folder.
+            boolean isFolder = bookmarksDatabaseHelper.isFolder(databaseId);
 
-                if (isFolder) {
-                    // Save the current folder name, which is used in `onSaveEditBookmarkFolder()`.
-                    oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
+            if (isFolder) {
+                // Save the current folder name, which is used in `onSaveEditBookmarkFolder()`.
+                oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
-                    // Show the edit bookmark folder `AlertDialog` and name the instance `@string/edit_folder`.
-                    AppCompatDialogFragment editFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId);
-                    editFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_folder));
-                } else {
-                    // Show the edit bookmark `AlertDialog` and name the instance `@string/edit_bookmark`.
-                    AppCompatDialogFragment editBookmarkDialog = EditBookmarkDialog.bookmarkDatabaseId(databaseId);
-                    editBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_bookmark));
-                }
-
-                // Consume the event.
-                return true;
+                // Show the edit bookmark folder `AlertDialog` and name the instance `@string/edit_folder`.
+                AppCompatDialogFragment editFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId);
+                editFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_folder));
+            } else {
+                // Show the edit bookmark `AlertDialog` and name the instance `@string/edit_bookmark`.
+                AppCompatDialogFragment editBookmarkDialog = EditBookmarkDialog.bookmarkDatabaseId(databaseId);
+                editBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_bookmark));
             }
+
+            // Consume the event.
+            return true;
         });
 
         // The `DrawerListener` allows us to update the Navigation Menu.
@@ -1099,7 +1071,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         });
 
         // Get a handle for the progress bar.
-        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        final ProgressBar progressBar = findViewById(R.id.progress_bar);
 
         mainWebView.setWebChromeClient(new WebChromeClient() {
             // Update the progress bar when a page is loading.
@@ -1113,26 +1085,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     mainWebView.evaluateJavascript("(function() {var parent = document.getElementsByTagName('head').item(0); var style = document.createElement('style'); style.type = 'text/css'; style.innerHTML = '" +
                             "* {background-color: #212121 !important; color: #BDBDBD !important; box-shadow: none !important; text-decoration: none !important; text-shadow: none !important; border: none !important;}" +
                             "a {color: #1565C0 !important;}" +
-                            "'; parent.appendChild(style)})()", new ValueCallback<String>() {
-                        @Override
-                        public void onReceiveValue(String value) {
-                            // Initialize a `Handler` to display `mainWebView`.
-                            Handler displayWebViewHandler = new Handler();
+                            "'; parent.appendChild(style)})()", value -> {
+                                // Initialize a `Handler` to display `mainWebView`.
+                                Handler displayWebViewHandler = new Handler();
 
-                            // Setup a `Runnable` to display `mainWebView` after a delay to allow the CSS to be applied.
-                            Runnable displayWebViewRunnable = new Runnable() {
-                                public void run() {
+                                // Setup a `Runnable` to display `mainWebView` after a delay to allow the CSS to be applied.
+                                Runnable displayWebViewRunnable = () -> {
                                     // Only display `mainWebView` if the progress bar is one.  This prevents the display of the `WebView` while it is still loading.
                                     if (progressBar.getVisibility() == View.GONE) {
                                         mainWebView.setVisibility(View.VISIBLE);
                                     }
-                                }
-                            };
+                                };
 
-                            // Use `displayWebViewHandler` to delay the displaying of `mainWebView` for 500 milliseconds.
-                            displayWebViewHandler.postDelayed(displayWebViewRunnable, 500);
-                        }
-                    });
+                                // Use `displayWebViewHandler` to delay the displaying of `mainWebView` for 500 milliseconds.
+                                displayWebViewHandler.postDelayed(displayWebViewRunnable, 500);
+                            });
                 }
 
                 progressBar.setProgress(progress);
@@ -1229,13 +1196,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         registerForContextMenu(mainWebView);
 
         // Allow the downloading of files.
-        mainWebView.setDownloadListener(new DownloadListener() {
-            @Override
-            public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
-                // Show the `DownloadFileDialog` `AlertDialog` and name this instance `@string/download`.
-                AppCompatDialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(url, contentDisposition, contentLength);
-                downloadFileDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
-            }
+        mainWebView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
+            // Show the `DownloadFileDialog` `AlertDialog` and name this instance `@string/download`.
+            AppCompatDialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(url, contentDisposition, contentLength);
+            downloadFileDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
         });
 
         // Allow pinch to zoom.
@@ -1702,11 +1666,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.clear_cookies:
                 Snackbar.make(findViewById(R.id.main_webview), R.string.cookies_deleted, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.undo, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                // Do nothing because everything will be handled by `onDismissed()` below.
-                            }
+                        .setAction(R.string.undo, v -> {
+                            // Do nothing because everything will be handled by `onDismissed()` below.
                         })
                         .addCallback(new Snackbar.Callback() {
                             @Override
@@ -1734,11 +1695,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.clear_dom_storage:
                 Snackbar.make(findViewById(R.id.main_webview), R.string.dom_storage_deleted, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.undo, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                // Do nothing because everything will be handled by `onDismissed()` below.
-                            }
+                        .setAction(R.string.undo, v -> {
+                            // Do nothing because everything will be handled by `onDismissed()` below.
                         })
                         .addCallback(new Snackbar.Callback() {
                             @Override
@@ -1769,11 +1727,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.clear_form_data:
                 Snackbar.make(findViewById(R.id.main_webview), R.string.form_data_deleted, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.undo, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                // Do nothing because everything will be handled by `onDismissed()` below.
-                            }
+                        .setAction(R.string.undo, v -> {
+                            // Do nothing because everything will be handled by `onDismissed()` below.
                         })
                         .addCallback(new Snackbar.Callback() {
                             @Override
@@ -1861,16 +1816,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 findOnPageLinearLayout.setVisibility(View.VISIBLE);
 
                 // Display the keyboard.  We have to wait 200 ms before running the command to work around a bug in Android.  http://stackoverflow.com/questions/5520085/android-show-softkeyboard-with-showsoftinput-is-not-working
-                findOnPageEditText.postDelayed(new Runnable() {
-                    @Override
-                    public void run()
-                    {
-                        // Set the focus on `findOnPageEditText`.
-                        findOnPageEditText.requestFocus();
+                findOnPageEditText.postDelayed(() -> {
+                    // Set the focus on `findOnPageEditText`.
+                    findOnPageEditText.requestFocus();
 
-                        // Display the keyboard.  `0` sets no input flags.
-                        inputMethodManager.showSoftInput(findOnPageEditText, 0);
-                    }
+                    // Display the keyboard.  `0` sets no input flags.
+                    inputMethodManager.showSoftInput(findOnPageEditText, 0);
                 }, 200);
                 return true;
 
@@ -1880,6 +1831,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Convert `mainWebView` to `printDocumentAdapter`.
                 PrintDocumentAdapter printDocumentAdapter = mainWebView.createPrintDocumentAdapter();
+
+                // Remove the lint error below that `printManager` might be `null`.
+                assert printManager != null;
 
                 // Print the document.  The print attributes are `null`.
                 printManager.print(getString(R.string.privacy_browser_web_page), printDocumentAdapter, null);
@@ -2143,6 +2097,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get a handle for the `ClipboardManager`.
         final ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
+        // Remove the lint errors below that `clipboardManager` might be `null`.
+        assert clipboardManager != null;
+
         switch (hitTestResult.getType()) {
             // `SRC_ANCHOR_TYPE` is a link.
             case WebView.HitTestResult.SRC_ANCHOR_TYPE:
@@ -2153,25 +2110,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 menu.setHeaderTitle(linkUrl);
 
                 // Add a `Load URL` entry.
-                menu.add(R.string.load_url).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        loadUrl(linkUrl);
-                        return false;
-                    }
+                menu.add(R.string.load_url).setOnMenuItemClickListener(item -> {
+                    loadUrl(linkUrl);
+                    return false;
                 });
 
                 // Add a `Copy URL` entry.
-                menu.add(R.string.copy_url).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        // Save the link URL in a `ClipData`.
-                        ClipData srcAnchorTypeClipData = ClipData.newPlainText(getString(R.string.url), linkUrl);
+                menu.add(R.string.copy_url).setOnMenuItemClickListener(item -> {
+                    // Save the link URL in a `ClipData`.
+                    ClipData srcAnchorTypeClipData = ClipData.newPlainText(getString(R.string.url), linkUrl);
 
-                        // Set the `ClipData` as the clipboard's primary clip.
-                        clipboardManager.setPrimaryClip(srcAnchorTypeClipData);
-                        return false;
-                    }
+                    // Set the `ClipData` as the clipboard's primary clip.
+                    clipboardManager.setPrimaryClip(srcAnchorTypeClipData);
+                    return false;
                 });
 
                 // Add a `Cancel` entry, which by default closes the `ContextMenu`.
@@ -2186,35 +2137,29 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 menu.setHeaderTitle(linkUrl);
 
                 // Add a `Write Email` entry.
-                menu.add(R.string.write_email).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        // We use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
-                        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+                menu.add(R.string.write_email).setOnMenuItemClickListener(item -> {
+                    // We use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
 
-                        // Parse the url and set it as the data for the `Intent`.
-                        emailIntent.setData(Uri.parse("mailto:" + linkUrl));
+                    // Parse the url and set it as the data for the `Intent`.
+                    emailIntent.setData(Uri.parse("mailto:" + linkUrl));
 
-                        // `FLAG_ACTIVITY_NEW_TASK` opens the email program in a new task instead as part of Privacy Browser.
-                        emailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    // `FLAG_ACTIVITY_NEW_TASK` opens the email program in a new task instead as part of Privacy Browser.
+                    emailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                        // Make it so.
-                        startActivity(emailIntent);
-                        return false;
-                    }
+                    // Make it so.
+                    startActivity(emailIntent);
+                    return false;
                 });
 
                 // Add a `Copy Email Address` entry.
-                menu.add(R.string.copy_email_address).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        // Save the email address in a `ClipData`.
-                        ClipData srcEmailTypeClipData = ClipData.newPlainText(getString(R.string.email_address), linkUrl);
+                menu.add(R.string.copy_email_address).setOnMenuItemClickListener(item -> {
+                    // Save the email address in a `ClipData`.
+                    ClipData srcEmailTypeClipData = ClipData.newPlainText(getString(R.string.email_address), linkUrl);
 
-                        // Set the `ClipData` as the clipboard's primary clip.
-                        clipboardManager.setPrimaryClip(srcEmailTypeClipData);
-                        return false;
-                    }
+                    // Set the `ClipData` as the clipboard's primary clip.
+                    clipboardManager.setPrimaryClip(srcEmailTypeClipData);
+                    return false;
                 });
 
                 // Add a `Cancel` entry, which by default closes the `ContextMenu`.
@@ -2230,36 +2175,27 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 menu.setHeaderTitle(imageUrl);
 
                 // Add a `View Image` entry.
-                menu.add(R.string.view_image).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        loadUrl(imageUrl);
-                        return false;
-                    }
+                menu.add(R.string.view_image).setOnMenuItemClickListener(item -> {
+                    loadUrl(imageUrl);
+                    return false;
                 });
 
                 // Add a `Download Image` entry.
-                menu.add(R.string.download_image).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        // Show the `DownloadImageDialog` `AlertDialog` and name this instance `@string/download`.
-                        AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
-                        downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
-                        return false;
-                    }
+                menu.add(R.string.download_image).setOnMenuItemClickListener(item -> {
+                    // Show the `DownloadImageDialog` `AlertDialog` and name this instance `@string/download`.
+                    AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
+                    downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
+                    return false;
                 });
 
                 // Add a `Copy URL` entry.
-                menu.add(R.string.copy_url).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        // Save the image URL in a `ClipData`.
-                        ClipData srcImageTypeClipData = ClipData.newPlainText(getString(R.string.url), imageUrl);
+                menu.add(R.string.copy_url).setOnMenuItemClickListener(item -> {
+                    // Save the image URL in a `ClipData`.
+                    ClipData srcImageTypeClipData = ClipData.newPlainText(getString(R.string.url), imageUrl);
 
-                        // Set the `ClipData` as the clipboard's primary clip.
-                        clipboardManager.setPrimaryClip(srcImageTypeClipData);
-                        return false;
-                    }
+                    // Set the `ClipData` as the clipboard's primary clip.
+                    clipboardManager.setPrimaryClip(srcImageTypeClipData);
+                    return false;
                 });
 
                 // Add a `Cancel` entry, which by default closes the `ContextMenu`.
@@ -2276,36 +2212,27 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 menu.setHeaderTitle(imageUrl);
 
                 // Add a `View Image` entry.
-                menu.add(R.string.view_image).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        loadUrl(imageUrl);
-                        return false;
-                    }
+                menu.add(R.string.view_image).setOnMenuItemClickListener(item -> {
+                    loadUrl(imageUrl);
+                    return false;
                 });
 
                 // Add a `Download Image` entry.
-                menu.add(R.string.download_image).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        // Show the `DownloadImageDialog` `AlertDialog` and name this instance `@string/download`.
-                        AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
-                        downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
-                        return false;
-                    }
+                menu.add(R.string.download_image).setOnMenuItemClickListener(item -> {
+                    // Show the `DownloadImageDialog` `AlertDialog` and name this instance `@string/download`.
+                    AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
+                    downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
+                    return false;
                 });
 
                 // Add a `Copy URL` entry.
-                menu.add(R.string.copy_url).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        // Save the image URL in a `ClipData`.
-                        ClipData srcImageAnchorTypeClipData = ClipData.newPlainText(getString(R.string.url), imageUrl);
+                menu.add(R.string.copy_url).setOnMenuItemClickListener(item -> {
+                    // Save the image URL in a `ClipData`.
+                    ClipData srcImageAnchorTypeClipData = ClipData.newPlainText(getString(R.string.url), imageUrl);
 
-                        // Set the `ClipData` as the clipboard's primary clip.
-                        clipboardManager.setPrimaryClip(srcImageAnchorTypeClipData);
-                        return false;
-                    }
+                    // Set the `ClipData` as the clipboard's primary clip.
+                    clipboardManager.setPrimaryClip(srcImageAnchorTypeClipData);
+                    return false;
                 });
 
                 // Add a `Cancel` entry, which by default closes the `ContextMenu`.
@@ -2317,8 +2244,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     @Override
     public void onCreateBookmark(AppCompatDialogFragment dialogFragment) {
         // Get the `EditTexts` from the `dialogFragment`.
-        EditText createBookmarkNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.create_bookmark_name_edittext);
-        EditText createBookmarkUrlEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.create_bookmark_url_edittext);
+        EditText createBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.create_bookmark_name_edittext);
+        EditText createBookmarkUrlEditText = dialogFragment.getDialog().findViewById(R.id.create_bookmark_url_edittext);
 
         // Extract the strings from the `EditTexts`.
         String bookmarkNameString = createBookmarkNameEditText.getText().toString();
@@ -2333,7 +2260,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         int newBookmarkDisplayOrder = bookmarksListView.getCount();
 
         // Create the bookmark.
-        bookmarksDatabaseHelper.createBookmark(bookmarkNameString, bookmarkUrlString, newBookmarkDisplayOrder, currentBookmarksFolder, favoriteIconByteArray);
+        bookmarksDatabaseHelper.createBookmark(bookmarkNameString, bookmarkUrlString, currentBookmarksFolder, newBookmarkDisplayOrder, favoriteIconByteArray);
 
         // Update `bookmarksCursor` with the current contents of this folder.
         bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentBookmarksFolder);
@@ -2348,9 +2275,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     @Override
     public void onCreateBookmarkFolder(AppCompatDialogFragment dialogFragment) {
         // Get handles for the views in `dialogFragment`.
-        EditText createFolderNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.create_folder_name_edittext);
-        RadioButton defaultFolderIconRadioButton = (RadioButton) dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon_radiobutton);
-        ImageView folderIconImageView = (ImageView) dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon);
+        EditText createFolderNameEditText = dialogFragment.getDialog().findViewById(R.id.create_folder_name_edittext);
+        RadioButton defaultFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon_radiobutton);
+        ImageView folderIconImageView = dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon);
 
         // Get new folder name string.
         String folderNameString = createFolderNameEditText.getText().toString();
@@ -2377,8 +2304,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             bookmarksDatabaseHelper.updateDisplayOrder(databaseId, i + 1);
         }
 
-        // Create the folder, placing it at the top of the ListView
-        bookmarksDatabaseHelper.createFolder(folderNameString, 0, currentBookmarksFolder, folderIconByteArray);
+        // Create the folder, which will be placed at the top of the `ListView`.
+        bookmarksDatabaseHelper.createFolder(folderNameString, currentBookmarksFolder, folderIconByteArray);
 
         // Update `bookmarksCursor` with the current contents of this folder.
         bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentBookmarksFolder);
@@ -2393,7 +2320,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     @Override
     public void onCreateHomeScreenShortcut(AppCompatDialogFragment dialogFragment) {
         // Get shortcutNameEditText from the alert dialog.
-        EditText shortcutNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.shortcut_name_edittext);
+        EditText shortcutNameEditText = dialogFragment.getDialog().findViewById(R.id.shortcut_name_edittext);
 
         // Create the bookmark shortcut based on formattedUrlString.
         Intent bookmarkShortcut = new Intent();
@@ -2430,7 +2357,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
 
             // Get the file name from `dialogFragment`.
-            EditText downloadImageNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.download_image_name);
+            EditText downloadImageNameEditText = dialogFragment.getDialog().findViewById(R.id.download_image_name);
             String imageName = downloadImageNameEditText.getText().toString();
 
             // Once we have `WRITE_EXTERNAL_STORAGE` permissions we can use `setDestinationInExternalPublicDir`.
@@ -2448,6 +2375,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Show the download notification after the download is completed.
             downloadRequest.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+            // Remove the lint warning below that `downloadManager` might be `null`.
+            assert downloadManager != null;
 
             // Initiate the download.
             downloadManager.enqueue(downloadRequest);
@@ -2478,7 +2408,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
 
             // Get the file name from `dialogFragment`.
-            EditText downloadFileNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.download_file_name);
+            EditText downloadFileNameEditText = dialogFragment.getDialog().findViewById(R.id.download_file_name);
             String fileName = downloadFileNameEditText.getText().toString();
 
             // Once we have `WRITE_EXTERNAL_STORAGE` permissions we can use `setDestinationInExternalPublicDir`.
@@ -2497,6 +2427,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Show the download notification after the download is completed.
             downloadRequest.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 
+            // Remove the lint warning below that `downloadManager` might be `null`.
+            assert downloadManager != null;
+
             // Initiate the download.
             downloadManager.enqueue(downloadRequest);
         } else {  // The download is not an HTTP or HTTPS URI.
@@ -2505,11 +2438,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onSaveEditBookmark(AppCompatDialogFragment dialogFragment, int selectedBookmarkDatabaseId) {
+    public void onSaveBookmark(AppCompatDialogFragment dialogFragment, int selectedBookmarkDatabaseId) {
         // Get handles for the views from `dialogFragment`.
-        EditText editBookmarkNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.edit_bookmark_name_edittext);
-        EditText editBookmarkUrlEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.edit_bookmark_url_edittext);
-        RadioButton currentBookmarkIconRadioButton = (RadioButton) dialogFragment.getDialog().findViewById(R.id.edit_bookmark_current_icon_radiobutton);
+        EditText editBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_name_edittext);
+        EditText editBookmarkUrlEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_url_edittext);
+        RadioButton currentBookmarkIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_current_icon_radiobutton);
 
         // Store the bookmark strings.
         String bookmarkNameString = editBookmarkNameEditText.getText().toString();
@@ -2536,12 +2469,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onSaveEditBookmarkFolder(AppCompatDialogFragment dialogFragment, int selectedFolderDatabaseId) {
+    public void onSaveBookmarkFolder(AppCompatDialogFragment dialogFragment, int selectedFolderDatabaseId) {
         // Get handles for the views from `dialogFragment`.
-        EditText editFolderNameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.edit_folder_name_edittext);
-        RadioButton currentFolderIconRadioButton = (RadioButton) dialogFragment.getDialog().findViewById(R.id.edit_folder_current_icon_radiobutton);
-        RadioButton defaultFolderIconRadioButton = (RadioButton) dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_radiobutton);
-        ImageView folderIconImageView = (ImageView) dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon);
+        EditText editFolderNameEditText = dialogFragment.getDialog().findViewById(R.id.edit_folder_name_edittext);
+        RadioButton currentFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_current_icon_radiobutton);
+        RadioButton defaultFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_radiobutton);
+        ImageView folderIconImageView = dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_imageview);
 
         // Get the new folder name.
         String newFolderNameString = editFolderNameEditText.getText().toString();
@@ -2606,8 +2539,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     @Override
     public void onHttpAuthenticationProceed(AppCompatDialogFragment dialogFragment) {
         // Get handles for the `EditTexts`.
-        EditText usernameEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.http_authentication_username);
-        EditText passwordEditText = (EditText) dialogFragment.getDialog().findViewById(R.id.http_authentication_password);
+        EditText usernameEditText = dialogFragment.getDialog().findViewById(R.id.http_authentication_username);
+        EditText passwordEditText = dialogFragment.getDialog().findViewById(R.id.http_authentication_password);
 
         // Proceed with the HTTP authentication.
         httpAuthHandler.proceed(usernameEditText.getText().toString(), passwordEditText.getText().toString());
@@ -3332,8 +3265,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @Override
             public void bindView(View view, Context context, Cursor cursor) {
                 // Get handles for the views.
-                ImageView bookmarkFavoriteIcon = (ImageView) view.findViewById(R.id.bookmark_favorite_icon);
-                TextView bookmarkNameTextView = (TextView) view.findViewById(R.id.bookmark_name);
+                ImageView bookmarkFavoriteIcon = view.findViewById(R.id.bookmark_favorite_icon);
+                TextView bookmarkNameTextView = view.findViewById(R.id.bookmark_name);
 
                 // Get the favorite icon byte array from the `Cursor`.
                 byte[] favoriteIconByteArray = cursor.getBlob(cursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON));
