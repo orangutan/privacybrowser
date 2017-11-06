@@ -196,19 +196,34 @@
         <string-array name="user_agent_entries">
             <item>Privacy Browser 1.0</item>
             <item>WebView-Standard</item>
-            <item>Firefox 50 auf Android 7.1.1</item>
-            <item>Chrome 55 auf Android 7.1.1</item>
-            <item>Safari 10 auf iOS 10.2.1</item>
-            <item>Firefox 45 auf Linux</item>
-            <item>Chromium 55 auf Linux</item>
-            <item>Konqueror 4.14.26 auf Linux</item>
-            <item>Firefox 50 auf Windows 10</item>
-            <item>Chrome 55 auf Windows 10</item>
-            <item>Edge 14 auf Windows 10</item>
+            <item>Firefox 56 auf Android 8.0.0</item>
+            <item>Chrome 61 auf Android 8.0.0</item>
+            <item>Safari 11 auf iOS 11.1</item>
+            <item>Firefox 52 auf Linux</item>
+            <item>Chromium 61 auf Linux</item>
+            <item>Firefox 56 auf Windows 10</item>
+            <item>Chrome 62 auf Windows 10</item>
+            <item>Edge 16 auf Windows 10</item>
             <item>Internet Explorer 11 auf Windows 10</item>
-            <item>Safari 10.0.2 auf macOS 10.12.2</item>
+            <item>Safari 11.0.1 auf macOS 10.13.1</item>
             <item>Eigener</item>
         </string-array>
+            <string-array name="domain_settings_user_agent_entries">
+                <item>System default</item>
+                <item>Privacy Browser 1.0</item>
+                <item>WebView-Standard</item>
+                <item>Firefox 56 on Android 8.0.0</item>
+                <item>Chrome 61 on Android 8.0.0</item>
+                <item>Safari 11 on iOS 11.1</item>
+                <item>Firefox 52 on Linux</item>
+                <item>Chromium 61 on Linux</item>
+                <item>Firefox 56 on Windows 10</item>
+                <item>Chrome 62 on Windows 10</item>
+                <item>Edge 16 on Windows 10</item>
+                <item>Internet Explorer 11 on Windows 10</item>
+                <item>Safari 11.0.1 on macOS 10.13.1</item>
+                <item>Eigener</item>
+            </string-array>
         <string name="custom_user_agent">Eigener User Agent</string>
         <string name="do_not_track">Nicht verfolgen (Do not track)</string>
         <string name="do_not_track_summary">Einen "Do Not Track-Header" senden, der freundlich anfragt, dass Webserver diesen Browser nicht nachverfolgen sollen.</string>

@@ -241,34 +241,32 @@
         <string-array name="user_agent_entries">
             <item>Privacy Browser 1.0</item>
             <item>WebView Default</item>
-            <item>Firefox 50 su Android 7.1.1</item>
-            <item>Chrome 55 su Android 7.1.1</item>
-            <item>Safari 10 su iOS 10.2.1</item>
-            <item>Firefox 45 su Linux</item>
-            <item>Chromium 55 su Linux</item>
-            <item>Konqueror 4.14.26 su Linux</item>
-            <item>Firefox 50 su Windows 10</item>
-            <item>Chrome 55 su Windows 10</item>
-            <item>Edge 14 su Windows 10</item>
+            <item>Firefox 56 su Android 8.0.0</item>
+            <item>Chrome 61 su Android 8.0.0</item>
+            <item>Safari 11 su iOS 11.1</item>
+            <item>Firefox 52 su Linux</item>
+            <item>Chromium 61 su Linux</item>
+            <item>Firefox 56 su Windows 10</item>
+            <item>Chrome 62 su Windows 10</item>
+            <item>Edge 16 su Windows 10</item>
             <item>Internet Explorer 11 su Windows 10</item>
-            <item>Safari 10.0.2 su macOS 10.12.2</item>
+            <item>Safari 11.0.1 su macOS 10.13.1</item>
             <item>Personalizzato</item>
         </string-array>
             <string-array name="domain_settings_user_agent_entries">
                 <item>Impostazioni di default</item>
                 <item>Privacy Browser 1.0</item>
                 <item>WebView Default</item>
-                <item>Firefox 50 su Android 7.1.1</item>
-                <item>Chrome 55 su Android 7.1.1</item>
-                <item>Safari 10 su iOS 10.2.1</item>
-                <item>Firefox 45 su Linux</item>
-                <item>Chromium 55 su Linux</item>
-                <item>Konqueror 4.14.26 su Linux</item>
-                <item>Firefox 50 su Windows 10</item>
-                <item>Chrome 55 su Windows 10</item>
-                <item>Edge 14 su Windows 10</item>
+                <item>Firefox 56 su Android 8.0.0</item>
+                <item>Chrome 61 su Android 8.0.0</item>
+                <item>Safari 11 su iOS 11.1</item>
+                <item>Firefox 52 su Linux</item>
+                <item>Chromium 61 su Linux</item>
+                <item>Firefox 56 su Windows 10</item>
+                <item>Chrome 62 su Windows 10</item>
+                <item>Edge 16 su Windows 10</item>
                 <item>Internet Explorer 11 su Windows 10</item>
-                <item>Safari 10.0.2 su macOS 10.12.2</item>
+                <item>Safari 11.0.1 su macOS 10.13.1</item>
                 <item>Personalizzato</item>
             </string-array>
         <string name="custom_user_agent">User agent personalizzato</string>
