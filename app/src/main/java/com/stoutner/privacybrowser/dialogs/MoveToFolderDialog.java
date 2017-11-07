@@ -124,15 +124,13 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
         // Initially disable the positive button.
         moveButton.setEnabled(false);
 
-        // Initialize the `Cursor` and `CursorAdapter` variables.
+        // Initialize the variables.
         Cursor foldersCursor;
         CursorAdapter foldersCursorAdapter;
+        exceptFolders = new StringBuilder();
 
         // Check to see if we are in the `Home Folder`.
         if (BookmarksActivity.currentFolder.isEmpty()) {  // Don't display `Home Folder` at the top of the `ListView`.
-            // Initialize `exceptFolders`.
-            exceptFolders = new StringBuilder();
-
             // If a folder is selected, add it and all children to the list of folders not to display.
             long[] selectedBookmarksLongArray = BookmarksActivity.checkedItemIds;
             for (long databaseIdLong : selectedBookmarksLongArray) {

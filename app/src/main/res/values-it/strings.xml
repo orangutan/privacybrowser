@@ -192,7 +192,12 @@
 
     <!-- Bookmarks Database View. -->
     <string name="bookmarks_database_view">Database dei Segnalibri</string>
+    <string name="all_folders">Tutte le cartelle</string>
     <string name="home_folder">Cartella principale</string>
+    <string name="database_id">ID Database:</string>
+    <string name="folder">Cartella:</string>
+    <string name="parent_folder">Cartella superiore:</string>
+    <string name="display_order">Ordine di visualizzazione:</string>
 
     <!-- Domains. -->
     <string name="domains">Domini</string>

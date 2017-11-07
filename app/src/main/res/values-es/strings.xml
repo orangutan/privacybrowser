@@ -190,7 +190,12 @@
 
     <!-- Bookmarks Database View. -->
     <string name="bookmarks_database_view">Vista de base de datos de marcadores</string>
+    <string name="all_folders">Todas las carpetas</string>
     <string name="home_folder">Carpeta inicio</string>
+    <string name="database_id">ID de base de datos:</string>
+    <string name="folder">Carpeta:</string>
+    <string name="parent_folder">Carpeta superior:</string>
+    <string name="display_order">Mostrar orden:</string>
 
     <!-- Domains. -->
     <string name="domains">Dominios</string>

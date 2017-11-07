@@ -160,6 +160,7 @@
     <string name="save">Speichern</string>
 
     <!-- Bookmarks Contextual App Bar. -->
+    <string name="one_selected">1 Ausgewählt</string>
     <string name="selected">Ausgewählt</string>
     <string name="move_up">Nach oben schieben</string>
     <string name="move_down">Nach unten schieben</string>
