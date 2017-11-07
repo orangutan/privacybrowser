@@ -1,0 +1,6 @@
+• Aggiunta di un cassetto dei segnalibri accessibile scorrendo da destra.
+• Corretto un difetto della Modalità Notte per cui appariva uno sfondo bianco durante il caricamento di pagine nuove.
+• Aggiornamento degli user agents.
+• Adeguamento della API target a 26 (Android Oreo, 8.0.0).
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León Becerra.
