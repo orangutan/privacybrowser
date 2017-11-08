@@ -21,5 +21,5 @@
 <!-- Highlight the selected item when the spinner is open. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:state_checked="true" android:color="@color/gray_300" />
-    <item android:color="@color/gray_500" />
+    <item android:color="@color/blue_300" />
 </selector>

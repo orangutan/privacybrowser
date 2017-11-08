@@ -46,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:text="@string/database_id"
                 android:textSize="18sp"
-                android:textColor="?attr/primaryTextColorSelector"
+                android:textColor="?android:textColorPrimary"
                 android:layout_marginEnd="8dp" />
 
             <TextView
@@ -114,7 +114,7 @@
                     android:layout_marginBottom="4dp"
                     android:text="@string/current_bookmark_icon"
                     android:textSize="18sp"
-                    android:textColor="?attr/primaryTextColorSelector" />
+                    android:textColor="?android:textColorPrimary" />
 
                 <RadioButton
                     android:id="@+id/edit_folder_default_icon_radiobutton"
@@ -124,7 +124,7 @@
                     android:layout_marginBottom="4dp"
                     android:text="@string/default_folder_icon"
                     android:textSize="18sp"
-                    android:textColor="?attr/primaryTextColorSelector" />
+                    android:textColor="?android:textColorPrimary" />
 
                 <RadioButton
                     android:id="@+id/edit_folder_webpage_favorite_icon_radiobutton"
@@ -133,7 +133,7 @@
                     android:layout_marginTop="5dp"
                     android:text="@string/web_page_favorite_icon"
                     android:textSize="18sp"
-                    android:textColor="?attr/primaryTextColorSelector" />
+                    android:textColor="?android:textColorPrimary" />
             </RadioGroup>
         </LinearLayout>
 
@@ -171,7 +171,7 @@
                 android:layout_width="wrap_content"
                 android:text="@string/parent_folder"
                 android:textSize="18sp"
-                android:textColor="?attr/primaryTextColorSelector" />
+                android:textColor="?android:textColorPrimary" />
 
             <Spinner
                 android:id="@+id/edit_folder_parent_folder_spinner"
@@ -193,7 +193,7 @@
                 android:layout_width="wrap_content"
                 android:text="@string/display_order"
                 android:textSize="18sp"
-                android:textColor="?attr/primaryTextColorSelector"
+                android:textColor="?android:textColorPrimary"
                 android:layout_marginEnd="6dp"
                 android:labelFor="@+id/edit_folder_display_order_edittext"/>
 

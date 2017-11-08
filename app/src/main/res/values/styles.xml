@@ -24,6 +24,7 @@
     <!-- `android:windowTranslucentStatus` makes the system status bar translucent.  When it is specified the root layout should include `android:fitsSystemWindows="true"`. -->
     <style name="PrivacyBrowserLight" parent="Theme.AppCompat.Light.NoActionBar" >
         <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:textColorPrimary">@color/primary_text_color_selector_light</item>
         <item name="colorAccent">@color/blue_700</item>
         <item name="android:textColorHighlight">@color/blue_200</item>
         <item name="navigationHeaderBackground">@color/blue_700</item>
@@ -45,7 +46,6 @@
         <item name="colorPrimaryDark">@color/blue_700</item>
         <item name="android:textColorHighlight">@color/blue_200</item>
         <item name="android:actionModeBackground">@color/blue_700</item>
-        <item name="primaryTextColorSelector">@color/primary_text_color_selector_light</item>
         <item name="bookmarksSpinnerHeaderTextColor">@color/white</item>
         <item name="bookmarksSpinnerTextColorSelector">@color/bookmarks_spinner_color_selector_light</item>
         <item name="bookmarksSpinnerBackground">@color/blue_750</item>
@@ -130,7 +130,6 @@
         <item name="windowActionModeOverlay">true</item>
         <item name="colorPrimaryDark">@color/blue_800</item>
         <item name="android:actionModeBackground">@color/blue_800</item>
-        <item name="primaryTextColorSelector">@color/primary_text_color_selector_dark</item>
         <item name="bookmarksSpinnerHeaderTextColor">@color/gray_300</item>
         <item name="bookmarksSpinnerTextColorSelector">@color/bookmarks_spinner_color_selector_dark</item>
         <item name="bookmarksSpinnerBackground">@color/blue_830</item>
