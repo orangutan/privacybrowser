@@ -1,0 +1,1 @@
+• Corrregir un fallo al editar un favorito en el nuevo cajón de favoritos.

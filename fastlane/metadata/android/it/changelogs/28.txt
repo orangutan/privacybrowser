@@ -1,0 +1,1 @@
+• Eliminato un crash che si verificava nel caso di editing dei segnalibri dal nuovo cassetto dei segnalibri.

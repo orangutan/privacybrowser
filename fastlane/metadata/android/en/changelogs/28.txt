@@ -1,0 +1,1 @@
+• Fix a crash when editing a bookmark in the new bookmarks drawer.
