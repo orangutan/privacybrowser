@@ -812,8 +812,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @SuppressWarnings("deprecation")
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (url.startsWith("mailto:")) {  // Load the URL in an external email program because it begins with `mailto:`.
-                    // We use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
+                if (url.startsWith("mailto:")) {  // Load the email address in an external email program.
+                    // Use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
 
                     // Parse the url and set it as the data for the `Intent`.
@@ -824,6 +824,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Make it so.
                     startActivity(emailIntent);
+
+                    // Returning `true` indicates the application is handling the URL.
+                    return true;
+                } else if (url.startsWith("tel:")) {  // Load the phone number in the dialer.
+                    // `ACTION_DIAL` open the dialer and loads the phone number, but waits for the user to place the call.
+                    Intent dialIntent = new Intent(Intent.ACTION_DIAL);
+
+                    // Add the phone number to the intent.
+                    dialIntent.setData(Uri.parse(url));
+
+                    // `FLAG_ACTIVITY_NEW_TASK` opens the dialer in a new task instead as part of Privacy Browser.
+                    dialIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                    // Make it so.
+                    startActivity(dialIntent);
 
                     // Returning `true` indicates the application is handling the URL.
                     return true;
