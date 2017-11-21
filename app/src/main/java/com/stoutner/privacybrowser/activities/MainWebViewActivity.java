@@ -101,6 +101,7 @@ import android.widget.TextView;
 import com.stoutner.privacybrowser.BannerAd;
 import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.dialogs.AddDomainDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkFolderDialog;
 import com.stoutner.privacybrowser.dialogs.CreateHomeScreenShortcutDialog;
@@ -135,7 +136,7 @@ import java.util.Map;
 import java.util.Set;
 
 // We need to use AppCompatActivity from android.support.v7.app.AppCompatActivity to have access to the SupportActionBar until the minimum API is >= 21.
-public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener, CreateHomeScreenShortcutDialog.CreateHomeScreenSchortcutListener,
+public class MainWebViewActivity extends AppCompatActivity implements AddDomainDialog.AddDomainListener, CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener, CreateHomeScreenShortcutDialog.CreateHomeScreenSchortcutListener,
         DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, EditBookmarkDialog.EditBookmarkListener, EditBookmarkFolderDialog.EditBookmarkFolderListener, HttpAuthenticationDialog.HttpAuthenticationListener,
         NavigationView.OnNavigationItemSelectedListener, PinnedSslCertificateMismatchDialog.PinnedSslCertificateMismatchListener, SslCertificateErrorDialog.SslCertificateErrorListener, UrlHistoryDialog.UrlHistoryListener {
 
@@ -178,8 +179,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `loadBookmarksFolder()`.
     public static String currentBookmarksFolder;
 
-    // The pinned domain SSL Certificate variables are public static so they can be accessed from `PinnedSslCertificateMismatchDialog`.  They are also used in `onCreate()` and `applyDomainSettings()`.
+    // `domainSettingsDatabaseId` is public static so it can be accessed from `PinnedSslCertificateMismatchDialog`.  It is also used in `onCreate()`, `onOptionsItemSelected()`, and `applyDomainSettings()`.
     public static int domainSettingsDatabaseId;
+
+    // The pinned domain SSL Certificate variables are public static so they can be accessed from `PinnedSslCertificateMismatchDialog`.  They are also used in `onCreate()` and `applyDomainSettings()`.
     public static String pinnedDomainSslIssuedToCNameString;
     public static String pinnedDomainSslIssuedToONameString;
     public static String pinnedDomainSslIssuedToUNameString;
@@ -275,7 +278,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `translucentNavigationBarOnFullscreen` is used in `onCreate()` and `applyAppSettings()`.
     private boolean translucentNavigationBarOnFullscreen;
 
-    // `currentDomainName` is used in `onCreate()`, `onNavigationItemSelected()`, `onSslMismatchProceed()`, and `applyDomainSettings()`.
+    // `reapplyDomainSettingsOnRestart` is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, and `onAddDomain()`, .
+    private boolean reapplyDomainSettingsOnRestart;
+
+    // `currentDomainName` is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onAddDomain()`, and `applyDomainSettings()`.
     private String currentDomainName;
 
     // `ignorePinnedSslCertificateForDomain` is used in `onCreate()`, `onSslMismatchProceed()`, and `applyDomainSettings()`.
@@ -284,7 +290,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `waitingForOrbot` is used in `onCreate()` and `applyAppSettings()`.
     private boolean waitingForOrbot;
 
-    // `domainSettingsApplied` is used in `applyDomainSettings()` and `setDisplayWebpageImages()`.
+    // `domainSettingsApplied` is used in `prepareOptionsMenu()`, `applyDomainSettings()`, and `setDisplayWebpageImages()`.
     private boolean domainSettingsApplied;
 
     // `displayWebpageImagesInt` is used in `applyDomainSettings()` and `setDisplayWebpageImages()`.
@@ -1319,10 +1325,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void onRestart() {
+        // Run the default commands.
         super.onRestart();
 
         // Apply the app settings, which may have been changed in `SettingsActivity`.
         applyAppSettings();
+
+        // Apply the domain settings if returning from the Domains Activity.
+        if (reapplyDomainSettingsOnRestart) {
+            // Reset `reapplyDomainSettingsOnRestart`.
+            reapplyDomainSettingsOnRestart = false;
+
+            // Reapply the domain settings.
+            applyDomainSettings(formattedUrlString);
+        }
 
         // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
         updatePrivacyIcons(true);
@@ -1364,6 +1380,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `onResume()` runs after `onStart()`, which runs after `onCreate()` and `onRestart()`.
     @Override
     public void onResume() {
+        // Run the default commands.
         super.onResume();
 
         // Resume JavaScript (if enabled).
@@ -1434,6 +1451,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // Get handles for the menu items.
+        MenuItem addOrEditDomain = menu.findItem(R.id.add_or_edit_domain);
         MenuItem toggleFirstPartyCookiesMenuItem = menu.findItem(R.id.toggle_first_party_cookies);
         MenuItem toggleThirdPartyCookiesMenuItem = menu.findItem(R.id.toggle_third_party_cookies);
         MenuItem toggleDomStorageMenuItem = menu.findItem(R.id.toggle_dom_storage);
@@ -1444,6 +1462,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem fontSizeMenuItem = menu.findItem(R.id.font_size);
         MenuItem displayImagesMenuItem = menu.findItem(R.id.display_images);
         MenuItem refreshMenuItem = menu.findItem(R.id.refresh);
+
+        // Set the text for the domain menu item.
+        if (domainSettingsApplied) {
+            addOrEditDomain.setTitle(R.string.edit_domain_settings);
+        } else {
+            addOrEditDomain.setTitle(R.string.add_domain_settings);
+        }
 
         // Set the status of the menu item checkboxes.
         toggleFirstPartyCookiesMenuItem.setChecked(firstPartyCookiesEnabled);
@@ -1559,6 +1584,27 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Set the commands that relate to the menu entries.
         switch (menuItemId) {
+            case R.id.add_or_edit_domain:
+                if (domainSettingsApplied) {  // Edit the current domain settings.
+                    // Reapply the domain settings on returning to `MainWebViewActivity`.
+                    reapplyDomainSettingsOnRestart = true;
+                    currentDomainName = "";
+
+                    // Create an intent to launch the domains activity.
+                    Intent domainsIntent = new Intent(this, DomainsActivity.class);
+
+                    // Put extra information instructing the domains activity to directly load the current domain.
+                    domainsIntent.putExtra("LoadDomain", domainSettingsDatabaseId);
+
+                    // Make it so.
+                    startActivity(domainsIntent);
+                } else {  // Add a new domain.
+                    // Show the add domain `AlertDialog`.
+                    AppCompatDialogFragment addDomainDialog = new AddDomainDialog();
+                    addDomainDialog.show(getSupportFragmentManager(), getResources().getString(R.string.add_domain));
+                }
+                return true;
+
             case R.id.toggle_javascript:
                 // Switch the status of javaScriptEnabled.
                 javaScriptEnabled = !javaScriptEnabled;
@@ -1923,7 +1969,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 break;
 
             case R.id.domains:
-                // Reset `currentDomainName` so that domain settings are reapplied after returning to `MainWebViewActivity`.
+                // Reapply the domain settings on returning to `MainWebViewActivity`.
+                reapplyDomainSettingsOnRestart = true;
                 currentDomainName = "";
 
                 // Launch `DomainsActivity`.
@@ -1932,7 +1979,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 break;
 
             case R.id.settings:
-                // Reset `currentDomainName` so that domain settings are reapplied after returning to `MainWebViewActivity`.
+                // Reapply the domain settings on returning to `MainWebViewActivity`.
+                reapplyDomainSettingsOnRestart = true;
                 currentDomainName = "";
 
                 // Launch `SettingsActivity`.
@@ -2254,6 +2302,33 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 menu.add(R.string.cancel);
                 break;
         }
+    }
+
+    @Override
+    public void onAddDomain(AppCompatDialogFragment dialogFragment) {
+        // Reapply the domain settings on returning to `MainWebViewActivity`.
+        reapplyDomainSettingsOnRestart = true;
+        currentDomainName = "";
+
+        // Get the new domain name `String` from `dialogFragment`.
+        EditText domainNameEditText = dialogFragment.getDialog().findViewById(R.id.domain_name_edittext);
+        String domainNameString = domainNameEditText.getText().toString();
+
+        // Initialize the database handler.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
+        // The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
+        DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
+
+        // Create the domain and store the database ID in `currentDomainDatabaseId`.
+        int newDomainDatabaseId = domainsDatabaseHelper.addDomain(domainNameString);
+
+        // Create an intent to launch the domains activity.
+        Intent domainsIntent = new Intent(this, DomainsActivity.class);
+
+        // Put extra information instructing the domains activity to directly load the current domain.
+        domainsIntent.putExtra("LoadDomain", newDomainDatabaseId);
+
+        // Make it so.
+        startActivity(domainsIntent);
     }
 
     @Override

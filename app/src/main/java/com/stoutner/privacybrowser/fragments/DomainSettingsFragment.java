@@ -95,52 +95,52 @@ public class DomainSettingsFragment extends Fragment {
         final boolean defaultNightModeBoolean = sharedPreferences.getBoolean("night_mode", false);
 
         // Get handles for the views in the fragment.
-        final EditText domainNameEditText = (EditText) domainSettingsView.findViewById(R.id.domain_settings_name_edittext);
-        final Switch javaScriptEnabledSwitch = (Switch) domainSettingsView.findViewById(R.id.domain_settings_javascript_switch);
-        final ImageView javaScriptImageView = (ImageView) domainSettingsView.findViewById(R.id.domain_settings_javascript_imageview);
-        Switch firstPartyCookiesEnabledSwitch = (Switch) domainSettingsView.findViewById(R.id.domain_settings_first_party_cookies_switch);
-        final ImageView firstPartyCookiesImageView = (ImageView) domainSettingsView.findViewById(R.id.domain_settings_first_party_cookies_imageview);
-        LinearLayout thirdPartyCookiesLinearLayout = (LinearLayout) domainSettingsView.findViewById(R.id.domain_settings_third_party_cookies_linearlayout);
-        final Switch thirdPartyCookiesEnabledSwitch = (Switch) domainSettingsView.findViewById(R.id.domain_settings_third_party_cookies_switch);
-        final ImageView thirdPartyCookiesImageView = (ImageView) domainSettingsView.findViewById(R.id.domain_settings_third_party_cookies_imageview);
-        final Switch domStorageEnabledSwitch = (Switch) domainSettingsView.findViewById(R.id.domain_settings_dom_storage_switch);
-        final ImageView domStorageImageView = (ImageView) domainSettingsView.findViewById(R.id.domain_settings_dom_storage_imageview);
-        Switch formDataEnabledSwitch = (Switch) domainSettingsView.findViewById(R.id.domain_settings_form_data_switch);
-        final ImageView formDataImageView = (ImageView) domainSettingsView.findViewById(R.id.domain_settings_form_data_imageview);
-        final Spinner userAgentSpinner = (Spinner) domainSettingsView.findViewById(R.id.domain_settings_user_agent_spinner);
-        final TextView userAgentTextView = (TextView) domainSettingsView.findViewById(R.id.domain_settings_user_agent_textview);
-        final EditText customUserAgentEditText = (EditText) domainSettingsView.findViewById(R.id.domain_settings_custom_user_agent_edittext);
-        final Spinner fontSizeSpinner = (Spinner) domainSettingsView.findViewById(R.id.domain_settings_font_size_spinner);
-        final TextView fontSizeTextView = (TextView) domainSettingsView.findViewById(R.id.domain_settings_font_size_textview);
-        final ImageView displayWebpageImagesImageView = (ImageView) domainSettingsView.findViewById(R.id.domain_settings_display_webpage_images_imageview);
-        final Spinner displayWebpageImagesSpinner = (Spinner) domainSettingsView.findViewById(R.id.domain_settings_display_webpage_images_spinner);
-        final TextView displayImagesTextView = (TextView) domainSettingsView.findViewById(R.id.domain_settings_display_webpage_images_textview);
-        final ImageView nightModeImageView = (ImageView) domainSettingsView.findViewById(R.id.domain_settings_night_mode_imageview);
-        final Spinner nightModeSpinner = (Spinner) domainSettingsView.findViewById(R.id.domain_settings_night_mode_spinner);
-        final TextView nightModeTextView = (TextView) domainSettingsView.findViewById(R.id.domain_settings_night_mode_textview);
-        final ImageView pinnedSslCertificateImageView = (ImageView) domainSettingsView.findViewById(R.id.domain_settings_pinned_ssl_certificate_imageview);
-        Switch pinnedSslCertificateSwitch = (Switch) domainSettingsView.findViewById(R.id.domain_settings_pinned_ssl_certificate_switch);
-        final LinearLayout savedSslCertificateLinearLayout = (LinearLayout) domainSettingsView.findViewById(R.id.saved_ssl_certificate_linearlayout);
-        final RadioButton savedSslCertificateRadioButton = (RadioButton) domainSettingsView.findViewById(R.id.saved_ssl_certificate_radiobutton);
-        final TextView savedSslCertificateIssuedToCNameTextView = (TextView) domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_to_cname);
-        TextView savedSslCertificateIssuedToONameTextView = (TextView) domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_to_oname);
-        TextView savedSslCertificateIssuedToUNameTextView = (TextView) domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_to_uname);
-        TextView savedSslCertificateIssuedByCNameTextView = (TextView) domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_by_cname);
-        TextView savedSslCertificateIssuedByONameTextView = (TextView) domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_by_oname);
-        TextView savedSslCertificateIssuedByUNameTextView = (TextView) domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_by_uname);
-        TextView savedSslCertificateStartDateTextView = (TextView) domainSettingsView.findViewById(R.id.saved_ssl_certificate_start_date);
-        TextView savedSslCertificateEndDateTextView = (TextView) domainSettingsView.findViewById(R.id.saved_ssl_certificate_end_date);
-        final LinearLayout currentWebsiteCertificateLinearLayout = (LinearLayout) domainSettingsView.findViewById(R.id.current_website_certificate_linearlayout);
-        final RadioButton currentWebsiteCertificateRadioButton = (RadioButton) domainSettingsView.findViewById(R.id.current_website_certificate_radiobutton);
-        final TextView currentWebsiteCertificateIssuedToCNameTextView = (TextView) domainSettingsView.findViewById(R.id.current_website_certificate_issued_to_cname);
-        TextView currentWebsiteCertificateIssuedToONameTextView = (TextView) domainSettingsView.findViewById(R.id.current_website_certificate_issued_to_oname);
-        TextView currentWebsiteCertificateIssuedToUNameTextView = (TextView) domainSettingsView.findViewById(R.id.current_website_certificate_issued_to_uname);
-        TextView currentWebsiteCertificateIssuedByCNameTextView = (TextView) domainSettingsView.findViewById(R.id.current_website_certificate_issued_by_cname);
-        TextView currentWebsiteCertificateIssuedByONameTextView = (TextView) domainSettingsView.findViewById(R.id.current_website_certificate_issued_by_oname);
-        TextView currentWebsiteCertificateIssuedByUNameTextView = (TextView) domainSettingsView.findViewById(R.id.current_website_certificate_issued_by_uname);
-        TextView currentWebsiteCertificateStartDateTextView = (TextView) domainSettingsView.findViewById(R.id.current_website_certificate_start_date);
-        TextView currentWebsiteCertificateEndDateTextView = (TextView) domainSettingsView.findViewById(R.id.current_website_certificate_end_date);
-        final TextView noCurrentWebsiteCertificateTextView = (TextView) domainSettingsView.findViewById(R.id.no_current_website_certificate);
+        final EditText domainNameEditText = domainSettingsView.findViewById(R.id.domain_settings_name_edittext);
+        final Switch javaScriptEnabledSwitch = domainSettingsView.findViewById(R.id.domain_settings_javascript_switch);
+        final ImageView javaScriptImageView = domainSettingsView.findViewById(R.id.domain_settings_javascript_imageview);
+        Switch firstPartyCookiesEnabledSwitch = domainSettingsView.findViewById(R.id.domain_settings_first_party_cookies_switch);
+        final ImageView firstPartyCookiesImageView = domainSettingsView.findViewById(R.id.domain_settings_first_party_cookies_imageview);
+        LinearLayout thirdPartyCookiesLinearLayout = domainSettingsView.findViewById(R.id.domain_settings_third_party_cookies_linearlayout);
+        final Switch thirdPartyCookiesEnabledSwitch = domainSettingsView.findViewById(R.id.domain_settings_third_party_cookies_switch);
+        final ImageView thirdPartyCookiesImageView = domainSettingsView.findViewById(R.id.domain_settings_third_party_cookies_imageview);
+        final Switch domStorageEnabledSwitch = domainSettingsView.findViewById(R.id.domain_settings_dom_storage_switch);
+        final ImageView domStorageImageView = domainSettingsView.findViewById(R.id.domain_settings_dom_storage_imageview);
+        Switch formDataEnabledSwitch = domainSettingsView.findViewById(R.id.domain_settings_form_data_switch);
+        final ImageView formDataImageView = domainSettingsView.findViewById(R.id.domain_settings_form_data_imageview);
+        final Spinner userAgentSpinner = domainSettingsView.findViewById(R.id.domain_settings_user_agent_spinner);
+        final TextView userAgentTextView = domainSettingsView.findViewById(R.id.domain_settings_user_agent_textview);
+        final EditText customUserAgentEditText = domainSettingsView.findViewById(R.id.domain_settings_custom_user_agent_edittext);
+        final Spinner fontSizeSpinner = domainSettingsView.findViewById(R.id.domain_settings_font_size_spinner);
+        final TextView fontSizeTextView = domainSettingsView.findViewById(R.id.domain_settings_font_size_textview);
+        final ImageView displayWebpageImagesImageView = domainSettingsView.findViewById(R.id.domain_settings_display_webpage_images_imageview);
+        final Spinner displayWebpageImagesSpinner = domainSettingsView.findViewById(R.id.domain_settings_display_webpage_images_spinner);
+        final TextView displayImagesTextView = domainSettingsView.findViewById(R.id.domain_settings_display_webpage_images_textview);
+        final ImageView nightModeImageView = domainSettingsView.findViewById(R.id.domain_settings_night_mode_imageview);
+        final Spinner nightModeSpinner = domainSettingsView.findViewById(R.id.domain_settings_night_mode_spinner);
+        final TextView nightModeTextView = domainSettingsView.findViewById(R.id.domain_settings_night_mode_textview);
+        final ImageView pinnedSslCertificateImageView = domainSettingsView.findViewById(R.id.domain_settings_pinned_ssl_certificate_imageview);
+        Switch pinnedSslCertificateSwitch = domainSettingsView.findViewById(R.id.domain_settings_pinned_ssl_certificate_switch);
+        final LinearLayout savedSslCertificateLinearLayout = domainSettingsView.findViewById(R.id.saved_ssl_certificate_linearlayout);
+        final RadioButton savedSslCertificateRadioButton = domainSettingsView.findViewById(R.id.saved_ssl_certificate_radiobutton);
+        final TextView savedSslCertificateIssuedToCNameTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_to_cname);
+        TextView savedSslCertificateIssuedToONameTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_to_oname);
+        TextView savedSslCertificateIssuedToUNameTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_to_uname);
+        TextView savedSslCertificateIssuedByCNameTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_by_cname);
+        TextView savedSslCertificateIssuedByONameTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_by_oname);
+        TextView savedSslCertificateIssuedByUNameTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_by_uname);
+        TextView savedSslCertificateStartDateTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_start_date);
+        TextView savedSslCertificateEndDateTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_end_date);
+        final LinearLayout currentWebsiteCertificateLinearLayout = domainSettingsView.findViewById(R.id.current_website_certificate_linearlayout);
+        final RadioButton currentWebsiteCertificateRadioButton = domainSettingsView.findViewById(R.id.current_website_certificate_radiobutton);
+        final TextView currentWebsiteCertificateIssuedToCNameTextView = domainSettingsView.findViewById(R.id.current_website_certificate_issued_to_cname);
+        TextView currentWebsiteCertificateIssuedToONameTextView = domainSettingsView.findViewById(R.id.current_website_certificate_issued_to_oname);
+        TextView currentWebsiteCertificateIssuedToUNameTextView = domainSettingsView.findViewById(R.id.current_website_certificate_issued_to_uname);
+        TextView currentWebsiteCertificateIssuedByCNameTextView = domainSettingsView.findViewById(R.id.current_website_certificate_issued_by_cname);
+        TextView currentWebsiteCertificateIssuedByONameTextView = domainSettingsView.findViewById(R.id.current_website_certificate_issued_by_oname);
+        TextView currentWebsiteCertificateIssuedByUNameTextView = domainSettingsView.findViewById(R.id.current_website_certificate_issued_by_uname);
+        TextView currentWebsiteCertificateStartDateTextView = domainSettingsView.findViewById(R.id.current_website_certificate_start_date);
+        TextView currentWebsiteCertificateEndDateTextView = domainSettingsView.findViewById(R.id.current_website_certificate_end_date);
+        final TextView noCurrentWebsiteCertificateTextView = domainSettingsView.findViewById(R.id.no_current_website_certificate);
 
         // Setup the SSL certificate labels.
         final String cNameLabel = getString(R.string.common_name) + "  ";
@@ -449,7 +449,7 @@ public class DomainSettingsFragment extends Fragment {
         // We need to inflated a `WebView` to get the default user agent.
         // `@SuppressLint("InflateParams")` removes the warning about using `null` as the `ViewGroup`, which in this case makes sense because we don't want to display `bare_webview` on the screen.  `false` does not attach the view to the root.
         @SuppressLint("InflateParams") View bareWebViewLayout = inflater.inflate(R.layout.bare_webview, null, false);
-        WebView bareWebView = (WebView) bareWebViewLayout.findViewById(R.id.bare_webview);
+        WebView bareWebView = bareWebViewLayout.findViewById(R.id.bare_webview);
         final String webViewDefaultUserAgentString = bareWebView.getSettings().getUserAgentString();
 
         // Get the position of the user agent in `userAgentEntryValuesArrayAdapter`.
@@ -509,12 +509,9 @@ public class DomainSettingsFragment extends Fragment {
         }
 
         // Open the user agent spinner when the `TextView` is clicked.
-        userAgentTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Open the user agent spinner.
-                userAgentSpinner.performClick();
-            }
+        userAgentTextView.setOnClickListener((View v) -> {
+            // Open the user agent spinner.
+            userAgentSpinner.performClick();
         });
 
         // Set the selected font size.
@@ -533,12 +530,9 @@ public class DomainSettingsFragment extends Fragment {
         }
 
         // Open the font size spinner when the `TextView` is clicked.
-        fontSizeTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Open the user agent spinner.
-                fontSizeSpinner.performClick();
-            }
+        fontSizeTextView.setOnClickListener((View v) -> {
+            // Open the user agent spinner.
+            fontSizeSpinner.performClick();
         });
 
         // Display the website images mode in the spinner.
@@ -600,12 +594,9 @@ public class DomainSettingsFragment extends Fragment {
         }
 
         // Open the display images spinner when the `TextView` is clicked.
-        displayImagesTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Open the user agent spinner.
-                displayWebpageImagesSpinner.performClick();
-            }
+        displayImagesTextView.setOnClickListener((View v) -> {
+            // Open the user agent spinner.
+            displayWebpageImagesSpinner.performClick();
         });
 
         // Display the night mode in the spinner.
@@ -667,12 +658,9 @@ public class DomainSettingsFragment extends Fragment {
         }
 
         // Open the night mode spinner when the `TextView` is clicked.
-        nightModeTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Open the user agent spinner.
-                nightModeSpinner.performClick();
-            }
+        nightModeTextView.setOnClickListener((View v) -> {
+            // Open the user agent spinner.
+            nightModeSpinner.performClick();
         });
         
         // Set the pinned SSL certificate icon.
@@ -854,113 +842,18 @@ public class DomainSettingsFragment extends Fragment {
 
 
         // Set the `javaScriptEnabledSwitch` `OnCheckedChangeListener()`.
-        javaScriptEnabledSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {  // JavaScript is enabled.
-                    // Update the JavaScript icon.
-                    javaScriptImageView.setImageDrawable(resources.getDrawable(R.drawable.javascript_enabled));
+        javaScriptEnabledSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            if (isChecked) {  // JavaScript is enabled.
+                // Update the JavaScript icon.
+                javaScriptImageView.setImageDrawable(resources.getDrawable(R.drawable.javascript_enabled));
 
-                    // Enable the DOM storage `Switch`.
-                    domStorageEnabledSwitch.setEnabled(true);
+                // Enable the DOM storage `Switch`.
+                domStorageEnabledSwitch.setEnabled(true);
 
-                    // Update the DOM storage icon.
-                    if (domStorageEnabledSwitch.isChecked()) {  // DOM storage is enabled.
-                        domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_enabled));
-                    } else {  // DOM storage is disabled.
-                        // Set the icon according to the theme.
-                        if (MainWebViewActivity.darkTheme) {
-                            domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_disabled_dark));
-                        } else {
-                            domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_disabled_light));
-                        }
-                    }
-                } else {  // JavaScript is disabled.
-                    // Update the JavaScript icon.
-                    javaScriptImageView.setImageDrawable(resources.getDrawable(R.drawable.privacy_mode));
-
-                    // Disable the DOM storage `Switch`.
-                    domStorageEnabledSwitch.setEnabled(false);
-
-                    // Set the DOM storage icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
-                        domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_ghosted_dark));
-                    } else {
-                        domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_ghosted_light));
-                    }
-                }
-            }
-        });
-
-        // Set the `firstPartyCookiesEnabledSwitch` `OnCheckedChangeListener()`.
-        firstPartyCookiesEnabledSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {  // First-party cookies are enabled.
-                    // Update the first-party cookies icon.
-                    firstPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_enabled));
-
-                    // Enable the third-party cookies `Switch`.
-                    thirdPartyCookiesEnabledSwitch.setEnabled(true);
-
-                    // Update the third-party cookies icon.
-                    if (thirdPartyCookiesEnabledSwitch.isChecked()) {  // Third-party cookies are enabled.
-                        thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_warning));
-                    } else {  // Third-party cookies are disabled.
-                        // Set the third-party cookies icon according to the theme.
-                        if (MainWebViewActivity.darkTheme) {
-                            thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_disabled_dark));
-                        } else {
-                            thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_disabled_light));
-                        }
-                    }
-                } else {  // First-party cookies are disabled.
-                    // Update the first-party cookies icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
-                        firstPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_disabled_dark));
-                    } else {
-                        firstPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_disabled_light));
-                    }
-
-                    // Disable the third-party cookies `Switch`.
-                    thirdPartyCookiesEnabledSwitch.setEnabled(false);
-
-                    // Set the third-party cookies icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
-                        thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_ghosted_dark));
-                    } else {
-                        thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_ghosted_light));
-                    }
-                }
-            }
-        });
-
-        // Set the `thirdPartyCookiesEnabledSwitch` `OnCheckedChangeListener()`.
-        thirdPartyCookiesEnabledSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // Update the icon.
-                if (isChecked) {
-                    thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_warning));
-                } else {
-                    // Update the third-party cookies icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
-                        thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_disabled_dark));
-                    } else {
-                        thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_disabled_light));
-                    }
-                }
-            }
-        });
-
-        // Set the `domStorageEnabledSwitch` `OnCheckedChangeListener()`.
-        domStorageEnabledSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // Update the icon.
-                if (isChecked) {
+                // Update the DOM storage icon.
+                if (domStorageEnabledSwitch.isChecked()) {  // DOM storage is enabled.
                     domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_enabled));
-                } else {
+                } else {  // DOM storage is disabled.
                     // Set the icon according to the theme.
                     if (MainWebViewActivity.darkTheme) {
                         domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_disabled_dark));
@@ -968,23 +861,103 @@ public class DomainSettingsFragment extends Fragment {
                         domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_disabled_light));
                     }
                 }
+            } else {  // JavaScript is disabled.
+                // Update the JavaScript icon.
+                javaScriptImageView.setImageDrawable(resources.getDrawable(R.drawable.privacy_mode));
+
+                // Disable the DOM storage `Switch`.
+                domStorageEnabledSwitch.setEnabled(false);
+
+                // Set the DOM storage icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_ghosted_dark));
+                } else {
+                    domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_ghosted_light));
+                }
+            }
+        });
+
+        // Set the `firstPartyCookiesEnabledSwitch` `OnCheckedChangeListener()`.
+        firstPartyCookiesEnabledSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            if (isChecked) {  // First-party cookies are enabled.
+                // Update the first-party cookies icon.
+                firstPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_enabled));
+
+                // Enable the third-party cookies `Switch`.
+                thirdPartyCookiesEnabledSwitch.setEnabled(true);
+
+                // Update the third-party cookies icon.
+                if (thirdPartyCookiesEnabledSwitch.isChecked()) {  // Third-party cookies are enabled.
+                    thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_warning));
+                } else {  // Third-party cookies are disabled.
+                    // Set the third-party cookies icon according to the theme.
+                    if (MainWebViewActivity.darkTheme) {
+                        thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_disabled_dark));
+                    } else {
+                        thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_disabled_light));
+                    }
+                }
+            } else {  // First-party cookies are disabled.
+                // Update the first-party cookies icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    firstPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_disabled_dark));
+                } else {
+                    firstPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_disabled_light));
+                }
+
+                // Disable the third-party cookies `Switch`.
+                thirdPartyCookiesEnabledSwitch.setEnabled(false);
+
+                // Set the third-party cookies icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_ghosted_dark));
+                } else {
+                    thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_ghosted_light));
+                }
+            }
+        });
+
+        // Set the `thirdPartyCookiesEnabledSwitch` `OnCheckedChangeListener()`.
+        thirdPartyCookiesEnabledSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            // Update the icon.
+            if (isChecked) {
+                thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_warning));
+            } else {
+                // Update the third-party cookies icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_disabled_dark));
+                } else {
+                    thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_disabled_light));
+                }
+            }
+        });
+
+        // Set the `domStorageEnabledSwitch` `OnCheckedChangeListener()`.
+        domStorageEnabledSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            // Update the icon.
+            if (isChecked) {
+                domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_enabled));
+            } else {
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_disabled_dark));
+                } else {
+                    domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_disabled_light));
+                }
             }
         });
 
         // Set the `formDataEnabledSwitch` `OnCheckedChangeListener()`.
-        formDataEnabledSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // Update the icon.
-                if (isChecked) {
-                    formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_enabled));
+        formDataEnabledSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            // Update the icon.
+            if (isChecked) {
+                formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_enabled));
+            } else {
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_disabled_dark));
                 } else {
-                    // Set the icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
-                        formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_disabled_dark));
-                    } else {
-                        formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_disabled_light));
-                    }
+                    formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_disabled_light));
                 }
             }
         });
@@ -1250,101 +1223,86 @@ public class DomainSettingsFragment extends Fragment {
         });
         
         // Set the `pinnedSSLCertificateSwitch` `onCheckedChangeListener()`.
-        pinnedSslCertificateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // Update the icon
-                if (isChecked) {  // Pinned SSL certificate is enabled.
-                    // Set the icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
-                        pinnedSslCertificateImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_enabled_dark));
-                    } else {
-                        pinnedSslCertificateImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_enabled_light));
-                    }
+        pinnedSslCertificateSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            // Update the icon
+            if (isChecked) {  // Pinned SSL certificate is enabled.
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    pinnedSslCertificateImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_enabled_dark));
+                } else {
+                    pinnedSslCertificateImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_enabled_light));
+                }
 
-                    // Update the visibility of the saved SSL certificate.
-                    if (savedSslCertificateIssuedToCNameString == null) {
-                        savedSslCertificateLinearLayout.setVisibility(View.GONE);
-                    } else {
-                        savedSslCertificateLinearLayout.setVisibility(View.VISIBLE);
-                    }
-
-                    // Update the visibility of the current website SSL certificate.
-                    if (currentWebsiteSslCertificate == null) {
-                        // Hide the SSL certificate.
-                        currentWebsiteCertificateLinearLayout.setVisibility(View.GONE);
-
-                        // Show the instruction.
-                        noCurrentWebsiteCertificateTextView.setVisibility(View.VISIBLE);
-                    } else {
-                        // Show the SSL certificate.
-                        currentWebsiteCertificateLinearLayout.setVisibility(View.VISIBLE);
-
-                        // Hide the instruction.
-                        noCurrentWebsiteCertificateTextView.setVisibility(View.GONE);
-                    }
-
-                    // Set the status of the radio buttons.
-                    if (savedSslCertificateLinearLayout.getVisibility() == View.VISIBLE) {  // The saved SSL certificate is displayed.
-                        savedSslCertificateRadioButton.setChecked(true);
-                        currentWebsiteCertificateRadioButton.setChecked(false);
-                    } else if (currentWebsiteCertificateLinearLayout.getVisibility() == View.VISIBLE) {  // The saved SSL certificate is hidden but the current website SSL certificate is visible.
-                        currentWebsiteCertificateRadioButton.setChecked(true);
-                        savedSslCertificateRadioButton.setChecked(false);
-                    } else {  // Neither SSL certificate is visible.
-                        savedSslCertificateRadioButton.setChecked(false);
-                        currentWebsiteCertificateRadioButton.setChecked(false);
-                    }
-                } else {  // Pinned SSL certificate is disabled.
-                    // Set the icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
-                        pinnedSslCertificateImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_disabled_dark));
-                    } else {
-                        pinnedSslCertificateImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_disabled_light));
-                    }
-
-                    // Hide the SSl certificates and instructions.
+                // Update the visibility of the saved SSL certificate.
+                if (savedSslCertificateIssuedToCNameString == null) {
                     savedSslCertificateLinearLayout.setVisibility(View.GONE);
-                    currentWebsiteCertificateLinearLayout.setVisibility(View.GONE);
-                    noCurrentWebsiteCertificateTextView.setVisibility(View.GONE);
+                } else {
+                    savedSslCertificateLinearLayout.setVisibility(View.VISIBLE);
+                }
 
-                    // Uncheck the radio buttons.
+                // Update the visibility of the current website SSL certificate.
+                if (currentWebsiteSslCertificate == null) {
+                    // Hide the SSL certificate.
+                    currentWebsiteCertificateLinearLayout.setVisibility(View.GONE);
+
+                    // Show the instruction.
+                    noCurrentWebsiteCertificateTextView.setVisibility(View.VISIBLE);
+                } else {
+                    // Show the SSL certificate.
+                    currentWebsiteCertificateLinearLayout.setVisibility(View.VISIBLE);
+
+                    // Hide the instruction.
+                    noCurrentWebsiteCertificateTextView.setVisibility(View.GONE);
+                }
+
+                // Set the status of the radio buttons.
+                if (savedSslCertificateLinearLayout.getVisibility() == View.VISIBLE) {  // The saved SSL certificate is displayed.
+                    savedSslCertificateRadioButton.setChecked(true);
+                    currentWebsiteCertificateRadioButton.setChecked(false);
+                } else if (currentWebsiteCertificateLinearLayout.getVisibility() == View.VISIBLE) {  // The saved SSL certificate is hidden but the current website SSL certificate is visible.
+                    currentWebsiteCertificateRadioButton.setChecked(true);
+                    savedSslCertificateRadioButton.setChecked(false);
+                } else {  // Neither SSL certificate is visible.
                     savedSslCertificateRadioButton.setChecked(false);
                     currentWebsiteCertificateRadioButton.setChecked(false);
                 }
-            }
-        });
+            } else {  // Pinned SSL certificate is disabled.
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    pinnedSslCertificateImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_disabled_dark));
+                } else {
+                    pinnedSslCertificateImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_disabled_light));
+                }
 
-        savedSslCertificateLinearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                savedSslCertificateRadioButton.setChecked(true);
+                // Hide the SSl certificates and instructions.
+                savedSslCertificateLinearLayout.setVisibility(View.GONE);
+                currentWebsiteCertificateLinearLayout.setVisibility(View.GONE);
+                noCurrentWebsiteCertificateTextView.setVisibility(View.GONE);
+
+                // Uncheck the radio buttons.
+                savedSslCertificateRadioButton.setChecked(false);
                 currentWebsiteCertificateRadioButton.setChecked(false);
             }
         });
 
-        savedSslCertificateRadioButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                savedSslCertificateRadioButton.setChecked(true);
-                currentWebsiteCertificateRadioButton.setChecked(false);
-            }
+        savedSslCertificateLinearLayout.setOnClickListener((View v) -> {
+            savedSslCertificateRadioButton.setChecked(true);
+            currentWebsiteCertificateRadioButton.setChecked(false);
         });
 
-        currentWebsiteCertificateLinearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentWebsiteCertificateRadioButton.setChecked(true);
-                savedSslCertificateRadioButton.setChecked(false);
-            }
+        savedSslCertificateRadioButton.setOnClickListener((View v) -> {
+            savedSslCertificateRadioButton.setChecked(true);
+            currentWebsiteCertificateRadioButton.setChecked(false);
         });
 
-        currentWebsiteCertificateRadioButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentWebsiteCertificateRadioButton.setChecked(true);
-                savedSslCertificateRadioButton.setChecked(false);
-            }
+        currentWebsiteCertificateLinearLayout.setOnClickListener((View v) -> {
+            currentWebsiteCertificateRadioButton.setChecked(true);
+            savedSslCertificateRadioButton.setChecked(false);
+        });
+
+        currentWebsiteCertificateRadioButton.setOnClickListener((View v) -> {
+            currentWebsiteCertificateRadioButton.setChecked(true);
+            savedSslCertificateRadioButton.setChecked(false);
         });
 
         return domainSettingsView;

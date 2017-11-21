@@ -118,6 +118,8 @@
     <string name="clear_and_exit">Clear and Exit</string>
 
     <!-- MainWebViewActivity Options Menu. -->
+    <string name="edit_domain_settings">Edit Domain Settings</string>
+    <string name="add_domain_settings">Add Domain Settings</string>
     <string name="javascript">JavaScript</string>
     <string name="first_party_cookies">First-Party Cookies</string>
     <string name="third_party_cookies">Third-Party Cookies</string>

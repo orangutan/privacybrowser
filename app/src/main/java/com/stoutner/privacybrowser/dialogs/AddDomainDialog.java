@@ -85,26 +85,20 @@ public class AddDomainDialog extends AppCompatDialogFragment {
         dialogBuilder.setView(getActivity().getLayoutInflater().inflate(R.layout.add_domain_dialog, null));
 
         // Set an `onClick()` listener for the negative button.
-        dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Do nothing.  The `AlertDialog` will close automatically.
-            }
+        dialogBuilder.setNegativeButton(R.string.cancel, (DialogInterface dialog, int which) -> {
+            // Do nothing.  The `AlertDialog` will close automatically.
         });
 
         // Set an `onClick()` listener for the positive button.
-        dialogBuilder.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Return the `DialogFragment` to the parent activity on add.
-                addDomainListener.onAddDomain(AddDomainDialog.this);
-            }
+        dialogBuilder.setPositiveButton(R.string.add, (DialogInterface dialog, int which) -> {
+            // Return the `DialogFragment` to the parent activity on add.
+            addDomainListener.onAddDomain(AddDomainDialog.this);
         });
 
         // Create an `AlertDialog` from the `AlertDialog.Builder`.
         final AlertDialog alertDialog = dialogBuilder.create();
 
-        // Remove the warning below the `setSoftInputMode` might produce `java.lang.NullPointerException`.
+        // Remove the warning below that `setSoftInputMode` might produce `java.lang.NullPointerException`.
         assert alertDialog.getWindow() != null;
 
         // Show the keyboard when the `AlertDialog` is displayed on the screen.
@@ -117,8 +111,8 @@ public class AddDomainDialog extends AppCompatDialogFragment {
         final DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(getContext(), null, null, 0);
 
         // Get handles for the views in `alertDialog`.
-        final EditText addDomainEditText = (EditText) alertDialog.findViewById(R.id.domain_name_edittext);
-        final TextView domainNameAlreadyExistsTextView = (TextView) alertDialog.findViewById(R.id.domain_name_already_exists_textview);
+        final EditText addDomainEditText = alertDialog.findViewById(R.id.domain_name_edittext);
+        final TextView domainNameAlreadyExistsTextView = alertDialog.findViewById(R.id.domain_name_already_exists_textview);
         final Button addButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
         //  Update the status of the warning text and the `add` button.
@@ -156,19 +150,17 @@ public class AddDomainDialog extends AppCompatDialogFragment {
         addDomainEditText.setText(currentUri.getHost());
 
         // Allow the `enter` key on the keyboard to create the domain from `add_domain_edittext`.
-        addDomainEditText.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View view, int keyCode, KeyEvent event) {
-                // If the event is a key-down on the `enter` key, select the `PositiveButton` `Add`.
-                if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)) {
-                    // Trigger `addDomainListener` and return the `DialogFragment` to the parent activity.
-                    addDomainListener.onAddDomain(AddDomainDialog.this);
-                    // Manually dismiss the `AlertDialog`.
-                    alertDialog.dismiss();
-                    // Consume the event.
-                    return true;
-                } else { // If any other key was pressed, do not consume the event.
-                    return false;
-                }
+        addDomainEditText.setOnKeyListener((View view, int keyCode, KeyEvent event) -> {
+            // If the event is a key-down on the `enter` key, select the `PositiveButton` `Add`.
+            if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)) {
+                // Trigger `addDomainListener` and return the `DialogFragment` to the parent activity.
+                addDomainListener.onAddDomain(AddDomainDialog.this);
+                // Manually dismiss the `AlertDialog`.
+                alertDialog.dismiss();
+                // Consume the event.
+                return true;
+            } else { // If any other key was pressed, do not consume the event.
+                return false;
             }
         });
 
