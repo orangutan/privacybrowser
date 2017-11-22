@@ -106,7 +106,7 @@
     <string name="forward">Adelante</string>
     <string name="history">Historial</string>
         <string name="clear_history">Borrar historial</string>
-    <string name="bookmarks">Marcadores</string>
+    <string name="bookmarks">Favoritos</string>
     <string name="downloads">Descargas</string>
     <string name="settings">Configuración</string>
     <string name="guide">Guía</string>
@@ -115,6 +115,8 @@
 
     <!-- MainWebViewActivity Options Menu. -->
     <string name="javascript">Javascript</string>
+    <string name="add_domain_settings">Añadir dominio</string>
+    <string name="edit_domain_settings">Editar dominio</string>
     <string name="first_party_cookies">Cookies de primera parte</string>
     <string name="third_party_cookies">Cookies de terceras partes</string>
     <string name="dom_storage">Almacenamiento DOM</string>
@@ -160,17 +162,17 @@
 
     <!-- Bookmarks. -->
     <string name="database_view">Vista de base de datos</string>
-    <string name="create_bookmark">Crear marcador</string>
+    <string name="create_bookmark">Crear favorito</string>
     <string name="create_folder">Crear carpeta</string>
-    <string name="current_bookmark_icon">Icono de marcador actual</string>
+    <string name="current_bookmark_icon">Icono de favorito actual</string>
     <string name="current_folder_icon">Icono de carpeta actual</string>
     <string name="default_folder_icon">Icono de carpeta por defecto</string>
     <string name="web_page_favorite_icon">Icono favorito de página Web</string>
-    <string name="bookmark_name">Nombre de marcador</string>
+    <string name="bookmark_name">Nombre de favorito</string>
     <string name="folder_name">Nombre de carpeta</string>
-    <string name="bookmark_url">Marcador URL</string>
+    <string name="bookmark_url">Favorito URL</string>
     <string name="folder_names_must_be_unique">Los nombres de carpetas deben ser únicos</string>
-    <string name="edit_bookmark">Editar marcador</string>
+    <string name="edit_bookmark">Editar favorito</string>
     <string name="edit_folder">Editar carpeta</string>
     <string name="move_to_folder">Mover a carpeta</string>
     <string name="move">Mover</string>
@@ -184,12 +186,12 @@
     <string name="edit">Editar</string>
     <string name="delete">Borrar</string>
     <string name="select_all">Selectionar todo</string>
-    <string name="one_bookmark_deleted">1 marcador borrado</string>
-    <string name="bookmarks_deleted">Marcadores borrados</string>
+    <string name="one_bookmark_deleted">1 favorito borrado</string>
+    <string name="bookmarks_deleted">favoritos borrados</string>
     <string name="undo">Deshacer</string>
 
     <!-- Bookmarks Database View. -->
-    <string name="bookmarks_database_view">Vista de base de datos de marcadores</string>
+    <string name="bookmarks_database_view">Vista de base de datos de favoritos</string>
     <string name="all_folders">Todas las carpetas</string>
     <string name="home_folder">Carpeta inicio</string>
     <string name="database_id">ID de base de datos:</string>

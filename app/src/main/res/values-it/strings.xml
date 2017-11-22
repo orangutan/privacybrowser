@@ -117,6 +117,8 @@
 
     <!-- MainWebViewActivity Options Menu. -->
     <string name="javascript">JavaScript</string>
+    <string name="add_domain_settings">Aggiungi dominio</string>
+    <string name="edit_domain_settings">Modifica dominio</string>
     <string name="first_party_cookies">Cookies proprietari</string>
     <string name="third_party_cookies">Cookies di terze parti</string>
     <string name="dom_storage">DOM storage</string>
