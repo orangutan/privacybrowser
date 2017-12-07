@@ -1456,6 +1456,7 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
         MenuItem toggleThirdPartyCookiesMenuItem = menu.findItem(R.id.toggle_third_party_cookies);
         MenuItem toggleDomStorageMenuItem = menu.findItem(R.id.toggle_dom_storage);
         MenuItem toggleSaveFormDataMenuItem = menu.findItem(R.id.toggle_save_form_data);
+        MenuItem clearDataMenuItem = menu.findItem(R.id.clear_data);
         MenuItem clearCookiesMenuItem = menu.findItem(R.id.clear_cookies);
         MenuItem clearDOMStorageMenuItem = menu.findItem(R.id.clear_dom_storage);
         MenuItem clearFormDataMenuItem = menu.findItem(R.id.clear_form_data);
@@ -1506,6 +1507,9 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
         // Enable `Clear Form Data` is there is any.
         WebViewDatabase mainWebViewDatabase = WebViewDatabase.getInstance(this);
         clearFormDataMenuItem.setEnabled(mainWebViewDatabase.hasFormData());
+
+        // Enable `Clear Data` if any of the submenu items are enabled.
+        clearDataMenuItem.setEnabled(clearCookiesMenuItem.isEnabled() || clearDOMStorageMenuItem.isEnabled() || clearFormDataMenuItem.isEnabled());
 
         // Initialize font size variables.
         int fontSize = mainWebView.getSettings().getTextZoom();
@@ -1774,9 +1778,16 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                                         WebStorage webStorage = WebStorage.getInstance();
                                         webStorage.deleteAllData();
 
-                                        // Manually remove `IndexedDB` if it exists.
+                                        // Manually delete the DOM storage files and directories.
                                         try {
+                                            // A `String[]` must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
+                                            privacyBrowserRuntime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Local Storage/"});
+
+                                            // Multiple commands must be used because `Runtime.exec()` does not like `*`.
                                             privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/IndexedDB");
+                                            privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager");
+                                            privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager-journal");
+                                            privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/databases");
                                         } catch (IOException e) {
                                             // Do nothing if an error is thrown.
                                         }
@@ -2033,10 +2044,10 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
 
                     // Manually delete the DOM storage files and directories, as `WebStorage` sometimes will not flush its changes to disk before `System.exit(0)` is run.
                     try {
-                        // We have to use a `String[]` because the directory contains a space and `Runtime.exec` will not escape the string correctly otherwise.
+                        // A `String[]` must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
                         privacyBrowserRuntime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Local Storage/"});
 
-                        // We have to use multiple commands because `Runtime.exec()` does not like `*`.
+                        // Multiple commands must be used because `Runtime.exec()` does not like `*`.
                         privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/IndexedDB");
                         privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager");
                         privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager-journal");

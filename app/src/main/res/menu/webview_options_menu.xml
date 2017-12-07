@@ -65,22 +65,31 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/clear_cookies"
-        android:title="@string/clear_cookies"
+        android:id="@+id/clear_data"
+        android:title="@string/clear_data"
         android:orderInCategory="70"
-        app:showAsAction="never" />
+        app:showAsAction="never" >
 
-    <item
-        android:id="@+id/clear_dom_storage"
-        android:title="@string/clear_dom_storage"
-        android:orderInCategory="80"
-        app:showAsAction="never" />
+        <menu>
+            <item
+                android:id="@+id/clear_cookies"
+                android:title="@string/clear_cookies"
+                android:orderInCategory="70"
+                app:showAsAction="never" />
 
-    <item
-        android:id="@+id/clear_form_data"
-        android:title="@string/clear_form_data"
-        android:orderInCategory="90"
-        app:showAsAction="never" />
+            <item
+                android:id="@+id/clear_dom_storage"
+                android:title="@string/clear_dom_storage"
+                android:orderInCategory="80"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/clear_form_data"
+                android:title="@string/clear_form_data"
+                android:orderInCategory="90"
+                app:showAsAction="never" />
+        </menu>
+    </item>
 
     <item
         android:id="@+id/font_size"

@@ -125,6 +125,7 @@
     <string name="third_party_cookies">Third-Party Cookies</string>
     <string name="dom_storage">DOM Storage</string>
     <string name="form_data">Form Data</string>
+    <string name="clear_data">Clear Data</string>
     <string name="clear_cookies">Clear Cookies</string>
     <string name="clear_dom_storage">Clear DOM Storage</string>
     <string name="clear_form_data">Clear Form Data</string>
