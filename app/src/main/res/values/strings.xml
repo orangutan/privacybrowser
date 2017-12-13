@@ -126,9 +126,9 @@
     <string name="dom_storage">DOM Storage</string>
     <string name="form_data">Form Data</string>
     <string name="clear_data">Clear Data</string>
-    <string name="clear_cookies">Clear Cookies</string>
-    <string name="clear_dom_storage">Clear DOM Storage</string>
-    <string name="clear_form_data">Clear Form Data</string>
+        <string name="clear_cookies">Clear Cookies</string>
+        <string name="clear_dom_storage">Clear DOM Storage</string>
+        <string name="clear_form_data">Clear Form Data</string>
     <string name="font_size">Font Size</string>
         <string name="twenty_five_percent">25%</string>
         <string name="fifty_percent">50%</string>

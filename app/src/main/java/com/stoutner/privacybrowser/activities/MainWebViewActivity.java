@@ -54,6 +54,10 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+// `ShortcutInfoCompat`, `ShortcutManagerCompat`, and `IconCompat` can be switched to the non-compat version once API >= 26.
+import android.support.v4.content.pm.ShortcutInfoCompat;
+import android.support.v4.content.pm.ShortcutManagerCompat;
+import android.support.v4.graphics.drawable.IconCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -2420,21 +2424,28 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
 
     @Override
     public void onCreateHomeScreenShortcut(AppCompatDialogFragment dialogFragment) {
-        // Get shortcutNameEditText from the alert dialog.
+        // Get the shortcut name.
         EditText shortcutNameEditText = dialogFragment.getDialog().findViewById(R.id.shortcut_name_edittext);
+        String shortcutNameString = shortcutNameEditText.getText().toString();
 
-        // Create the bookmark shortcut based on formattedUrlString.
-        Intent bookmarkShortcut = new Intent();
-        bookmarkShortcut.setAction(Intent.ACTION_VIEW);
-        bookmarkShortcut.setData(Uri.parse(formattedUrlString));
+        // Convert the favorite icon bitmap to an `Icon`.  `IconCompat` is required until API >= 26.
+        IconCompat favoriteIcon = IconCompat.createWithBitmap(favoriteIconBitmap);
 
-        // Place the bookmark shortcut on the home screen.
-        Intent placeBookmarkShortcut = new Intent();
-        placeBookmarkShortcut.putExtra("android.intent.extra.shortcut.INTENT", bookmarkShortcut);
-        placeBookmarkShortcut.putExtra("android.intent.extra.shortcut.NAME", shortcutNameEditText.getText().toString());
-        placeBookmarkShortcut.putExtra("android.intent.extra.shortcut.ICON", favoriteIconBitmap);
-        placeBookmarkShortcut.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
-        sendBroadcast(placeBookmarkShortcut);
+        // Setup the shortcut intent.
+        Intent shortcutIntent = new Intent();
+        shortcutIntent.setAction(Intent.ACTION_VIEW);
+        shortcutIntent.setData(Uri.parse(formattedUrlString));
+
+        // Create a shortcut info builder.  The shortcut name becomes the shortcut ID.
+        ShortcutInfoCompat.Builder shortcutInfoBuilder = new ShortcutInfoCompat.Builder(this, shortcutNameString);
+
+        // Add the required fields to the shortcut info builder.
+        shortcutInfoBuilder.setIcon(favoriteIcon);
+        shortcutInfoBuilder.setIntent(shortcutIntent);
+        shortcutInfoBuilder.setShortLabel(shortcutNameString);
+
+        // Request the pin.  `ShortcutManagerCompat` can be switched to `ShortcutManager` once API >= 26.
+        ShortcutManagerCompat.requestPinShortcut(this, shortcutInfoBuilder.build(), null);
     }
 
     @Override

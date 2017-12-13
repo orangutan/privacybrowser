@@ -123,9 +123,10 @@
     <string name="third_party_cookies">Cookies di terze parti</string>
     <string name="dom_storage">DOM storage</string>
     <string name="form_data">Dati dei moduli</string>
-    <string name="clear_cookies">Elimina cookies</string>
-    <string name="clear_dom_storage">Elimina DOM storage</string>
-    <string name="clear_form_data">Elimina dati dei moduli</string>
+    <string name="clear_data">Elimina dati</string>
+        <string name="clear_cookies">Elimina cookies</string>
+        <string name="clear_dom_storage">Elimina DOM storage</string>
+        <string name="clear_form_data">Elimina dati dei moduli</string>
     <string name="font_size">Dimensione font</string>
         <string name="twenty_five_percent">25%</string>
         <string name="fifty_percent">50%</string>

@@ -121,9 +121,10 @@
     <string name="third_party_cookies">Cookies de terceras partes</string>
     <string name="dom_storage">Almacenamiento DOM</string>
     <string name="form_data">Datos de formulario</string>
-    <string name="clear_cookies">Borrar cookies</string>
-    <string name="clear_dom_storage">Borrar almacenamiento DOM</string>
-    <string name="clear_form_data">Borrar datos de formulario</string>
+    <string name="clear_data">Borrar datos</string>
+        <string name="clear_cookies">Borrar cookies</string>
+        <string name="clear_dom_storage">Borrar almacenamiento DOM</string>
+        <string name="clear_form_data">Borrar datos de formulario</string>
     <string name="font_size">Tamaño de fuente</string>
         <string name="twenty_five_percent">25%</string>
         <string name="fifty_percent">50%</string>
