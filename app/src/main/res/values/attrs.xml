@@ -42,12 +42,11 @@
 
     <attr name="progressTintColor" format="reference" />
     <attr name="navigationIconTintColor" format="reference" />
-
     <attr name="findOnPageIconTintColor" format="reference" />
+    <attr name="domainSettingsIconTintColor" format="reference" />
+    <attr name="viewSourceIconTintColor" format="reference" />
 
     <attr name="listSelectorDrawable" format="reference" />
-
-    <attr name="iconTintColor" format="reference" />
 
     <attr name="userAgentIcon" format="reference" />
     <attr name="searchIcon" format="reference" />
@@ -60,4 +59,5 @@
     <attr name="selectAllIcon" format="reference" />
     <attr name="editIcon" format="reference" />
     <attr name="moveToFolderIcon" format="reference" />
+    <attr name="aboutIcon" format="reference" />
 </resources>

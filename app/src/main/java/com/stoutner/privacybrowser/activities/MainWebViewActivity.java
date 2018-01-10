@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015-2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2015-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * Download cookie code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
  *
@@ -167,6 +167,9 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
     // `webViewTitle` is public static so it can be accessed from `CreateBookmarkDialog` and `CreateHomeScreenShortcutDialog`.  It is also used in `onCreate()`.
     public static String webViewTitle;
 
+    // `appliedUserAgentString` is public static so it can be accessed from `ViewSourceActivity`.  It is also used in `applyDomainSettings()`.
+    public static String appliedUserAgentString;
+
     // `displayWebpageImagesBoolean` is public static so it can be accessed from `DomainSettingsFragment`.  It is also used in `applyAppSettings()` and `applyDomainSettings()`.
     public static boolean displayWebpageImagesBoolean;
 
@@ -327,13 +330,9 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
     // `urlTextBox` is used in `onCreate()`, `onOptionsItemSelected()`, `loadUrlFromTextBox()`, `loadUrl()`, and `highlightUrlText()`.
     private EditText urlTextBox;
 
-    // `redColorSpan` is used in `onCreate()` and `highlightUrlText()`.
+    // The color spans are used in `onCreate()` and `highlightUrlText()`.
     private ForegroundColorSpan redColorSpan;
-
-    // `initialGrayColorSpan` is sued in `onCreate()` and `highlightUrlText()`.
     private ForegroundColorSpan initialGrayColorSpan;
-
-    // `finalGrayColorSpam` is used in `onCreate()` and `highlightUrlText()`.
     private ForegroundColorSpan finalGrayColorSpan;
 
     // `adView` is used in `onCreate()` and `onConfigurationChanged()`.
@@ -415,16 +414,16 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
         appBar.setCustomView(R.layout.url_app_bar);
         appBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 
-        // Initialize the `ForegroundColorSpans` and `StyleSpan` for highlighting `urlTextBox`.  We have to use the deprecated `getColor()` until API >= 23.
+        // Initialize the foreground color spans for highlighting the URLs.  We have to use the deprecated `getColor()` until API >= 23.
         redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
         initialGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
         finalGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
 
         // Get a handle for `urlTextBox`.
-        urlTextBox = appBar.getCustomView().findViewById(R.id.url_edittext);
+        urlTextBox = findViewById(R.id.url_edittext);
 
         // Remove the formatting from `urlTextBar` when the user is editing the text.
-        urlTextBox.setOnFocusChangeListener((v, hasFocus) -> {
+        urlTextBox.setOnFocusChangeListener((View v, boolean hasFocus) -> {
             if (hasFocus) {  // The user is editing `urlTextBox`.
                 // Remove the highlighting.
                 urlTextBox.getText().removeSpan(redColorSpan);
@@ -436,8 +435,8 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
             }
         });
 
-        // Set the `Go` button on the keyboard to load the URL in `urlTextBox`.
-        urlTextBox.setOnKeyListener((v, keyCode, event) -> {
+        // Set the go button on the keyboard to load the URL in `urlTextBox`.
+        urlTextBox.setOnKeyListener((View v, int keyCode, KeyEvent event) -> {
             // If the event is a key-down event on the `enter` button, load the URL.
             if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                 // Load the URL into the mainWebView and consume the event.
@@ -812,8 +811,8 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
 
             // Close `bufferedReader`.
             bufferedReader.close();
-        } catch (IOException ioException) {
-            // We're pretty sure the asset exists, so we don't need to worry about the `IOException` ever being thrown.
+        } catch (IOException e) {
+            // The asset exists, so the `IOException` will never be thrown.
         }
 
         mainWebView.setWebViewClient(new WebViewClient() {
@@ -1127,7 +1126,10 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                             });
                 }
 
+                // Update the progress bar.
                 progressBar.setProgress(progress);
+
+                // Set the visibility of the progress bar.
                 if (progress < 100) {
                     // Show the progress bar.
                     progressBar.setVisibility(View.VISIBLE);
@@ -1221,7 +1223,7 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
         registerForContextMenu(mainWebView);
 
         // Allow the downloading of files.
-        mainWebView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
+        mainWebView.setDownloadListener((String url, String userAgent, String contentDisposition, String mimetype, long contentLength) -> {
             // Show the `DownloadFileDialog` `AlertDialog` and name this instance `@string/download`.
             AppCompatDialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(url, contentDisposition, contentLength);
             downloadFileDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
@@ -1578,7 +1580,7 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
         // Run all the other default commands.
         super.onPrepareOptionsMenu(menu);
 
-        // `return true` displays the menu.
+        // Display the menu.
         return true;
     }
 
@@ -1588,6 +1590,7 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
     // removeAllCookies is deprecated, but it is required for API < 21.
     @SuppressWarnings("deprecation")
     public boolean onOptionsItemSelected(MenuItem menuItem) {
+        // Get the selected menu item ID.
         int menuItemId = menuItem.getItemId();
 
         // Set the commands that relate to the menu entries.
@@ -1913,6 +1916,12 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
 
                 // Print the document.  The print attributes are `null`.
                 printManager.print(getString(R.string.privacy_browser_web_page), printDocumentAdapter, null);
+                return true;
+
+            case R.id.view_source:
+                // Launch the Vew Source activity.
+                Intent viewSourceIntent = new Intent(this, ViewSourceActivity.class);
+                startActivity(viewSourceIntent);
                 return true;
 
             case R.id.add_to_homescreen:
@@ -2259,7 +2268,7 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                 });
 
                 // Add a `Download Image` entry.
-                menu.add(R.string.download_image).setOnMenuItemClickListener(item -> {
+                menu.add(R.string.download_image).setOnMenuItemClickListener((MenuItem item) -> {
                     // Show the `DownloadImageDialog` `AlertDialog` and name this instance `@string/download`.
                     AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
                     downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
@@ -2296,7 +2305,7 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                 });
 
                 // Add a `Download Image` entry.
-                menu.add(R.string.download_image).setOnMenuItemClickListener(item -> {
+                menu.add(R.string.download_image).setOnMenuItemClickListener((MenuItem item) -> {
                     // Show the `DownloadImageDialog` `AlertDialog` and name this instance `@string/download`.
                     AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
                     downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
@@ -2824,10 +2833,10 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
     }
 
     private void applyAppSettings() {
-        // Get a handle for `sharedPreferences`.  `this` references the current context.
+        // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Store the values from `sharedPreferences` in variables.
+        // Store the values from the shared preferences in variables.
         String homepageString = sharedPreferences.getString("homepage", "https://start.duckduckgo.com");
         String torHomepageString = sharedPreferences.getString("tor_homepage", "https://3g2upl4pq6kufc4m.onion");
         String torSearchString = sharedPreferences.getString("tor_search", "https://3g2upl4pq6kufc4m.onion/html/?q=");
@@ -3179,6 +3188,9 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                             // Use the selected user agent.
                             mainWebView.getSettings().setUserAgentString(userAgentString);
                     }
+
+                    // Store the applied user agent string.
+                    appliedUserAgentString = mainWebView.getSettings().getUserAgentString();
                 }
 
                 // Set a green background on `urlTextBox` to indicate that custom domain settings are being used.  We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
@@ -3241,6 +3253,9 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                             // Use the selected user agent.
                             mainWebView.getSettings().setUserAgentString(defaultUserAgentString);
                     }
+
+                    // Store the applied user agent string.
+                    appliedUserAgentString = mainWebView.getSettings().getUserAgentString();
                 }
 
                 // Set a transparent background on `urlTextBox`.  We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
@@ -3347,9 +3362,9 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
     private void highlightUrlText() {
         String urlString = urlTextBox.getText().toString();
 
-        if (urlString.startsWith("http://")) {  // Highlight connections that are not encrypted.
+        if (urlString.startsWith("http://")) {  // Highlight the protocol of connections that are not encrypted.
             urlTextBox.getText().setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        } else if (urlString.startsWith("https://")) {  // Highlight connections that are encrypted.
+        } else if (urlString.startsWith("https://")) {  // De-emphasize the protocol of connections that are encrypted.
             urlTextBox.getText().setSpan(initialGrayColorSpan, 0, 8, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         }
 

@@ -48,21 +48,21 @@ public class AboutActivity extends AppCompatActivity {
         // Set the content view.
         setContentView(R.layout.about_coordinatorlayout);
 
-        // We need to use the SupportActionBar from android.support.v7.app.ActionBar until the minimum API is >= 21.
-        Toolbar aboutAppBar = (Toolbar) findViewById(R.id.about_toolbar);
+        // `SupportActionBar` from `android.support.v7.app.ActionBar` must be used until the minimum API is >= 21.
+        Toolbar aboutAppBar = findViewById(R.id.about_toolbar);
         setSupportActionBar(aboutAppBar);
 
-        // Display the home arrow on supportAppBar.
+        // Display the home arrow on `supportAppBar`.
         final ActionBar appBar = getSupportActionBar();
-        assert appBar != null;// This assert removes the incorrect warning in Android Studio on the following line that appBar might be null.
+        assert appBar != null;  // This assert removes the incorrect warning in Android Studio on the following line that appBar might be null.
         appBar.setDisplayHomeAsUpEnabled(true);
 
         //  Setup the ViewPager.
-        ViewPager aboutViewPager = (ViewPager) findViewById(R.id.about_viewpager);
+        ViewPager aboutViewPager = findViewById(R.id.about_viewpager);
         aboutViewPager.setAdapter(new aboutPagerAdapter(getSupportFragmentManager()));
 
         // Setup the TabLayout and connect it to the ViewPager.
-        TabLayout aboutTabLayout = (TabLayout) findViewById(R.id.about_tablayout);
+        TabLayout aboutTabLayout = findViewById(R.id.about_tablayout);
         aboutTabLayout.setupWithViewPager(aboutViewPager);
     }
 

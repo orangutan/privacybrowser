@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -67,7 +67,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:design:26.1.0'
     // Only compile `com.google.firebase:firebase-ads` for the free flavor.
-    freeImplementation 'com.google.firebase:firebase-ads:11.6.2'
+    freeImplementation 'com.google.firebase:firebase-ads:11.8.0'
 }
 
 // Google's documentation says the following line is required for `firebase-ads` but things work correctly without it.  I have no interest in applying the Google Mobile Services plugin in the standard flavor if I don't have to.

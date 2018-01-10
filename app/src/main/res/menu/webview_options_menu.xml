@@ -175,14 +175,20 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/view_source"
+        android:title="@string/view_source"
+        android:orderInCategory="130"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/add_to_homescreen"
         android:title="@string/add_to_home_screen"
-        android:orderInCategory="130"
+        android:orderInCategory="140"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/refresh"
         android:title="@string/refresh"
-        android:orderInCategory="140"
+        android:orderInCategory="150"
         app:showAsAction="never" />
 </menu>

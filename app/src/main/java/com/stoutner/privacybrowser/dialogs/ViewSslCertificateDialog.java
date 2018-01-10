@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -51,7 +51,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
         // Create a drawable version of the favorite icon.
         Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), MainWebViewActivity.favoriteIconBitmap);
 
-        // Use `AlertDialog.Builder` to create the `AlertDialog`.
+        // Use a builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
         // Set the style according to the theme.
@@ -64,7 +64,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
         // Set the icon.
         dialogBuilder.setIcon(favoriteIconDrawable);
 
-        // Set an `onClick` listener on the negative button.  Using `null` closes the dialog without doing anything else.
+        // Set an `onClick` listener on the negative button.  Using `null` as the listener closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.close, null);
 
         // Check to see if the website is encrypted.
@@ -75,14 +75,8 @@ public class ViewSslCertificateDialog extends DialogFragment {
             // Set the Layout.  The parent view is `null` because it will be assigned by `AlertDialog`.
             dialogBuilder.setView(layoutInflater.inflate(R.layout.unencrypted_website, null));
 
-            // Create an `AlertDialog` from the `AlertDialog.Builder`
-            final AlertDialog alertDialog = dialogBuilder.create();
-
-            // Show `alertDialog`.
-            alertDialog.show();
-
             // `onCreateDialog` requires the return of an `AlertDialog`.
-            return alertDialog;
+            return dialogBuilder.create();
 
         } else {  // Display the SSL certificate information
             // Set the title.
@@ -91,22 +85,22 @@ public class ViewSslCertificateDialog extends DialogFragment {
             // Set the layout.  The parent view is `null` because it will be assigned by `AlertDialog`.
             dialogBuilder.setView(layoutInflater.inflate(R.layout.view_ssl_certificate, null));
 
-            // Create an `AlertDialog` from the `AlertDialog.Builder`
+            // Create an alert dialog from the builder.
             final AlertDialog alertDialog = dialogBuilder.create();
 
-            // The `AlertDialog` must be shown before items in the layout can be modified.
+            // The alert dialog must be shown before items in the layout can be modified.
             alertDialog.show();
 
             // Get handles for the `TextViews`.
-            TextView domainTextView = (TextView) alertDialog.findViewById(R.id.domain);
-            TextView issuedToCNameTextView = (TextView) alertDialog.findViewById(R.id.issued_to_cname);
-            TextView issuedToONameTextView = (TextView) alertDialog.findViewById(R.id.issued_to_oname);
-            TextView issuedToUNameTextView = (TextView) alertDialog.findViewById(R.id.issued_to_uname);
-            TextView issuedByCNameTextView = (TextView) alertDialog.findViewById(R.id.issued_by_cname);
-            TextView issuedByONameTextView = (TextView) alertDialog.findViewById(R.id.issued_by_oname);
-            TextView issuedByUNameTextView = (TextView) alertDialog.findViewById(R.id.issued_by_uname);
-            TextView startDateTextView = (TextView) alertDialog.findViewById(R.id.start_date);
-            TextView endDateTextView = (TextView) alertDialog.findViewById(R.id.end_date);
+            TextView domainTextView = alertDialog.findViewById(R.id.domain);
+            TextView issuedToCNameTextView = alertDialog.findViewById(R.id.issued_to_cname);
+            TextView issuedToONameTextView = alertDialog.findViewById(R.id.issued_to_oname);
+            TextView issuedToUNameTextView = alertDialog.findViewById(R.id.issued_to_uname);
+            TextView issuedByCNameTextView = alertDialog.findViewById(R.id.issued_by_cname);
+            TextView issuedByONameTextView = alertDialog.findViewById(R.id.issued_by_oname);
+            TextView issuedByUNameTextView = alertDialog.findViewById(R.id.issued_by_uname);
+            TextView startDateTextView = alertDialog.findViewById(R.id.start_date);
+            TextView endDateTextView = alertDialog.findViewById(R.id.end_date);
 
             // Setup the labels.
             String domainLabel = getString(R.string.domain_label) + "  ";

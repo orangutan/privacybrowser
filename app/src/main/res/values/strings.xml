@@ -142,6 +142,7 @@
     <string name="share">Share</string>
     <string name="find_on_page">Find on Page</string>
     <string name="print">Print</string>
+    <string name="view_source">View Source</string>
     <string name="add_to_home_screen">Add to Home Screen</string>
         <string name="privacy_browser_web_page">Privacy Browser Web Page</string>
     <string name="refresh">Refresh</string>
@@ -159,6 +160,16 @@
     <string name="zero_of_zero" translatable="false">0/0</string>
     <string name="previous">Previous</string>
     <string name="next">Next</string>
+
+    <!-- View Source. -->
+    <string name="request_headers">Request Headers</string>
+    <string name="response_message">Response Message</string>
+    <string name="response_headers">Response Headers</string>
+    <string name="response_body">Response Body</string>
+    <string name="error_body">Error Body</string>
+    <string name="about_view_source">About View Source</string>
+    <string name="about_view_source_message">Because Android’s WebView does not expose the source information, a separate request was made using system tools to gather the information displayed in this activity.
+        There may be some differences between this data and that used by the WebView in the main activity. This limitation will be removed in the 4.x series with the release of Privacy WebView.</string>
 
     <!-- Create Home Screen Shortcut Alert Dialog. -->
     <string name="create_shortcut">Create Shortcut</string>

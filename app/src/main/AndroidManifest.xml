@@ -153,5 +153,17 @@
             android:screenOrientation="fullUser"
             android:persistableMode="persistNever"
             tools:ignore="UnusedAttribute" />
+
+        <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
+             `android:persistableMode="persistNever"` removes Privacy Browser from the recents screen on a device reboot.
+             `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
+        <activity
+            android:name=".activities.ViewSourceActivity"
+            android:label="@string/view_source"
+            android:parentActivityName=".activities.MainWebViewActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="fullUser"
+            android:persistableMode="persistNever"
+            tools:ignore="UnusedAttribute" />
     </application>
 </manifest>

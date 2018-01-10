@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2018 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -24,15 +24,9 @@
 
     <!-- `android:iconTint` can be used once API >= 26 instead of including a separate drawable for each theme. -->
     <item
-        android:id="@+id/options_menu_select_all_bookmarks"
-        android:title="@string/select_all"
+        android:id="@+id/about_view_source"
+        android:title="@string/about"
         android:orderInCategory="10"
-        android:icon="?attr/selectAllIcon"
+        android:icon="?attr/aboutIcon"
         app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/bookmarks_database_view"
-        android:title="@string/database_view"
-        android:orderInCategory="20"
-        app:showAsAction="never" />
 </menu>

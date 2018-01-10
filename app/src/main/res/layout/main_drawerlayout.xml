@@ -25,9 +25,8 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent" >
 
-    <!-- `android:fitsSystemWindows="true"` moves `root_coordinatorlayout` below the system status bar.
-         When it is specified, the theme should include `<item name="android:windowTranslucentStatus">true</item>`.
-         Setting the layout root to be `focusableInTouchMode` prevents `urlTextBox` from stealing focus on launch and opening the keyboard. -->
+    <!-- `android:fitsSystemWindows="true"` moves `root_coordinatorlayout` below the system status bar. When it is specified, the theme should include `<item name="android:windowTranslucentStatus">true</item>`.
+         Setting the CoordinatorLayout to be `focusableInTouchMode` prevents the URL text box from stealing focus on launch and opening the keyboard. -->
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/root_coordinatorlayout"
         xmlns:tools="http://schemas.android.com/tools"
@@ -63,12 +62,12 @@
 
                     <!-- `android:max` changes the maximum `ProgressBar` value from 10000 to 100 to match progress percentage.
                         `android:layout_height="2dp"` works best for API >= 23, but `3dp` is required for visibility on API <= 22.
-                        `tools:ignore="UnusedAttribute"` removes the lint waring about `progressTint` and `progressBackgroundTint` not applying to API < 21. -->
+                        `tools:ignore="UnusedAttribute"` removes the lint warning about `progressTint` and `progressBackgroundTint` not applying to API < 21. -->
                     <ProgressBar
                         android:id="@+id/progress_bar"
                         style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="fill_parent"
                         android:layout_height="3dp"
+                        android:layout_width="match_parent"
                         android:layout_gravity="bottom"
                         android:max="100"
                         android:progressTint="?attr/progressTintColor"

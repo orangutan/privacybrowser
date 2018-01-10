@@ -20,31 +20,31 @@
 
 <!-- `RelativeLayout` is used instead of a `LinearLayout` because `supportAppBar` does not let `android:layout_weight="1"` cause `urlTextBox` to fill all the available space. -->
 <RelativeLayout
-    android:id="@+id/url_app_bar_relativelayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    tools:context=".activities.MainWebViewActivity" >
+    tools:context=".activities.ViewSourceActivity" >
 
-    <!-- Set `@drawable/world` as the initial as the initial favorite icon.  `layout_height` and `layout_width` of 26dp matches the `AppBar` icons. -->
     <ImageView
-        android:id="@+id/favorite_icon"
-        android:src="@drawable/world"
-        android:layout_height="26dp"
-        android:layout_width="26dp"
+        android:id="@+id/back_arrow"
+        android:src="@drawable/back"
+        android:tint="?attr/viewSourceIconTintColor"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginStart="4dp"
-        android:onClick="viewSslCertificate"
-        android:contentDescription="@string/favorite_icon" />
+        android:layout_marginEnd="14dp"
+        android:contentDescription="@string/back"
+        android:onClick="goBack" />
 
-    <!-- `android:imeOptions="actionGo"` sets the keyboard to have a go key instead of a new line key.  `android:inputType="textUri"` disables spell check in the `EditText`. -->
+    <!-- `android:imeOptions="actionGo"` sets the keyboard to have a `go` key instead of a `new line` key.
+        `android:inputType="textUri"` disables spell check in the `EditText`. -->
     <EditText
         android:id="@+id/url_edittext"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_toEndOf="@id/favorite_icon"
-        android:hint="@string/url_or_search_terms"
+        android:layout_toEndOf="@id/back_arrow"
+        android:hint="@string/url"
         android:imeOptions="actionGo"
         android:inputType="textUri"
         android:selectAllOnFocus="true" />

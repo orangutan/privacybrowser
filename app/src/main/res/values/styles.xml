@@ -33,10 +33,12 @@
         <item name="progressTintColor">@color/blue_700</item>
         <item name="navigationIconTintColor">@color/blue_800</item>
         <item name="findOnPageIconTintColor">@color/blue_800</item>
+        <item name="viewSourceIconTintColor">@color/black</item>
         <item name="sslHeader">@color/blue_700</item>
         <item name="sslTitle">@color/blue_900</item>
         <item name="urlHistoryText">@color/black</item>
         <item name="redText">@color/red_a700</item>
+        <item name="aboutIcon">@drawable/about_light</item>
         <item name="dialogTabLayoutTheme">@style/PrivacyBrowserTabLayoutDialogLight</item>
     </style>
 
@@ -54,7 +56,7 @@
         <item name="aboutTitle">@color/blue_900</item>
         <item name="aboutText">@color/blue_700</item>
         <item name="aboutBackground">@color/white</item>
-        <item name="iconTintColor">@color/blue_800</item>
+        <item name="domainSettingsIconTintColor">@color/blue_800</item>
         <item name="deleteIcon">@drawable/delete_light</item>
         <item name="addIcon">@drawable/add_light</item>
         <item name="addBookmarkIcon">@drawable/create_bookmark_light</item>
@@ -104,6 +106,10 @@
         <item name="colorAccent">@color/blue_700</item>
     </style>
 
+    <style name="PrivacyBrowserProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal" >
+        <item name="android:indeterminateDrawable">@android:drawable/progress_horizontal</item>
+    </style>
+
 
     <!-- Dark theme styles. -->
 
@@ -119,10 +125,12 @@
         <item name="progressTintColor">@color/blue_600</item>
         <item name="navigationIconTintColor">@color/blue_600</item>
         <item name="findOnPageIconTintColor">@color/blue_600</item>
+        <item name="viewSourceIconTintColor">@color/gray_300</item>
         <item name="sslHeader">@color/blue_400</item>
         <item name="sslTitle">@color/blue_700</item>
         <item name="urlHistoryText">@color/gray_200</item>
         <item name="redText">@color/red_900</item>
+        <item name="aboutIcon">@drawable/about_dark</item>
     </style>
 
     <!-- `windowActionModeOverlay` makes the contextual app bar cover the support app bar.  `colorPrimaryDark` goes behind the status bar, which is then darkened by the overlay.-->
@@ -138,7 +146,7 @@
         <item name="aboutText">@color/blue_400</item>
         <item name="aboutBackground">@color/gray_850</item>
         <item name="listSelectorDrawable">@drawable/list_selector_dark</item>
-        <item name="iconTintColor">@color/blue_600</item>
+        <item name="domainSettingsIconTintColor">@color/blue_600</item>
         <item name="deleteIcon">@drawable/delete_dark</item>
         <item name="addIcon">@drawable/add_dark</item>
         <item name="addBookmarkIcon">@drawable/create_bookmark_dark</item>
