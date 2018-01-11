@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -98,6 +98,7 @@ public class AboutTabFragment extends Fragment {
             TextView versionBuildTextView = tabLayout.findViewById(R.id.about_version_build);
             TextView versionWebKitTextView = tabLayout.findViewById(R.id.about_version_webkit);
             TextView versionChromeTextView = tabLayout.findViewById(R.id.about_version_chrome);
+            TextView versionEasyListTextView = tabLayout.findViewById(R.id.about_version_easylist);
             TextView versionOrbotTextView = tabLayout.findViewById(R.id.about_version_orbot);
             TextView certificateIssuerDNTextView = tabLayout.findViewById(R.id.about_version_certificate_issuer_dn);
             TextView certificateSubjectDNTextView = tabLayout.findViewById(R.id.about_version_certificate_subject_dn);
@@ -118,6 +119,7 @@ public class AboutTabFragment extends Fragment {
             String buildLabel = getString(R.string.build) + "  ";
             String webKitLabel = getString(R.string.webkit) + "  ";
             String chromeLabel = getString(R.string.chrome) + "  ";
+            String easyListLabel = getString(R.string.easylist) + "  ";
             String issuerDNLabel = getString(R.string.issuer_dn) + "  ";
             String subjectDNLabel = getString(R.string.subject_dn) + "  ";
             String startDateLabel = getString(R.string.start_date) + "  ";
@@ -164,6 +166,7 @@ public class AboutTabFragment extends Fragment {
             SpannableStringBuilder buildStringBuilder = new SpannableStringBuilder(buildLabel + build);
             SpannableStringBuilder webKitStringBuilder = new SpannableStringBuilder(webKitLabel + webKit);
             SpannableStringBuilder chromeStringBuilder = new SpannableStringBuilder(chromeLabel + chrome);
+            SpannableStringBuilder easyListStringBuilder = new SpannableStringBuilder(easyListLabel + MainWebViewActivity.easyListVersion);
 
             // Create the `blueColorSpan` variable.
             ForegroundColorSpan blueColorSpan;
@@ -187,6 +190,7 @@ public class AboutTabFragment extends Fragment {
             buildStringBuilder.setSpan(blueColorSpan, buildLabel.length(), buildStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             webKitStringBuilder.setSpan(blueColorSpan, webKitLabel.length(), webKitStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             chromeStringBuilder.setSpan(blueColorSpan, chromeLabel.length(), chromeStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            easyListStringBuilder.setSpan(blueColorSpan, easyListLabel.length(), easyListStringBuilder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 
             // Display the strings in the text boxes.
             versionNumberTextView.setText(version);
@@ -199,6 +203,7 @@ public class AboutTabFragment extends Fragment {
             versionBuildTextView.setText(buildStringBuilder);
             versionWebKitTextView.setText(webKitStringBuilder);
             versionChromeTextView.setText(chromeStringBuilder);
+            versionEasyListTextView.setText(easyListStringBuilder);
 
             // Build.VERSION.SECURITY_PATCH is only available for SDK_INT >= 23.
             if (Build.VERSION.SDK_INT >= 23) {

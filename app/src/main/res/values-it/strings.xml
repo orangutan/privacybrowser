@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
 
   Translation 2017 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -137,11 +137,12 @@
         <string name="one_hundred_seventy_five_percent">175%</string>
         <string name="two_hundred_percent">200%</string>
     <string name="display_images">Mostra immagini</string>
-    <string name="find_on_page">Cerca nella pagina</string>
     <string name="share">Condividi</string>
-    <string name="add_to_home_screen">Aggiungi collegamento</string>
+    <string name="find_on_page">Cerca nella pagina</string>
     <string name="print">Stampa</string>
         <string name="privacy_browser_web_page">Pagina web di Privacy Browser</string>
+    <string name="view_source">Visualizza Sorgente</string>
+    <string name="add_to_home_screen">Aggiungi collegamento</string>
     <string name="refresh">Aggiorna</string>
 
     <!-- Context Menus. -->
@@ -156,6 +157,16 @@
     <!-- Find on Page. -->
     <string name="previous">Precedente</string>
     <string name="next">Successivo</string>
+
+    <!-- View Source. -->
+    <string name="request_headers">Richiesta Intestazioni</string>
+    <string name="response_message">Messaggio di risposta</string>
+    <string name="response_headers">Risposta Intestazioni</string>
+    <string name="response_body">Testo della risposta</string>
+    <string name="error_body">Testo errore</string>
+    <string name="about_view_source">Informazioni sulla visualizzazione della sorgente</string>
+    <string name="about_view_source_message">Dal momento che la WebView di Android non fornisce indicazioni sulla sorgente è stata effettuata una richiesta separata utilizzando i system tools in modo da ottenere le informazioni mostrate.
+        Potrebbero esserci alcune differenze tra questi dati e quelli utilizzati da WebView. Questa limitazione sarà eliminata nella serie 4.x quando verrà rilasciata Privacy WebView.</string>
 
     <!-- Create Home Screen Shortcut Alert Dialog. -->
     <string name="create_shortcut">Crea Collegamento</string>
@@ -385,6 +396,7 @@
             <string name="security_patch">Patch si sicurezza:</string>
             <string name="webkit">WebKit:</string>
             <string name="chrome">Chrome:</string>
+            <string name="easylist">EasyList:</string>
             <string name="orbot">Orbot:</string>
         <string name="package_signature">Firma del Pacchetto</string>
             <string name="issuer_dn">Emittente:</string>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
 
   Translation 2017 Jose A. León Becerra <emails@joseleon.me>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -135,11 +135,12 @@
         <string name="one_hundred_seventy_five_percent">175%</string>
         <string name="two_hundred_percent">200%</string>
     <string name="display_images">Mostrar imágenes</string>
-    <string name="find_on_page">Buscar en página</string>
     <string name="share">Compartir</string>
-    <string name="add_to_home_screen">Añadir a la ventana de inicio</string>
+    <string name="find_on_page">Buscar en página</string>
     <string name="print">Imprimir</string>
         <string name="privacy_browser_web_page">Página web de Navegador Privado</string>
+    <string name="view_source">Ver la fuente</string>
+    <string name="add_to_home_screen">Añadir a la ventana de inicio</string>
     <string name="refresh">Actualizar</string>
 
     <!-- Context Menus. -->
@@ -154,6 +155,16 @@
     <!-- Find on Page. -->
     <string name="previous">Anterior</string>
     <string name="next">Siguiente</string>
+
+    <!-- View Source. -->
+    <string name="request_headers">Cabeceras de solicitud</string>
+    <string name="response_message">Mensaje de respuesta</string>
+    <string name="response_headers">Cabeceras de respuesta</string>
+    <string name="response_body">Cuerpo de respuesta</string>
+    <string name="error_body">Cuerpo del error</string>
+    <string name="about_view_source">Acerca de ver la fuente</string>
+    <string name="about_view_source_message">Debido a que WebView de Android no expone la información fuente, se hizo una solicitud por separado utilizando las herramientas del sistema para recopilar la información mostrada en esta actividad.
+        Puede haber algunas diferencias entre estos datos y los utilizados por WebView en la actividad principal. Esta limitación se eliminará en la serie 4.x con el lanzamiento de Privacy WebView.</string>
 
     <!-- Create Home Screen Shortcut Alert Dialog. -->
     <string name="create_shortcut">Crear acceso directo</string>
@@ -383,6 +394,7 @@
             <string name="security_patch">Parche de seguridad:</string>
             <string name="webkit">WebKit:</string>
             <string name="chrome">Chrome:</string>
+            <string name="easylist">EasyList:</string>
             <string name="orbot">Orbot:</string>
         <string name="package_signature">Firma del paquete</string>
             <string name="issuer_dn">DN del emisor:</string>

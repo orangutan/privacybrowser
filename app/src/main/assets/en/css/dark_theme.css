@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -17,28 +17,34 @@
  * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* Gray 850 */
 body {
     background-color: #313131;
     color: #BDBDBD;
 }
 
+/* Blue 700 */
 a {
     color: #1976D2;
     text-decoration: none;
 }
 
+/* Blue 600 */
 h3 {
     color: #1E88E5;
 }
 
+/* Half of Red 900 */
 strong.red {
     color: #A71919;
 }
 
+/* Blue 400 */
 strong.blue {
-    color: #1E88E5;
+    color: #42A5F5;
 }
 
+/* Blue 400 */
 item {
     color: #42A5F5;
     font-weight: bold;

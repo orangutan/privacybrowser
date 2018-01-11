@@ -70,6 +70,7 @@ import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.ContextMenu;
 import android.view.GestureDetector;
@@ -181,6 +182,9 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
 
     // `restartFromBookmarksActivity` is public static so it can be accessed from `BookmarksActivity`.  It is also used in `onRestart()`.
     public static boolean restartFromBookmarksActivity;
+
+    // `easyListVersion` is public static so it can be accessed from `AboutTabFragment`.  It is also used in `onCreate()`.
+    public static String easyListVersion;
 
     // `currentBookmarksFolder` is public static so it can be accessed from `BookmarksActivity`.  It is also used in `onCreate()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and
     // `loadBookmarksFolder()`.
@@ -395,6 +399,52 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
 
         // Run the default commands.
         super.onCreate(savedInstanceState);
+
+        // **DEBUG** Log the beginning of the loading of the ad blocker.
+        Log.i("AdBlocker", "Begin loading ad blocker");
+
+        // Initialize `adServerSet`.
+        final Set<String> adServersSet = new HashSet<>();
+
+        // Load the list of ad servers into memory.
+        try {
+            // Load `easylist.txt` into a `BufferedReader`.
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getAssets().open("easylist.txt")));
+
+            // Create a string for storing each ad server.
+            String adBlockerEntry;
+
+            // Populate `adServersSet`.
+            while ((adBlockerEntry = bufferedReader.readLine()) != null) {
+                //noinspection StatementWithEmptyBody
+                if (adBlockerEntry.contains("##") || adBlockerEntry.contains("#?#") || adBlockerEntry.contains("#@#") || adBlockerEntry.startsWith("[")) {
+                    // Entries that contain `##`, `#?#`, and `#@#` are for hiding elements in the main page's HTML.  Entries that start with `[` describe the AdBlock compatibility level.
+
+                    // Do nothing.  Privacy Browser does not currently use these entries.
+
+                    // **DEBUG** Log the entries that are not added.
+                    // Log.i("AdBlocker", "Not added: " + adBlockerEntry);
+                } else if (adBlockerEntry.startsWith("!")){  //  Entries that begin with `!` are comments.
+                    if (adBlockerEntry.startsWith("! Version:")) {
+                        // Store the EasyList version number.
+                        easyListVersion = adBlockerEntry.substring(11);
+                    }
+
+                    // **DEBUG** Log the entries that are not added.
+                    // Log.i("AdBlocker", "Not added: " + adBlockerEntry);
+                } else {
+                    adServersSet.add(adBlockerEntry);
+                }
+            }
+
+            // Close `bufferedReader`.
+            bufferedReader.close();
+        } catch (IOException e) {
+            // The asset exists, so the `IOException` will never be thrown.
+        }
+
+        // **DEBUG** Log the finishing of the loading of the ad blocker.
+        Log.i("AdBlocker", "Finish loading ad blocker");
 
         // Set the content view.
         setContentView(R.layout.main_drawerlayout);
@@ -792,28 +842,6 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
 
         // drawerToggle creates the hamburger icon at the start of the AppBar.
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, supportAppBar, R.string.open_navigation_drawer, R.string.close_navigation_drawer);
-
-        // Initialize `adServerSet`.
-        final Set<String> adServersSet = new HashSet<>();
-
-        // Load the list of ad servers into memory.
-        try {
-            // Load `pgl.yoyo.org_adservers.txt` into a `BufferedReader`.
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getAssets().open("pgl.yoyo.org_adservers.txt")));
-
-            // Create a string for storing each ad server.
-            String adServer;
-
-            // Populate `adServersSet`.
-            while ((adServer = bufferedReader.readLine()) != null) {
-                adServersSet.add(adServer);
-            }
-
-            // Close `bufferedReader`.
-            bufferedReader.close();
-        } catch (IOException e) {
-            // The asset exists, so the `IOException` will never be thrown.
-        }
 
         mainWebView.setWebViewClient(new WebViewClient() {
             // `shouldOverrideUrlLoading` makes this `WebView` the default handler for URLs inside the app, so that links are not kicked out to other apps.

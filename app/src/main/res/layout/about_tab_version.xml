@@ -151,6 +151,11 @@
                 android:layout_width="wrap_content" />
 
             <TextView
+                android:id="@+id/about_version_easylist"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content" />
+
+            <TextView
                 android:id="@+id/about_version_orbot"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content" />
