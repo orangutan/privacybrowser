@@ -22,6 +22,7 @@
 package com.stoutner.privacybrowser.activities;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
@@ -137,29 +138,36 @@ import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 // We need to use AppCompatActivity from android.support.v7.app.AppCompatActivity to have access to the SupportActionBar until the minimum API is >= 21.
-public class MainWebViewActivity extends AppCompatActivity implements AddDomainDialog.AddDomainListener, CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener, CreateHomeScreenShortcutDialog.CreateHomeScreenSchortcutListener,
-        DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, EditBookmarkDialog.EditBookmarkListener, EditBookmarkFolderDialog.EditBookmarkFolderListener, HttpAuthenticationDialog.HttpAuthenticationListener,
-        NavigationView.OnNavigationItemSelectedListener, PinnedSslCertificateMismatchDialog.PinnedSslCertificateMismatchListener, SslCertificateErrorDialog.SslCertificateErrorListener, UrlHistoryDialog.UrlHistoryListener {
+public class MainWebViewActivity extends AppCompatActivity implements AddDomainDialog.AddDomainListener, CreateBookmarkDialog.CreateBookmarkListener,
+        CreateBookmarkFolderDialog.CreateBookmarkFolderListener, CreateHomeScreenShortcutDialog.CreateHomeScreenSchortcutListener, DownloadFileDialog.DownloadFileListener,
+        DownloadImageDialog.DownloadImageListener, EditBookmarkDialog.EditBookmarkListener, EditBookmarkFolderDialog.EditBookmarkFolderListener, HttpAuthenticationDialog.HttpAuthenticationListener,
+        NavigationView.OnNavigationItemSelectedListener, PinnedSslCertificateMismatchDialog.PinnedSslCertificateMismatchListener, SslCertificateErrorDialog.SslCertificateErrorListener,
+        UrlHistoryDialog.UrlHistoryListener {
 
-    // `darkTheme` is public static so it can be accessed from `AboutActivity`, `GuideActivity`, `AddDomainDialog`, `SettingsActivity`, `DomainsActivity`, `DomainsListFragment`, `BookmarksActivity`, `BookmarksDatabaseViewActivity`,
-    // `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, `DownloadFileDialog`, `DownloadImageDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`, `EditBookmarkDatabaseViewDialog`, `HttpAuthenticationDialog`, `MoveToFolderDialog`,
-    // `SslCertificateErrorDialog`, `UrlHistoryDialog`, `ViewSslCertificateDialog`, `CreateHomeScreenShortcutDialog`, and `OrbotProxyHelper`. It is also used in `onCreate()`, `applyAppSettings()`, `applyDomainSettings()`, and `updatePrivacyIcons()`.
+    // `darkTheme` is public static so it can be accessed from `AboutActivity`, `GuideActivity`, `AddDomainDialog`, `SettingsActivity`, `DomainsActivity`, `DomainsListFragment`, `BookmarksActivity`,
+    // `BookmarksDatabaseViewActivity`, `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, `DownloadFileDialog`, `DownloadImageDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`,
+    // `EditBookmarkDatabaseViewDialog`, `HttpAuthenticationDialog`, `MoveToFolderDialog`, `SslCertificateErrorDialog`, `UrlHistoryDialog`, `ViewSslCertificateDialog`, `CreateHomeScreenShortcutDialog`,
+    //  and `OrbotProxyHelper`. It is also used in `onCreate()`, `applyAppSettings()`, `applyDomainSettings()`, and `updatePrivacyIcons()`.
     public static boolean darkTheme;
 
-    // `favoriteIconBitmap` is public static so it can be accessed from `CreateHomeScreenShortcutDialog`, `BookmarksActivity`, `BookmarksDatabaseViewActivity`, `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, `EditBookmarkDialog`,
-    // `EditBookmarkFolderDialog`, `EditBookmarkDatabaseViewDialog`, and `ViewSslCertificateDialog`.  It is also used in `onCreate()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onCreateHomeScreenShortcutCreate()`, `onSaveEditBookmark()`,
-    // `onSaveEditBookmarkFolder()`, and `applyDomainSettings()`.
+    // `favoriteIconBitmap` is public static so it can be accessed from `CreateHomeScreenShortcutDialog`, `BookmarksActivity`, `BookmarksDatabaseViewActivity`, `CreateBookmarkDialog`,
+    // `CreateBookmarkFolderDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`, `EditBookmarkDatabaseViewDialog`, and `ViewSslCertificateDialog`.  It is also used in `onCreate()`,
+    // `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onCreateHomeScreenShortcutCreate()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `applyDomainSettings()`.
     public static Bitmap favoriteIconBitmap;
 
     // `formattedUrlString` is public static so it can be accessed from `BookmarksActivity`, `CreateBookmarkDialog`, and `AddDomainDialog`.
     // It is also used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onCreateHomeScreenShortcutCreate()`, and `loadUrlFromTextBox()`.
     public static String formattedUrlString;
 
-    // `sslCertificate` is public static so it can be accessed from `DomainsActivity`, `DomainsListFragment`, `DomainSettingsFragment`, `PinnedSslCertificateMismatchDialog`, and `ViewSslCertificateDialog`.  It is also used in `onCreate()`.
+    // `sslCertificate` is public static so it can be accessed from `DomainsActivity`, `DomainsListFragment`, `DomainSettingsFragment`, `PinnedSslCertificateMismatchDialog`,
+    // and `ViewSslCertificateDialog`.  It is also used in `onCreate()`.
     public static SslCertificate sslCertificate;
 
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`.
@@ -186,8 +194,8 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
     // `easyListVersion` is public static so it can be accessed from `AboutTabFragment`.  It is also used in `onCreate()`.
     public static String easyListVersion;
 
-    // `currentBookmarksFolder` is public static so it can be accessed from `BookmarksActivity`.  It is also used in `onCreate()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and
-    // `loadBookmarksFolder()`.
+    // `currentBookmarksFolder` is public static so it can be accessed from `BookmarksActivity`.  It is also used in `onCreate()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`,
+    // `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `loadBookmarksFolder()`.
     public static String currentBookmarksFolder;
 
     // `domainSettingsDatabaseId` is public static so it can be accessed from `PinnedSslCertificateMismatchDialog`.  It is also used in `onCreate()`, `onOptionsItemSelected()`, and `applyDomainSettings()`.
@@ -219,8 +227,8 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
     // `rootCoordinatorLayout` is used in `onCreate()` and `applyAppSettings()`.
     private CoordinatorLayout rootCoordinatorLayout;
 
-    // `mainWebView` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`, `findNextOnPage()`, `closeFindOnPage()`, `loadUrlFromTextBox()`
-    // `onSslMismatchBack()`, and `setDisplayWebpageImages()`.
+    // `mainWebView` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`,
+    // `findNextOnPage()`, `closeFindOnPage()`, `loadUrlFromTextBox()`, `onSslMismatchBack()`, and `setDisplayWebpageImages()`.
     private WebView mainWebView;
 
     // `fullScreenVideoFrameLayout` is used in `onCreate()` and `onConfigurationChanged()`.
@@ -400,40 +408,734 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
         // Run the default commands.
         super.onCreate(savedInstanceState);
 
-        // **DEBUG** Log the beginning of the loading of the ad blocker.
-        Log.i("AdBlocker", "Begin loading ad blocker");
+        Log.i("BlockLists", "Begin populating block lists.");
 
-        // Initialize `adServerSet`.
-        final Set<String> adServersSet = new HashSet<>();
+        // Initialize the block lists.
+        List<String> mainWhiteList = new LinkedList<>();
+        List<String[]> multiEntryWhiteList = new LinkedList<>();
+        List<String> mainBlockList = new LinkedList<>();
+        List<String> initialBlockList = new LinkedList<>();
+        List<String> finalBlockList = new LinkedList<>();
+        List<String[]> multiEntryBlockList = new LinkedList<>();
+        List<String[]> multiEntryInitialBlockList = new LinkedList<>();
+        List<String[]> multiEntryFinalBlockList = new LinkedList<>();
+        List<String[]> domainBlockList = new LinkedList<>();
+        List<String[]> domainInitialBlockList = new LinkedList<>();
+        List<String[]> domainFinalBlockList = new LinkedList<>();
+        List<String[]> domainMultiEntryBlockList = new LinkedList<>();
+        List<String[]> domainRegularExpressionBlockList = new LinkedList<>();
+        List<String> regularExpressionBlockList = new LinkedList<>();
 
-        // Load the list of ad servers into memory.
+        // Populate the block lists.
         try {
             // Load `easylist.txt` into a `BufferedReader`.
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getAssets().open("easylist.txt")));
 
-            // Create a string for storing each ad server.
-            String adBlockerEntry;
+            // Create a string for storing the block list entries.
+            String blockListEntry;
 
-            // Populate `adServersSet`.
-            while ((adBlockerEntry = bufferedReader.readLine()) != null) {
+            // Parse EasyList.
+            while ((blockListEntry = bufferedReader.readLine()) != null) {
                 //noinspection StatementWithEmptyBody
-                if (adBlockerEntry.contains("##") || adBlockerEntry.contains("#?#") || adBlockerEntry.contains("#@#") || adBlockerEntry.startsWith("[")) {
+                if (blockListEntry.contains("##") || blockListEntry.contains("#?#") || blockListEntry.contains("#@#") || blockListEntry.startsWith("[")) {
                     // Entries that contain `##`, `#?#`, and `#@#` are for hiding elements in the main page's HTML.  Entries that start with `[` describe the AdBlock compatibility level.
 
                     // Do nothing.  Privacy Browser does not currently use these entries.
 
-                    // **DEBUG** Log the entries that are not added.
-                    // Log.i("AdBlocker", "Not added: " + adBlockerEntry);
-                } else if (adBlockerEntry.startsWith("!")){  //  Entries that begin with `!` are comments.
-                    if (adBlockerEntry.startsWith("! Version:")) {
+                    //Log.i("BlackLists", "Not added: " + adBlockerEntry);
+                } else if (blockListEntry.startsWith("!")){  //  Entries that begin with `!` are comments.
+                    if (blockListEntry.startsWith("! Version:")) {
                         // Store the EasyList version number.
-                        easyListVersion = adBlockerEntry.substring(11);
+                        easyListVersion = blockListEntry.substring(11);
                     }
 
-                    // **DEBUG** Log the entries that are not added.
-                    // Log.i("AdBlocker", "Not added: " + adBlockerEntry);
-                } else {
-                    adServersSet.add(adBlockerEntry);
+                    //Log.i("BlackLists", "Not added: " + adBlockerEntry);
+                } else if (blockListEntry.startsWith("@@")) {  // Entries that begin with `@@` are excludes (whitelists).
+                    // mainWhiteList.add(blockListEntry.substring(2));
+
+                    //Log.i("BlockLists", "Main white list added: " + blockListEntry.substring(2, blockListEntry.length()));
+                } else if (blockListEntry.endsWith("|")){  // Entries that end with `|` match against the end of the URL.
+                    // Strip out the final "|"
+                    blockListEntry = blockListEntry.substring(0, blockListEntry.length() - 1);
+
+                    // Strip out any initial `||`.  They are redundant in this case because the block list entry is being matched against the end of the URL.
+                    if (blockListEntry.startsWith("||")) {
+                        blockListEntry = blockListEntry.substring(2);
+                    }
+
+                    if (blockListEntry.contains("*")) {
+                        int wildcardIndex = blockListEntry.indexOf("*");
+
+                        String firstEntry = blockListEntry.substring(0, wildcardIndex);
+                        String secondEntry = blockListEntry.substring(wildcardIndex + 1);
+
+                        if (firstEntry.endsWith("^")) {
+                            String firstEntryBase = firstEntry.substring(0, firstEntry.length() - 1);
+
+                            String firstEntry1 = firstEntryBase + ":";
+                            String firstEntry2 = firstEntryBase + "/";
+                            String firstEntry3 = firstEntryBase + "?";
+                            String firstEntry4 = firstEntryBase + "=";
+                            String firstEntry5 = firstEntryBase + "&";
+
+                            String[] doubleEntry1 = {firstEntry1, secondEntry};
+                            String[] doubleEntry2 = {firstEntry2, secondEntry};
+                            String[] doubleEntry3 = {firstEntry3, secondEntry};
+                            String[] doubleEntry4 = {firstEntry4, secondEntry};
+                            String[] doubleEntry5 = {firstEntry5, secondEntry};
+
+                            multiEntryFinalBlockList.add(doubleEntry1);
+                            multiEntryFinalBlockList.add(doubleEntry2);
+                            multiEntryFinalBlockList.add(doubleEntry3);
+                            multiEntryFinalBlockList.add(doubleEntry4);
+                            multiEntryFinalBlockList.add(doubleEntry5);
+
+                            //Log.i("BlockLists", "Multi entry final block list added: " + firstEntry1 + " , " + secondEntry);
+                            //Log.i("BlockLists", "Multi entry final block list added: " + firstEntry2 + " , " + secondEntry);
+                            //Log.i("BlockLists", "Multi entry final block list added: " + firstEntry3 + " , " + secondEntry);
+                            //Log.i("BlockLists", "Multi entry final block list added: " + firstEntry4 + " , " + secondEntry);
+                            //Log.i("BlockLists", "Multi entry final block list added: " + firstEntry5 + " , " + secondEntry);
+                        } else {
+                            String[] doubleEntry = {firstEntry, secondEntry};
+
+                            multiEntryFinalBlockList.add(doubleEntry);
+
+                            //Log.i("BlockLists", "Multi entry final block list added: " + firstEntry + " , " + secondEntry);
+                        }
+                    } else {
+                        finalBlockList.add(blockListEntry);
+
+                        //Log.i("BlockLists", "Final block list added: " + blockListEntry);
+                    }
+                } else if (blockListEntry.contains("$")) {  // Entries that contain `$` use filter options.
+                    // Strip out any initial `||`.  These will be treated like any other entry.
+                    if (blockListEntry.startsWith("||")) {
+                        blockListEntry = blockListEntry.substring(2);
+                    }
+
+                    if (blockListEntry.contains("third-party")) {
+                        // Log.i("BlockLists", "Not added: " + blockListEntry);
+                    } else if (blockListEntry.substring(blockListEntry.indexOf("$")).contains("domain")) {
+                        if (blockListEntry.contains("~")) {  // Whitelist.
+
+                        } else {
+                            // Separate the filters.
+                            String entry = blockListEntry.substring(0, blockListEntry.indexOf("$"));
+                            String filters = blockListEntry.substring(blockListEntry.indexOf("$") + 1);
+                            String domains = filters.substring(filters.indexOf("domain=") + 7);
+
+                            // Only process the block list item if the entry is not null.  Some lines in EasyList begin with `$websocket`, which create a null entry.
+                            if (!entry.equals("")) {
+                                do {
+                                    String domain;
+
+                                    if (domains.contains("|")) {
+                                        // Get the first domain.
+                                        domain = domains.substring(0, domains.indexOf("|"));
+
+                                        // Remove the first domain from the list.
+                                        domains = domains.substring(domains.indexOf("|") + 1);
+                                    } else {
+                                        domain = domains;
+                                    }
+
+                                    if (entry.contains("*")) {
+                                        int wildcardIndex = entry.indexOf("*");
+
+                                        String firstEntry = entry.substring(0, wildcardIndex);
+                                        String secondEntry = entry.substring(wildcardIndex + 1);
+
+                                        if (firstEntry.endsWith("^")) {
+                                            String firstEntryBase = firstEntry.substring(0, firstEntry.length() - 1);
+
+                                            String firstEntry1 = firstEntryBase + ":";
+                                            String firstEntry2 = firstEntryBase + "/";
+                                            String firstEntry3 = firstEntryBase + "?";
+                                            String firstEntry4 = firstEntryBase + "=";
+                                            String firstEntry5 = firstEntryBase + "&";
+
+                                            String[] domainDoubleEntry1 = {domain, firstEntry1, secondEntry};
+                                            String[] domainDoubleEntry2 = {domain, firstEntry2, secondEntry};
+                                            String[] domainDoubleEntry3 = {domain, firstEntry3, secondEntry};
+                                            String[] domainDoubleEntry4 = {domain, firstEntry4, secondEntry};
+                                            String[] domainDoubleEntry5 = {domain, firstEntry5, secondEntry};
+
+                                            domainMultiEntryBlockList.add(domainDoubleEntry1);
+                                            domainMultiEntryBlockList.add(domainDoubleEntry2);
+                                            domainMultiEntryBlockList.add(domainDoubleEntry3);
+                                            domainMultiEntryBlockList.add(domainDoubleEntry4);
+                                            domainMultiEntryBlockList.add(domainDoubleEntry5);
+
+                                            //Log.i("BlockLists", "Domain ^ double entry block list added: " + domain + " , " + firstEntry1 + " , " + secondEntry);
+                                            //Log.i("BlockLists", "Domain ^ double entry block list added: " + domain + " , " + firstEntry2 + " , " + secondEntry);
+                                            //Log.i("BlockLists", "Domain ^ double entry block list added: " + domain + " , " + firstEntry3 + " , " + secondEntry);
+                                            //Log.i("BlockLists", "Domain ^ double entry block list added: " + domain + " , " + firstEntry4 + " , " + secondEntry);
+                                            //Log.i("BlockLists", "Domain ^ double entry block list added: " + domain + " , " + firstEntry5 + " , " + secondEntry);
+                                        } else {
+                                            String[] domainDoubleEntry = {domain, firstEntry, secondEntry};
+
+                                            domainMultiEntryBlockList.add(domainDoubleEntry);
+
+                                            //Log.i("BlockLists", "Domain double entry block list added: " + domain + " , " + firstEntry + " , " + secondEntry);
+                                        }
+                                    } else if (entry.endsWith("^")) {
+                                        String entryBase = entry.substring(0, entry.length() - 1);
+
+                                        String entry1 = entryBase + ":";
+                                        String entry2 = entryBase + "/";
+                                        String entry3 = entryBase + "?";
+                                        String entry4 = entryBase + "=";
+                                        String entry5 = entryBase + "&";
+
+                                        String[] domainEntry1 = {domain, entry1};
+                                        String[] domainEntry2 = {domain, entry2};
+                                        String[] domainEntry3 = {domain, entry3};
+                                        String[] domainEntry4 = {domain, entry4};
+                                        String[] domainEntry5 = {domain, entry5};
+
+                                        domainBlockList.add(domainEntry1);
+                                        domainBlockList.add(domainEntry2);
+                                        domainBlockList.add(domainEntry3);
+                                        domainBlockList.add(domainEntry4);
+                                        domainBlockList.add(domainEntry5);
+
+                                        //Log.i("BlockLists", "Domain ^ block list added: " + domain + " , " + entry1);
+                                        //Log.i("BlockLists", "Domain ^ block list added: " + domain + " , " + entry2);
+                                        //Log.i("BlockLists", "Domain ^ block list added: " + domain + " , " + entry3);
+                                        //Log.i("BlockLists", "Domain ^ block list added: " + domain + " , " + entry4);
+                                        //Log.i("BlockLists", "Domain ^ block list added: " + domain + " , " + entry5);
+                                    } else if (entry.startsWith("^")) {
+                                        String entryBase = entry.substring(1);
+
+                                        String entry1 = ":" + entryBase;
+                                        String entry2 = ":" + entryBase;
+                                        String entry3 = ":" + entryBase;
+                                        String entry4 = ":" + entryBase;
+                                        String entry5 = ":" + entryBase;
+
+                                        String[] domainEntry1 = {domain, entry1};
+                                        String[] domainEntry2 = {domain, entry2};
+                                        String[] domainEntry3 = {domain, entry3};
+                                        String[] domainEntry4 = {domain, entry4};
+                                        String[] domainEntry5 = {domain, entry5};
+
+                                        domainBlockList.add(domainEntry1);
+                                        domainBlockList.add(domainEntry2);
+                                        domainBlockList.add(domainEntry3);
+                                        domainBlockList.add(domainEntry4);
+                                        domainBlockList.add(domainEntry5);
+
+                                        //Log.i("BlockLists", "Domain ^ block list added: " + domain + " , " + entry1);
+                                        //Log.i("BlockLists", "Domain ^ block list added: " + domain + " , " + entry2);
+                                        //Log.i("BlockLists", "Domain ^ block list added: " + domain + " , " + entry3);
+                                        //Log.i("BlockLists", "Domain ^ block list added: " + domain + " , " + entry4);
+                                        //Log.i("BlockLists", "Domain ^ block list added: " + domain + " , " + entry5);
+                                    } else if (entry.startsWith("|")) {
+                                        // Remove the initial `|`;
+                                        String entryBase = entry.substring(1);
+
+                                        //noinspection StatementWithEmptyBody
+                                        if (entryBase.equals("http://") || entryBase.equals("https://")) {
+                                            // Do nothing.  These entries will entirely block the website.
+                                            // Often the original entry blocks `$script` but Privacy Browser does not currently differentiate between scripts and other entries.
+                                        } else {
+                                            String[] domainEntry = {domain, entryBase};
+
+                                            domainInitialBlockList.add(domainEntry);
+
+                                            //Log.i("BlockLists", "Domain initial block list added: " + domain + " , " + entryBase);
+                                        }
+                                    } else if (entry.endsWith("|")) {
+                                        // Remove the final `|`.
+                                        String entryBase = entry.substring(0, entry.length() - 1);
+
+                                        String[] domainEntry = {domain, entryBase};
+
+                                        domainFinalBlockList.add(domainEntry);
+
+                                        Log.i("BlockLists", "Domain final block list added: " + domain + " , " + entryBase);
+                                    } else if (entry.contains("\\")) {
+                                        String[] domainEntry = {domain, entry};
+
+                                        domainRegularExpressionBlockList.add(domainEntry);
+
+                                        // Log.i("BlockLists", "Domain regular expression block list added: " + domain + " , " + entry);
+                                    } else {
+                                        String[] domainEntry = {domain, entry};
+
+                                        domainBlockList.add(domainEntry);
+
+                                        //Log.i("BlockLists", "Domain block list added: " + domain + " , " + entry);
+                                    }
+                                } while (domains.contains("|"));
+                            }
+                        }
+                    } else if (blockListEntry.contains("~")) {  // Whitelist entries.
+                        // Remove the filter options.
+                        blockListEntry = blockListEntry.substring(0, blockListEntry.indexOf("$"));
+
+                        // Strip any trailing `*`.
+                        if (blockListEntry.endsWith("*")) {
+                            blockListEntry = blockListEntry.substring(0, blockListEntry.length() -1);
+                        }
+
+                        if (blockListEntry.contains("*")) {
+                            int wildcardIndex = blockListEntry.indexOf("*");
+
+                            String firstEntry = blockListEntry.substring(0, wildcardIndex);
+                            String secondEntry = blockListEntry.substring(wildcardIndex + 1);
+
+                            if (firstEntry.endsWith("^")) {
+                                String firstEntryBase = firstEntry.substring(0, firstEntry.length() - 1);
+
+                                String firstEntry1 = firstEntryBase + ":";
+                                String firstEntry2 = firstEntryBase + "/";
+                                String firstEntry3 = firstEntryBase + "?";
+                                String firstEntry4 = firstEntryBase + "=";
+                                String firstEntry5 = firstEntryBase + "&";
+
+                                String[] doubleEntry1 = {firstEntry1, secondEntry};
+                                String[] doubleEntry2 = {firstEntry2, secondEntry};
+                                String[] doubleEntry3 = {firstEntry3, secondEntry};
+                                String[] doubleEntry4 = {firstEntry4, secondEntry};
+                                String[] doubleEntry5 = {firstEntry5, secondEntry};
+
+                                multiEntryWhiteList.add(doubleEntry1);
+                                multiEntryWhiteList.add(doubleEntry2);
+                                multiEntryWhiteList.add(doubleEntry3);
+                                multiEntryWhiteList.add(doubleEntry4);
+                                multiEntryWhiteList.add(doubleEntry5);
+
+                                //Log.i("BlockLists", "Multi entry white list added: " + firstEntry1 + " , " + secondEntry);
+                                //Log.i("BlockLists", "Multi entry white list added: " + firstEntry2 + " , " + secondEntry);
+                                //Log.i("BlockLists", "Multi entry white list added: " + firstEntry3 + " , " + secondEntry);
+                                //Log.i("BlockLists", "Multi entry white list added: " + firstEntry4 + " , " + secondEntry);
+                                //Log.i("BlockLists", "Multi entry white list added: " + firstEntry5 + " , " + secondEntry);
+                            } else {
+                                String[] doubleEntry = {firstEntry, secondEntry};
+
+                                multiEntryWhiteList.add(doubleEntry);
+
+                                //Log.i("BlockLists", "Multi entry white list added: " + firstEntry + " , " + secondEntry);
+                            }
+                        } else {
+                            if (blockListEntry.endsWith("^")) {
+                                String blockListEntryBase = blockListEntry.substring(0, blockListEntry.length() - 1);
+
+                                String blockListEntry1 = blockListEntryBase + ":";
+                                String blockListEntry2 = blockListEntryBase + "/";
+                                String blockListEntry3 = blockListEntryBase + "?";
+                                String blockListEntry4 = blockListEntryBase + "=";
+                                String blockListEntry5 = blockListEntryBase + "&";
+
+                                mainWhiteList.add(blockListEntry1);
+                                mainWhiteList.add(blockListEntry2);
+                                mainWhiteList.add(blockListEntry3);
+                                mainWhiteList.add(blockListEntry4);
+                                mainWhiteList.add(blockListEntry5);
+
+                                // Log.i("BlockLists", "Main white list added: " + blockListEntry1);
+                                // Log.i("BlockLists", "Main white list added: " + blockListEntry2);
+                                // Log.i("BlockLists", "Main white list added: " + blockListEntry3);
+                                // Log.i("BlockLists", "Main white list added: " + blockListEntry4);
+                                // Log.i("BlockLists", "Main white list added: " + blockListEntry5);
+                            } else {
+                                mainWhiteList.add(blockListEntry);
+
+                                // Log.i("BlockLists", "Main white list added: " + blockListEntry);
+                            }
+                        }
+                    } else if (blockListEntry.contains("\\")) {  // Regular expressions.
+                        // Remove the filter options.
+                        blockListEntry = blockListEntry.substring(0, blockListEntry.indexOf("$"));
+
+                        regularExpressionBlockList.add(blockListEntry);
+
+                        //Log.i("BlockLists", "Regular expression list added: " + blockListEntry);
+                    } else {
+                        // Remove the filter options.
+                        blockListEntry = blockListEntry.substring(0, blockListEntry.indexOf("$"));
+
+                        // Strip any trailing `*` or `^`.  Many of these entries have `^$`, which seem redundant for the purposes of Privacy Browser.
+                        if (blockListEntry.endsWith("*") || blockListEntry.endsWith("^")) {
+                            blockListEntry = blockListEntry.substring(0, blockListEntry.length() - 1);
+                        }
+
+                        if (blockListEntry.contains("*")) {  // Use a multi entry list.
+                            int wildcardIndex = blockListEntry.indexOf("*");
+
+                            String firstEntry = blockListEntry.substring(0, wildcardIndex);
+                            String secondEntry = blockListEntry.substring(wildcardIndex + 1);
+
+                            // Remove `.*` if it appears at the beginning of the second entry.
+                            if (secondEntry.startsWith(".*")) {
+                                secondEntry = secondEntry.substring(2);
+                            }
+
+                            // Create a third entry if required.
+                            if (secondEntry.contains("*")) {
+                                wildcardIndex = secondEntry.indexOf("*");
+
+                                String thirdEntry = secondEntry.substring(wildcardIndex + 1);
+                                secondEntry = secondEntry.substring(0, wildcardIndex);
+
+                                if (firstEntry.endsWith("^")) {
+                                    String firstEntryBase = firstEntry.substring(0, firstEntry.length() - 1);
+
+                                    String firstEntry1 = firstEntryBase + ":";
+                                    String firstEntry2 = firstEntryBase + "/";
+                                    String firstEntry3 = firstEntryBase + "?";
+                                    String firstEntry4 = firstEntryBase + "=";
+                                    String firstEntry5 = firstEntryBase + "&";
+
+                                    if (thirdEntry.endsWith("|")) {
+                                        thirdEntry = thirdEntry.substring(0, thirdEntry.length() - 1);
+
+                                        String[] tripleEntry1 = {firstEntry1, secondEntry, thirdEntry};
+                                        String[] tripleEntry2 = {firstEntry2, secondEntry, thirdEntry};
+                                        String[] tripleEntry3 = {firstEntry3, secondEntry, thirdEntry};
+                                        String[] tripleEntry4 = {firstEntry4, secondEntry, thirdEntry};
+                                        String[] tripleEntry5 = {firstEntry5, secondEntry, thirdEntry};
+
+                                        multiEntryFinalBlockList.add(tripleEntry1);
+                                        multiEntryFinalBlockList.add(tripleEntry2);
+                                        multiEntryFinalBlockList.add(tripleEntry3);
+                                        multiEntryFinalBlockList.add(tripleEntry4);
+                                        multiEntryFinalBlockList.add(tripleEntry5);
+
+                                        //Log.i("BlockLists", "Multi entry final tripple block list added: " + firstEntry1 + " , " + secondEntry + " , " + thirdEntry);
+                                        //Log.i("BlockLists", "Multi entry final tripple block list added: " + firstEntry2 + " , " + secondEntry + " , " + thirdEntry);
+                                        //Log.i("BlockLists", "Multi entry final tripple block list added: " + firstEntry3 + " , " + secondEntry + " , " + thirdEntry);
+                                        //Log.i("BlockLists", "Multi entry final tripple block list added: " + firstEntry4 + " , " + secondEntry + " , " + thirdEntry);
+                                        //Log.i("BlockLists", "Multi entry final tripple block list added: " + firstEntry5 + " , " + secondEntry + " , " + thirdEntry);
+                                    } else {
+                                        String[] tripleEntry1 = {firstEntry1, secondEntry, thirdEntry};
+                                        String[] tripleEntry2 = {firstEntry2, secondEntry, thirdEntry};
+                                        String[] tripleEntry3 = {firstEntry3, secondEntry, thirdEntry};
+                                        String[] tripleEntry4 = {firstEntry4, secondEntry, thirdEntry};
+                                        String[] tripleEntry5 = {firstEntry5, secondEntry, thirdEntry};
+
+                                        multiEntryBlockList.add(tripleEntry1);
+                                        multiEntryBlockList.add(tripleEntry2);
+                                        multiEntryBlockList.add(tripleEntry3);
+                                        multiEntryBlockList.add(tripleEntry4);
+                                        multiEntryBlockList.add(tripleEntry5);
+
+                                        //Log.i("BlockLists", "Multi entry tripple block list added: " + firstEntry1 + " , " + secondEntry + " , " + thirdEntry);
+                                        //Log.i("BlockLists", "Multi entry tripple block list added: " + firstEntry2 + " , " + secondEntry + " , " + thirdEntry);
+                                        //Log.i("BlockLists", "Multi entry tripple block list added: " + firstEntry3 + " , " + secondEntry + " , " + thirdEntry);
+                                        //Log.i("BlockLists", "Multi entry tripple block list added: " + firstEntry4 + " , " + secondEntry + " , " + thirdEntry);
+                                        //Log.i("BlockLists", "Multi entry tripple block list added: " + firstEntry5 + " , " + secondEntry + " , " + thirdEntry);
+                                    }
+                                } else {
+                                    String[] tripleEntry = {firstEntry, secondEntry, thirdEntry};
+
+                                    multiEntryBlockList.add(tripleEntry);
+
+                                    // Log.i("BlockLists", "Multi entry tripple block list added: " + firstEntry + " , " + secondEntry + " , " + thirdEntry);
+                                }
+                            } else {  // This is a double entry.
+                                if (firstEntry.startsWith("|")) {
+                                    String[] doubleEntry = {firstEntry.substring(1), secondEntry};
+
+                                    multiEntryInitialBlockList.add(doubleEntry);
+
+                                    //Log.i("BlockLists", "Multi entry initial block list added: " + firstEntry.substring(1) + " , " + secondEntry);
+                                } else if (firstEntry.startsWith("^")) {
+                                    String firstEntryBase = firstEntry.substring(1);
+
+                                    String firstEntry1 = ":" + firstEntryBase;
+                                    String firstEntry2 = "/" + firstEntryBase;
+                                    String firstEntry3 = "?" + firstEntryBase;
+                                    String firstEntry4 = "=" + firstEntryBase;
+                                    String firstEntry5 = "&" + firstEntryBase;
+
+                                    String[] doubleEntry1 = {firstEntry1, secondEntry};
+                                    String[] doubleEntry2 = {firstEntry2, secondEntry};
+                                    String[] doubleEntry3 = {firstEntry3, secondEntry};
+                                    String[] doubleEntry4 = {firstEntry4, secondEntry};
+                                    String[] doubleEntry5 = {firstEntry5, secondEntry};
+
+                                    multiEntryBlockList.add(doubleEntry1);
+                                    multiEntryBlockList.add(doubleEntry2);
+                                    multiEntryBlockList.add(doubleEntry3);
+                                    multiEntryBlockList.add(doubleEntry4);
+                                    multiEntryBlockList.add(doubleEntry5);
+
+                                    //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry1 + " , " + secondEntry);
+                                    //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry2 + " , " + secondEntry);
+                                    //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry3 + " , " + secondEntry);
+                                    //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry4 + " , " + secondEntry);
+                                    //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry5 + " , " + secondEntry);
+                                } else if (firstEntry.endsWith("^")) {
+                                    String firstEntryBase = firstEntry.substring(0, firstEntry.length() - 1);
+
+                                    String firstEntry1 = firstEntryBase + ":";
+                                    String firstEntry2 = firstEntryBase + "/";
+                                    String firstEntry3 = firstEntryBase + "?";
+                                    String firstEntry4 = firstEntryBase + "=";
+                                    String firstEntry5 = firstEntryBase + "&";
+
+                                    String[] doubleEntry1 = {firstEntry1, secondEntry};
+                                    String[] doubleEntry2 = {firstEntry2, secondEntry};
+                                    String[] doubleEntry3 = {firstEntry3, secondEntry};
+                                    String[] doubleEntry4 = {firstEntry4, secondEntry};
+                                    String[] doubleEntry5 = {firstEntry5, secondEntry};
+
+                                    multiEntryBlockList.add(doubleEntry1);
+                                    multiEntryBlockList.add(doubleEntry2);
+                                    multiEntryBlockList.add(doubleEntry3);
+                                    multiEntryBlockList.add(doubleEntry4);
+                                    multiEntryBlockList.add(doubleEntry5);
+
+                                    //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry1 + " , " + secondEntry);
+                                    //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry2 + " , " + secondEntry);
+                                    //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry3 + " , " + secondEntry);
+                                    //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry4 + " , " + secondEntry);
+                                    //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry5 + " , " + secondEntry);
+                                } else if (secondEntry.startsWith("^")) {
+                                    String secondEntryBase = secondEntry.substring(1);
+
+                                    String secondEntry1 = ":" + secondEntryBase;
+                                    String secondEntry2 = "/" + secondEntryBase;
+                                    String secondEntry3 = "?" + secondEntryBase;
+                                    String secondEntry4 = "=" + secondEntryBase;
+                                    String secondEntry5 = "&" + secondEntryBase;
+
+                                    String[] doubleEntry1 = {firstEntry, secondEntry1};
+                                    String[] doubleEntry2 = {firstEntry, secondEntry2};
+                                    String[] doubleEntry3 = {firstEntry, secondEntry3};
+                                    String[] doubleEntry4 = {firstEntry, secondEntry4};
+                                    String[] doubleEntry5 = {firstEntry, secondEntry5};
+
+                                    multiEntryBlockList.add(doubleEntry1);
+                                    multiEntryBlockList.add(doubleEntry2);
+                                    multiEntryBlockList.add(doubleEntry3);
+                                    multiEntryBlockList.add(doubleEntry4);
+                                    multiEntryBlockList.add(doubleEntry5);
+
+                                    //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry + " , " + secondEntry1);
+                                    //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry + " , " + secondEntry2);
+                                    //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry + " , " + secondEntry3);
+                                    //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry + " , " + secondEntry4);
+                                    //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry + " , " + secondEntry5);
+                                } else if (secondEntry.endsWith("^")) {
+                                    String secondEntryBase = secondEntry.substring(0, secondEntry.length() - 1);
+
+                                    String secondEntry1 = secondEntryBase + ":";
+                                    String secondEntry2 = secondEntryBase + "/";
+                                    String secondEntry3 = secondEntryBase + "?";
+                                    String secondEntry4 = secondEntryBase + "=";
+                                    String secondEntry5 = secondEntryBase + "&";
+
+                                    String[] doubleEntry1 = {firstEntry, secondEntry1};
+                                    String[] doubleEntry2 = {firstEntry, secondEntry2};
+                                    String[] doubleEntry3 = {firstEntry, secondEntry3};
+                                    String[] doubleEntry4 = {firstEntry, secondEntry4};
+                                    String[] doubleEntry5 = {firstEntry, secondEntry5};
+
+                                    String[] doubleEntryFinal = {firstEntry, secondEntryBase};
+
+                                    multiEntryBlockList.add(doubleEntry1);
+                                    multiEntryBlockList.add(doubleEntry2);
+                                    multiEntryBlockList.add(doubleEntry3);
+                                    multiEntryBlockList.add(doubleEntry4);
+                                    multiEntryBlockList.add(doubleEntry5);
+
+                                    multiEntryFinalBlockList.add(doubleEntryFinal);
+
+                                    //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry + " , " + secondEntry1);
+                                    //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry + " , " + secondEntry2);
+                                    //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry + " , " + secondEntry3);
+                                    //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry + " , " + secondEntry4);
+                                    //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry + " , " + secondEntry5);
+
+                                    //Log.i("BlockLists", "Multi entry final block list added: " + firstEntry + " , " + secondEntryBase);
+                                } else {
+                                    String[] doubleEntry = {firstEntry, secondEntry};
+
+                                    multiEntryBlockList.add(doubleEntry);
+
+                                    //Log.i("BlockLists", "Multi entry block list added: " + firstEntry + " , " + secondEntry);
+                                }
+                            }
+                        } else if (blockListEntry.startsWith("|")) {  // Populate the initial block list.
+                            // Strip the initial `|`.
+                            blockListEntry = blockListEntry.substring(1);
+
+                            // Populate the initial block list.
+                            initialBlockList.add(blockListEntry);
+
+                            //Log.i("BlockLists", "Initial block list added: " + blockListEntry);
+                        } else {  // Populate the main block list.
+                            mainBlockList.add(blockListEntry);
+
+                            //Log.i("BlockLists", "Main block list added: " + blockListEntry);
+                        }
+                    }
+                } else {  // Populate the standard lists.
+                    // Strip out any initial `||`.  These will be treated like any other entry.
+                    if (blockListEntry.startsWith("||")) {
+                        blockListEntry = blockListEntry.substring(2);
+                    }
+
+                    // Strip out any initial `*`.
+                    if (blockListEntry.startsWith("*")) {
+                        blockListEntry = blockListEntry.substring(1);
+                    }
+
+                    // Strip out any trailing `*`.
+                    if (blockListEntry.endsWith("*")) {
+                        blockListEntry = blockListEntry.substring(0, blockListEntry.length() - 1);
+                    }
+
+                    if (blockListEntry.contains("*")) {  // Entries that contain a `*` in the middle have to be treated specially.
+                        int wildcardIndex = blockListEntry.indexOf("*");
+
+                        String firstEntry = blockListEntry.substring(0, wildcardIndex);
+                        String secondEntry = blockListEntry.substring(wildcardIndex + 1);
+
+                        // Remove `.*` if it appears at the beginning of the second entry.
+                        if (secondEntry.startsWith(".*")) {
+                            secondEntry = secondEntry.substring(2);
+                        }
+
+                        // Create a third entry if required.
+                        if (secondEntry.contains("*")) {
+                            wildcardIndex = secondEntry.indexOf("*");
+
+                            String thirdEntry = secondEntry.substring(wildcardIndex + 1);
+                            secondEntry = secondEntry.substring(0, wildcardIndex);
+
+                            String[] tripleEntry = {firstEntry, secondEntry, thirdEntry};
+
+                            multiEntryBlockList.add(tripleEntry);
+
+                            //Log.i("BlockLists", "Multi entry tripple block list added: " + firstEntry + " , " + secondEntry + " , " + thirdEntry);
+                        } else {
+                            if (firstEntry.startsWith("|")) {
+                                String[] doubleEntry = {firstEntry.substring(1), secondEntry};
+
+                                multiEntryInitialBlockList.add(doubleEntry);
+
+                                //Log.i("BlockLists", "Multi entry initial block list added: " + firstEntry.substring(1) + " , " + secondEntry);
+                            } else if (firstEntry.startsWith("^")) {
+                                String firstEntryBase = firstEntry.substring(1);
+
+                                String firstEntry1 = ":" + firstEntryBase;
+                                String firstEntry2 = "/" + firstEntryBase;
+                                String firstEntry3 = "?" + firstEntryBase;
+                                String firstEntry4 = "=" + firstEntryBase;
+                                String firstEntry5 = "&" + firstEntryBase;
+
+                                String[] doubleEntry1 = {firstEntry1, secondEntry};
+                                String[] doubleEntry2 = {firstEntry2, secondEntry};
+                                String[] doubleEntry3 = {firstEntry3, secondEntry};
+                                String[] doubleEntry4 = {firstEntry4, secondEntry};
+                                String[] doubleEntry5 = {firstEntry5, secondEntry};
+
+                                multiEntryBlockList.add(doubleEntry1);
+                                multiEntryBlockList.add(doubleEntry2);
+                                multiEntryBlockList.add(doubleEntry3);
+                                multiEntryBlockList.add(doubleEntry4);
+                                multiEntryBlockList.add(doubleEntry5);
+
+                                //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry1 + " , " + secondEntry);
+                                //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry2 + " , " + secondEntry);
+                                //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry3 + " , " + secondEntry);
+                                //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry4 + " , " + secondEntry);
+                                //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry5 + " , " + secondEntry);
+                            } else if (secondEntry.startsWith("^")) {
+                                String secondEntryBase = secondEntry.substring(1);
+
+                                String secondEntry1 = ":" + secondEntryBase;
+                                String secondEntry2 = "/" + secondEntryBase;
+                                String secondEntry3 = "?" + secondEntryBase;
+                                String secondEntry4 = "=" + secondEntryBase;
+                                String secondEntry5 = "&" + secondEntryBase;
+
+                                String[] doubleEntry1 = {firstEntry, secondEntry1};
+                                String[] doubleEntry2 = {firstEntry, secondEntry2};
+                                String[] doubleEntry3 = {firstEntry, secondEntry3};
+                                String[] doubleEntry4 = {firstEntry, secondEntry4};
+                                String[] doubleEntry5 = {firstEntry, secondEntry5};
+
+                                multiEntryBlockList.add(doubleEntry1);
+                                multiEntryBlockList.add(doubleEntry2);
+                                multiEntryBlockList.add(doubleEntry3);
+                                multiEntryBlockList.add(doubleEntry4);
+                                multiEntryBlockList.add(doubleEntry5);
+
+                                //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry + " , " + secondEntry1);
+                                //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry + " , " + secondEntry2);
+                                //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry + " , " + secondEntry3);
+                                //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry + " , " + secondEntry4);
+                                //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry + " , " + secondEntry5);
+                            } else if (secondEntry.endsWith("^")) {
+                                String secondEntryBase = secondEntry.substring(0, secondEntry.length() - 1);
+
+                                String secondEntry1 = secondEntryBase + ":";
+                                String secondEntry2 = secondEntryBase + "/";
+                                String secondEntry3 = secondEntryBase + "?";
+                                String secondEntry4 = secondEntryBase + "=";
+                                String secondEntry5 = secondEntryBase + "&";
+
+                                String[] doubleEntry1 = {firstEntry, secondEntry1};
+                                String[] doubleEntry2 = {firstEntry, secondEntry2};
+                                String[] doubleEntry3 = {firstEntry, secondEntry3};
+                                String[] doubleEntry4 = {firstEntry, secondEntry4};
+                                String[] doubleEntry5 = {firstEntry, secondEntry5};
+
+                                String[] doubleEntryFinal = {firstEntry, secondEntryBase};
+
+                                multiEntryBlockList.add(doubleEntry1);
+                                multiEntryBlockList.add(doubleEntry2);
+                                multiEntryBlockList.add(doubleEntry3);
+                                multiEntryBlockList.add(doubleEntry4);
+                                multiEntryBlockList.add(doubleEntry5);
+
+                                multiEntryFinalBlockList.add(doubleEntryFinal);
+
+                                //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry + " , " + secondEntry1);
+                                //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry + " , " + secondEntry2);
+                                //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry + " , " + secondEntry3);
+                                //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry + " , " + secondEntry4);
+                                //Log.i("BlockLists", "Multi entry ^ block list added: " + firstEntry + " , " + secondEntry5);
+
+                                //Log.i("BlockLists", "Multi entry final block list added: " + firstEntry + " , " + secondEntryBase);
+                            } else {
+                                String[] doubleEntry = {firstEntry, secondEntry};
+
+                                multiEntryBlockList.add(doubleEntry);
+
+                                //Log.i("BlockLists", "Multi entry block list added: " + firstEntry + " , " + secondEntry);
+                            }
+                        }
+                    } else {
+                        if (blockListEntry.endsWith("^")) {  // `^` matches against `:`, `/`, `?`, `=`, `&`, and the end of the URL.
+                            // Add all the variations to the main block list.
+                            mainBlockList.add(blockListEntry.substring(0, blockListEntry.length() - 1) + ":");
+                            mainBlockList.add(blockListEntry.substring(0, blockListEntry.length() - 1) + "/");
+                            mainBlockList.add(blockListEntry.substring(0, blockListEntry.length() - 1) + "?");
+                            mainBlockList.add(blockListEntry.substring(0, blockListEntry.length() - 1) + "=");
+                            mainBlockList.add(blockListEntry.substring(0, blockListEntry.length() - 1) + "&");
+
+                            // Add the base block entry to the final block list.
+                            finalBlockList.add(blockListEntry.substring(0, blockListEntry.length() - 1));
+
+                            //Log.i("BlockLists", "Main block list added: " + blockListEntry.substring(0, blockListEntry.length() - 1) + ":");
+                            //Log.i("BlockLists", "Main block list added: " + blockListEntry.substring(0, blockListEntry.length() - 1) + "/");
+                            //Log.i("BlockLists", "Main block list added: " + blockListEntry.substring(0, blockListEntry.length() - 1) + "?");
+                            //Log.i("BlockLists", "Main block list added: " + blockListEntry.substring(0, blockListEntry.length() - 1) + "=");
+                            //Log.i("BlockLists", "Main block list added: " + blockListEntry.substring(0, blockListEntry.length() - 1) + "&");
+                            //Log.i("BlockLists", "Final block list added: " + blockListEntry.substring(0, blockListEntry.length() - 1));
+                        } else {  // This is a basic entry.
+                            // Add the modified block list entry to the main block list.
+                            mainBlockList.add(blockListEntry);
+
+                            //Log.i("BlockLists", "Main block list added: " + blockListEntry);
+                        }
+                    }
                 }
             }
 
@@ -443,8 +1145,7 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
             // The asset exists, so the `IOException` will never be thrown.
         }
 
-        // **DEBUG** Log the finishing of the loading of the ad blocker.
-        Log.i("AdBlocker", "Finish loading ad blocker");
+        Log.i("BlockLists", "Finish populating block lists");
 
         // Set the content view.
         setContentView(R.layout.main_drawerlayout);
@@ -625,7 +1326,8 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                             // Set `rootCoordinatorLayout` to fit under the status and navigation bars.
                             rootCoordinatorLayout.setFitsSystemWindows(false);
 
-                            if (translucentNavigationBarOnFullscreen) {  // There is an Android Support Library bug that causes a scrim to print on the right side of the `Drawer Layout` when the navigation bar is displayed on the right of the screen.
+                            // There is an Android Support Library bug that causes a scrim to print on the right side of the `Drawer Layout` when the navigation bar is displayed on the right of the screen.
+                            if (translucentNavigationBarOnFullscreen) {
                                 // Set the navigation bar to be translucent.
                                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
                             }
@@ -812,15 +1514,15 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
         // The `DrawerListener` allows us to update the Navigation Menu.
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
+            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
             }
 
             @Override
-            public void onDrawerOpened(View drawerView) {
+            public void onDrawerOpened(@NonNull View drawerView) {
             }
 
             @Override
-            public void onDrawerClosed(View drawerView) {
+            public void onDrawerClosed(@NonNull View drawerView) {
             }
 
             @Override
@@ -888,37 +1590,164 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                 }
             }
 
-            // Block ads.  We have to use the deprecated `shouldInterceptRequest` until minimum API >= 21.
+            // Check requests against the block lists.  The deprecated `shouldInterceptRequest` must be used until minimum API >= 21.
             @SuppressWarnings("deprecation")
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url){
-                if (adBlockerEnabled) {  // Block ads.
-                    // Extract the host from `url`.
-                    Uri requestUri = Uri.parse(url);
-                    String requestHost = requestUri.getHost();
+                if (adBlockerEnabled) {  // Check the block lists.
+                    Log.i("BlockLists", "Begin check for " + url);
 
-                    // Initialize a variable to track if this is an ad server.
-                    boolean requestHostIsAdServer = false;
+                    Uri uri = Uri.parse(url);
+                    String domain = uri.getHost();
 
-                    // Check all the subdomains of `requestHost` if it is not `null` against the ad server database.
-                    if (requestHost != null) {
-                        while (requestHost.contains(".") && !requestHostIsAdServer) {  // Stop checking if we run out of `.` or if we already know that `requestHostIsAdServer` is `true`.
-                            if (adServersSet.contains(requestHost)) {
-                                requestHostIsAdServer = true;
-                            }
+                    for (String whiteListEntry : mainWhiteList) {
+                        if (url.contains(whiteListEntry)) {
+                            Log.i("BlockLists", "Request allowed by main white list: " + whiteListEntry + " | " + url);
 
-                            // Strip out the lowest subdomain of `requestHost`.
-                            requestHost = requestHost.substring(requestHost.indexOf(".") + 1);
+                            // `Return null` loads the requested resource.
+                            return null;
                         }
                     }
 
-                    if (requestHostIsAdServer) {  // It is an ad server.
-                        // Return an empty `WebResourceResponse`.
-                        return new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
-                    } else {  // It is not an ad server.
-                        // `return null` loads the requested resource.
-                        return null;
+                    for (String[] whiteListEntry : multiEntryWhiteList) {
+                        if (whiteListEntry.length == 2) {  // There are two entries.
+                            if (url.contains(whiteListEntry[0]) && url.contains(whiteListEntry[1])) {
+                                Log.i("BlockLists", "Request allowed by multi entry white list:  " + whiteListEntry[0] + " , " + whiteListEntry[1] + " | " + url);
+
+                                // `Return null` loads the requested resource.
+                                return null;
+                            }
+                        } else {  // There are three entries.
+                            if (url.contains(whiteListEntry[0]) && url.contains(whiteListEntry[1]) && url.contains(whiteListEntry[2])) {
+                                Log.i("BlockLists", "Request allowed by multi entry white list:  " + whiteListEntry[0] + " , " + whiteListEntry[1] + " , " + whiteListEntry[2] + " | " + url);
+
+                                // `Return null` loads the requested resource.
+                                return null;
+                            }
+                        }
                     }
+
+                    for (String blockListEntry : mainBlockList) {
+                        if (url.contains(blockListEntry)) {
+                            Log.i("BlockLists", "Request blocked by main block list: " + blockListEntry + " | " + url);
+
+                            // Return an empty `WebResourceResponse`.
+                            return new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
+                        }
+                    }
+
+                    for (String blockListEntry : initialBlockList) {
+                        if (url.startsWith(blockListEntry)) {
+                            Log.i("BlockLists", "Request blocked by initial block list: " + blockListEntry + " | " + url);
+
+                            // Return an empty `WebResourceResponse`.
+                            return new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
+                        }
+                    }
+
+                    for (String blockListEntry : finalBlockList) {
+                        if (url.endsWith(blockListEntry)) {
+                            Log.i("BlockLists", "Request blocked by final block list: " + blockListEntry + " | " + url);
+
+                            // Return an empty `WebResourceResponse`.
+                            return new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
+                        }
+                    }
+
+                    for (String[] blockListEntry : multiEntryBlockList) {
+                        if (blockListEntry.length == 2) {  // There are two entries.
+                            if (url.contains(blockListEntry[0]) && url.contains(blockListEntry[1])) {
+                                Log.i("BlockLists", "Request blocked by multi entry block list: " + blockListEntry[0] + " , " + blockListEntry[1] + " | " + url);
+
+                                // Return an empty `WebResourceResponse`.
+                                return new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
+                            }
+                        } else {  // There are three entries.
+                            if (url.contains(blockListEntry[0]) && url.contains(blockListEntry[1]) && url.contains(blockListEntry[2])) {
+                                Log.i("BlockLists", "Request blocked by multi entry block list: " + blockListEntry[0] + " , " + blockListEntry[1] + " , " + blockListEntry[2] + " | " + url);
+
+                                // Return an empty `WebResourceResponse`.
+                                return new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
+                            }
+                        }
+                    }
+
+                    for (String[] blockListEntry : multiEntryInitialBlockList) {
+                        if (url.startsWith(blockListEntry[0]) && url.contains(blockListEntry[1])) {
+                            Log.i("BlockLists", "Request blocked by multi entry initial block list: " + blockListEntry[0] + " , " + blockListEntry[1] + " | " + url);
+
+                            // Return an empty `WebResourceResponse`.
+                            return new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
+                        }
+                    }
+
+                    for (String[] blockListEntry : multiEntryFinalBlockList) {
+                        if (url.contains(blockListEntry[0]) && url.endsWith(blockListEntry[1])) {
+                            Log.i("BlockLists", "Request blocked by multi entry final block list: " + blockListEntry[0] + " , " + blockListEntry[1] + " | " + url);
+
+                            // Return an empty `WebResourceResponse`.
+                            return new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
+                        }
+                    }
+
+                    for (String[] blockListEntry : domainBlockList) {
+                        if (domain.endsWith(blockListEntry[0]) && url.contains(blockListEntry[1])) {
+                            Log.i("BlockLists", "Request blocked by domain block list: " + blockListEntry[0] + " , " + blockListEntry[1] + " | " + url);
+
+                            // Return an empty `WebResourceResponse`.
+                            return new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
+                        }
+                    }
+
+                    for (String[] blockListEntry : domainInitialBlockList) {
+                        if (domain.endsWith(blockListEntry[0]) && url.startsWith(blockListEntry[1])) {
+                            Log.i("BlockLists", "Request blocked by domain initial block list: " + blockListEntry[0] + " , " + blockListEntry[1] + " | " + url);
+
+                            // Return an empty `WebResourceResponse`.
+                            return new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
+                        }
+                    }
+
+                    for (String[] blockListEntry : domainFinalBlockList) {
+                        if (domain.endsWith(blockListEntry[0]) && url.endsWith(blockListEntry[2])) {
+                            Log.i("BlockLists", "Request blocked by domain final block list: " + blockListEntry[0] + " , " + blockListEntry[1] + " | " + url);
+
+                            // Return an empty `WebResourceResponse`.
+                            return new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
+                        }
+                    }
+
+                    for (String[] blockListEntry : domainMultiEntryBlockList) {
+                        if (domain.endsWith(blockListEntry[0]) && url.contains(blockListEntry[1]) && url.contains(blockListEntry[2])) {
+                            Log.i("BlockLists", "Request blocked by domain multi entry block list: " + blockListEntry[0] + " , " + blockListEntry[1] + " , " + blockListEntry[2] + " | " + url);
+
+                            // Return an empty `WebResourceResponse`.
+                            return new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
+                        }
+                    }
+
+                    for (String[] blockListEntry : domainRegularExpressionBlockList) {
+                        if (domain.endsWith(blockListEntry[0]) && Pattern.matches(blockListEntry[1], url)) {
+                            Log.i("BlockLists", "Request blocked by domain regular expression block list: " + blockListEntry[0] + " , " + blockListEntry[1] + " | " + url);
+
+                            // Return an empty `WebResourceResponse`.
+                            return new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
+                        }
+                    }
+
+                    for (String blockListEntry : regularExpressionBlockList) {
+                        if (Pattern.matches(blockListEntry, url)) {
+                            Log.i("BlockLists", "Request blocked by regular expression block list: " + blockListEntry + " | " + url);
+
+                            // Return an empty `WebResourceResponse`.
+                            return new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
+                        }
+                    }
+
+                    Log.i("BlockLists", "End check for " + url);
+
+                    // `return null` loads the requested resource.
+                    return null;
                 } else {  // Ad blocking is disabled.
                     // `return null` loads the requested resource.
                     return null;
@@ -1077,9 +1906,11 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                         }
 
                         // Check to see if the pinned SSL certificate matches the current website certificate.
-                        if (!currentWebsiteIssuedToCName.equals(pinnedDomainSslIssuedToCNameString) || !currentWebsiteIssuedToOName.equals(pinnedDomainSslIssuedToONameString) || !currentWebsiteIssuedToUName.equals(pinnedDomainSslIssuedToUNameString) ||
-                                !currentWebsiteIssuedByCName.equals(pinnedDomainSslIssuedByCNameString) || !currentWebsiteIssuedByOName.equals(pinnedDomainSslIssuedByONameString) || !currentWebsiteIssuedByUName.equals(pinnedDomainSslIssuedByUNameString) ||
-                                !currentWebsiteSslStartDateString.equals(pinnedDomainSslStartDateString) || !currentWebsiteSslEndDateString.equals(pinnedDomainSslEndDateString)) {  // The pinned SSL certificate doesn't match the current domain certificate.
+                        if (!currentWebsiteIssuedToCName.equals(pinnedDomainSslIssuedToCNameString) || !currentWebsiteIssuedToOName.equals(pinnedDomainSslIssuedToONameString) ||
+                                !currentWebsiteIssuedToUName.equals(pinnedDomainSslIssuedToUNameString) || !currentWebsiteIssuedByCName.equals(pinnedDomainSslIssuedByCNameString) ||
+                                !currentWebsiteIssuedByOName.equals(pinnedDomainSslIssuedByONameString) || !currentWebsiteIssuedByUName.equals(pinnedDomainSslIssuedByUNameString) ||
+                                !currentWebsiteSslStartDateString.equals(pinnedDomainSslStartDateString) || !currentWebsiteSslEndDateString.equals(pinnedDomainSslEndDateString)) {
+                                // The pinned SSL certificate doesn't match the current domain certificate.
                             //Display the pinned SSL certificate mismatch `AlertDialog`.
                             AppCompatDialogFragment pinnedSslCertificateMismatchDialogFragment = new PinnedSslCertificateMismatchDialog();
                             pinnedSslCertificateMismatchDialogFragment.show(getSupportFragmentManager(), getString(R.string.ssl_certificate_mismatch));
@@ -1106,9 +1937,11 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
 
                 // Proceed to the website if the current SSL website certificate matches the pinned domain certificate.
                 if (pinnedDomainSslCertificate &&
-                        currentWebsiteIssuedToCName.equals(pinnedDomainSslIssuedToCNameString) && currentWebsiteIssuedToOName.equals(pinnedDomainSslIssuedToONameString) && currentWebsiteIssuedToUName.equals(pinnedDomainSslIssuedToUNameString) &&
-                        currentWebsiteIssuedByCName.equals(pinnedDomainSslIssuedByCNameString) && currentWebsiteIssuedByOName.equals(pinnedDomainSslIssuedByONameString) && currentWebsiteIssuedByUName.equals(pinnedDomainSslIssuedByUNameString) &&
-                        currentWebsiteSslStartDate.equals(pinnedDomainSslStartDate) && currentWebsiteSslEndDate.equals(pinnedDomainSslEndDate)) {  // An SSL certificate is pinned and matches the current domain certificate.
+                        currentWebsiteIssuedToCName.equals(pinnedDomainSslIssuedToCNameString) && currentWebsiteIssuedToOName.equals(pinnedDomainSslIssuedToONameString) &&
+                        currentWebsiteIssuedToUName.equals(pinnedDomainSslIssuedToUNameString) && currentWebsiteIssuedByCName.equals(pinnedDomainSslIssuedByCNameString) &&
+                        currentWebsiteIssuedByOName.equals(pinnedDomainSslIssuedByONameString) && currentWebsiteIssuedByUName.equals(pinnedDomainSslIssuedByUNameString) &&
+                        currentWebsiteSslStartDate.equals(pinnedDomainSslStartDate) && currentWebsiteSslEndDate.equals(pinnedDomainSslEndDate)) {
+                        // An SSL certificate is pinned and matches the current domain certificate.
                     // Proceed to the website without displaying an error.
                     handler.proceed();
                 } else {  // Either there isn't a pinned SSL certificate or it doesn't match the current website certificate.
@@ -1131,13 +1964,13 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
             public void onProgressChanged(WebView view, int progress) {
                 // Inject the night mode CSS if night mode is enabled.
                 if (nightMode) {
-                    // `background-color: #212121` sets the background to be dark gray.  `color: #BDBDBD` sets the text color to be light gray.  `box-shadow: none` removes a lower underline on links used by WordPress.
-                    // `text-decoration: none` removes all text underlines.  `text-shadow: none` removes text shadows, which usually have a hard coded color.  `border: none` removes all borders, which can also be used to underline text.
+                    // `background-color: #212121` sets the background to be dark gray.  `color: #BDBDBD` sets the text color to be light gray.  `box-shadow: none` removes a lower underline on links
+                    // used by WordPress.  `text-decoration: none` removes all text underlines.  `text-shadow: none` removes text shadows, which usually have a hard coded color.
+                    // `border: none` removes all borders, which can also be used to underline text.
                     // `a {color: #1565C0}` sets links to be a dark blue.  `!important` takes precedent over any existing sub-settings.
-                    mainWebView.evaluateJavascript("(function() {var parent = document.getElementsByTagName('head').item(0); var style = document.createElement('style'); style.type = 'text/css'; style.innerHTML = '" +
-                            "* {background-color: #212121 !important; color: #BDBDBD !important; box-shadow: none !important; text-decoration: none !important; text-shadow: none !important; border: none !important;}" +
-                            "a {color: #1565C0 !important;}" +
-                            "'; parent.appendChild(style)})()", value -> {
+                    mainWebView.evaluateJavascript("(function() {var parent = document.getElementsByTagName('head').item(0); var style = document.createElement('style'); style.type = 'text/css'; " +
+                            "style.innerHTML = '* {background-color: #212121 !important; color: #BDBDBD !important; box-shadow: none !important; text-decoration: none !important;" +
+                            "text-shadow: none !important; border: none !important;} a {color: #1565C0 !important;}'; parent.appendChild(style)})()", value -> {
                                 // Initialize a `Handler` to display `mainWebView`.
                                 Handler displayWebViewHandler = new Handler();
 
@@ -1166,7 +1999,8 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                     progressBar.setVisibility(View.GONE);
 
                     // Display `mainWebView` if night mode is disabled.
-                    // Because of a race condition between `applyDomainSettings` and `onPageStarted`, when night mode is set by domain settings the `WebView` may be hidden even if night mode is not currently enabled.
+                    // Because of a race condition between `applyDomainSettings` and `onPageStarted`, when night mode is set by domain settings the `WebView` may be hidden even if night mode is not
+                    // currently enabled.
                     if (!nightMode) {
                         mainWebView.setVisibility(View.VISIBLE);
                     }
@@ -1296,7 +2130,8 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
         privacyBrowserRuntime = Runtime.getRuntime();
 
         // Store the application's private data directory.
-        privateDataDirectoryString = getApplicationInfo().dataDir;  // `dataDir` will vary, but will be something like `/data/user/0/com.stoutner.privacybrowser.standard`, which links to `/data/data/com.stoutner.privacybrowser.standard`.
+        privateDataDirectoryString = getApplicationInfo().dataDir;
+        // `dataDir` will vary, but will be something like `/data/user/0/com.stoutner.privacybrowser.standard`, which links to `/data/data/com.stoutner.privacybrowser.standard`.
 
         // Initialize `inFullScreenBrowsingMode`, which is always false at this point because Privacy Browser never starts in full screen browsing mode.
         inFullScreenBrowsingMode = false;
@@ -1315,9 +2150,10 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
         // Initialize `webViewTitle`.
         webViewTitle = getString(R.string.no_title);
 
-        // Initialize `favoriteIconBitmap`.  We have to use `ContextCompat` until API >= 21.
+        // Initialize `favoriteIconBitmap`.  `ContextCompat` must be used until API >= 21.
         Drawable favoriteIconDrawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.world);
         BitmapDrawable favoriteIconBitmapDrawable = (BitmapDrawable) favoriteIconDrawable;
+        assert favoriteIconBitmapDrawable != null;
         favoriteIconDefaultBitmap = favoriteIconBitmapDrawable.getBitmap();
 
         // If the favorite icon is null, load the default.
@@ -1922,7 +2758,8 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                 // Show the Find on Page `RelativeLayout`.
                 findOnPageLinearLayout.setVisibility(View.VISIBLE);
 
-                // Display the keyboard.  We have to wait 200 ms before running the command to work around a bug in Android.  http://stackoverflow.com/questions/5520085/android-show-softkeyboard-with-showsoftinput-is-not-working
+                // Display the keyboard.  We have to wait 200 ms before running the command to work around a bug in Android.
+                // http://stackoverflow.com/questions/5520085/android-show-softkeyboard-with-showsoftinput-is-not-working
                 findOnPageEditText.postDelayed(() -> {
                     // Set the focus on `findOnPageEditText`.
                     findOnPageEditText.requestFocus();
@@ -2122,8 +2959,8 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                     try {
                         // Delete the main cache directory.
                         privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/cache");
-
-                        // Delete the secondary `Service Worker` cache directory.  We have to use a `String[]` because the directory contains a space and `Runtime.exec` will not escape the string correctly otherwise.
+                        // Delete the secondary `Service Worker` cache directory.
+                        // We have to use a `String[]` because the directory contains a space and `Runtime.exec` will not escape the string correctly otherwise.
                         privacyBrowserRuntime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Service Worker/"});
                     } catch (IOException e) {
                         // Do nothing if an error is thrown.
@@ -2196,7 +3033,8 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
             adView = findViewById(R.id.adview);
         }
 
-        // `invalidateOptionsMenu` should recalculate the number of action buttons from the menu to display on the app bar, but it doesn't because of the this bug:  https://code.google.com/p/android/issues/detail?id=20493#c8
+        // `invalidateOptionsMenu` should recalculate the number of action buttons from the menu to display on the app bar, but it doesn't because of the this bug:
+        // https://code.google.com/p/android/issues/detail?id=20493#c8
         // ActivityCompat.invalidateOptionsMenu(this);
     }
 
@@ -3185,7 +4023,8 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                     cookieManager.setAcceptThirdPartyCookies(mainWebView, thirdPartyCookiesEnabled);
                 }
 
-                // Only set the user agent if the webpage is not currently loading.  Otherwise, changing the user agent on redirects can cause the original website to reload.  <https://redmine.stoutner.com/issues/160>
+                // Only set the user agent if the webpage is not currently loading.  Otherwise, changing the user agent on redirects can cause the original website to reload.
+                // <https://redmine.stoutner.com/issues/160>
                 if (!urlIsLoading) {
                     switch (userAgentString) {
                         case "System default user agent":
@@ -3264,7 +4103,8 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                     cookieManager.setAcceptThirdPartyCookies(mainWebView, thirdPartyCookiesEnabled);
                 }
 
-                // Only set the user agent if the webpage is not currently loading.  Otherwise, changing the user agent on redirects can cause the original website to reload.  <https://redmine.stoutner.com/issues/160>
+                // Only set the user agent if the webpage is not currently loading.  Otherwise, changing the user agent on redirects can cause the original website to reload.
+                // <https://redmine.stoutner.com/issues/160>
                 if (!urlIsLoading) {
                     switch (defaultUserAgentString) {
                         case "WebView default user agent":
@@ -3381,9 +4221,9 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
             }
         }
 
-        // `invalidateOptionsMenu` calls `onPrepareOptionsMenu()` and redraws the icons in the `AppBar`.  `this` references the current activity.
+        // `invalidateOptionsMenu` calls `onPrepareOptionsMenu()` and redraws the icons in the `AppBar`.
         if (runInvalidateOptionsMenu) {
-            ActivityCompat.invalidateOptionsMenu(this);
+            invalidateOptionsMenu();
         }
     }
 

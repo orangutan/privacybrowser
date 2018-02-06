@@ -24,7 +24,8 @@
     <!-- Activities. -->
     <string name="privacy_browser">Navegador Privado</string>
     <string name="privacy_browser_settings">Configuración de Navegador Privado</string>
-    <string name="android_asset_path">es</string>  <!-- For translations, this should be the localization abbreviation. -->
+    <!-- For translations, `android_asset_path` should be the localization abbreviation.  For example, Spanish is `es`.  This should not be translated unless the Guide and About sections are localized. -->
+    <string name="android_asset_path">es</string>
 
     <!-- MainWebViewActivity. -->
     <string name="privacy_mode">Modo Privado</string>

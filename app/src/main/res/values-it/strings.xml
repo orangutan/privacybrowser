@@ -24,7 +24,8 @@
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser</string>
     <string name="privacy_browser_settings">Impostazioni</string>
-    <string name="android_asset_path">it</string>  <!-- For translations, this should be the localization abbreviation. -->
+    <!-- For translations, `android_asset_path` should be the localization abbreviation.  For example, Spanish is `es`.  This should not be translated unless the Guide and About sections are localized. -->
+    <string name="android_asset_path">it</string>
 
     <!-- MainWebView. -->
     <string name="privacy_mode">Modalità privata</string>
@@ -141,7 +142,7 @@
     <string name="find_on_page">Cerca nella pagina</string>
     <string name="print">Stampa</string>
         <string name="privacy_browser_web_page">Pagina web di Privacy Browser</string>
-    <string name="view_source">Visualizza Sorgente</string>
+    <string name="view_source">Visualizza sorgente</string>
     <string name="add_to_home_screen">Aggiungi collegamento</string>
     <string name="refresh">Aggiorna</string>
 
@@ -160,10 +161,10 @@
 
     <!-- View Source. -->
     <string name="request_headers">Richiesta Intestazioni</string>
-    <string name="response_message">Messaggio di risposta</string>
+    <string name="response_message">Messaggio di Risposta</string>
     <string name="response_headers">Risposta Intestazioni</string>
-    <string name="response_body">Testo della risposta</string>
-    <string name="error_body">Testo errore</string>
+    <string name="response_body">Testo della Risposta</string>
+    <string name="error_body">Testo Errore</string>
     <string name="about_view_source">Informazioni sulla visualizzazione della sorgente</string>
     <string name="about_view_source_message">Dal momento che la WebView di Android non fornisce indicazioni sulla sorgente è stata effettuata una richiesta separata utilizzando i system tools in modo da ottenere le informazioni mostrate.
         Potrebbero esserci alcune differenze tra questi dati e quelli utilizzati da WebView. Questa limitazione sarà eliminata nella serie 4.x quando verrà rilasciata Privacy WebView.</string>

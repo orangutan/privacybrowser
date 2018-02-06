@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2018 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -26,7 +26,8 @@
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser</string>
     <string name="privacy_browser_settings">Privacy Browser Settings</string>
-    <string name="android_asset_path">en</string>  <!-- For translations, this should be the localization abbreviation.  For example, Spanish is `es`.  This should not be translated unless the Guide and About sections are localized. -->
+    <!-- For translations, `android_asset_path` should be the localization abbreviation.  For example, Spanish is `es`.  This should not be translated unless the Guide and About sections are localized. -->
+    <string name="android_asset_path">en</string>
 
     <!-- MainWebView. -->
     <string name="privacy_mode">Privacy Mode</string>
@@ -321,7 +322,7 @@
                 <item>Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko</item>
                 <item>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) AppleWebKit/604.3.4 (KHTML, like Gecko) Version/11.0.1 Safari/604.3.4</item>
                 <item>Custom user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
-        </string-array>
+            </string-array>
         <string name="custom_user_agent">Custom user agent</string>
         <string name="block_ads">Block ads</string>
         <string name="block_ads_summary">Use the list of ad servers from pgl.yoyo.org to block ads.</string>
