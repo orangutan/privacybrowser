@@ -24,6 +24,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -72,12 +73,15 @@ public class AboutTabFragment extends Fragment {
         // Run the default commands.
         super.onCreate(savedInstanceState);
 
+        // Remove the lint warning that `getArguments()` might be null.
+        assert getArguments() != null;
+
         // Store the tab number in a class variable.
         tabNumber = getArguments().getInt("Tab");
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View tabLayout;
 
         // Load the tabs.  Tab numbers start at 0.
@@ -98,8 +102,11 @@ public class AboutTabFragment extends Fragment {
             TextView versionBuildTextView = tabLayout.findViewById(R.id.about_version_build);
             TextView versionWebKitTextView = tabLayout.findViewById(R.id.about_version_webkit);
             TextView versionChromeTextView = tabLayout.findViewById(R.id.about_version_chrome);
-            TextView versionEasyListTextView = tabLayout.findViewById(R.id.about_version_easylist);
             TextView versionOrbotTextView = tabLayout.findViewById(R.id.about_version_orbot);
+            TextView versionEasyListTextView = tabLayout.findViewById(R.id.about_version_easylist);
+            TextView versionEasyPrivacyTextView = tabLayout.findViewById(R.id.about_version_easyprivacy);
+            TextView versionFanboyAnnoyanceTextView = tabLayout.findViewById(R.id.about_version_fanboy_annoyance);
+            TextView versionFanboySocialTextView = tabLayout.findViewById(R.id.about_version_fanboy_social);
             TextView certificateIssuerDNTextView = tabLayout.findViewById(R.id.about_version_certificate_issuer_dn);
             TextView certificateSubjectDNTextView = tabLayout.findViewById(R.id.about_version_certificate_subject_dn);
             TextView certificateStartDateTextView = tabLayout.findViewById(R.id.about_version_certificate_start_date);
@@ -119,7 +126,10 @@ public class AboutTabFragment extends Fragment {
             String buildLabel = getString(R.string.build) + "  ";
             String webKitLabel = getString(R.string.webkit) + "  ";
             String chromeLabel = getString(R.string.chrome) + "  ";
-            String easyListLabel = getString(R.string.easylist) + "  ";
+            String easyListLabel = getString(R.string.easylist_label) + "  ";
+            String easyPrivacyLabel = getString(R.string.easyprivacy_label) + "  ";
+            String fanboyAnnoyanceLabel = getString(R.string.fanboy_annoyance_label) + "  ";
+            String fanboySocialLabel = getString(R.string.fanboy_social_label) + "  ";
             String issuerDNLabel = getString(R.string.issuer_dn) + "  ";
             String subjectDNLabel = getString(R.string.subject_dn) + "  ";
             String startDateLabel = getString(R.string.start_date) + "  ";
@@ -150,6 +160,9 @@ public class AboutTabFragment extends Fragment {
             // Get the Orbot version name if Orbot is installed.
             String orbot;
             try {
+                // Remove the lint warning that `getContext()` might be null.
+                assert getContext() != null;
+
                 // Store the version name.
                 orbot = getContext().getPackageManager().getPackageInfo("org.torproject.android", PackageManager.GET_CONFIGURATIONS).versionName;
             } catch (PackageManager.NameNotFoundException e) {  // Orbot is not installed.
@@ -167,6 +180,9 @@ public class AboutTabFragment extends Fragment {
             SpannableStringBuilder webKitStringBuilder = new SpannableStringBuilder(webKitLabel + webKit);
             SpannableStringBuilder chromeStringBuilder = new SpannableStringBuilder(chromeLabel + chrome);
             SpannableStringBuilder easyListStringBuilder = new SpannableStringBuilder(easyListLabel + MainWebViewActivity.easyListVersion);
+            SpannableStringBuilder easyPrivacyStringBuilder = new SpannableStringBuilder(easyPrivacyLabel + MainWebViewActivity.easyPrivacyVersion);
+            SpannableStringBuilder fanboyAnnoyanceStringBuilder = new SpannableStringBuilder(fanboyAnnoyanceLabel + MainWebViewActivity.fanboyAnnoyanceVersion);
+            SpannableStringBuilder fanboySocialStringBuilder = new SpannableStringBuilder(fanboySocialLabel + MainWebViewActivity.fanboySocialVersion);
 
             // Create the `blueColorSpan` variable.
             ForegroundColorSpan blueColorSpan;
@@ -191,6 +207,9 @@ public class AboutTabFragment extends Fragment {
             webKitStringBuilder.setSpan(blueColorSpan, webKitLabel.length(), webKitStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             chromeStringBuilder.setSpan(blueColorSpan, chromeLabel.length(), chromeStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             easyListStringBuilder.setSpan(blueColorSpan, easyListLabel.length(), easyListStringBuilder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            easyPrivacyStringBuilder.setSpan(blueColorSpan, easyPrivacyLabel.length(), easyPrivacyStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            fanboyAnnoyanceStringBuilder.setSpan(blueColorSpan, fanboyAnnoyanceLabel.length(), fanboyAnnoyanceStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            fanboySocialStringBuilder.setSpan(blueColorSpan, fanboySocialLabel.length(), fanboySocialStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
             // Display the strings in the text boxes.
             versionNumberTextView.setText(version);
@@ -204,6 +223,9 @@ public class AboutTabFragment extends Fragment {
             versionWebKitTextView.setText(webKitStringBuilder);
             versionChromeTextView.setText(chromeStringBuilder);
             versionEasyListTextView.setText(easyListStringBuilder);
+            versionEasyPrivacyTextView.setText(easyPrivacyStringBuilder);
+            versionFanboyAnnoyanceTextView.setText(fanboyAnnoyanceStringBuilder);
+            versionFanboySocialTextView.setText(fanboySocialStringBuilder);
 
             // Build.VERSION.SECURITY_PATCH is only available for SDK_INT >= 23.
             if (Build.VERSION.SDK_INT >= 23) {

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -19,6 +19,7 @@
 
 package com.stoutner.privacybrowser.helpers;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -53,7 +54,7 @@ public class OrbotProxyHelper {
             mLoadedApkField.setAccessible(true);
             Object mLoadedApkObject = mLoadedApkField.get(privacyBrowserContext);
 
-            Class loadedApkClass = Class.forName("android.app.LoadedApk");
+            @SuppressLint("PrivateApi") Class loadedApkClass = Class.forName("android.app.LoadedApk");
             Field mReceiversField = loadedApkClass.getDeclaredField("mReceivers");
             // `setAccessible(true)` allows us to change the value of `mReceiversField`.
             mReceiversField.setAccessible(true);
@@ -62,7 +63,8 @@ public class OrbotProxyHelper {
 
             for (Object receiverMap : receivers.values()) {
                 for (Object receiver : ((ArrayMap) receiverMap).keySet()) {
-                    // We have to use `Class<?>`, which is an `unbounded wildcard parameterized type`, instead of `Class`, which is a `raw type`, or `receiveClass.getDeclaredMethod` below will produce an error.
+                    // We have to use `Class<?>`, which is an `unbounded wildcard parameterized type`, instead of `Class`, which is a `raw type`.
+                    // Otherwise, `receiveClass.getDeclaredMethod` below will produce an error.
                     Class<?> receiverClass = receiver.getClass();
                     if (receiverClass.getName().contains("ProxyChangeListener")) {
                         Method onReceiveMethod = receiverClass.getDeclaredMethod("onReceive", Context.class, Intent.class);
@@ -109,11 +111,8 @@ public class OrbotProxyHelper {
                 dialogBuilder.setMessage(R.string.orbot_proxy_not_installed);
 
                 // Set the positive button.
-                dialogBuilder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Do nothing.  The `AlertDialog` will close automatically.
-                    }
+                dialogBuilder.setPositiveButton(R.string.close, (DialogInterface dialog, int which) -> {
+                    // Do nothing.  The `AlertDialog` will close automatically.
                 });
 
                 // Convert `dialogBuilder` to `alertDialog`.

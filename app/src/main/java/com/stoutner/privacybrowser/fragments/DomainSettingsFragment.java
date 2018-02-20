@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -29,6 +29,7 @@ import android.os.Build;
 import android.os.Bundle;
 // We have to use `android.support.v4.app.Fragment` until minimum API >= 23.  Otherwise we cannot call `getContext()`.
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
@@ -69,6 +70,9 @@ public class DomainSettingsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Remove the lint warning that `getArguments` might be null.
+        assert getArguments() != null;
+
         // Store the database id in `databaseId`.
         databaseId = getArguments().getInt(DATABASE_ID);
     }
@@ -76,7 +80,7 @@ public class DomainSettingsFragment extends Fragment {
     // We have to use the deprecated `getDrawable()` until the minimum API >= 21.
     @SuppressWarnings("deprecation")
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate `domain_settings_fragment`.  `false` does not attach it to the root `container`.
         View domainSettingsView = inflater.inflate(R.layout.domain_settings_fragment, container, false);
 

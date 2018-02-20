@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -69,12 +69,6 @@
             android:inputType="textVisiblePassword|textMultiLine" />
 
         <SwitchPreference
-            android:key="block_ads"
-            android:title="@string/block_ads"
-            android:summary="@string/block_ads_summary"
-            android:defaultValue="true" />
-
-        <SwitchPreference
             android:key="incognito_mode"
             android:title="@string/incognito_mode"
             android:summary="@string/incognito_mode_summary"
@@ -85,6 +79,35 @@
             android:title="@string/do_not_track"
             android:summary="@string/do_not_track_summary"
             android:defaultValue="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="block_lists"
+        android:title="@string/block_lists" >
+
+        <SwitchPreference
+            android:key="easylist"
+            android:title="@string/easylist"
+            android:summary="@string/easylist_summary"
+            android:defaultValue="true" />
+
+        <SwitchPreference
+            android:key="easyprivacy"
+            android:title="@string/easyprivacy"
+            android:summary="@string/easyprivacy_summary"
+            android:defaultValue="true" />
+
+        <SwitchPreference
+            android:key="fanboy_annoyance_list"
+            android:title="@string/fanboy_annoyance_list"
+            android:summary="@string/fanboy_annoyance_list_summary"
+            android:defaultValue="true" />
+
+        <SwitchPreference
+            android:key="fanboy_social_blocking_list"
+            android:title="@string/fanboy_social_blocking_list"
+            android:summary="@string/fanboy_social_blocking_list_summary"
+            android:defaultValue="true" />
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -110,6 +133,8 @@
             android:entryValues="@array/tor_search_entry_values"
             android:defaultValue="https://3g2upl4pq6kufc4m.onion/html/?q=" />
 
+        <!--suppress AndroidDomInspection -->
+        <!--`suppress AndroidDomInspection` removes the error about the default value being blank. -->
         <EditTextPreference
             android:key="tor_search_custom_url"
             android:title="@string/tor_search_custom_url"
@@ -129,6 +154,8 @@
             android:defaultValue="https://duckduckgo.com/html/?q="
             android:icon="?attr/searchIcon" />
 
+        <!--suppress AndroidDomInspection -->
+        <!--`suppress AndroidDomInspection` removes the error about the default value being blank. -->
         <EditTextPreference
             android:key="search_custom_url"
             android:title="@string/search_custom_url"

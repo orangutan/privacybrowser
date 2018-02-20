@@ -17,6 +17,7 @@
       <w>becerra</w>
       <w>beeb</w>
       <w>blocklist</w>
+      <w>blocklists</w>
       <w>bookmarkname</w>
       <w>bookmarkurl</w>
       <w>browserleaks</w>
@@ -40,9 +41,11 @@
       <w>domainname</w>
       <w>downloadfile</w>
       <w>drawerlayout</w>
+      <w>duckduckgo</w>
       <w>dwallach</w>
       <w>eadd</w>
       <w>easylist</w>
+      <w>easyprivacy</w>
       <w>edittext</w>
       <w>enabledomstorage</w>
       <w>enablefirstpartycookies</w>
@@ -50,6 +53,7 @@
       <w>enablejavascript</w>
       <w>enablethirdpartycookies</w>
       <w>exynos</w>
+      <w>fanboy</w>
       <w>favoriteicon</w>
       <w>fbee</w>
       <w>fdfilter</w>
@@ -76,7 +80,9 @@
       <w>listview</w>
       <w>logins</w>
       <w>lossless</w>
+      <w>mailto</w>
       <w>materialdesignicons</w>
+      <w>mimetype</w>
       <w>mitm</w>
       <w>mozilla</w>
       <w>navigationview</w>
@@ -134,13 +140,16 @@
       <w>uname</w>
       <w>uncheck</w>
       <w>undelete</w>
+      <w>unported</w>
       <w>useragent</w>
       <w>useragentname</w>
       <w>useragentstring</w>
       <w>verizons</w>
       <w>webkay</w>
       <w>webkitversion</w>
+      <w>webpage</w>
       <w>websocket</w>
+      <w>webview</w>
       <w>whatismyip</w>
       <w>wouldn</w>
       <w>xmlhttprequest</w>

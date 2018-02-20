@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -151,12 +151,37 @@
                 android:layout_width="wrap_content" />
 
             <TextView
+                android:id="@+id/about_version_orbot"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content" />
+
+            <!-- Block Lists. -->
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/block_lists"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="?attr/aboutTitle"
+                android:paddingTop="12dp" />
+
+            <TextView
                 android:id="@+id/about_version_easylist"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content" />
 
             <TextView
-                android:id="@+id/about_version_orbot"
+                android:id="@+id/about_version_easyprivacy"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content" />
+
+            <TextView
+                android:id="@+id/about_version_fanboy-annoyance"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content" />
+
+            <TextView
+                android:id="@+id/about_version_fanboy-social"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content" />
 
