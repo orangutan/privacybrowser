@@ -294,6 +294,15 @@
         <string name="incognito_mode_summary">Borrar el historial y el caché después de que cada página web termine de cargar.</string>
         <string name="do_not_track">No rastrear</string>
         <string name="do_not_track_summary">Enviar la cabecera de no rastrear (DNT) que educadamente sugiere que los servidores web no rastreen este navegador.</string>
+    <string name="block_lists">Bloquear listas</string>
+        <string name="easylist">EasyList</string>
+        <string name="easylist_summary">Lista principal de bloqueo de anuncios.</string>
+        <string name="easyprivacy">EasyPrivacy</string>
+        <string name="easyprivacy_summary">Lista principal de bloqueo de rastreadores.</string>
+        <string name="fanboy_annoyance_list">Lista molesta de Fanboy</string>
+        <string name="fanboy_annoyance_list_summary">Bloquear popups y enlaces molestos.  Incluye la lista de bloqueo social de Fanboy.</string>
+        <string name="fanboy_social_blocking_list">Lista de bloqueo social de Fanboy</string>
+        <string name="fanboy_social_blocking_list_summary">Bloquear contenidos de medios sociales de terceros.</string>
     <string name="tor">Tor</string>
         <string name="proxy_through_orbot">Enviar a través de Orbot</string>
         <string name="proxy_through_orbot_summary">Enviar todo el tráfico web a través de Orbot en localhost:8118.</string>
@@ -321,7 +330,7 @@
         </string-array>
         <string name="search_custom_url">URL personalizado de búsqueda</string>
         <string name="custom_url">URL personalizado</string>
-    <string name="full_screen">Pantalla Completa</string>
+    <string name="full_screen">Pantalla completa</string>
         <string name="full_screen_browsing_mode">Navegación de pantalla completa</string>
         <string name="full_screen_browsing_mode_summary">Doble toque para alternar a modo de navegación de pantalla completa.</string>
         <string name="hide_system_bars">Esconder barras del systema</string>
@@ -395,8 +404,11 @@
             <string name="security_patch">Parche de seguridad:</string>
             <string name="webkit">WebKit:</string>
             <string name="chrome">Chrome:</string>
-            <string name="easylist">EasyList:</string>
             <string name="orbot">Orbot:</string>
+            <string name="easylist_label">EasyList:</string>
+            <string name="easyprivacy_label">EasyPrivacy:</string>
+            <string name="fanboy_annoyance_label">Lista molesta de Fanboy:</string>
+            <string name="fanboy_social_label">Lista de bloqueo social de Fanboy:</string>
         <string name="package_signature">Firma del paquete</string>
             <string name="issuer_dn">DN del emisor:</string>
             <string name="subject_dn">DN del sujeto:</string>

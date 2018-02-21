@@ -409,21 +409,6 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
         // Run the default commands.
         super.onCreate(savedInstanceState);
 
-        // Instantiate the block list helper.
-        BlockListHelper blockListHelper = new BlockListHelper();
-
-        // Parse the block lists.
-        ArrayList<List<String[]>> easyList = blockListHelper.parseBlockList(getAssets(), "blocklists/easylist.txt");
-        ArrayList<List<String[]>> easyPrivacy = blockListHelper.parseBlockList(getAssets(), "blocklists/easyprivacy.txt");
-        ArrayList<List<String[]>> fanboyAnnoyance = blockListHelper.parseBlockList(getAssets(), "blocklists/fanboy-annoyance.txt");
-        ArrayList<List<String[]>> fanboySocial = blockListHelper.parseBlockList(getAssets(), "blocklists/fanboy-social.txt");
-
-        // Get the list versions.
-        easyListVersion = easyList.get(0).get(0)[0];
-        easyPrivacyVersion = easyPrivacy.get(0).get(0)[0];
-        fanboyAnnoyanceVersion = fanboyAnnoyance.get(0).get(0)[0];
-        fanboySocialVersion = fanboySocial.get(0).get(0)[0];
-
         // Set the content view.
         setContentView(R.layout.main_drawerlayout);
 
@@ -821,6 +806,21 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
 
         // drawerToggle creates the hamburger icon at the start of the AppBar.
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, supportAppBar, R.string.open_navigation_drawer, R.string.close_navigation_drawer);
+
+        // Instantiate the block list helper.
+        BlockListHelper blockListHelper = new BlockListHelper();
+
+        // Parse the block lists.
+        final ArrayList<List<String[]>> easyList = blockListHelper.parseBlockList(getAssets(), "blocklists/easylist.txt");
+        final ArrayList<List<String[]>> easyPrivacy = blockListHelper.parseBlockList(getAssets(), "blocklists/easyprivacy.txt");
+        final ArrayList<List<String[]>> fanboyAnnoyance = blockListHelper.parseBlockList(getAssets(), "blocklists/fanboy-annoyance.txt");
+        final ArrayList<List<String[]>> fanboySocial = blockListHelper.parseBlockList(getAssets(), "blocklists/fanboy-social.txt");
+
+        // Store the list versions.
+        easyListVersion = easyList.get(0).get(0)[0];
+        easyPrivacyVersion = easyPrivacy.get(0).get(0)[0];
+        fanboyAnnoyanceVersion = fanboyAnnoyance.get(0).get(0)[0];
+        fanboySocialVersion = fanboySocial.get(0).get(0)[0];
 
         mainWebView.setWebViewClient(new WebViewClient() {
             // `shouldOverrideUrlLoading` makes this `WebView` the default handler for URLs inside the app, so that links are not kicked out to other apps.

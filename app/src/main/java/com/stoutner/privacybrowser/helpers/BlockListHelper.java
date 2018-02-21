@@ -34,33 +34,33 @@ import java.util.regex.Pattern;
 public class BlockListHelper {
     public ArrayList<List<String[]>> parseBlockList(AssetManager assets, String blockListName) {
         // Initialize the header list.
-        List<String[]> headers = new LinkedList<>();
+        List<String[]> headers = new ArrayList<>();
 
         // Initialize the white lists.
-        List<String[]> mainWhiteList = new LinkedList<>();
-        List<String[]> finalWhiteList = new LinkedList<>();
-        List<String[]> domainWhiteList = new LinkedList<>();
-        List<String[]> domainInitialWhiteList = new LinkedList<>();
-        List<String[]> domainFinalWhiteList = new LinkedList<>();
-        List<String[]> thirdPartyWhiteList = new LinkedList<>();
-        List<String[]> thirdPartyDomainWhiteList = new LinkedList<>();
-        List<String[]> thirdPartyDomainInitialWhiteList = new LinkedList<>();
+        List<String[]> mainWhiteList = new ArrayList<>();
+        List<String[]> finalWhiteList = new ArrayList<>();
+        List<String[]> domainWhiteList = new ArrayList<>();
+        List<String[]> domainInitialWhiteList = new ArrayList<>();
+        List<String[]> domainFinalWhiteList = new ArrayList<>();
+        List<String[]> thirdPartyWhiteList = new ArrayList<>();
+        List<String[]> thirdPartyDomainWhiteList = new ArrayList<>();
+        List<String[]> thirdPartyDomainInitialWhiteList = new ArrayList<>();
 
         // Initialize the black lists
-        List<String[]> mainBlackList = new LinkedList<>();
-        List<String[]> initialBlackList = new LinkedList<>();
-        List<String[]> finalBlackList = new LinkedList<>();
-        List<String[]> domainBlackList = new LinkedList<>();
-        List<String[]> domainInitialBlackList = new LinkedList<>();
-        List<String[]> domainFinalBlackList = new LinkedList<>();
-        List<String[]> thirdPartyBlackList = new LinkedList<>();
-        List<String[]> thirdPartyInitialBlackList = new LinkedList<>();
-        List<String[]> thirdPartyDomainBlackList = new LinkedList<>();
-        List<String[]> thirdPartyDomainInitialBlackList = new LinkedList<>();
-        List<String[]> regularExpressionBlackList = new LinkedList<>();
-        List<String[]> domainRegularExpressionBlackList = new LinkedList<>();
-        List<String[]> thirdPartyRegularExpressionBlackList = new LinkedList<>();
-        List<String[]> thirdPartyDomainRegularExpressionBlackList = new LinkedList<>();
+        List<String[]> mainBlackList = new ArrayList<>();
+        List<String[]> initialBlackList = new ArrayList<>();
+        List<String[]> finalBlackList = new ArrayList<>();
+        List<String[]> domainBlackList = new ArrayList<>();
+        List<String[]> domainInitialBlackList = new ArrayList<>();
+        List<String[]> domainFinalBlackList = new ArrayList<>();
+        List<String[]> thirdPartyBlackList = new ArrayList<>();
+        List<String[]> thirdPartyInitialBlackList = new ArrayList<>();
+        List<String[]> thirdPartyDomainBlackList = new ArrayList<>();
+        List<String[]> thirdPartyDomainInitialBlackList = new ArrayList<>();
+        List<String[]> regularExpressionBlackList = new ArrayList<>();
+        List<String[]> domainRegularExpressionBlackList = new ArrayList<>();
+        List<String[]> thirdPartyRegularExpressionBlackList = new ArrayList<>();
+        List<String[]> thirdPartyDomainRegularExpressionBlackList = new ArrayList<>();
 
 
         // Populate the block lists.  The `try` is required by `InputStreamReader`.
