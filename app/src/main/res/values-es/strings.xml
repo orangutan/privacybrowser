@@ -288,8 +288,6 @@
                 <item>Personalizado</item>
             </string-array>
         <string name="custom_user_agent">Agente de usuario personalizado</string>
-        <string name="block_ads">Bloquear anuncios</string>
-        <string name="block_ads_summary">Usar la lista de servidores de anuncios de pgl.yoyo.org para bloquear anuncios.</string>
         <string name="incognito_mode">Modo incógnito</string>
         <string name="incognito_mode_summary">Borrar el historial y el caché después de que cada página web termine de cargar.</string>
         <string name="do_not_track">No rastrear</string>

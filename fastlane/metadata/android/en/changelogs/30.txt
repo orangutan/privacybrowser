@@ -1,0 +1,9 @@
+• Switch to EasyList for ad and tracking blocking.
+• Add a View Source activity.
+• Add a Clear Data submenu to the options menu.
+• Fix the Add to Home Screen option to be compatible with Android Oreo.
+• Fix color formatting in the URL text box.
+• Clarify language in the privacy policy.
+• Updated Italian translation provided by Francesco Buratti.
+• Partial Russian translation.
+• Updated Spanish translation provided by Jose A. León Becerra.

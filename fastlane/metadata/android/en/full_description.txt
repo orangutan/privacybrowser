@@ -1,19 +1,13 @@
-Privacy Browser protects your privacy by disabling JavaScript, DOM storage, and cookies by default, but providing quick methods to enable them for websites where they are required. Many websites use these technologies to track users between visits and across sites.
+Privacy Browser protects your privacy by disabling features like JavaScript, DOM storage, and cookies that are used by websites to track users.  Settings can be adjusted by domain and on-the-fly to enable these features when needed.  In addition, Privacy Browser incorporates the EasyList block lists, which block many tracking technologies even when JavaScript is enabled.
 
-Privacy Browser uses Android's built-in WebView to render web pages.  As such, it works best if you have updated to the latest version of WebView.
+Privacy Browser does not have tabbed browsing yet.  This is a planned feature for the 3.x series.
 
-Warning: Privacy Browser is susceptible to
-[https://www.stoutner.com/kitkat-security-problems/ MITM (Man In The Middle)
-attacks] when browsing insecure websites from devices running Android KitKat
-(version 4.4.x, API 19).
+Privacy Browser currently uses Android’s built-in WebView to render web pages.  As such, it works best when the latest version of WebView is installed.  In the 4.x series, Privacy Browser will switch to a forked version of Android’s WebView called Privacy WebView that will allow for advanced privacy features.
+
+Warning: Due to limitations in the OS, Privacy Browser is susceptible to MITM (Man In The Middle) attacks when browsing insecure websites from devices running Android KitKat (version 4.4.x, API 19).  More information about this issue is available at https://www.stoutner.com/kitkat-security-problems/.
 
 Features:
-*Full screen browsing mode.
-*Integrated ad blocker.
-*Tor Orbot proxy support.
-
-Planned features for future releases:
-*Upload of files to website.
-*Fine grained cookie management.
-*Fine grained DOM storage management.
-*Tabbed browsing.
+• Tor Orbot proxy support.
+• SSL certificate pinning.
+• Full screen browsing mode.
+• Night mode.

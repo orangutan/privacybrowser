@@ -1,16 +1,14 @@
-Privacy Browser protegge la privacy perchè disabilita di default JavaScript, il DOM storage, e i cookie, ma fornisce sistemi rapidi per la loro abilitazione per i siti web in cui sono richiesti. Molti siti web utilizzano queste tecnologie per tracciare gli utenti che li visitano.
+Privacy Browser protegge la privacy perchè disabilita funzionalità come JavaScript, DOM storage e i cookie, che sono utilizzati dai siti web per tracciare gli utenti.  Quando è necessario, le impostazioni possono però essere modificate per i singoli domini oppure globalmente in modo da abilitare queste funzionalità. In aggiunta, Privacy Browser include le block list di Easylist, che sono in grado di bloccare molte tecnologie di tracking anche con Javascript abilitato .
 
-Privacy Browser utilizza, per la visualizzazione delle pagine web, WebView nativo di Android. Per questo motivo il funzionamento è ottimale se Webview è aggiornato all'ultima versione.
+Privacy Browser non permette ancora la navigazione con tab. Questa funzionalità è prevista per le release della serie 3.x.
 
-Attenzione: Privacy Browser è vulnerabile agli [https://www.stoutner.com/kitkat-security-problems/ attacchi MITM (Man In The Middle)] quando si accede a siti non sicuri con dispositivi su cui è installato Android KitKat (versione 4.4.x, API 19).
+Privacy Browser utilizza, per la visualizzazione delle pagine web, WebView nativo di Android. Per questo motivo il funzionamento è ottimale se Webview è aggiornato all'ultima versione. Nella futura serie 4.x Privacy Browser utilizzerà una versione modificata di Webview denominata Privacy WebView che introdurrà funzionalità avanzate per la privacy.
+
+Attenzione: Privacy Browser è vulnerabile agli attacchi MITM (Man In The Middle) quando si accede a siti non sicuri con dispositivi su cui è installato Android KitKat (versione 4.4.x, API 19).
+Per maggiori informazioni sul problema è possibile consultare: https://www.stoutner.com/kitkat-security-problems/
 
 Funzionalità:
-*Navigazione a schermo intero.
-*Ad-blocker integrato.
-*Supporto per Tor Orbot proxy.
-
-Funzionalità previste per le prossime versioni:
-*Upload di file ai siti web.
-*Controllo fine dei cookie.
-*Controllo fine del DOM storage.
-*Navigazione con tab.
+• Supporto per Tor Orbot proxy.
+• Possibilità di appuntare i certificati SSL.
+• Navigazione a schermo intero.
+• Modalità notte.

@@ -290,12 +290,19 @@
                 <item>Personalizzato</item>
             </string-array>
         <string name="custom_user_agent">User agent personalizzato</string>
-        <string name="block_ads">Blocca annunci</string>
-        <string name="block_ads_summary">Per bloccare gli annunci utilizza la lista dei server di pgl.yoyo.org.</string>
         <string name="incognito_mode">Modalità Incognito</string>
         <string name="incognito_mode_summary">Cancella la cronologia e la cache al termine del caricamento di ogni pagina.</string>
         <string name="do_not_track">Non tracciare</string>
         <string name="do_not_track_summary">Invia un\'intestazione di non tracciamento per chiedere al web server di non tracciare il browser.</string>
+    <string name="block_lists">Block List</string>
+        <string name="easylist">EasyList</string>
+        <string name="easylist_summary">Blocking list principale.</string>
+        <string name="easyprivacy">EasyPrivacy</string>
+        <string name="easyprivacy_summary">Tracker blocking list principale.</string>
+        <string name="fanboy_annoyance_list">Fanboy’s annoyance list</string>
+        <string name="fanboy_annoyance_list_summary">Blocca fastidiosi pop-up e collegamenti.  Include le liste Fanboy’s social blocking.</string>
+        <string name="fanboy_social_blocking_list">Fanboy’s social blocking list</string>
+        <string name="fanboy_social_blocking_list_summary">Blocca contenuti di terze parti sui social media .</string>
     <string name="tor">Tor</string>
         <string name="proxy_through_orbot">Utilizza Proxy con Orbot</string>
         <string name="proxy_through_orbot_summary">Utilizza Proxy attraverso Orbot su localhost:8118.</string>
@@ -397,8 +404,11 @@
             <string name="security_patch">Patch si sicurezza:</string>
             <string name="webkit">WebKit:</string>
             <string name="chrome">Chrome:</string>
-            <string name="easylist">EasyList:</string>
             <string name="orbot">Orbot:</string>
+            <string name="easylist_label">EasyList:</string>
+            <string name="easyprivacy_label">EasyPrivacy:</string>
+            <string name="fanboy_annoyance_label">Fanboy’s Annoyance List:</string>
+            <string name="fanboy_social_label">Fanboy’s Social Blocking List:</string>
         <string name="package_signature">Firma del Pacchetto</string>
             <string name="issuer_dn">Emittente:</string>
             <string name="subject_dn">Soggetto:</string>

@@ -293,8 +293,6 @@
                 <item>Пользовательский</item>
             </string-array>
         <string name="custom_user_agent">Пользовательский user agent</string>
-        <string name="block_ads">Блокировать рекламу</string>
-        <string name="block_ads_summary">Для блокировки рекламы использовать список серверов pgl.yoyo.org.</string>
         <string name="incognito_mode">Режим инкогнито</string>
         <string name="incognito_mode_summary">Очистка журнала и кэша после завершения загрузки каждой веб-страницы.</string>
         <string name="do_not_track">Не отслеживать</string>

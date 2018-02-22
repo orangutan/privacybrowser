@@ -1,0 +1,9 @@
+• Passaggio a EasyList per il blocco degli annunci e del tracciamento.
+• Aggiunta la possibilità di visualizzare la sorgente.
+• Inserito il sottomenù Cancella Datial menu delle opzioni.
+• Modificata l'opzione per aggiungere il collegamento nella schermata Home per essere compatibile con Android Oreo.
+• Corretta la formattazione del colore nel box dell'URL.
+• Chiarimento della privacy policy.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
+• Traduzione parziale in Russio.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León Becerra.

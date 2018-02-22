@@ -1,0 +1,9 @@
+• Cambiar a EasyList para el bloqueo de publicidad y rastreo.
+• Añadir una actividad Ver Fuente.
+• Añadir un submenú Borrar datos al menú de opciones.
+• Corregir la opción Añadir a pantalla de inicio para ser compatible con Android Oreo.
+• Corregir el formato de color en el cuadro de texto URL.
+• Clarificar el lenguaje en la política de privacidad.
+• Traducción al español actualizada por Jose A. León Becerra.
+• Traducción al italiano actualizada por Francesco Buratti.
+• Traducción parcial al ruso.
