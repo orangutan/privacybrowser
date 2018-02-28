@@ -4,6 +4,7 @@
 • Modificata l'opzione per aggiungere il collegamento nella schermata Home per essere compatibile con Android Oreo.
 • Corretta la formattazione del colore nel box dell'URL.
 • Chiarimento della privacy policy.
+• Adeguamento della API target a 27 (Android Oreo, 8.1.0).
 • Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
-• Traduzione parziale in Russio.
+• Traduzione parziale in Russo.
 • Aggiornamento della traduzione Spagnola fornita da Jose A. León Becerra.

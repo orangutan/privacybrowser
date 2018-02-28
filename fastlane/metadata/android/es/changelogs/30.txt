@@ -4,6 +4,7 @@
 • Corregir la opción Añadir a pantalla de inicio para ser compatible con Android Oreo.
 • Corregir el formato de color en el cuadro de texto URL.
 • Clarificar el lenguaje en la política de privacidad.
-• Traducción al español actualizada por Jose A. León Becerra.
-• Traducción al italiano actualizada por Francesco Buratti.
+• Aumentar la API dirigido a 27 (Android Oreo, 8.1.0).
+• Actualizada la traducción al español proporcionada por Jose A. León Becerra.
+• Actualizada la traducción al italiano proporcionada por Francesco Buratti.
 • Traducción parcial al ruso.

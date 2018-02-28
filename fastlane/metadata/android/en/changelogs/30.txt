@@ -4,6 +4,7 @@
 • Fix the Add to Home Screen option to be compatible with Android Oreo.
 • Fix color formatting in the URL text box.
 • Clarify language in the privacy policy.
+• Bump target API to 27 (Android Oreo, 8.1.0).
 • Updated Italian translation provided by Francesco Buratti.
 • Partial Russian translation.
 • Updated Spanish translation provided by Jose A. León Becerra.

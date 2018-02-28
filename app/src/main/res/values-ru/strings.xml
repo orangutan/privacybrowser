@@ -144,7 +144,7 @@
     <string name="find_on_page">Найти на странице</string>
     <string name="print">Печать</string>
         <string name="privacy_browser_web_page">Privacy Browser веб-страница</string>
-    <string name="view_source">Посмотреть источник</string>
+    <string name="view_source">Просмотр исходного кода</string>
     <string name="add_to_home_screen">Добавить на домашний экран</string>
     <string name="refresh">Обновить</string>
 
@@ -162,12 +162,12 @@
     <string name="next">Следующий</string>
 
     <!-- View Source. -->
-    <string name="request_headers">Запросить заголовки</string>
+    <string name="request_headers">Заголовки запроса</string>
     <string name="response_message">Ответное сообщение</string>
-    <string name="response_headers">Заголовки ответов</string>
+    <string name="response_headers">Заголовки ответа</string>
     <string name="response_body">Тело ответа</string>
     <string name="error_body">Тело ошибки</string>
-    <string name="about_view_source">Об источнике представления</string>
+    <string name="about_view_source">О просмотре исходного кода</string>
     <string name="about_view_source_message">Поскольку Android WebView не предоставляет исходные данные, для сбора информации, отображаемой в этом действии,
         был сделан отдельный запрос с помощью системных средств. Между этими данными и теми, которые используются в WebView, могут быть некоторые отличия.
         Это ограничение будет удалено в серии 4.x с выпуском Privacy WebView.</string>
@@ -255,7 +255,7 @@
         <string name="first_party_cookies_preference">Включить первичные файлы cookie по умолчанию</string>
         <string name="first_party_cookies_preference_summary">На устройствах с версией Android старше Lollipop (версия 5.0) этим параметром также активируются сторонние файлы cookie.</string>
         <string name="third_party_cookies_preference">Включить сторонние файлы cookie по умолчанию</string>
-        <string name="third_party_cookies_summary">Этот параметр требует Android Lollipop (версия 5.0) или выше. Он не действует, если сторонние файлы cookie отключены.</string>
+        <string name="third_party_cookies_summary">Этот параметр требует Android Lollipop (версия 5.0) или выше. Он не действует, если первичные файлы cookie отключены.</string>
         <string name="dom_storage_preference">Включить хранилище DOM по умолчанию</string>
         <string name="dom_storage_preference_summary">Для работы хранилища DOM должен быть включен JavaScript.</string>
         <string name="save_form_data_preference">Разрешить сохранение данных формы по умолчанию</string>
@@ -277,7 +277,7 @@
             <item>Пользовательский</item>
         </string-array>
             <string-array name="domain_settings_user_agent_entries">
-                <item>Системный по умолчанию</item>
+                <item>Настройки по умолчанию</item>
                 <item>Privacy Browser 1.0</item>
                 <item>WebView по умолчанию</item>
                 <item>Firefox 56 на Android 8.0.0</item>
@@ -364,7 +364,7 @@
             <item>200%</item>
         </string-array>
             <string-array name="domain_settings_font_size_entries">
-                <item>Системный по умолчанию</item>
+                <item>Настройки по умолчанию</item>
                 <item>25%</item>
                 <item>50%</item>
                 <item>75%</item>
@@ -383,7 +383,7 @@
         <string name="night_mode">Ночной режим</string>
         <string name="night_mode_summary">Включение ночного режима также включает JavaScript для всех веб-страниц.</string>
         <string name="display_webpage_images">Показывать изображения веб-страницы</string>
-        <string name="display_webpage_images_summary">Отключите, для экономии трафика.</string>
+        <string name="display_webpage_images_summary">Отключите для экономии трафика.</string>
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Проксирование Orbot работает только с установленным Orbot.</string>

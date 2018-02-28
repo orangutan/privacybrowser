@@ -6,5 +6,5 @@
 • Añadir una acción de deshacer a la snackbar cuando las cookies, el almacenamiento DOM, o los datos de formulario sean limpiados desde el menú de opciones.
 • Arreglar un error que causaba que se perdieran los cambios pendientes al reiniciar.
 • Arreglar un error con el diseño spinner en algunos dispositivos Huawei.
-• Traducción al español actualizada proporcionada por Jose A. León Becerra.
-• Traducción al italiano actualizada proporcionada por Francesco Buratti.
+• Actualizada la traducción al español proporcionada por Jose A. León Becerra.
+• Actualizada la traducción al italiano proporcionada por Francesco Buratti.

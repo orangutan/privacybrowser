@@ -807,307 +807,6 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
         // drawerToggle creates the hamburger icon at the start of the AppBar.
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, supportAppBar, R.string.open_navigation_drawer, R.string.close_navigation_drawer);
 
-        // Instantiate the block list helper.
-        BlockListHelper blockListHelper = new BlockListHelper();
-
-        // Parse the block lists.
-        final ArrayList<List<String[]>> easyList = blockListHelper.parseBlockList(getAssets(), "blocklists/easylist.txt");
-        final ArrayList<List<String[]>> easyPrivacy = blockListHelper.parseBlockList(getAssets(), "blocklists/easyprivacy.txt");
-        final ArrayList<List<String[]>> fanboyAnnoyance = blockListHelper.parseBlockList(getAssets(), "blocklists/fanboy-annoyance.txt");
-        final ArrayList<List<String[]>> fanboySocial = blockListHelper.parseBlockList(getAssets(), "blocklists/fanboy-social.txt");
-
-        // Store the list versions.
-        easyListVersion = easyList.get(0).get(0)[0];
-        easyPrivacyVersion = easyPrivacy.get(0).get(0)[0];
-        fanboyAnnoyanceVersion = fanboyAnnoyance.get(0).get(0)[0];
-        fanboySocialVersion = fanboySocial.get(0).get(0)[0];
-
-        mainWebView.setWebViewClient(new WebViewClient() {
-            // `shouldOverrideUrlLoading` makes this `WebView` the default handler for URLs inside the app, so that links are not kicked out to other apps.
-            // We have to use the deprecated `shouldOverrideUrlLoading` until API >= 24.
-            @SuppressWarnings("deprecation")
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (url.startsWith("mailto:")) {  // Load the email address in an external email program.
-                    // Use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
-                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-
-                    // Parse the url and set it as the data for the `Intent`.
-                    emailIntent.setData(Uri.parse(url));
-
-                    // `FLAG_ACTIVITY_NEW_TASK` opens the email program in a new task instead as part of Privacy Browser.
-                    emailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                    // Make it so.
-                    startActivity(emailIntent);
-
-                    // Returning `true` indicates the application is handling the URL.
-                    return true;
-                } else if (url.startsWith("tel:")) {  // Load the phone number in the dialer.
-                    // `ACTION_DIAL` open the dialer and loads the phone number, but waits for the user to place the call.
-                    Intent dialIntent = new Intent(Intent.ACTION_DIAL);
-
-                    // Add the phone number to the intent.
-                    dialIntent.setData(Uri.parse(url));
-
-                    // `FLAG_ACTIVITY_NEW_TASK` opens the dialer in a new task instead as part of Privacy Browser.
-                    dialIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                    // Make it so.
-                    startActivity(dialIntent);
-
-                    // Returning `true` indicates the application is handling the URL.
-                    return true;
-                } else {  // Load the URL in Privacy Browser.
-                    // Apply the domain settings for the new URL.
-                    applyDomainSettings(url);
-
-                    // Returning `false` causes the current `WebView` to handle the URL and prevents it from adding redirects to the history list.
-                    return false;
-                }
-            }
-
-            // Check requests against the block lists.  The deprecated `shouldInterceptRequest` must be used until minimum API >= 21.
-            @SuppressWarnings("deprecation")
-            @Override
-            public WebResourceResponse shouldInterceptRequest(WebView view, String url){
-                // Create an empty web resource response to be used if the resource request is blocked.
-                WebResourceResponse emptyWebResourceResponse = new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
-
-                // Check EasyList if it is enabled.
-                if (easyListEnabled) {
-                    if (blockListHelper.isBlocked(formattedUrlString, url, easyList)) {
-                        // The resource request was blocked.  Return an empty web resource response.
-                        return emptyWebResourceResponse;
-                    }
-                }
-
-                // Check EasyPrivacy if it is enabled.
-                if (easyPrivacyEnabled) {
-                    if (blockListHelper.isBlocked(formattedUrlString, url, easyPrivacy)) {
-                        // The resource request was blocked.  Return an empty web resource response.
-                        return emptyWebResourceResponse;
-                    }
-                }
-
-                // Check Fanboy’s Annoyance List if it is enabled.
-                if (fanboyAnnoyanceListEnabled) {
-                    if (blockListHelper.isBlocked(formattedUrlString, url, fanboyAnnoyance)) {
-                        // The resource request was blocked.  Return an empty web resource response.
-                        return emptyWebResourceResponse;
-                    }
-                } else if (fanboySocialBlockingListEnabled){  // Only check Fanboy’s Social Blocking List if Fanboy’s Annoyance List is disabled.
-                    if (blockListHelper.isBlocked(formattedUrlString, url, fanboySocial)) {
-                        // The resource request was blocked.  Return an empty web resource response.
-                        return emptyWebResourceResponse;
-                    }
-                }
-
-                // The resource request has not been blocked.  `return null` loads the requested resource.
-                return null;
-            }
-
-            // Handle HTTP authentication requests.
-            @Override
-            public void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm) {
-                // Store `handler` so it can be accessed from `onHttpAuthenticationCancel()` and `onHttpAuthenticationProceed()`.
-                httpAuthHandler = handler;
-
-                // Display the HTTP authentication dialog.
-                AppCompatDialogFragment httpAuthenticationDialogFragment = HttpAuthenticationDialog.displayDialog(host, realm);
-                httpAuthenticationDialogFragment.show(getSupportFragmentManager(), getString(R.string.http_authentication));
-            }
-
-            // Update the URL in urlTextBox when the page starts to load.
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                // If night mode is enabled, hide `mainWebView` until after the night mode CSS is applied.
-                if (nightMode) {
-                    mainWebView.setVisibility(View.INVISIBLE);
-                }
-
-                // Hide the keyboard.  `0` indicates no additional flags.
-                inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
-
-                // Check to see if we are waiting on Orbot.
-                if (!waitingForOrbot) {  // We are not waiting on Orbot, so we need to process the URL.
-                    // We need to update `formattedUrlString` at the beginning of the load, so that if the user toggles JavaScript during the load the new website is reloaded.
-                    formattedUrlString = url;
-
-                    // Display the formatted URL text.
-                    urlTextBox.setText(formattedUrlString);
-
-                    // Apply text highlighting to `urlTextBox`.
-                    highlightUrlText();
-
-                    // Apply any custom domain settings if the URL was loaded by navigating history.
-                    if (navigatingHistory) {
-                        applyDomainSettings(url);
-                    }
-
-                    // Set `urlIsLoading` to `true`, so that redirects while loading do not trigger changes in the user agent, which forces another reload of the existing page.
-                    urlIsLoading = true;
-                }
-            }
-
-            // It is necessary to update `formattedUrlString` and `urlTextBox` after the page finishes loading because the final URL can change during load.
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                // Reset `urlIsLoading`, which is used to prevent reloads on redirect if the user agent changes.
-                urlIsLoading = false;
-
-                // Clear the cache and history if Incognito Mode is enabled.
-                if (incognitoModeEnabled) {
-                    // Clear the cache.  `true` includes disk files.
-                    mainWebView.clearCache(true);
-
-                    // Clear the back/forward history.
-                    mainWebView.clearHistory();
-
-                    // Manually delete cache folders.
-                    try {
-                        // Delete the main `cache` folder.
-                        privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/cache");
-
-                        // Delete the `app_webview` folder, which contains an additional `WebView` cache.  See `https://code.google.com/p/android/issues/detail?id=233826&thanks=233826&ts=1486670530`.
-                        privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview");
-                    } catch (IOException e) {
-                        // Do nothing if an error is thrown.
-                    }
-                }
-
-                // Update `urlTextBox` and apply domain settings if not waiting on Orbot.
-                if (!waitingForOrbot) {
-                    // Check to see if `WebView` has set `url` to be `about:blank`.
-                    if (url.equals("about:blank")) {  // `WebView` is blank, so `formattedUrlString` should be `""` and `urlTextBox` should display a hint.
-                        // Set `formattedUrlString` to `""`.
-                        formattedUrlString = "";
-
-                        urlTextBox.setText(formattedUrlString);
-
-                        // Request focus for `urlTextBox`.
-                        urlTextBox.requestFocus();
-
-                        // Display the keyboard.
-                        inputMethodManager.showSoftInput(urlTextBox, 0);
-
-                        // Apply the domain settings.  This clears any settings from the previous domain.
-                        applyDomainSettings(formattedUrlString);
-                    } else {  // `WebView` has loaded a webpage.
-                        // Set `formattedUrlString`.
-                        formattedUrlString = url;
-
-                        // Only update `urlTextBox` if the user is not typing in it.
-                        if (!urlTextBox.hasFocus()) {
-                            // Display the formatted URL text.
-                            urlTextBox.setText(formattedUrlString);
-
-                            // Apply text highlighting to `urlTextBox`.
-                            highlightUrlText();
-                        }
-                    }
-
-                    // Store the SSL certificate so it can be accessed from `ViewSslCertificateDialog` and `PinnedSslCertificateMismatchDialog`.
-                    sslCertificate = mainWebView.getCertificate();
-
-                    // Check the current website SSL certificate against the pinned SSL certificate if there is a pinned SSL certificate the user has not chosen to ignore it for this session.
-                    if (pinnedDomainSslCertificate && !ignorePinnedSslCertificate) {
-                        // Initialize the current SSL certificate variables.
-                        String currentWebsiteIssuedToCName = "";
-                        String currentWebsiteIssuedToOName = "";
-                        String currentWebsiteIssuedToUName = "";
-                        String currentWebsiteIssuedByCName = "";
-                        String currentWebsiteIssuedByOName = "";
-                        String currentWebsiteIssuedByUName = "";
-                        Date currentWebsiteSslStartDate = null;
-                        Date currentWebsiteSslEndDate = null;
-
-
-                        // Extract the individual pieces of information from the current website SSL certificate if it is not null.
-                        if (sslCertificate != null) {
-                            currentWebsiteIssuedToCName = sslCertificate.getIssuedTo().getCName();
-                            currentWebsiteIssuedToOName = sslCertificate.getIssuedTo().getOName();
-                            currentWebsiteIssuedToUName = sslCertificate.getIssuedTo().getUName();
-                            currentWebsiteIssuedByCName = sslCertificate.getIssuedBy().getCName();
-                            currentWebsiteIssuedByOName = sslCertificate.getIssuedBy().getOName();
-                            currentWebsiteIssuedByUName = sslCertificate.getIssuedBy().getUName();
-                            currentWebsiteSslStartDate = sslCertificate.getValidNotBeforeDate();
-                            currentWebsiteSslEndDate = sslCertificate.getValidNotAfterDate();
-                        }
-
-                        // Initialize `String` variables to store the SSL certificate dates.  `Strings` are needed to compare the values below, which doesn't work with `Dates` if they are `null`.
-                        String currentWebsiteSslStartDateString = "";
-                        String currentWebsiteSslEndDateString = "";
-                        String pinnedDomainSslStartDateString = "";
-                        String pinnedDomainSslEndDateString = "";
-
-                        // Convert the `Dates` to `Strings` if they are not `null`.
-                        if (currentWebsiteSslStartDate != null) {
-                            currentWebsiteSslStartDateString = currentWebsiteSslStartDate.toString();
-                        }
-
-                        if (currentWebsiteSslEndDate != null) {
-                            currentWebsiteSslEndDateString = currentWebsiteSslEndDate.toString();
-                        }
-
-                        if (pinnedDomainSslStartDate != null) {
-                            pinnedDomainSslStartDateString = pinnedDomainSslStartDate.toString();
-                        }
-
-                        if (pinnedDomainSslEndDate != null) {
-                            pinnedDomainSslEndDateString = pinnedDomainSslEndDate.toString();
-                        }
-
-                        // Check to see if the pinned SSL certificate matches the current website certificate.
-                        if (!currentWebsiteIssuedToCName.equals(pinnedDomainSslIssuedToCNameString) || !currentWebsiteIssuedToOName.equals(pinnedDomainSslIssuedToONameString) ||
-                                !currentWebsiteIssuedToUName.equals(pinnedDomainSslIssuedToUNameString) || !currentWebsiteIssuedByCName.equals(pinnedDomainSslIssuedByCNameString) ||
-                                !currentWebsiteIssuedByOName.equals(pinnedDomainSslIssuedByONameString) || !currentWebsiteIssuedByUName.equals(pinnedDomainSslIssuedByUNameString) ||
-                                !currentWebsiteSslStartDateString.equals(pinnedDomainSslStartDateString) || !currentWebsiteSslEndDateString.equals(pinnedDomainSslEndDateString)) {
-                                // The pinned SSL certificate doesn't match the current domain certificate.
-                            //Display the pinned SSL certificate mismatch `AlertDialog`.
-                            AppCompatDialogFragment pinnedSslCertificateMismatchDialogFragment = new PinnedSslCertificateMismatchDialog();
-                            pinnedSslCertificateMismatchDialogFragment.show(getSupportFragmentManager(), getString(R.string.ssl_certificate_mismatch));
-                        }
-                    }
-                }
-            }
-
-            // Handle SSL Certificate errors.
-            @Override
-            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-                // Get the current website SSL certificate.
-                SslCertificate currentWebsiteSslCertificate = error.getCertificate();
-
-                // Extract the individual pieces of information from the current website SSL certificate.
-                String currentWebsiteIssuedToCName = currentWebsiteSslCertificate.getIssuedTo().getCName();
-                String currentWebsiteIssuedToOName = currentWebsiteSslCertificate.getIssuedTo().getOName();
-                String currentWebsiteIssuedToUName = currentWebsiteSslCertificate.getIssuedTo().getUName();
-                String currentWebsiteIssuedByCName = currentWebsiteSslCertificate.getIssuedBy().getCName();
-                String currentWebsiteIssuedByOName = currentWebsiteSslCertificate.getIssuedBy().getOName();
-                String currentWebsiteIssuedByUName = currentWebsiteSslCertificate.getIssuedBy().getUName();
-                Date currentWebsiteSslStartDate = currentWebsiteSslCertificate.getValidNotBeforeDate();
-                Date currentWebsiteSslEndDate = currentWebsiteSslCertificate.getValidNotAfterDate();
-
-                // Proceed to the website if the current SSL website certificate matches the pinned domain certificate.
-                if (pinnedDomainSslCertificate &&
-                        currentWebsiteIssuedToCName.equals(pinnedDomainSslIssuedToCNameString) && currentWebsiteIssuedToOName.equals(pinnedDomainSslIssuedToONameString) &&
-                        currentWebsiteIssuedToUName.equals(pinnedDomainSslIssuedToUNameString) && currentWebsiteIssuedByCName.equals(pinnedDomainSslIssuedByCNameString) &&
-                        currentWebsiteIssuedByOName.equals(pinnedDomainSslIssuedByONameString) && currentWebsiteIssuedByUName.equals(pinnedDomainSslIssuedByUNameString) &&
-                        currentWebsiteSslStartDate.equals(pinnedDomainSslStartDate) && currentWebsiteSslEndDate.equals(pinnedDomainSslEndDate)) {
-                        // An SSL certificate is pinned and matches the current domain certificate.
-                    // Proceed to the website without displaying an error.
-                    handler.proceed();
-                } else {  // Either there isn't a pinned SSL certificate or it doesn't match the current website certificate.
-                    // Store `handler` so it can be accesses from `onSslErrorCancel()` and `onSslErrorProceed()`.
-                    sslErrorHandler = handler;
-
-                    // Display the SSL error `AlertDialog`.
-                    AppCompatDialogFragment sslCertificateErrorDialogFragment = SslCertificateErrorDialog.displayDialog(error);
-                    sslCertificateErrorDialogFragment.show(getSupportFragmentManager(), getString(R.string.ssl_certificate_error));
-                }
-            }
-        });
-
         // Get a handle for the progress bar.
         final ProgressBar progressBar = findViewById(R.id.progress_bar);
 
@@ -1317,7 +1016,312 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
         // Apply the app settings from the shared preferences.
         applyAppSettings();
 
-        // Load `formattedUrlString` if we are not waiting for Orbot to connect.
+        // Instantiate the block list helper.
+        BlockListHelper blockListHelper = new BlockListHelper();
+
+        // Parse the block lists.
+        final ArrayList<List<String[]>> easyList = blockListHelper.parseBlockList(getAssets(), "blocklists/easylist.txt");
+        final ArrayList<List<String[]>> easyPrivacy = blockListHelper.parseBlockList(getAssets(), "blocklists/easyprivacy.txt");
+        final ArrayList<List<String[]>> fanboyAnnoyance = blockListHelper.parseBlockList(getAssets(), "blocklists/fanboy-annoyance.txt");
+        final ArrayList<List<String[]>> fanboySocial = blockListHelper.parseBlockList(getAssets(), "blocklists/fanboy-social.txt");
+
+        // Store the list versions.
+        easyListVersion = easyList.get(0).get(0)[0];
+        easyPrivacyVersion = easyPrivacy.get(0).get(0)[0];
+        fanboyAnnoyanceVersion = fanboyAnnoyance.get(0).get(0)[0];
+        fanboySocialVersion = fanboySocial.get(0).get(0)[0];
+
+        mainWebView.setWebViewClient(new WebViewClient() {
+            // `shouldOverrideUrlLoading` makes this `WebView` the default handler for URLs inside the app, so that links are not kicked out to other apps.
+            // We have to use the deprecated `shouldOverrideUrlLoading` until API >= 24.
+            @SuppressWarnings("deprecation")
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url.startsWith("mailto:")) {  // Load the email address in an external email program.
+                    // Use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+
+                    // Parse the url and set it as the data for the `Intent`.
+                    emailIntent.setData(Uri.parse(url));
+
+                    // `FLAG_ACTIVITY_NEW_TASK` opens the email program in a new task instead as part of Privacy Browser.
+                    emailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                    // Make it so.
+                    startActivity(emailIntent);
+
+                    // Returning `true` indicates the application is handling the URL.
+                    return true;
+                } else if (url.startsWith("tel:")) {  // Load the phone number in the dialer.
+                    // `ACTION_DIAL` open the dialer and loads the phone number, but waits for the user to place the call.
+                    Intent dialIntent = new Intent(Intent.ACTION_DIAL);
+
+                    // Add the phone number to the intent.
+                    dialIntent.setData(Uri.parse(url));
+
+                    // `FLAG_ACTIVITY_NEW_TASK` opens the dialer in a new task instead as part of Privacy Browser.
+                    dialIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                    // Make it so.
+                    startActivity(dialIntent);
+
+                    // Returning `true` indicates the application is handling the URL.
+                    return true;
+                } else {  // Load the URL in Privacy Browser.
+                    // Apply the domain settings for the new URL.
+                    applyDomainSettings(url);
+
+                    // Returning `false` causes the current `WebView` to handle the URL and prevents it from adding redirects to the history list.
+                    return false;
+                }
+            }
+
+            // Check requests against the block lists.  The deprecated `shouldInterceptRequest` must be used until minimum API >= 21.
+            @SuppressWarnings("deprecation")
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, String url){
+                // Create an empty web resource response to be used if the resource request is blocked.
+                WebResourceResponse emptyWebResourceResponse = new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
+
+                // Check EasyList if it is enabled.
+                if (easyListEnabled) {
+                    if (blockListHelper.isBlocked(formattedUrlString, url, easyList)) {
+                        // The resource request was blocked.  Return an empty web resource response.
+                        return emptyWebResourceResponse;
+                    }
+                }
+
+                // Check EasyPrivacy if it is enabled.
+                if (easyPrivacyEnabled) {
+                    if (blockListHelper.isBlocked(formattedUrlString, url, easyPrivacy)) {
+                        // The resource request was blocked.  Return an empty web resource response.
+                        return emptyWebResourceResponse;
+                    }
+                }
+
+                // Check Fanboy’s Annoyance List if it is enabled.
+                if (fanboyAnnoyanceListEnabled) {
+                    if (blockListHelper.isBlocked(formattedUrlString, url, fanboyAnnoyance)) {
+                        // The resource request was blocked.  Return an empty web resource response.
+                        return emptyWebResourceResponse;
+                    }
+                } else if (fanboySocialBlockingListEnabled){  // Only check Fanboy’s Social Blocking List if Fanboy’s Annoyance List is disabled.
+                    if (blockListHelper.isBlocked(formattedUrlString, url, fanboySocial)) {
+                        // The resource request was blocked.  Return an empty web resource response.
+                        return emptyWebResourceResponse;
+                    }
+                }
+
+                // The resource request has not been blocked.  `return null` loads the requested resource.
+                return null;
+            }
+
+            // Handle HTTP authentication requests.
+            @Override
+            public void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm) {
+                // Store `handler` so it can be accessed from `onHttpAuthenticationCancel()` and `onHttpAuthenticationProceed()`.
+                httpAuthHandler = handler;
+
+                // Display the HTTP authentication dialog.
+                AppCompatDialogFragment httpAuthenticationDialogFragment = HttpAuthenticationDialog.displayDialog(host, realm);
+                httpAuthenticationDialogFragment.show(getSupportFragmentManager(), getString(R.string.http_authentication));
+            }
+
+            // Update the URL in urlTextBox when the page starts to load.
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {// If night mode is enabled, hide `mainWebView` until after the night mode CSS is applied.
+                if (nightMode) {
+                    mainWebView.setVisibility(View.INVISIBLE);
+                }
+
+                // Hide the keyboard.  `0` indicates no additional flags.
+                inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
+
+                // Check to see if we are waiting on Orbot.
+                if (!waitingForOrbot) {  // We are not waiting on Orbot, so we need to process the URL.
+                    // We need to update `formattedUrlString` at the beginning of the load, so that if the user toggles JavaScript during the load the new website is reloaded.
+                    formattedUrlString = url;
+
+                    // Display the formatted URL text.
+                    urlTextBox.setText(formattedUrlString);
+
+                    // Apply text highlighting to `urlTextBox`.
+                    highlightUrlText();
+
+                    // Apply any custom domain settings if the URL was loaded by navigating history.
+                    if (navigatingHistory) {
+                        applyDomainSettings(url);
+                    }
+
+                    // Set `urlIsLoading` to `true`, so that redirects while loading do not trigger changes in the user agent, which forces another reload of the existing page.
+                    urlIsLoading = true;
+                }
+            }
+
+            // It is necessary to update `formattedUrlString` and `urlTextBox` after the page finishes loading because the final URL can change during load.
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                // Flush any cookies to persistent storage.  `CookieManager` has become very lazy about flushing cookies in recent versions.
+                if (Build.VERSION.SDK_INT >= 21) {
+                    cookieManager.flush();
+                }
+
+                // Reset `urlIsLoading`, which is used to prevent reloads on redirect if the user agent changes.
+                urlIsLoading = false;
+
+                // Clear the cache and history if Incognito Mode is enabled.
+                if (incognitoModeEnabled) {
+                    // Clear the cache.  `true` includes disk files.
+                    mainWebView.clearCache(true);
+
+                    // Clear the back/forward history.
+                    mainWebView.clearHistory();
+
+                    // Manually delete cache folders.
+                    try {
+                        // Delete the main `cache` folder.
+                        privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/cache");
+
+                        // Delete the `app_webview` folder, which contains an additional `WebView` cache.  See `https://code.google.com/p/android/issues/detail?id=233826&thanks=233826&ts=1486670530`.
+                        privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview");
+                    } catch (IOException e) {
+                        // Do nothing if an error is thrown.
+                    }
+                }
+
+                // Update `urlTextBox` and apply domain settings if not waiting on Orbot.
+                if (!waitingForOrbot) {
+                    // Check to see if `WebView` has set `url` to be `about:blank`.
+                    if (url.equals("about:blank")) {  // `WebView` is blank, so `formattedUrlString` should be `""` and `urlTextBox` should display a hint.
+                        // Set `formattedUrlString` to `""`.
+                        formattedUrlString = "";
+
+                        urlTextBox.setText(formattedUrlString);
+
+                        // Request focus for `urlTextBox`.
+                        urlTextBox.requestFocus();
+
+                        // Display the keyboard.
+                        inputMethodManager.showSoftInput(urlTextBox, 0);
+
+                        // Apply the domain settings.  This clears any settings from the previous domain.
+                        applyDomainSettings(formattedUrlString);
+                    } else {  // `WebView` has loaded a webpage.
+                        // Set `formattedUrlString`.
+                        formattedUrlString = url;
+
+                        // Only update `urlTextBox` if the user is not typing in it.
+                        if (!urlTextBox.hasFocus()) {
+                            // Display the formatted URL text.
+                            urlTextBox.setText(formattedUrlString);
+
+                            // Apply text highlighting to `urlTextBox`.
+                            highlightUrlText();
+                        }
+                    }
+
+                    // Store the SSL certificate so it can be accessed from `ViewSslCertificateDialog` and `PinnedSslCertificateMismatchDialog`.
+                    sslCertificate = mainWebView.getCertificate();
+
+                    // Check the current website SSL certificate against the pinned SSL certificate if there is a pinned SSL certificate the user has not chosen to ignore it for this session.
+                    if (pinnedDomainSslCertificate && !ignorePinnedSslCertificate) {
+                        // Initialize the current SSL certificate variables.
+                        String currentWebsiteIssuedToCName = "";
+                        String currentWebsiteIssuedToOName = "";
+                        String currentWebsiteIssuedToUName = "";
+                        String currentWebsiteIssuedByCName = "";
+                        String currentWebsiteIssuedByOName = "";
+                        String currentWebsiteIssuedByUName = "";
+                        Date currentWebsiteSslStartDate = null;
+                        Date currentWebsiteSslEndDate = null;
+
+
+                        // Extract the individual pieces of information from the current website SSL certificate if it is not null.
+                        if (sslCertificate != null) {
+                            currentWebsiteIssuedToCName = sslCertificate.getIssuedTo().getCName();
+                            currentWebsiteIssuedToOName = sslCertificate.getIssuedTo().getOName();
+                            currentWebsiteIssuedToUName = sslCertificate.getIssuedTo().getUName();
+                            currentWebsiteIssuedByCName = sslCertificate.getIssuedBy().getCName();
+                            currentWebsiteIssuedByOName = sslCertificate.getIssuedBy().getOName();
+                            currentWebsiteIssuedByUName = sslCertificate.getIssuedBy().getUName();
+                            currentWebsiteSslStartDate = sslCertificate.getValidNotBeforeDate();
+                            currentWebsiteSslEndDate = sslCertificate.getValidNotAfterDate();
+                        }
+
+                        // Initialize `String` variables to store the SSL certificate dates.  `Strings` are needed to compare the values below, which doesn't work with `Dates` if they are `null`.
+                        String currentWebsiteSslStartDateString = "";
+                        String currentWebsiteSslEndDateString = "";
+                        String pinnedDomainSslStartDateString = "";
+                        String pinnedDomainSslEndDateString = "";
+
+                        // Convert the `Dates` to `Strings` if they are not `null`.
+                        if (currentWebsiteSslStartDate != null) {
+                            currentWebsiteSslStartDateString = currentWebsiteSslStartDate.toString();
+                        }
+
+                        if (currentWebsiteSslEndDate != null) {
+                            currentWebsiteSslEndDateString = currentWebsiteSslEndDate.toString();
+                        }
+
+                        if (pinnedDomainSslStartDate != null) {
+                            pinnedDomainSslStartDateString = pinnedDomainSslStartDate.toString();
+                        }
+
+                        if (pinnedDomainSslEndDate != null) {
+                            pinnedDomainSslEndDateString = pinnedDomainSslEndDate.toString();
+                        }
+
+                        // Check to see if the pinned SSL certificate matches the current website certificate.
+                        if (!currentWebsiteIssuedToCName.equals(pinnedDomainSslIssuedToCNameString) || !currentWebsiteIssuedToOName.equals(pinnedDomainSslIssuedToONameString) ||
+                                !currentWebsiteIssuedToUName.equals(pinnedDomainSslIssuedToUNameString) || !currentWebsiteIssuedByCName.equals(pinnedDomainSslIssuedByCNameString) ||
+                                !currentWebsiteIssuedByOName.equals(pinnedDomainSslIssuedByONameString) || !currentWebsiteIssuedByUName.equals(pinnedDomainSslIssuedByUNameString) ||
+                                !currentWebsiteSslStartDateString.equals(pinnedDomainSslStartDateString) || !currentWebsiteSslEndDateString.equals(pinnedDomainSslEndDateString)) {
+                            // The pinned SSL certificate doesn't match the current domain certificate.
+                            //Display the pinned SSL certificate mismatch `AlertDialog`.
+                            AppCompatDialogFragment pinnedSslCertificateMismatchDialogFragment = new PinnedSslCertificateMismatchDialog();
+                            pinnedSslCertificateMismatchDialogFragment.show(getSupportFragmentManager(), getString(R.string.ssl_certificate_mismatch));
+                        }
+                    }
+                }
+            }
+
+            // Handle SSL Certificate errors.
+            @Override
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                // Get the current website SSL certificate.
+                SslCertificate currentWebsiteSslCertificate = error.getCertificate();
+
+                // Extract the individual pieces of information from the current website SSL certificate.
+                String currentWebsiteIssuedToCName = currentWebsiteSslCertificate.getIssuedTo().getCName();
+                String currentWebsiteIssuedToOName = currentWebsiteSslCertificate.getIssuedTo().getOName();
+                String currentWebsiteIssuedToUName = currentWebsiteSslCertificate.getIssuedTo().getUName();
+                String currentWebsiteIssuedByCName = currentWebsiteSslCertificate.getIssuedBy().getCName();
+                String currentWebsiteIssuedByOName = currentWebsiteSslCertificate.getIssuedBy().getOName();
+                String currentWebsiteIssuedByUName = currentWebsiteSslCertificate.getIssuedBy().getUName();
+                Date currentWebsiteSslStartDate = currentWebsiteSslCertificate.getValidNotBeforeDate();
+                Date currentWebsiteSslEndDate = currentWebsiteSslCertificate.getValidNotAfterDate();
+
+                // Proceed to the website if the current SSL website certificate matches the pinned domain certificate.
+                if (pinnedDomainSslCertificate &&
+                        currentWebsiteIssuedToCName.equals(pinnedDomainSslIssuedToCNameString) && currentWebsiteIssuedToOName.equals(pinnedDomainSslIssuedToONameString) &&
+                        currentWebsiteIssuedToUName.equals(pinnedDomainSslIssuedToUNameString) && currentWebsiteIssuedByCName.equals(pinnedDomainSslIssuedByCNameString) &&
+                        currentWebsiteIssuedByOName.equals(pinnedDomainSslIssuedByONameString) && currentWebsiteIssuedByUName.equals(pinnedDomainSslIssuedByUNameString) &&
+                        currentWebsiteSslStartDate.equals(pinnedDomainSslStartDate) && currentWebsiteSslEndDate.equals(pinnedDomainSslEndDate)) {
+                    // An SSL certificate is pinned and matches the current domain certificate.
+                    // Proceed to the website without displaying an error.
+                    handler.proceed();
+                } else {  // Either there isn't a pinned SSL certificate or it doesn't match the current website certificate.
+                    // Store `handler` so it can be accesses from `onSslErrorCancel()` and `onSslErrorProceed()`.
+                    sslErrorHandler = handler;
+
+                    // Display the SSL error `AlertDialog`.
+                    AppCompatDialogFragment sslCertificateErrorDialogFragment = SslCertificateErrorDialog.displayDialog(error);
+                    sslCertificateErrorDialogFragment.show(getSupportFragmentManager(), getString(R.string.ssl_certificate_error));
+                }
+            }
+        });
+
+        // Load the website if not waiting for Orbot to connect.
         if (!waitingForOrbot) {
             loadUrl(formattedUrlString);
         }
@@ -3038,7 +3042,7 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
             loadingNewDomainName = !hostName.equals(currentDomainName);
         }
 
-        // Only apply the domain settings if we are loading a new domain.  This allows the user to set temporary settings for JavaScript, cookies, DOM storage, etc.
+        // Only apply the domain settings if a new domain is being loaded.  This allows the user to set temporary settings for JavaScript, cookies, DOM storage, etc.
         if (loadingNewDomainName) {
             // Set the new `hostname` as the `currentDomainName`.
             currentDomainName = hostName;

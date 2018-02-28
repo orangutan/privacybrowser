@@ -1,4 +1,4 @@
-Privacy Browser protegge la privacy perchè disabilita funzionalità come JavaScript, DOM storage e i cookie, che sono utilizzati dai siti web per tracciare gli utenti.  Quando è necessario, le impostazioni possono però essere modificate per i singoli domini oppure globalmente in modo da abilitare queste funzionalità. In aggiunta, Privacy Browser include le block list di Easylist, che sono in grado di bloccare molte tecnologie di tracking anche con Javascript abilitato .
+Privacy Browser protegge la privacy perchè disabilita funzionalità come JavaScript, DOM storage e i cookie, che sono utilizzati dai siti web per tracciare gli utenti.  Quando è necessario, le impostazioni possono però essere modificate per i singoli domini oppure globalmente in modo da abilitare queste funzionalità. In aggiunta, Privacy Browser include le block list di Easylist, che sono in grado di bloccare molte tecnologie di tracking anche con Javascript abilitato.
 
 Privacy Browser non permette ancora la navigazione con tab. Questa funzionalità è prevista per le release della serie 3.x.
 

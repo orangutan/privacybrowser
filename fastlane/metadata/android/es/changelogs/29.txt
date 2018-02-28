@@ -1,5 +1,5 @@
 • Añadir un elemento de menú de opciones para crear/editar la configuración del dominio para el dominio actual.
 • Abrir hipervínculos de números telefónicos en el marcador telefónico.
 • Arreglar un error de compilación que impedía la liberación de 2.7 y 2.7.1 en F-Droid.
-• Traducción al español actualizada por Jose A. León Becerra.
-• Traducción al italiano actualizada por Francesco Buratti.
+• Actualizada la traducción al español proporcionada por Jose A. León Becerra.
+• Actualizada la traducción al italiano proporcionada por Francesco Buratti.
