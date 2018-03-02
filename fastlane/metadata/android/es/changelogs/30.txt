@@ -1,7 +1,7 @@
-• Cambiar a EasyList para el bloqueo de publicidad y rastreo.
-• Añadir una actividad Ver Fuente.
-• Añadir un submenú Borrar datos al menú de opciones.
-• Corregir la opción Añadir a pantalla de inicio para ser compatible con Android Oreo.
+• Cambiar a “EasyList” para el bloqueo de publicidad y rastreo.
+• Añadir una actividad: “Ver Fuente”.
+• Añadir un submenú: “Borrar datos” al menú de opciones.
+• Corregir la opción “Añadir a pantalla de inicio” para ser compatible con Android Oreo.
 • Corregir el formato de color en el cuadro de texto URL.
 • Clarificar el lenguaje en la política de privacidad.
 • Aumentar la API dirigido a 27 (Android Oreo, 8.1.0).

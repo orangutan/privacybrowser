@@ -1,0 +1,1 @@
+• Workaround a bug in recent versions of Android’s WebView that prevented users from saving cookies when desired.

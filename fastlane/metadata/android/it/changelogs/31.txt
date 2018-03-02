@@ -1,0 +1,1 @@
+• Correzione di un baco dovuto alle più recenti versioni della WebView di Android che impediva il salvataggio dei cookies agli utenti quando desideravano farlo.
