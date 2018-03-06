@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -49,7 +49,7 @@ public class GuideActivity extends AppCompatActivity {
         setContentView(R.layout.guide_coordinatorlayout);
 
         // We need to use `SupportActionBar` from `android.support.v7.app.ActionBar` until the minimum API is >= 21.
-        Toolbar guideAppBar = (Toolbar) findViewById(R.id.guide_toolbar);
+        Toolbar guideAppBar = findViewById(R.id.guide_toolbar);
         setSupportActionBar(guideAppBar);
 
         // Display the home arrow on `ppBar`.
@@ -58,12 +58,12 @@ public class GuideActivity extends AppCompatActivity {
         appBar.setDisplayHomeAsUpEnabled(true);
 
         //  Setup the ViewPager.
-        ViewPager aboutViewPager = (ViewPager) findViewById(R.id.guide_viewpager);
+        ViewPager aboutViewPager = findViewById(R.id.guide_viewpager);
         assert aboutViewPager != null; // This assert removes the incorrect warning in Android Studio on the following line that aboutViewPager might be null.
         aboutViewPager.setAdapter(new guidePagerAdapter(getSupportFragmentManager()));
 
         // Setup the TabLayout and connect it to the ViewPager.
-        TabLayout aboutTabLayout = (TabLayout) findViewById(R.id.guide_tablayout);
+        TabLayout aboutTabLayout = findViewById(R.id.guide_tablayout);
         assert aboutTabLayout != null; // This assert removes the incorrect warning in Android Studio on the following line that aboutTabLayout might be null.
         aboutTabLayout.setupWithViewPager(aboutViewPager);
     }

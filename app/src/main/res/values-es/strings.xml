@@ -292,7 +292,7 @@
         <string name="incognito_mode_summary">Borrar el historial y el caché después de que cada página web termine de cargar.</string>
         <string name="do_not_track">No rastrear</string>
         <string name="do_not_track_summary">Enviar la cabecera de no rastrear (DNT) que educadamente sugiere que los servidores web no rastreen este navegador.</string>
-    <string name="block_lists">Bloquear listas</string>
+    <string name="block_lists">Listas de bloqueo</string>
         <string name="easylist">EasyList</string>
         <string name="easylist_summary">Lista principal de bloqueo de anuncios.</string>
         <string name="easyprivacy">EasyPrivacy</string>

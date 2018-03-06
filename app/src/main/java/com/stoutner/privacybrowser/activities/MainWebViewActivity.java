@@ -301,6 +301,9 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
     // `reapplyDomainSettingsOnRestart` is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, and `onAddDomain()`, .
     private boolean reapplyDomainSettingsOnRestart;
 
+    // `returnFromSettings` is used in `onNavigationItemSelected()` and `onRestart()`.
+    private boolean returnFromSettings;
+
     // `currentDomainName` is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onAddDomain()`, and `applyDomainSettings()`.
     private String currentDomainName;
 
@@ -1162,7 +1165,7 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
             @Override
             public void onPageFinished(WebView view, String url) {
                 // Flush any cookies to persistent storage.  `CookieManager` has become very lazy about flushing cookies in recent versions.
-                if (Build.VERSION.SDK_INT >= 21) {
+                if (firstPartyCookiesEnabled && Build.VERSION.SDK_INT >= 21) {
                     cookieManager.flush();
                 }
 
@@ -1332,22 +1335,23 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
         // Sets the new intent as the activity intent, so that any future `getIntent()`s pick up this one instead of creating a new activity.
         setIntent(intent);
 
+        // Check to see if the intent contains a new URL.
         if (intent.getData() != null) {
             // Get the intent data and convert it to a string.
             final Uri intentUriData = intent.getData();
             formattedUrlString = intentUriData.toString();
+
+            // Load the website.
+            loadUrl(formattedUrlString);
+
+            // Close the navigation drawer if it is open.
+            if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START);
+            }
+
+            // Clear the keyboard if displayed and remove the focus on the urlTextBar if it has it.
+            mainWebView.requestFocus();
         }
-
-        // Close the navigation drawer if it is open.
-        if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        }
-
-        // Load the website.
-        loadUrl(formattedUrlString);
-
-        // Clear the keyboard if displayed and remove the focus on the urlTextBar if it has it.
-        mainWebView.requestFocus();
     }
 
     @Override
@@ -1355,31 +1359,34 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
         // Run the default commands.
         super.onRestart();
 
-        // Apply the app settings, which may have been changed in `SettingsActivity`.
-        applyAppSettings();
+        // Apply the app settings if returning from the Settings activity..
+        if (returnFromSettings) {
+            // Reset the return from settings flag.
+            returnFromSettings = false;
 
-        // Apply the domain settings if returning from the Domains Activity.
-        if (reapplyDomainSettingsOnRestart) {
-            // Reset `reapplyDomainSettingsOnRestart`.
-            reapplyDomainSettingsOnRestart = false;
+            // Apply the app settings.
+            applyAppSettings();
 
-            // Reapply the domain settings.
-            applyDomainSettings(formattedUrlString);
+            // Set the display webpage images mode.
+            setDisplayWebpageImages();
         }
 
-        // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
-        updatePrivacyIcons(true);
-
-        // Set the display webpage images mode.
-        setDisplayWebpageImages();
-
-        // Reload the webpage if displaying of images has been disabled in `SettingsFragment`.
+        // Reload the webpage if displaying of images has been disabled in the Settings activity.
         if (reloadOnRestart) {
             // Reload `mainWebView`.
             mainWebView.reload();
 
             // Reset `reloadOnRestartBoolean`.
             reloadOnRestart = false;
+        }
+
+        // Apply the domain settings if returning from the Domains activity.
+        if (reapplyDomainSettingsOnRestart) {
+            // Reset `reapplyDomainSettingsOnRestart`.
+            reapplyDomainSettingsOnRestart = false;
+
+            // Reapply the domain settings.
+            applyDomainSettings(formattedUrlString);
         }
 
         // Load the URL on restart to apply changes to night mode.
@@ -1391,7 +1398,7 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
             loadUrlOnRestart = false;
         }
 
-        //
+        // Update the bookmarks drawer if returning from the Bookmarks activity.
         if (restartFromBookmarksActivity) {
             // Close the bookmarks drawer.
             drawerLayout.closeDrawer(GravityCompat.END);
@@ -1402,6 +1409,9 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
             // Reset `restartFromBookmarksActivity`.
             restartFromBookmarksActivity = false;
         }
+
+        // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
+        updatePrivacyIcons(true);
     }
 
     // `onResume()` runs after `onStart()`, which runs after `onCreate()` and `onRestart()`.
@@ -2028,6 +2038,9 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                 // Reapply the domain settings on returning to `MainWebViewActivity`.
                 reapplyDomainSettingsOnRestart = true;
                 currentDomainName = "";
+
+                // Mark a flag to reapply app settings on restart only when returning from Settings.
+                returnFromSettings = true;
 
                 // Launch `SettingsActivity`.
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);
