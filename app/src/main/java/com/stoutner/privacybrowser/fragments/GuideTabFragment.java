@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -21,6 +21,7 @@ package com.stoutner.privacybrowser.fragments;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,13 +56,16 @@ public class GuideTabFragment extends Fragment {
         // Run the default commands.
         super.onCreate(savedInstanceState);
 
+        // Remove the lint warning that `getArguments()` might be null.
+        assert getArguments() != null;
+
         // Store the tab number in a class variable.
         tabNumber = getArguments().getInt("Tab");
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.  The fragment will take care of attaching the root automatically.
         View tabLayout = inflater.inflate(R.layout.bare_webview, container, false);
 
@@ -107,6 +111,10 @@ public class GuideTabFragment extends Fragment {
                 case 7:
                     tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_tracking_ids_dark.html");
                     break;
+
+                case 8:
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_bookmarks_dark.html");
+                    break;
             }
         } else {  // The light theme is applied.
             // Tab numbers start at 0.
@@ -142,6 +150,9 @@ public class GuideTabFragment extends Fragment {
                 case 7:
                     tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_tracking_ids_light.html");
                     break;
+
+                case 8:
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_bookmarks_light.html");
             }
         }
 

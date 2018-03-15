@@ -1,7 +1,5 @@
 <!--
-  Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
-
-  Translation 2017 Jose A. León Becerra.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2018 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -26,12 +24,15 @@
     </head>
 
     <body>
-        <h3>Tener acceso completo a la red</h3>
-        <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#INTERNET">android.permission.INTERNET</a></p>
-        <p>Requerido para que WebView consiga acceso a internet. Sin este permiso, Navegador Privado sería “Sin Navegador: Protegiendo su privacidad estando completamente desconectado de internet”.</p>
+        <h3><img class="title" src="../en/images/ic_bookmark_border_blue_dark.png"> Bookmarks</h3>
 
-        <h3>Instalar accesos directos</h3>
-        <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#INSTALL_SHORTCUT">com.android.launcher.permission.INSTALL_SHORTCUT</a></p>
-        <p>Requerido para añadir accesos directos de páginas web en el escritorio.</p>
+        <p>Bookmarks can be accessed in a drawer layout by swiping from the right of the screen.</p>
+
+        <img class="center" src="images/bookmarks.png">
+
+        <p>Tapping the top floating action button loads the bookmarks activity, which has advanced options like moving and deleting bookmarks.
+            From the bookmarks activity, there is an option to load the bookmarks database view. This shows the bookmarks as they exist in the SQLite database.
+            This will mostly be useful for troubleshooting problems with <a href="https://redmine.stoutner.com/issues/91">importing</a>
+            and <a href="https://redmine.stoutner.com/issues/23">exporting</a> bookmarks once those features are added.</p>
     </body>
 </html>

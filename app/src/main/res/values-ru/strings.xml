@@ -3,20 +3,20 @@
 <!--
   Copyright © 2015-2018 Soren Stoutner <soren@stoutner.com>.
 
-  Этот файл является частью Privacy Browser <https://www.stoutner.com/privacy-browser>.
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
-  Privacy Browser является свободным программным обеспечением: вы можете распространять
-  его и/или модифицировать его на условиях публичной лицензии GNU,
-  опубликованной Фондом свободного программного обеспечения, либо
-  третьей версии лицензии, либо (по вашему выбору) любой более поздней версии.
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-  Privacy Browser распространяется в надежде, что он будет полезен,
-  но БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ; даже без подразумеваемой гарантии пригодности
-  К КОММЕРЧЕСКОЙ ДЕЯТЕЛЬНОСТИ ИЛИ ДЛЯ ОПРЕДЕЛЕННОЙ ЦЕЛИ.  Более подробную
-  информацию можно получить ознакомившись с условиями публичной лицензии GNU.
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-  Вы должны были получить копию публичной лицензии GNU вместе с
-  Privacy Browser.  Если нет, посетите <http://www.gnu.org/licenses/>. -->
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
 <!-- `tools:ignore="MissingTranslation"` allows release APKs to be built if translation strings are missing.  The missing strings will fall back to English. -->
 <resources
@@ -27,7 +27,7 @@
     <string name="privacy_browser">Privacy Browser</string>
     <string name="privacy_browser_settings">Настройки Privacy Browser</string>
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  For example, Spanish is `es`.  This should not be translated unless the Guide and About sections are localized. -->
-    <!-- <string name="android_asset_path">ru</string> -->
+    <string name="android_asset_path">ru</string> -->
 
     <!-- MainWebView. -->
     <string name="privacy_mode">Режим приватности</string>

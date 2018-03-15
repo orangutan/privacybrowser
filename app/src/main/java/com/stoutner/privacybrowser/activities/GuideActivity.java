@@ -76,7 +76,7 @@ public class GuideActivity extends AppCompatActivity {
         @Override
         // Get the count of the number of tabs.
         public int getCount() {
-            return 8;
+            return 9;
         }
 
         @Override
@@ -107,6 +107,9 @@ public class GuideActivity extends AppCompatActivity {
                 case 7:
                     return getString(R.string.tracking_ids);
 
+                case 8:
+                    return getString(R.string.bookmarks);
+
                 default:
                     return "";
             }
@@ -118,5 +121,4 @@ public class GuideActivity extends AppCompatActivity {
             return GuideTabFragment.createTab(tab);
         }
     }
-
 }

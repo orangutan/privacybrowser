@@ -3,22 +3,22 @@
 <!--
   Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2017 Jose A. León Becerra.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017-2018 Jose A. León Becerra.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
-  Este archivo es parte de Navegador Privado (Privacy Browser) <https://www.stoutner.com/privacy-browser>.
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
-  Navegador Privado (Privacy Browser) es software libre: puedes redistribuirlo y/o modificarlo
-  bajo los términos de la Licencia Pública General GNU, como se ha publicado por
-  la Fundación del Software Libre, tanto la versión 3 de la Licencia, o
-  (a su opción) cualquier versión posterior.
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-  Navegador Privado (Privacy Browser) es distribuído con la esperanza de que será útil,
-  pero SIN NINGUNA GARANTÍA; ni siquiera la garantía implícita de
-  MERCANTILIDAD o APTITUD PARA UN PROPÓSITO PARTICULAR.  Vea la
-  Licencia Pública General para más detalles.
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-  Usted debería haber recibido una copia de la Licencia Pública General GNU
-  junto con Navegador Privado (Privacy Browser).  Si no es así, vea <http://www.gnu.org/licenses/>. -->
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
 <resources>
     <!-- Activities. -->
