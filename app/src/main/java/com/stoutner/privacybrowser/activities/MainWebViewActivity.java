@@ -301,8 +301,8 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
     // `reapplyDomainSettingsOnRestart` is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, and `onAddDomain()`, .
     private boolean reapplyDomainSettingsOnRestart;
 
-    // `returnFromSettings` is used in `onNavigationItemSelected()` and `onRestart()`.
-    private boolean returnFromSettings;
+    // `reapplyAppSettingsOnRestart` is used in `onNavigationItemSelected()` and `onRestart()`.
+    private boolean reapplyAppSettingsOnRestert;
 
     // `currentDomainName` is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onAddDomain()`, and `applyDomainSettings()`.
     private String currentDomainName;
@@ -1072,7 +1072,7 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                     return true;
                 } else {  // Load the URL in Privacy Browser.
                     // Apply the domain settings for the new URL.
-                    applyDomainSettings(url);
+                    applyDomainSettings(url, true);
 
                     // Returning `false` causes the current `WebView` to handle the URL and prevents it from adding redirects to the history list.
                     return false;
@@ -1153,7 +1153,7 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
 
                     // Apply any custom domain settings if the URL was loaded by navigating history.
                     if (navigatingHistory) {
-                        applyDomainSettings(url);
+                        applyDomainSettings(url, true);
                     }
 
                     // Set `urlIsLoading` to `true`, so that redirects while loading do not trigger changes in the user agent, which forces another reload of the existing page.
@@ -1208,7 +1208,7 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                         inputMethodManager.showSoftInput(urlTextBox, 0);
 
                         // Apply the domain settings.  This clears any settings from the previous domain.
-                        applyDomainSettings(formattedUrlString);
+                        applyDomainSettings(formattedUrlString, true);
                     } else {  // `WebView` has loaded a webpage.
                         // Set `formattedUrlString`.
                         formattedUrlString = url;
@@ -1360,33 +1360,30 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
         super.onRestart();
 
         // Apply the app settings if returning from the Settings activity..
-        if (returnFromSettings) {
-            // Reset the return from settings flag.
-            returnFromSettings = false;
-
+        if (reapplyAppSettingsOnRestert) {
             // Apply the app settings.
             applyAppSettings();
 
-            // Set the display webpage images mode.
-            setDisplayWebpageImages();
-        }
+            // Reload the webpage if displaying of images has been disabled in the Settings activity.
+            if (reloadOnRestart) {
+                // Reload `mainWebView`.
+                mainWebView.reload();
 
-        // Reload the webpage if displaying of images has been disabled in the Settings activity.
-        if (reloadOnRestart) {
-            // Reload `mainWebView`.
-            mainWebView.reload();
+                // Reset `reloadOnRestartBoolean`.
+                reloadOnRestart = false;
+            }
 
-            // Reset `reloadOnRestartBoolean`.
-            reloadOnRestart = false;
+            // Reset the return from settings flag.
+            reapplyAppSettingsOnRestert = false;
         }
 
         // Apply the domain settings if returning from the Domains activity.
         if (reapplyDomainSettingsOnRestart) {
+            // Reapply the domain settings.
+            applyDomainSettings(formattedUrlString, false);
+
             // Reset `reapplyDomainSettingsOnRestart`.
             reapplyDomainSettingsOnRestart = false;
-
-            // Reapply the domain settings.
-            applyDomainSettings(formattedUrlString);
         }
 
         // Load the URL on restart to apply changes to night mode.
@@ -1410,7 +1407,7 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
             restartFromBookmarksActivity = false;
         }
 
-        // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
+        // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.  This can be important if the screen was rotated.
         updatePrivacyIcons(true);
     }
 
@@ -2025,7 +2022,7 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                 break;
 
             case R.id.domains:
-                // Reapply the domain settings on returning to `MainWebViewActivity`.
+                // Set the flag to reapply the domain settings on restart when returning from Domain Settings.
                 reapplyDomainSettingsOnRestart = true;
                 currentDomainName = "";
 
@@ -2035,12 +2032,12 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                 break;
 
             case R.id.settings:
-                // Reapply the domain settings on returning to `MainWebViewActivity`.
+                // Set the flag to reapply app settings on restart when returning from Settings.
+                reapplyAppSettingsOnRestert = true;
+
+                // Set the flag to reapply the domain settings on restart when returning from Settings.
                 reapplyDomainSettingsOnRestart = true;
                 currentDomainName = "";
-
-                // Mark a flag to reapply app settings on restart only when returning from Settings.
-                returnFromSettings = true;
 
                 // Launch `SettingsActivity`.
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);
@@ -2835,7 +2832,7 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
 
     private void loadUrl(String url) {
         // Apply any custom domain settings.
-        applyDomainSettings(url);
+        applyDomainSettings(url, true);
 
         // Load the URL.
         mainWebView.loadUrl(url, customHeaders);
@@ -3031,9 +3028,10 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
         }
     }
 
-    // We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
+    //
+    // The deprecated `.getDrawable()` must be used until the minimum API >= 21.
     @SuppressWarnings("deprecation")
-    private void applyDomainSettings(String url) {
+    private void applyDomainSettings(String url, boolean resetFavoriteIcon) {
         // Reset `navigatingHistory`.
         navigatingHistory = false;
 
@@ -3063,9 +3061,11 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
             // Reset `ignorePinnedSslCertificate`.
             ignorePinnedSslCertificate = false;
 
-            // Reset `favoriteIconBitmap` and display it in the `appbar`.
-            favoriteIconBitmap = favoriteIconDefaultBitmap;
-            favoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(favoriteIconBitmap, 64, 64, true));
+            // Reset the favorite icon if specified.
+            if (resetFavoriteIcon) {
+                favoriteIconBitmap = favoriteIconDefaultBitmap;
+                favoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(favoriteIconBitmap, 64, 64, true));
+            }
 
             // Initialize the database handler.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
             // The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
