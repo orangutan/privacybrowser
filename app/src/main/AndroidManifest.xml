@@ -37,6 +37,7 @@
     <application
         android:label="@string/privacy_browser"
         android:icon="@mipmap/privacy_browser"
+        android:roundIcon="@mipmap/privacy_browser_round"
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:supportsRtl="true" >
