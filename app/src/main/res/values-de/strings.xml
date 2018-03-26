@@ -41,8 +41,10 @@
     <string name="form_data_disabled">Formulardaten deaktiviert</string>
     <string name="cookies_deleted">Cookies gelöscht</string>
     <string name="dom_storage_deleted">DOM-Speicher gelöscht</string>
+    <string name="form_data_deleted">Formulardaten gelöscht</string>
     <string name="open_navigation_drawer">Navigationspanel öffnen</string>
     <string name="close_navigation_drawer">Navigationspanel schließen</string>
+    <string name="no_title">Kein Titel</string>
 
     <!-- Save As. -->
     <string name="save_as">Speichern Unter</string>
@@ -51,6 +53,8 @@
     <string name="image_name">Name des Bildes</string>
     <string name="unknown_size">Unbekannte Größe</string>
     <string name="download">Download</string>
+    <string name="cannot_download_file">Diese Datei kann nicht heruntergeladen werden, da sie keine HTTP oder HTTPS URI besitzt.</string>
+    <string name="cannot_download_image">Dieses Bild kann nicht heruntergeladen werden, da es keine HTTP oder HTTPS URI besitzt.</string>
 
     <!-- Custom App Bar. -->
     <string name="favorite_icon">Website-Icon</string>
@@ -62,6 +66,8 @@
     <string name="no_ssl_certificate">Communication with this website is not encrypted. This allows third parties to intercept information, track your browsing, and inject malicious content.</string>
     <string name="ssl_certificate">SSL-Zertifikat</string>
     <string name="close">Schließen</string>
+    <string name="domain">Domain</string>
+    <string name="domain_label">Domain:</string>
     <string name="issued_to">Ausgestellt für</string>
     <string name="issued_by">Ausgestellt von</string>
     <string name="common_name">Allgemeiner Name (CN):</string>
@@ -75,13 +81,25 @@
     <string name="ssl_certificate_error">SSL-Zertifikatsfehler</string>
     <string name="proceed">Fortfahren</string>
     <string name="future_certificate">Das Startdatum des SSL-Zertifikats liegt in der Zukunft</string>
-    <string name="expired_certificate">ŽDas Zertifikat ist abgelaufen</string>
+    <string name="expired_certificate">Das Zertifikat ist abgelaufen</string>
     <string name="cn_mismatch">Der allgemeine Name entspricht nicht dem Hostnamen</string>
     <string name="untrusted">Der Zertifikatsbehörde wird nicht vertraut</string>
     <string name="invalid_date">Das Datum des Zertifikats ist ungültig</string>
     <string name="invalid_certificate">Das Zertifikat ist ungültig</string>
     <string name="url">URL</string>
     <string name="url_label">URL:</string>
+
+    <!-- Pinned SSL Certificate Mismatch. -->
+    <string name="update_ssl">SSL aktualisieren</string>
+    <string name="ssl_certificate_mismatch">SSL-Zertifikat Mismatch</string>
+    <string name="current_ssl">Aktuelles SSL</string>
+    <string name="pinned_ssl">Pinned SSL</string>
+
+    <!-- HTTP Authentication. -->
+    <string name="http_authentication">HTTP-Authentifizierung</string>
+    <string name="host">Host:</string>
+    <string name="username">Benutzername</string>
+    <string name="password">Passwort</string>
 
     <!-- MainWebViewActivity Navigation Drawer. -->
     <string name="navigation_drawer">Navigationspanel</string>
@@ -100,13 +118,16 @@
 
     <!-- MainWebViewActivity Options Menu. -->
     <string name="javascript">JavaScript</string>
+    <string name="add_domain_settings">Domain-Einstellungen speichern</string>
+    <string name="edit_domain_settings">Domain-Einstellungen bearbeiten</string>
     <string name="first_party_cookies">Erstanbieter-Cookies</string>
     <string name="third_party_cookies">Drittanbieter-Cookies</string>
     <string name="dom_storage">DOM-Speicher</string>
     <string name="form_data">Formulardaten</string>
-    <string name="clear_cookies">Cookies leeren</string>
-    <string name="clear_dom_storage">DOM-Speicher leeren</string>
-    <string name="clear_form_data">Formulardaten leeren</string>
+    <string name="clear_data">Daten löschen</string>
+        <string name="clear_cookies">Cookies löschen</string>
+        <string name="clear_dom_storage">DOM-Speicher löschen</string>
+        <string name="clear_form_data">Formulardaten löschen</string>
     <string name="font_size">Schriftgröße</string>
         <string name="twenty_five_percent">25%</string>
         <string name="fifty_percent">50%</string>
@@ -116,15 +137,20 @@
         <string name="one_hundred_fifty_percent">150%</string>
         <string name="one_hundred_seventy_five_percent">175%</string>
         <string name="two_hundred_percent">200%</string>
-    <string name="find_on_page">Auf Seite finden</string>
+    <string name="display_images">Bilder anzeigen</string>
     <string name="share">Teilen</string>
-    <string name="add_to_home_screen">Zur Startseite hinzufügen</string>
+    <string name="find_on_page">Auf Seite finden</string>
     <string name="print">Drucken</string>
         <string name="privacy_browser_web_page">Privacy Browser-Website</string>
+    <string name="view_source">Quelltext anzeigen</string>
+    <string name="add_to_home_screen">Zur Startseite hinzufügen</string>
     <string name="refresh">Aktualisieren</string>
 
     <!-- Context Menus. -->
     <string name="load_url">URL laden</string>
+    <string name="copy_url">URL kopieren</string>
+    <string name="email_address">E-Mail-Adresse</string>
+    <string name="copy_email_address">E-Mail-Adresse kopieren</string>
     <string name="write_email">E-Mail senden</string>
     <string name="view_image">Bild anzeigen</string>
     <string name="download_image">Bild herunterladen</string>
@@ -133,16 +159,26 @@
     <string name="previous">Vorheriges</string>
     <string name="next">Nächstes</string>
 
+    <!-- View Source. -->
+    <string name="request_headers">Anfragekopfzeilen</string>
+    <string name="response_message">Status-Code</string>
+    <string name="response_headers">Antwortkopfzeilen</string>
+    <string name="response_body">Antwortinhalt</string>
+    <string name="error_body">Fehler</string>
+    <string name="about_view_source">Über Quelltext</string>
+    <string name="about_view_source_message">Weil Androids WebView keine Quelltext-Informationen zur Verfügung stellt, muss eine separate a separate Serveranfrage mit system tools gestellt werden, die die hier dargestellten Daten erhält.
+        Deshalb können Unterschiede zwischen diesen Daten und der mit Webview dargestellten Webseite auftreten. Es ist geplant, mit Version 4.x eine eigene Engine einzuführen, die diese Einschränkungen umgeht.</string>
+
     <!-- Create Home Screen Shortcut Alert Dialog. -->
-    <string name="create_shortcut">Verknüpfung Erstellen</string>
+    <string name="create_shortcut">Verknüpfung erstellen</string>
     <string name="shortcut_name">Name der Verknüpfung</string>
     <string name="cancel">Abbrechen</string>
     <string name="create">Erstellen</string>
 
     <!-- Bookmarks. -->
     <string name="database_view">Lesezeichen-Übersicht</string>
-    <string name="create_bookmark">Lesezeichen Erstellen</string>
-    <string name="create_folder">Ordner Erstellen</string>
+    <string name="create_bookmark">Lesezeichen erstellen</string>
+    <string name="create_folder">Ordner erstellen</string>
     <string name="current_bookmark_icon">Symbol für das aktuelle Lesezeichen</string>
     <string name="current_folder_icon">Aktuelles Ordnersymbol</string>
     <string name="default_folder_icon">Standard-Ordnersymbol</string>
@@ -151,8 +187,8 @@
     <string name="folder_name">Name des Ordners</string>
     <string name="bookmark_url">URL für das Lesezeichen</string>
     <string name="folder_names_must_be_unique">Ordnernamen müssen einmalig sein</string>
-    <string name="edit_bookmark">Lesezeichen Bearbeiten</string>
-    <string name="edit_folder">Ordner Bearbeiten</string>
+    <string name="edit_bookmark">Lesezeichen bearbeiten</string>
+    <string name="edit_folder">Ordner bearbeiten</string>
     <string name="move_to_folder">In Ordner verschieben</string>
     <string name="move">Verschieben</string>
     <string name="save">Speichern</string>
@@ -160,8 +196,8 @@
     <!-- Bookmarks Contextual App Bar. -->
     <string name="one_selected">1 Ausgewählt</string>
     <string name="selected">Ausgewählt</string>
-    <string name="move_up">Nach oben schieben</string>
-    <string name="move_down">Nach unten schieben</string>
+    <string name="move_up">Nach oben verschieben</string>
+    <string name="move_down">Nach unten verschieben</string>
     <string name="edit">Bearbeiten</string>
     <string name="delete">Löschen</string>
     <string name="select_all">Alle auswählen</string>
@@ -171,12 +207,42 @@
 
     <!-- Bookmarks Database View. -->
     <string name="bookmarks_database_view">Lesezeichen-Übersicht</string>
+    <string name="all_folders">Alle Ordner</string>
     <string name="home_folder">Standard-Ordner</string>
+    <string name="database_id">Databank-ID:</string>
+    <string name="folder">Ordner:</string>
+    <string name="parent_folder">Übergeordneter Ordner:</string>
+    <string name="display_order">Sortierung:</string>
+
+    <!-- Domains. -->
+    <string name="domains">Domains</string>
+    <string name="domain_settings">Domain-Einstellungen</string>
+    <string name="add_domain">Domain hinzufügen</string>
+    <string name="domain_name_already_exists">Domain existiert bereits</string>
+    <string name="add">Hinzufügen</string>
+    <string name="domain_name">Domainname</string>
+    <string name="domain_deleted">Domain gelöscht</string>
+    <string name="domain_name_instructions">*. kann als Wildcard-Subdomain verwendet werden (z.B. *.stoutner.com)</string>
+    <string-array name="display_webpage_images_array">
+        <item>Standardeinstellung</item>
+        <item>Grafiken aktiviert</item>
+        <item>Grafiken deaktiviert</item>
+    </string-array>
+    <string-array name="night_mode_array">
+        <item>Standardeinstellung</item>
+        <item>Nachtmodus aktiviert</item>
+        <item>Nachtmodus deaktiviert</item>
+    </string-array>
+    <string name="pinned_ssl_certificate">SSL-Zertifikat verankern</string>
+    <string name="saved_ssl_certificate">Gespeicherte SSL-Zertifikate</string>
+    <string name="current_website_ssl_certificate">SSL-Zertifikat der aktuellen Webseite</string>
+    <string name="load_an_encrypted_website">Zuerst verschlüsselte Webseite laden...</string>
 
     <!-- Guide. -->
     <string name="privacy_browser_guide">Privacy Browser Handbuch</string>
     <string name="overview">Übersicht</string>
     <string name="local_storage">Lokale Speicherung</string>
+    <string name="ssl_certificates">SSL-Zertifikate</string>
     <string name="tracking_ids">Verolgungs-IDs</string>
 
     <!-- Preferences. -->
@@ -265,6 +331,7 @@
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Orbot-Proxy wird nicht funktionieren, solange Orbot nicht installiert ist.</string>
+    <string name="waiting_for_orbot">Warte, bis sich Orbot verbindet...</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">Über Privacy Browser</string>
@@ -285,6 +352,16 @@
             <string name="webkit">WebKit:</string>
             <string name="chrome">Chrome:</string>
             <string name="orbot">Orbot:</string>
+            <string name="easylist_label">EasyList:</string>
+            <string name="easyprivacy_label">EasyPrivacy:</string>
+            <string name="fanboy_annoyance_label">Fanboy’s Annoyance List:</string>
+            <string name="fanboy_social_label">Fanboy’s Social Blocking List:</string>
+        <string name="package_signature">Paket-Signatur</string>
+            <string name="issuer_dn">Aussteller-DN:</string>
+            <string name="subject_dn">Subject DN:</string>
+            <string name="certificate_version">Zertifikat-Version:</string>
+            <string name="serial_number">Seriennummer:</string>
+            <string name="signature_algorithm">Signaturalgorithmus:</string>
     <string name="permissions">Berechtigungen</string>
     <string name="privacy_policy">Datenschutzrichtlinie</string>
     <string name="changelog">Changelog</string>
