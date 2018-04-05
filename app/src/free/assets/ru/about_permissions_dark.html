@@ -20,7 +20,7 @@
     <head>
         <meta charset="UTF-8">
 
-        <link rel="stylesheet" href="css/light_theme.css">
+        <link rel="stylesheet" href="../en/css/dark_theme.css">
     </head>
 
     <body>
@@ -36,5 +36,29 @@
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WRITE_EXTERNAL_STORAGE"> android.permission.WRITE_EXTERNAL_STORAGE</a></p>
         <p>Required to download files to the public download folder.
             On Android Marshmallow (API 23) and newer, if this permission is denied Privacy Browser will store downloads in the app’s download folder instead.</p>
+
+        <br/>
+        <hr/>
+        <br/>
+
+        <p>In addition, Privacy Browser Free displays ads from Google’s AdMob network using the Firebase backend.
+            For the free flavor, Firebase adds the following permissions even though they are not listed in the manifest file.</p>
+
+        <h3>View network connections</h3>
+        <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#ACCESS_NETWORK_STATE">android.permission.ACCESS_NETWORK_STATE</a></p>
+        <p>Allows the ads to tell when you are connected to the internet and when you aren’t (presumably so they don’t try to reload an ad when you are disconnected).
+            They can also tell if you are connected via Wi-Fi, 2G, 3G, 4G, etc.</p>
+
+        <h3>Prevent phone from sleeping</h3>
+        <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WAKE_LOCK">android.permission.WAKE_LOCK</a></p>
+        <p>Allows the ads to keep the processor from sleeping and the screen from dimming, although in my testing I don’t think the ads actually do this.</p>
+
+        <h3>Receive data from Internet</h3>
+        <p><a href="http://androidpermissions.com/permission/com.google.android.c2dm.permission.RECEIVE">com.google.android.c2dm.permission.RECEIVE</a></p>
+        <p>Allows Google to send information directly to the AdView without having to receive a request first (cloud-to-device messaging).</p>
+
+        <h3>Receive data from Internet</h3>
+        <p><a href="https://developers.google.com/cloud-messaging/android/client">com.stoutner.privacybrowser.free.permission.C2D_MESSAGE</a></p>
+        <p>Secures the cloud-to-device messages so that only Privacy Browser Free can receive them.</p>
     </body>
 </html>

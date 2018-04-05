@@ -61,7 +61,8 @@
     <!-- View SSL Certificate. -->
     <string name="view_ssl_certificate">Ver certificado SSL</string>
     <string name="unencrypted_website">Web sin cifrar</string>
-    <string name="no_ssl_certificate">La comunicación con esta página web no está cifrada. Esto permite a terceras partes interceptar información, rastrear su navegación e inyectar contenido malicioso.</string>
+    <string name="no_ssl_certificate">La comunicación con esta página web no está cifrada.
+        Esto permite a terceras partes interceptar información, rastrear su navegación e inyectar contenido malicioso.</string>
     <string name="ssl_certificate">Certificado SSL</string>
     <string name="close">Cerrar</string>
     <string name="domain">Dominio</string>
@@ -164,8 +165,10 @@
     <string name="response_body">Cuerpo de respuesta</string>
     <string name="error_body">Cuerpo del error</string>
     <string name="about_view_source">Acerca de ver la fuente</string>
-    <string name="about_view_source_message">Debido a que WebView de Android no expone la información fuente, se hizo una solicitud por separado utilizando las herramientas del sistema para recopilar la información mostrada en esta actividad.
-        Puede haber algunas diferencias entre estos datos y los utilizados por WebView en la actividad principal. Esta limitación se eliminará en la serie 4.x con el lanzamiento de Privacy WebView.</string>
+    <string name="about_view_source_message">Debido a que WebView de Android no expone la información fuente,
+        se hizo una solicitud por separado utilizando las herramientas del sistema para recopilar la información mostrada en esta actividad.
+        Puede haber algunas diferencias entre estos datos y los utilizados por WebView en la actividad principal.
+        Esta limitación se eliminará en la serie 4.x con el lanzamiento de Privacy WebView.</string>
 
     <!-- Create Home Screen Shortcut Alert Dialog. -->
     <string name="create_shortcut">Crear acceso directo</string>
@@ -248,7 +251,8 @@
         <string name="javascript_preference">Habilitar Javascript por defecto</string>
         <string name="javascript_preference_summary">Javascript permite a las webs ejecutar programas (scripts) en el dispositivo.</string>
         <string name="first_party_cookies_preference">Habilitar cookies de primera parte por defecto</string>
-        <string name="first_party_cookies_preference_summary">Dispositivos con versiones de Android más antiguas que Lollipop (versión 5.0) también habilitarán las cookies de terceras partes con este ajuste.</string>
+        <string name="first_party_cookies_preference_summary">Dispositivos con versiones de Android más antiguas que Lollipop (versión 5.0)
+            también habilitarán las cookies de terceras partes con este ajuste.</string>
         <string name="third_party_cookies_preference">Habilar cookies de terceras partes por defecto</string>
         <string name="third_party_cookies_summary">Este ajuste requiere Android Lollipop (versión 5.0) o mayor.  No tiene efecto si las cookies de primera parte están deshabilitadas.</string>
         <string name="dom_storage_preference">Habilitar almacenamiento DOM por defecto</string>
@@ -332,11 +336,13 @@
         <string name="full_screen_browsing_mode">Navegación de pantalla completa</string>
         <string name="full_screen_browsing_mode_summary">Doble toque para alternar a modo de navegación de pantalla completa.</string>
         <string name="hide_system_bars">Esconder barras del systema</string>
-        <string name="hide_system_bars_summary">Esconder las barras de estado y de navegación en el modo de navegación a pantalla completa.  Esto no funciona bien si el teclado es mostrado durante el modo de navegación a pantalla completa.</string>
+        <string name="hide_system_bars_summary">Esconder las barras de estado y de navegación en el modo de navegación a pantalla completa.
+            Esto no funciona bien si el teclado es mostrado durante el modo de navegación a pantalla completa.</string>
         <string name="translucent_navigation_bar">Barra de navegación translúcida</string>
         <string name="translucent_navigation_bar_summary">Hacer la barra de navegación translúcida en el modo de navegación a pantalla completa.</string>
     <string name="clear_everything">Borrar todo</string>
-        <string name="clear_everything_summary">Borra cookies, almacenamiento DOM, datos de formulario y la caché de  WebView.  A continuación borra manualmente los directorios “app_webview” y “cache”.</string>
+        <string name="clear_everything_summary">Borra cookies, almacenamiento DOM, datos de formulario y la caché de  WebView.
+            A continuación borra manualmente los directorios “app_webview” y “cache”.</string>
         <string name="clear_cookies_preference">Borrar cookies</string>
         <string name="clear_cookies_summary">Borra las cookies de primera y terceras partes.</string>
         <string name="clear_dom_storage_preference">Borrar almacenamiento DOM</string>

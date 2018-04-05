@@ -1,22 +1,22 @@
 <!--
-  Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
 
   Translation 2017 Jose A. León Becerra.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
-  Este archivo es parte de Navegador Privado (Privacy Browser) <https://www.stoutner.com/privacy-browser>.
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
-  Navegador Privado (Privacy Browser) es software libre: puedes redistribuirlo y/o modificarlo
-  bajo los términos de la Licencia Pública General GNU, como se ha publicado por
-  la Fundación del Software Libre, tanto la versión 3 de la Licencia, o
-  (a su opción) cualquier versión posterior.
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-  Navegador Privado (Privacy Browser) es distribuído con la esperanza de que será útil,
-  pero SIN NINGUNA GARANTÍA; ni siquiera la garantía implícita de
-  MERCANTILIDAD o APTITUD PARA UN PROPÓSITO PARTICULAR.  Vea la
-  Licencia Pública General para más detalles.
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-  Usted debería haber recibido una copia de la Licencia Pública General GNU
-  junto con Navegador Privado (Privacy Browser).  Si no es así, vea <http://www.gnu.org/licenses/>. -->
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
 <html>
     <head>
@@ -34,11 +34,17 @@
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#INSTALL_SHORTCUT">com.android.launcher.permission.INSTALL_SHORTCUT</a></p>
         <p>Requerido para añadir accesos directos de páginas web en el escritorio.</p>
 
+        <h3>Write storage</h3>
+        <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WRITE_EXTERNAL_STORAGE"> android.permission.WRITE_EXTERNAL_STORAGE</a></p>
+        <p>Required to download files to the public download folder.
+            On Android Marshmallow (API 23) and newer, if this permission is denied Privacy Browser will store downloads in the app’s download folder instead.</p>
+
         <br/>
         <hr/>
         <br/>
 
-        <p>Además, Navegador Privado Gratuito muestra anuncios de Google AdMob usando el proveedor Firebase. En el sabor gratuito, Firebase añade los siguientes permisos aunque no aparecen en el archivo de manifiesto.</p>
+        <p>Además, Navegador Privado Gratuito muestra anuncios de Google AdMob usando el proveedor Firebase.
+            En el sabor gratuito, Firebase añade los siguientes permisos aunque no aparecen en el archivo de manifiesto.</p>
 
         <h3>Ver conexiones de red</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#ACCESS_NETWORK_STATE">android.permission.ACCESS_NETWORK_STATE</a></p>

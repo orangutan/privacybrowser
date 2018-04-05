@@ -3,6 +3,8 @@
 <!--
   Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
 
+  Translation 2018 Stefan Erhardt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+
   Translation 2016 Aaron Gerlach <aaron@gerlach.com>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
@@ -166,8 +168,9 @@
     <string name="response_body">Antwortinhalt</string>
     <string name="error_body">Fehler</string>
     <string name="about_view_source">Über Quelltext</string>
-    <string name="about_view_source_message">Weil Androids WebView keine Quelltext-Informationen zur Verfügung stellt, muss eine separate a separate Serveranfrage mit system tools gestellt werden, die die hier dargestellten Daten erhält.
-        Deshalb können Unterschiede zwischen diesen Daten und der mit Webview dargestellten Webseite auftreten. Es ist geplant, mit Version 4.x eine eigene Engine einzuführen, die diese Einschränkungen umgeht.</string>
+    <string name="about_view_source_message">Weil Androids WebView keine Quelltext-Informationen zur Verfügung stellt, muss eine separate a separate Serveranfrage mit system tools gestellt werden,
+        die die hier dargestellten Daten erhält. Deshalb können Unterschiede zwischen diesen Daten und der mit Webview dargestellten Webseite auftreten.
+        Es ist geplant, mit Version 4.x eine eigene Engine einzuführen, die diese Einschränkungen umgeht.</string>
 
     <!-- Create Home Screen Shortcut Alert Dialog. -->
     <string name="create_shortcut">Verknüpfung erstellen</string>
@@ -250,7 +253,8 @@
         <string name="javascript_preference">JavaScript standardmäßig aktivieren</string>
         <string name="javascript_preference_summary">JavaScript ermöglicht es Websites, Programme (Scripts) auf Ihrem Gerät auszuführen.</string>
         <string name="first_party_cookies_preference">Erstanbieter-Cookies standardmäßig aktivieren</string>
-        <string name="first_party_cookies_preference_summary">Auf Geräten mit älterer Android-Version als Lollipop (Version 5.0) wird zusammen mit dieser auch die Option für Drittanbieter-Cookies aktiviert.</string>
+        <string name="first_party_cookies_preference_summary">Auf Geräten mit älterer Android-Version als Lollipop (Version 5.0)
+            wird zusammen mit dieser auch die Option für Drittanbieter-Cookies aktiviert.</string>
         <string name="third_party_cookies_preference">Drittanbieter-Cookies standardmäßig aktivieren</string>
         <string name="third_party_cookies_summary">Diese Option benötigt Android Lollipop (Version 5.0) oder höher. Sie hat keine Auswirkungen, wenn Erstanbieter-Cookies deaktiviert sind.</string>
         <string name="dom_storage_preference">DOM-Speicher standardmäßig aktivieren</string>

@@ -21,6 +21,7 @@
 
 package com.stoutner.privacybrowser.activities;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.DialogFragment;
 import android.app.DownloadManager;
@@ -31,6 +32,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -43,6 +45,7 @@ import android.net.http.SslCertificate;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.print.PrintDocumentAdapter;
@@ -52,6 +55,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 // `ShortcutInfoCompat`, `ShortcutManagerCompat`, and `IconCompat` can be switched to the non-compat version once API >= 26.
 import android.support.v4.content.pm.ShortcutInfoCompat;
@@ -109,6 +113,7 @@ import com.stoutner.privacybrowser.dialogs.CreateBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkFolderDialog;
 import com.stoutner.privacybrowser.dialogs.CreateHomeScreenShortcutDialog;
 import com.stoutner.privacybrowser.dialogs.DownloadImageDialog;
+import com.stoutner.privacybrowser.dialogs.DownloadLocationPermissionDialog;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkFolderDialog;
 import com.stoutner.privacybrowser.dialogs.HttpAuthenticationDialog;
@@ -139,12 +144,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-// We need to use AppCompatActivity from android.support.v7.app.AppCompatActivity to have access to the SupportActionBar until the minimum API is >= 21.
+// AppCompatActivity from android.support.v7.app.AppCompatActivity must be used to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements AddDomainDialog.AddDomainListener, CreateBookmarkDialog.CreateBookmarkListener,
         CreateBookmarkFolderDialog.CreateBookmarkFolderListener, CreateHomeScreenShortcutDialog.CreateHomeScreenSchortcutListener, DownloadFileDialog.DownloadFileListener,
-        DownloadImageDialog.DownloadImageListener, EditBookmarkDialog.EditBookmarkListener, EditBookmarkFolderDialog.EditBookmarkFolderListener, HttpAuthenticationDialog.HttpAuthenticationListener,
-        NavigationView.OnNavigationItemSelectedListener, PinnedSslCertificateMismatchDialog.PinnedSslCertificateMismatchListener, SslCertificateErrorDialog.SslCertificateErrorListener,
-        UrlHistoryDialog.UrlHistoryListener {
+        DownloadImageDialog.DownloadImageListener, DownloadLocationPermissionDialog.DownloadLocationPermissionDialogListener, EditBookmarkDialog.EditBookmarkListener,
+        EditBookmarkFolderDialog.EditBookmarkFolderListener, HttpAuthenticationDialog.HttpAuthenticationListener, NavigationView.OnNavigationItemSelectedListener,
+        PinnedSslCertificateMismatchDialog.PinnedSslCertificateMismatchListener, SslCertificateErrorDialog.SslCertificateErrorListener, UrlHistoryDialog.UrlHistoryListener {
 
     // `darkTheme` is public static so it can be accessed from `AboutActivity`, `GuideActivity`, `AddDomainDialog`, `SettingsActivity`, `DomainsActivity`, `DomainsListFragment`, `BookmarksActivity`,
     // `BookmarksDatabaseViewActivity`, `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, `DownloadFileDialog`, `DownloadImageDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`,
@@ -302,7 +307,7 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
     private boolean reapplyDomainSettingsOnRestart;
 
     // `reapplyAppSettingsOnRestart` is used in `onNavigationItemSelected()` and `onRestart()`.
-    private boolean reapplyAppSettingsOnRestert;
+    private boolean reapplyAppSettingsOnRestart;
 
     // `currentDomainName` is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onAddDomain()`, and `applyDomainSettings()`.
     private String currentDomainName;
@@ -390,9 +395,22 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
     // `oldFolderNameString` is used in `onCreate()` and `onSaveEditBookmarkFolder()`.
     private String oldFolderNameString;
 
+    // The download strings are used in `onCreate()` and `onRequestPermissionResult()`.
+    private String downloadUrl;
+    private String downloadContentDisposition;
+    private long downloadContentLength;
+
+    // `downloadImageUrl` is used in `onCreateContextMenu()` and `onRequestPermissionResult()`.
+    private String downloadImageUrl;
+
+    // The request codes are used in `onCreate()`, `onCreateContextMenu()`, `onCloseDownloadLocationPermissionDialog()`, and `onRequestPermissionResult()`.
+    private final int DOWNLOAD_FILE_REQUEST_CODE = 1;
+    private final int DOWNLOAD_IMAGE_REQUEST_CODE = 2;
+
     @Override
     // Remove Android Studio's warning about the dangers of using SetJavaScriptEnabled.  The whole premise of Privacy Browser is built around an understanding of these dangers.
-    @SuppressLint({"SetJavaScriptEnabled"})
+    // Also, remove the warning about needing to override `performClick()` when using an `OnTouchListener` with `WebView`.
+    @SuppressLint({"SetJavaScriptEnabled", "ClickableViewAccessibility"})
     // Remove Android Studio's warning about deprecations.  We have to use the deprecated `getColor()` until API >= 23.
     @SuppressWarnings("deprecation")
     protected void onCreate(Bundle savedInstanceState) {
@@ -941,9 +959,33 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
 
         // Allow the downloading of files.
         mainWebView.setDownloadListener((String url, String userAgent, String contentDisposition, String mimetype, long contentLength) -> {
-            // Show the `DownloadFileDialog` `AlertDialog` and name this instance `@string/download`.
-            AppCompatDialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(url, contentDisposition, contentLength);
-            downloadFileDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
+            // Check to see if the WRITE_EXTERNAL_STORAGE permission has already been granted.
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                // The WRITE_EXTERNAL_STORAGE permission needs to be requested.
+
+                // Store the variables for future use by `onRequestPermissionsResult()`.
+                downloadUrl = url;
+                downloadContentDisposition = contentDisposition;
+                downloadContentLength = contentLength;
+
+                // Show a dialog if the user has previously denied the permission.
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
+                    // Get a handle for the download location permission alert dialog and set the download type to DOWNLOAD_FILE.
+                    DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_FILE);
+
+                    // Show the download location permission alert dialog.  The permission will be requested when the the dialog is closed.
+                    downloadLocationPermissionDialogFragment.show(getFragmentManager(), getString(R.string.download_location));
+                } else {  // Show the permission request directly.
+                    // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
+                    ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_FILE_REQUEST_CODE);
+                }
+            } else {  // The WRITE_EXTERNAL_STORAGE permission has already been granted.
+                // Get a handle for the download file alert dialog.
+                AppCompatDialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(url, contentDisposition, contentLength);
+
+                // Show the download file alert dialog.
+                downloadFileDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
+            }
         });
 
         // Allow pinch to zoom.
@@ -1360,7 +1402,7 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
         super.onRestart();
 
         // Apply the app settings if returning from the Settings activity..
-        if (reapplyAppSettingsOnRestert) {
+        if (reapplyAppSettingsOnRestart) {
             // Apply the app settings.
             applyAppSettings();
 
@@ -1374,7 +1416,7 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
             }
 
             // Reset the return from settings flag.
-            reapplyAppSettingsOnRestert = false;
+            reapplyAppSettingsOnRestart = false;
         }
 
         // Apply the domain settings if returning from the Domains activity.
@@ -2033,7 +2075,7 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
 
             case R.id.settings:
                 // Set the flag to reapply app settings on restart when returning from Settings.
-                reapplyAppSettingsOnRestert = true;
+                reapplyAppSettingsOnRestart = true;
 
                 // Set the flag to reapply the domain settings on restart when returning from Settings.
                 reapplyDomainSettingsOnRestart = true;
@@ -2302,9 +2344,31 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
 
                 // Add a `Download Image` entry.
                 menu.add(R.string.download_image).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Show the `DownloadImageDialog` `AlertDialog` and name this instance `@string/download`.
-                    AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
-                    downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
+                    // Check to see if the WRITE_EXTERNAL_STORAGE permission has already been granted.
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                        // The WRITE_EXTERNAL_STORAGE permission needs to be requested.
+
+                        // Store the image URL for use by `onRequestPermissionResult()`.
+                        downloadImageUrl = imageUrl;
+
+                        // Show a dialog if the user has previously denied the permission.
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
+                            // Get a handle for the download location permission alert dialog and set the download type to DOWNLOAD_IMAGE.
+                            DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_IMAGE);
+
+                            // Show the download location permission alert dialog.  The permission will be requested when the dialog is closed.
+                            downloadLocationPermissionDialogFragment.show(getFragmentManager(), getString(R.string.download_location));
+                        } else {  // Show the permission request directly.
+                            // Request the permission.  The download dialog will be launched by `onRequestPermissionResult().
+                            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_IMAGE_REQUEST_CODE);
+                        }
+                    } else {  // The WRITE_EXTERNAL_STORAGE permission has already been granted.
+                        // Get a handle for the download image alert dialog.
+                        AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
+
+                        // Show the download image alert dialog.
+                        downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
+                    }
                     return false;
                 });
 
@@ -2339,9 +2403,31 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
 
                 // Add a `Download Image` entry.
                 menu.add(R.string.download_image).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Show the `DownloadImageDialog` `AlertDialog` and name this instance `@string/download`.
-                    AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
-                    downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
+                    // Check to see if the WRITE_EXTERNAL_STORAGE permission has already been granted.
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                        // The WRITE_EXTERNAL_STORAGE permission needs to be requested.
+
+                        // Store the image URL for use by `onRequestPermissionResult()`.
+                        downloadImageUrl = imageUrl;
+
+                        // Show a dialog if the user has previously denied the permission.
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
+                            // Get a handle for the download location permission alert dialog and set the download type to DOWNLOAD_IMAGE.
+                            DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_IMAGE);
+
+                            // Show the download location permission alert dialog.  The permission will be requested when the dialog is closed.
+                            downloadLocationPermissionDialogFragment.show(getFragmentManager(), getString(R.string.download_location));
+                        } else {  // Show the permission request directly.
+                            // Request the permission.  The download dialog will be launched by `onRequestPermissionResult().
+                            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_IMAGE_REQUEST_CODE);
+                        }
+                    } else {  // The WRITE_EXTERNAL_STORAGE permission has already been granted.
+                        // Get a handle for the download image alert dialog.
+                        AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
+
+                        // Show the download image alert dialog.
+                        downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
+                    }
                     return false;
                 });
 
@@ -2491,6 +2577,58 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
     }
 
     @Override
+    public void onCloseDownloadLocationPermissionDialog(int downloadType) {
+        switch (downloadType) {
+            case DownloadLocationPermissionDialog.DOWNLOAD_FILE:
+                // Request the WRITE_EXTERNAL_STORAGE permission with a file request code.
+                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_FILE_REQUEST_CODE);
+                break;
+
+            case DownloadLocationPermissionDialog.DOWNLOAD_IMAGE:
+                // Request the WRITE_EXTERNAL_STORAGE permission with an image request code.
+                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_IMAGE_REQUEST_CODE);
+                break;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case DOWNLOAD_FILE_REQUEST_CODE:
+                // Show the download file alert dialog.  When the dialog closes, the correct command will be used based on the permission status.
+                AppCompatDialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(downloadUrl, downloadContentDisposition, downloadContentLength);
+
+                // On API 23, displaying the fragment must be delayed or the app will crash.
+                if (Build.VERSION.SDK_INT == 23) {
+                    new Handler().postDelayed(() -> downloadFileDialogFragment.show(getSupportFragmentManager(), getString(R.string.download)), 500);
+                } else {
+                    downloadFileDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
+                }
+
+                // Reset the download variables.
+                downloadUrl = "";
+                downloadContentDisposition = "";
+                downloadContentLength = 0;
+                break;
+
+            case DOWNLOAD_IMAGE_REQUEST_CODE:
+                // Show the download image alert dialog.  When the dialog closes, the correct command will be used based on the permission status.
+                AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(downloadImageUrl);
+
+                // On API 23, displaying the fragment must be delayed or the app will crash.
+                if (Build.VERSION.SDK_INT == 23) {
+                    new Handler().postDelayed(() -> downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download)), 500);
+                } else {
+                    downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
+                }
+
+                // Reset the image URL variable.
+                downloadImageUrl = "";
+                break;
+        }
+    }
+
+    @Override
     public void onDownloadImage(AppCompatDialogFragment dialogFragment, String imageUrl) {
         // Download the image if it has an HTTP or HTTPS URI.
         if (imageUrl.startsWith("http")) {
@@ -2510,15 +2648,17 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                 downloadRequest.addRequestHeader("Cookie", cookies);
             }
 
-            // Get the file name from `dialogFragment`.
+            // Get the file name from the dialog fragment.
             EditText downloadImageNameEditText = dialogFragment.getDialog().findViewById(R.id.download_image_name);
             String imageName = downloadImageNameEditText.getText().toString();
 
-            // Once we have `WRITE_EXTERNAL_STORAGE` permissions we can use `setDestinationInExternalPublicDir`.
-            if (Build.VERSION.SDK_INT >= 23) { // If API >= 23, set the download save in the the `DIRECTORY_DOWNLOADS` using `imageName`.
-                downloadRequest.setDestinationInExternalFilesDir(this, "/", imageName);
-            } else { // Only set the title using `imageName`.
-                downloadRequest.setTitle(imageName);
+            // Specify the download location.
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // External write permission granted.
+                // Download to the public download directory.
+                downloadRequest.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, imageName);
+            } else {  // External write permission denied.
+                // Download to the app's external download directory.
+                downloadRequest.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, imageName);
             }
 
             // Allow `MediaScanner` to index the download if it is a media file.
@@ -2544,7 +2684,6 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
     public void onDownloadFile(AppCompatDialogFragment dialogFragment, String downloadUrl) {
         // Download the file if it has an HTTP or HTTPS URI.
         if (downloadUrl.startsWith("http")) {
-
             // Get a handle for the system `DOWNLOAD_SERVICE`.
             DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
 
@@ -2561,15 +2700,17 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                 downloadRequest.addRequestHeader("Cookie", cookies);
             }
 
-            // Get the file name from `dialogFragment`.
+            // Get the file name from the dialog fragment.
             EditText downloadFileNameEditText = dialogFragment.getDialog().findViewById(R.id.download_file_name);
             String fileName = downloadFileNameEditText.getText().toString();
 
-            // Once we have `WRITE_EXTERNAL_STORAGE` permissions we can use `setDestinationInExternalPublicDir`.
-            if (Build.VERSION.SDK_INT >= 23) { // If API >= 23, set the download location to `/sdcard/Android/data/com.stoutner.privacybrowser.standard/files` named `fileName`.
-                downloadRequest.setDestinationInExternalFilesDir(this, "/", fileName);
-            } else { // Only set the title using `fileName`.
-                downloadRequest.setTitle(fileName);
+            // Specify the download location.
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // External write permission granted.
+                // Download to the public download directory.
+                downloadRequest.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+            } else {  // External write permission denied.
+                // Download to the app's external download directory.
+                downloadRequest.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, fileName);
             }
 
             // Allow `MediaScanner` to index the download if it is a media file.

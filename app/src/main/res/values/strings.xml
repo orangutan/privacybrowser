@@ -169,7 +169,8 @@
     <string name="response_body">Response Body</string>
     <string name="error_body">Error Body</string>
     <string name="about_view_source">About View Source</string>
-    <string name="about_view_source_message">Because Android’s WebView does not expose the source information, a separate request was made using system tools to gather the information displayed in this activity.
+    <string name="about_view_source_message">Because Android’s WebView does not expose the source information,
+        a separate request was made using system tools to gather the information displayed in this activity.
         There may be some differences between this data and that used by the WebView in the main activity. This limitation will be removed in the 4.x series with the release of Privacy WebView.</string>
 
     <!-- Create Home Screen Shortcut Alert Dialog. -->
@@ -386,7 +387,8 @@
         <string name="full_screen_browsing_mode">Full screen browsing mode</string>
         <string name="full_screen_browsing_mode_summary">Double-tap to toggle full screen browsing mode.</string>
         <string name="hide_system_bars">Hide system bars</string>
-        <string name="hide_system_bars_summary">Hide the status and navigation bars in full screen browsing mode. This doesn’t work well if the keyboard is displayed during full screen browsing mode.</string>
+        <string name="hide_system_bars_summary">Hide the status and navigation bars in full screen browsing mode.
+            This doesn’t work well if the keyboard is displayed during full screen browsing mode.</string>
         <string name="translucent_navigation_bar">Translucent navigation bar</string>
         <string name="translucent_navigation_bar_summary">Make the navigation bar translucent in full screen browsing mode.</string>
     <string name="clear_everything">Clear everything</string>
@@ -454,6 +456,11 @@
         <string name="night_mode_summary">Enabling night mode will also enable JavaScript for all web pages.</string>
         <string name="display_webpage_images">Display webpage images</string>
         <string name="display_webpage_images_summary">Disable to conserve bandwidth.</string>
+
+    <!-- Download Location -->
+        <string name="download_location">Download Location</string>
+        <string name="download_location_message">Privacy Browser needs the storage permission to use the public download directory. If it is denied, the app’s download directory will be used instead.</string>
+        <string name="ok">OK</string>
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Orbot proxy will not work unless Orbot is installed.</string>

@@ -37,15 +37,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
-            <!-- `tools:ignore="ContentDescription"` suppresses the lint warning about supplying a content description for the `ImageView`,
-                 which isn't needed in this case because the `ImageView` is only decorative. -->
+            <!--`tools:ignore="RtlSymmetry"` suppressed the lint warning about adding `android:paddingStart`, which wouldn't work with this layout.
+                `tools:ignore="ContentDescription"` suppresses the lint warning about supplying a content description for the `ImageView`,
+                which isn't needed in this case because the `ImageView` is only decorative. -->
             <ImageView
                 android:id="@+id/about_version_icon"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:src="@mipmap/privacy_browser"
                 android:paddingTop="10dp"
-                tools:ignore="ContentDescription" />
+                android:paddingEnd="5dp"
+                tools:ignore="RtlSymmetry,ContentDescription" />
 
             <TextView
                 android:id="@+id/about_version_privacy_browser_textview"
@@ -55,6 +57,7 @@
                 android:textStyle="bold"
                 android:textSize="22sp"
                 android:textColor="?attr/aboutTitle"
+                android:paddingTop="12dp"
                 android:layout_toEndOf="@id/about_version_icon" />
 
             <TextView

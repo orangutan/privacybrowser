@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2018 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -25,8 +25,11 @@
     <!-- Required to load websites. -->
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- Required to create homescreen shortcuts. -->
+    <!-- Required to create home screen shortcuts. -->
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+
+    <!-- Required to save files to the public download folder. -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 
     <!-- Support Chromebooks that don't have a touch screen. -->
@@ -54,8 +57,9 @@
 
         <!-- The theme has to be defined here or an ugly title bar is displayed when the app launches.
              `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes, which preserves scroll location in the WebView.
-             `android:launchMode="singleTask"` makes the app launch in a new task instead of inside the task of the program that sends it an intent.  It also makes it reuse an existing Privacy Browser activity if available instead of launching a new one.
-             `android:persistableMode="persistNever"` removes Privacy Browser from the recents screen on a device reboot.
+             `android:launchMode="singleTask"` makes the app launch in a new task instead of inside the task of the program that sends it an intent.
+             It also makes it reuse an existing Privacy Browser activity if available instead of launching a new one.
+             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
              `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
             android:name=".activities.MainWebViewActivity"
@@ -84,7 +88,7 @@
 
 
         <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
-             `android:persistableMode="persistNever"` removes Privacy Browser from the recents screen on a device reboot.
+             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
              `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
             android:name=".activities.BookmarksActivity"
@@ -96,7 +100,7 @@
             tools:ignore="UnusedAttribute" />
 
         <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
-             `android:persistableMode="persistNever"` removes Privacy Browser from the recents screen on a device reboot.
+             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
              `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
             android:name=".activities.BookmarksDatabaseViewActivity"
@@ -108,7 +112,7 @@
             tools:ignore="UnusedAttribute" />
 
         <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
-             `android:persistableMode="persistNever"` removes Privacy Browser from the recents screen on a device reboot.
+             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
              `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
             android:name=".activities.SettingsActivity"
@@ -120,7 +124,7 @@
             tools:ignore="UnusedAttribute" />
 
         <!-- `android:windowSoftInputMode="stateAlwaysHidden"` keeps the keyboard from displaying when the screen is rotated and after the `AddDomainDialog` is dismissed.
-             `android:persistableMode="persistNever"` removes Privacy Browser from the recents screen on a device reboot.
+             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
              `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
             android:name=".activities.DomainsActivity"
@@ -132,7 +136,7 @@
             tools:ignore="UnusedAttribute" />
 
         <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
-             `android:persistableMode="persistNever"` removes Privacy Browser from the recents screen on a device reboot.
+             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
              `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
             android:name=".activities.GuideActivity"
@@ -144,7 +148,7 @@
             tools:ignore="UnusedAttribute" />
 
         <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
-             `android:persistableMode="persistNever"` removes Privacy Browser from the recents screen on a device reboot.
+             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
              `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
             android:name=".activities.AboutActivity"
@@ -156,7 +160,7 @@
             tools:ignore="UnusedAttribute" />
 
         <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
-             `android:persistableMode="persistNever"` removes Privacy Browser from the recents screen on a device reboot.
+             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
              `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
             android:name=".activities.ViewSourceActivity"

@@ -67,9 +67,10 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:design:27.0.2'
     // Only compile `com.google.firebase:firebase-ads` for the free flavor.
-    freeImplementation 'com.google.firebase:firebase-ads:11.8.0'
+    freeImplementation 'com.google.firebase:firebase-ads:12.0.1'
 }
 
-// Google's documentation says the following line is required for `firebase-ads` but things work correctly without it.  I have no interest in applying the Google Mobile Services plugin in the standard flavor if I don't have to.
+// Google's documentation says the following line is required for `firebase-ads` but things work correctly without it.
+// I have no interest in applying the Google Mobile Services plugin in the standard flavor if I don't have to.
 // I suspect that in the free flavor `firebase-ads` applies it even when not specified.  <https://firebase.google.com/docs/admob/android/quick-start>.
 // apply plugin: 'com.google.gms.google-services'

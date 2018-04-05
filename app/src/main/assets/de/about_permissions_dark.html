@@ -1,5 +1,5 @@
 <!--
-  Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
 
   Translation 2016 Aaron Gerlach <aaron@gerlach.com>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -27,16 +27,16 @@
 
     <body>
         <h3>Voller Netzwerkzugriff</h3>
-
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#INTERNET">android.permission.INTERNET</a></p>
-
         <p>Benötigt, damit WebView das Internet nutzen kann. Ohne diese Berechtigung wäre Privacy Browser “Kein Browser: Schützt Ihre Privatsphäre durch Fernbleiben von jeglicher Konnektivität”.</p>
 
-
         <h3>Verknüpfungen installieren</h3>
-
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#INSTALL_SHORTCUT">com.android.launcher.permission.INSTALL_SHORTCUT</a></p>
-
         <p>Benötigt, um Verknüpfungen zu Websites auf Ihrer Startseite zu erstellen.</p>
+
+        <h3>Write storage</h3>
+        <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WRITE_EXTERNAL_STORAGE"> android.permission.WRITE_EXTERNAL_STORAGE</a></p>
+        <p>Required to download files to the public download folder.
+            On Android Marshmallow (API 23) and newer, if this permission is denied Privacy Browser will store downloads in the app’s download folder instead.</p>
     </body>
 </html>

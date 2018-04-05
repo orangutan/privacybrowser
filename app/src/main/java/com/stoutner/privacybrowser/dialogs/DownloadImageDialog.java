@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -46,19 +46,21 @@ public class DownloadImageDialog extends AppCompatDialogFragment {
     private String imageFileName;
 
     public static DownloadImageDialog imageUrl(String imageUrlString) {
-        // Create `argumentsBundle`.
+        // Create an arguments bundle.
         Bundle argumentsBundle = new Bundle();
 
+        // Create a variable for the image name string.
         String imageNameString;
 
+        // Extract the image name string from the image URL.
         Uri imageUri = Uri.parse(imageUrlString);
         imageNameString = imageUri.getLastPathSegment();
 
-        // Store the variables in the `Bundle`.
+        // Store the variables in the bundle.
         argumentsBundle.putString("URL", imageUrlString);
         argumentsBundle.putString("Image_Name", imageNameString);
 
-        // Add `argumentsBundle` to this instance of `DownloadFileDialog`.
+        // Add the arguments bundle to this instance of `DownloadFileDialog`.
         DownloadImageDialog thisDownloadFileDialog = new DownloadImageDialog();
         thisDownloadFileDialog.setArguments(argumentsBundle);
         return thisDownloadFileDialog;
@@ -67,6 +69,9 @@ public class DownloadImageDialog extends AppCompatDialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Remove the warning below that `getArguments()` might be null.
+        assert getArguments() != null;
 
         // Store the strings in the local class variables.
         imageUrl = getArguments().getString("URL");
@@ -97,6 +102,9 @@ public class DownloadImageDialog extends AppCompatDialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Remove the warning below that `.getActivity()` might be null.
+        assert getActivity() != null;
+
         // Get the activity's layout inflater.
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
 
@@ -117,20 +125,14 @@ public class DownloadImageDialog extends AppCompatDialogFragment {
         dialogBuilder.setView(layoutInflater.inflate(R.layout.download_image_dialog, null));
 
         // Set an `onClick()` listener on the negative button.
-        dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Do nothing if `Cancel` is clicked.
-            }
+        dialogBuilder.setNegativeButton(R.string.cancel, (DialogInterface dialog, int which) -> {
+            // Do nothing if `Cancel` is clicked.
         });
 
         // Set an `onClick()` listener on the positive button
-        dialogBuilder.setPositiveButton(R.string.download, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // trigger `onDownloadFile()` and return the `DialogFragment` and the download URL to the parent activity.
-                downloadImageListener.onDownloadImage(DownloadImageDialog.this, imageUrl);
-            }
+        dialogBuilder.setPositiveButton(R.string.download, (DialogInterface dialog, int which) -> {
+            // trigger `onDownloadFile()` and return the `DialogFragment` and the download URL to the parent activity.
+            downloadImageListener.onDownloadImage(DownloadImageDialog.this, imageUrl);
         });
 
 
@@ -147,27 +149,25 @@ public class DownloadImageDialog extends AppCompatDialogFragment {
         alertDialog.show();
 
         // Set the text for `downloadImageNameTextView`.
-        EditText downloadImageNameTextView = (EditText) alertDialog.findViewById(R.id.download_image_name);
+        EditText downloadImageNameTextView = alertDialog.findViewById(R.id.download_image_name);
         downloadImageNameTextView.setText(imageFileName);
 
         // Allow the `enter` key on the keyboard to save the file from `downloadImageNameTextView`.
-        downloadImageNameTextView.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey (View v, int keyCode, KeyEvent event) {
-                // If the event is an `ACTION_DOWN` on the `enter` key, initiate the download.
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    // trigger `onDownloadImage()` and return the `DialogFragment` and the URL to the parent activity.
-                    downloadImageListener.onDownloadImage(DownloadImageDialog.this, imageUrl);
-                    // Manually dismiss `alertDialog`.
-                    alertDialog.dismiss();
-                    // Consume the event.
-                    return true;
-                } else {  // If any other key was pressed, do not consume the event.
-                    return false;
-                }
+        downloadImageNameTextView.setOnKeyListener((View v, int keyCode, KeyEvent event) -> {
+            // If the event is an `ACTION_DOWN` on the `enter` key, initiate the download.
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                // trigger `onDownloadImage()` and return the `DialogFragment` and the URL to the parent activity.
+                downloadImageListener.onDownloadImage(DownloadImageDialog.this, imageUrl);
+
+                // Manually dismiss the alert dialog.
+                alertDialog.dismiss();
+
+                // Consume the event.
+                return true;
+            } else {  // If any other key was pressed, do not consume the event.
+                return false;
             }
         });
-
 
         // `onCreateDialog` requires the return of an `AlertDialog`.
         return alertDialog;

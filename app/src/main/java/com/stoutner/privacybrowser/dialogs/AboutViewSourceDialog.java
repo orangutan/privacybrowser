@@ -28,6 +28,7 @@ import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
 public class AboutViewSourceDialog extends DialogFragment {
+    @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use a builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;

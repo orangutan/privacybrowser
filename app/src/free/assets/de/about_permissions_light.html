@@ -1,25 +1,22 @@
 <!--
-  Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
 
   Translation 2016 Aaron Gerlach <aaron@gerlach.com>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
-  Diese Datei ist Teil von Privacy Browser <https://www.stoutner.com/privacy-browser>.
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
-  Privacy Browser ist eine kostenlose Software: Sie können sie
-  unter den Bedingungen der GNU General Public License weiterverteilen
-  mit Berufung auf die veröffentlichte Fassung der Free Software
-  Foundation, entweder Version 3 der Lizenz oder (nach Ihrer
-  Möglichkeit) jede neuere Version.
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-  Privacy Browser wird in der Hoffnung vertrieben nützlich zu sein,
-  jedoch OHNE JEGLICHE GARANTIE; auch ohne die implizierte
-  Garantie auf MARKTGÄNGLICHKEIT oder BEREITSCHAFT FÜR
-  BESTIMMTE ANWENDUNGEN. Nutzen Sie die GNU General Public
-  License für mehr Details.
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-  Sie sollten eine Kopie der GNU General Public License zusammen mit
-  Privacy Browser erhalten haben. Wenn nicht, besuchen Sie
-  <http://www.gnu.org/licenses/>. -->
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
 <html>
     <head>
@@ -37,19 +34,26 @@
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#INSTALL_SHORTCUT">com.android.launcher.permission.INSTALL_SHORTCUT</a></p>
         <p>Benötigt, um Verknüpfungen zu Websites auf Ihrer Startseite zu erstellen.</p>
 
+        <h3>Write storage</h3>
+        <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WRITE_EXTERNAL_STORAGE"> android.permission.WRITE_EXTERNAL_STORAGE</a></p>
+        <p>Required to download files to the public download folder.
+            On Android Marshmallow (API 23) and newer, if this permission is denied Privacy Browser will store downloads in the app’s download folder instead.</p>
+
         <br/>
         <hr/>
         <br/>
 
-        <p>In addition, Privacy Browser Free displays ads from Google's AdMob network using the Firebase backend. For the free flavor, Firebase adds the following permissions even though they are not listed in the manifest file.</p>
+        <p>In addition, Privacy Browser Free displays ads from Google’s AdMob network using the Firebase backend.
+            For the free flavor, Firebase adds the following permissions even though they are not listed in the manifest file.</p>
 
         <h3>View network connections</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#ACCESS_NETWORK_STATE">android.permission.ACCESS_NETWORK_STATE</a></p>
-        <p>Allows the ads to tell when you are connected to the internet and when you aren't (presumably so they don't try to reload an ad when you are disconnected). They can also tell if you are connected via Wi-Fi, 2G, 3G, 4G, etc.</p>
+        <p>Allows the ads to tell when you are connected to the internet and when you aren’t (presumably so they don’t try to reload an ad when you are disconnected).
+            They can also tell if you are connected via Wi-Fi, 2G, 3G, 4G, etc.</p>
 
         <h3>Prevent phone from sleeping</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WAKE_LOCK">android.permission.WAKE_LOCK</a></p>
-        <p>Allows the ads to keep the processor from sleeping and the screen from dimming, although in my testing I don't think the ads actually do this.</p>
+        <p>Allows the ads to keep the processor from sleeping and the screen from dimming, although in my testing I don’t think the ads actually do this.</p>
 
         <h3>Receive data from Internet</h3>
         <p><a href="http://androidpermissions.com/permission/com.google.android.c2dm.permission.RECEIVE">com.google.android.c2dm.permission.RECEIVE</a></p>
