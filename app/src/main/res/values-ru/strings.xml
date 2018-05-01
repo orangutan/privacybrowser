@@ -65,7 +65,7 @@
     <!-- View SSL Certificate. -->
     <string name="view_ssl_certificate">Просмотр сертификата SSL</string>
     <string name="unencrypted_website">Незашифрованный веб-сайт</string>
-    <string name="no_ssl_certificate">Связь с этим сайтом не шифруется. Это позволяет третьим сторонам перехватывать информацию, отслеживать просмотр и вводить вредоносный контент.</string>
+    <string name="no_ssl_certificate">Соединение с этим сайтом не зашифровано. Это позволяет третьим сторонам перехватывать информацию, отслеживать просмотр и внедрять вредоносный контент.</string>
     <string name="ssl_certificate">Сертификат SSL</string>
     <string name="close">Закрыть</string>
     <string name="domain">Домен</string>
@@ -384,6 +384,12 @@
         <string name="night_mode_summary">Включение ночного режима также включает JavaScript для всех веб-страниц.</string>
         <string name="display_webpage_images">Показывать изображения веб-страницы</string>
         <string name="display_webpage_images_summary">Отключите для экономии трафика.</string>
+
+    <!-- Download Location -->
+    <string name="download_location">Папка загрузок</string>
+    <string name="download_location_message">Privacy Browser необходимо разрешение на доступ к хранилищу для использования общей папки загрузок.
+        Если разрешение получено не будет, то для загрузок будет использоваться папка приложения</string>
+    <string name="ok">OK</string>
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Проксирование Orbot работает только с установленным Orbot.</string>

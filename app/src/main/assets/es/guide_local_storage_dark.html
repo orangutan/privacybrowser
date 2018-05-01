@@ -22,11 +22,11 @@
     <head>
         <meta charset="UTF-8">
 
-        <link rel="stylesheet" href="../en/css/dark_theme.css">
+        <link rel="stylesheet" href="../css/dark_theme.css">
     </head>
 
     <body>
-        <h3><img class="title" src="../en/images/cookie_blue_dark.png"> Cookies de primera parte</h3>
+        <h3><img class="title" src="../shared_images/cookie_blue_dark.png"> Cookies de primera parte</h3>
 
         <p>Las cookies de primera parte son cookies establecidas por la página web en la barra URL de la parte superior de la página.</p>
 
@@ -43,16 +43,16 @@
             son la única forma en que una página web puede mantener conectado en una sesión a un usuario mientras se mueve de una página a otra en ese sitio web, pero si una página web en particular
             ha elegido implementar inicios de sesión de esa manera, la única forma de poder usar la funcionalidad de ese sitio web será habilitando cookies de primera parte.</p>
 
-        <p>Si las cookies de primera parte están habilitadas pero Javascript está deshabilitado, el icono de privacidad será amarillo <img class="inline" src="../en/images/warning.png"> como advertencia.</p>
+        <p>Si las cookies de primera parte están habilitadas pero Javascript está deshabilitado, el icono de privacidad será amarillo <img class="inline" src="../shared_images/warning.png"> como advertencia.</p>
 
 
-        <h3><img class="title" src="../en/images/cookie_blue_dark.png"> Cookies de terceras partes</h3>
+        <h3><img class="title" src="../shared_images/cookie_blue_dark.png"> Cookies de terceras partes</h3>
 
         <p>Las cookies de terceras partes son establecidas por ciertas partes de una página web que son cargadas desde servidores diferentes a la URL de la parte superior de la página. Por ejemplo,
             la mayoría de páginas web que tienen anuncios los cargan desde una compañía de publicidad de terceros, como <a href="https://www.google.com/adsense/start/#?modal_active=none">Ad Sense</a>
             de Google. Cada vez que se carga la página web, solicita a la compañía de publicidad que muestre un anuncio. La compañía de publicidad analiza cualquier información que pueda tener sobre el usuario,
-            analiza la tasa actual que los anunciantes están dispuestos a pagar por sus anuncios, y selecciona uno  para mostrar. La sección de la página web que muestra los anuncios es cargada desde el servidor
-            de la compañía de terceros en vez de hacerlo desde el servidor principal.</p>
+            analiza la tasa actual que los anunciantes están dispuestos a pagar por sus anuncios, y selecciona uno  para mostrar.
+            La sección de la página web que muestra los anuncios es cargada desde el servidor de la compañía de terceros en vez de hacerlo desde el servidor principal.</p>
 
         <p>Ya que la mayoría de los anuncios en internet se muestran desde solo unas pequeñas compañías, no les llevó a éstas mucho tiempo en darse cuenta que podrían establecer una cookie de seguimiento
             en el dispositivo del usuario y así conocer cualquier lugar al que el usuario va. Cada vez que un anuncio se carga desde una compañía, lo primero que hace es comprobar si el dispositivo ya tiene un
@@ -61,25 +61,28 @@
 
         <p>Además de compañías de publicidad, las páginas de redes sociales descubrieron que también podían entrar en acción. Hace unos pocos años, las principales páginas de redes sociales
             como Facebook y Twitter convencieron a un gran número de páginas web que sería por su mejor interés colocar pequeños iconos de redes sociales en sus páginas. Éstos no son sólo imágenes.
-            Contienen <a href="https://developers.facebook.com/docs/plugins/like-button/">código incrustado</a> que enlazan de nuevo a la web de la red social, y entre otras cosas cargan una cookie de terceras partes en el dispositivo.
-            Estas cookies se colocan aunque el usuario no tenga una cuenta con la plataforma de la red social. A través del tiempo, compañías como Facebook (la cual también corre una red de anuncios) han construído un gran
-            número de perfiles detallados sobre personas que <a href="http://www.theverge.com/2016/5/27/11795248/facebook-ad-network-non-users-cookies-plug-ins">ni siquiera han creado una cuenta en su web</a>.
+            Contienen <a href="https://developers.facebook.com/docs/plugins/like-button/">código incrustado</a> que enlazan de nuevo a la web de la red social,
+            y entre otras cosas cargan una cookie de terceras partes en el dispositivo. Estas cookies se colocan aunque el usuario no tenga una cuenta con la plataforma de la red social.
+            A través del tiempo, compañías como Facebook (la cual también corre una red de anuncios) han construído un gran número de perfiles detallados sobre personas que
+            <a href="http://www.theverge.com/2016/5/27/11795248/facebook-ad-network-non-users-cookies-plug-ins">ni siquiera han creado una cuenta en su web</a>.
 
-        <p>Prácticamente no existe una buena razón por la cual se deban habilitar las cookies de terceras partes. En dispositivos con Android KitKat o más antiguos (versión <= 4.4.4 o API <= 20). WebView no
-            <a href="https://developer.android.com/reference/android/webkit/CookieManager.html#acceptThirdPartyCookies(android.webkit.WebView)">diferencia entre cookies de primera parte y de terceras partes</a>. Así que habilitando las cookies de
-            primera parte se habilitarán también las de terceras partes.</p>
-
-
-        <h3><img class="title" src="../en/images/ic_web_blue_dark.png"> Almacenamiento DOM</h3>
-
-        <p>El almacenamiento Modelo de Objeto de Documento (Document Object Model), también conocido como almacenamiento web, es como cookies pero más poderoso. Mientras el tamaño de almacenamiento combinado máximo para todas las cookies
-            de una única URL es de 4 kilobytes, el almacenamiento DOM puede tener <a href="https://en.wikipedia.org/wiki/Web_storage#Storage_size">megabytes por sitio web</a>. Debido a que el almacenamiento DOM usa Javascript para leer y escribir
-            los datos, habilitarlo no hará nada a menos que Javascript sea habilitado también.</p>
+        <p>Prácticamente no existe una buena razón por la cual se deban habilitar las cookies de terceras partes. En dispositivos con Android KitKat o más antiguos (versión <= 4.4.4 o API <= 20).
+            WebView no <a href="https://developer.android.com/reference/android/webkit/CookieManager.html#acceptThirdPartyCookies(android.webkit.WebView)">diferencia entre cookies de primera parte
+            y de terceras partes</a>. Así que habilitando las cookies de primera parte se habilitarán también las de terceras partes.</p>
 
 
-        <h3><img class="title" src="../en/images/ic_subtitles_blue_dark.png"> Datos de formulario</h3>
+        <h3><img class="title" src="../shared_images/ic_web_blue_dark.png"> Almacenamiento DOM</h3>
 
-        <p>Los datos de formulario contienen información escrita en formularios web, como nombres de usuario, direcciones, números de teléfono, etcétera, y los enumera en un cuadro desplegable en futuras visitas.
+        <p>El almacenamiento Modelo de Objeto de Documento (Document Object Model), también conocido como almacenamiento web, es como cookies pero más poderoso.
+            Mientras el tamaño de almacenamiento combinado máximo para todas las cookies de una única URL es de 4 kilobytes,
+            el almacenamiento DOM puede tener <a href="https://en.wikipedia.org/wiki/Web_storage#Storage_size">megabytes por sitio web</a>.
+            Debido a que el almacenamiento DOM usa Javascript para leer y escribir los datos, habilitarlo no hará nada a menos que Javascript sea habilitado también.</p>
+
+
+        <h3><img class="title" src="../shared_images/ic_subtitles_blue_dark.png"> Datos de formulario</h3>
+
+        <p>Los datos de formulario contienen información escrita en formularios web, como nombres de usuario, direcciones, números de teléfono, etcétera,
+            y los enumera en un cuadro desplegable en futuras visitas.
             A diferencia de las otras formas de almacenamiento local, los datos de formulario no son enviados al servidor web sin una interacción específica del usuario.</p>
     </body>
 </html>

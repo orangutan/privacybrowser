@@ -386,6 +386,12 @@
         <string name="display_webpage_images">Mostrar imágenes de la página web</string>
         <string name="display_webpage_images_summary">Deshabilitar para conservar ancho de banda.</string>
 
+    <!-- Download Location -->
+    <string name="download_location">Lugar de descarga</string>
+    <string name="download_location_message">Navegador Privado necesita el permiso de almacenamiento para utilizar el directorio de descarga público.
+        Si se deniega, se utilizará el directorio de descarga de la aplicación.</string>
+    <string name="ok">OK</string>
+
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Enviar a través de Orbot no funcionará a menos que se instale Orbot.</string>
     <string name="waiting_for_orbot">Esperando a Orbot para conectar...</string>

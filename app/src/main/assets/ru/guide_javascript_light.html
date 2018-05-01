@@ -1,0 +1,59 @@
+<!--
+  Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+
+        <link rel="stylesheet" href="../css/light_theme.css">
+    </head>
+
+    <body>
+        <h3><img class="title" src="../shared_images/privacy_browser.png"> JavaScript это сила</h3>
+
+        <p>В первые дни интернета веб-страницы были статичными, то есть они содержали текст и изображения, которые отображались на экране, но не изменялись и не взаимодействовали с пользователем.
+            Конечно, не так много интересного может произойти со статическим контентом. Для облегчения работы динамических веб-страниц было разработано несколько различных технологий.
+            Одной из таких технологий является JavaScript.</p>
+
+        <p>JavaScript - это язык программирования. Многие веб-серверы размещают программы, написанные на JavaScript, которые отправляются на устройства как часть веб-страницы.
+            Устройство запускает JavaScript на своем локальном процессоре и следует командам программы, которые могут анимировать изображения на веб-сайте,
+            вызывать всплывающие меню и делать много других полезных вещей.</p>
+
+
+        <h3><img class="title" src="../shared_images/javascript_enabled.png"> JavaScript это опасность</h3>
+
+        <p>Конечно, концепция запуска произвольных программ с веб-сайта потенциально опасна. Поэтому, в JavaScript встроены ограничения, позволяющие ему не делать такие вещи, как установка вирусов.
+            Однако оказывается, что эти ограничения слишком широки.
+            Ниже представлен скриншот из <a href="http://webkay.robinlinus.com">webkay</a>, который представляет собой веб-сайт, демонстрирующий тип информации, которую может извлекать JavaScript из устройства.
+            <a href="http://www.browserleaks.com/">Утечки браузера</a> - еще один хороший ресурс.</p>
+
+        <p><img class="center" src="../en/images/webkay.png"></p>
+
+        <p>В целях конфиденциальности идеальным был бы просмотр интернета с отключенным JavaScript.
+            Тем не менее, существуют некоторые веб-сайты, которые на законных основаниях требуют JavaScript для выполнения своих целей и другие, которые не работают корректно без JavaScript,
+            даже если они могут быть запрограммированы для этого. Privacy Browser решает эту задачу, упрощая включение и выключение JavaScript.
+            Нажатие на щит переключит его между синим цветом <img class="inline" src="../shared_images/privacy_browser.png"> или желтым <img class="inline" src="../shared_images/warning.png">
+            (оба из которых указывают что JavaScript отключен) и красный <img class = "inline" src="../shared_images/javascript_enabled.png"> (JavaScript включен).
+            Просмотр различной информации на <a href="http://webkay.robinlinus.com">webkay</a>, которую можно собрать с включенным и отключенным JavaScript, является информативным.
+
+        <p>Просмотр интернета с отключенным JavaScript и его включение, только если это необходимо, в значительной степени защищают конфиденциальность пользователей.
+            Кроме того, JavaScript используется для загрузки большей части раздражающих рекламных объявлений и дополнительного хлама, который поставляется вместе с большинством современных веб-сайтов.
+            С его отключением веб-сайты будут загружаться быстрее, потреблять меньше сетевого трафика и содержать менее раздражающие рекламные объявления,
+            например, тех, что скрывают текст всей веб-страницы.</p>
+    </body>
+</html>

@@ -382,6 +382,12 @@
         <string name="display_webpage_images">Mostra immagini delle pagine web</string>
         <string name="display_webpage_images_summary">Disabilita per ridurre il consumo di dati.</string>
 
+    <!-- Download Location -->
+    <string name="download_location">Cartella di Download</string>
+    <string name="download_location_message">Privacy Browser necessita del permesso di accesso alla memoria di storage per utilizzare la cartella pubblica di download.
+        Nel caso in cui il permesso sia negato sarà utilizzata la cartella di download dell'applicazione.</string>
+    <string name="ok">OK</string>
+
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Il Proxy con Orbot funziona solo se è installato Orbot.</string>
     <string name="waiting_for_orbot">In attesa della connessione di Orbot...</string>

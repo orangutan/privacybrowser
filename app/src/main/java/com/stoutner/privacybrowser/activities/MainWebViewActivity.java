@@ -1391,6 +1391,11 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                 drawerLayout.closeDrawer(GravityCompat.START);
             }
 
+            // Close the bookmarks drawer if it is open.
+            if (drawerLayout.isDrawerVisible(GravityCompat.END)) {
+                drawerLayout.closeDrawer(GravityCompat.END);
+            }
+
             // Clear the keyboard if displayed and remove the focus on the urlTextBar if it has it.
             mainWebView.requestFocus();
         }

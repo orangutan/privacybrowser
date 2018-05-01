@@ -1,0 +1,62 @@
+<!--
+  Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+
+        <link rel="stylesheet" href="../css/dark_theme.css">
+    </head>
+
+    <body>
+        <h3><img class="title" src="../shared_images/ic_devices_other_blue_dark.png"> Идентификация браузера</h3>
+
+        <p>При подключении браузера к веб-сайтам происходит отправка пользовательского агента, который идентифицирует браузер и возможности визуализации, которыми он обладает.
+            Веб-сервер может использовать эту информацию, чтобы решить, какую версию сайта отправить в браузер.
+            Например, многие сайты имеют разные версии для компьютерных и мобильных браузеров.</p>
+
+        <p>По умолчанию Privacy Browser использует собственный пользовательский агент PrivacyBrowser/1.0. На веб-сервер отправляется минимум информации.
+            Поскольку веб-серверы не распознают его пользовательским агентом мобильного телефона, они обычно отображают версию сайта для компьютера.</p>
+
+        <p>Для сравнения, пользовательский агент WebView по умолчанию раскрывает большой объем информации об аппаратном и программном обеспечении устройства.
+            В меню <strong>Настройки</strong> выберите <strong>WebView по умолчанию</strong>, поскольку <strong>User agent</strong> отображает пользовательский агент, который будет отправлен.
+            На скриншоте ниже показан Pixel 2 XL под управлением Android 8.1.0 с установленным Android WebView 66.0.3359.126.
+            Большинство веб-серверов признают это как мобильный браузер и будут отображать мобильную версию сайта, если таковая имеется.</p>
+
+        <img class="center21" src="images/user_agent.png">
+
+        <p>В пользовательском агенте достаточно информации о том, что иногда только несколько посетителей веб-сайта будут выглядеть одинаковыми.
+            Если пользовательский агент сочетается с другой частью неуникальной идентифицирующей информации, часто это приводит к уникальному отпечатку браузера.
+            Фонд Electronic Frontier Foundation создал инструмент под названием <a href="https://panopticlick.eff.org/">Panopticlick</a>, чтобы продемонстрировать,
+            сколько информации можно извлечь из этих источников.
+            Если этот тест выполняется с включенным JavaScript, объем информации, которая раскрывается, значительно увеличивается.
+            <a href="https://www.browserleaks.com">Browser Leaks</a> и <a href="https://amiunique.org/">Am I Unique</a> также являются хорошими источниками информации по этой теме.</p>
+
+        <img class="center" src="../en/images/panopticlick.png">
+
+        <p>Существует несколько предустановленных пользовательских агентов, которые соответствуют обычным браузерам и операционным системам.
+            Для использования отпечатков браузера существует правило - все, что редко встречается, легче отслеживать.
+            По мере распространения Privacy Browser использование PrivacyBrowser/1.0 в качестве пользовательского агента станет хорошим выбором для обеспечения конфиденциальности.
+            Firefox или Chrome являются наиболее распространенными пользовательскими агентами, но они автоматически обновляются и их номера версий меняются настолько быстро, что,
+            скорее всего, пользовательские агенты, включенные в Privacy Browser, часто будут не соответствовать большинству пользовательских агентов в журналах сервера.</p>
+
+        <p>Некоторые сайты <a href="https://www.stoutner.com/user-agent-problems/">работают неправильно</a>, если они не распознают пользовательский агент.
+            Использование параметров домена для установки агента пользователя <strong>WebView по умолчанию</strong>, или другого пользовательского агента, который корректно распознается, обычно решает проблему.
+            Android WebView не позволяет пользовательскому агенту быть пустым. В этом случае WebView отправляет на сервер пользовательский агент по умолчанию.</p>
+    </body>
+</html>

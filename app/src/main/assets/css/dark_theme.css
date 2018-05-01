@@ -17,30 +17,36 @@
  * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* Gray 850 */
+body {
+    background-color: #313131;
+    color: #BDBDBD;
+}
+
 /* Blue 700 */
 a {
     color: #1976D2;
     text-decoration: none;
 }
 
-/* Blue 900 */
+/* Blue 600 */
 h3 {
-    color: #0D47A1;
+    color: #1E88E5;
 }
 
-/* Red 900 */
+/* Half of Red 900 */
 strong.red {
-    color: #B71C1C;
+    color: #A71919;
 }
 
-/* Blue 800 */
+/* Blue 400 */
 strong.blue {
-    color: #1565C0;
+    color: #42A5F5;
 }
 
-/* Blue 700 */
+/* Blue 400 */
 item {
-    color: #1976D2;
+    color: #42A5F5;
     font-weight: bold;
 }
 
@@ -73,5 +79,16 @@ img.center {
     margin-left: auto;
     margin-right: auto;
     height: 640;
+    width: 360;
+}
+
+
+/* center21 is for screenshots that have a 2:1 aspect ration (so called 18:9) */
+/* An image must be a block to be centered. */
+img.center21 {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 720;
     width: 360;
 }

@@ -458,9 +458,9 @@
         <string name="display_webpage_images_summary">Disable to conserve bandwidth.</string>
 
     <!-- Download Location -->
-        <string name="download_location">Download Location</string>
-        <string name="download_location_message">Privacy Browser needs the storage permission to use the public download directory. If it is denied, the app’s download directory will be used instead.</string>
-        <string name="ok">OK</string>
+    <string name="download_location">Download Location</string>
+    <string name="download_location_message">Privacy Browser needs the storage permission to use the public download directory. If it is denied, the app’s download directory will be used instead.</string>
+    <string name="ok">OK</string>
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Orbot proxy will not work unless Orbot is installed.</string>
