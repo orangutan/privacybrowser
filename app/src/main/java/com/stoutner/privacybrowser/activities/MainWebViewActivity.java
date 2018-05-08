@@ -1250,11 +1250,12 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
 
                     // Manually delete cache folders.
                     try {
-                        // Delete the main `cache` folder.
+                        // Delete the main cache directory.
                         privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/cache");
 
-                        // Delete the `app_webview` folder, which contains an additional `WebView` cache.  See `https://code.google.com/p/android/issues/detail?id=233826&thanks=233826&ts=1486670530`.
-                        privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview");
+                        // Delete the secondary `Service Worker` cache directory.
+                        // A `String[]` must be used because the directory contains a space and `Runtime.exec` will not escape the string correctly otherwise.
+                        privacyBrowserRuntime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Service Worker/"});
                     } catch (IOException e) {
                         // Do nothing if an error is thrown.
                     }
@@ -2211,8 +2212,9 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                     try {
                         // Delete the main cache directory.
                         privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/cache");
+
                         // Delete the secondary `Service Worker` cache directory.
-                        // We have to use a `String[]` because the directory contains a space and `Runtime.exec` will not escape the string correctly otherwise.
+                        // A `String[]` must be used because the directory contains a space and `Runtime.exec` will not escape the string correctly otherwise.
                         privacyBrowserRuntime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Service Worker/"});
                     } catch (IOException e) {
                         // Do nothing if an error is thrown.
