@@ -47,6 +47,7 @@
     <string name="open_navigation_drawer">Navigationspanel öffnen</string>
     <string name="close_navigation_drawer">Navigationspanel schließen</string>
     <string name="no_title">Kein Titel</string>
+    <string name="unrecognized_url">Unbekannte URL:</string>
 
     <!-- Save As. -->
     <string name="save_as">Speichern Unter</string>
@@ -332,6 +333,11 @@
         <string name="swipe_to_refresh_enabled_summary">Einige Websites funktionieren nicht, wenn "Herunterziehen zum Aktualisieren" eingeschaltet ist.</string>
         <string name="display_additional_app_bar_icons">Weitere Icons in der Titelleiste</string>
         <string name="display_additional_app_bar_icons_summary">Icons zum Umschalten von Cookies, DOM-Speicher und Formulardaten neben der Adresszeile anzeigen, wenn noch Platz dafür da ist.</string>
+
+    <!-- Download Location -->
+    <string name="download_location">Download-Zielordner</string>
+    <string name="download_location_message">Privacy Browser benötigt die Berechtigung zur Speicherung im öffentlichen Download-Ordner. Anderenfalls wird der Download-Ordner der App verwendet.</string>
+    <string name="ok">OK</string>
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Orbot-Proxy wird nicht funktionieren, solange Orbot nicht installiert ist.</string>

@@ -289,6 +289,9 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
     // `privacyBrowserRuntime` is used in `onCreate()`, `onOptionsItemSelected()`, and `applyAppSettings()`.
     private Runtime privacyBrowserRuntime;
 
+    // `proxyThroughOrbot` is used in `onRestart()` and `applyAppSettings()`.
+    boolean proxyThroughOrbot;
+
     // `incognitoModeEnabled` is used in `onCreate()` and `applyAppSettings()`.
     private boolean incognitoModeEnabled;
 
@@ -1428,6 +1431,18 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
     public void onRestart() {
         // Run the default commands.
         super.onRestart();
+
+        // Make sure Orbot is running if Privacy Browser is proxying through Orbot.
+        if (proxyThroughOrbot) {
+            // Request Orbot to start.  If Orbot is already running no hard will be caused by this request.
+            Intent orbotIntent = new Intent("org.torproject.android.intent.action.START");
+
+            // Send the intent to the Orbot package.
+            orbotIntent.setPackage("org.torproject.android");
+
+            // Make it so.
+            sendBroadcast(orbotIntent);
+        }
 
         // Apply the app settings if returning from the Settings activity..
         if (reapplyAppSettingsOnRestart) {
@@ -3050,7 +3065,7 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
         String searchCustomURLString = sharedPreferences.getString("search_custom_url", "");
         incognitoModeEnabled = sharedPreferences.getBoolean("incognito_mode", false);
         boolean doNotTrackEnabled = sharedPreferences.getBoolean("do_not_track", false);
-        boolean proxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
+        proxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
         fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("full_screen_browsing_mode", false);
         hideSystemBarsOnFullscreen = sharedPreferences.getBoolean("hide_system_bars", false);
         translucentNavigationBarOnFullscreen = sharedPreferences.getBoolean("translucent_navigation_bar", true);

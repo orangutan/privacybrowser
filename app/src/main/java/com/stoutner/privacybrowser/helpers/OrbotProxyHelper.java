@@ -49,21 +49,26 @@ public class OrbotProxyHelper {
         // Use reflection to apply the new proxy values.
         try {
             Class applicationClass = Class.forName("android.app.Application");
-            Field mLoadedApkField = applicationClass.getDeclaredField("mLoadedApk");
-            // `setAccessible(true)` allows us to change the value of `mLoadedApkField`.
+
+            // Suppress the lint warning that `mLoadedApk` cannot be resolved.
+            @SuppressWarnings("JavaReflectionMemberAccess") Field mLoadedApkField = applicationClass.getDeclaredField("mLoadedApk");
+
+            // `setAccessible(true)` allows the value of `mLoadedApkField` to be changed..
             mLoadedApkField.setAccessible(true);
             Object mLoadedApkObject = mLoadedApkField.get(privacyBrowserContext);
 
+            // Suppress the lint warning that reflection may not alwasy work in the future and on all devices.
             @SuppressLint("PrivateApi") Class loadedApkClass = Class.forName("android.app.LoadedApk");
             Field mReceiversField = loadedApkClass.getDeclaredField("mReceivers");
-            // `setAccessible(true)` allows us to change the value of `mReceiversField`.
+
+            // `setAccessible(true)` allows the value of `mReceiversField` to be changed.
             mReceiversField.setAccessible(true);
 
             ArrayMap receivers = (ArrayMap) mReceiversField.get(mLoadedApkObject);
 
             for (Object receiverMap : receivers.values()) {
                 for (Object receiver : ((ArrayMap) receiverMap).keySet()) {
-                    // We have to use `Class<?>`, which is an `unbounded wildcard parameterized type`, instead of `Class`, which is a `raw type`.
+                    // `Class<?>`, which is an `unbounded wildcard parameterized type`, must be used instead of `Class`, which is a `raw type`.
                     // Otherwise, `receiveClass.getDeclaredMethod` below will produce an error.
                     Class<?> receiverClass = receiver.getClass();
                     if (receiverClass.getName().contains("ProxyChangeListener")) {
