@@ -25,6 +25,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.DialogFragment;
 import android.app.DownloadManager;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -1078,46 +1079,68 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
 
         mainWebView.setWebViewClient(new WebViewClient() {
             // `shouldOverrideUrlLoading` makes this `WebView` the default handler for URLs inside the app, so that links are not kicked out to other apps.
-            // We have to use the deprecated `shouldOverrideUrlLoading` until API >= 24.
+            // The deprecated `shouldOverrideUrlLoading` must be used until API >= 24.
             @SuppressWarnings("deprecation")
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (url.startsWith("mailto:")) {  // Load the email address in an external email program.
+                if (url.startsWith("http")) {  // Load the URL in Privacy Browser.
+                    // Apply the domain settings for the new URL.
+                    applyDomainSettings(url, true);
+
+                    // Returning false causes the current `WebView` to handle the URL and prevents it from adding redirects to the history list.
+                    return false;
+                } else if (url.startsWith("mailto:")) {  // Load the email address in an external email program.
                     // Use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
 
-                    // Parse the url and set it as the data for the `Intent`.
+                    // Parse the url and set it as the data for the intent.
                     emailIntent.setData(Uri.parse(url));
 
-                    // `FLAG_ACTIVITY_NEW_TASK` opens the email program in a new task instead as part of Privacy Browser.
+                    // Open the email program in a new task instead of as part of Privacy Browser.
                     emailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                     // Make it so.
                     startActivity(emailIntent);
 
-                    // Returning `true` indicates the application is handling the URL.
+                    // Returning true indicates Privacy Browser is handling the URL by creating an intent.
                     return true;
                 } else if (url.startsWith("tel:")) {  // Load the phone number in the dialer.
-                    // `ACTION_DIAL` open the dialer and loads the phone number, but waits for the user to place the call.
+                    // Open the dialer and load the phone number, but wait for the user to place the call.
                     Intent dialIntent = new Intent(Intent.ACTION_DIAL);
 
                     // Add the phone number to the intent.
                     dialIntent.setData(Uri.parse(url));
 
-                    // `FLAG_ACTIVITY_NEW_TASK` opens the dialer in a new task instead as part of Privacy Browser.
+                    // Open the dialer in a new task instead of as part of Privacy Browser.
                     dialIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                     // Make it so.
                     startActivity(dialIntent);
 
-                    // Returning `true` indicates the application is handling the URL.
+                    // Returning true indicates Privacy Browser is handling the URL by creating an intent.
                     return true;
-                } else {  // Load the URL in Privacy Browser.
-                    // Apply the domain settings for the new URL.
-                    applyDomainSettings(url, true);
+                } else {  // Load a system chooser to select an app that can handle the URL.
+                    // Open an app that can handle the URL.
+                    Intent genericIntent = new Intent(Intent.ACTION_VIEW);
 
-                    // Returning `false` causes the current `WebView` to handle the URL and prevents it from adding redirects to the history list.
-                    return false;
+                    // Add the URL to the intent.
+                    genericIntent.setData(Uri.parse(url));
+
+                    // List all apps that can handle the URL instead of just opening the first one.
+                    genericIntent.addCategory(Intent.CATEGORY_BROWSABLE);
+
+                    // Open the app in a new task instead of as part of Privacy Browser.
+                    genericIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                    // Start the app or display a snackbar if no app is available to handle the URL.
+                    try {
+                        startActivity(genericIntent);
+                    } catch (ActivityNotFoundException exception) {
+                        Snackbar.make(mainWebView, getString(R.string.unrecognized_url) + "  " + url, Snackbar.LENGTH_SHORT).show();
+                    }
+
+                    // Returning true indicates Privacy Browser is handling the URL by creating an intent.
+                    return true;
                 }
             }
 
