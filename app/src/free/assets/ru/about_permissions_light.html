@@ -41,24 +41,24 @@
         <hr/>
         <br/>
 
-        <p>In addition, Privacy Browser Free displays ads from Google’s AdMob network using the Firebase backend.
-            For the free flavor, Firebase adds the following permissions even though they are not listed in the manifest file.</p>
+        <p>Кроме того, Privacy Browser Free отображает объявления из сети Google AdMob с использованием бэкенда Firebase.
+            Для бесплатной версии Firebase добавляет следующие разрешения, даже если они не перечислены в файле манифеста.</p>
 
-        <h3>View network connections</h3>
+        <h3>Просмотр сетевых подключений</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#ACCESS_NETWORK_STATE">android.permission.ACCESS_NETWORK_STATE</a></p>
-        <p>Allows the ads to tell when you are connected to the internet and when you aren’t (presumably so they don’t try to reload an ad when you are disconnected).
-            They can also tell if you are connected via Wi-Fi, 2G, 3G, 4G, etc.</p>
+        <p>Позволяет рекламе узнавать наличие подключения к интернету (возможно, таким образом предотвращаются попытки загрузки рекламы при отсутствии активного соединения).
+            Кроме того, передается тип подключения - Wi-Fi, 2G, 3G, 4G, и т.д.</p>
 
-        <h3>Prevent phone from sleeping</h3>
+        <h3>Предотвращение засыпания устройства</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WAKE_LOCK">android.permission.WAKE_LOCK</a></p>
-        <p>Allows the ads to keep the processor from sleeping and the screen from dimming, although in my testing I don't think the ads actually do this.</p>
+        <p>Позволяет рекламе предотвращать переход процессора в режим сна и экран от выключения. Результаты тестировании не свидетельствуют о том, что реклама на самом деле это делает.</p>
 
-        <h3>Receive data from Internet</h3>
+        <h3>Получение данных из интернета</h3>
         <p><a href="http://androidpermissions.com/permission/com.google.android.c2dm.permission.RECEIVE">com.google.android.c2dm.permission.RECEIVE</a></p>
-        <p>Allows Google to send information directly to the AdView without having to receive a request first (cloud-to-device messaging).</p>
+        <p>Позволяет Google отправлять информацию непосредственно в AdView без необходимости сначала получать запрос (обмен сообщениями между облаком и устройством).</p>
 
-        <h3>Receive data from Internet</h3>
+        <h3>Получение данных из интернета</h3>
         <p><a href="https://developers.google.com/cloud-messaging/android/client">com.stoutner.privacybrowser.free.permission.C2D_MESSAGE</a></p>
-        <p>Secures the cloud-to-device messages so that only Privacy Browser Free can receive them.</p>
+        <p>Обеспечивает защиту сообщений между облаком и устройством, чтобы их могли получать только Privacy Browser Free can receive them.</p>
     </body>
 </html>

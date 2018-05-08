@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -21,12 +21,14 @@ package com.stoutner.privacybrowser.helpers;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.preference.PreferenceManager;
 
 public class DomainsDatabaseHelper extends SQLiteOpenHelper {
-    private static final int SCHEMA_VERSION = 4;
+    private static final int SCHEMA_VERSION = 5;
     private static final String DOMAINS_DATABASE = "domains.db";
     private static final String DOMAINS_TABLE = "domains";
 
@@ -37,6 +39,10 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
     public static final String ENABLE_THIRD_PARTY_COOKIES = "enablethirdpartycookies";
     public static final String ENABLE_DOM_STORAGE = "enabledomstorage";
     public static final String ENABLE_FORM_DATA = "enableformdata";
+    public static final String ENABLE_EASYLIST = "enableeasylist";
+    public static final String ENABLE_EASYPRIVACY = "enableeasyprivacy";
+    public static final String ENABLE_FANBOYS_ANNOYANCE_LIST = "enablefanboysannoyancelist";
+    public static final String ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST = "enablefanboyssocialblockinglist";
     public static final String USER_AGENT = "useragent";
     public static final String FONT_SIZE = "fontsize";
     public static final String DISPLAY_IMAGES = "displayimages";
@@ -61,9 +67,14 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
     public static final int NIGHT_MODE_ENABLED = 1;
     public static final int NIGHT_MODE_DISABLED = 2;
 
+    private Context appContext;
+
     // Initialize the database.  The lint warnings for the unused parameters are suppressed.
     public DomainsDatabaseHelper(Context context, @SuppressWarnings("UnusedParameters") String name, SQLiteDatabase.CursorFactory cursorFactory, @SuppressWarnings("UnusedParameters") int version) {
         super(context, DOMAINS_DATABASE, cursorFactory, SCHEMA_VERSION);
+
+        // Store a handle for the context.
+        appContext = context;
     }
 
     @Override
@@ -77,6 +88,10 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
                 ENABLE_THIRD_PARTY_COOKIES + " BOOLEAN, " +
                 ENABLE_DOM_STORAGE + " BOOLEAN, " +
                 ENABLE_FORM_DATA + " BOOLEAN, " +
+                ENABLE_EASYLIST + " BOOLEAN, " +
+                ENABLE_EASYPRIVACY + " BOOLEAN, " +
+                ENABLE_FANBOYS_ANNOYANCE_LIST + " BOOLEAN, " +
+                ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST + " BOOLEAN, " +
                 USER_AGENT + " TEXT, " +
                 FONT_SIZE + " INTEGER, " +
                 DISPLAY_IMAGES + " INTEGER, " +
@@ -97,14 +112,14 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase domainsDatabase, int oldVersion, int newVersion) {
-        // Upgrade `DOMAINS_TABLE`.
+        // Upgrade the database table.
         switch (oldVersion) {
-            // Upgrade from `SCHEMA_VERSION` 1.
+            // Upgrade from schema version 1.
             case 1:
-                // Add the `DISPLAY_IMAGES` column.
+                // Add the display images column.
                 domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + DISPLAY_IMAGES + " INTEGER");
 
-            // Upgrade from `SCHEMA_VERSION` 2.
+            // Upgrade from schema version 2.
             case 2:
                 //  Add the SSL certificate columns.
                 domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + PINNED_SSL_CERTIFICATE + " BOOLEAN");
@@ -117,10 +132,55 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
                 domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + SSL_START_DATE + " INTEGER");
                 domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + SSL_END_DATE + " INTEGER");
 
-            // Upgrade from `SCHEMA_VERSION` 3.
+            // Upgrade from schema version 3.
             case 3:
                 // Add the `NIGHT_MODE` column.
                 domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + NIGHT_MODE + " INTEGER");
+
+            // Upgrade from schema version 4.
+            case 4:
+                // Add the block lists columns.
+                domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + ENABLE_EASYLIST + " BOOLEAN");
+                domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + ENABLE_EASYPRIVACY + " BOOLEAN");
+                domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + ENABLE_FANBOYS_ANNOYANCE_LIST + " BOOLEAN");
+                domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST + " BOOLEAN");
+
+                // Get a handle for the shared preference.
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(appContext);
+
+                // Get the default block list settings.
+                boolean easyListEnabled = sharedPreferences.getBoolean("easylist", true);
+                boolean easyPrivacyEnabled = sharedPreferences.getBoolean("easyprivacy", true);
+                boolean fanboyAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboy_annoyance_list", true);
+                boolean fanboySocialBlockingListEnabled = sharedPreferences.getBoolean("fanboy_social_blocking_list", true);
+
+                // Set EasyList for existing rows according to the current system-wide default.
+                if (easyListEnabled) {
+                    domainsDatabase.execSQL("UPDATE " + DOMAINS_TABLE + " SET " + ENABLE_EASYLIST + " = " + 1);
+                } else {
+                    domainsDatabase.execSQL("UPDATE " + DOMAINS_TABLE + " SET " + ENABLE_EASYLIST + " = " + 0);
+                }
+
+                // Set EasyPrivacy for existing rows according to the current system-wide default.
+                if (easyPrivacyEnabled) {
+                    domainsDatabase.execSQL("UPDATE " + DOMAINS_TABLE + " SET " + ENABLE_EASYPRIVACY + " = " + 1);
+                } else {
+                    domainsDatabase.execSQL("UPDATE " + DOMAINS_TABLE + " SET " + ENABLE_EASYPRIVACY + " = " + 0);
+                }
+
+                // Set Fanboy's Annoyance List for existing rows according to the current system-wide default.
+                if (fanboyAnnoyanceListEnabled) {
+                    domainsDatabase.execSQL("UPDATE " + DOMAINS_TABLE + " SET " + ENABLE_FANBOYS_ANNOYANCE_LIST + " = " + 1);
+                } else {
+                    domainsDatabase.execSQL("UPDATE " + DOMAINS_TABLE + " SET " + ENABLE_FANBOYS_ANNOYANCE_LIST + " = " + 0);
+                }
+
+                // Set Fanboy's Social Blocking List for existing rows according to the current system-wide default.
+                if (fanboySocialBlockingListEnabled) {
+                    domainsDatabase.execSQL("UPDATE " + DOMAINS_TABLE + " SET " + ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST + " = " + 1);
+                } else {
+                    domainsDatabase.execSQL("UPDATE " + DOMAINS_TABLE + " SET " + ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST + " = " + 0);
+                }
         }
     }
 
@@ -179,13 +239,31 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         // Store the domain data in a `ContentValues`.
         ContentValues domainContentValues = new ContentValues();
 
+        // Get a handle for the shared preference.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(appContext);
+
+        // Get the default settings.
+        boolean javaScriptEnabled = sharedPreferences.getBoolean("javascript_enabled", false);
+        boolean firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies_enabled", false);
+        boolean thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies_enabled", false);
+        boolean domStorageEnabled = sharedPreferences.getBoolean("dom_storage_enabled", false);
+        boolean saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data_enabled", false);
+        boolean easyListEnabled = sharedPreferences.getBoolean("easylist", true);
+        boolean easyPrivacyEnabled = sharedPreferences.getBoolean("easyprivacy", true);
+        boolean fanboyAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboy_annoyance_list", true);
+        boolean fanboySocialBlockingListEnabled = sharedPreferences.getBoolean("fanboy_social_blocking_list", true);
+
         // Create entries for the database fields.  The ID is created automatically.  The pinned SSL certificate information is not created unless added by the user.
         domainContentValues.put(DOMAIN_NAME, domainName);
-        domainContentValues.put(ENABLE_JAVASCRIPT, false);
-        domainContentValues.put(ENABLE_FIRST_PARTY_COOKIES, false);
-        domainContentValues.put(ENABLE_THIRD_PARTY_COOKIES, false);
-        domainContentValues.put(ENABLE_DOM_STORAGE, false);
-        domainContentValues.put(ENABLE_FORM_DATA, false);
+        domainContentValues.put(ENABLE_JAVASCRIPT, javaScriptEnabled);
+        domainContentValues.put(ENABLE_FIRST_PARTY_COOKIES, firstPartyCookiesEnabled);
+        domainContentValues.put(ENABLE_THIRD_PARTY_COOKIES, thirdPartyCookiesEnabled);
+        domainContentValues.put(ENABLE_DOM_STORAGE, domStorageEnabled);
+        domainContentValues.put(ENABLE_FORM_DATA, saveFormDataEnabled);
+        domainContentValues.put(ENABLE_EASYLIST, easyListEnabled);
+        domainContentValues.put(ENABLE_EASYPRIVACY, easyPrivacyEnabled);
+        domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, fanboyAnnoyanceListEnabled);
+        domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, fanboySocialBlockingListEnabled);
         domainContentValues.put(USER_AGENT, "System default user agent");
         domainContentValues.put(FONT_SIZE, 0);
         domainContentValues.put(DISPLAY_IMAGES, 0);
@@ -204,8 +282,10 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         return newDomainDatabaseId;
     }
 
-    public void updateDomainExceptCertificate(int databaseId, String domainName, boolean javaScriptEnabled, boolean firstPartyCookiesEnabled, boolean thirdPartyCookiesEnabled, boolean domStorageEnabled, boolean formDataEnabled, String userAgent, int fontSize,
-                                              int displayImages, int nightMode, boolean pinnedSslCertificate) {
+    public void updateDomainExceptCertificate(int databaseId, String domainName, boolean javaScriptEnabled, boolean firstPartyCookiesEnabled, boolean thirdPartyCookiesEnabled, boolean domStorageEnabled,
+                                              boolean formDataEnabled, boolean easyListEnabled, boolean easyPrivacyEnabled, boolean fanboysAnnoyanceEnabled, boolean fanboysSocialBlockingEnabled,
+                                              String userAgent, int fontSize, int displayImages, int nightMode, boolean pinnedSslCertificate) {
+
         // Store the domain data in a `ContentValues`.
         ContentValues domainContentValues = new ContentValues();
 
@@ -216,6 +296,10 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainContentValues.put(ENABLE_THIRD_PARTY_COOKIES, thirdPartyCookiesEnabled);
         domainContentValues.put(ENABLE_DOM_STORAGE, domStorageEnabled);
         domainContentValues.put(ENABLE_FORM_DATA, formDataEnabled);
+        domainContentValues.put(ENABLE_EASYLIST, easyListEnabled);
+        domainContentValues.put(ENABLE_EASYPRIVACY, easyPrivacyEnabled);
+        domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, fanboysAnnoyanceEnabled);
+        domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, fanboysSocialBlockingEnabled);
         domainContentValues.put(USER_AGENT, userAgent);
         domainContentValues.put(FONT_SIZE, fontSize);
         domainContentValues.put(DISPLAY_IMAGES, displayImages);
@@ -232,9 +316,12 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainsDatabase.close();
     }
 
-    public void updateDomainWithCertificate(int databaseId, String domainName, boolean javaScriptEnabled, boolean firstPartyCookiesEnabled, boolean thirdPartyCookiesEnabled, boolean domStorageEnabled, boolean formDataEnabled, String userAgent, int fontSize,
-                                            int displayImages, int nightMode, boolean pinnedSslCertificate, String sslIssuedToCommonName, String sslIssuedToOrganization, String sslIssuedToOrganizationalUnit, String sslIssuedByCommonName, String sslIssuedByOrganization,
-                                            String sslIssuedByOrganizationalUnit, long sslStartDate, long sslEndDate) {
+    public void updateDomainWithCertificate(int databaseId, String domainName, boolean javaScriptEnabled, boolean firstPartyCookiesEnabled, boolean thirdPartyCookiesEnabled, boolean domStorageEnabled,
+                                            boolean formDataEnabled, boolean easyListEnabled, boolean easyPrivacyEnabled, boolean fanboysAnnoyanceEnabled, boolean fanboysSocialBlockingEnabled, String userAgent,
+                                            int fontSize, int displayImages, int nightMode, boolean pinnedSslCertificate, String sslIssuedToCommonName, String sslIssuedToOrganization,
+                                            String sslIssuedToOrganizationalUnit, String sslIssuedByCommonName, String sslIssuedByOrganization, String sslIssuedByOrganizationalUnit, long sslStartDate,
+                                            long sslEndDate) {
+
         // Store the domain data in a `ContentValues`.
         ContentValues domainContentValues = new ContentValues();
 
@@ -245,6 +332,10 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainContentValues.put(ENABLE_THIRD_PARTY_COOKIES, thirdPartyCookiesEnabled);
         domainContentValues.put(ENABLE_DOM_STORAGE, domStorageEnabled);
         domainContentValues.put(ENABLE_FORM_DATA, formDataEnabled);
+        domainContentValues.put(ENABLE_EASYLIST, easyListEnabled);
+        domainContentValues.put(ENABLE_EASYPRIVACY, easyPrivacyEnabled);
+        domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, fanboysAnnoyanceEnabled);
+        domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, fanboysSocialBlockingEnabled);
         domainContentValues.put(USER_AGENT, userAgent);
         domainContentValues.put(FONT_SIZE, fontSize);
         domainContentValues.put(DISPLAY_IMAGES, displayImages);
@@ -269,8 +360,8 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainsDatabase.close();
     }
 
-    public void updateCertificate(int databaseId, String sslIssuedToCommonName, String sslIssuedToOrganization, String sslIssuedToOrganizationalUnit, String sslIssuedByCommonName, String sslIssuedByOrganization, String sslIssuedByOrganizationalUnit,
-                                  long sslStartDate, long sslEndDate) {
+    public void updateCertificate(int databaseId, String sslIssuedToCommonName, String sslIssuedToOrganization, String sslIssuedToOrganizationalUnit, String sslIssuedByCommonName,
+                                  String sslIssuedByOrganization, String sslIssuedByOrganizationalUnit, long sslStartDate, long sslEndDate) {
         // Store the domain data in a `ContentValues`.
         ContentValues domainContentValues = new ContentValues();
 

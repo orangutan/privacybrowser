@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -512,15 +512,12 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                 saveDomainSettings();
             }
 
-            // Dismiss the undo delete `SnackBar` if it is shown.
+            // Dismiss the undo delete SnackBar if it is shown.
             if (undoDeleteSnackbar != null && undoDeleteSnackbar.isShown()) {
                 undoDeleteSnackbar.dismiss();
 
-                // Create a `Runnable` to return to the main activity.
-                Runnable navigateHomeRunnable = () -> {
-                    // Pass `onBackPressed()` to the system.
-                    super.onBackPressed();
-                };
+                // Create a runnable to return to the main activity.
+                Runnable navigateHomeRunnable = super::onBackPressed;
 
                 // Navigate home after 300 milliseconds to make sure that the previous domain has been deleted from the database.
                 Handler handler = new Handler();
@@ -533,7 +530,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             // Save the current domain settings.
             saveDomainSettings();
 
-            // Display `DomainsListFragment`.
+            // Display the domains list fragment.
             DomainsListFragment domainsListFragment = new DomainsListFragment();
             supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainsListFragment).commit();
             supportFragmentManager.executePendingTransactions();
@@ -551,11 +548,8 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             if (undoDeleteSnackbar != null && undoDeleteSnackbar.isShown()) {
                 undoDeleteSnackbar.dismiss();
 
-                // Create a `Runnable` to return to the main activity.
-                Runnable navigateHomeRunnable = () -> {
-                    // Pass `onBackPressed()` to the system.
-                    super.onBackPressed();
-                };
+                // Create a runnable to return to the main activity.
+                Runnable navigateHomeRunnable = super::onBackPressed;
 
                 // Navigate home after 300 milliseconds to make sure that the previous domain has been deleted from the database.
                 Handler handler = new Handler();
@@ -569,12 +563,12 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
     @Override
     public void onAddDomain(AppCompatDialogFragment dialogFragment) {
-        // Dismiss `undoDeleteSnackbar` if it is currently displayed.
+        // Dismiss the undo delete snackbar if it is currently displayed.
         if ((undoDeleteSnackbar != null) && (undoDeleteSnackbar.isShown())) {
             undoDeleteSnackbar.dismiss();
         }
 
-        // Get the new domain name `String` from `dialogFragment`.
+        // Get the new domain name String from the dialog fragment.
         EditText domainNameEditText = dialogFragment.getDialog().findViewById(R.id.domain_name_edittext);
         String domainNameString = domainNameEditText.getText().toString();
 
@@ -607,11 +601,15 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
     private void saveDomainSettings() {
         // Get handles for the domain settings.
         EditText domainNameEditText = findViewById(R.id.domain_settings_name_edittext);
-        Switch javaScriptEnabledSwitch = findViewById(R.id.domain_settings_javascript_switch);
-        Switch firstPartyCookiesEnabledSwitch = findViewById(R.id.domain_settings_first_party_cookies_switch);
-        Switch thirdPartyCookiesEnabledSwitch = findViewById(R.id.domain_settings_third_party_cookies_switch);
-        Switch domStorageEnabledSwitch = findViewById(R.id.domain_settings_dom_storage_switch);
-        Switch formDataEnabledSwitch = findViewById(R.id.domain_settings_form_data_switch);
+        Switch javaScriptSwitch = findViewById(R.id.domain_settings_javascript_switch);
+        Switch firstPartyCookiesSwitch = findViewById(R.id.domain_settings_first_party_cookies_switch);
+        Switch thirdPartyCookiesSwitch = findViewById(R.id.domain_settings_third_party_cookies_switch);
+        Switch domStorageSwitch = findViewById(R.id.domain_settings_dom_storage_switch);
+        Switch formDataSwitch = findViewById(R.id.domain_settings_form_data_switch);
+        Switch easyListSwitch = findViewById(R.id.domain_settings_easylist_switch);
+        Switch easyPrivacySwitch = findViewById(R.id.domain_settings_easyprivacy_switch);
+        Switch fanboysAnnoyanceSwitch = findViewById(R.id.domain_settings_fanboys_annoyance_list_switch);
+        Switch fanboysSocialBlockingSwitch = findViewById(R.id.domain_settings_fanboys_social_blocking_list_switch);
         Spinner userAgentSpinner = findViewById(R.id.domain_settings_user_agent_spinner);
         EditText customUserAgentEditText = findViewById(R.id.domain_settings_custom_user_agent_edittext);
         Spinner fontSizeSpinner = findViewById(R.id.domain_settings_font_size_spinner);
@@ -623,11 +621,15 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
         // Extract the data for the domain settings.
         String domainNameString = domainNameEditText.getText().toString();
-        boolean javaScriptEnabledBoolean = javaScriptEnabledSwitch.isChecked();
-        boolean firstPartyCookiesEnabledBoolean = firstPartyCookiesEnabledSwitch.isChecked();
-        boolean thirdPartyCookiesEnabledBoolean = thirdPartyCookiesEnabledSwitch.isChecked();
-        boolean domStorageEnabledEnabledBoolean  = domStorageEnabledSwitch.isChecked();
-        boolean formDataEnabledBoolean = formDataEnabledSwitch.isChecked();
+        boolean javaScriptEnabled = javaScriptSwitch.isChecked();
+        boolean firstPartyCookiesEnabled = firstPartyCookiesSwitch.isChecked();
+        boolean thirdPartyCookiesEnabled = thirdPartyCookiesSwitch.isChecked();
+        boolean domStorageEnabled  = domStorageSwitch.isChecked();
+        boolean formDataEnabled = formDataSwitch.isChecked();
+        boolean easyListEnabled = easyListSwitch.isChecked();
+        boolean easyPrivacyEnabled = easyPrivacySwitch.isChecked();
+        boolean fanboysAnnoyanceEnabled = fanboysAnnoyanceSwitch.isChecked();
+        boolean fanboysSocialBlockingEnabled = fanboysSocialBlockingSwitch.isChecked();
         int userAgentPositionInt = userAgentSpinner.getSelectedItemPosition();
         int fontSizePositionInt = fontSizeSpinner.getSelectedItemPosition();
         int displayWebpageImagesInt = displayWebpageImagesSpinner.getSelectedItemPosition();
@@ -647,8 +649,9 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         // Save the domain settings.
         if (savedSslCertificateRadioButton.isChecked()) {  // The current certificate is being used.
             // Update the database except for the certificate.
-            domainsDatabaseHelper.updateDomainExceptCertificate(DomainsActivity.currentDomainDatabaseId, domainNameString, javaScriptEnabledBoolean, firstPartyCookiesEnabledBoolean, thirdPartyCookiesEnabledBoolean, domStorageEnabledEnabledBoolean,
-                    formDataEnabledBoolean, userAgentString, fontSizeInt, displayWebpageImagesInt, nightModeInt, pinnedSslCertificate);
+            domainsDatabaseHelper.updateDomainExceptCertificate(DomainsActivity.currentDomainDatabaseId, domainNameString, javaScriptEnabled, firstPartyCookiesEnabled, thirdPartyCookiesEnabled,
+                    domStorageEnabled, formDataEnabled, easyListEnabled, easyPrivacyEnabled, fanboysAnnoyanceEnabled, fanboysSocialBlockingEnabled, userAgentString, fontSizeInt, displayWebpageImagesInt,
+                    nightModeInt, pinnedSslCertificate);
         } else if (currentWebsiteCertificateRadioButton.isChecked()) {  // The certificate is being updated with the current website certificate.
             // Get the current website SSL certificate.
             SslCertificate currentWebsiteSslCertificate = MainWebViewActivity.sslCertificate;
@@ -664,13 +667,15 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             long endDateLong = currentWebsiteSslCertificate.getValidNotAfterDate().getTime();
 
             // Update the database.
-            domainsDatabaseHelper.updateDomainWithCertificate(currentDomainDatabaseId, domainNameString, javaScriptEnabledBoolean, firstPartyCookiesEnabledBoolean, thirdPartyCookiesEnabledBoolean, domStorageEnabledEnabledBoolean, formDataEnabledBoolean,
-                    userAgentString, fontSizeInt, displayWebpageImagesInt, nightModeInt, pinnedSslCertificate, issuedToCommonName, issuedToOrganization, issuedToOrganizationalUnit, issuedByCommonName, issuedByOrganization, issuedByOrganizationalUnit,
-                    startDateLong, endDateLong);
+            domainsDatabaseHelper.updateDomainWithCertificate(currentDomainDatabaseId, domainNameString, javaScriptEnabled, firstPartyCookiesEnabled, thirdPartyCookiesEnabled, domStorageEnabled,
+                    formDataEnabled, easyListEnabled, easyPrivacyEnabled, fanboysAnnoyanceEnabled, fanboysSocialBlockingEnabled, userAgentString, fontSizeInt, displayWebpageImagesInt, nightModeInt,
+                    pinnedSslCertificate, issuedToCommonName, issuedToOrganization, issuedToOrganizationalUnit, issuedByCommonName, issuedByOrganization, issuedByOrganizationalUnit, startDateLong, endDateLong);
+
         } else {  // No certificate is selected.
             // Update the database, with PINNED_SSL_CERTIFICATE set to false.
-            domainsDatabaseHelper.updateDomainExceptCertificate(currentDomainDatabaseId, domainNameString, javaScriptEnabledBoolean, firstPartyCookiesEnabledBoolean, thirdPartyCookiesEnabledBoolean, domStorageEnabledEnabledBoolean, formDataEnabledBoolean,
-                    userAgentString, fontSizeInt, displayWebpageImagesInt, nightModeInt, false);
+            domainsDatabaseHelper.updateDomainExceptCertificate(currentDomainDatabaseId, domainNameString, javaScriptEnabled, firstPartyCookiesEnabled, thirdPartyCookiesEnabled, domStorageEnabled,
+                    formDataEnabled, easyListEnabled, easyPrivacyEnabled, fanboysAnnoyanceEnabled, fanboysSocialBlockingEnabled, userAgentString, fontSizeInt, displayWebpageImagesInt, nightModeInt,
+                    false);
         }
     }
 

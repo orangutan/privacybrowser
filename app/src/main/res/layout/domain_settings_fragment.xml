@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -218,6 +218,114 @@
                 android:textSize="18sp" />
         </LinearLayout>
 
+        <!-- EasyList. -->
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/domain_settings_easylist_imageview"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="1dp"
+                android:layout_marginEnd="10dp"
+                android:layout_gravity="center_vertical"
+                tools:ignore="contentDescription" />
+
+            <Switch
+                android:id="@+id/domain_settings_easylist_switch"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="14dp"
+                android:text="@string/easylist"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <!-- EasyPrivacy. -->
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/domain_settings_easyprivacy_imageview"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="1dp"
+                android:layout_marginEnd="10dp"
+                android:layout_gravity="center_vertical"
+                tools:ignore="contentDescription" />
+
+            <Switch
+                android:id="@+id/domain_settings_easyprivacy_switch"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="14dp"
+                android:text="@string/easyprivacy"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <!-- Fanboy's Annoyance List. -->
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/domain_settings_fanboys_annoyance_list_imageview"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="1dp"
+                android:layout_marginEnd="10dp"
+                android:layout_gravity="center_vertical"
+                tools:ignore="contentDescription" />
+
+            <Switch
+                android:id="@+id/domain_settings_fanboys_annoyance_list_switch"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="14dp"
+                android:text="@string/fanboy_annoyance_list"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <!-- Fanboy's Social Blocking List. -->
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/domain_settings_fanboys_social_blocking_list_imageview"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="1dp"
+                android:layout_marginEnd="10dp"
+                android:layout_gravity="center_vertical"
+                tools:ignore="contentDescription" />
+
+            <Switch
+                android:id="@+id/domain_settings_fanboys_social_blocking_list_switch"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="14dp"
+                android:text="@string/fanboy_social_blocking_list"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="18sp" />
+        </LinearLayout>
+
         <!-- User Agent. -->
         <LinearLayout
             android:layout_height="wrap_content"
@@ -262,7 +370,8 @@
                 android:layout_width="match_parent"
                 android:layout_marginStart="40dp"
                 android:layout_marginEnd="60dp"
-                android:inputType="textUri" />
+                android:inputType="textUri"
+                android:hint="@string/custom_user_agent"/>
         </LinearLayout>
 
         <!-- Font Size. -->

@@ -282,8 +282,8 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
     // The block list variables are used in `onCreate()` and `applyAppSettings()`.
     private boolean easyListEnabled;
     private boolean easyPrivacyEnabled;
-    private boolean fanboyAnnoyanceListEnabled;
-    private boolean fanboySocialBlockingListEnabled;
+    private boolean fanboysAnnoyanceListEnabled;
+    private boolean fanboysSocialBlockingListEnabled;
 
     // `privacyBrowserRuntime` is used in `onCreate()`, `onOptionsItemSelected()`, and `applyAppSettings()`.
     private Runtime privacyBrowserRuntime;
@@ -1145,12 +1145,12 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                 }
 
                 // Check Fanboy’s Annoyance List if it is enabled.
-                if (fanboyAnnoyanceListEnabled) {
+                if (fanboysAnnoyanceListEnabled) {
                     if (blockListHelper.isBlocked(formattedUrlString, url, fanboyAnnoyance)) {
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse;
                     }
-                } else if (fanboySocialBlockingListEnabled){  // Only check Fanboy’s Social Blocking List if Fanboy’s Annoyance List is disabled.
+                } else if (fanboysSocialBlockingListEnabled){  // Only check Fanboy’s Social Blocking List if Fanboy’s Annoyance List is disabled.
                     if (blockListHelper.isBlocked(formattedUrlString, url, fanboySocial)) {
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse;
@@ -3025,10 +3025,6 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
         String torSearchCustomURLString = sharedPreferences.getString("tor_search_custom_url", "");
         String searchString = sharedPreferences.getString("search", "https://duckduckgo.com/html/?q=");
         String searchCustomURLString = sharedPreferences.getString("search_custom_url", "");
-        easyListEnabled = sharedPreferences.getBoolean("easylist", true);
-        easyPrivacyEnabled = sharedPreferences.getBoolean("easyprivacy", true);
-        fanboyAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboy_annoyance_list", true);
-        fanboySocialBlockingListEnabled = sharedPreferences.getBoolean("fanboy_social_blocking_list", true);
         incognitoModeEnabled = sharedPreferences.getBoolean("incognito_mode", false);
         boolean doNotTrackEnabled = sharedPreferences.getBoolean("do_not_track", false);
         boolean proxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
@@ -3282,6 +3278,10 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                 thirdPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES)) == 1);
                 domStorageEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)) == 1);
                 saveFormDataEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA)) == 1);
+                easyListEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYLIST)) == 1);
+                easyPrivacyEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY)) == 1);
+                fanboysAnnoyanceListEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST)) == 1);
+                fanboysSocialBlockingListEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)) == 1);
                 String userAgentString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
                 int fontSize = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
                 displayWebpageImagesInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
@@ -3395,6 +3395,10 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                 thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies_enabled", false);
                 domStorageEnabled = sharedPreferences.getBoolean("dom_storage_enabled", false);
                 saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data_enabled", false);
+                easyListEnabled = sharedPreferences.getBoolean("easylist", true);
+                easyPrivacyEnabled = sharedPreferences.getBoolean("easyprivacy", true);
+                fanboysAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboy_annoyance_list", true);
+                fanboysSocialBlockingListEnabled = sharedPreferences.getBoolean("fanboy_social_blocking_list", true);
 
                 // Set `javaScriptEnabled` to be `true` if `night_mode` is `true`.
                 if (nightMode) {

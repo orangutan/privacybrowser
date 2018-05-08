@@ -77,7 +77,7 @@ public class DomainSettingsFragment extends Fragment {
         databaseId = getArguments().getInt(DATABASE_ID);
     }
 
-    // We have to use the deprecated `getDrawable()` until the minimum API >= 21.
+    // The deprecated `getDrawable()` must be used until the minimum API >= 21.
     @SuppressWarnings("deprecation")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -111,6 +111,14 @@ public class DomainSettingsFragment extends Fragment {
         final ImageView domStorageImageView = domainSettingsView.findViewById(R.id.domain_settings_dom_storage_imageview);
         Switch formDataEnabledSwitch = domainSettingsView.findViewById(R.id.domain_settings_form_data_switch);
         final ImageView formDataImageView = domainSettingsView.findViewById(R.id.domain_settings_form_data_imageview);
+        Switch easyListSwitch = domainSettingsView.findViewById(R.id.domain_settings_easylist_switch);
+        ImageView easyListImageView = domainSettingsView.findViewById(R.id.domain_settings_easylist_imageview);
+        Switch easyPrivacySwitch = domainSettingsView.findViewById(R.id.domain_settings_easyprivacy_switch);
+        ImageView easyPrivacyImageView = domainSettingsView.findViewById(R.id.domain_settings_easyprivacy_imageview);
+        Switch fanboysAnnoyanceListSwitch = domainSettingsView.findViewById(R.id.domain_settings_fanboys_annoyance_list_switch);
+        ImageView fanboysAnnoyanceListImageView = domainSettingsView.findViewById(R.id.domain_settings_fanboys_annoyance_list_imageview);
+        Switch fanboysSocialBlockingListSwitch = domainSettingsView.findViewById(R.id.domain_settings_fanboys_social_blocking_list_switch);
+        ImageView fanboysSocialBlockingListImageView = domainSettingsView.findViewById(R.id.domain_settings_fanboys_social_blocking_list_imageview);
         final Spinner userAgentSpinner = domainSettingsView.findViewById(R.id.domain_settings_user_agent_spinner);
         final TextView userAgentTextView = domainSettingsView.findViewById(R.id.domain_settings_user_agent_textview);
         final EditText customUserAgentEditText = domainSettingsView.findViewById(R.id.domain_settings_custom_user_agent_edittext);
@@ -156,7 +164,7 @@ public class DomainSettingsFragment extends Fragment {
         // Get the current website SSL certificate
         final SslCertificate currentWebsiteSslCertificate = MainWebViewActivity.sslCertificate;
 
-        // Initialize the database handler.  The two `nulls` do not specify the database name or a `CursorFactory`.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
+        // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
         DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(context, null, null, 0);
 
         // Get the database `Cursor` for this ID and move it to the first row.
@@ -170,6 +178,10 @@ public class DomainSettingsFragment extends Fragment {
         int thirdPartyCookiesEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES));
         final int domStorageEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE));
         int formDataEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA));
+        int easyListEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYLIST));
+        int easyPrivacyEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY));
+        int fanboysAnnoyanceListInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST));
+        int fanboysSocialBlockingListInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST));
         final String currentUserAgentString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
         int fontSizeInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
         int displayImagesInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
@@ -339,7 +351,7 @@ public class DomainSettingsFragment extends Fragment {
             javaScriptEnabledSwitch.setChecked(false);
         }
 
-        // Set the first-party cookies status.  Once minimum API >= 21 we can use a selector as the tint mode instead of specifying different icons.
+        // Set the first-party cookies status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
         if (firstPartyCookiesEnabledInt == 1) {  // First-party cookies are enabled.
             firstPartyCookiesEnabledSwitch.setChecked(true);
             firstPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_enabled));
@@ -358,7 +370,7 @@ public class DomainSettingsFragment extends Fragment {
         if (Build.VERSION.SDK_INT >= 21) {  // Third-party cookies can be configured for API >= 21.
             // Only enable third-party-cookies if first-party cookies are enabled.
             if (firstPartyCookiesEnabledInt == 1) {  // First-party cookies are enabled.
-                // Set the third-party cookies status.  Once minimum API >= 21 we can use a selector as the tint mode instead of specifying different icons.
+                // Set the third-party cookies status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
                 if (thirdPartyCookiesEnabledInt == 1) {  // Both first-party and third-party cookies are enabled.
                     thirdPartyCookiesEnabledSwitch.setChecked(true);
                     thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_warning));
@@ -400,7 +412,7 @@ public class DomainSettingsFragment extends Fragment {
             // Enable the DOM storage `Switch`.
             domStorageEnabledSwitch.setEnabled(true);
 
-            // Set the DOM storage status.  Once minimum API >= 21 we can use a selector as the tint mode instead of specifying different icons.
+            // Set the DOM storage status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
             if (domStorageEnabledInt == 1) {  // Both JavaScript and DOM storage are enabled.
                 domStorageEnabledSwitch.setChecked(true);
                 domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_enabled));
@@ -434,12 +446,12 @@ public class DomainSettingsFragment extends Fragment {
             }
         }
 
-        // Set the form data status.  Once minimum API >= 21 we can use a selector as the tint mode instead of specifying different icons.
-        if (formDataEnabledInt == 1) {  // Form data is enabled.
+        // Set the form data status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
+        if (formDataEnabledInt == 1) {  // Form data is on.
             formDataEnabledSwitch.setChecked(true);
             formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_enabled));
-        } else {  // Form data is disabled.
-            // Set the form data switch to off.
+        } else {  // Form data is off.
+            // Turn the form data switch to off.
             formDataEnabledSwitch.setChecked(false);
 
             // Set the icon according to the theme.
@@ -450,8 +462,123 @@ public class DomainSettingsFragment extends Fragment {
             }
         }
 
-        // We need to inflated a `WebView` to get the default user agent.
-        // `@SuppressLint("InflateParams")` removes the warning about using `null` as the `ViewGroup`, which in this case makes sense because we don't want to display `bare_webview` on the screen.  `false` does not attach the view to the root.
+        // Set the EasyList status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
+        if (easyListEnabledInt == 1) {  // EasyList is on.
+            // Turn the switch on.
+            easyListSwitch.setChecked(true);
+
+            // Set the icon according to the theme.
+            if (MainWebViewActivity.darkTheme) {
+                easyListImageView.setImageDrawable(resources.getDrawable(R.drawable.block_ads_enabled_dark));
+            } else {
+                easyListImageView.setImageDrawable(resources.getDrawable(R.drawable.block_ads_enabled_light));
+            }
+        } else {  // EasyList is off.
+            // Turn the switch off.
+            easyListSwitch.setChecked(false);
+
+            // Set the icon according to the theme.
+            if (MainWebViewActivity.darkTheme) {
+                easyListImageView.setImageDrawable(resources.getDrawable(R.drawable.block_ads_disabled_dark));
+            } else {
+                easyListImageView.setImageDrawable(resources.getDrawable(R.drawable.block_ads_disabled_light));
+            }
+        }
+
+        // Set the EasyPrivacy status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
+        if (easyPrivacyEnabledInt == 1) {  // EasyPrivacy is on.
+            // Turn the switch on.
+            easyPrivacySwitch.setChecked(true);
+
+            // Set the icon according to the theme.
+            if (MainWebViewActivity.darkTheme) {
+                easyPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_enabled_dark));
+            } else {
+                easyPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_enabled_light));
+            }
+        } else {  // EasyPrivacy is off.
+            // Turn the switch off.
+            easyPrivacySwitch.setChecked(false);
+
+            // Set the icon according to the theme.
+            if (MainWebViewActivity.darkTheme) {
+                easyPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_disabled_dark));
+            } else {
+                easyPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_disabled_light));
+            }
+        }
+
+        // Set the Fanboy's Annoyance List status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
+        if (fanboysAnnoyanceListInt == 1) {  // Fanboy's Annoyance List is on.
+            // Turn the switch on.
+            fanboysAnnoyanceListSwitch.setChecked(true);
+
+            // Set the icon according to the theme.
+            if (MainWebViewActivity.darkTheme) {
+                fanboysAnnoyanceListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_enabled_dark));
+            } else {
+                fanboysAnnoyanceListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_enabled_light));
+            }
+        } else {  // Fanboy's Annoyance List is off.
+            // Turn the switch off.
+            fanboysAnnoyanceListSwitch.setChecked(false);
+
+            // Set the icon according to the theme.
+            if (MainWebViewActivity.darkTheme) {
+                fanboysAnnoyanceListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_dark));
+            } else {
+                fanboysAnnoyanceListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_light));
+            }
+        }
+
+        // Only enable Fanboy's Social Blocking List if Fanboy's Annoyance List is off.
+        if (fanboysAnnoyanceListInt == 0) {  // Fanboy's Annoyance List is on.
+            // Enable Fanboy's Social Blocking List.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
+            if (fanboysSocialBlockingListInt == 1) {  // Fanboy's Social Blocking List is on.
+                // Enable the switch and turn it on.
+                fanboysSocialBlockingListSwitch.setEnabled(true);
+                fanboysSocialBlockingListSwitch.setChecked(true);
+
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_enabled_dark));
+                } else {
+                    fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_enabled_light));
+                }
+            } else {  // Fanboy's Social Blocking List is off.
+                // Enable the switch but turn it off.
+                fanboysSocialBlockingListSwitch.setEnabled(true);
+                fanboysSocialBlockingListSwitch.setChecked(false);
+
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_dark));
+                } else {
+                    fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_light));
+                }
+            }
+        } else {  // Fanboy's Annoyance List is on.
+            // Disable Fanboy's Social Blocking List.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
+            if (fanboysSocialBlockingListInt == 1) {  // Fanboy's Social Blocking List is on.
+                // Disable the switch but turn it on.
+                fanboysSocialBlockingListSwitch.setEnabled(false);
+                fanboysSocialBlockingListSwitch.setChecked(true);
+            } else {  // Fanboy's Social Blocking List is off.
+                // Disable the switch and turn it off.
+                fanboysSocialBlockingListSwitch.setEnabled(false);
+                fanboysSocialBlockingListSwitch.setChecked(false);
+            }
+
+            // Set the icon according to the theme.
+            if (MainWebViewActivity.darkTheme) {
+                fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_ghosted_dark));
+            } else {
+                fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_ghosted_light));
+            }
+        }
+
+        // Inflated a WebView to get the default user agent.
+        // `@SuppressLint("InflateParams")` removes the warning about using `null` as the `ViewGroup`, which in this case makes sense because the bare WebView should not be displayed on the screen.
         @SuppressLint("InflateParams") View bareWebViewLayout = inflater.inflate(R.layout.bare_webview, null, false);
         WebView bareWebView = bareWebViewLayout.findViewById(R.id.bare_webview);
         final String webViewDefaultUserAgentString = bareWebView.getSettings().getUserAgentString();
@@ -549,7 +676,7 @@ public class DomainSettingsFragment extends Fragment {
             displayImagesTextView.setText(displayImagesArrayAdapter.getItem(DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_DISABLED));
         }
 
-        // Set the display website images icon and `TextView` settings.  Once minimum API >= 21 we can use a selector as the tint mode instead of specifying different icons.
+        // Set the display website images icon and `TextView` settings.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
         switch (displayImagesInt) {
             case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT:
                 if (defaultDisplayWebpageImagesBoolean) {  // Display webpage images enabled by default.
@@ -613,7 +740,7 @@ public class DomainSettingsFragment extends Fragment {
             nightModeTextView.setText(nightModeArrayAdapter.getItem(DomainsDatabaseHelper.NIGHT_MODE_DISABLED));
         }
 
-        // Set the night mode icon and `TextView` settings.  Once minimum API >= 21 we can use a selector as the tint mode instead of specifying different icons.
+        // Set the night mode icon and `TextView` settings.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
         switch (displayImagesInt) {
             case DomainsDatabaseHelper.NIGHT_MODE_SYSTEM_DEFAULT:
                 if (defaultNightModeBoolean) {  // Night mode enabled by default.
@@ -668,7 +795,7 @@ public class DomainSettingsFragment extends Fragment {
         });
         
         // Set the pinned SSL certificate icon.
-        if (pinnedSslCertificateInt == 1) {  // Pinned SSL certificate is enabled.  Once minimum API >= 21 we can use a selector as the tint mode instead of specifying different icons.
+        if (pinnedSslCertificateInt == 1) {  // Pinned SSL certificate is enabled.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
             // Check the switch.
             pinnedSslCertificateSwitch.setChecked(true);
 
@@ -753,8 +880,10 @@ public class DomainSettingsFragment extends Fragment {
             SpannableStringBuilder currentWebsiteCertificateIssuedByCNameStringBuilder = new SpannableStringBuilder(cNameLabel + currentWebsiteCertificateIssuedByCNameString);
             SpannableStringBuilder currentWebsiteCertificateIssuedByONameStringBuilder = new SpannableStringBuilder(oNameLabel + currentWebsiteCertificateIssuedByONameString);
             SpannableStringBuilder currentWebsiteCertificateIssuedByUNameStringBuilder = new SpannableStringBuilder(uNameLabel + currentWebsiteCertificateIssuedByUNameString);
-            SpannableStringBuilder currentWebsiteCertificateStartDateStringBuilder = new SpannableStringBuilder(startDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(currentWebsiteCertificateStartDate));
-            SpannableStringBuilder currentWebsiteCertificateEndDateStringBuilder = new SpannableStringBuilder(endDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(currentWebsiteCertificateEndDate));
+            SpannableStringBuilder currentWebsiteCertificateStartDateStringBuilder = new SpannableStringBuilder(startDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG)
+                    .format(currentWebsiteCertificateStartDate));
+            SpannableStringBuilder currentWebsiteCertificateEndDateStringBuilder = new SpannableStringBuilder(endDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG)
+                    .format(currentWebsiteCertificateEndDate));
 
             // Setup the `StringBuilders` to display the general certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
             currentWebsiteCertificateIssuedToONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length(), currentWebsiteCertificateIssuedToONameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
@@ -845,7 +974,7 @@ public class DomainSettingsFragment extends Fragment {
         }
 
 
-        // Set the `javaScriptEnabledSwitch` `OnCheckedChangeListener()`.
+        // Set the JavaScript switch listener.
         javaScriptEnabledSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             if (isChecked) {  // JavaScript is enabled.
                 // Update the JavaScript icon.
@@ -881,13 +1010,13 @@ public class DomainSettingsFragment extends Fragment {
             }
         });
 
-        // Set the `firstPartyCookiesEnabledSwitch` `OnCheckedChangeListener()`.
+        // Set the first-party cookies switch listener.
         firstPartyCookiesEnabledSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             if (isChecked) {  // First-party cookies are enabled.
                 // Update the first-party cookies icon.
                 firstPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_enabled));
 
-                // Enable the third-party cookies `Switch`.
+                // Enable the third-party cookies switch.
                 thirdPartyCookiesEnabledSwitch.setEnabled(true);
 
                 // Update the third-party cookies icon.
@@ -909,7 +1038,7 @@ public class DomainSettingsFragment extends Fragment {
                     firstPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_disabled_light));
                 }
 
-                // Disable the third-party cookies `Switch`.
+                // Disable the third-party cookies switch.
                 thirdPartyCookiesEnabledSwitch.setEnabled(false);
 
                 // Set the third-party cookies icon according to the theme.
@@ -921,7 +1050,7 @@ public class DomainSettingsFragment extends Fragment {
             }
         });
 
-        // Set the `thirdPartyCookiesEnabledSwitch` `OnCheckedChangeListener()`.
+        // Set the third-party cookies switch listener.
         thirdPartyCookiesEnabledSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             // Update the icon.
             if (isChecked) {
@@ -936,7 +1065,7 @@ public class DomainSettingsFragment extends Fragment {
             }
         });
 
-        // Set the `domStorageEnabledSwitch` `OnCheckedChangeListener()`.
+        // Set the DOM Storage switch listener.
         domStorageEnabledSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             // Update the icon.
             if (isChecked) {
@@ -951,7 +1080,7 @@ public class DomainSettingsFragment extends Fragment {
             }
         });
 
-        // Set the `formDataEnabledSwitch` `OnCheckedChangeListener()`.
+        // Set the form data switch listener.
         formDataEnabledSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             // Update the icon.
             if (isChecked) {
@@ -966,7 +1095,118 @@ public class DomainSettingsFragment extends Fragment {
             }
         });
 
-        // Set the `userAgentSpinner` `onItemClickListener()`.
+        // Set the EasyList switch listener.
+        easyListSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            // Update the icon.
+            if (isChecked) {  // EasyList is on.
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    easyListImageView.setImageDrawable(resources.getDrawable(R.drawable.block_ads_enabled_dark));
+                } else {
+                    easyListImageView.setImageDrawable(resources.getDrawable(R.drawable.block_ads_enabled_light));
+                }
+            } else {  // EasyList is off.
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    easyListImageView.setImageDrawable(resources.getDrawable(R.drawable.block_ads_disabled_dark));
+                } else {
+                    easyListImageView.setImageDrawable(resources.getDrawable(R.drawable.block_ads_disabled_light));
+                }
+            }
+        });
+
+        // Set the EasyPrivacy switch listener.
+        easyPrivacySwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            // Update the icon.
+            if (isChecked) {  // EasyPrivacy is on.
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    easyPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_enabled_dark));
+                } else {
+                    easyPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_enabled_light));
+                }
+            } else {  // EasyPrivacy is off.
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    easyPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_disabled_dark));
+                } else {
+                    easyPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_disabled_light));
+                }
+            }
+        });
+
+        // Set the Fanboy's Annoyance List switch listener.
+        fanboysAnnoyanceListSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            // Update the icon and Fanboy's Social Blocking List.
+            if (isChecked) {  // Fanboy's Annoyance List is on.
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    fanboysAnnoyanceListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_enabled_dark));
+                } else {
+                    fanboysAnnoyanceListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_enabled_light));
+                }
+
+                // Disable the Fanboy's Social Blocking List switch.
+                fanboysSocialBlockingListSwitch.setEnabled(false);
+
+                // Update the Fanboy's Social Blocking List icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_ghosted_dark));
+                } else {
+                    fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_ghosted_light));
+                }
+            } else {  // Fanboy's Annoyance List is off.
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    fanboysAnnoyanceListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_dark));
+                } else {
+                    fanboysAnnoyanceListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_light));
+                }
+
+                // Enable the Fanboy's Social Blocking List switch.
+                fanboysSocialBlockingListSwitch.setEnabled(true);
+
+                // Update the Fanboy's Social Blocking List icon.
+                if (fanboysSocialBlockingListSwitch.isChecked()) {  // Fanboy's Social Blocking List is on.
+                    // Update the icon according to the theme.
+                    if (MainWebViewActivity.darkTheme) {
+                        fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_enabled_dark));
+                    } else {
+                        fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_enabled_light));
+                    }
+                } else {  // Fanboy's Social Blocking List is off.
+                    // Update the icon according to the theme.
+                    if (MainWebViewActivity.darkTheme) {
+                        fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_dark));
+                    } else {
+                        fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_light));
+                    }
+                }
+            }
+
+        });
+
+        // Set the Fanboy's Social Blocking List switch listener.
+        fanboysSocialBlockingListSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            // Update the icon.
+            if (isChecked) {  // Fanboy's Social Blocking List is on.
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_enabled_dark));
+                } else {
+                    fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_enabled_light));
+                }
+            } else {  // Fanboy's Social Blocking List is off.
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_dark));
+                } else {
+                    fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_light));
+                }
+            }
+        });
+
+        // Set the user agent spinner listener.
         userAgentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -1034,7 +1274,7 @@ public class DomainSettingsFragment extends Fragment {
             }
         });
 
-        // Set the `fontSizeSpinner` `onItemSelectedListener()`.
+        // Set the font size spinner listener.
         fontSizeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -1052,7 +1292,7 @@ public class DomainSettingsFragment extends Fragment {
             }
         });
 
-        // Set the `displayWebpageImagesSpinner` `onItemSelectedListener()`.
+        // Set the display webpage images spinner listener.
         displayWebpageImagesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -1111,11 +1351,11 @@ public class DomainSettingsFragment extends Fragment {
             }
         });
 
-        // Set the `nightModeSpinner` `onItemSelectedListener()`.
+        // Set the night mode spinner listener.
         nightModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // Update the icon and the visibility of `nightModeTextView`.  Once minimum API >= 21 we can use a selector as the tint mode instead of specifying different icons.
+                // Update the icon and the visibility of `nightModeTextView`.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
                 switch (position) {
                     case DomainsDatabaseHelper.NIGHT_MODE_SYSTEM_DEFAULT:
                         if (defaultNightModeBoolean) {  // Night mode enabled by default.
@@ -1185,7 +1425,7 @@ public class DomainSettingsFragment extends Fragment {
                     // Enable the DOM storage `Switch`.
                     domStorageEnabledSwitch.setEnabled(true);
 
-                    // Set the DOM storage status.  Once minimum API >= 21 we can use a selector as the tint mode instead of specifying different icons.
+                    // Set the DOM storage status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
                     if (domStorageEnabledInt == 1) {  // Both JavaScript and DOM storage are enabled.
                         domStorageEnabledSwitch.setChecked(true);
                         domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_enabled));
@@ -1226,7 +1466,7 @@ public class DomainSettingsFragment extends Fragment {
             }
         });
         
-        // Set the `pinnedSSLCertificateSwitch` `onCheckedChangeListener()`.
+        // Set the pinned SSL certificate switch listener.
         pinnedSslCertificateSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             // Update the icon
             if (isChecked) {  // Pinned SSL certificate is enabled.
@@ -1321,7 +1561,8 @@ public class DomainSettingsFragment extends Fragment {
             domainNamesMatch = true;
         }
 
-        // Check various wildcard permutations if `domainName` and `certificateCommonName` are not empty.  `noinspection ConstantCondition` removes Android Studio's incorrect lint warning that `domainName` can never be `null`.
+        // Check various wildcard permutations if `domainName` and `certificateCommonName` are not empty.
+        // `noinspection ConstantCondition` removes Android Studio's incorrect lint warning that `domainName` can never be `null`.
         //noinspection ConstantConditions
         if ((domainName != null) && (certificateCommonName != null)) {
             // If `domainName` starts with a wildcard, check the base domain against all the subdomains of `certificateCommonName`.
