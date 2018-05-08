@@ -326,7 +326,7 @@
             </string-array>
         <string name="custom_user_agent">Custom user agent</string>
         <string name="incognito_mode">Incognito Mode</string>
-        <string name="incognito_mode_summary">Clear the history and cache after each webpage finishes loading.</string>
+        <string name="incognito_mode_summary">Clear the history and cache after each webpage finishes loading. Forward and back do not work in Incognito Mode.</string>
         <string name="do_not_track">Do Not Track</string>
         <string name="do_not_track_summary">Send the Do Not Track header, which politely suggests that web servers not track this browser.</string>
     <string name="block_lists">Block Lists</string>

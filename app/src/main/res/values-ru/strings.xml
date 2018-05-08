@@ -294,7 +294,7 @@
             </string-array>
         <string name="custom_user_agent">Пользовательский user agent</string>
         <string name="incognito_mode">Режим инкогнито</string>
-        <string name="incognito_mode_summary">Очистка журнала и кэша после завершения загрузки каждой веб-страницы.</string>
+        <string name="incognito_mode_summary">Очистка журнала и кэша после завершения загрузки каждой веб-страницы. Forward and back do not work in Incognito Mode.</string>
         <string name="do_not_track">Не отслеживать</string>
         <string name="do_not_track_summary">Отправлять заголовок \'не отслеживать\', являющийся пожеланием веб-серверу не отслеживать этот браузер.</string>
     <string name="block_lists">Списки блокировки</string>

@@ -291,7 +291,7 @@
             </string-array>
         <string name="custom_user_agent">User agent personalizzato</string>
         <string name="incognito_mode">Modalità Incognito</string>
-        <string name="incognito_mode_summary">Cancella la cronologia e la cache al termine del caricamento di ogni pagina.</string>
+        <string name="incognito_mode_summary">Cancella la cronologia e la cache al termine del caricamento di ogni pagina. Forward and back do not work in Incognito Mode.</string>
         <string name="do_not_track">Non tracciare</string>
         <string name="do_not_track_summary">Invia un\'intestazione di non tracciamento per chiedere al web server di non tracciare il browser.</string>
     <string name="block_lists">Block List</string>

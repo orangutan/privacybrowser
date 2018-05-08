@@ -293,7 +293,7 @@
             </string-array>
         <string name="custom_user_agent">Agente de usuario personalizado</string>
         <string name="incognito_mode">Modo incógnito</string>
-        <string name="incognito_mode_summary">Borrar el historial y el caché después de que cada página web termine de cargar.</string>
+        <string name="incognito_mode_summary">Borrar el historial y el caché después de que cada página web termine de cargar. Forward and back do not work in Incognito Mode.</string>
         <string name="do_not_track">No rastrear</string>
         <string name="do_not_track_summary">Enviar la cabecera de no rastrear (DNT) que educadamente sugiere que los servidores web no rastreen este navegador.</string>
     <string name="block_lists">Listas de bloqueo</string>
