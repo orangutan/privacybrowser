@@ -1,0 +1,13 @@
+• Use the public download directory.
+• Add controls for the block lists to domain settings.
+• Support launching other apps using custom URLs.
+• Add a bookmarks tab to the guide.
+• Create an adaptive icon.
+• Preserve the favorite icon when returning from the settings or domains activities.
+• Add a warning that Incognito Mode disables forward and back navigation.
+• Allow cookies to be saved when Incognito Mode is enabled.
+• Don’t reload the webpage when restarting from the launcher.
+• Partially updated German translation provided by Stefan Erhardt.
+• Updated Italian translation provided by Francesco Buratti.
+• First complete Russian translation.
+• Updated Spanish translation provided by Jose A. León Becerra.

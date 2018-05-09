@@ -1,0 +1,13 @@
+• Usar el directorio público de descargas.
+• Añadir controles para las listas de bloqueo a la configuración del dominio.
+• Soporte para el lanzamiento de otras aplicaciones usando URLs personalizadas.
+• Añadir una pestaña de favoritos a la guía.
+• Crear un icono adaptable.
+• Conservar el icono favorito al volver de las actividades de configuración o del dominio.
+• Añadir una advertencia de que el Modo incógnito desactiva la navegación hacia adelante y hacia atrás.
+• Permitir que las cookies se guarden cuando el Modo incógnito está activado.
+• No recargar la página web al reiniciar desde el lanzador.
+• Actualizada la traducción al español proporcionada por Jose A. León Becerra.
+• Traducción al alemán parcialmente actualizada proporcionada por Stefan Erhardt.
+• Actualizada la traducción al italiano proporcionada por Francesco Buratti.
+• Primera traducción completa al ruso.

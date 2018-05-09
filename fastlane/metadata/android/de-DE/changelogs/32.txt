@@ -1,0 +1,13 @@
+• Verwendung des öffentlichen Download-Ordners.
+• Neue Einstellungen für die Block-List in den Domain-Einstellungen.
+• Unterstützung vom Starten anderer Anwendungen mit Hilfe eigener URLs.
+• Neue Hilfe zum Lesezeichen-Tab.
+• Erzeugung eines adaptiven Icons.
+• Beibehaltung des Lesezeichen-Icons nach dem Schließen der Einstellungen oder nach Domain-Aktivität.
+• Hinzufügung einer Warnung, dass im Inkognito-Modus die vorwärts und zurück-Navigation nicht funktionieren.
+• Erlaube das Speichern von Cookies im Inkognito-Modus.
+• Kein Neuladen der Webseite nach einem Neustart der App.
+• Teilweise aktualisierte deutsche Übersetzung von Stefan Erhardt.
+• Aktualisierte italienische Übersetzung von Francesco Buratti.
+• Neue russische Übersetzung.
+• Aktualisierte spanische Übersetzung von Jose A. León Becerra.

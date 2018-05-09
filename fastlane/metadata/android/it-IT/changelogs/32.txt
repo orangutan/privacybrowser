@@ -1,0 +1,13 @@
+• Utilizzo della cartella pubblica per il download.
+• Aggiunta di controlli delle Block List alle impostazioni dei domini.
+• Supporto per il lancio di altre App utilizzando URL personalizzate.
+• Aggiunta di una scheda dei segnalibri nella guida.
+• Creazione di una icona adattiva.
+• Mantenimento dell'icona preferita quando si esce dalle impostazioni o dai domini.
+• Aggiunta di un avvertimento che in modalità Incognito i pulsanti di navigazione in avanti e indietro sono disabilitati.
+• Possibilità di salvare i cookie quando è abilitata la modalità Incognito.
+• Evitato il ricaricamento di una pagina web quando si riavvia attraverso il launcher.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
+• Aggiornamento parziale della traduzione in Tedesco da parte di Stefan Erhardt.
+• Prima completa traduzione in Russo.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León Becerra.

@@ -45,6 +45,7 @@
     <string name="open_navigation_drawer">Apri il menu di navigazione</string>
     <string name="close_navigation_drawer">Chiudi il menu di navigazione</string>
     <string name="no_title">Nessun titolo</string>
+    <string name="unrecognized_url">URL non riconosciuta:</string>
 
     <!-- Save As. -->
     <string name="save_as">Salva come</string>
@@ -63,7 +64,8 @@
     <!-- View SSL Certificate. -->
     <string name="view_ssl_certificate">Visualizza il certificato SSL</string>
     <string name="unencrypted_website">Sito non criptato</string>
-    <string name="no_ssl_certificate">La comunicazione con questo sito web non è criptata. Questo consente a terze parti la possibilità di intercettare le informazioni scambiate, di tracciare la navigazione e di inviare contenuto maligno.</string>
+    <string name="no_ssl_certificate">La comunicazione con questo sito web non è criptata. Questo consente a terze parti la possibilità di intercettare le informazioni scambiate,
+        di tracciare la navigazione e di inviare contenuto maligno.</string>
     <string name="ssl_certificate">Certificato SSL</string>
     <string name="close">Chiudi</string>
     <string name="domain">Dominio</string>
@@ -166,8 +168,9 @@
     <string name="response_body">Testo della Risposta</string>
     <string name="error_body">Testo Errore</string>
     <string name="about_view_source">Informazioni sulla visualizzazione della sorgente</string>
-    <string name="about_view_source_message">Dal momento che la WebView di Android non fornisce indicazioni sulla sorgente è stata effettuata una richiesta separata utilizzando i system tools in modo da ottenere le informazioni mostrate.
-        Potrebbero esserci alcune differenze tra questi dati e quelli utilizzati da WebView. Questa limitazione sarà eliminata nella serie 4.x quando verrà rilasciata Privacy WebView.</string>
+    <string name="about_view_source_message">Dal momento che la WebView di Android non fornisce indicazioni sulla sorgente è stata effettuata una richiesta separata utilizzando i system tools in modo da
+        ottenere le informazioni mostrate. Potrebbero esserci alcune differenze tra questi dati e quelli utilizzati da WebView.
+        Questa limitazione sarà eliminata nella serie 4.x quando verrà rilasciata Privacy WebView.</string>
 
     <!-- Create Home Screen Shortcut Alert Dialog. -->
     <string name="create_shortcut">Crea Collegamento</string>
@@ -291,7 +294,7 @@
             </string-array>
         <string name="custom_user_agent">User agent personalizzato</string>
         <string name="incognito_mode">Modalità Incognito</string>
-        <string name="incognito_mode_summary">Cancella la cronologia e la cache al termine del caricamento di ogni pagina. Forward and back do not work in Incognito Mode.</string>
+        <string name="incognito_mode_summary">Cancella la cronologia e la cache al termine del caricamento di ogni pagina. I pulsanti Avanti e Indietro non funzionano in modalità incognito.</string>
         <string name="do_not_track">Non tracciare</string>
         <string name="do_not_track_summary">Invia un\'intestazione di non tracciamento per chiedere al web server di non tracciare il browser.</string>
     <string name="block_lists">Block List</string>
@@ -334,7 +337,8 @@
         <string name="full_screen_browsing_mode">Navigazione a schermo intero</string>
         <string name="full_screen_browsing_mode_summary">Toccare due volte per avviare la navigazione a schermo intero.</string>
         <string name="hide_system_bars">Nascondi le barre di sistema</string>
-        <string name="hide_system_bars_summary">Nasconde la barra di stato e la barra di navigazione durante la navigazione a schermo intero. Questa opzione non funziona perfettamente se si visualizza la tastiera durante la navigazione a schermo intero.</string>
+        <string name="hide_system_bars_summary">Nasconde la barra di stato e la barra di navigazione durante la navigazione a schermo intero.
+            Questa opzione non funziona perfettamente se si visualizza la tastiera durante la navigazione a schermo intero.</string>
         <string name="translucent_navigation_bar">Barra di navigazione trasparente</string>
         <string name="translucent_navigation_bar_summary">Rende la barra di navigazione trasparente durante la navigazione a schermo intero.</string>
     <string name="clear_everything">Elimina tutto</string>
@@ -374,7 +378,8 @@
         <string name="swipe_to_refresh_enabled">Swipe per aggiornare</string>
         <string name="swipe_to_refresh_enabled_summary">Alcuni siti non funzionano correttamente se questa opzione è abilitata.</string>
         <string name="display_additional_app_bar_icons">Mostra icone addizionali nella barra dell\'applicazione</string>
-        <string name="display_additional_app_bar_icons_summary">Mostra le icone per l\'abilitazione dei cookies, del DOM storage, e dei dati dei moduli nella barra dell\'applicazione se c\'è spazio disponibile.</string>
+        <string name="display_additional_app_bar_icons_summary">Mostra le icone per l\'abilitazione dei cookies, del DOM storage,
+            e dei dati dei moduli nella barra dell\'applicazione se c\'è spazio disponibile.</string>
         <string name="dark_theme">Tema Dark</string>
         <string name="dark_theme_summary">La modifica del tema provocherà il riavvio di Privacy Browser.</string>
         <string name="night_mode">Modalità Notte</string>

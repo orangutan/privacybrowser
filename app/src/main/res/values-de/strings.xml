@@ -295,6 +295,8 @@
                 <item>Eigener</item>
             </string-array>
         <string name="custom_user_agent">Eigener User Agent</string>
+        <string name="incognito_mode">Inkognito-Modus</string>
+        <string name="incognito_mode_summary">Löscht den Verlauf und den Cache nach jedem fertigen Laden einer Webseite. Zurück und vorwärts funktioniert im Inkognito-Modus nicht.</string>
         <string name="do_not_track">Nicht verfolgen (Do not track)</string>
         <string name="do_not_track_summary">Einen "Do Not Track-Header" senden, der freundlich anfragt, dass Webserver diesen Browser nicht nachverfolgen sollen.</string>
     <string name="tor">Tor</string>
