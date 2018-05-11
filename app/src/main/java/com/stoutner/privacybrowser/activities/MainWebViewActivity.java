@@ -1717,8 +1717,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Create an intent to launch the domains activity.
                     Intent domainsIntent = new Intent(this, DomainsActivity.class);
 
-                    // Put extra information instructing the domains activity to directly load the current domain.
-                    domainsIntent.putExtra("LoadDomain", domainSettingsDatabaseId);
+                    // Put extra information instructing the domains activity to directly load the current domain and close on back instread of returning to the domains list.
+                    domainsIntent.putExtra("loadDomain", domainSettingsDatabaseId);
+                    domainsIntent.putExtra("closeOnBack", true);
 
                     // Make it so.
                     startActivity(domainsIntent);
@@ -1740,8 +1741,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Create an intent to launch the domains activity.
                     Intent domainsIntent = new Intent(this, DomainsActivity.class);
 
-                    // Put extra information instructing the domains activity to directly load the new domain.
-                    domainsIntent.putExtra("LoadDomain", newDomainDatabaseId);
+                    // Put extra information instructing the domains activity to directly load the new domain and close on back instead of returning to the domains list.
+                    domainsIntent.putExtra("loadDomain", newDomainDatabaseId);
+                    domainsIntent.putExtra("closeOnBack", true);
 
                     // Make it so.
                     startActivity(domainsIntent);

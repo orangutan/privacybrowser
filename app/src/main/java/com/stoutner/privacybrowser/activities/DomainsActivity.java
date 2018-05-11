@@ -98,6 +98,9 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
     // `goDirectlyToDatabaseId` is used in `onCreate()` and `onCreateOptionsMenu()`.
     int goDirectlyToDatabaseId;
 
+    // `closeOnBack` is used in `onCreate()`, `onOptionsItemSelected()` and `onBackPressed()`.
+    boolean closeOnBack;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Set the activity theme.
@@ -121,7 +124,10 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         Intent intent = getIntent();
 
         // Extract the domain to load if there is one.  `-1` is the default value.
-        goDirectlyToDatabaseId = intent.getIntExtra("LoadDomain", -1);
+        goDirectlyToDatabaseId = intent.getIntExtra("loadDomain", -1);
+
+        // Get the status of close-on-back, which is true when the domains activity is called from the options menu.
+        closeOnBack = intent.getBooleanExtra("closeOnBack", false);
 
         // Set the content view.
         setContentView(R.layout.domains_coordinatorlayout);
@@ -280,11 +286,17 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                         // Go home.
                         NavUtils.navigateUpFromSameTask(this);
                     }
-                } else if (findViewById(R.id.domain_settings_scrollview) != null) {  // The device is in single-paned mode and `DomainSettingsFragment` is displayed.
+                } else if (closeOnBack) {  // Go directly back to the main WebView activity because the domains activity was launched from the options menu.
                     // Save the current domain settings.
                     saveDomainSettings();
 
-                    // Display `DomainsListFragment`.
+                    // Go home.
+                    NavUtils.navigateUpFromSameTask(this);
+                } else if (findViewById(R.id.domain_settings_scrollview) != null) {  // The device is in single-paned mode and the domain settings fragment is displayed.
+                    // Save the current domain settings.
+                    saveDomainSettings();
+
+                    // Display the domains list fragment.
                     DomainsListFragment domainsListFragment = new DomainsListFragment();
                     supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainsListFragment).commit();
                     supportFragmentManager.executePendingTransactions();
@@ -292,10 +304,10 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                     // Populate the list of domains.  `-1` highlights the first domain if in two-paned mode.  It has no effect in single-paned mode.
                     populateDomainsListView(-1);
 
-                    // Display `addDomainFAB`.
+                    // Display the add domain FAB.
                     addDomainFAB.setVisibility(View.VISIBLE);
 
-                    // Hide `deleteMenuItem`.
+                    // Hide the delete menu item.
                     deleteMenuItem.setVisible(false);
                 } else {  // The device is in single-paned mode and `DomainsListFragment` is displayed.
                     // Dismiss the undo delete `SnackBar` if it is shown.
@@ -319,6 +331,9 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                 break;
 
             case R.id.delete_domain:
+                // Reset close-on-back, which otherwise can cause errors if the system attempts to save settings for a domain that no longer exists.
+                closeOnBack = false;
+
                 // Store a copy of `currentDomainDatabaseId` because it could change while the `Snackbar` is displayed.
                 final int databaseIdToDelete = currentDomainDatabaseId;
 
@@ -526,7 +541,13 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                 // Pass `onBackPressed()` to the system.
                 super.onBackPressed();
             }
-        } else if (findViewById(R.id.domain_settings_scrollview) != null) {  // The device is in single-paned mode and `DomainSettingsFragment` is displayed.
+        } else if (closeOnBack) {  // Go directly back to the main WebView activity because the domains activity was launched from the options menu.
+            // Save the current domain settings.
+            saveDomainSettings();
+
+            // Pass `onBackPressed()` to the system.
+            super.onBackPressed();
+        } else if (findViewById(R.id.domain_settings_scrollview) != null) {  // The device is in single-paned mode and domain settings fragment is displayed.
             // Save the current domain settings.
             saveDomainSettings();
 
@@ -538,13 +559,13 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             // Populate the list of domains.  `-1` highlights the first domain if in two-paned mode.  It has no effect in single-paned mode.
             populateDomainsListView(-1);
 
-            // Display `addDomainFAB`.
+            // Display the add domain FAB.
             addDomainFAB.setVisibility(View.VISIBLE);
 
-            // Hide `deleteMenuItem`.
+            // Hide the delete menu item.
             deleteMenuItem.setVisible(false);
-        } else {  // The device is in single-paned mode and `DomainsListFragment` is displayed.
-            // Dismiss the undo delete `SnackBar` if it is shown.
+        } else {  // The device is in single-paned mode and the domain list fragment is displayed.
+            // Dismiss the undo delete SnackBar if it is shown.
             if (undoDeleteSnackbar != null && undoDeleteSnackbar.isShown()) {
                 undoDeleteSnackbar.dismiss();
 
