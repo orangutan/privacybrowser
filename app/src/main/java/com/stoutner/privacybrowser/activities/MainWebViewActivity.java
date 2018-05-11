@@ -88,6 +88,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.CookieManager;
 import android.webkit.HttpAuthHandler;
 import android.webkit.SslErrorHandler;
+import android.webkit.ValueCallback;
 import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceResponse;
@@ -397,6 +398,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // `oldFolderNameString` is used in `onCreate()` and `onSaveEditBookmarkFolder()`.
     private String oldFolderNameString;
+
+    // `fileChooserCallback` is used in `onCreate()` and `onActivityResult()`.
+    private ValueCallback<Uri[]> fileChooserCallback;
 
     // The download strings are used in `onCreate()` and `onRequestPermissionResult()`.
     private String downloadUrl;
@@ -906,7 +910,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 webViewTitle = title;
             }
 
-            // Enter full screen video
+            // Enter full screen video.
             @Override
             public void onShowCustomView(View view, CustomViewCallback callback) {
                 // Pause the ad if this is the free flavor.
@@ -934,7 +938,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 fullScreenVideoFrameLayout.setVisibility(View.VISIBLE);
             }
 
-            // Exit full screen video
+            // Exit full screen video.
+            @Override
             public void onHideCustomView() {
                 // Hide `fullScreenVideoFrameLayout`.
                 fullScreenVideoFrameLayout.removeAllViews();
@@ -954,6 +959,23 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Reinitialize the `adView` variable, as the `View` will have been removed and re-added by `BannerAd.reloadAfterRotate()`.
                     adView = findViewById(R.id.adview);
                 }
+            }
+
+            // Upload files.
+            @Override
+            public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+                // Show the file chooser if the device is running API >= 21.
+                if (Build.VERSION.SDK_INT >= 21) {
+                    // Store the file path callback.
+                    fileChooserCallback = filePathCallback;
+
+                    // Create an intent to open a chooser based ont the file chooser parameters.
+                    Intent fileChooserIntent = fileChooserParams.createIntent();
+
+                    // Open the file chooser.  Currently only one `startActivityForResult` exists in this activity, so the request code, used to differentiate them, is simply `0`.
+                    startActivityForResult(fileChooserIntent, 0);
+                }
+                return true;
             }
         });
 
@@ -2957,6 +2979,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         } else {  // There isn't anything to do in Privacy Browser.
             // Pass `onBackPressed()` to the system.
             super.onBackPressed();
+        }
+    }
+
+    // Process the results of an upload file chooser.  Currently there is only one `startActivityForResult` in this activity, so the request code, used to differentiate them, is ignored.
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // File uploads only work on API >= 21.
+        if (Build.VERSION.SDK_INT >= 21) {
+            // Pass the file to the WebView.
+            fileChooserCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
         }
     }
 
