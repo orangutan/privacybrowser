@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -81,41 +81,44 @@ public class AddDomainDialog extends AppCompatDialogFragment {
         // Set the title.
         dialogBuilder.setTitle(R.string.add_domain);
 
-        // Set the view.  The parent view is `null` because it will be assigned by the `AlertDialog`.
+        // Remove the incorrect lint warning below that `getActivity()` might be null.
+        assert getActivity() != null;
+
+        // Set the view.  The parent view is `null` because it will be assigned by the alert dialog.
         dialogBuilder.setView(getActivity().getLayoutInflater().inflate(R.layout.add_domain_dialog, null));
 
-        // Set an `onClick()` listener for the negative button.
+        // Set a listener for the negative button.
         dialogBuilder.setNegativeButton(R.string.cancel, (DialogInterface dialog, int which) -> {
             // Do nothing.  The `AlertDialog` will close automatically.
         });
 
-        // Set an `onClick()` listener for the positive button.
+        // Set a listener for the positive button.
         dialogBuilder.setPositiveButton(R.string.add, (DialogInterface dialog, int which) -> {
             // Return the `DialogFragment` to the parent activity on add.
             addDomainListener.onAddDomain(AddDomainDialog.this);
         });
 
-        // Create an `AlertDialog` from the `AlertDialog.Builder`.
+        // Create an alert dialog from the builder.
         final AlertDialog alertDialog = dialogBuilder.create();
 
-        // Remove the warning below that `setSoftInputMode` might produce `java.lang.NullPointerException`.
+        // Remove the warning below that `setSoftInputMode` might be null.
         assert alertDialog.getWindow() != null;
 
-        // Show the keyboard when the `AlertDialog` is displayed on the screen.
+        // Show the keyboard when the alert dialog is displayed on the screen.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
-        // The `AlertDialog` must be shown before the contents can be edited.
+        // The alert dialog must be shown before the contents can be edited.
         alertDialog.show();
 
-        // Initialize `domainsDatabaseHelper`.  The two `nulls` do not specify the database name or a `CursorFactory`.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
+        // Initialize `domainsDatabaseHelper`.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
         final DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(getContext(), null, null, 0);
 
-        // Get handles for the views in `alertDialog`.
+        // Get handles for the views in the alert dialog.
         final EditText addDomainEditText = alertDialog.findViewById(R.id.domain_name_edittext);
         final TextView domainNameAlreadyExistsTextView = alertDialog.findViewById(R.id.domain_name_already_exists_textview);
         final Button addButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
-        //  Update the status of the warning text and the `add` button.
+        //  Update the status of the warning text and the add button.
         addDomainEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -133,13 +136,13 @@ public class AddDomainDialog extends AppCompatDialogFragment {
                     // Show the warning text.
                     domainNameAlreadyExistsTextView.setVisibility(View.VISIBLE);
 
-                    // Disable the `add` button.
+                    // Disable the add button.
                     addButton.setEnabled(false);
                 } else {  // The domain do not yet exist.
                     // Hide the warning text.
                     domainNameAlreadyExistsTextView.setVisibility(View.GONE);
 
-                    // Enable the `add` button.
+                    // Enable the add button.
                     addButton.setEnabled(true);
                 }
             }

@@ -1,4 +1,4 @@
-• Utilizzo della cartella pubblica per il download.
+• Utilizzo della cartella pubblica per il download (richiede il permesso di scrittura della memoria).
 • Aggiunta di controlli delle Block List alle impostazioni dei domini.
 • Supporto per il lancio di altre App utilizzando URL personalizzate.
 • Aggiunta di una scheda dei segnalibri nella guida.

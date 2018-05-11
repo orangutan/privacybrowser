@@ -1,4 +1,4 @@
-• Use the public download directory.
+• Use the public download directory (requires write storage permission).
 • Add controls for the block lists to domain settings.
 • Support launching other apps using custom URLs.
 • Add a bookmarks tab to the guide.

@@ -1,4 +1,4 @@
-• Usar el directorio público de descargas.
+• Usar el directorio público de descargas (requiere el permiso de almacenamiento de escritura).
 • Añadir controles para las listas de bloqueo a la configuración del dominio.
 • Soporte para el lanzamiento de otras aplicaciones usando URLs personalizadas.
 • Añadir una pestaña de favoritos a la guía.

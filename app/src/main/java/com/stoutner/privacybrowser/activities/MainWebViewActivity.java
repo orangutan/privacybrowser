@@ -109,7 +109,6 @@ import android.widget.TextView;
 import com.stoutner.privacybrowser.BannerAd;
 import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.dialogs.AddDomainDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkFolderDialog;
 import com.stoutner.privacybrowser.dialogs.CreateHomeScreenShortcutDialog;
@@ -146,11 +145,11 @@ import java.util.Map;
 import java.util.Set;
 
 // AppCompatActivity from android.support.v7.app.AppCompatActivity must be used to have access to the SupportActionBar until the minimum API is >= 21.
-public class MainWebViewActivity extends AppCompatActivity implements AddDomainDialog.AddDomainListener, CreateBookmarkDialog.CreateBookmarkListener,
-        CreateBookmarkFolderDialog.CreateBookmarkFolderListener, CreateHomeScreenShortcutDialog.CreateHomeScreenSchortcutListener, DownloadFileDialog.DownloadFileListener,
-        DownloadImageDialog.DownloadImageListener, DownloadLocationPermissionDialog.DownloadLocationPermissionDialogListener, EditBookmarkDialog.EditBookmarkListener,
-        EditBookmarkFolderDialog.EditBookmarkFolderListener, HttpAuthenticationDialog.HttpAuthenticationListener, NavigationView.OnNavigationItemSelectedListener,
-        PinnedSslCertificateMismatchDialog.PinnedSslCertificateMismatchListener, SslCertificateErrorDialog.SslCertificateErrorListener, UrlHistoryDialog.UrlHistoryListener {
+public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
+        CreateHomeScreenShortcutDialog.CreateHomeScreenSchortcutListener, DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener,
+        DownloadLocationPermissionDialog.DownloadLocationPermissionDialogListener, EditBookmarkDialog.EditBookmarkListener, EditBookmarkFolderDialog.EditBookmarkFolderListener,
+        HttpAuthenticationDialog.HttpAuthenticationListener, NavigationView.OnNavigationItemSelectedListener, PinnedSslCertificateMismatchDialog.PinnedSslCertificateMismatchListener,
+        SslCertificateErrorDialog.SslCertificateErrorListener, UrlHistoryDialog.UrlHistoryListener {
 
     // `darkTheme` is public static so it can be accessed from `AboutActivity`, `GuideActivity`, `AddDomainDialog`, `SettingsActivity`, `DomainsActivity`, `DomainsListFragment`, `BookmarksActivity`,
     // `BookmarksDatabaseViewActivity`, `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, `DownloadFileDialog`, `DownloadImageDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`,
@@ -1724,9 +1723,28 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                     // Make it so.
                     startActivity(domainsIntent);
                 } else {  // Add a new domain.
-                    // Show the add domain `AlertDialog`.
-                    AppCompatDialogFragment addDomainDialog = new AddDomainDialog();
-                    addDomainDialog.show(getSupportFragmentManager(), getResources().getString(R.string.add_domain));
+                    // Apply the new domain settings on returning to `MainWebViewActivity`.
+                    reapplyDomainSettingsOnRestart = true;
+                    currentDomainName = "";
+
+                    // Get the current domain
+                    Uri currentUri = Uri.parse(formattedUrlString);
+                    String currentDomain = currentUri.getHost();
+
+                    // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
+                    DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
+
+                    // Create the domain and store the database ID.
+                    int newDomainDatabaseId = domainsDatabaseHelper.addDomain(currentDomain);
+
+                    // Create an intent to launch the domains activity.
+                    Intent domainsIntent = new Intent(this, DomainsActivity.class);
+
+                    // Put extra information instructing the domains activity to directly load the new domain.
+                    domainsIntent.putExtra("LoadDomain", newDomainDatabaseId);
+
+                    // Make it so.
+                    startActivity(domainsIntent);
                 }
                 return true;
 
@@ -2490,33 +2508,6 @@ public class MainWebViewActivity extends AppCompatActivity implements AddDomainD
                 menu.add(R.string.cancel);
                 break;
         }
-    }
-
-    @Override
-    public void onAddDomain(AppCompatDialogFragment dialogFragment) {
-        // Reapply the domain settings on returning to `MainWebViewActivity`.
-        reapplyDomainSettingsOnRestart = true;
-        currentDomainName = "";
-
-        // Get the new domain name `String` from `dialogFragment`.
-        EditText domainNameEditText = dialogFragment.getDialog().findViewById(R.id.domain_name_edittext);
-        String domainNameString = domainNameEditText.getText().toString();
-
-        // Initialize the database handler.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
-        // The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
-        DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
-
-        // Create the domain and store the database ID in `currentDomainDatabaseId`.
-        int newDomainDatabaseId = domainsDatabaseHelper.addDomain(domainNameString);
-
-        // Create an intent to launch the domains activity.
-        Intent domainsIntent = new Intent(this, DomainsActivity.class);
-
-        // Put extra information instructing the domains activity to directly load the current domain.
-        domainsIntent.putExtra("LoadDomain", newDomainDatabaseId);
-
-        // Make it so.
-        startActivity(domainsIntent);
     }
 
     @Override
