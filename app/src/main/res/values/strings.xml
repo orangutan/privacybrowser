@@ -152,6 +152,7 @@
     <!-- Context Menus. -->
     <string name="load_url">Load URL</string>
     <string name="copy_url">Copy URL</string>
+    <string name="download_url">Download URL</string>
     <string name="email_address">Email Address</string>
     <string name="copy_email_address">Copy Email Address</string>
     <string name="write_email">Write Email</string>

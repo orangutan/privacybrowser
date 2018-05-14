@@ -2358,19 +2358,51 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Set the target URL as the title of the `ContextMenu`.
                 menu.setHeaderTitle(linkUrl);
 
-                // Add a `Load URL` entry.
-                menu.add(R.string.load_url).setOnMenuItemClickListener(item -> {
+                // Add a Load URL entry.
+                menu.add(R.string.load_url).setOnMenuItemClickListener((MenuItem item) -> {
                     loadUrl(linkUrl);
                     return false;
                 });
 
-                // Add a `Copy URL` entry.
-                menu.add(R.string.copy_url).setOnMenuItemClickListener(item -> {
+                // Add a Copy URL entry.
+                menu.add(R.string.copy_url).setOnMenuItemClickListener((MenuItem item) -> {
                     // Save the link URL in a `ClipData`.
                     ClipData srcAnchorTypeClipData = ClipData.newPlainText(getString(R.string.url), linkUrl);
 
                     // Set the `ClipData` as the clipboard's primary clip.
                     clipboardManager.setPrimaryClip(srcAnchorTypeClipData);
+                    return false;
+                });
+
+                // Add a Download URL entry.
+                menu.add(R.string.download_url).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Check to see if the WRITE_EXTERNAL_STORAGE permission has already been granted.
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                        // The WRITE_EXTERNAL_STORAGE permission needs to be requested.
+
+                        // Store the variables for future use by `onRequestPermissionsResult()`.
+                        downloadUrl = linkUrl;
+                        downloadContentDisposition = "none";
+                        downloadContentLength = -1;
+
+                        // Show a dialog if the user has previously denied the permission.
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
+                            // Get a handle for the download location permission alert dialog and set the download type to DOWNLOAD_FILE.
+                            DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_FILE);
+
+                            // Show the download location permission alert dialog.  The permission will be requested when the the dialog is closed.
+                            downloadLocationPermissionDialogFragment.show(getFragmentManager(), getString(R.string.download_location));
+                        } else {  // Show the permission request directly.
+                            // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
+                            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_FILE_REQUEST_CODE);
+                        }
+                    } else {  // The WRITE_EXTERNAL_STORAGE permission has already been granted.
+                        // Get a handle for the download file alert dialog.
+                        AppCompatDialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(linkUrl, "none", -1);
+
+                        // Show the download file alert dialog.
+                        downloadFileDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
+                    }
                     return false;
                 });
 
