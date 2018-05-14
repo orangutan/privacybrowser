@@ -1109,7 +1109,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.startsWith("http")) {  // Load the URL in Privacy Browser.
                     // Apply the domain settings for the new URL.
-                    applyDomainSettings(url, true);
+                    applyDomainSettings(url, true, false);
 
                     // Returning false causes the current `WebView` to handle the URL and prevents it from adding redirects to the history list.
                     return false;
@@ -1242,7 +1242,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Apply any custom domain settings if the URL was loaded by navigating history.
                     if (navigatingHistory) {
-                        applyDomainSettings(url, true);
+                        applyDomainSettings(url, true, false);
                     }
 
                     // Set `urlIsLoading` to `true`, so that redirects while loading do not trigger changes in the user agent, which forces another reload of the existing page.
@@ -1298,7 +1298,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         inputMethodManager.showSoftInput(urlTextBox, 0);
 
                         // Apply the domain settings.  This clears any settings from the previous domain.
-                        applyDomainSettings(formattedUrlString, true);
+                        applyDomainSettings(formattedUrlString, true, false);
                     } else {  // `WebView` has loaded a webpage.
                         // Set `formattedUrlString`.
                         formattedUrlString = url;
@@ -1487,7 +1487,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Apply the domain settings if returning from the Domains activity.
         if (reapplyDomainSettingsOnRestart) {
             // Reapply the domain settings.
-            applyDomainSettings(formattedUrlString, false);
+            applyDomainSettings(formattedUrlString, false, true);
 
             // Reset `reapplyDomainSettingsOnRestart`.
             reapplyDomainSettingsOnRestart = false;
@@ -3043,7 +3043,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     private void loadUrl(String url) {
         // Apply any custom domain settings.
-        applyDomainSettings(url, true);
+        applyDomainSettings(url, true, false);
 
         // Load the URL.
         mainWebView.loadUrl(url, customHeaders);
@@ -3235,10 +3235,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
     }
 
-    //
+    // `reloadWebsite` is used if returnig from the Domains activity.  Otherwise JavaScript might not function correctly if it is newly enabled.
     // The deprecated `.getDrawable()` must be used until the minimum API >= 21.
     @SuppressWarnings("deprecation")
-    private void applyDomainSettings(String url, boolean resetFavoriteIcon) {
+    private void applyDomainSettings(String url, boolean resetFavoriteIcon, boolean reloadWebsite) {
         // Reset `navigatingHistory`.
         navigatingHistory = false;
 
@@ -3531,6 +3531,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Update the privacy icons, but only if `mainMenu` has already been populated.
             if (mainMenu != null) {
                 updatePrivacyIcons(true);
+            }
+
+            // Reload the website if returning from the Domains activity.
+            if (reloadWebsite) {
+                mainWebView.reload();
             }
         }
     }
