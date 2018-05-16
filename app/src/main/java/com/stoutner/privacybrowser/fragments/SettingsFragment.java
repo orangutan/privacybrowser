@@ -20,6 +20,7 @@
 package com.stoutner.privacybrowser.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -29,6 +30,7 @@ import android.preference.PreferenceFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.WebView;
+import android.widget.ArrayAdapter;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
@@ -41,6 +43,9 @@ public class SettingsFragment extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
+
+        // Get a handle for the context.
+        Context context = getActivity().getApplicationContext();
 
         // Initialize savedPreferences.
         savedPreferences = getPreferenceScreen().getSharedPreferences();
@@ -117,27 +122,42 @@ public class SettingsFragment extends PreferenceFragment {
         @SuppressLint("InflateParams") View bareWebViewLayout = inflater.inflate(R.layout.bare_webview, null, false);
         final WebView bareWebView = bareWebViewLayout.findViewById(R.id.bare_webview);
 
-        // Set the current user-agent as the summary text for the "user_agent" preference when the preference screen is loaded.
-        switch (savedPreferences.getString("user_agent", "PrivacyBrowser/1.0")) {
-            case "WebView default user agent":
-                // Get the user agent text from the webview (which changes based on the version of Android and WebView installed).
-                userAgentPreference.setSummary(bareWebView.getSettings().getUserAgentString());
+        // Get the user agent arrays.
+        ArrayAdapter<CharSequence> userAgentNamesArray = ArrayAdapter.createFromResource(context, R.array.user_agent_names, R.layout.domain_settings_spinner_item);
+        String[] translatedUserAgentNamesArray = getResources().getStringArray(R.array.translated_user_agent_names);
+        String[] userAgentDataArray = getResources().getStringArray(R.array.user_agent_data);
+
+        // Get the current user agent name from the preference.
+        String userAgentName = savedPreferences.getString("user_agent", "Privacy Browser");
+
+        // Get the array position of the user agent name.
+        int userAgentArrayPosition = userAgentNamesArray.getPosition(userAgentName);
+
+        // Populate the user agent summary.
+        switch (userAgentArrayPosition) {
+            case MainWebViewActivity.UNRECOGNIZED_USER_AGENT:  // The user agent name is not on the canonical list.
+                // This is probably because it was set in an older version of Privacy Browser before the switch to persistent user agent names.  Use the current user agent entry name as the summary.
+                userAgentPreference.setSummary(userAgentName);
                 break;
 
-            case "Custom user agent":
-                // We can't use the string from the array because it is referenced in code and can't be translated.
+            case MainWebViewActivity.SETTINGS_WEBVIEW_DEFAULT_USER_AGENT:
+                // Get the user agent text from the webview (which changes based on the version of Android and WebView installed).
+                userAgentPreference.setSummary(translatedUserAgentNamesArray[userAgentArrayPosition] + ":\n" + bareWebView.getSettings().getUserAgentString());
+                break;
+
+            case MainWebViewActivity.SETTINGS_CUSTOM_USER_AGENT:
+                // Set the summary text.
                 userAgentPreference.setSummary(R.string.custom_user_agent);
                 break;
 
             default:
-                // Display the user agent from the preference as the summary text.
-                userAgentPreference.setSummary(savedPreferences.getString("user_agent", "PrivacyBrowser/1.0"));
-                break;
+                // Get the user agent summary from the user agent data array.
+                userAgentPreference.setSummary(translatedUserAgentNamesArray[userAgentArrayPosition] + ":\n" + userAgentDataArray[userAgentArrayPosition]);
         }
 
-        // Set the summary text for "customUserAgentPreference" (the default is `PrivacyBrowser/1.0`) and enable it if `userAgentPreference` it set to `Custom user agent`.
+        // Set the summary text for the custom user agent preference and enable it if user agent preference is set to custom.
         customUserAgentPreference.setSummary(savedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0"));
-        customUserAgentPreference.setEnabled(userAgentPreference.getSummary().equals("Custom user agent"));
+        customUserAgentPreference.setEnabled(userAgentPreference.getSummary().equals(getString(R.string.custom_user_agent)));
 
 
         // Set the Tor homepage URL as the summary text for the `tor_homepage` preference when the preference screen is loaded.  The default is DuckDuckGo: `https://3g2upl4pq6kufc4m.onion`.
@@ -726,17 +746,25 @@ public class SettingsFragment extends PreferenceFragment {
                     }
 
                 case "user_agent":
-                    String userAgentString = sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0");
+                    // Get the new user agent name.
+                    String newUserAgentName = sharedPreferences.getString("user_agent", "Privacy Browser");
 
-                    switch (userAgentString) {
-                        case "WebView default user agent":
-                            // Display the user agent as the summary text for `userAgentPreference`.
-                            userAgentPreference.setSummary(bareWebView.getSettings().getUserAgentString());
+                    // Get the array position for the new user agent name.
+                    int newUserAgentArrayPosition = userAgentNamesArray.getPosition(newUserAgentName);
 
-                            // Disable `customUserAgentPreference`.
+                    // Get the translated new user agent name.
+                    String translatedNewUserAgentName = translatedUserAgentNamesArray[newUserAgentArrayPosition];
+
+                    // Populate the user agent summary.
+                    switch (newUserAgentArrayPosition) {
+                        case MainWebViewActivity.SETTINGS_WEBVIEW_DEFAULT_USER_AGENT:
+                            // Get the user agent text from the webview (which changes based on the version of Android and WebView installed).
+                            userAgentPreference.setSummary(translatedNewUserAgentName + ":\n" + bareWebView.getSettings().getUserAgentString());
+
+                            // Disable the custom user agent preference.
                             customUserAgentPreference.setEnabled(false);
 
-                            // Set the `customUserAgentPreference` icon according to the theme.
+                            // Set the custom user agent preference icon according to the theme.
                             if (MainWebViewActivity.darkTheme) {
                                 customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_dark);
                             } else {
@@ -744,14 +772,14 @@ public class SettingsFragment extends PreferenceFragment {
                             }
                             break;
 
-                        case "Custom user agent":
-                            // Display `Custom user agent` as the summary text for `userAgentPreference`.
+                        case MainWebViewActivity.SETTINGS_CUSTOM_USER_AGENT:
+                            // Set the summary text.
                             userAgentPreference.setSummary(R.string.custom_user_agent);
 
-                            // Enable `customUserAgentPreference`.
+                            // Enable the custom user agent preference.
                             customUserAgentPreference.setEnabled(true);
 
-                            // Set the `customUserAgentPreference` icon according to the theme.
+                            // Set the custom user agent preference icon according to the theme.
                             if (MainWebViewActivity.darkTheme) {
                                 customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled_dark);
                             } else {
@@ -760,24 +788,23 @@ public class SettingsFragment extends PreferenceFragment {
                             break;
 
                         default:
-                            // Display the user agent as the summary text for `userAgentPreference`.
-                            userAgentPreference.setSummary(sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0"));
+                            // Get the user agent summary from the user agent data array.
+                            userAgentPreference.setSummary(translatedNewUserAgentName + ":\n" + userAgentDataArray[newUserAgentArrayPosition]);
 
-                            // Disable `customUserAgentPreference`.
+                            // Disable the custom user agent preference.
                             customUserAgentPreference.setEnabled(false);
 
-                            // Set the `customUserAgentPreference` icon according to the theme.
+                            // Set the custom user agent preference icon according to the theme.
                             if (MainWebViewActivity.darkTheme) {
                                 customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_dark);
                             } else {
                                 customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_light);
                             }
-                            break;
                     }
                     break;
 
                 case "custom_user_agent":
-                    // Set the new custom user agent as the summary text for `custom_user_agent`.  The default is `PrivacyBrowser/1.0`.
+                    // Set the new custom user agent as the summary text for the preference.
                     customUserAgentPreference.setSummary(sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0"));
                     break;
 

@@ -170,7 +170,7 @@
     <string name="error_body">Fehler</string>
     <string name="about_view_source">Über Quelltext</string>
     <string name="about_view_source_message">Weil Androids WebView keine Quelltext-Informationen zur Verfügung stellt, muss eine separate a separate Serveranfrage mit system tools gestellt werden,
-        die die hier dargestellten Daten erhält. Deshalb können Unterschiede zwischen diesen Daten und der mit Webview dargestellten Webseite auftreten.
+        die hier dargestellten Daten erhält. Deshalb können Unterschiede zwischen diesen Daten und der mit Webview dargestellten Webseite auftreten.
         Es ist geplant, mit Version 4.x eine eigene Engine einzuführen, die diese Einschränkungen umgeht.</string>
 
     <!-- Create Home Screen Shortcut Alert Dialog. -->
@@ -263,37 +263,37 @@
         <string name="save_form_data_preference">Formulardaten standardmäßig speichern</string>
         <string name="save_form_data_preference_summary">Mit gespeicherten Formulardaten können Formularfelder auf Websites automatisch ausgefüllt werden.</string>
         <string name="user_agent">User Agent</string>
-        <string-array name="user_agent_entries">
-            <item>Privacy Browser 1.0</item>
+        <string-array name="translated_user_agent_names">
+            <item>Privacy Browser</item>
             <item>WebView-Standard</item>
-            <item>Firefox 56 auf Android 8.0.0</item>
-            <item>Chrome 62 auf Android 8.0.0</item>
-            <item>Safari 11 auf iOS 11.1</item>
-            <item>Firefox 52 auf Linux</item>
-            <item>Chromium 61 auf Linux</item>
-            <item>Firefox 56 auf Windows 10</item>
-            <item>Chrome 62 auf Windows 10</item>
-            <item>Edge 16 auf Windows 10</item>
-            <item>Internet Explorer 11 auf Windows 10</item>
-            <item>Safari 11.0.1 auf macOS 10.13.1</item>
+            <item>Firefox auf Android</item>
+            <item>Chrome auf Android</item>
+            <item>Safari auf iOS</item>
+            <item>Firefox auf Linux</item>
+            <item>Chromium auf Linux</item>
+            <item>Firefox auf Windows</item>
+            <item>Chrome auf Windows</item>
+            <item>Edge auf Windows</item>
+            <item>Internet Explorer auf Windows</item>
+            <item>Safari auf macOS</item>
             <item>Eigener</item>
         </string-array>
-            <string-array name="domain_settings_user_agent_entries">
-                <item>System default</item>
-                <item>Privacy Browser 1.0</item>
-                <item>WebView-Standard</item>
-                <item>Firefox 56 on Android 8.0.0</item>
-                <item>Chrome 62 on Android 8.0.0</item>
-                <item>Safari 11 on iOS 11.1</item>
-                <item>Firefox 52 on Linux</item>
-                <item>Chromium 61 on Linux</item>
-                <item>Firefox 56 on Windows 10</item>
-                <item>Chrome 62 on Windows 10</item>
-                <item>Edge 16 on Windows 10</item>
-                <item>Internet Explorer 11 on Windows 10</item>
-                <item>Safari 11.0.1 on macOS 10.13.1</item>
-                <item>Eigener</item>
-            </string-array>
+        <string-array name="translated_domain_settings_user_agent_names">  <!-- The translated names of the user agents with a System Default option for the domains spinner. -->
+            <item>System default</item>
+            <item>Privacy Browser</item>
+            <item>WebView-Standard</item>
+            <item>Firefox auf Android</item>
+            <item>Chrome auf Android</item>
+            <item>Safari auf iOS</item>
+            <item>Firefox auf Linux</item>
+            <item>Chromium auf Linux</item>
+            <item>Firefox auf Windows</item>
+            <item>Chrome auf Windows</item>
+            <item>Edge auf Windows</item>
+            <item>Internet Explorer auf Windows</item>
+            <item>Safari auf macOS</item>
+            <item>Eigener</item>
+        </string-array>
         <string name="custom_user_agent">Eigener User Agent</string>
         <string name="incognito_mode">Inkognito-Modus</string>
         <string name="incognito_mode_summary">Löscht den Verlauf und den Cache nach jedem fertigen Laden einer Webseite. Zurück und vorwärts funktioniert im Inkognito-Modus nicht.</string>

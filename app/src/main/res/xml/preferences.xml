@@ -56,9 +56,9 @@
         <ListPreference
             android:key="user_agent"
             android:title="@string/user_agent"
-            android:entries="@array/user_agent_entries"
-            android:entryValues="@array/user_agent_entry_values"
-            android:defaultValue="PrivacyBrowser/1.0"
+            android:entries="@array/translated_user_agent_names"
+            android:entryValues="@array/user_agent_names"
+            android:defaultValue="Privacy Browser"
             android:icon="?attr/userAgentIcon" />
 
         <!-- android:inputType="textVisiblePassword" sets the keyboard to have a dedicated number row.-->

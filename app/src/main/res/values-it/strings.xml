@@ -151,6 +151,7 @@
     <!-- Context Menus. -->
     <string name="load_url">Apri URL</string>
     <string name="copy_url">Copia URL</string>
+    <string name="download_url">Scarica URL</string>
     <string name="email_address">Indirizzo Email</string>
     <string name="copy_email_address">Copia Indirizzo Email</string>
     <string name="write_email">Scrivi Email</string>
@@ -261,37 +262,37 @@
         <string name="save_form_data_preference">Abilita il salvataggio dei dati dei moduli</string>
         <string name="save_form_data_preference_summary">I dati dei moduli salvati permettono di auto-compilare i campi dei moduli nei siti web.</string>
         <string name="user_agent">User agent</string>
-        <string-array name="user_agent_entries">
-            <item>Privacy Browser 1.0</item>
+        <string-array name="translated_user_agent_names">
+            <item>Privacy Browser</item>
             <item>WebView Default</item>
-            <item>Firefox 56 su Android 8.0.0</item>
-            <item>Chrome 61 su Android 8.0.0</item>
-            <item>Safari 11 su iOS 11.1</item>
-            <item>Firefox 52 su Linux</item>
-            <item>Chromium 62 su Linux</item>
-            <item>Firefox 56 su Windows 10</item>
-            <item>Chrome 62 su Windows 10</item>
-            <item>Edge 16 su Windows 10</item>
-            <item>Internet Explorer 11 su Windows 10</item>
-            <item>Safari 11.0.1 su macOS 10.13.1</item>
+            <item>Firefox su Android</item>
+            <item>Chrome su Android</item>
+            <item>Safari su iOS</item>
+            <item>Firefox su Linux</item>
+            <item>Chromium su Linux</item>
+            <item>Firefox su Windows</item>
+            <item>Chrome su Windows</item>
+            <item>Edge su Windows</item>
+            <item>Internet Explorer su Windows</item>
+            <item>Safari su macOS</item>
             <item>Personalizzato</item>
         </string-array>
-            <string-array name="domain_settings_user_agent_entries">
-                <item>Impostazioni di default</item>
-                <item>Privacy Browser 1.0</item>
-                <item>WebView Default</item>
-                <item>Firefox 56 su Android 8.0.0</item>
-                <item>Chrome 62 su Android 8.0.0</item>
-                <item>Safari 11 su iOS 11.1</item>
-                <item>Firefox 52 su Linux</item>
-                <item>Chromium 61 su Linux</item>
-                <item>Firefox 56 su Windows 10</item>
-                <item>Chrome 62 su Windows 10</item>
-                <item>Edge 16 su Windows 10</item>
-                <item>Internet Explorer 11 su Windows 10</item>
-                <item>Safari 11.0.1 su macOS 10.13.1</item>
-                <item>Personalizzato</item>
-            </string-array>
+        <string-array name="translated_domain_settings_user_agent_names">  <!-- The translated names of the user agents with a System Default option for the domains spinner. -->
+            <item>Impostazioni di default</item>
+            <item>Privacy Browser</item>
+            <item>WebView Default</item>
+            <item>Firefox su Android</item>
+            <item>Chrome su Android</item>
+            <item>Safari su iOS</item>
+            <item>Firefox su Linux</item>
+            <item>Chromium su Linux</item>
+            <item>Firefox su Windows</item>
+            <item>Chrome su Windows</item>
+            <item>Edge su Windows</item>
+            <item>Internet Explorer su Windows</item>
+            <item>Safari su macOS</item>
+            <item>Personalizzato</item>
+        </string-array>
         <string name="custom_user_agent">User agent personalizzato</string>
         <string name="incognito_mode">Modalità Incognito</string>
         <string name="incognito_mode_summary">Cancella la cronologia e la cache al termine del caricamento di ogni pagina. I pulsanti Avanti e Indietro non funzionano in modalità incognito.</string>

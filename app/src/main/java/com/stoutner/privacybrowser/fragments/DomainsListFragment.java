@@ -19,27 +19,21 @@
 
 package com.stoutner.privacybrowser.fragments;
 
-import android.net.http.SslCertificate;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-// We have to use `android.support.v4.app.Fragment` until minimum API >= 23.  Otherwise we cannot call `getContext()`.
+// `android.support.v4.app.Fragment` must be used until minimum API >= 23.  Otherwise `getContext()` cannot be called.
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.Spinner;
-import android.widget.Switch;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.DomainsActivity;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
-import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 
 public class DomainsListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,9 +42,6 @@ public class DomainsListFragment extends Fragment {
 
         // Initialize `domainsListView`.
         ListView domainsListView = domainsListFragmentView.findViewById(R.id.domains_listview);
-
-        // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
-        final DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(getContext(), null, null, 0);
 
         // Remove the incorrect lint error below that `.getSupportFragmentManager()` might be null.
         assert getActivity() != null;
@@ -68,87 +59,14 @@ public class DomainsListFragment extends Fragment {
 
             // Save the current domain settings if operating in two-paned mode and a domain is currently selected.
             if (DomainsActivity.twoPanedMode && DomainsActivity.deleteMenuItem.isEnabled()) {
+                // Get a handle for the domain settings fragment view.
                 View domainSettingsFragmentView = supportFragmentManager.findFragmentById(R.id.domain_settings_fragment_container).getView();
-                assert domainSettingsFragmentView != null;
 
-                // Get handles for the domain settings.
-                EditText domainNameEditText = domainSettingsFragmentView.findViewById(R.id.domain_settings_name_edittext);
-                Switch javaScriptSwitch = domainSettingsFragmentView.findViewById(R.id.domain_settings_javascript_switch);
-                Switch firstPartyCookiesSwitch = domainSettingsFragmentView.findViewById(R.id.domain_settings_first_party_cookies_switch);
-                Switch thirdPartyCookiesSwitch = domainSettingsFragmentView.findViewById(R.id.domain_settings_third_party_cookies_switch);
-                Switch domStorageSwitch = domainSettingsFragmentView.findViewById(R.id.domain_settings_dom_storage_switch);
-                Switch formDataSwitch = domainSettingsFragmentView.findViewById(R.id.domain_settings_form_data_switch);
-                Switch easyListSwitch = domainSettingsFragmentView.findViewById(R.id.domain_settings_easylist_switch);
-                Switch easyPrivacySwitch = domainSettingsFragmentView.findViewById(R.id.domain_settings_easyprivacy_switch);
-                Switch fanboysAnnoyanceSwitch = domainSettingsFragmentView.findViewById(R.id.domain_settings_fanboys_annoyance_list_switch);
-                Switch fanboysSocialBlockingSwitch = domainSettingsFragmentView.findViewById(R.id.domain_settings_fanboys_social_blocking_list_switch);
-                Spinner userAgentSpinner = domainSettingsFragmentView.findViewById(R.id.domain_settings_user_agent_spinner);
-                EditText customUserAgentEditText = domainSettingsFragmentView.findViewById(R.id.domain_settings_custom_user_agent_edittext);
-                Spinner fontSizeSpinner = domainSettingsFragmentView.findViewById(R.id.domain_settings_font_size_spinner);
-                Spinner displayWebpageImagesSpinner = domainSettingsFragmentView.findViewById(R.id.domain_settings_display_webpage_images_spinner);
-                Spinner nightModeSpinner = domainSettingsFragmentView.findViewById(R.id.domain_settings_night_mode_spinner);
-                Switch pinnedSslCertificateSwitch = domainSettingsFragmentView.findViewById(R.id.domain_settings_pinned_ssl_certificate_switch);
-                RadioButton savedSslCertificateRadioButton = domainSettingsFragmentView.findViewById(R.id.saved_ssl_certificate_radiobutton);
-                RadioButton currentWebsiteCertificateRadioButton = domainSettingsFragmentView.findViewById(R.id.current_website_certificate_radiobutton);
-
-                // Extract the data for the domain settings.
-                String domainNameString = domainNameEditText.getText().toString();
-                boolean javaScriptEnabled = javaScriptSwitch.isChecked();
-                boolean firstPartyCookiesEnabled = firstPartyCookiesSwitch.isChecked();
-                boolean thirdPartyCookiesEnabled = thirdPartyCookiesSwitch.isChecked();
-                boolean domStorageEnabled  = domStorageSwitch.isChecked();
-                boolean formDataEnabled = formDataSwitch.isChecked();
-                boolean easyListEnabled = easyListSwitch.isChecked();
-                boolean easyPrivacyEnabled = easyPrivacySwitch.isChecked();
-                boolean fanboysAnnoyanceEnabled = fanboysAnnoyanceSwitch.isChecked();
-                boolean fanboysSocialBlockingEnabled = fanboysSocialBlockingSwitch.isChecked();
-                int userAgentPositionInt = userAgentSpinner.getSelectedItemPosition();
-                int fontSizePositionInt = fontSizeSpinner.getSelectedItemPosition();
-                int displayWebpageImagesInt = displayWebpageImagesSpinner.getSelectedItemPosition();
-                int nightModeInt = nightModeSpinner.getSelectedItemPosition();
-                boolean pinnedSslCertificate = pinnedSslCertificateSwitch.isChecked();
-
-                // Get the data for the `Spinners` from the entry values string arrays.
-                String userAgentString = getResources().getStringArray(R.array.domain_settings_user_agent_entry_values)[userAgentPositionInt];
-                int fontSizeInt = Integer.parseInt(getResources().getStringArray(R.array.domain_settings_font_size_entry_values)[fontSizePositionInt]);
-
-                // Check to see if we are using a custom user agent.
-                if (userAgentString.equals("Custom user agent")) {
-                    // Set `userAgentString` to the custom user agent string.
-                    userAgentString = customUserAgentEditText.getText().toString();
-                }
+                // Get a handle for the domains activity.
+                DomainsActivity domainsActivity = new DomainsActivity();
 
                 // Save the domain settings.
-                if (savedSslCertificateRadioButton.isChecked()) {  // The current certificate is being used.
-                    // Update the database except for the certificate.
-                    domainsDatabaseHelper.updateDomainExceptCertificate(DomainsActivity.currentDomainDatabaseId, domainNameString, javaScriptEnabled, firstPartyCookiesEnabled, thirdPartyCookiesEnabled,
-                            domStorageEnabled, formDataEnabled, easyListEnabled, easyPrivacyEnabled, fanboysAnnoyanceEnabled, fanboysSocialBlockingEnabled, userAgentString, fontSizeInt, displayWebpageImagesInt,
-                            nightModeInt, pinnedSslCertificate);
-                } else if (currentWebsiteCertificateRadioButton.isChecked()) {  // The certificate is being updated with the current website certificate.
-                    // Get the current website SSL certificate.
-                    SslCertificate currentWebsiteSslCertificate = MainWebViewActivity.sslCertificate;
-
-                    // Store the values from the SSL certificate.
-                    String issuedToCommonName = currentWebsiteSslCertificate.getIssuedTo().getCName();
-                    String issuedToOrganization = currentWebsiteSslCertificate.getIssuedTo().getOName();
-                    String issuedToOrganizationalUnit = currentWebsiteSslCertificate.getIssuedTo().getUName();
-                    String issuedByCommonName = currentWebsiteSslCertificate.getIssuedBy().getCName();
-                    String issuedByOrganization = currentWebsiteSslCertificate.getIssuedBy().getOName();
-                    String issuedByOrganizationalUnit = currentWebsiteSslCertificate.getIssuedBy().getUName();
-                    long startDateLong = currentWebsiteSslCertificate.getValidNotBeforeDate().getTime();
-                    long endDateLong = currentWebsiteSslCertificate.getValidNotAfterDate().getTime();
-
-                    // Update the database.
-                    domainsDatabaseHelper.updateDomainWithCertificate(DomainsActivity.currentDomainDatabaseId, domainNameString, javaScriptEnabled, firstPartyCookiesEnabled, thirdPartyCookiesEnabled,
-                            domStorageEnabled, formDataEnabled, easyListEnabled, easyPrivacyEnabled, fanboysAnnoyanceEnabled, fanboysSocialBlockingEnabled, userAgentString, fontSizeInt, displayWebpageImagesInt,
-                            nightModeInt, pinnedSslCertificate, issuedToCommonName, issuedToOrganization, issuedToOrganizationalUnit, issuedByCommonName, issuedByOrganization,
-                            issuedByOrganizationalUnit, startDateLong, endDateLong);
-                } else {  // No certificate is selected.
-                    // Update the database, with PINNED_SSL_CERTIFICATE set to false.
-                    domainsDatabaseHelper.updateDomainExceptCertificate(DomainsActivity.currentDomainDatabaseId, domainNameString, javaScriptEnabled, firstPartyCookiesEnabled, thirdPartyCookiesEnabled,
-                            domStorageEnabled, formDataEnabled, easyListEnabled, easyPrivacyEnabled, fanboysAnnoyanceEnabled, fanboysSocialBlockingEnabled, userAgentString, fontSizeInt, displayWebpageImagesInt,
-                            nightModeInt, false);
-                }
+                domainsActivity.saveDomainSettings(domainSettingsFragmentView, getResources());
             }
 
             // Store the new `currentDomainDatabaseId`, converting it from `long` to `int` to match the format of the domains database.

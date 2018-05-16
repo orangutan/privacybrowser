@@ -149,6 +149,7 @@
     <!-- Context Menus. -->
     <string name="load_url">Cargar URL</string>
     <string name="copy_url">Copiar URL</string>
+    <string name="download_url">Descargar URL</string>
     <string name="email_address">Correo electrónico</string>
     <string name="copy_email_address">Copiar correo electrónico</string>
     <string name="write_email">Escribir correo electrónico</string>
@@ -261,37 +262,37 @@
         <string name="save_form_data_preference">Habilitar el guardar los datos de formulario por defecto</string>
         <string name="save_form_data_preference_summary">Los datos de formularios guardados pueden rellenar automáticamente las casillas o campos de las webs.</string>
         <string name="user_agent">Agente de usuario</string>
-        <string-array name="user_agent_entries">
-            <item>Navegador Privado 1.0</item>
+        <string-array name="translated_user_agent_names">
+            <item>Navegador Privado</item>
             <item>WebView por defecto</item>
-            <item>Firefox 56 en Android 8.0.0</item>
-            <item>Chrome 61 en Android 8.0.0</item>
-            <item>Safari 11 en iOS 11.1</item>
-            <item>Firefox 52 en Linux</item>
-            <item>Chromium 62 en Linux</item>
-            <item>Firefox 56 en Windows 10</item>
-            <item>Chrome 62 en Windows 10</item>
-            <item>Edge 16 en Windows 10</item>
-            <item>Internet Explorer 11 en Windows 10</item>
-            <item>Safari 11.0.1 en macOS 10.13.1</item>
+            <item>Firefox en Android</item>
+            <item>Chrome en Android</item>
+            <item>Safari en iOS</item>
+            <item>Firefox en Linux</item>
+            <item>Chromium en Linux</item>
+            <item>Firefox en Windows</item>
+            <item>Chrome en Windows</item>
+            <item>Edge en Windows</item>
+            <item>Internet Explorer en Windows</item>
+            <item>Safari en macOS</item>
             <item>Personalizado</item>
         </string-array>
-            <string-array name="domain_settings_user_agent_entries">
-                <item>Por defecto del sistema</item>
-                <item>Navegador Privado 1.0</item>
-                <item>WebView por defecto</item>
-                <item>Firefox 56 en Android 8.0.0</item>
-                <item>Chrome 62 en Android 8.0.0</item>
-                <item>Safari 11 en iOS 11.1</item>
-                <item>Firefox 52 en Linux</item>
-                <item>Chromium 61 en Linux</item>
-                <item>Firefox 56 en Windows 10</item>
-                <item>Chrome 62 en Windows 10</item>
-                <item>Edge 16 en Windows 10</item>
-                <item>Internet Explorer 11 en Windows 10</item>
-                <item>Safari 11.0.1 en macOS 10.13.1</item>
-                <item>Personalizado</item>
-            </string-array>
+        <string-array name="translated_domain_settings_user_agent_names">  <!-- The translated names of the user agents with a System Default option for the domains spinner. -->
+            <item>Por defecto del sistema</item>
+            <item>Navegador Privado</item>
+            <item>WebView por defecto</item>
+            <item>Firefox en Android</item>
+            <item>Chrome en Android</item>
+            <item>Safari en iOS</item>
+            <item>Firefox en Linux</item>
+            <item>Chromium en Linux</item>
+            <item>Firefox en Windows</item>
+            <item>Chrome en Windows</item>
+            <item>Edge en Windows</item>
+            <item>Internet Explorer en Windows</item>
+            <item>Safari en macOS</item>
+            <item>Personalizado</item>
+        </string-array>
         <string name="custom_user_agent">Agente de usuario personalizado</string>
         <string name="incognito_mode">Modo incógnito</string>
         <string name="incognito_mode_summary">Borrar el historial y el caché después de que cada página web termine de cargar. Adelante y atrás no funcionan en el Modo incógnito.</string>

@@ -96,6 +96,7 @@ import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebViewDatabase;
+import android.widget.ArrayAdapter;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -212,6 +213,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public static Date pinnedDomainSslStartDate;
     public static Date pinnedDomainSslEndDate;
 
+    // The user agent constants are public static so they can be accessed from `SettingsActivity` and `DomainsActivity`.
+    public final static int UNRECOGNIZED_USER_AGENT = -1;
+    public final static int SETTINGS_WEBVIEW_DEFAULT_USER_AGENT = 1;
+    public final static int SETTINGS_CUSTOM_USER_AGENT = 12;
+    public final static int DOMAINS_SYSTEM_DEFAULT_USER_AGENT = 0;
+    public final static int DOMAINS_WEBVIEW_DEFAULT_USER_AGENT = 2;
+    public final static int DOMAINS_CUSTOM_USER_AGENT = 13;
 
     // `appBar` is used in `onCreate()`, `onOptionsItemSelected()`, `closeFindOnPage()`, and `applyAppSettings()`.
     private ActionBar appBar;
@@ -290,7 +298,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private Runtime privacyBrowserRuntime;
 
     // `proxyThroughOrbot` is used in `onRestart()` and `applyAppSettings()`.
-    boolean proxyThroughOrbot;
+    private boolean proxyThroughOrbot;
 
     // `incognitoModeEnabled` is used in `onCreate()` and `applyAppSettings()`.
     private boolean incognitoModeEnabled;
@@ -409,6 +417,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // `downloadImageUrl` is used in `onCreateContextMenu()` and `onRequestPermissionResult()`.
     private String downloadImageUrl;
+
+    // The user agent variables are used in `onCreate()` and `applyDomainSettings()`.
+    private ArrayAdapter<CharSequence> userAgentNamesArray;
+    private String[] userAgentDataArray;
 
     // The request codes are used in `onCreate()`, `onCreateContextMenu()`, `onCloseDownloadLocationPermissionDialog()`, and `onRequestPermissionResult()`.
     private final int DOWNLOAD_FILE_REQUEST_CODE = 1;
@@ -1069,10 +1081,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         saveFormDataEnabled = false;
         nightMode = false;
 
-        // Initialize `webViewTitle`.
+        // Initialize the WebView title.
         webViewTitle = getString(R.string.no_title);
 
-        // Initialize `favoriteIconBitmap`.  `ContextCompat` must be used until API >= 21.
+        // Initialize the favorite icon bitmap.  `ContextCompat` must be used until API >= 21.
         Drawable favoriteIconDrawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.world);
         BitmapDrawable favoriteIconBitmapDrawable = (BitmapDrawable) favoriteIconDrawable;
         assert favoriteIconBitmapDrawable != null;
@@ -1082,6 +1094,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         if (favoriteIconBitmap == null) {
             favoriteIconBitmap = favoriteIconDefaultBitmap;
         }
+
+        // Initialize the user agent array adapter and string array.
+        userAgentNamesArray = ArrayAdapter.createFromResource(this, R.array.user_agent_names, R.layout.domain_settings_spinner_item);
+        userAgentDataArray = getResources().getStringArray(R.array.user_agent_data);
 
         // Apply the app settings from the shared preferences.
         applyAppSettings();
@@ -1739,7 +1755,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Create an intent to launch the domains activity.
                     Intent domainsIntent = new Intent(this, DomainsActivity.class);
 
-                    // Put extra information instructing the domains activity to directly load the current domain and close on back instread of returning to the domains list.
+                    // Put extra information instructing the domains activity to directly load the current domain and close on back instead of returning to the domains list.
                     domainsIntent.putExtra("loadDomain", domainSettingsDatabaseId);
                     domainsIntent.putExtra("closeOnBack", true);
 
@@ -3267,7 +3283,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
     }
 
-    // `reloadWebsite` is used if returnig from the Domains activity.  Otherwise JavaScript might not function correctly if it is newly enabled.
+    // `reloadWebsite` is used if returning from the Domains activity.  Otherwise JavaScript might not function correctly if it is newly enabled.
     // The deprecated `.getDrawable()` must be used until the minimum API >= 21.
     @SuppressWarnings("deprecation")
     private void applyDomainSettings(String url, boolean resetFavoriteIcon, boolean reloadWebsite) {
@@ -3359,7 +3375,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Store the general preference information.
             String defaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
-            String defaultUserAgentString = sharedPreferences.getString("user_agent", "PrivacyBrowser/1.0");
+            String defaultUserAgentName = sharedPreferences.getString("user_agent", "Privacy Browser");
             String defaultCustomUserAgentString = sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0");
             nightMode = sharedPreferences.getBoolean("night_mode", false);
 
@@ -3379,7 +3395,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 easyPrivacyEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY)) == 1);
                 fanboysAnnoyanceListEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST)) == 1);
                 fanboysSocialBlockingListEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)) == 1);
-                String userAgentString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
+                String userAgentName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
                 int fontSize = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
                 displayWebpageImagesInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
                 int nightModeInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.NIGHT_MODE));
@@ -3445,37 +3461,53 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Only set the user agent if the webpage is not currently loading.  Otherwise, changing the user agent on redirects can cause the original website to reload.
                 // <https://redmine.stoutner.com/issues/160>
                 if (!urlIsLoading) {
-                    switch (userAgentString) {
-                        case "System default user agent":
-                            // Set the user agent according to the system default.
-                            switch (defaultUserAgentString) {
-                                case "WebView default user agent":
-                                    // Set the user agent to `""`, which uses the default value.
-                                    mainWebView.getSettings().setUserAgentString("");
-                                    break;
+                    // Set the user agent.
+                    if (userAgentName.equals(getString(R.string.system_default_user_agent))) {  // Use the system default user agent.
+                        // Get the array position of the default user agent name.
+                        int defaultUserAgentArrayPosition = userAgentNamesArray.getPosition(defaultUserAgentName);
 
-                                case "Custom user agent":
-                                    // Set the custom user agent.
-                                    mainWebView.getSettings().setUserAgentString(defaultCustomUserAgentString);
-                                    break;
+                        // Set the user agent according to the system default.
+                        switch (defaultUserAgentArrayPosition) {
+                            case UNRECOGNIZED_USER_AGENT:  // The default user agent name is not on the canonical list.
+                                // This is probably because it was set in an older version of Privacy Browser before the switch to persistent user agent names.
+                                mainWebView.getSettings().setUserAgentString(defaultUserAgentName);
+                                break;
 
-                                default:
-                                    // Use the selected user agent.
-                                    mainWebView.getSettings().setUserAgentString(defaultUserAgentString);
-                            }
-                            break;
+                            case SETTINGS_WEBVIEW_DEFAULT_USER_AGENT:
+                                // Set the user agent to `""`, which uses the default value.
+                                mainWebView.getSettings().setUserAgentString("");
+                                break;
 
-                        case "WebView default user agent":
-                            // Set the user agent to `""`, which uses the default value.
-                            mainWebView.getSettings().setUserAgentString("");
-                            break;
+                            case SETTINGS_CUSTOM_USER_AGENT:
+                                // Set the custom user agent.
+                                mainWebView.getSettings().setUserAgentString(defaultCustomUserAgentString);
+                                break;
 
-                        default:
-                            // Use the selected user agent.
-                            mainWebView.getSettings().setUserAgentString(userAgentString);
+                            default:
+                                // Get the user agent string from the user agent data array
+                                mainWebView.getSettings().setUserAgentString(userAgentDataArray[defaultUserAgentArrayPosition]);
+                        }
+                    } else {  // Set the user agent according to the stored name.
+                        // Get the array position of the user agent name.
+                        int userAgentArrayPosition = userAgentNamesArray.getPosition(userAgentName);
+
+                        switch (userAgentArrayPosition) {
+                            case UNRECOGNIZED_USER_AGENT:  // The user agent name contains a custom user agent.
+                                mainWebView.getSettings().setUserAgentString(userAgentName);
+                                break;
+
+                            case SETTINGS_WEBVIEW_DEFAULT_USER_AGENT:
+                                // Set the user agent to `""`, which uses the default value.
+                                mainWebView.getSettings().setUserAgentString("");
+                                break;
+
+                            default:
+                                // Get the user agent string from the user agent data array.
+                                mainWebView.getSettings().setUserAgentString(userAgentDataArray[userAgentArrayPosition]);
+                        }
                     }
 
-                    // Store the applied user agent string.
+                    // Store the applied user agent string, which is used in the View Source activity.
                     appliedUserAgentString = mainWebView.getSettings().getUserAgentString();
                 }
 
@@ -3529,23 +3561,32 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Only set the user agent if the webpage is not currently loading.  Otherwise, changing the user agent on redirects can cause the original website to reload.
                 // <https://redmine.stoutner.com/issues/160>
                 if (!urlIsLoading) {
-                    switch (defaultUserAgentString) {
-                        case "WebView default user agent":
+                    // Get the array position of the user agent name.
+                    int userAgentArrayPosition = userAgentNamesArray.getPosition(defaultUserAgentName);
+
+                    // Set the user agent.
+                    switch (userAgentArrayPosition) {
+                        case UNRECOGNIZED_USER_AGENT:  // The default user agent name is not on the canonical list.
+                            // This is probably because it was set in an older version of Privacy Browser before the switch to persistent user agent names.
+                            mainWebView.getSettings().setUserAgentString(defaultUserAgentName);
+                            break;
+
+                        case SETTINGS_WEBVIEW_DEFAULT_USER_AGENT:
                             // Set the user agent to `""`, which uses the default value.
                             mainWebView.getSettings().setUserAgentString("");
                             break;
 
-                        case "Custom user agent":
+                        case SETTINGS_CUSTOM_USER_AGENT:
                             // Set the custom user agent.
                             mainWebView.getSettings().setUserAgentString(defaultCustomUserAgentString);
                             break;
 
                         default:
-                            // Use the selected user agent.
-                            mainWebView.getSettings().setUserAgentString(defaultUserAgentString);
+                            // Get the user agent string from the user agent data array
+                            mainWebView.getSettings().setUserAgentString(userAgentDataArray[userAgentArrayPosition]);
                     }
 
-                    // Store the applied user agent string.
+                    // Store the applied user agent string, which is used in the View Source activity.
                     appliedUserAgentString = mainWebView.getSettings().getUserAgentString();
                 }
 

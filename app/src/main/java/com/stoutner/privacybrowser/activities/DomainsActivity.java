@@ -21,6 +21,7 @@ package com.stoutner.privacybrowser.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.http.SslCertificate;
 import android.os.Bundle;
@@ -96,10 +97,16 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
     private int domainSettingsDatabaseIdBeforeRotate;
 
     // `goDirectlyToDatabaseId` is used in `onCreate()` and `onCreateOptionsMenu()`.
-    int goDirectlyToDatabaseId;
+    private int goDirectlyToDatabaseId;
 
     // `closeOnBack` is used in `onCreate()`, `onOptionsItemSelected()` and `onBackPressed()`.
-    boolean closeOnBack;
+    private boolean closeOnBack;
+
+    // `coordinatorLayout` is use in `onCreate()`, `onOptionsItemSelected()`, and `onSaveInstanceState()`.
+    private View coordinatorLayout;
+
+    // `resources` is used in `onCreate()`, `onOptionsItemSelected()`, and `onSaveInstanceState()`.
+    private Resources resources;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,10 +139,10 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         // Set the content view.
         setContentView(R.layout.domains_coordinatorlayout);
 
-        // Get a handle for the context.
+        // Populate the class variables.
+        coordinatorLayout = findViewById(R.id.domains_coordinatorlayout);
+        resources = getResources();
         context = this;
-
-        // Get a handle for the fragment manager.
         supportFragmentManager = getSupportFragmentManager();
 
         // `SupportActionBar` from `android.support.v7.app.ActionBar` must be used until the minimum API is >= 21.
@@ -158,7 +165,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         addDomainFAB.setOnClickListener((View view) -> {
             // Show the add domain `AlertDialog`.
             AppCompatDialogFragment addDomainDialog = new AddDomainDialog();
-            addDomainDialog.show(supportFragmentManager, getResources().getString(R.string.add_domain));
+            addDomainDialog.show(supportFragmentManager, resources.getString(R.string.add_domain));
         });
     }
 
@@ -266,7 +273,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                 if (twoPanedMode) {  // The device is in two-paned mode.
                     // Save the current domain settings if the domain settings fragment is displayed.
                     if (findViewById(R.id.domain_settings_scrollview) != null) {
-                        saveDomainSettings();
+                        saveDomainSettings(coordinatorLayout, resources);
                     }
 
                     // Dismiss the undo delete `SnackBar` if it is shown.
@@ -288,13 +295,13 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                     }
                 } else if (closeOnBack) {  // Go directly back to the main WebView activity because the domains activity was launched from the options menu.
                     // Save the current domain settings.
-                    saveDomainSettings();
+                    saveDomainSettings(coordinatorLayout, resources);
 
                     // Go home.
                     NavUtils.navigateUpFromSameTask(this);
                 } else if (findViewById(R.id.domain_settings_scrollview) != null) {  // The device is in single-paned mode and the domain settings fragment is displayed.
                     // Save the current domain settings.
-                    saveDomainSettings();
+                    saveDomainSettings(coordinatorLayout, resources);
 
                     // Display the domains list fragment.
                     DomainsListFragment domainsListFragment = new DomainsListFragment();
@@ -505,7 +512,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         // Store the current `DomainSettingsFragment` state in `outState`.
         if (findViewById(R.id.domain_settings_scrollview) != null) {  // `DomainSettingsFragment` is displayed.
             // Save any changes that have been made to the domain settings.
-            saveDomainSettings();
+            saveDomainSettings(coordinatorLayout, resources);
 
             // Store `DomainSettingsDisplayed`.
             outState.putBoolean("domainSettingsDisplayed", true);
@@ -524,7 +531,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         if (twoPanedMode) {  // The device is in two-paned mode.
             // Save the current domain settings if the domain settings fragment is displayed.
             if (findViewById(R.id.domain_settings_scrollview) != null) {
-                saveDomainSettings();
+                saveDomainSettings(coordinatorLayout, resources);
             }
 
             // Dismiss the undo delete SnackBar if it is shown.
@@ -543,13 +550,13 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             }
         } else if (closeOnBack) {  // Go directly back to the main WebView activity because the domains activity was launched from the options menu.
             // Save the current domain settings.
-            saveDomainSettings();
+            saveDomainSettings(coordinatorLayout, resources);
 
             // Pass `onBackPressed()` to the system.
             super.onBackPressed();
         } else if (findViewById(R.id.domain_settings_scrollview) != null) {  // The device is in single-paned mode and domain settings fragment is displayed.
             // Save the current domain settings.
-            saveDomainSettings();
+            saveDomainSettings(coordinatorLayout, resources);
 
             // Display the domains list fragment.
             DomainsListFragment domainsListFragment = new DomainsListFragment();
@@ -619,26 +626,26 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         }
     }
 
-    private void saveDomainSettings() {
+    public void saveDomainSettings(View view, Resources resources) {
         // Get handles for the domain settings.
-        EditText domainNameEditText = findViewById(R.id.domain_settings_name_edittext);
-        Switch javaScriptSwitch = findViewById(R.id.domain_settings_javascript_switch);
-        Switch firstPartyCookiesSwitch = findViewById(R.id.domain_settings_first_party_cookies_switch);
-        Switch thirdPartyCookiesSwitch = findViewById(R.id.domain_settings_third_party_cookies_switch);
-        Switch domStorageSwitch = findViewById(R.id.domain_settings_dom_storage_switch);
-        Switch formDataSwitch = findViewById(R.id.domain_settings_form_data_switch);
-        Switch easyListSwitch = findViewById(R.id.domain_settings_easylist_switch);
-        Switch easyPrivacySwitch = findViewById(R.id.domain_settings_easyprivacy_switch);
-        Switch fanboysAnnoyanceSwitch = findViewById(R.id.domain_settings_fanboys_annoyance_list_switch);
-        Switch fanboysSocialBlockingSwitch = findViewById(R.id.domain_settings_fanboys_social_blocking_list_switch);
-        Spinner userAgentSpinner = findViewById(R.id.domain_settings_user_agent_spinner);
-        EditText customUserAgentEditText = findViewById(R.id.domain_settings_custom_user_agent_edittext);
-        Spinner fontSizeSpinner = findViewById(R.id.domain_settings_font_size_spinner);
-        Spinner displayWebpageImagesSpinner = findViewById(R.id.domain_settings_display_webpage_images_spinner);
-        Spinner nightModeSpinner = findViewById(R.id.domain_settings_night_mode_spinner);
-        Switch pinnedSslCertificateSwitch = findViewById(R.id.domain_settings_pinned_ssl_certificate_switch);
-        RadioButton savedSslCertificateRadioButton = findViewById(R.id.saved_ssl_certificate_radiobutton);
-        RadioButton currentWebsiteCertificateRadioButton = findViewById(R.id.current_website_certificate_radiobutton);
+        EditText domainNameEditText = view.findViewById(R.id.domain_settings_name_edittext);
+        Switch javaScriptSwitch = view.findViewById(R.id.domain_settings_javascript_switch);
+        Switch firstPartyCookiesSwitch = view.findViewById(R.id.domain_settings_first_party_cookies_switch);
+        Switch thirdPartyCookiesSwitch = view.findViewById(R.id.domain_settings_third_party_cookies_switch);
+        Switch domStorageSwitch = view.findViewById(R.id.domain_settings_dom_storage_switch);
+        Switch formDataSwitch = view.findViewById(R.id.domain_settings_form_data_switch);
+        Switch easyListSwitch = view.findViewById(R.id.domain_settings_easylist_switch);
+        Switch easyPrivacySwitch = view.findViewById(R.id.domain_settings_easyprivacy_switch);
+        Switch fanboysAnnoyanceSwitch = view.findViewById(R.id.domain_settings_fanboys_annoyance_list_switch);
+        Switch fanboysSocialBlockingSwitch = view.findViewById(R.id.domain_settings_fanboys_social_blocking_list_switch);
+        Spinner userAgentSpinner = view.findViewById(R.id.domain_settings_user_agent_spinner);
+        EditText customUserAgentEditText = view.findViewById(R.id.domain_settings_custom_user_agent_edittext);
+        Spinner fontSizeSpinner = view.findViewById(R.id.domain_settings_font_size_spinner);
+        Spinner displayWebpageImagesSpinner = view.findViewById(R.id.domain_settings_display_webpage_images_spinner);
+        Spinner nightModeSpinner = view.findViewById(R.id.domain_settings_night_mode_spinner);
+        Switch pinnedSslCertificateSwitch = view.findViewById(R.id.domain_settings_pinned_ssl_certificate_switch);
+        RadioButton savedSslCertificateRadioButton = view.findViewById(R.id.saved_ssl_certificate_radiobutton);
+        RadioButton currentWebsiteCertificateRadioButton = view.findViewById(R.id.current_website_certificate_radiobutton);
 
         // Extract the data for the domain settings.
         String domainNameString = domainNameEditText.getText().toString();
@@ -651,27 +658,43 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         boolean easyPrivacyEnabled = easyPrivacySwitch.isChecked();
         boolean fanboysAnnoyanceEnabled = fanboysAnnoyanceSwitch.isChecked();
         boolean fanboysSocialBlockingEnabled = fanboysSocialBlockingSwitch.isChecked();
-        int userAgentPositionInt = userAgentSpinner.getSelectedItemPosition();
-        int fontSizePositionInt = fontSizeSpinner.getSelectedItemPosition();
+        int userAgentPosition = userAgentSpinner.getSelectedItemPosition();
+        int fontSizePosition = fontSizeSpinner.getSelectedItemPosition();
         int displayWebpageImagesInt = displayWebpageImagesSpinner.getSelectedItemPosition();
         int nightModeInt = nightModeSpinner.getSelectedItemPosition();
         boolean pinnedSslCertificate = pinnedSslCertificateSwitch.isChecked();
 
-        // Get the data for the `Spinners` from the entry values string arrays.
-        String userAgentString = getResources().getStringArray(R.array.domain_settings_user_agent_entry_values)[userAgentPositionInt];
-        int fontSizeInt = Integer.parseInt(getResources().getStringArray(R.array.domain_settings_font_size_entry_values)[fontSizePositionInt]);
+        // Initialize the user agent name string.
+        String userAgentName;
 
-        // Check to see if we are using a custom user agent.
-        if (userAgentString.equals("Custom user agent")) {
-            // Set `userAgentString` to the custom user agent string.
-            userAgentString = customUserAgentEditText.getText().toString();
+        // Set the user agent name.
+        switch (userAgentPosition) {
+            case MainWebViewActivity.DOMAINS_SYSTEM_DEFAULT_USER_AGENT:
+                // Set the user agent name to be `System default user agent`.
+                userAgentName = resources.getString(R.string.system_default_user_agent);
+                break;
+
+            case MainWebViewActivity.DOMAINS_CUSTOM_USER_AGENT:
+                // Set the user agent name to be the custom user agent.
+                userAgentName = customUserAgentEditText.getText().toString();
+                break;
+
+            default:
+                // Get the array of user agent names.
+                String[] userAgentNameArray = resources.getStringArray(R.array.user_agent_names);
+
+                // Set the user agent name from the array.  The domain spinner has one more entry than the name array, so the position must be decremented.
+                userAgentName = userAgentNameArray[userAgentPosition - 1];
         }
+
+        // Get the font size integer.
+        int fontSizeInt = Integer.parseInt(resources.getStringArray(R.array.domain_settings_font_size_entry_values)[fontSizePosition]);
 
         // Save the domain settings.
         if (savedSslCertificateRadioButton.isChecked()) {  // The current certificate is being used.
             // Update the database except for the certificate.
             domainsDatabaseHelper.updateDomainExceptCertificate(DomainsActivity.currentDomainDatabaseId, domainNameString, javaScriptEnabled, firstPartyCookiesEnabled, thirdPartyCookiesEnabled,
-                    domStorageEnabled, formDataEnabled, easyListEnabled, easyPrivacyEnabled, fanboysAnnoyanceEnabled, fanboysSocialBlockingEnabled, userAgentString, fontSizeInt, displayWebpageImagesInt,
+                    domStorageEnabled, formDataEnabled, easyListEnabled, easyPrivacyEnabled, fanboysAnnoyanceEnabled, fanboysSocialBlockingEnabled, userAgentName, fontSizeInt, displayWebpageImagesInt,
                     nightModeInt, pinnedSslCertificate);
         } else if (currentWebsiteCertificateRadioButton.isChecked()) {  // The certificate is being updated with the current website certificate.
             // Get the current website SSL certificate.
@@ -689,13 +712,13 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
             // Update the database.
             domainsDatabaseHelper.updateDomainWithCertificate(currentDomainDatabaseId, domainNameString, javaScriptEnabled, firstPartyCookiesEnabled, thirdPartyCookiesEnabled, domStorageEnabled,
-                    formDataEnabled, easyListEnabled, easyPrivacyEnabled, fanboysAnnoyanceEnabled, fanboysSocialBlockingEnabled, userAgentString, fontSizeInt, displayWebpageImagesInt, nightModeInt,
+                    formDataEnabled, easyListEnabled, easyPrivacyEnabled, fanboysAnnoyanceEnabled, fanboysSocialBlockingEnabled, userAgentName, fontSizeInt, displayWebpageImagesInt, nightModeInt,
                     pinnedSslCertificate, issuedToCommonName, issuedToOrganization, issuedToOrganizationalUnit, issuedByCommonName, issuedByOrganization, issuedByOrganizationalUnit, startDateLong, endDateLong);
 
         } else {  // No certificate is selected.
             // Update the database, with PINNED_SSL_CERTIFICATE set to false.
             domainsDatabaseHelper.updateDomainExceptCertificate(currentDomainDatabaseId, domainNameString, javaScriptEnabled, firstPartyCookiesEnabled, thirdPartyCookiesEnabled, domStorageEnabled,
-                    formDataEnabled, easyListEnabled, easyPrivacyEnabled, fanboysAnnoyanceEnabled, fanboysSocialBlockingEnabled, userAgentString, fontSizeInt, displayWebpageImagesInt, nightModeInt,
+                    formDataEnabled, easyListEnabled, easyPrivacyEnabled, fanboysAnnoyanceEnabled, fanboysSocialBlockingEnabled, userAgentName, fontSizeInt, displayWebpageImagesInt, nightModeInt,
                     false);
         }
     }
