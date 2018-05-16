@@ -153,20 +153,23 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             // Convert the id from long to int to match the format of the bookmarks database.
             int databaseID = (int) id;
 
-            // Get the bookmark `Cursor` for this ID and move it to the first row.
+            // Get the bookmark cursor for this ID and move it to the first row.
             Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmarkCursor(databaseID);
             bookmarkCursor.moveToFirst();
 
             // Act upon the bookmark according to the type.
             if (bookmarkCursor.getInt(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.IS_FOLDER)) == 1) {  // The selected bookmark is a folder.
-                // Update `currentFolder`.
+                // Update the current folder.
                 currentFolder = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
                 // Load the new folder.
                 loadFolder();
             } else {  // The selected bookmark is not a folder.
-                // Get the bookmark URL and assign it to `formattedUrlString`.  `mainWebView` will automatically reload when `BookmarksActivity` closes.
+                // Get the bookmark URL and assign it to `formattedUrlString`.
                 MainWebViewActivity.formattedUrlString = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL));
+
+                // Set `MainWebViewActivity` to load the new URL on restart.
+                MainWebViewActivity.loadUrlOnRestart = true;
 
                 // Update the bookmarks folder for the bookmarks drawer in `MainWebViewActivity`.
                 MainWebViewActivity.currentBookmarksFolder = currentFolder;

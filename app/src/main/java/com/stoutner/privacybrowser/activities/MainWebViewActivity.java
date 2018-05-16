@@ -184,7 +184,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `reloadOnRestart` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onRestart()`
     public static boolean reloadOnRestart;
 
-    // `reloadUrlOnRestart` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onRestart()`.
+    // `reloadUrlOnRestart` is public static so it can be accessed from `SettingsFragment` and `BookmarksActivity`.  It is also used in `onRestart()`.
     public static boolean loadUrlOnRestart;
 
     // `restartFromBookmarksActivity` is public static so it can be accessed from `BookmarksActivity`.  It is also used in `onRestart()`.
@@ -213,13 +213,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public static Date pinnedDomainSslStartDate;
     public static Date pinnedDomainSslEndDate;
 
-    // The user agent constants are public static so they can be accessed from `SettingsActivity` and `DomainsActivity`.
+    // The user agent constants are public static so they can be accessed from `SettingsFragment`, `DomainsActivity`, and `DomainSettingsFragment`.
     public final static int UNRECOGNIZED_USER_AGENT = -1;
     public final static int SETTINGS_WEBVIEW_DEFAULT_USER_AGENT = 1;
     public final static int SETTINGS_CUSTOM_USER_AGENT = 12;
     public final static int DOMAINS_SYSTEM_DEFAULT_USER_AGENT = 0;
     public final static int DOMAINS_WEBVIEW_DEFAULT_USER_AGENT = 2;
     public final static int DOMAINS_CUSTOM_USER_AGENT = 13;
+
 
     // `appBar` is used in `onCreate()`, `onOptionsItemSelected()`, `closeFindOnPage()`, and `applyAppSettings()`.
     private ActionBar appBar;
@@ -576,14 +577,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             startActivity(bookmarksIntent);
         });
 
-        // Set the create new bookmark folder FAB to display the `AlertDialog`.
+        // Set the create new bookmark folder FAB to display an alert dialog.
         createBookmarkFolderFab.setOnClickListener(v -> {
             // Show the `CreateBookmarkFolderDialog` `AlertDialog` and name the instance `@string/create_folder`.
             AppCompatDialogFragment createBookmarkFolderDialog = new CreateBookmarkFolderDialog();
             createBookmarkFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_folder));
         });
 
-        // Set the create new bookmark FAB to display the `AlertDialog`.
+        // Set the create new bookmark FAB to display an alert dialog.
         createBookmarkFab.setOnClickListener(view -> {
             // Show the `CreateBookmarkDialog` `AlertDialog` and name the instance `@string/create_bookmark`.
             AppCompatDialogFragment createBookmarkDialog = new CreateBookmarkDialog();
@@ -766,7 +767,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Convert the id from long to int to match the format of the bookmarks database.
             int databaseID = (int) id;
 
-            // Get the bookmark `Cursor` for this ID and move it to the first row.
+            // Get the bookmark cursor for this ID and move it to the first row.
             Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmarkCursor(databaseID);
             bookmarkCursor.moveToFirst();
 
@@ -3715,7 +3716,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void loadBookmarksFolder() {
-        // Update `bookmarksCursor` with the contents of the bookmarks database for the current folder.
+        // Update the bookmarks cursor with the contents of the bookmarks database for the current folder.
         bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentBookmarksFolder);
 
         // Populate the bookmarks cursor adapter.  `this` specifies the `Context`.  `false` disables `autoRequery`.
@@ -3732,7 +3733,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 ImageView bookmarkFavoriteIcon = view.findViewById(R.id.bookmark_favorite_icon);
                 TextView bookmarkNameTextView = view.findViewById(R.id.bookmark_name);
 
-                // Get the favorite icon byte array from the `Cursor`.
+                // Get the favorite icon byte array from the cursor.
                 byte[] favoriteIconByteArray = cursor.getBlob(cursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON));
 
                 // Convert the byte array to a `Bitmap` beginning at the first byte and ending at the last.
