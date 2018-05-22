@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -17,25 +17,23 @@
  * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.stoutner.privacybrowser;
+package com.stoutner.privacybrowser.helpers;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.view.View;
 
-public class BannerAd {
-    public static void requestAd(View view) {
+@SuppressWarnings("unused")
+public class AdHelper {
+    public static void initializeAds(View view, Context applicationContext, FragmentManager fragmentManager, String ad_id) {
         // Do nothing because this is the standard flavor.
     }
 
-    public static void reloadAfterRotate(View view, Context applicationContext, String ad_id) {
+    public static void loadAd(View view, Context applicationContext, String ad_id) {
         // Do nothing because this is the standard flavor.
     }
 
     public static void hideAd(View view) {
-        // Do nothing because this is the standard flavor.
-    }
-
-    public static void showAd(View view) {
         // Do nothing because this is the standard flavor.
     }
 

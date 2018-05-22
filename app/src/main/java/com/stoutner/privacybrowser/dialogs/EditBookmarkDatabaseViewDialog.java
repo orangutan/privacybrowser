@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -75,6 +75,7 @@ public class EditBookmarkDatabaseViewDialog extends AppCompatDialogFragment {
         void onSaveBookmark(AppCompatDialogFragment dialogFragment, int selectedBookmarkDatabaseId);
     }
 
+    @Override
     public void onAttach(Context context) {
         // Run the default commands.
         super.onAttach(context);
@@ -108,6 +109,9 @@ public class EditBookmarkDatabaseViewDialog extends AppCompatDialogFragment {
         // Run the default commands.
         super.onCreate(savedInstanceState);
 
+        // Remove the incorrect lint warning below that `getInt()` might be null.
+        assert getArguments() != null;
+
         // Store the bookmark database ID in the class variable.
         bookmarkDatabaseId = getArguments().getInt("Database ID");
     }
@@ -136,6 +140,9 @@ public class EditBookmarkDatabaseViewDialog extends AppCompatDialogFragment {
 
         // Set the title.
         dialogBuilder.setTitle(R.string.edit_bookmark);
+
+        // Remove the incorrect lint warning below that `getLayoutInflater()` might be null.
+        assert getActivity() != null;
 
         // Set the view.  The parent view is `null` because it will be assigned by `AlertDialog`.
         dialogBuilder.setView(getActivity().getLayoutInflater().inflate(R.layout.edit_bookmark_databaseview_dialog, null));
@@ -209,6 +216,9 @@ public class EditBookmarkDatabaseViewDialog extends AppCompatDialogFragment {
 
         // Combine `matrixCursor` and `foldersCursor`.
         MergeCursor foldersMergeCursor = new MergeCursor(new Cursor[]{matrixCursor, foldersCursor});
+
+        // Remove the incorrect lint warning below that `getContext()` might be null.
+        assert getContext() != null;
 
         // Create a `ResourceCursorAdapter` for the `Spinner`.  `0` specifies no flags.;
         ResourceCursorAdapter foldersCursorAdapter = new ResourceCursorAdapter(getContext(), R.layout.edit_bookmark_databaseview_spinner_item, foldersMergeCursor, 0) {

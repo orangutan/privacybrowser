@@ -108,9 +108,9 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.stoutner.privacybrowser.BannerAd;
 import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.dialogs.AdConsentDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkFolderDialog;
 import com.stoutner.privacybrowser.dialogs.CreateHomeScreenShortcutDialog;
@@ -122,6 +122,7 @@ import com.stoutner.privacybrowser.dialogs.HttpAuthenticationDialog;
 import com.stoutner.privacybrowser.dialogs.PinnedSslCertificateMismatchDialog;
 import com.stoutner.privacybrowser.dialogs.UrlHistoryDialog;
 import com.stoutner.privacybrowser.dialogs.ViewSslCertificateDialog;
+import com.stoutner.privacybrowser.helpers.AdHelper;
 import com.stoutner.privacybrowser.helpers.BlockListHelper;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
@@ -369,9 +370,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private ForegroundColorSpan initialGrayColorSpan;
     private ForegroundColorSpan finalGrayColorSpan;
 
-    // `adView` is used in `onCreate()` and `onConfigurationChanged()`.
-    private View adView;
-
     // `sslErrorHandler` is used in `onCreate()`, `onSslErrorCancel()`, and `onSslErrorProceed`.
     private SslErrorHandler sslErrorHandler;
 
@@ -604,9 +602,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Hide the `appBar`.
                         appBar.hide();
 
-                        // Hide the `BannerAd` in the free flavor.
+                        // Hide the banner ad in the free flavor.
                         if (BuildConfig.FLAVOR.contentEquals("free")) {
-                            BannerAd.hideAd(adView);
+                            // The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
+                            AdHelper.hideAd(findViewById(R.id.adview));
                         }
 
                         // Modify the system bars.
@@ -641,11 +640,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // Show the `BannerAd` in the free flavor.
                         if (BuildConfig.FLAVOR.contentEquals("free")) {
-                            // Reload the ad.  Because the screen may have rotated, we need to use `reloadAfterRotate`.
-                            BannerAd.reloadAfterRotate(adView, getApplicationContext(), getString(R.string.ad_id));
-
-                            // Reinitialize the `adView` variable, as the `View` will have been removed and re-added by `BannerAd.reloadAfterRotate()`.
-                            adView = findViewById(R.id.adview);
+                            // Reload the ad.  The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
+                            AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_id));
                         }
 
                         // Remove the translucent navigation bar flag if it is set.
@@ -928,7 +924,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             public void onShowCustomView(View view, CustomViewCallback callback) {
                 // Pause the ad if this is the free flavor.
                 if (BuildConfig.FLAVOR.contentEquals("free")) {
-                    BannerAd.pauseAd(adView);
+                    // The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
+                    AdHelper.pauseAd(findViewById(R.id.adview));
                 }
 
                 // Remove the translucent overlays.
@@ -966,11 +963,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Show the ad if this is the free flavor.
                 if (BuildConfig.FLAVOR.contentEquals("free")) {
-                    // Reload the ad.  Because the screen may have rotated, we need to use `reloadAfterRotate`.
-                    BannerAd.reloadAfterRotate(adView, getApplicationContext(), getString(R.string.ad_id));
-
-                    // Reinitialize the `adView` variable, as the `View` will have been removed and re-added by `BannerAd.reloadAfterRotate()`.
-                    adView = findViewById(R.id.adview);
+                    // Reload the ad.  The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
+                    AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_id));
                 }
             }
 
@@ -1070,9 +1064,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Initialize `inFullScreenBrowsingMode`, which is always false at this point because Privacy Browser never starts in full screen browsing mode.
         inFullScreenBrowsingMode = false;
-
-        // Initialize AdView for the free flavor.
-        adView = findViewById(R.id.adview);
 
         // Initialize the privacy settings variables.
         javaScriptEnabled = false;
@@ -1549,7 +1540,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Resume the adView for the free flavor.
         if (BuildConfig.FLAVOR.contentEquals("free")) {
-            BannerAd.resumeAd(adView);
+            // The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
+            AdHelper.resumeAd(findViewById(R.id.adview));
         }
     }
 
@@ -1563,7 +1555,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Pause the adView or it will continue to consume resources in the background on the free flavor.
         if (BuildConfig.FLAVOR.contentEquals("free")) {
-            BannerAd.pauseAd(adView);
+            // The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
+            AdHelper.pauseAd(findViewById(R.id.adview));
         }
 
         super.onPause();
@@ -1621,6 +1614,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem fontSizeMenuItem = menu.findItem(R.id.font_size);
         MenuItem displayImagesMenuItem = menu.findItem(R.id.display_images);
         MenuItem refreshMenuItem = menu.findItem(R.id.refresh);
+        MenuItem adConsentMenuItem = menu.findItem(R.id.ad_consent);
 
         // Set the text for the domain menu item.
         if (domainSettingsApplied) {
@@ -1726,8 +1720,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         fontSizeMenuItem.setTitle(fontSizeTitle);
         selectedFontSizeMenuItem.setChecked(true);
 
-        // Only show `Refresh` if `swipeToRefresh` is disabled.
+        // Only show Refresh if `swipeToRefresh` is disabled.
         refreshMenuItem.setVisible(!swipeToRefreshEnabled);
+
+        // Only show Ad Consent if this is the free flavor.
+        adConsentMenuItem.setVisible(BuildConfig.FLAVOR.contentEquals("free"));
 
         // Run all the other default commands.
         super.onPrepareOptionsMenu(menu);
@@ -1828,7 +1825,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Display a `Snackbar`.
                 if (firstPartyCookiesEnabled) {  // First-party cookies are enabled.
                     Snackbar.make(findViewById(R.id.main_webview), R.string.first_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
-                } else if (javaScriptEnabled){  // JavaScript is still enabled.
+                } else if (javaScriptEnabled) {  // JavaScript is still enabled.
                     Snackbar.make(findViewById(R.id.main_webview), R.string.first_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
                 } else {  // Privacy mode.
                     Snackbar.make(findViewById(R.id.main_webview), R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
@@ -2110,6 +2107,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 mainWebView.reload();
                 return true;
 
+            case R.id.ad_consent:
+                // Display the ad consent dialog.
+                DialogFragment adConsentDialogFragment = new AdConsentDialog();
+                adConsentDialogFragment.show(getFragmentManager(), getString(R.string.ad_consent));
+                return true;
+
             default:
                 // Don't consume the event.
                 return super.onOptionsItemSelected(menuItem);
@@ -2339,11 +2342,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Reload the ad for the free flavor if we are not in full screen mode.
         if (BuildConfig.FLAVOR.contentEquals("free") && !inFullScreenBrowsingMode) {
-            // Reload the ad.
-            BannerAd.reloadAfterRotate(adView, getApplicationContext(), getString(R.string.ad_id));
-
-            // Reinitialize the `adView` variable, as the `View` will have been removed and re-added by `BannerAd.reloadAfterRotate()`.
-            adView = findViewById(R.id.adview);
+            // Reload the ad.  The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
+            AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_id));
         }
 
         // `invalidateOptionsMenu` should recalculate the number of action buttons from the menu to display on the app bar, but it doesn't because of the this bug:
@@ -3263,11 +3263,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Show the `BannerAd` in the free flavor.
             if (BuildConfig.FLAVOR.contentEquals("free")) {
-                // Reload the ad.  Because the screen may have rotated, we need to use `reloadAfterRotate`.
-                BannerAd.reloadAfterRotate(adView, getApplicationContext(), getString(R.string.ad_id));
-
-                // Reinitialize the `adView` variable, as the `View` will have been removed and re-added by `BannerAd.reloadAfterRotate()`.
-                adView = findViewById(R.id.adview);
+                // Initialize the ad.  The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
+                AdHelper.initializeAds(findViewById(R.id.adview), getApplicationContext(), getFragmentManager(), getString(R.string.ad_id));
             }
 
             // Remove the translucent navigation bar flag if it is set.

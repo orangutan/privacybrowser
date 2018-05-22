@@ -504,6 +504,7 @@
     <string name="contributors">Contributors</string>
     <string name="links">Links</string>
 
-    <!-- Ad Control. -->
-    <string name="ad_id" translatable="false">Null</string>  <!-- There are no ads in the standard flavor, but this string must exist because it is referenced in the code. -->
+    <!-- Ad Control. There are no ads in the standard flavor, but these strings must exist because they are referenced in the code. -->
+    <string name="ad_id" translatable="false">Null</string>
+    <string name="ad_consent">Ad Consent</string>
 </resources>

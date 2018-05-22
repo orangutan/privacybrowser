@@ -191,4 +191,10 @@
         android:title="@string/refresh"
         android:orderInCategory="150"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/ad_consent"
+        android:title="@string/ad_consent"
+        android:orderInCategory="160"
+        app:showAsAction="never" />
 </menu>
