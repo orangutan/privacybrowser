@@ -433,4 +433,7 @@
     <string name="licenses">Licenze</string>
     <string name="contributors">Collaboratori</string>
     <string name="links">Links</string>
+
+    <!-- Ad Control. There are no ads in the standard flavor, but this string must exist because it is  referenced in the code. -->
+    <string name="ad_consent">Consenso agli annunci</string>
 </resources>

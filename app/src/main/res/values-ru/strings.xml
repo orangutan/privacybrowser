@@ -432,4 +432,7 @@
     <string name="licenses">Лицензии</string>
     <string name="contributors">Благодарности</string>
     <string name="links">Ссылки</string>
+
+    <!-- Ad Control. There are no ads in the standard flavor, but this string must exist because it is referenced in the code. -->
+    <string name="ad_consent">Согласие на рекламу</string>
 </resources>

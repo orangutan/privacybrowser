@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2018 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -32,7 +32,7 @@
     <!-- Ad Consent. -->
     <string name="ad_consent_text">Privacy Browser Free displays a banner ad on the bottom of the screen.
         These ads come from Google’s set of commonly used providers and are configured to be non-personalized and non-tracking.
-        The standard version of Privacy Browser does not contain ads.</string>
+        \n\nThe standard version of Privacy Browser does not contain ads.</string>
     <string name="close_browser">Close Browser</string>
     <string name="accept_ads">Accept Ads</string>
 </resources>

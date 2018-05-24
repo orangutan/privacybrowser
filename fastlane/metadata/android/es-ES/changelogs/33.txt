@@ -1,0 +1,11 @@
+• Habilitar la subida de archivos a páginas web en Lollipop y más recientes.
+• Permitir que los agentes de usuario aplicados puedan actualizarse automáticamente con nuevas versiones.
+• Añadir una opción de descarga de URL al menú contextual.
+• Añadir un diálogo de consentimiento de anuncios y actualizar la política de privacidad de Navegador Privado Gratuíto para cumplir con la GDPR.
+• Usar los nuevos controles de anuncios de la GDPR para establecer que todos los anuncios de aplicaciones en Navegador Privado Gratuíto sean sin personalización y sin rastreo.
+• Corregir un error introducido en la versión 2.9 que impedía que los favoritos se cargaran desde la actividad de Favoritos.
+• Corregir un error que causaba que algunos cambios en la configuración de dominio no se aplicaran hasta después de recargar.
+• Mejorar el flujo de trabajo al agregar y editar la configuración de dominio desde el menú de opciones.
+• Actualizada la traducción al español proporcionada por Jose A. León Becerra.
+• Actualizada la traducción al italiano proporcionada por Francesco Buratti.
+• Actualizada la traducción al ruso.

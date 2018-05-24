@@ -26,8 +26,8 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 32
-        versionName "2.9"
+        versionCode 33
+        versionName "2.10"
     }
 
     buildTypes {
@@ -61,6 +61,11 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    // Allow the releases to be built even though the versions of the support and consent libraries don't match (Privacy Browser doesn't use the consent library form, so it doesn't matter).
+    lintOptions {
+        abortOnError false
     }
 }
 

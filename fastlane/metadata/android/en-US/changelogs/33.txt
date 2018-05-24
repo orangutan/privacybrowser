@@ -1,0 +1,11 @@
+• Enable uploading of files to websites on Lollipop and newer.
+• Allow applied user agents to be auto-updated with new releases.
+• Add a download URL option to the context menu.
+• Add an ad consent dialog and update the privacy policy for Privacy Browser Free to comply with the GDPR.
+• Use the new GDPR ad controls to set all app ads in Privacy Browser Free to be non-personalized and non-tracking.
+• Fix a bug introduced in version 2.9 that prevented bookmarks from being loaded from the Bookmarks activity.
+• Fix a bug that caused some changes in domain settings to not be applied until after a reload.
+• Improve the workflow when adding and editing domain settings from the options menu.
+• Updated Italian translation provided by Francesco Buratti.
+• Updated Russian translation.
+• Updated Spanish translation provided by Jose A. León Becerra.

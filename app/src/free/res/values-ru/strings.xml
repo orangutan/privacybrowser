@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2018 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -21,4 +21,11 @@
 <resources>
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser Free</string>
+
+    <!-- Ad Consent. -->
+    <string name="ad_consent_text">Privacy Browser Free отображает рекламный баннер в нижней части экрана.
+        Реклама поступает от широко используемых Google поставщиков и настроена так, чтобы исключить персонализацию и возможность отслеживания.
+        \n\nСтандартная версия Privacy Browser не содержит рекламы.</string>
+    <string name="close_browser">Закрыть браузер</string>
+    <string name="accept_ads">Разрешить рекламу</string>
 </resources>

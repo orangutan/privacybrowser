@@ -54,6 +54,8 @@
     <string name="image_name">Nombre de imagen</string>
     <string name="unknown_size">Tamaño desconocido</string>
     <string name="download">Descargar</string>
+    <string name="cannot_download_file">Este archivo no puede descargarse porque no tiene un URI HTTP o HTTPS.</string>
+    <string name="cannot_download_image">Esta imagen no puede descargarse porque no tiene un URI HTTP o HTTPS.</string>
 
     <!-- Custom App Bar. -->
     <string name="favorite_icon">Icono favorito</string>
@@ -433,6 +435,7 @@
     <string name="licenses">Licencias</string>
     <string name="contributors">Colaboradores</string>
     <string name="links">Enlaces</string>
-    <string name="cannot_download_file">Este archivo no puede descargarse porque no tiene un URI HTTP o HTTPS.</string>
-    <string name="cannot_download_image">Esta imagen no puede descargarse porque no tiene un URI HTTP o HTTPS.</string>
+
+    <!-- Ad Control. There are no ads in the standard flavor, but this string must exist because it is referenced in the code. -->
+    <string name="ad_consent">Autorización publicitaria</string>
 </resources>

@@ -1,0 +1,11 @@
+• Abilitazione dell'upload di file sui siti web per Android Lollipop e seguenti.
+• Possibilità per gli user agent applicati di essere auto-aggiornati con le nuove release.
+• Aggiunta l'opzione di download della URL al menu contestuale.
+• Aggiunta una finestra di dialogo per il consenso agli annunci e aggiornamento della privacy policy per Privacy Browser Free in modo da essere conforme alla GDPR.
+• Utilizzo dei nuovi controlli degli annunci di GDPR per l'impostazione di tutti gli annunci in Privacy Browser Free in modo da essere non personalizzati e non traccianti.
+• Correzione di un baco introdotto nella versione 2.9 che impediva il caricamento delle URL dalla scheda dei Preferiti.
+• Correzione di un baco che provocava alcune modifiche nelle impostazioni dei domini per cui non erano applicate se non dopo il ricaricamento.
+• Miglioramento del comportamento nell'aggiunta e nella modifica delle impostazioni dei domini dal menu delle opzioni.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
+• Aggiornamento della traduzione Russo.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León Becerra.
