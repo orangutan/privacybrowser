@@ -48,6 +48,12 @@
         <p>In addition, Privacy Browser Free displays ads from Google’s AdMob network using the Firebase backend.
             For the free flavor, Firebase adds the following permissions even though they are not listed in the manifest file.</p>
 
+        <h3>Read phone status and identity</h3>
+        <p><a href="https://developer.android.com/reference/android/Manifest.permission#read_phone_state">android.permission.READ_PHONE_STATE</a></p>
+        <p>Allows the ads to access to phone state, including the phone number of the device, current cellular network information, the status of any ongoing calls,
+            and a list of any PhoneAccounts registered on the device. This is a dangerous permission and requires the user to explicitly allow it on Android Marshmallow (API 23) or newer.
+            In my testing I have not seen ads attempt to request or use this permission.</p>
+
         <h3>View network connections</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#ACCESS_NETWORK_STATE">android.permission.ACCESS_NETWORK_STATE</a></p>
         <p>Allows the ads to tell when you are connected to the internet and when you aren’t (presumably so they don’t try to reload an ad when you are disconnected).

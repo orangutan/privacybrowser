@@ -242,9 +242,9 @@
 
         <SwitchPreference
             android:key="swipe_to_refresh"
-            android:title="@string/swipe_to_refresh_enabled"
-            android:summary="@string/swipe_to_refresh_enabled_summary"
-            android:defaultValue="false" />
+            android:title="@string/swipe_to_refresh_preference"
+            android:summary="@string/swipe_to_refresh_summary"
+            android:defaultValue="true" />
 
         <SwitchPreference
             android:key="display_additional_app_bar_icons"

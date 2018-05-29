@@ -28,7 +28,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
 
 public class DomainsDatabaseHelper extends SQLiteOpenHelper {
-    private static final int SCHEMA_VERSION = 5;
+    private static final int SCHEMA_VERSION = 6;
     private static final String DOMAINS_DATABASE = "domains.db";
     private static final String DOMAINS_TABLE = "domains";
 
@@ -45,8 +45,9 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
     public static final String ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST = "enablefanboyssocialblockinglist";
     public static final String USER_AGENT = "useragent";
     public static final String FONT_SIZE = "fontsize";
-    public static final String DISPLAY_IMAGES = "displayimages";
+    public static final String SWIPE_TO_REFRESH = "swipetorefresh";
     public static final String NIGHT_MODE = "nightmode";
+    public static final String DISPLAY_IMAGES = "displayimages";
     public static final String PINNED_SSL_CERTIFICATE = "pinnedsslcertificate";
     public static final String SSL_ISSUED_TO_COMMON_NAME = "sslissuedtocommonname";
     public static final String SSL_ISSUED_TO_ORGANIZATION = "sslissuedtoorganization";
@@ -57,15 +58,20 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
     public static final String SSL_START_DATE = "sslstartdate";
     public static final String SSL_END_DATE = "sslenddate";
 
-    // Display webpage images constants.
-    public static final int DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT = 0;
-    public static final int DISPLAY_WEBPAGE_IMAGES_ENABLED = 1;
-    public static final int DISPLAY_WEBPAGE_IMAGES_DISABLED = 2;
+    // Swipe to refresh constants.
+    public static final int SWIPE_TO_REFRESH_SYSTEM_DEFAULT = 0;
+    public static final int SWIPE_TO_REFRESH_ENABLED = 1;
+    public static final int SWIPE_TO_REFRESH_DISABLED = 2;
 
     // Night mode constants.
     public static final int NIGHT_MODE_SYSTEM_DEFAULT = 0;
     public static final int NIGHT_MODE_ENABLED = 1;
     public static final int NIGHT_MODE_DISABLED = 2;
+
+    // Display webpage images constants.
+    public static final int DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT = 0;
+    public static final int DISPLAY_WEBPAGE_IMAGES_ENABLED = 1;
+    public static final int DISPLAY_WEBPAGE_IMAGES_DISABLED = 2;
 
     private Context appContext;
 
@@ -94,8 +100,9 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
                 ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST + " BOOLEAN, " +
                 USER_AGENT + " TEXT, " +
                 FONT_SIZE + " INTEGER, " +
-                DISPLAY_IMAGES + " INTEGER, " +
+                SWIPE_TO_REFRESH + " INTEGER, " +
                 NIGHT_MODE + " INTEGER, " +
+                DISPLAY_IMAGES + " INTEGER, " +
                 PINNED_SSL_CERTIFICATE + " BOOLEAN, " +
                 SSL_ISSUED_TO_COMMON_NAME + " TEXT, " +
                 SSL_ISSUED_TO_ORGANIZATION + " TEXT, " +
@@ -134,7 +141,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
 
             // Upgrade from schema version 3.
             case 3:
-                // Add the `NIGHT_MODE` column.
+                // Add the Night Mode column.
                 domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + NIGHT_MODE + " INTEGER");
 
             // Upgrade from schema version 4.
@@ -181,6 +188,11 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
                 } else {
                     domainsDatabase.execSQL("UPDATE " + DOMAINS_TABLE + " SET " + ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST + " = " + 0);
                 }
+
+            // Upgrade from schema version 5.
+            case 5:
+                // Add the swipe to refresh column.
+                domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + SWIPE_TO_REFRESH + " INTEGER");
         }
     }
 
@@ -266,8 +278,9 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, fanboySocialBlockingListEnabled);
         domainContentValues.put(USER_AGENT, "System default user agent");
         domainContentValues.put(FONT_SIZE, 0);
-        domainContentValues.put(DISPLAY_IMAGES, 0);
+        domainContentValues.put(SWIPE_TO_REFRESH, 0);
         domainContentValues.put(NIGHT_MODE, 0);
+        domainContentValues.put(DISPLAY_IMAGES, 0);
 
         // Get a writable database handle.
         SQLiteDatabase domainsDatabase = this.getWritableDatabase();
@@ -284,7 +297,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
 
     public void updateDomainExceptCertificate(int databaseId, String domainName, boolean javaScriptEnabled, boolean firstPartyCookiesEnabled, boolean thirdPartyCookiesEnabled, boolean domStorageEnabled,
                                               boolean formDataEnabled, boolean easyListEnabled, boolean easyPrivacyEnabled, boolean fanboysAnnoyanceEnabled, boolean fanboysSocialBlockingEnabled,
-                                              String userAgent, int fontSize, int displayImages, int nightMode, boolean pinnedSslCertificate) {
+                                              String userAgent, int fontSize, int swipeToRefresh, int nightMode, int displayImages, boolean pinnedSslCertificate) {
 
         // Store the domain data in a `ContentValues`.
         ContentValues domainContentValues = new ContentValues();
@@ -302,8 +315,9 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, fanboysSocialBlockingEnabled);
         domainContentValues.put(USER_AGENT, userAgent);
         domainContentValues.put(FONT_SIZE, fontSize);
-        domainContentValues.put(DISPLAY_IMAGES, displayImages);
+        domainContentValues.put(SWIPE_TO_REFRESH, swipeToRefresh);
         domainContentValues.put(NIGHT_MODE, nightMode);
+        domainContentValues.put(DISPLAY_IMAGES, displayImages);
         domainContentValues.put(PINNED_SSL_CERTIFICATE, pinnedSslCertificate);
 
         // Get a writable database handle.
@@ -318,7 +332,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
 
     public void updateDomainWithCertificate(int databaseId, String domainName, boolean javaScriptEnabled, boolean firstPartyCookiesEnabled, boolean thirdPartyCookiesEnabled, boolean domStorageEnabled,
                                             boolean formDataEnabled, boolean easyListEnabled, boolean easyPrivacyEnabled, boolean fanboysAnnoyanceEnabled, boolean fanboysSocialBlockingEnabled, String userAgent,
-                                            int fontSize, int displayImages, int nightMode, boolean pinnedSslCertificate, String sslIssuedToCommonName, String sslIssuedToOrganization,
+                                            int fontSize, int swipeToRefresh, int nightMode, int displayImages, boolean pinnedSslCertificate, String sslIssuedToCommonName, String sslIssuedToOrganization,
                                             String sslIssuedToOrganizationalUnit, String sslIssuedByCommonName, String sslIssuedByOrganization, String sslIssuedByOrganizationalUnit, long sslStartDate,
                                             long sslEndDate) {
 
@@ -338,8 +352,9 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, fanboysSocialBlockingEnabled);
         domainContentValues.put(USER_AGENT, userAgent);
         domainContentValues.put(FONT_SIZE, fontSize);
-        domainContentValues.put(DISPLAY_IMAGES, displayImages);
+        domainContentValues.put(SWIPE_TO_REFRESH, swipeToRefresh);
         domainContentValues.put(NIGHT_MODE, nightMode);
+        domainContentValues.put(DISPLAY_IMAGES, displayImages);
         domainContentValues.put(PINNED_SSL_CERTIFICATE, pinnedSslCertificate);
         domainContentValues.put(SSL_ISSUED_TO_COMMON_NAME, sslIssuedToCommonName);
         domainContentValues.put(SSL_ISSUED_TO_ORGANIZATION, sslIssuedToOrganization);

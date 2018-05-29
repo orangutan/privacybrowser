@@ -245,7 +245,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `fullScreenVideoFrameLayout` is used in `onCreate()` and `onConfigurationChanged()`.
     private FrameLayout fullScreenVideoFrameLayout;
 
-    // `swipeRefreshLayout` is used in `onCreate()`, `onPrepareOptionsMenu`, and `onRestart()`.
+    // `swipeRefreshLayout` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsMenuSelected()`, and `onRestart()`.
     private SwipeRefreshLayout swipeRefreshLayout;
 
     // `urlAppBarRelativeLayout` is used in `onCreate()` and `applyDomainSettings()`.
@@ -277,9 +277,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // `nightMode` is used in `onCreate()` and  `applyDomainSettings()`.
     private boolean nightMode;
-
-    // `swipeToRefreshEnabled` is used in `onPrepareOptionsMenu()` and `applyAppSettings()`.
-    private boolean swipeToRefreshEnabled;
 
     // `displayWebpageImagesBoolean` is used in `applyAppSettings()` and `applyDomainSettings()`.
     private boolean displayWebpageImagesBoolean;
@@ -894,7 +891,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         mainWebView.setVisibility(View.VISIBLE);
                     }
 
-                    //Stop the `SwipeToRefresh` indicator if it is running
+                    //Stop the swipe to refresh indicator if it is running
                     swipeRefreshLayout.setRefreshing(false);
                 }
             }
@@ -1612,8 +1609,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem clearDOMStorageMenuItem = menu.findItem(R.id.clear_dom_storage);
         MenuItem clearFormDataMenuItem = menu.findItem(R.id.clear_form_data);
         MenuItem fontSizeMenuItem = menu.findItem(R.id.font_size);
+        MenuItem swipeToRefreshMenuItem = menu.findItem(R.id.swipe_to_refresh);
         MenuItem displayImagesMenuItem = menu.findItem(R.id.display_images);
-        MenuItem refreshMenuItem = menu.findItem(R.id.refresh);
         MenuItem adConsentMenuItem = menu.findItem(R.id.ad_consent);
 
         // Set the text for the domain menu item.
@@ -1628,6 +1625,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         toggleThirdPartyCookiesMenuItem.setChecked(thirdPartyCookiesEnabled);
         toggleDomStorageMenuItem.setChecked(domStorageEnabled);
         toggleSaveFormDataMenuItem.setChecked(saveFormDataEnabled);
+        swipeToRefreshMenuItem.setChecked(swipeRefreshLayout.isEnabled());
         displayImagesMenuItem.setChecked(mainWebView.getSettings().getLoadsImagesAutomatically());
 
         // Enable third-party cookies if first-party cookies are enabled.
@@ -1720,9 +1718,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         fontSizeMenuItem.setTitle(fontSizeTitle);
         selectedFontSizeMenuItem.setChecked(true);
 
-        // Only show Refresh if `swipeToRefresh` is disabled.
-        refreshMenuItem.setVisible(!swipeToRefreshEnabled);
-
         // Only show Ad Consent if this is the free flavor.
         adConsentMenuItem.setVisible(BuildConfig.FLAVOR.contentEquals("free"));
 
@@ -1744,6 +1739,29 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Set the commands that relate to the menu entries.
         switch (menuItemId) {
+            case R.id.toggle_javascript:
+                // Switch the status of javaScriptEnabled.
+                javaScriptEnabled = !javaScriptEnabled;
+
+                // Apply the new JavaScript status.
+                mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
+
+                // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
+                updatePrivacyIcons(true);
+
+                // Display a `Snackbar`.
+                if (javaScriptEnabled) {  // JavaScrip is enabled.
+                    Snackbar.make(findViewById(R.id.main_webview), R.string.javascript_enabled, Snackbar.LENGTH_SHORT).show();
+                } else if (firstPartyCookiesEnabled) {  // JavaScript is disabled, but first-party cookies are enabled.
+                    Snackbar.make(findViewById(R.id.main_webview), R.string.javascript_disabled, Snackbar.LENGTH_SHORT).show();
+                } else {  // Privacy mode.
+                    Snackbar.make(findViewById(R.id.main_webview), R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
+                }
+
+                // Reload the WebView.
+                mainWebView.reload();
+                return true;
+
             case R.id.add_or_edit_domain:
                 if (domainSettingsApplied) {  // Edit the current domain settings.
                     // Reapply the domain settings on returning to `MainWebViewActivity`.
@@ -1784,29 +1802,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Make it so.
                     startActivity(domainsIntent);
                 }
-                return true;
-
-            case R.id.toggle_javascript:
-                // Switch the status of javaScriptEnabled.
-                javaScriptEnabled = !javaScriptEnabled;
-
-                // Apply the new JavaScript status.
-                mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
-
-                // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
-                updatePrivacyIcons(true);
-
-                // Display a `Snackbar`.
-                if (javaScriptEnabled) {  // JavaScrip is enabled.
-                    Snackbar.make(findViewById(R.id.main_webview), R.string.javascript_enabled, Snackbar.LENGTH_SHORT).show();
-                } else if (firstPartyCookiesEnabled) {  // JavaScript is disabled, but first-party cookies are enabled.
-                    Snackbar.make(findViewById(R.id.main_webview), R.string.javascript_disabled, Snackbar.LENGTH_SHORT).show();
-                } else {  // Privacy mode.
-                    Snackbar.make(findViewById(R.id.main_webview), R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
-                }
-
-                // Reload the WebView.
-                mainWebView.reload();
                 return true;
 
             case R.id.toggle_first_party_cookies:
@@ -2031,6 +2026,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 mainWebView.getSettings().setTextZoom(200);
                 return true;
 
+            case R.id.swipe_to_refresh:
+                // Toggle swipe to refresh.
+                swipeRefreshLayout.setEnabled(!swipeRefreshLayout.isEnabled());
+                return true;
+
             case R.id.display_images:
                 if (mainWebView.getSettings().getLoadsImagesAutomatically()) {  // Images are currently loaded automatically.
                     mainWebView.getSettings().setLoadsImagesAutomatically(false);
@@ -2041,6 +2041,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Set `onTheFlyDisplayImagesSet`.
                 onTheFlyDisplayImagesSet = true;
+                return true;
+
+            case R.id.view_source:
+                // Launch the View Source activity.
+                Intent viewSourceIntent = new Intent(this, ViewSourceActivity.class);
+                startActivity(viewSourceIntent);
                 return true;
 
             case R.id.share:
@@ -2087,12 +2093,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Print the document.  The print attributes are `null`.
                 printManager.print(getString(R.string.privacy_browser_web_page), printDocumentAdapter, null);
-                return true;
-
-            case R.id.view_source:
-                // Launch the Vew Source activity.
-                Intent viewSourceIntent = new Intent(this, ViewSourceActivity.class);
-                startActivity(viewSourceIntent);
                 return true;
 
             case R.id.add_to_homescreen:
@@ -3145,7 +3145,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("full_screen_browsing_mode", false);
         hideSystemBarsOnFullscreen = sharedPreferences.getBoolean("hide_system_bars", false);
         translucentNavigationBarOnFullscreen = sharedPreferences.getBoolean("translucent_navigation_bar", true);
-        swipeToRefreshEnabled = sharedPreferences.getBoolean("swipe_to_refresh", false);
         displayWebpageImagesBoolean = sharedPreferences.getBoolean("display_webpage_images", true);
 
         // Set the homepage, search, and proxy options.
@@ -3212,9 +3211,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Reset `waitingForOrbot.
             waitingForOrbot = false;
         }
-
-        // Set swipe to refresh.
-        swipeRefreshLayout.setEnabled(swipeToRefreshEnabled);
 
         // Set Do Not Track status.
         if (doNotTrackEnabled) {
@@ -3375,6 +3371,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             String defaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
             String defaultUserAgentName = sharedPreferences.getString("user_agent", "Privacy Browser");
             String defaultCustomUserAgentString = sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0");
+            boolean defaultSwipeToRefresh = sharedPreferences.getBoolean("swipe_to_refresh", true);
             nightMode = sharedPreferences.getBoolean("night_mode", false);
 
             if (domainSettingsApplied) {  // The url we are loading has custom domain settings.
@@ -3395,8 +3392,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 fanboysSocialBlockingListEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)) == 1);
                 String userAgentName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
                 int fontSize = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
-                displayWebpageImagesInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
+                int swipeToRefreshInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SWIPE_TO_REFRESH));
                 int nightModeInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.NIGHT_MODE));
+                displayWebpageImagesInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
                 pinnedDomainSslCertificate = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE)) == 1);
                 pinnedDomainSslIssuedToCNameString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME));
                 pinnedDomainSslIssuedToONameString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION));
@@ -3505,6 +3503,23 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         }
                     }
 
+                    // Set swipe to refresh.
+                    switch (swipeToRefreshInt) {
+                        case DomainsDatabaseHelper.SWIPE_TO_REFRESH_SYSTEM_DEFAULT:
+                            // Set swipe to refresh according to the default.
+                            swipeRefreshLayout.setEnabled(defaultSwipeToRefresh);
+                            break;
+
+                        case DomainsDatabaseHelper.SWIPE_TO_REFRESH_ENABLED:
+                            // Enable swipe to refresh.
+                            swipeRefreshLayout.setEnabled(true);
+                            break;
+
+                        case DomainsDatabaseHelper.SWIPE_TO_REFRESH_DISABLED:
+                            // Disable swipe to refresh.
+                            swipeRefreshLayout.setEnabled(false);
+                    }
+
                     // Store the applied user agent string, which is used in the View Source activity.
                     appliedUserAgentString = mainWebView.getSettings().getUserAgentString();
                 }
@@ -3538,6 +3553,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
                 mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
                 mainWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
+                swipeRefreshLayout.setEnabled(defaultSwipeToRefresh);
 
                 // Reset the pinned SSL certificate information.
                 domainSettingsDatabaseId = -1;

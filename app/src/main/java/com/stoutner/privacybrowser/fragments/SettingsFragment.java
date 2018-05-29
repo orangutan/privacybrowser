@@ -194,7 +194,7 @@ public class SettingsFragment extends PreferenceFragment {
         searchCustomURLPreference.setEnabled(searchString.equals("Custom URL"));
 
 
-        // Enable `translucentNavigationBarPreference` only if full screen browsing mode is enabled and `hide_system_bars` is disabled.
+        // Enable the translucent navigation bar preference only if full screen browsing mode is enabled and `hide_system_bars` is disabled.
         translucentNavigationBarPreference.setEnabled(fullScreenBrowsingMode && !hideSystemBars);
 
         // Set the status of the `Clear and Exit` preferences.
@@ -203,10 +203,10 @@ public class SettingsFragment extends PreferenceFragment {
         clearFormDataPreference.setEnabled(!clearEverything);
         clearCachePreference.setEnabled(!clearEverything);
 
-        // Set the homepage URL as the summary text for the `Homepage` preference when the preference screen is loaded.  The default is `https://duckduckgo.com`.
-        homepagePreference.setSummary(savedPreferences.getString("homepage", "https://duckduckgo.com"));
+        // Set the homepage URL as the summary text for the homepage preference.
+        homepagePreference.setSummary(savedPreferences.getString("homepage", "https://duckduckgo.com/?kao=-1&amp;kak=-1"));
 
-        // Set the default font size as the summary text for the `Default Font Size` preference when the preference screen is loaded.  The default is `100`.
+        // Set the default font size as the summary text for the preference.
         defaultFontSizePreference.setSummary(savedPreferences.getString("default_font_size", "100") + "%%");
 
         // Disable `javaScriptPreference` if `nightModeBoolean` is true.  JavaScript will be enabled for all web pages.
@@ -448,7 +448,7 @@ public class SettingsFragment extends PreferenceFragment {
         }
 
         // Set the full screen browsing mode icons.
-        if (fullScreenBrowsingMode) {  // `fullScreenBrowsingModeBoolean` is `true`.
+        if (fullScreenBrowsingMode) {  // Full screen browsing mode is enabled.
             // Set the `fullScreenBrowsingModePreference` icon according to the theme.
             if (MainWebViewActivity.darkTheme) {
                 fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled_dark);
@@ -489,7 +489,7 @@ public class SettingsFragment extends PreferenceFragment {
                     }
                 }
             }
-        } else {  // `fullScreenBrowsingModeBoolean` is `false`.
+        } else {  // Full screen browsing mode is disabled.
             // Set the icons according to the theme.
             if (MainWebViewActivity.darkTheme) {
                 fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled_dark);
@@ -502,7 +502,7 @@ public class SettingsFragment extends PreferenceFragment {
             }
         }
 
-        // Set the `clearEverythingPreference` icon.
+        // Set the clear everything preference icon.
         if (clearEverything) {
             if (MainWebViewActivity.darkTheme) {
                 clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled_dark);
@@ -513,7 +513,7 @@ public class SettingsFragment extends PreferenceFragment {
             clearEverythingPreference.setIcon(R.drawable.clear_everything_disabled);
         }
 
-        // Set the `clearCookiesPreference` icon.
+        // Set the clear cookies preference icon.
         if (clearEverything || savedPreferences.getBoolean("clear_cookies", true)) {
             if (MainWebViewActivity.darkTheme) {
                 clearCookiesPreference.setIcon(R.drawable.cookies_cleared_dark);
@@ -524,7 +524,7 @@ public class SettingsFragment extends PreferenceFragment {
             clearCookiesPreference.setIcon(R.drawable.cookies_warning);
         }
 
-        // Set the `clearDomStoragePreference` icon.
+        // Set the clear DOM storage preference icon.
         if (clearEverything || savedPreferences.getBoolean("clear_dom_storage", true)) {
             if (MainWebViewActivity.darkTheme) {
                 clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_dark);
@@ -535,7 +535,7 @@ public class SettingsFragment extends PreferenceFragment {
             clearDomStoragePreference.setIcon(R.drawable.dom_storage_warning);
         }
 
-        // Set the `clearFormDataPreference` icon.
+        // Set the clear form data preference icon.
         if (clearEverything || savedPreferences.getBoolean("clear_form_data", true)) {
             if (MainWebViewActivity.darkTheme) {
                 clearFormDataPreference.setIcon(R.drawable.form_data_cleared_dark);
@@ -546,7 +546,7 @@ public class SettingsFragment extends PreferenceFragment {
             clearFormDataPreference.setIcon(R.drawable.form_data_warning);
         }
 
-        // Set the `clearCachePreference` icon.
+        // Set the clear cache preference icon.
         if (clearEverything || savedPreferences.getBoolean("clear_cache", true)) {
             if (MainWebViewActivity.darkTheme) {
                 clearCachePreference.setIcon(R.drawable.cache_cleared_dark);
@@ -557,8 +557,8 @@ public class SettingsFragment extends PreferenceFragment {
             clearCachePreference.setIcon(R.drawable.cache_warning);
         }
 
-        // Set the `swipeToRefreshPreference` icon.
-        if (savedPreferences.getBoolean("swipe_to_refresh", false)) {
+        // Set the swipe to refresh preference icon.
+        if (savedPreferences.getBoolean("swipe_to_refresh", true)) {
             if (MainWebViewActivity.darkTheme) {
                 swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled_dark);
             } else {
@@ -572,7 +572,7 @@ public class SettingsFragment extends PreferenceFragment {
             }
         }
 
-        // Set the `displayAdditionalAppBarIconsPreference` icon.
+        // Set the display additional app bar icons preference icon.
         if (savedPreferences.getBoolean("display_additional_app_bar_icons", false)) {
             if (MainWebViewActivity.darkTheme) {
                 displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled_dark);
@@ -587,14 +587,14 @@ public class SettingsFragment extends PreferenceFragment {
             }
         }
 
-        // Set the `darkThemePreference` icon.
+        // Set the dark theme preference icon.
         if (savedPreferences.getBoolean("dark_theme", false)) {
             darkThemePreference.setIcon(R.drawable.theme_dark);
         } else {
             darkThemePreference.setIcon(R.drawable.theme_light);
         }
 
-        // Set the `nightModePreference` icon.
+        // Set the night mode preference icon.
         if (nightMode) {
             if (MainWebViewActivity.darkTheme) {
                 nightModePreference.setIcon(R.drawable.night_mode_enabled_dark);
@@ -609,7 +609,7 @@ public class SettingsFragment extends PreferenceFragment {
             }
         }
 
-        // Set the `displayWebpageImagesPreference` icon.
+        // Set the display webpage images preference icon.
         if (savedPreferences.getBoolean("display_webpage_images", true)) {
             if (MainWebViewActivity.darkTheme) {
                 displayWebpageImagesPreference.setIcon(R.drawable.images_enabled_dark);
@@ -1327,7 +1327,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                 case "swipe_to_refresh":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("swipe_to_refresh", false)) {
+                    if (sharedPreferences.getBoolean("swipe_to_refresh", true)) {
                         if (MainWebViewActivity.darkTheme) {
                             swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled_dark);
                         } else {

@@ -131,21 +131,22 @@
         <string name="clear_cookies">Очистить cookie</string>
         <string name="clear_dom_storage"> Очистить хранилище DOM</string>
         <string name="clear_form_data">Очистить данные формы</string>
-    <string name="font_size">Размер шрифта</string>
-        <string name="twenty_five_percent">25%</string>
-        <string name="fifty_percent">50%</string>
-        <string name="seventy_five_percent">75%</string>
-        <string name="one_hundred_percent">100%</string>
-        <string name="one_hundred_twenty_five_percent">125%</string>
-        <string name="one_hundred_fifty_percent">150%</string>
-        <string name="one_hundred_seventy_five_percent">175%</string>
-        <string name="two_hundred_percent">200%</string>
-    <string name="display_images">Показывать изображения</string>
+        <string name="font_size">Размер шрифта</string>
+            <string name="twenty_five_percent">25%</string>
+            <string name="fifty_percent">50%</string>
+            <string name="seventy_five_percent">75%</string>
+            <string name="one_hundred_percent">100%</string>
+            <string name="one_hundred_twenty_five_percent">125%</string>
+            <string name="one_hundred_fifty_percent">150%</string>
+            <string name="one_hundred_seventy_five_percent">175%</string>
+            <string name="two_hundred_percent">200%</string>
+        <string name="swipe_to_refresh_options_menu">Потянуть для обновления</string>
+        <string name="display_images">Показывать изображения</string>
+        <string name="view_source">Просмотр исходного кода</string>
     <string name="share">Поделиться</string>
     <string name="find_on_page">Найти на странице</string>
     <string name="print">Печать</string>
         <string name="privacy_browser_web_page">Privacy Browser веб-страница</string>
-    <string name="view_source">Просмотр исходного кода</string>
     <string name="add_to_home_screen">Добавить на домашний экран</string>
     <string name="refresh">Обновить</string>
 
@@ -228,15 +229,20 @@
     <string name="domain_name">Имя домена</string>
     <string name="domain_deleted">Домен удален</string>
     <string name="domain_name_instructions">добавьте *. для включения всех поддоменов (напр. * .yandex.ru)</string>
-    <string-array name="display_webpage_images_array">
+    <string-array name="swipe_to_refresh_array">
         <item>Настройки по умолчанию</item>
-        <item>Изображения включены</item>
-        <item>Изображения выключены</item>
+        <item>Потянуть для обновления enabled</item>
+        <item>Потянуть для обновления disabled</item>
     </string-array>
     <string-array name="night_mode_array">
         <item>Настройки по умолчанию</item>
         <item>Ночной режим включен</item>
         <item>Ночной режим выключен</item>
+    </string-array>
+    <string-array name="display_webpage_images_array">
+        <item>Настройки по умолчанию</item>
+        <item>Изображения включены</item>
+        <item>Изображения выключены</item>
     </string-array>
     <string name="pinned_ssl_certificate">Закрепленный сертификат SSL</string>
     <string name="saved_ssl_certificate">Сохраненный сертификат SSL</string>
@@ -376,8 +382,8 @@
                 <item>175%</item>
                 <item>200%</item>
             </string-array>
-        <string name="swipe_to_refresh_enabled">Потянуть для обновления</string>
-        <string name="swipe_to_refresh_enabled_summary">Некоторые веб-сайты могут работать некорректно при включении данной опции.</string>
+        <string name="swipe_to_refresh_preference">Потянуть для обновления</string>
+        <string name="swipe_to_refresh_summary">Некоторые веб-сайты могут работать некорректно при включении данной опции.</string>
         <string name="display_additional_app_bar_icons">Отображать дополнительные значки на панели приложения</string>
         <string name="display_additional_app_bar_icons_summary">Отображение значков для переключения файлов cookie, хранилища DOM и данных формы на панели приложения при наличии места.</string>
         <string name="dark_theme">Темная тема</string>

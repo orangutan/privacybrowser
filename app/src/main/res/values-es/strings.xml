@@ -130,21 +130,22 @@
         <string name="clear_cookies">Borrar cookies</string>
         <string name="clear_dom_storage">Borrar almacenamiento DOM</string>
         <string name="clear_form_data">Borrar datos de formulario</string>
-    <string name="font_size">Tamaño de fuente</string>
-        <string name="twenty_five_percent">25%</string>
-        <string name="fifty_percent">50%</string>
-        <string name="seventy_five_percent">75%</string>
-        <string name="one_hundred_percent">100%</string>
-        <string name="one_hundred_twenty_five_percent">125%</string>
-        <string name="one_hundred_fifty_percent">150%</string>
-        <string name="one_hundred_seventy_five_percent">175%</string>
-        <string name="two_hundred_percent">200%</string>
-    <string name="display_images">Mostrar imágenes</string>
+        <string name="font_size">Tamaño de fuente</string>
+            <string name="twenty_five_percent">25%</string>
+            <string name="fifty_percent">50%</string>
+            <string name="seventy_five_percent">75%</string>
+            <string name="one_hundred_percent">100%</string>
+            <string name="one_hundred_twenty_five_percent">125%</string>
+            <string name="one_hundred_fifty_percent">150%</string>
+            <string name="one_hundred_seventy_five_percent">175%</string>
+            <string name="two_hundred_percent">200%</string>
+        <string name="swipe_to_refresh_options_menu">Deslizar para actualizar</string>
+        <string name="display_images">Mostrar imágenes</string>
+        <string name="view_source">Ver la fuente</string>
     <string name="share">Compartir</string>
     <string name="find_on_page">Buscar en página</string>
     <string name="print">Imprimir</string>
         <string name="privacy_browser_web_page">Página web de Navegador Privado</string>
-    <string name="view_source">Ver la fuente</string>
     <string name="add_to_home_screen">Añadir a la ventana de inicio</string>
     <string name="refresh">Actualizar</string>
 
@@ -200,7 +201,7 @@
 
     <!-- Bookmarks Contextual App Bar. -->
     <string name="one_selected">1 seleccionado</string>
-    <string name="selected">seleccionados</string>
+    <string name="selected">seleccionados</string>  <!--This is a plural adjective.-->
     <string name="move_up">Subir</string>
     <string name="move_down">Bajar</string>
     <string name="edit">Editar</string>
@@ -228,15 +229,20 @@
     <string name="domain_name">Nombre de dominio</string>
     <string name="domain_deleted">Dominio borrado</string>
     <string name="domain_name_instructions">*. puede ser añadido a un dominio para incluir todos los subdominios (p.ej. *.stoutner.com)</string>
-    <string-array name="display_webpage_images_array">
+    <string-array name="swipe_to_refresh_array">
         <item>Por defecto del sistema</item>
-        <item>Imágenes habilitadas</item>
-        <item>Imágenes deshabilitadas</item>
+        <item>Deslizar para actualizar habilitado</item>
+        <item>Deslizar para actualizar deshabilitado</item>
     </string-array>
     <string-array name="night_mode_array">
         <item>Por defecto del sistema</item>
         <item>Modo noche habilitado</item>
         <item>Modo noche deshabilitado</item>
+    </string-array>
+    <string-array name="display_webpage_images_array">
+        <item>Por defecto del sistema</item>
+        <item>Imágenes habilitadas</item>
+        <item>Imágenes deshabilitadas</item>
     </string-array>
     <string name="pinned_ssl_certificate">Certificado SSL fijado</string>
     <string name="saved_ssl_certificate">Certificado SSL guardado</string>
@@ -379,8 +385,8 @@
                 <item>175%</item>
                 <item>200%</item>
             </string-array>
-        <string name="swipe_to_refresh_enabled">Deslizar para actualizar</string>
-        <string name="swipe_to_refresh_enabled_summary">Algunas webs no funcionan bien si la opción deslizar para actualizar está habilitada.</string>
+        <string name="swipe_to_refresh_preference">Deslizar para actualizar</string>
+        <string name="swipe_to_refresh_summary">Algunas webs no funcionan bien si la opción deslizar para actualizar está habilitada.</string>
         <string name="display_additional_app_bar_icons">Mostrar iconos adicionales en la barra de aplicación</string>
         <string name="display_additional_app_bar_icons_summary">Mostrar iconos para alternar entre cookies, almacenamiento DOM, y datos de formulario en la barra de aplicación, si hay espacio.</string>
         <string name="dark_theme">Tema oscuro</string>

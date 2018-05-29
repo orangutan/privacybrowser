@@ -131,21 +131,23 @@
         <string name="clear_cookies">Clear Cookies</string>
         <string name="clear_dom_storage">Clear DOM Storage</string>
         <string name="clear_form_data">Clear Form Data</string>
-    <string name="font_size">Font Size</string>
-        <string name="twenty_five_percent">25%</string>
-        <string name="fifty_percent">50%</string>
-        <string name="seventy_five_percent">75%</string>
-        <string name="one_hundred_percent">100%</string>
-        <string name="one_hundred_twenty_five_percent">125%</string>
-        <string name="one_hundred_fifty_percent">150%</string>
-        <string name="one_hundred_seventy_five_percent">175%</string>
-        <string name="two_hundred_percent">200%</string>
-    <string name="display_images">Display Images</string>
+    <string name="layout">Layout</string>
+        <string name="font_size">Font Size</string>
+            <string name="twenty_five_percent">25%</string>
+            <string name="fifty_percent">50%</string>
+            <string name="seventy_five_percent">75%</string>
+            <string name="one_hundred_percent">100%</string>
+            <string name="one_hundred_twenty_five_percent">125%</string>
+            <string name="one_hundred_fifty_percent">150%</string>
+            <string name="one_hundred_seventy_five_percent">175%</string>
+            <string name="two_hundred_percent">200%</string>
+        <string name="swipe_to_refresh_options_menu">Swipe to Refresh</string>
+        <string name="display_images">Display Images</string>
+        <string name="view_source">View Source</string>
     <string name="share">Share</string>
     <string name="find_on_page">Find on Page</string>
     <string name="print">Print</string>
         <string name="privacy_browser_web_page">Privacy Browser Web Page</string>
-    <string name="view_source">View Source</string>
     <string name="add_to_home_screen">Add to Home Screen</string>
     <string name="refresh">Refresh</string>
 
@@ -229,15 +231,20 @@
     <string name="domain_name">Domain name</string>
     <string name="domain_deleted">Domain deleted</string>
     <string name="domain_name_instructions">*. may be prepended to a domain to include all subdomains (eg. *.stoutner.com)</string>
-    <string-array name="display_webpage_images_array">
+    <string-array name="swipe_to_refresh_array">
         <item>System default</item>
-        <item>Images enabled</item>
-        <item>Images disabled</item>
+        <item>Swipe to refresh enabled</item>
+        <item>Swipe to refresh disabled</item>
     </string-array>
     <string-array name="night_mode_array">
         <item>System default</item>
         <item>Night mode enabled</item>
         <item>Night mode disabled</item>
+    </string-array>
+    <string-array name="display_webpage_images_array">
+        <item>System default</item>
+        <item>Images enabled</item>
+        <item>Images disabled</item>
     </string-array>
     <string name="pinned_ssl_certificate">Pinned SSL certificate</string>
     <string name="saved_ssl_certificate">Saved SSL certificate</string>
@@ -448,8 +455,8 @@
                 <item>175</item>
                 <item>200</item>
             </string-array>
-        <string name="swipe_to_refresh_enabled">Swipe to refresh</string>
-        <string name="swipe_to_refresh_enabled_summary">Some websites don’t work well if swipe to refresh is enabled.</string>
+        <string name="swipe_to_refresh_preference">Swipe to refresh</string>
+        <string name="swipe_to_refresh_summary">Some websites don’t work well if swipe to refresh is enabled.</string>
         <string name="display_additional_app_bar_icons">Display additional app bar icons</string>
         <string name="display_additional_app_bar_icons_summary">Display icons for toggling cookies, DOM storage, and form data in the app bar if there is room.</string>
         <string name="dark_theme">Dark theme</string>

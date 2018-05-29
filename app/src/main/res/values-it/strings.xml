@@ -130,21 +130,22 @@
         <string name="clear_cookies">Elimina cookies</string>
         <string name="clear_dom_storage">Elimina DOM storage</string>
         <string name="clear_form_data">Elimina dati dei moduli</string>
-    <string name="font_size">Dimensione font</string>
-        <string name="twenty_five_percent">25%</string>
-        <string name="fifty_percent">50%</string>
-        <string name="seventy_five_percent">75%</string>
-        <string name="one_hundred_percent">100%</string>
-        <string name="one_hundred_twenty_five_percent">125%</string>
-        <string name="one_hundred_fifty_percent">150%</string>
-        <string name="one_hundred_seventy_five_percent">175%</string>
-        <string name="two_hundred_percent">200%</string>
-    <string name="display_images">Mostra immagini</string>
+        <string name="font_size">Dimensione font</string>
+            <string name="twenty_five_percent">25%</string>
+            <string name="fifty_percent">50%</string>
+            <string name="seventy_five_percent">75%</string>
+            <string name="one_hundred_percent">100%</string>
+            <string name="one_hundred_twenty_five_percent">125%</string>
+            <string name="one_hundred_fifty_percent">150%</string>
+            <string name="one_hundred_seventy_five_percent">175%</string>
+            <string name="two_hundred_percent">200%</string>
+        <string name="swipe_to_refresh_options_menu">Swipe per aggiornare</string>
+        <string name="display_images">Mostra immagini</string>
+        <string name="view_source">Visualizza sorgente</string>
     <string name="share">Condividi</string>
     <string name="find_on_page">Cerca nella pagina</string>
     <string name="print">Stampa</string>
         <string name="privacy_browser_web_page">Pagina web di Privacy Browser</string>
-    <string name="view_source">Visualizza sorgente</string>
     <string name="add_to_home_screen">Aggiungi collegamento</string>
     <string name="refresh">Aggiorna</string>
 
@@ -199,7 +200,7 @@
 
     <!-- Bookmarks Contextual App Bar. -->
     <string name="one_selected">1 Selezionato</string>
-    <string name="selected">Selezionato</string>
+    <string name="selected">Selezionato</string>  <!--This is a plural adjective.-->
     <string name="move_up">Sposta sopra</string>
     <string name="move_down">Sposta sotto</string>
     <string name="edit">Modifica</string>
@@ -227,15 +228,20 @@
     <string name="domain_name">Nome del Dominio</string>
     <string name="domain_deleted">Dominio Eliminato</string>
     <string name="domain_name_instructions">è possibile anteporre *. a un dominio per includere tutti i sottodomini (es. *.stoutner.com)</string>
-    <string-array name="display_webpage_images_array">
+    <string-array name="swipe_to_refresh_array">
         <item>Impostazioni di default</item>
-        <item>Abilita Immagini</item>
-        <item>Disabilita Immagini</item>
+        <item>Swipe per aggiornare abilitata</item>
+        <item>Swipe per aggiornare disabilitata</item>
     </string-array>
     <string-array name="night_mode_array">
         <item>Impostazioni di default</item>
         <item>Modalità Notte abilitata</item>
         <item>Modalità Notte disabilitata</item>
+    </string-array>
+    <string-array name="display_webpage_images_array">
+        <item>Impostazioni di default</item>
+        <item>Abilita Immagini</item>
+        <item>Disabilita Immagini</item>
     </string-array>
     <string name="pinned_ssl_certificate">Certificato SSL appuntato</string>
     <string name="saved_ssl_certificate">Certificato SSL salvato</string>
@@ -376,8 +382,8 @@
                 <item>175%</item>
                 <item>200%</item>
             </string-array>
-        <string name="swipe_to_refresh_enabled">Swipe per aggiornare</string>
-        <string name="swipe_to_refresh_enabled_summary">Alcuni siti non funzionano correttamente se questa opzione è abilitata.</string>
+        <string name="swipe_to_refresh_preference">Swipe per aggiornare</string>
+        <string name="swipe_to_refresh_summary">Alcuni siti non funzionano correttamente se questa opzione è abilitata.</string>
         <string name="display_additional_app_bar_icons">Mostra icone addizionali nella barra dell\'applicazione</string>
         <string name="display_additional_app_bar_icons_summary">Mostra le icone per l\'abilitazione dei cookies, del DOM storage,
             e dei dati dei moduli nella barra dell\'applicazione se c\'è spazio disponibile.</string>

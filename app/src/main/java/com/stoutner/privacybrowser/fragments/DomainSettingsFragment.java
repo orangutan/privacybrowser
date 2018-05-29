@@ -95,8 +95,9 @@ public class DomainSettingsFragment extends Fragment {
         final String defaultUserAgentName = sharedPreferences.getString("user_agent", "Privacy Browser");
         final String defaultCustomUserAgentString = sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0");
         String defaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
-        final boolean defaultDisplayWebpageImagesBoolean = sharedPreferences.getBoolean("display_website_images", true);
+        boolean defaultSwipeToRefreshBoolean = sharedPreferences.getBoolean("swipe_to_refresh", true);
         final boolean defaultNightModeBoolean = sharedPreferences.getBoolean("night_mode", false);
+        final boolean defaultDisplayWebpageImagesBoolean = sharedPreferences.getBoolean("display_website_images", true);
 
         // Get handles for the views in the fragment.
         final EditText domainNameEditText = domainSettingsView.findViewById(R.id.domain_settings_name_edittext);
@@ -124,12 +125,15 @@ public class DomainSettingsFragment extends Fragment {
         final EditText customUserAgentEditText = domainSettingsView.findViewById(R.id.domain_settings_custom_user_agent_edittext);
         final Spinner fontSizeSpinner = domainSettingsView.findViewById(R.id.domain_settings_font_size_spinner);
         final TextView fontSizeTextView = domainSettingsView.findViewById(R.id.domain_settings_font_size_textview);
-        final ImageView displayWebpageImagesImageView = domainSettingsView.findViewById(R.id.domain_settings_display_webpage_images_imageview);
-        final Spinner displayWebpageImagesSpinner = domainSettingsView.findViewById(R.id.domain_settings_display_webpage_images_spinner);
-        final TextView displayImagesTextView = domainSettingsView.findViewById(R.id.domain_settings_display_webpage_images_textview);
+        final ImageView swipeToRefreshImageView = domainSettingsView.findViewById(R.id.domain_settings_swipe_to_refresh_imageview);
+        final Spinner swipeToRefreshSpinner = domainSettingsView.findViewById(R.id.domain_settings_swipe_to_refresh_spinner);
+        final TextView swipeToRefreshTextView = domainSettingsView.findViewById(R.id.domain_settings_swipe_to_refresh_textview);
         final ImageView nightModeImageView = domainSettingsView.findViewById(R.id.domain_settings_night_mode_imageview);
         final Spinner nightModeSpinner = domainSettingsView.findViewById(R.id.domain_settings_night_mode_spinner);
         final TextView nightModeTextView = domainSettingsView.findViewById(R.id.domain_settings_night_mode_textview);
+        final ImageView displayWebpageImagesImageView = domainSettingsView.findViewById(R.id.domain_settings_display_webpage_images_imageview);
+        final Spinner displayWebpageImagesSpinner = domainSettingsView.findViewById(R.id.domain_settings_display_webpage_images_spinner);
+        final TextView displayImagesTextView = domainSettingsView.findViewById(R.id.domain_settings_display_webpage_images_textview);
         final ImageView pinnedSslCertificateImageView = domainSettingsView.findViewById(R.id.domain_settings_pinned_ssl_certificate_imageview);
         Switch pinnedSslCertificateSwitch = domainSettingsView.findViewById(R.id.domain_settings_pinned_ssl_certificate_switch);
         final LinearLayout savedSslCertificateLinearLayout = domainSettingsView.findViewById(R.id.saved_ssl_certificate_linearlayout);
@@ -184,8 +188,9 @@ public class DomainSettingsFragment extends Fragment {
         int fanboysSocialBlockingListInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST));
         final String currentUserAgentName = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
         int fontSizeInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
-        int displayImagesInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
+        int swipeToRefreshInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.SWIPE_TO_REFRESH));
         int nightModeInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.NIGHT_MODE));
+        int displayImagesInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
         int pinnedSslCertificateInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE));
         final String savedSslCertificateIssuedToCNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME));
         String savedSslCertificateIssuedToONameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION));
@@ -211,20 +216,23 @@ public class DomainSettingsFragment extends Fragment {
         ArrayAdapter<CharSequence> translatedUserAgentArrayAdapter = ArrayAdapter.createFromResource(context, R.array.translated_domain_settings_user_agent_names, R.layout.domain_settings_spinner_item);
         ArrayAdapter<CharSequence> fontSizeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.domain_settings_font_size_entries, R.layout.domain_settings_spinner_item);
         ArrayAdapter<CharSequence> fontSizeEntryValuesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.domain_settings_font_size_entry_values, R.layout.domain_settings_spinner_item);
-        final ArrayAdapter<CharSequence> displayImagesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.display_webpage_images_array, R.layout.domain_settings_spinner_item);
+        ArrayAdapter<CharSequence> swipeToRefreshArrayAdapter = ArrayAdapter.createFromResource(context, R.array.swipe_to_refresh_array, R.layout.domain_settings_spinner_item);
         ArrayAdapter<CharSequence> nightModeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.night_mode_array, R.layout.domain_settings_spinner_item);
+        ArrayAdapter<CharSequence> displayImagesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.display_webpage_images_array, R.layout.domain_settings_spinner_item);
 
         // Set the `DropDownViewResource` on the `Spinners`.
-        translatedUserAgentArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_item);
-        fontSizeArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_item);
-        displayImagesArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_item);
-        nightModeArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_item);
+        translatedUserAgentArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items);
+        fontSizeArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items);
+        swipeToRefreshArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items);
+        nightModeArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items);
+        displayImagesArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items);
 
         // Set the `ArrayAdapters` for the `Spinners`.
         userAgentSpinner.setAdapter(translatedUserAgentArrayAdapter);
         fontSizeSpinner.setAdapter(fontSizeArrayAdapter);
-        displayWebpageImagesSpinner.setAdapter(displayImagesArrayAdapter);
+        swipeToRefreshSpinner.setAdapter(swipeToRefreshArrayAdapter);
         nightModeSpinner.setAdapter(nightModeArrayAdapter);
+        displayWebpageImagesSpinner.setAdapter(displayImagesArrayAdapter);
 
         // Create a `SpannableStringBuilder` for each `TextView` that needs multiple colors of text.
         SpannableStringBuilder savedSslCertificateIssuedToCNameStringBuilder = new SpannableStringBuilder(cNameLabel + savedSslCertificateIssuedToCNameString);
@@ -329,7 +337,7 @@ public class DomainSettingsFragment extends Fragment {
         // Create a `boolean` to track if night mode is enabled.
         boolean nightModeEnabled = (nightModeInt == DomainsDatabaseHelper.NIGHT_MODE_ENABLED) || ((nightModeInt == DomainsDatabaseHelper.NIGHT_MODE_SYSTEM_DEFAULT) && defaultNightModeBoolean);
 
-        // Disable the JavaScript `Switch` if night mode is enabled.
+        // Disable the JavaScript switch if night mode is enabled.
         if (nightModeEnabled) {
             javaScriptEnabledSwitch.setEnabled(false);
         } else {
@@ -343,7 +351,7 @@ public class DomainSettingsFragment extends Fragment {
             javaScriptImageView.setImageDrawable(resources.getDrawable(R.drawable.privacy_mode));
         }
 
-        // Set the JavaScript `Switch` status.
+        // Set the JavaScript switch status.
         if (javaScriptEnabledInt == 1) {  // JavaScript is enabled.
             javaScriptEnabledSwitch.setChecked(true);
         } else {  // JavaScript is disabled.
@@ -402,7 +410,7 @@ public class DomainSettingsFragment extends Fragment {
                 }
             }
         } else {  // Third-party cookies cannot be configured for API <= 21.
-            // Hide the `LinearLayout` for third-party cookies.
+            // Hide the LinearLayout for third-party cookies.
             thirdPartyCookiesLinearLayout.setVisibility(View.GONE);
         }
 
@@ -648,7 +656,7 @@ public class DomainSettingsFragment extends Fragment {
             }
         }
 
-        // Open the user agent spinner when the `TextView` is clicked.
+        // Open the user agent spinner when the TextView is clicked.
         userAgentTextView.setOnClickListener((View v) -> {
             // Open the user agent spinner.
             userAgentSpinner.performClick();
@@ -662,17 +670,144 @@ public class DomainSettingsFragment extends Fragment {
         int defaultFontSizeArrayPosition = fontSizeEntryValuesArrayAdapter.getPosition(defaultFontSizeString);
         fontSizeTextView.setText(fontSizeArrayAdapter.getItem(defaultFontSizeArrayPosition));
 
-        // Set the display options for `fontSizeTextView`.
+        // Set the display options for the font size TextView.
         if (fontSizeArrayPosition == 0) {  // System default font size is selected.  Display `fontSizeTextView`.
             fontSizeTextView.setVisibility(View.VISIBLE);
         } else {  // A custom font size is specified.  Hide `fontSizeTextView`.
             fontSizeTextView.setVisibility(View.GONE);
         }
 
-        // Open the font size spinner when the `TextView` is clicked.
+        // Open the font size spinner when the TextView is clicked.
         fontSizeTextView.setOnClickListener((View v) -> {
             // Open the user agent spinner.
             fontSizeSpinner.performClick();
+        });
+
+        // Display the swipe to refresh selection in the spinner.
+        swipeToRefreshSpinner.setSelection(swipeToRefreshInt);
+
+        // Set the swipe to refresh text.
+        if (defaultSwipeToRefreshBoolean) {
+            swipeToRefreshTextView.setText(swipeToRefreshArrayAdapter.getItem(DomainsDatabaseHelper.SWIPE_TO_REFRESH_ENABLED));
+        } else {
+            swipeToRefreshTextView.setText(swipeToRefreshArrayAdapter.getItem(DomainsDatabaseHelper.SWIPE_TO_REFRESH_DISABLED));
+        }
+
+        // Set the swipe to refresh icon and TextView settings.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
+        switch (swipeToRefreshInt) {
+            case DomainsDatabaseHelper.SWIPE_TO_REFRESH_SYSTEM_DEFAULT:
+                if (defaultSwipeToRefreshBoolean) {  // Swipe to refresh is enabled by default.
+                    // Set the icon according to the theme.
+                    if (MainWebViewActivity.darkTheme) {
+                        swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_enabled_dark));
+                    } else {
+                        swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_enabled_light));
+                    }
+                } else {  // Swipe to refresh is disabled by default
+                    // Set the icon according to the theme.
+                    if (MainWebViewActivity.darkTheme) {
+                        swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_disabled_dark));
+                    } else {
+                        swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_disabled_light));
+                    }
+                }
+
+                // Show the swipe to refresh TextView.
+                swipeToRefreshTextView.setVisibility(View.VISIBLE);
+                break;
+
+            case DomainsDatabaseHelper.SWIPE_TO_REFRESH_ENABLED:
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_enabled_dark));
+                } else {
+                    swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_enabled_light));
+                }
+
+                // Hide the swipe to refresh TextView.`
+                swipeToRefreshTextView.setVisibility(View.GONE);
+                break;
+
+            case DomainsDatabaseHelper.SWIPE_TO_REFRESH_DISABLED:
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_disabled_dark));
+                } else {
+                    swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_disabled_light));
+                }
+
+                // Hide the swipe to refresh TextView.
+                swipeToRefreshTextView.setVisibility(View.GONE);
+        }
+
+        // Open the swipe to refresh spinner when the TextView is clicked.
+        swipeToRefreshTextView.setOnClickListener((View v) -> {
+            // Open the swipe to refresh spinner.
+            swipeToRefreshSpinner.performClick();
+        });
+
+        // Display the night mode in the spinner.
+        nightModeSpinner.setSelection(nightModeInt);
+
+        // Set the default night mode text.
+        if (defaultNightModeBoolean) {
+            nightModeTextView.setText(nightModeArrayAdapter.getItem(DomainsDatabaseHelper.NIGHT_MODE_ENABLED));
+        } else {
+            nightModeTextView.setText(nightModeArrayAdapter.getItem(DomainsDatabaseHelper.NIGHT_MODE_DISABLED));
+        }
+
+        // Set the night mode icon and TextView settings.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
+        switch (nightModeInt) {
+            case DomainsDatabaseHelper.NIGHT_MODE_SYSTEM_DEFAULT:
+                if (defaultNightModeBoolean) {  // Night mode enabled by default.
+                    // Set the icon according to the theme.
+                    if (MainWebViewActivity.darkTheme) {
+                        nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_dark));
+                    } else {
+                        nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_light));
+                    }
+                } else {  // Night mode disabled by default.
+                    // Set the icon according to the theme.
+                    if (MainWebViewActivity.darkTheme) {
+                        nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_disabled_dark));
+                    } else {
+                        nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_disabled_light));
+                    }
+                }
+
+                // Show night mode TextView.
+                nightModeTextView.setVisibility(View.VISIBLE);
+                break;
+
+            case DomainsDatabaseHelper.NIGHT_MODE_ENABLED:
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_dark));
+                } else {
+                    nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_light));
+                }
+
+                // Hide the night mode TextView.
+                nightModeTextView.setVisibility(View.GONE);
+                break;
+
+            case DomainsDatabaseHelper.NIGHT_MODE_DISABLED:
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_disabled_dark));
+                } else {
+                    nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_disabled_light));
+                }
+
+                // Hide the night mode TextView.
+                nightModeTextView.setVisibility(View.GONE);
+                break;
+        }
+
+        // Open the night mode spinner when the TextView is clicked.
+        nightModeTextView.setOnClickListener((View v) -> {
+            // Open the night mode spinner.
+            nightModeSpinner.performClick();
         });
 
         // Display the website images mode in the spinner.
@@ -685,7 +820,7 @@ public class DomainSettingsFragment extends Fragment {
             displayImagesTextView.setText(displayImagesArrayAdapter.getItem(DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_DISABLED));
         }
 
-        // Set the display website images icon and `TextView` settings.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
+        // Set the display website images icon and TextView settings.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
         switch (displayImagesInt) {
             case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT:
                 if (defaultDisplayWebpageImagesBoolean) {  // Display webpage images enabled by default.
@@ -704,7 +839,7 @@ public class DomainSettingsFragment extends Fragment {
                     }
                 }
 
-                // Show `displayImagesTextView`.
+                // Show the display images TextView.
                 displayImagesTextView.setVisibility(View.VISIBLE);
                 break;
 
@@ -716,7 +851,7 @@ public class DomainSettingsFragment extends Fragment {
                     displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_enabled_light));
                 }
 
-                // Hide `displayImagesTextView`.
+                // Hide the display images TextView.
                 displayImagesTextView.setVisibility(View.GONE);
                 break;
 
@@ -728,79 +863,15 @@ public class DomainSettingsFragment extends Fragment {
                     displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_disabled_light));
                 }
 
-                // Hide `displayImagesTextView`.
+                // Hide the display images TextView.
                 displayImagesTextView.setVisibility(View.GONE);
                 break;
         }
 
-        // Open the display images spinner when the `TextView` is clicked.
+        // Open the display images spinner when the TextView is clicked.
         displayImagesTextView.setOnClickListener((View v) -> {
             // Open the user agent spinner.
             displayWebpageImagesSpinner.performClick();
-        });
-
-        // Display the night mode in the spinner.
-        nightModeSpinner.setSelection(nightModeInt);
-
-        // Set the default night mode text.
-        if (defaultNightModeBoolean) {
-            nightModeTextView.setText(nightModeArrayAdapter.getItem(DomainsDatabaseHelper.NIGHT_MODE_ENABLED));
-        } else {
-            nightModeTextView.setText(nightModeArrayAdapter.getItem(DomainsDatabaseHelper.NIGHT_MODE_DISABLED));
-        }
-
-        // Set the night mode icon and `TextView` settings.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-        switch (displayImagesInt) {
-            case DomainsDatabaseHelper.NIGHT_MODE_SYSTEM_DEFAULT:
-                if (defaultNightModeBoolean) {  // Night mode enabled by default.
-                    // Set the icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
-                        nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_dark));
-                    } else {
-                        nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_light));
-                    }
-                } else {  // Night mode disabled by default.
-                    // Set the icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
-                        nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_disabled_dark));
-                    } else {
-                        nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_disabled_light));
-                    }
-                }
-
-                // Show `nightModeTextView`.
-                nightModeTextView.setVisibility(View.VISIBLE);
-                break;
-
-            case DomainsDatabaseHelper.NIGHT_MODE_ENABLED:
-                // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
-                    nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_dark));
-                } else {
-                    nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_light));
-                }
-
-                // Hide `nightModeTextView`.
-                nightModeTextView.setVisibility(View.GONE);
-                break;
-
-            case DomainsDatabaseHelper.NIGHT_MODE_DISABLED:
-                // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
-                    nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_disabled_dark));
-                } else {
-                    nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_disabled_light));
-                }
-
-                // Hide `nightModeTextView`.
-                nightModeTextView.setVisibility(View.GONE);
-                break;
-        }
-
-        // Open the night mode spinner when the `TextView` is clicked.
-        nightModeTextView.setOnClickListener((View v) -> {
-            // Open the user agent spinner.
-            nightModeSpinner.performClick();
         });
         
         // Set the pinned SSL certificate icon.
@@ -1303,56 +1374,55 @@ public class DomainSettingsFragment extends Fragment {
             }
         });
 
-        // Set the display webpage images spinner listener.
-        displayWebpageImagesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        // Set the swipe to refresh spinner listener.
+        swipeToRefreshSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // Update the icon and the visibility of `displayImagesTextView`.
+                // Update the icon and the visibility of `nightModeTextView`.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
                 switch (position) {
-                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT:
-                        if (defaultDisplayWebpageImagesBoolean) {
+                    case DomainsDatabaseHelper.SWIPE_TO_REFRESH_SYSTEM_DEFAULT:
+                        if (defaultSwipeToRefreshBoolean) {  // Swipe to refresh enabled by default.
                             // Set the icon according to the theme.
                             if (MainWebViewActivity.darkTheme) {
-                                displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_enabled_dark));
+                                swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_enabled_dark));
                             } else {
-                                displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_enabled_light));
+                                swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_enabled_light));
                             }
-                        } else {
+                        } else {  // Swipe to refresh disabled by default.
                             // Set the icon according to the theme.
                             if (MainWebViewActivity.darkTheme) {
-                                displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_disabled_dark));
+                                swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_disabled_dark));
                             } else {
-                                displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_disabled_light));
+                                swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_disabled_light));
                             }
                         }
 
-                        // Show `displayImagesTextView`.
-                        displayImagesTextView.setVisibility(View.VISIBLE);
+                        // Show the swipe to refresh TextView.
+                        swipeToRefreshTextView.setVisibility(View.VISIBLE);
                         break;
 
-                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_ENABLED:
+                    case DomainsDatabaseHelper.SWIPE_TO_REFRESH_ENABLED:
                         // Set the icon according to the theme.
                         if (MainWebViewActivity.darkTheme) {
-                            displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_enabled_dark));
+                            swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_enabled_dark));
                         } else {
-                            displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_enabled_light));
+                            swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_enabled_light));
                         }
 
-                        // Hide `displayImagesTextView`.
-                        displayImagesTextView.setVisibility(View.GONE);
+                        // Hide the swipe to refresh TextView.
+                        swipeToRefreshTextView.setVisibility(View.GONE);
                         break;
 
-                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_DISABLED:
+                    case DomainsDatabaseHelper.SWIPE_TO_REFRESH_DISABLED:
                         // Set the icon according to the theme.
                         if (MainWebViewActivity.darkTheme) {
-                            displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_disabled_dark));
+                            swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_disabled_dark));
                         } else {
-                            displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_disabled_light));
+                            swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_disabled_light));
                         }
 
-                        // Hide `displayImagesTextView`.
-                        displayImagesTextView.setVisibility(View.GONE);
-                        break;
+                        // Hide the swipe to refresh TextView.
+                        swipeToRefreshTextView.setVisibility(View.GONE);
                 }
             }
 
@@ -1385,7 +1455,7 @@ public class DomainSettingsFragment extends Fragment {
                             }
                         }
 
-                        // Show `nightModeTextView`.
+                        // Show the night mode TextView.
                         nightModeTextView.setVisibility(View.VISIBLE);
                         break;
 
@@ -1468,6 +1538,65 @@ public class DomainSettingsFragment extends Fragment {
                     } else {
                         domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_ghosted_light));
                     }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing.
+            }
+        });
+
+        // Set the display webpage images spinner listener.
+        displayWebpageImagesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Update the icon and the visibility of `displayImagesTextView`.
+                switch (position) {
+                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT:
+                        if (defaultDisplayWebpageImagesBoolean) {
+                            // Set the icon according to the theme.
+                            if (MainWebViewActivity.darkTheme) {
+                                displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_enabled_dark));
+                            } else {
+                                displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_enabled_light));
+                            }
+                        } else {
+                            // Set the icon according to the theme.
+                            if (MainWebViewActivity.darkTheme) {
+                                displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_disabled_dark));
+                            } else {
+                                displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_disabled_light));
+                            }
+                        }
+
+                        // Show `displayImagesTextView`.
+                        displayImagesTextView.setVisibility(View.VISIBLE);
+                        break;
+
+                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_ENABLED:
+                        // Set the icon according to the theme.
+                        if (MainWebViewActivity.darkTheme) {
+                            displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_enabled_dark));
+                        } else {
+                            displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_enabled_light));
+                        }
+
+                        // Hide `displayImagesTextView`.
+                        displayImagesTextView.setVisibility(View.GONE);
+                        break;
+
+                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_DISABLED:
+                        // Set the icon according to the theme.
+                        if (MainWebViewActivity.darkTheme) {
+                            displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_disabled_dark));
+                        } else {
+                            displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_disabled_light));
+                        }
+
+                        // Hide `displayImagesTextView`.
+                        displayImagesTextView.setVisibility(View.GONE);
+                        break;
                 }
             }
 

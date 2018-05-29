@@ -46,6 +46,13 @@
         <p>Oltre ai permessi sopraelencati, Privacy Browser Free mostra gli annunci provenienti dalla Google's AdMob network utilizzando il Firebase backend.
             Se si utilizza la versione Free, Firebase aggiunge i seguenti permessi anche se non sono elencati nel file “manifest”.</p>
 
+        <h3>Lettura dello stato del telefono e dell'identità</h3>
+        <p><a href="https://developer.android.com/reference/android/Manifest.permission#read_phone_state">android.permission.READ_PHONE_STATE</a></p>
+        <p>Permette agli annunci di accedere allo stato del telefono, compreso il numero di telefono del dispositivo, l'informazione sulla rete telefonica in uso,
+            lo status delle chiamate in uscita e una lista degli account telefonici registrati sul dispositivo.
+            Si tratta di un permesso pericoloso per cui è richiesto che l'utente ne dia esplicito consenso su Android Marshmallow (API 23) o successivo.
+            Test effettuati non hanno peraltro evidenziato alcun tentativo da parte di annunci di richiedere o utilizzare questo permesso.</p>
+
         <h3>Visualizzare connessioni di rete</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#ACCESS_NETWORK_STATE">android.permission.ACCESS_NETWORK_STATE</a></p>
         <p>Permette agli annunci di dire quando si è o non si è connessi a internet (presumibilmente per evitare il tentativo di ricaricare un annuncio quando non si è connessi).

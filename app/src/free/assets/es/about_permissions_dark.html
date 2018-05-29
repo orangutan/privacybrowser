@@ -46,6 +46,13 @@
         <p>Además, Navegador Privado Gratuito muestra anuncios de Google AdMob usando el proveedor Firebase.
             En el sabor gratuito, Firebase añade los siguientes permisos aunque no aparecen en el archivo de manifiesto.</p>
 
+        <h3>Leer el estado y la identidad del teléfono</h3>
+        <p><a href="https://developer.android.com/reference/android/Manifest.permission#read_phone_state">android.permission.READ_PHONE_STATE</a></p>
+        <p>Permite que los anuncios accedan al estado del teléfono, incluyendo el número de teléfono del dispositivo, la información actual de la red celular,
+            el estado de las llamadas en curso y una lista de las cuentas telefónicas registradas en el dispositivo.
+            Este es un permiso peligroso y requiere que el usuario lo permita explícitamente en Android Marshmallow (API 23) o posterior.
+            En mis pruebas no he visto anuncios que intenten solicitar o usar este permiso.</p>
+
         <h3>Ver conexiones de red</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#ACCESS_NETWORK_STATE">android.permission.ACCESS_NETWORK_STATE</a></p>
         <p>Permite a los anuncios saber si el dispositivo está conectado a internet y cuando no (probablemente para no tratar de recargar un anuncio cuando está desconectado).

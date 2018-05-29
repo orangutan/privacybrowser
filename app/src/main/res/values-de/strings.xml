@@ -131,21 +131,22 @@
         <string name="clear_cookies">Cookies löschen</string>
         <string name="clear_dom_storage">DOM-Speicher löschen</string>
         <string name="clear_form_data">Formulardaten löschen</string>
-    <string name="font_size">Schriftgröße</string>
-        <string name="twenty_five_percent">25%</string>
-        <string name="fifty_percent">50%</string>
-        <string name="seventy_five_percent">75%</string>
-        <string name="one_hundred_percent">100%</string>
-        <string name="one_hundred_twenty_five_percent">125%</string>
-        <string name="one_hundred_fifty_percent">150%</string>
-        <string name="one_hundred_seventy_five_percent">175%</string>
-        <string name="two_hundred_percent">200%</string>
-    <string name="display_images">Bilder anzeigen</string>
+        <string name="font_size">Schriftgröße</string>
+            <string name="twenty_five_percent">25%</string>
+            <string name="fifty_percent">50%</string>
+            <string name="seventy_five_percent">75%</string>
+            <string name="one_hundred_percent">100%</string>
+            <string name="one_hundred_twenty_five_percent">125%</string>
+            <string name="one_hundred_fifty_percent">150%</string>
+            <string name="one_hundred_seventy_five_percent">175%</string>
+            <string name="two_hundred_percent">200%</string>
+        <string name="swipe_to_refresh_options_menu">Herunterziehen zum aktualisieren</string>
+        <string name="display_images">Bilder anzeigen</string>
+        <string name="view_source">Quelltext anzeigen</string>
     <string name="share">Teilen</string>
     <string name="find_on_page">Auf Seite finden</string>
     <string name="print">Drucken</string>
         <string name="privacy_browser_web_page">Privacy Browser-Website</string>
-    <string name="view_source">Quelltext anzeigen</string>
     <string name="add_to_home_screen">Zur Startseite hinzufügen</string>
     <string name="refresh">Aktualisieren</string>
 
@@ -199,7 +200,7 @@
 
     <!-- Bookmarks Contextual App Bar. -->
     <string name="one_selected">1 Ausgewählt</string>
-    <string name="selected">Ausgewählt</string>
+    <string name="selected">Ausgewählt</string>  <!--This is a plural adjective.-->
     <string name="move_up">Nach oben verschieben</string>
     <string name="move_down">Nach unten verschieben</string>
     <string name="edit">Bearbeiten</string>
@@ -227,15 +228,20 @@
     <string name="domain_name">Domainname</string>
     <string name="domain_deleted">Domain gelöscht</string>
     <string name="domain_name_instructions">*. kann als Wildcard-Subdomain verwendet werden (z.B. *.stoutner.com)</string>
-    <string-array name="display_webpage_images_array">
+    <string-array name="swipe_to_refresh_array">
         <item>Standardeinstellung</item>
-        <item>Grafiken aktiviert</item>
-        <item>Grafiken deaktiviert</item>
+        <item>Herunterziehen zum aktualisieren aktiviert</item>
+        <item>Herunterziehen zum aktualisieren deaktiviert</item>
     </string-array>
     <string-array name="night_mode_array">
         <item>Standardeinstellung</item>
         <item>Nachtmodus aktiviert</item>
         <item>Nachtmodus deaktiviert</item>
+    </string-array>
+    <string-array name="display_webpage_images_array">
+        <item>Standardeinstellung</item>
+        <item>Grafiken aktiviert</item>
+        <item>Grafiken deaktiviert</item>
     </string-array>
     <string name="pinned_ssl_certificate">SSL-Zertifikat verankern</string>
     <string name="saved_ssl_certificate">Gespeicherte SSL-Zertifikate</string>
@@ -331,8 +337,8 @@
             <item>175%</item>
             <item>200%</item>
         </string-array>
-        <string name="swipe_to_refresh_enabled">Herunterziehen zum Aktualisieren</string>
-        <string name="swipe_to_refresh_enabled_summary">Einige Websites funktionieren nicht, wenn "Herunterziehen zum Aktualisieren" eingeschaltet ist.</string>
+        <string name="swipe_to_refresh_preference">Herunterziehen zum Aktualisieren</string>
+        <string name="swipe_to_refresh_summary">Einige Websites funktionieren nicht, wenn "Herunterziehen zum Aktualisieren" eingeschaltet ist.</string>
         <string name="display_additional_app_bar_icons">Weitere Icons in der Titelleiste</string>
         <string name="display_additional_app_bar_icons_summary">Icons zum Umschalten von Cookies, DOM-Speicher und Formulardaten neben der Adresszeile anzeigen, wenn noch Platz dafür da ist.</string>
 
