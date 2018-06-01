@@ -306,6 +306,8 @@
         <string name="incognito_mode_summary">Очистка журнала и кэша после завершения загрузки каждой веб-страницы. Кнопки \'Вперед\' и \'Назад\' не работают в этом режиме.</string>
         <string name="do_not_track">Не отслеживать</string>
         <string name="do_not_track_summary">Отправлять заголовок \'не отслеживать\', являющийся пожеланием веб-серверу не отслеживать этот браузер.</string>
+        <string name="allow_screenshots">Разрешить скриншоты</string>
+        <string name="allow_screenshots_summary">Разрешить скриншоты, запись видео и просмотр на незащищенных дисплеях. При изменении этого параметра Privacy Browser будет перезапущен.</string>
     <string name="block_lists">Списки блокировки</string>
         <string name="easylist">EasyList</string>
         <string name="easylist_summary">Основной список блокировки рекламы.</string>

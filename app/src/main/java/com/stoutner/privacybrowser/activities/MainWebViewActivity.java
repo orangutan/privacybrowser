@@ -1583,7 +1583,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem toggleFirstPartyCookiesMenuItem = menu.findItem(R.id.toggle_first_party_cookies);
         MenuItem toggleThirdPartyCookiesMenuItem = menu.findItem(R.id.toggle_third_party_cookies);
         MenuItem toggleDomStorageMenuItem = menu.findItem(R.id.toggle_dom_storage);
-        MenuItem toggleSaveFormDataMenuItem = menu.findItem(R.id.toggle_save_form_data);
+        MenuItem refreshMenuItem = menu.findItem(R.id.refresh);
 
         // Only display third-party cookies if SDK >= 21
         toggleThirdPartyCookiesMenuItem.setVisible(Build.VERSION.SDK_INT >= 21);
@@ -1591,15 +1591,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get the shared preference values.  `this` references the current context.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Set the status of the additional app bar icons.  The default is `false`.
+        // Set the status of the additional app bar icons.  Setting the refresh menu item to `SHOW_AS_ACTION_ALWAYS` makes it appear even on small devices like phones.
         if (sharedPreferences.getBoolean("display_additional_app_bar_icons", false)) {
             toggleFirstPartyCookiesMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             toggleDomStorageMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-            toggleSaveFormDataMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            refreshMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         } else { //Do not display the additional icons.
             toggleFirstPartyCookiesMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
             toggleDomStorageMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-            toggleSaveFormDataMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            refreshMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
 
         return true;
@@ -3659,58 +3659,54 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void updatePrivacyIcons(boolean runInvalidateOptionsMenu) {
-        // Get handles for the icons.
-        MenuItem privacyIconMenuItem = mainMenu.findItem(R.id.toggle_javascript);
-        MenuItem firstPartyCookiesIconMenuItem = mainMenu.findItem(R.id.toggle_first_party_cookies);
-        MenuItem domStorageIconMenuItem = mainMenu.findItem(R.id.toggle_dom_storage);
-        MenuItem formDataIconMenuItem = mainMenu.findItem(R.id.toggle_save_form_data);
+        // Get handles for the menu items.
+        MenuItem privacyMenuItem = mainMenu.findItem(R.id.toggle_javascript);
+        MenuItem firstPartyCookiesMenuItem = mainMenu.findItem(R.id.toggle_first_party_cookies);
+        MenuItem domStorageMenuItem = mainMenu.findItem(R.id.toggle_dom_storage);
+        MenuItem refreshMenuItem = mainMenu.findItem(R.id.refresh);
 
-        // Update `privacyIcon`.
+        // Update the privacy icon.
         if (javaScriptEnabled) {  // JavaScript is enabled.
-            privacyIconMenuItem.setIcon(R.drawable.javascript_enabled);
+            privacyMenuItem.setIcon(R.drawable.javascript_enabled);
         } else if (firstPartyCookiesEnabled) {  // JavaScript is disabled but cookies are enabled.
-            privacyIconMenuItem.setIcon(R.drawable.warning);
+            privacyMenuItem.setIcon(R.drawable.warning);
         } else {  // All the dangerous features are disabled.
-            privacyIconMenuItem.setIcon(R.drawable.privacy_mode);
+            privacyMenuItem.setIcon(R.drawable.privacy_mode);
         }
 
-        // Update `firstPartyCookiesIcon`.
+        // Update the first-party cookies icon.
         if (firstPartyCookiesEnabled) {  // First-party cookies are enabled.
-            firstPartyCookiesIconMenuItem.setIcon(R.drawable.cookies_enabled);
+            firstPartyCookiesMenuItem.setIcon(R.drawable.cookies_enabled);
         } else {  // First-party cookies are disabled.
             if (darkTheme) {
-                firstPartyCookiesIconMenuItem.setIcon(R.drawable.cookies_disabled_dark);
+                firstPartyCookiesMenuItem.setIcon(R.drawable.cookies_disabled_dark);
             } else {
-                firstPartyCookiesIconMenuItem.setIcon(R.drawable.cookies_disabled_light);
+                firstPartyCookiesMenuItem.setIcon(R.drawable.cookies_disabled_light);
             }
         }
 
-        // Update `domStorageIcon`.
+        // Update the DOM storage icon.
         if (javaScriptEnabled && domStorageEnabled) {  // Both JavaScript and DOM storage are enabled.
-            domStorageIconMenuItem.setIcon(R.drawable.dom_storage_enabled);
+            domStorageMenuItem.setIcon(R.drawable.dom_storage_enabled);
         } else if (javaScriptEnabled) {  // JavaScript is enabled but DOM storage is disabled.
             if (darkTheme) {
-                domStorageIconMenuItem.setIcon(R.drawable.dom_storage_disabled_dark);
+                domStorageMenuItem.setIcon(R.drawable.dom_storage_disabled_dark);
             } else {
-                domStorageIconMenuItem.setIcon(R.drawable.dom_storage_disabled_light);
+                domStorageMenuItem.setIcon(R.drawable.dom_storage_disabled_light);
             }
         } else {  // JavaScript is disabled, so DOM storage is ghosted.
             if (darkTheme) {
-                domStorageIconMenuItem.setIcon(R.drawable.dom_storage_ghosted_dark);
+                domStorageMenuItem.setIcon(R.drawable.dom_storage_ghosted_dark);
             } else {
-                domStorageIconMenuItem.setIcon(R.drawable.dom_storage_ghosted_light);
+                domStorageMenuItem.setIcon(R.drawable.dom_storage_ghosted_light);
             }
         }
 
-        // Update `formDataIcon`.
-        if (saveFormDataEnabled) {  // Form data is enabled.
-            formDataIconMenuItem.setIcon(R.drawable.form_data_enabled);
-        } else {  // Form data is disabled.
-            if (darkTheme) {
-                formDataIconMenuItem.setIcon(R.drawable.form_data_disabled_dark);
-            } else {
-                formDataIconMenuItem.setIcon(R.drawable.form_data_disabled_light);
-            }
+        // Update the refresh icon.
+        if (darkTheme) {
+            refreshMenuItem.setIcon(R.drawable.refresh_enabled_dark);
+        } else {
+            refreshMenuItem.setIcon(R.drawable.refresh_enabled_light);
         }
 
         // `invalidateOptionsMenu` calls `onPrepareOptionsMenu()` and redraws the icons in the `AppBar`.

@@ -305,6 +305,9 @@
         <string name="incognito_mode_summary">Cancella la cronologia e la cache al termine del caricamento di ogni pagina. I pulsanti Avanti e Indietro non funzionano in modalità incognito.</string>
         <string name="do_not_track">Non tracciare</string>
         <string name="do_not_track_summary">Invia un\'intestazione di non tracciamento per chiedere al web server di non tracciare il browser.</string>
+        <string name="allow_screenshots">Permetti gli screenshot</string>
+        <string name="allow_screenshots_summary">Permette gli screenshot, la registrazione di video, e la possibilità di visualizzare su schermi non sicuri.
+            La modifica di questa impostazione provoca il riavvio di Privacy Browser.</string>
     <string name="block_lists">Block List</string>
         <string name="easylist">EasyList</string>
         <string name="easylist_summary">Blocking list principale.</string>

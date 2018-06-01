@@ -307,6 +307,8 @@
         <string name="incognito_mode_summary">Borrar el historial y el caché después de que cada página web termine de cargar. Adelante y atrás no funcionan en el Modo incógnito.</string>
         <string name="do_not_track">No rastrear</string>
         <string name="do_not_track_summary">Enviar la cabecera de no rastrear (DNT) que educadamente sugiere que los servidores web no rastreen este navegador.</string>
+        <string name="allow_screenshots">Permitir capturas de pantalla</string>
+        <string name="allow_screenshots_summary">Permitir capturas de pantalla, grabación de vídeo y visualización en pantallas inseguras. Cambiar esta configuración reiniciará Navegador Privado.</string>
     <string name="block_lists">Listas de bloqueo</string>
         <string name="easylist">EasyList</string>
         <string name="easylist_summary">Lista principal de bloqueo de anuncios.</string>

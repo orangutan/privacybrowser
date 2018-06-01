@@ -460,7 +460,7 @@
         <string name="swipe_to_refresh_preference">Swipe to refresh</string>
         <string name="swipe_to_refresh_summary">Some websites don’t work well if swipe to refresh is enabled.</string>
         <string name="display_additional_app_bar_icons">Display additional app bar icons</string>
-        <string name="display_additional_app_bar_icons_summary">Display icons for toggling cookies, DOM storage, and form data in the app bar if there is room.</string>
+        <string name="display_additional_app_bar_icons_summary">Display icons in the app bar for refreshing the WebView and, if there is room, for toggling cookies and DOM storage.</string>
         <string name="dark_theme">Dark theme</string>
         <string name="dark_theme_summary">Changing the theme will restart Privacy Browser.</string>
         <string name="night_mode">Night mode</string>
