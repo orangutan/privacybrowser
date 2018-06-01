@@ -124,11 +124,11 @@ public class EditBookmarkDatabaseViewDialog extends AppCompatDialogFragment {
         // Initialize the database helper.  The two `nulls` do not specify the database name or a `CursorFactory`.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
         BookmarksDatabaseHelper bookmarksDatabaseHelper = new BookmarksDatabaseHelper(getContext(), null, null, 0);
 
-        // Get a `Cursor` with the selected bookmark and move it to the first position.
+        // Get a cursor with the selected bookmark and move it to the first position.
         Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmarkCursor(bookmarkDatabaseId);
         bookmarkCursor.moveToFirst();
 
-        // Use `AlertDialog.Builder` to create the `AlertDialog`.
+        // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
         // Set the style according to the theme.
@@ -147,27 +147,32 @@ public class EditBookmarkDatabaseViewDialog extends AppCompatDialogFragment {
         // Set the view.  The parent view is `null` because it will be assigned by `AlertDialog`.
         dialogBuilder.setView(getActivity().getLayoutInflater().inflate(R.layout.edit_bookmark_databaseview_dialog, null));
 
-        // Set an `onClick()` listener for the negative button.
+        // Set the listener for the negative button.
         dialogBuilder.setNegativeButton(R.string.cancel, (DialogInterface dialog, int which) -> {
             // Do nothing.  The `AlertDialog` will close automatically.
         });
 
-        // Set the `onClick()` listener fo the positive button.
+        // Set the listener fo the positive button.
         dialogBuilder.setPositiveButton(R.string.save, (DialogInterface dialog, int which) -> {
             // Return the `DialogFragment` to the parent activity on save.
             editBookmarkDatabaseViewListener.onSaveBookmark(EditBookmarkDatabaseViewDialog.this, bookmarkDatabaseId);
         });
 
-        // Create an `AlertDialog` from the `AlertDialog.Builder`.
+        // Create an alert dialog from the alert dialog builder`.
         final AlertDialog alertDialog = dialogBuilder.create();
 
-        // Remove the warning below that `setSoftInputMode` might produce `java.lang.NullPointerException`.
+        // Remove the warning below that `getWindow()` might be null.
         assert alertDialog.getWindow() != null;
+
+        // Disable screenshots if not allowed.
+        if (!MainWebViewActivity.allowScreenshots) {
+            alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
 
         // Set the keyboard to be hidden when the `AlertDialog` is first shown.  If this is not set, the `AlertDialog` will not shrink when the keyboard is displayed.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-        // The `AlertDialog` must be shown before items in the layout can be modified.
+        // The alert dialog must be shown before items in the layout can be modified.
         alertDialog.show();
 
         // Get handles for the layout items.

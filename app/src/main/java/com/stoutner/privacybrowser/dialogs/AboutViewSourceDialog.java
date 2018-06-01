@@ -23,6 +23,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
+import android.view.WindowManager;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
@@ -51,7 +52,19 @@ public class AboutViewSourceDialog extends DialogFragment {
         // Set the text.
         dialogBuilder.setMessage(R.string.about_view_source_message);
 
+        // Create an alert dialog from the alert dialog builder.
+        final AlertDialog alertDialog = dialogBuilder.create();
+
+        // Disable screenshots if not allowed.
+        if (!MainWebViewActivity.allowScreenshots) {
+            // Remove the warning below that `getWindow()` might be null.
+            assert alertDialog.getWindow() != null;
+
+            // Disable screenshots.
+            alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
+
         // `onCreateDialog` requires the return of an `AlertDialog`.
-        return dialogBuilder.create();
+        return alertDialog;
     }
 }

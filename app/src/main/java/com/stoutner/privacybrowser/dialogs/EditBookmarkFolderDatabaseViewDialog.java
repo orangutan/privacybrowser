@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -109,6 +109,9 @@ public class EditBookmarkFolderDatabaseViewDialog extends AppCompatDialogFragmen
         // Run the default commands.
         super.onCreate(savedInstanceState);
 
+        // Remove the incorrect lint warning that `getInt()` might be null.
+        assert getArguments() != null;
+
         // Store the bookmark database ID in the class variable.
         folderDatabaseId = getArguments().getInt("Database ID");
     }
@@ -125,7 +128,7 @@ public class EditBookmarkFolderDatabaseViewDialog extends AppCompatDialogFragmen
         Cursor folderCursor = bookmarksDatabaseHelper.getBookmarkCursor(folderDatabaseId);
         folderCursor.moveToFirst();
 
-        // Use `AlertDialog.Builder` to create the `AlertDialog`.
+        // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
         // Set the style according to the theme.
@@ -138,30 +141,38 @@ public class EditBookmarkFolderDatabaseViewDialog extends AppCompatDialogFragmen
         // Set the title.
         dialogBuilder.setTitle(R.string.edit_folder);
 
+        // Remove the incorrect lint warning that `getActivity()` might be null.
+        assert getActivity() != null;
+
         // Set the view.  The parent view is `null` because it will be assigned by `AlertDialog`.
         dialogBuilder.setView(getActivity().getLayoutInflater().inflate(R.layout.edit_bookmark_folder_databaseview_dialog, null));
 
-        // Set an `onClick()` listener for the negative button.
+        // Set the listener for the negative button.
         dialogBuilder.setNegativeButton(R.string.cancel, (DialogInterface dialog, int which) -> {
             // Do nothing.  The `AlertDialog` will close automatically.
         });
 
-        // Set the `onClick()` listener fo the positive button.
+        // Set the listener fo the positive button.
         dialogBuilder.setPositiveButton(R.string.save, (DialogInterface dialog, int which) -> {
             // Return the `DialogFragment` to the parent activity on save.
             editBookmarkFolderDatabaseViewListener.onSaveBookmarkFolder(EditBookmarkFolderDatabaseViewDialog.this, folderDatabaseId);
         });
 
-        // Create an `AlertDialog` from the `AlertDialog.Builder`.
+        // Create an alert dialog from the alert dialog builder.
         final AlertDialog alertDialog = dialogBuilder.create();
 
-        // Remove the warning below that `setSoftInputMode` might produce `java.lang.NullPointerException`.
+        // Remove the warning below that `getWindow()` might be null.
         assert alertDialog.getWindow() != null;
+
+        // Disable screenshots if not allowed.
+        if (!MainWebViewActivity.allowScreenshots) {
+            alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
 
         // Set the keyboard to be hidden when the `AlertDialog` is first shown.  If this is not set, the `AlertDialog` will not shrink when the keyboard is displayed.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-        // The `AlertDialog` must be shown before items in the layout can be modified.
+        // The alert dialog must be shown before items in the layout can be modified.
         alertDialog.show();
 
         // Get handles for the layout items.
@@ -214,6 +225,9 @@ public class EditBookmarkFolderDatabaseViewDialog extends AppCompatDialogFragmen
 
         // Combine `matrixCursor` and `foldersCursor`.
         MergeCursor foldersMergeCursor = new MergeCursor(new Cursor[]{matrixCursor, foldersCursor});
+
+        // Remove the incorrect lint warning that `getContext()` might be null.
+        assert getContext() != null;
 
         // Create a `ResourceCursorAdapter` for the `Spinner`.  `0` specifies no flags.;
         ResourceCursorAdapter foldersCursorAdapter = new ResourceCursorAdapter(getContext(), R.layout.edit_bookmark_databaseview_spinner_item, foldersMergeCursor, 0) {

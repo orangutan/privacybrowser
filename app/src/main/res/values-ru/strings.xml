@@ -131,6 +131,7 @@
         <string name="clear_cookies">Очистить cookie</string>
         <string name="clear_dom_storage"> Очистить хранилище DOM</string>
         <string name="clear_form_data">Очистить данные формы</string>
+    <string name="layout">Внешний вид</string>
         <string name="font_size">Размер шрифта</string>
             <string name="twenty_five_percent">25%</string>
             <string name="fifty_percent">50%</string>
@@ -231,8 +232,8 @@
     <string name="domain_name_instructions">добавьте *. для включения всех поддоменов (напр. * .yandex.ru)</string>
     <string-array name="swipe_to_refresh_array">
         <item>Настройки по умолчанию</item>
-        <item>Потянуть для обновления enabled</item>
-        <item>Потянуть для обновления disabled</item>
+        <item>Потянуть для обновления - включено</item>
+        <item>Потянуть для обновления - выключено</item>
     </string-array>
     <string-array name="night_mode_array">
         <item>Настройки по умолчанию</item>

@@ -1,4 +1,4 @@
-<!-- `custom_user_agent_ghosted_light.xml` comes from the Android Material icon set, where it is called `ic_important_devices_off`.  It is released under the Apache License 2.0. -->
+<!-- `custom_user_agent_ghosted_light.xml` comes from the Android Material icon set, where it is called `important_devices_off`.  It is released under the Apache License 2.0. -->
 
 <!-- `tools:ignore="VectorRaster"` removes the lint warning about `android:autoMirrored="true"` not applying to API < 21. -->
 <vector

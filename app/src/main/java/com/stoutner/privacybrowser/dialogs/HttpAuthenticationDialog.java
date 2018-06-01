@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -63,6 +63,9 @@ public class HttpAuthenticationDialog extends AppCompatDialogFragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Remove the incorrect lint warnings that `getString()` might be null.
+        assert getArguments() != null;
+
         // Save the host and realm in class variables.
         httpAuthHost = getArguments().getString("Host");
         httpAuthRealm = getArguments().getString("Realm");
@@ -94,10 +97,13 @@ public class HttpAuthenticationDialog extends AppCompatDialogFragment{
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Remove the incorrect lint warning that `getActivity()` might be null.
+        assert getActivity() != null;
+
         // Get the activity's layout inflater.
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
 
-        // Use `AlertDialog.Builder` to create the `AlertDialog`.
+        // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
         // Set the style according to the theme.
@@ -122,40 +128,39 @@ public class HttpAuthenticationDialog extends AppCompatDialogFragment{
         dialogBuilder.setView(layoutInflater.inflate(R.layout.http_authentication_dialog, null));
 
         // Setup the negative button.
-        dialogBuilder.setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Call `onHttpAuthenticationCancel()` and return the `DialogFragment` to the parent activity.
-                httpAuthenticationListener.onHttpAuthenticationCancel();
-            }
+        dialogBuilder.setNegativeButton(R.string.close, (DialogInterface dialog, int which) -> {
+            // Call `onHttpAuthenticationCancel()` and return the `DialogFragment` to the parent activity.
+            httpAuthenticationListener.onHttpAuthenticationCancel();
         });
 
         // Setup the positive button.
-        dialogBuilder.setPositiveButton(R.string.proceed, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Call `onHttpAuthenticationProceed()` and return the `DialogFragment` to the parent activity.
-                httpAuthenticationListener.onHttpAuthenticationProceed(HttpAuthenticationDialog.this);
-            }
+        dialogBuilder.setPositiveButton(R.string.proceed, (DialogInterface dialog, int which) -> {
+            // Call `onHttpAuthenticationProceed()` and return the `DialogFragment` to the parent activity.
+            httpAuthenticationListener.onHttpAuthenticationProceed(HttpAuthenticationDialog.this);
         });
 
-        // Create an `AlertDialog` from the `AlertDialog.Builder`.
+        // Create an alert dialog from the alert dialog builder.
         final AlertDialog alertDialog = dialogBuilder.create();
 
-        // Remove the warning below that `setSoftInputMode` might produce `java.lang.NullPointerException`.
+        // Remove the warning below that `getWindow()` might be null.
         assert alertDialog.getWindow() != null;
+
+        // Disable screenshots if not allowed.
+        if (!MainWebViewActivity.allowScreenshots) {
+            alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
 
         // Show the keyboard when the `AlertDialog` is displayed on the screen.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
-        // The `AlertDialog` needs to be shown before `setOnKeyListener()` can be called.
+        // The alert dialog needs to be shown before the contents can be modified.
         alertDialog.show();
 
         // Get handles for the views in `alertDialog`.
-        TextView realmTextView = (TextView) alertDialog.findViewById(R.id.http_authentication_realm);
-        TextView hostTextView = (TextView) alertDialog.findViewById(R.id.http_authentication_host);
-        EditText usernameEditText = (EditText) alertDialog.findViewById(R.id.http_authentication_username);
-        EditText passwordEditText = (EditText) alertDialog.findViewById(R.id.http_authentication_password);
+        TextView realmTextView = alertDialog.findViewById(R.id.http_authentication_realm);
+        TextView hostTextView = alertDialog.findViewById(R.id.http_authentication_host);
+        EditText usernameEditText = alertDialog.findViewById(R.id.http_authentication_username);
+        EditText passwordEditText = alertDialog.findViewById(R.id.http_authentication_password);
 
         // Set the realm text.
         realmTextView.setText(httpAuthRealm);
@@ -192,40 +197,36 @@ public class HttpAuthenticationDialog extends AppCompatDialogFragment{
         hostTextView.setText(hostStringBuilder);
 
         // Allow the `enter` key on the keyboard to trigger `onHttpAuthenticationProceed` from `usernameEditText`.
-        usernameEditText.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View view, int keyCode, KeyEvent event) {
-                // If the event is a key-down on the `enter` key, call `onHttpAuthenticationProceed()`.
-                if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)) {
-                    // Trigger `onHttpAuthenticationProceed` and return the `DialogFragment` to the parent activity.
-                    httpAuthenticationListener.onHttpAuthenticationProceed(HttpAuthenticationDialog.this);
+        usernameEditText.setOnKeyListener((View view, int keyCode, KeyEvent event) -> {
+            // If the event is a key-down on the `enter` key, call `onHttpAuthenticationProceed()`.
+            if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)) {
+                // Trigger `onHttpAuthenticationProceed` and return the `DialogFragment` to the parent activity.
+                httpAuthenticationListener.onHttpAuthenticationProceed(HttpAuthenticationDialog.this);
 
-                    // Manually dismiss the `AlertDialog`.
-                    alertDialog.dismiss();
+                // Manually dismiss the `AlertDialog`.
+                alertDialog.dismiss();
 
-                    // Consume the event.
-                    return true;
-                } else {  // If any other key was pressed, do not consume the event.
-                    return false;
-                }
+                // Consume the event.
+                return true;
+            } else {  // If any other key was pressed, do not consume the event.
+                return false;
             }
         });
 
         // Allow the `enter` key on the keyboard to trigger `onHttpAuthenticationProceed()` from `passwordEditText`.
-        passwordEditText.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View view, int keyCode, KeyEvent event) {
-                // If the event is a key-down on the `enter` key, call `onHttpAuthenticationProceed()`.
-                if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)) {
-                    // Trigger `onHttpAuthenticationProceed` and return the `DialogFragment` to the parent activity.
-                    httpAuthenticationListener.onHttpAuthenticationProceed(HttpAuthenticationDialog.this);
+        passwordEditText.setOnKeyListener((View view, int keyCode, KeyEvent event) -> {
+            // If the event is a key-down on the `enter` key, call `onHttpAuthenticationProceed()`.
+            if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)) {
+                // Trigger `onHttpAuthenticationProceed` and return the `DialogFragment` to the parent activity.
+                httpAuthenticationListener.onHttpAuthenticationProceed(HttpAuthenticationDialog.this);
 
-                    // Manually dismiss the `AlertDialog`.
-                    alertDialog.dismiss();
+                // Manually dismiss the `AlertDialog`.
+                alertDialog.dismiss();
 
-                    // Consume the event.
-                    return true;
-                } else {  // If any other key was pressed, do not consume the event.
-                    return false;
-                }
+                // Consume the event.
+                return true;
+            } else {  // If any other key was pressed, do not consume the event.
+                return false;
             }
         });
 

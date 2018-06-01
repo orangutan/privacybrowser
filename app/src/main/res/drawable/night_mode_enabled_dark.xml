@@ -1,4 +1,4 @@
-<!-- `night_mode_enabled_dark.xml` is derived from `ic_compare`, which is part of the Android Material icon set.  `ic_compare` is released under the Apache License 2.0.
+<!-- `night_mode_enabled_dark.xml` is derived from `compare`, which is part of the Android Material icon set.  It is released under the Apache License 2.0.
     Modifications copyright © 2017 Soren Stoutner <soren@stoutner.com>.  The resulting image is released under the GPLv3+ license. -->
 
 <!-- `tools:ignore="VectorRaster"` removes the lint warning about `android:autoMirrored="true"` not applying to API < 21. -->

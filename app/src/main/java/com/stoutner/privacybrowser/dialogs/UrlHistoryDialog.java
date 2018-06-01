@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -36,6 +36,7 @@ import android.support.v7.app.AppCompatDialogFragment;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.WebBackForwardList;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -71,6 +72,9 @@ public class UrlHistoryDialog extends AppCompatDialogFragment{
         // Convert `defaultFavoriteIconDrawable` to a `BitmapDrawable`.
         BitmapDrawable defaultFavoriteIconBitmapDrawable = (BitmapDrawable) defaultFavoriteIconDrawable;
 
+        // Remove the incorrect lint error that `getBitmap()` might be null.
+        assert defaultFavoriteIconBitmapDrawable != null;
+
         // Extract a `Bitmap` from `defaultFavoriteIconBitmapDrawable`.
         Bitmap defaultFavoriteIcon = defaultFavoriteIconBitmapDrawable.getBitmap();
 
@@ -92,6 +96,9 @@ public class UrlHistoryDialog extends AppCompatDialogFragment{
 
             // Create a `ByteArrayOutputStream`.
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+            // Remove the incorrect lint error that `compress()` might be null;
+            assert iconBitmap != null;
 
             // Convert the favorite icon `Bitmap` to a `ByteArrayOutputStream`.  `100` is the compression quality, which is ignored by `PNG`.
             iconBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
@@ -120,6 +127,9 @@ public class UrlHistoryDialog extends AppCompatDialogFragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Remove the incorrect lint error that `getArguments()` might be null.
+        assert getArguments() != null;
 
         // Get the `ArrayLists` from the `Arguments`.
         ArrayList<String> urlStringArrayList = getArguments().getStringArrayList("URL_History");
@@ -180,10 +190,13 @@ public class UrlHistoryDialog extends AppCompatDialogFragment{
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Remove the incorrect lint warning that `getActivity()` might be null.
+        assert getActivity() != null;
+
         // Get the activity's layout inflater.
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
 
-        // Use `AlertDialog.Builder` to create the `AlertDialog`.
+        // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
         // Set the style according to the theme.
@@ -200,52 +213,52 @@ public class UrlHistoryDialog extends AppCompatDialogFragment{
         dialogBuilder.setView(layoutInflater.inflate(R.layout.url_history_dialog, null));
 
         // Set an `onClick()` listener on the negative button.
-        dialogBuilder.setNegativeButton(R.string.clear_history, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Clear the history.
-                urlHistoryListener.onClearHistory();
-            }
+        dialogBuilder.setNegativeButton(R.string.clear_history, (DialogInterface dialog, int which) -> {
+            // Clear the history.
+            urlHistoryListener.onClearHistory();
         });
 
         // Set an `onClick()` listener on the positive button.
-        dialogBuilder.setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Do nothing if `Close` is clicked.  The `Dialog` will automatically close.
-            }
+        dialogBuilder.setPositiveButton(R.string.close, (DialogInterface dialog, int which) -> {
+            // Do nothing if `Close` is clicked.  The `Dialog` will automatically close.
         });
 
-        // Create an `AlertDialog` from the `AlertDialog.Builder`.
+        // Create an alert dialog from the alert dialog builder.
         final AlertDialog alertDialog = dialogBuilder.create();
 
-        // We need to show `alertDialog` before we can modify the contents.
+        // Disable screenshots if not allowed.
+        if (!MainWebViewActivity.allowScreenshots) {
+            // Remove the warning below that `getWindow()` might be null.
+            assert alertDialog.getWindow() != null;
+
+            // Disable screenshots.
+            alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
+
+        //The alert dialog must be shown before the contents can be modified.
         alertDialog.show();
 
         // Instantiate a `HistoryArrayAdapter`.
         final HistoryArrayAdapter historyArrayAdapter = new HistoryArrayAdapter(getContext(), historyArrayList, currentPageId);
 
-        // Get a handle for `listView`.
-        ListView listView = (ListView) alertDialog.findViewById(R.id.history_listview);
+        // Get a handle for the list view.
+        ListView listView = alertDialog.findViewById(R.id.history_listview);
 
-        // Set the adapter on `listView`.
+        // Set the list view adapter.
         listView.setAdapter(historyArrayAdapter);
 
-        // Listen for clicks on entries in `listView`.
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Convert the `long` `id` to an `int`.
-                int itemId = (int) id;
+        // Listen for clicks on entries in the list view.
+        listView.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
+            // Convert the `long` `id` to an `int`.
+            int itemId = (int) id;
 
-                // Only consume the click if it is not on the `currentPageId`.
-                if (itemId != currentPageId) {
-                    // Go forward or back to `itemId`.
-                    urlHistoryListener.onUrlHistoryEntrySelected(currentPageId - itemId);
+            // Only consume the click if it is not on the `currentPageId`.
+            if (itemId != currentPageId) {
+                // Go forward or back to `itemId`.
+                urlHistoryListener.onUrlHistoryEntrySelected(currentPageId - itemId);
 
-                    // Dismiss the `Dialog`.
-                    alertDialog.dismiss();
-                }
+                // Dismiss the `Dialog`.
+                alertDialog.dismiss();
             }
         });
 

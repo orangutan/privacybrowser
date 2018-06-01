@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -37,6 +37,7 @@ import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.stoutner.privacybrowser.R;
@@ -87,10 +88,13 @@ public class PinnedSslCertificateMismatchDialog extends AppCompatDialogFragment 
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Remove the incorrect lint warning that `getActivity()` might be null.
+        assert getActivity() != null;
+
         // Get the activity's layout inflater.
         layoutInflater = getActivity().getLayoutInflater();
 
-        // Use `AlertDialog.Builder` to create the `AlertDialog`.
+        // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
         // Set the style according to the theme.
@@ -109,57 +113,48 @@ public class PinnedSslCertificateMismatchDialog extends AppCompatDialogFragment 
         }
 
         // Setup the neutral button.
-        dialogBuilder.setNeutralButton(R.string.update_ssl, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Initialize the `long` date variables.  If the date is `null`, a long value of `0` will be stored in the Domains database entry.
-                long currentSslStartDateLong = 0;
-                long currentSslEndDateLong = 0;
+        dialogBuilder.setNeutralButton(R.string.update_ssl, (DialogInterface dialog, int which) -> {
+            // Initialize the `long` date variables.  If the date is `null`, a long value of `0` will be stored in the Domains database entry.
+            long currentSslStartDateLong = 0;
+            long currentSslEndDateLong = 0;
 
-                // Convert the `Dates` into `longs`.
-                if (currentSslStartDate != null) {
-                    currentSslStartDateLong = currentSslStartDate.getTime();
-                }
-
-                if (currentSslEndDate != null) {
-                    currentSslEndDateLong = currentSslEndDate.getTime();
-                }
-
-                // Initialize the database handler.  The two `nulls` do not specify the database name or a `CursorFactory`.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
-                DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(getContext(), null, null, 0);
-
-                // Update the pinned SSL certificate for this domain.
-                domainsDatabaseHelper.updateCertificate(MainWebViewActivity.domainSettingsDatabaseId, currentSslIssuedToCNameString, currentSslIssuedToONameString, currentSslIssuedToUNameString, currentSslIssuedByCNameString, currentSslIssuedByONameString,
-                        currentSslIssuedByUNameString, currentSslStartDateLong, currentSslEndDateLong);
-
-                // Update the pinned SSL certificate global variables to match the information that is now in the database.
-                MainWebViewActivity.pinnedDomainSslIssuedToCNameString = currentSslIssuedToCNameString;
-                MainWebViewActivity.pinnedDomainSslIssuedToONameString = currentSslIssuedToONameString;
-                MainWebViewActivity.pinnedDomainSslIssuedToUNameString = currentSslIssuedToUNameString;
-                MainWebViewActivity.pinnedDomainSslIssuedByCNameString = currentSslIssuedByCNameString;
-                MainWebViewActivity.pinnedDomainSslIssuedByONameString = currentSslIssuedByONameString;
-                MainWebViewActivity.pinnedDomainSslIssuedByUNameString = currentSslIssuedByUNameString;
-                MainWebViewActivity.pinnedDomainSslStartDate = currentSslStartDate;
-                MainWebViewActivity.pinnedDomainSslEndDate = currentSslEndDate;
+            // Convert the `Dates` into `longs`.
+            if (currentSslStartDate != null) {
+                currentSslStartDateLong = currentSslStartDate.getTime();
             }
+
+            if (currentSslEndDate != null) {
+                currentSslEndDateLong = currentSslEndDate.getTime();
+            }
+
+            // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
+            DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(getContext(), null, null, 0);
+
+            // Update the pinned SSL certificate for this domain.
+            domainsDatabaseHelper.updateCertificate(MainWebViewActivity.domainSettingsDatabaseId, currentSslIssuedToCNameString, currentSslIssuedToONameString, currentSslIssuedToUNameString,
+                    currentSslIssuedByCNameString, currentSslIssuedByONameString, currentSslIssuedByUNameString, currentSslStartDateLong, currentSslEndDateLong);
+
+            // Update the pinned SSL certificate global variables to match the information that is now in the database.
+            MainWebViewActivity.pinnedDomainSslIssuedToCNameString = currentSslIssuedToCNameString;
+            MainWebViewActivity.pinnedDomainSslIssuedToONameString = currentSslIssuedToONameString;
+            MainWebViewActivity.pinnedDomainSslIssuedToUNameString = currentSslIssuedToUNameString;
+            MainWebViewActivity.pinnedDomainSslIssuedByCNameString = currentSslIssuedByCNameString;
+            MainWebViewActivity.pinnedDomainSslIssuedByONameString = currentSslIssuedByONameString;
+            MainWebViewActivity.pinnedDomainSslIssuedByUNameString = currentSslIssuedByUNameString;
+            MainWebViewActivity.pinnedDomainSslStartDate = currentSslStartDate;
+            MainWebViewActivity.pinnedDomainSslEndDate = currentSslEndDate;
         });
 
         // Setup the negative button.
-        dialogBuilder.setNegativeButton(R.string.back, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Call the `onSslMismatchBack` public interface to send the `WebView` back one page.
-                pinnedSslCertificateMismatchListener.onSslMismatchBack();
-            }
+        dialogBuilder.setNegativeButton(R.string.back, (DialogInterface dialog, int which) -> {
+            // Call the `onSslMismatchBack` public interface to send the `WebView` back one page.
+            pinnedSslCertificateMismatchListener.onSslMismatchBack();
         });
 
         // Setup the positive button.
-        dialogBuilder.setPositiveButton(R.string.proceed, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Call the `onSslMismatchProceed` public interface.
-                pinnedSslCertificateMismatchListener.onSslMismatchProceed();
-            }
+        dialogBuilder.setPositiveButton(R.string.proceed, (DialogInterface dialog, int which) -> {
+            // Call the `onSslMismatchProceed` public interface.
+            pinnedSslCertificateMismatchListener.onSslMismatchProceed();
         });
 
         // Set the title.
@@ -168,27 +163,36 @@ public class PinnedSslCertificateMismatchDialog extends AppCompatDialogFragment 
         // Set the layout.  The parent view is `null` because it will be assigned by `AlertDialog`.
         dialogBuilder.setView(layoutInflater.inflate(R.layout.pinned_ssl_certificate_mismatch_linearlayout, null));
 
-        // Create an `AlertDialog` from the `AlertDialog.Builder`
+        // Create an alert dialog from the alert dialog builder.
         final AlertDialog alertDialog = dialogBuilder.create();
 
-        // Show the `AlertDialog` so the items in the layout can be modified.
+        // Disable screenshots if not allowed.
+        if (!MainWebViewActivity.allowScreenshots) {
+            // Remove the warning below that `getWindow()` might be null.
+            assert alertDialog.getWindow() != null;
+
+            // Disable screenshots.
+            alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
+
+        // Show the alert dialog so the items in the layout can be modified.
         alertDialog.show();
 
-        //  Setup `wrapVerticalContentViewPager`.
-        WrapVerticalContentViewPager wrapVerticalContentViewPager = (WrapVerticalContentViewPager) alertDialog.findViewById(R.id.pinned_ssl_certificate_mismatch_viewpager);
+        //  Setup the view pager.
+        WrapVerticalContentViewPager wrapVerticalContentViewPager = alertDialog.findViewById(R.id.pinned_ssl_certificate_mismatch_viewpager);
         wrapVerticalContentViewPager.setAdapter(new pagerAdapter());
 
-        // Setup the `TabLayout` and connect it to the `WrapVerticalContentViewPager`.
-        TabLayout tabLayout = (TabLayout) alertDialog.findViewById(R.id.pinned_ssl_certificate_mismatch_tablayout);
+        // Setup the tab layout and connect it to the view pager.
+        TabLayout tabLayout = alertDialog.findViewById(R.id.pinned_ssl_certificate_mismatch_tablayout);
         tabLayout.setupWithViewPager(wrapVerticalContentViewPager);
 
-        // `onCreateDialog` requires the return of an `AlertDialog`.
+        // `onCreateDialog()` requires the return of an `AlertDialog`.
         return alertDialog;
     }
 
     private class pagerAdapter extends PagerAdapter {
         @Override
-        public boolean isViewFromObject(View view, Object object) {
+        public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
             // Check to see if the `View` and the `Object` are the same.
             return (view == object);
         }
@@ -210,19 +214,20 @@ public class PinnedSslCertificateMismatchDialog extends AppCompatDialogFragment 
         }
 
         @Override
-        public Object instantiateItem(ViewGroup container, int position) {
+        @NonNull
+        public Object instantiateItem(@NonNull ViewGroup container, int position) {
             // Inflate the `ScrollView` for this tab.
             ViewGroup tabViewGroup = (ViewGroup) layoutInflater.inflate(R.layout.pinned_ssl_certificate_mismatch_scrollview, container, false);
 
             // Get handles for the `TextViews`.
-            TextView issuedToCNameTextView = (TextView) tabViewGroup.findViewById(R.id.issued_to_cname);
-            TextView issuedToONameTextView = (TextView) tabViewGroup.findViewById(R.id.issued_to_oname);
-            TextView issuedToUNameTextView = (TextView) tabViewGroup.findViewById(R.id.issued_to_uname);
-            TextView issuedByCNameTextView = (TextView) tabViewGroup.findViewById(R.id.issued_by_cname);
-            TextView issuedByONameTextView = (TextView) tabViewGroup.findViewById(R.id.issued_by_oname);
-            TextView issuedByUNameTextView = (TextView) tabViewGroup.findViewById(R.id.issued_by_uname);
-            TextView startDateTextView = (TextView) tabViewGroup.findViewById(R.id.start_date);
-            TextView endDateTextView = (TextView) tabViewGroup.findViewById(R.id.end_date);
+            TextView issuedToCNameTextView = tabViewGroup.findViewById(R.id.issued_to_cname);
+            TextView issuedToONameTextView = tabViewGroup.findViewById(R.id.issued_to_oname);
+            TextView issuedToUNameTextView = tabViewGroup.findViewById(R.id.issued_to_uname);
+            TextView issuedByCNameTextView = tabViewGroup.findViewById(R.id.issued_by_cname);
+            TextView issuedByONameTextView = tabViewGroup.findViewById(R.id.issued_by_oname);
+            TextView issuedByUNameTextView = tabViewGroup.findViewById(R.id.issued_by_uname);
+            TextView startDateTextView = tabViewGroup.findViewById(R.id.start_date);
+            TextView endDateTextView = tabViewGroup.findViewById(R.id.end_date);
 
             // Setup the labels.
             String cNameLabel = getString(R.string.common_name) + "  ";
@@ -297,7 +302,8 @@ public class PinnedSslCertificateMismatchDialog extends AppCompatDialogFragment 
                 if (MainWebViewActivity.pinnedDomainSslStartDate == null) {
                     startDateStringBuilder = new SpannableStringBuilder(startDateLabel);
                 } else {
-                    startDateStringBuilder = new SpannableStringBuilder(startDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(MainWebViewActivity.pinnedDomainSslStartDate));
+                    startDateStringBuilder = new SpannableStringBuilder(startDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG)
+                            .format(MainWebViewActivity.pinnedDomainSslStartDate));
                 }
 
                 if (MainWebViewActivity.pinnedDomainSslEndDate == null) {

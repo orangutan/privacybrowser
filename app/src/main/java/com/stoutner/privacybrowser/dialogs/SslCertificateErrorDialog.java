@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -34,6 +34,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.stoutner.privacybrowser.R;
@@ -93,6 +94,9 @@ public class SslCertificateErrorDialog extends AppCompatDialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Remove the incorrect lint warning that `getArguments()` might be null.
+        assert getArguments() != null;
+
         // Save the components of the SSL error message in class variables.
         primaryErrorInt = getArguments().getInt("PrimaryErrorInt");
         urlWithError = getArguments().getString("UrlWithError");
@@ -133,10 +137,13 @@ public class SslCertificateErrorDialog extends AppCompatDialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Remove the incorrect lint warning that `getActivity()` might be null.
+        assert getActivity() != null;
+
         // Get the activity's layout inflater.
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
 
-        // Use `AlertDialog.Builder` to create the `AlertDialog`.
+        // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
         // Set the style and icon according to the theme.
@@ -160,42 +167,41 @@ public class SslCertificateErrorDialog extends AppCompatDialogFragment {
         // Set the view.  The parent view is `null` because it will be assigned by `AlertDialog`.
         dialogBuilder.setView(layoutInflater.inflate(R.layout.ssl_certificate_error, null));
 
-        // Set an `onClick` listener on the negative button.  `null` doesn't do anything extra when the button is pressed.  The `Dialog` will automatically close.
-        dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                sslCertificateErrorListener.onSslErrorCancel();
-            }
-        });
+        // Set a listener on the negative button.
+        dialogBuilder.setNegativeButton(R.string.cancel, (DialogInterface dialog, int which) -> sslCertificateErrorListener.onSslErrorCancel());
 
-        // Set an `onClick` listener on the positive button.
-        dialogBuilder.setPositiveButton(R.string.proceed, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                sslCertificateErrorListener.onSslErrorProceed();
-            }
-        });
+        // Set a listener on the positive button.
+        dialogBuilder.setPositiveButton(R.string.proceed, (DialogInterface dialog, int which) -> sslCertificateErrorListener.onSslErrorProceed());
 
 
-        // Create an `AlertDialog` from the `AlertDialog.Builder`.
+        // Create an alert dialog from the alert dialog builder.
         AlertDialog alertDialog = dialogBuilder.create();
 
-        // We have to show the `AlertDialog` before we can modify the content.
+        // Disable screenshots if not allowed.
+        if (!MainWebViewActivity.allowScreenshots) {
+            // Remove the warning below that `getWindow()` might be null.
+            assert alertDialog.getWindow() != null;
+
+            // Disable screenshots.
+            alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
+
+        // We have to show the alert dialog before we can modify the content.
         alertDialog.show();
 
         // Get handles for the `TextViews`
-        TextView primaryErrorTextView = (TextView) alertDialog.findViewById(R.id.primary_error);
-        TextView urlTextView = (TextView) alertDialog.findViewById(R.id.url_error_dialog);
-        TextView issuedToCNameTextView = (TextView) alertDialog.findViewById(R.id.issued_to_cname_error_dialog);
-        TextView issuedToONameTextView = (TextView) alertDialog.findViewById(R.id.issued_to_oname_error_dialog);
-        TextView issuedToUNameTextView = (TextView) alertDialog.findViewById(R.id.issued_to_uname_error_dialog);
-        TextView issuedByTextView = (TextView) alertDialog.findViewById(R.id.issued_by_textview);
-        TextView issuedByCNameTextView = (TextView) alertDialog.findViewById(R.id.issued_by_cname_error_dialog);
-        TextView issuedByONameTextView = (TextView) alertDialog.findViewById(R.id.issued_by_oname_error_dialog);
-        TextView issuedByUNameTextView = (TextView) alertDialog.findViewById(R.id.issued_by_uname_error_dialog);
-        TextView validDatesTextView = (TextView) alertDialog.findViewById(R.id.valid_dates_textview);
-        TextView startDateTextView = (TextView) alertDialog.findViewById(R.id.start_date_error_dialog);
-        TextView endDateTextView = (TextView) alertDialog.findViewById(R.id.end_date_error_dialog);
+        TextView primaryErrorTextView = alertDialog.findViewById(R.id.primary_error);
+        TextView urlTextView = alertDialog.findViewById(R.id.url_error_dialog);
+        TextView issuedToCNameTextView = alertDialog.findViewById(R.id.issued_to_cname_error_dialog);
+        TextView issuedToONameTextView = alertDialog.findViewById(R.id.issued_to_oname_error_dialog);
+        TextView issuedToUNameTextView = alertDialog.findViewById(R.id.issued_to_uname_error_dialog);
+        TextView issuedByTextView = alertDialog.findViewById(R.id.issued_by_textview);
+        TextView issuedByCNameTextView = alertDialog.findViewById(R.id.issued_by_cname_error_dialog);
+        TextView issuedByONameTextView = alertDialog.findViewById(R.id.issued_by_oname_error_dialog);
+        TextView issuedByUNameTextView = alertDialog.findViewById(R.id.issued_by_uname_error_dialog);
+        TextView validDatesTextView = alertDialog.findViewById(R.id.valid_dates_textview);
+        TextView startDateTextView = alertDialog.findViewById(R.id.start_date_error_dialog);
+        TextView endDateTextView = alertDialog.findViewById(R.id.end_date_error_dialog);
 
         // Setup the common strings.
         String urlLabel = getString(R.string.url_label) + "  ";

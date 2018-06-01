@@ -130,6 +130,7 @@
         <string name="clear_cookies">Elimina cookies</string>
         <string name="clear_dom_storage">Elimina DOM storage</string>
         <string name="clear_form_data">Elimina dati dei moduli</string>
+    <string name="layout">Layout</string>
         <string name="font_size">Dimensione font</string>
             <string name="twenty_five_percent">25%</string>
             <string name="fifty_percent">50%</string>
@@ -230,8 +231,8 @@
     <string name="domain_name_instructions">è possibile anteporre *. a un dominio per includere tutti i sottodomini (es. *.stoutner.com)</string>
     <string-array name="swipe_to_refresh_array">
         <item>Impostazioni di default</item>
-        <item>Swipe per aggiornare abilitata</item>
-        <item>Swipe per aggiornare disabilitata</item>
+        <item>Swipe per aggiornare abilitato</item>
+        <item>Swipe per aggiornare disabilitato</item>
     </string-array>
     <string-array name="night_mode_array">
         <item>Impostazioni di default</item>
@@ -240,8 +241,8 @@
     </string-array>
     <string-array name="display_webpage_images_array">
         <item>Impostazioni di default</item>
-        <item>Abilita Immagini</item>
-        <item>Disabilita Immagini</item>
+        <item>Immagini abilitate</item>
+        <item>Immagini disabilitate</item>
     </string-array>
     <string name="pinned_ssl_certificate">Certificato SSL appuntato</string>
     <string name="saved_ssl_certificate">Certificato SSL salvato</string>

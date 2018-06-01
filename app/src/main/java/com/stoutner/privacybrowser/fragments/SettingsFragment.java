@@ -60,6 +60,7 @@ public class SettingsFragment extends PreferenceFragment {
         final Preference customUserAgentPreference = findPreference("custom_user_agent");
         final Preference incognitoModePreference = findPreference("incognito_mode");
         final Preference doNotTrackPreference = findPreference("do_not_track");
+        final Preference allowScreenshotsPreference = findPreference("allow_screenshots");
         final Preference easyListPreference = findPreference("easylist");
         final Preference easyPrivacyPreference = findPreference("easyprivacy");
         final Preference fanboyAnnoyanceListPreference = findPreference("fanboy_annoyance_list");
@@ -209,17 +210,17 @@ public class SettingsFragment extends PreferenceFragment {
         // Set the default font size as the summary text for the preference.
         defaultFontSizePreference.setSummary(savedPreferences.getString("default_font_size", "100") + "%%");
 
-        // Disable `javaScriptPreference` if `nightModeBoolean` is true.  JavaScript will be enabled for all web pages.
+        // Disable the JavaScript preference if Night Mode is enabled.  JavaScript will be enabled for all web pages.
         javaScriptPreference.setEnabled(!nightMode);
 
-        // Set the `javaScriptPreference` icon.
+        // Set the JavaScript icon.
         if (javaScriptEnabled || nightMode) {
             javaScriptPreference.setIcon(R.drawable.javascript_enabled);
         } else {
             javaScriptPreference.setIcon(R.drawable.privacy_mode);
         }
 
-        // Set the `firstPartyCookiesPreference` icon.
+        // Set the first-party cookies icon.
         if (firstPartyCookiesEnabled) {
             firstPartyCookiesPreference.setIcon(R.drawable.cookies_enabled);
         } else {
@@ -230,7 +231,7 @@ public class SettingsFragment extends PreferenceFragment {
             }
         }
 
-        // Set the `thirdPartyCookiesPreference` icon.
+        // Set the third party cookies icon.
         if (firstPartyCookiesEnabled && Build.VERSION.SDK_INT >= 21) {
             if (thirdPartyCookiesEnabled) {
                 thirdPartyCookiesPreference.setIcon(R.drawable.cookies_warning);
@@ -249,7 +250,7 @@ public class SettingsFragment extends PreferenceFragment {
             }
         }
 
-        // Set the `domStoragePreference` icon.
+        // Set the DOM storage icon.
         if (javaScriptEnabled || nightMode) {  // The preference is enabled.
             if (savedPreferences.getBoolean("dom_storage_enabled", false)) {  // DOM storage is enabled.
                 domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
@@ -268,7 +269,7 @@ public class SettingsFragment extends PreferenceFragment {
             }
         }
 
-        // Set the `saveFormDataPreference` icon.
+        // Set the save form data icon.
         if (savedPreferences.getBoolean("save_form_data_enabled", false)) {
             saveFormDataPreference.setIcon(R.drawable.form_data_enabled);
         } else {
@@ -279,7 +280,7 @@ public class SettingsFragment extends PreferenceFragment {
             }
         }
 
-        // Set the `customUserAgentPreference` icon.
+        // Set the custom user agent icon.
         if (customUserAgentPreference.isEnabled()) {
             if (MainWebViewActivity.darkTheme) {
                 customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled_dark);
@@ -294,7 +295,7 @@ public class SettingsFragment extends PreferenceFragment {
             }
         }
 
-        // Set the `incognitoModePreference` icon.
+        // Set the incognito mode icon.
         if (savedPreferences.getBoolean("incognito_mode", false)) {
             if (MainWebViewActivity.darkTheme) {
                 incognitoModePreference.setIcon(R.drawable.incognito_mode_enabled_dark);
@@ -309,7 +310,7 @@ public class SettingsFragment extends PreferenceFragment {
             }
         }
 
-        // Set the `doNotTrackPreference` icon.
+        // Set the Do Not Track icon.
         if (savedPreferences.getBoolean("do_not_track", false)) {
             if (MainWebViewActivity.darkTheme) {
                 doNotTrackPreference.setIcon(R.drawable.block_tracking_enabled_dark);
@@ -321,6 +322,21 @@ public class SettingsFragment extends PreferenceFragment {
                 doNotTrackPreference.setIcon(R.drawable.block_tracking_disabled_dark);
             } else {
                 doNotTrackPreference.setIcon(R.drawable.block_tracking_disabled_light);
+            }
+        }
+
+        // Set the allow screenshots icon.
+        if (savedPreferences.getBoolean("allow_screenshots", false)) {
+            if (MainWebViewActivity.darkTheme) {
+                allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled_dark);
+            } else {
+                allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled_light);
+            }
+        } else {
+            if (MainWebViewActivity.darkTheme) {
+                allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled_dark);
+            } else {
+                allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled_light);
             }
         }
 
@@ -354,7 +370,7 @@ public class SettingsFragment extends PreferenceFragment {
             }
         }
 
-        // Set the Fanboy list icons.
+        // Set the Fanboy lists icons.
         if (fanboyAnnoyanceListEnabled) {
             if (MainWebViewActivity.darkTheme) {
                 // Set the Fanboy annoyance list icon.
@@ -432,7 +448,7 @@ public class SettingsFragment extends PreferenceFragment {
             }
         }
 
-        // Set the `searchCustomURLPreference` icon.
+        // Set the search custom URL icon.
         if (searchCustomURLPreference.isEnabled()) {
             if (MainWebViewActivity.darkTheme) {
                 searchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_dark);
@@ -841,6 +857,35 @@ public class SettingsFragment extends PreferenceFragment {
                         }
                     }
 
+                    break;
+
+                case "allow_screenshots":
+                    // Update the icon.
+                    if (sharedPreferences.getBoolean("allow_screenshots", false)) {
+                        if (MainWebViewActivity.darkTheme) {
+                            allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled_dark);
+                        } else {
+                            allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled_light);
+                        }
+                    } else {
+                        if (MainWebViewActivity.darkTheme) {
+                            allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled_dark);
+                        } else {
+                            allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled_light);
+                        }
+                    }
+
+                    // Create an intent to restart Privacy Browser.
+                    Intent allowScreenshotsRestartIntent = getActivity().getParentActivityIntent();
+
+                    // Assert that the intent is not null to remove the lint error below.
+                    assert allowScreenshotsRestartIntent != null;
+
+                    // `Intent.FLAG_ACTIVITY_CLEAR_TASK` removes all activities from the stack.  It requires `Intent.FLAG_ACTIVITY_NEW_TASK`.
+                    allowScreenshotsRestartIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+                    // Make it so.
+                    startActivity(allowScreenshotsRestartIntent);
                     break;
 
                 case "easylist":
@@ -1367,17 +1412,17 @@ public class SettingsFragment extends PreferenceFragment {
                         darkThemePreference.setIcon(R.drawable.theme_light);
                     }
 
-                    // Create an `Intent` to restart Privacy Browser.
-                    Intent intent = getActivity().getParentActivityIntent();
+                    // Create an intent to restart Privacy Browser.
+                    Intent changeThemeRestartIntent = getActivity().getParentActivityIntent();
 
-                    // Assert that `intent` is not `null` to remove the lint error below.
-                    assert intent != null;
+                    // Assert that the intent is not null to remove the lint error below.
+                    assert changeThemeRestartIntent != null;
 
                     // `Intent.FLAG_ACTIVITY_CLEAR_TASK` removes all activities from the stack.  It requires `Intent.FLAG_ACTIVITY_NEW_TASK`.
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    changeThemeRestartIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
                     // Make it so.
-                    startActivity(intent);
+                    startActivity(changeThemeRestartIntent);
                     break;
 
                 case "night_mode":

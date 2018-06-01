@@ -1,0 +1,11 @@
+• Dateiuploads auf Webseiten unter Lollipop und neuer.
+• Automatische Aktualisierung von user agents mit neuen Releases.
+• Neue Option URL herunterladen im Kontextmenü.
+• Neuer Dialog über Werbung und aktualisierte Datenschutzbestimmungen des Privacy Browser Free im Rahmen der EU-DSGV.
+• Neue Möglichkeit, die Werbung in Privacy Browser Free anonymisiert und nicht verfolgend einzustellen.
+• Bug fix aus Version 2.9: Lesezeichen wurden aus der Lesezeichen-Aktivität nicht geladen.
+• Bug fix: Domaineinstellungen wurden teilweise erst nach Neuladen übernommen.
+• Verbesserte Dialogführung beim Hinzufügen und Bearbeiten von Domaineinstellungen in den Optionen.
+• Aktualisierte italienische Übersetzung von Francesco Buratti.
+• Aktualisierte russische Übersetzung.
+• Aktualisierte spanische Übersetzung von Jose A. León Becerra.

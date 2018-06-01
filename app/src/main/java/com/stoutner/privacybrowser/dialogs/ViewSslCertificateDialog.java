@@ -32,6 +32,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
@@ -64,7 +65,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
         // Set the icon.
         dialogBuilder.setIcon(favoriteIconDrawable);
 
-        // Set an `onClick` listener on the negative button.  Using `null` as the listener closes the dialog without doing anything else.
+        // Set a listener on the negative button.  Using `null` as the listener closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.close, null);
 
         // Check to see if the website is encrypted.
@@ -75,8 +76,20 @@ public class ViewSslCertificateDialog extends DialogFragment {
             // Set the Layout.  The parent view is `null` because it will be assigned by `AlertDialog`.
             dialogBuilder.setView(layoutInflater.inflate(R.layout.unencrypted_website, null));
 
+            // Create an alert dialog from the alert dialog builder.
+            final AlertDialog alertDialog = dialogBuilder.create();
+
+            // Disable screenshots if not allowed.
+            if (!MainWebViewActivity.allowScreenshots) {
+                // Remove the warning below that `getWindow()` might be null.
+                assert alertDialog.getWindow() != null;
+
+                // Disable screenshots.
+                alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+            }
+
             // `onCreateDialog` requires the return of an `AlertDialog`.
-            return dialogBuilder.create();
+            return alertDialog;
 
         } else {  // Display the SSL certificate information
             // Set the title.
@@ -87,6 +100,15 @@ public class ViewSslCertificateDialog extends DialogFragment {
 
             // Create an alert dialog from the builder.
             final AlertDialog alertDialog = dialogBuilder.create();
+
+            // Disable screenshots if not allowed.
+            if (!MainWebViewActivity.allowScreenshots) {
+                // Remove the warning below that `getWindow()` might be null.
+                assert alertDialog.getWindow() != null;
+
+                // Disable screenshots.
+                alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+            }
 
             // The alert dialog must be shown before items in the layout can be modified.
             alertDialog.show();

@@ -68,7 +68,7 @@ public class AddDomainDialog extends AppCompatDialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use `AlertDialog.Builder` to create the `AlertDialog`.
+        // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
         // Set the style according to the theme.
@@ -101,8 +101,13 @@ public class AddDomainDialog extends AppCompatDialogFragment {
         // Create an alert dialog from the builder.
         final AlertDialog alertDialog = dialogBuilder.create();
 
-        // Remove the warning below that `setSoftInputMode` might be null.
+        // Remove the warning below that `getWindow()` might be null.
         assert alertDialog.getWindow() != null;
+
+        // Disable screenshots if not allowed.
+        if (!MainWebViewActivity.allowScreenshots) {
+            alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
 
         // Show the keyboard when the alert dialog is displayed on the screen.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);

@@ -153,6 +153,7 @@
     <!-- Context Menus. -->
     <string name="load_url">URL laden</string>
     <string name="copy_url">URL kopieren</string>
+    <string name="download_url">Download URL</string>
     <string name="email_address">E-Mail-Adresse</string>
     <string name="copy_email_address">E-Mail-Adresse kopieren</string>
     <string name="write_email">E-Mail senden</string>
@@ -386,4 +387,7 @@
     <string name="licenses">Lizenzen</string>
     <string name="contributors">Mitwirkende</string>
     <string name="links">Links</string>
+
+    <!-- Ad Control. There are no ads in the standard flavor, but this string must exist because it is referenced in the code. -->
+    <string name="ad_consent">Zustimmung zur Werbung</string>
 </resources>

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -43,6 +43,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
@@ -103,6 +104,11 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Disable screenshots if not allowed.
+        if (!MainWebViewActivity.allowScreenshots) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
+
         // Set the activity theme.
         if (MainWebViewActivity.darkTheme) {
             setTheme(R.style.PrivacyBrowserDark_SecondaryActivity);

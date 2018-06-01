@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015-2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2015-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -41,18 +41,18 @@ import com.stoutner.privacybrowser.R;
 
 public class CreateHomeScreenShortcutDialog extends AppCompatDialogFragment {
     // The public interface is used to send information back to the parent activity.
-    public interface CreateHomeScreenSchortcutListener {
+    public interface CreateHomeScreenShortcutListener {
         void onCreateHomeScreenShortcut(AppCompatDialogFragment dialogFragment);
     }
 
     //`createHomeScreenShortcutListener` is used in `onAttach()` and `onCreateDialog()`.
-    private CreateHomeScreenSchortcutListener createHomeScreenShortcutListener;
+    private CreateHomeScreenShortcutListener createHomeScreenShortcutListener;
 
     // Check to make sure that the parent activity implements the listener.
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            createHomeScreenShortcutListener = (CreateHomeScreenSchortcutListener) context;
+            createHomeScreenShortcutListener = (CreateHomeScreenShortcutListener) context;
         } catch(ClassCastException exception) {
             throw new ClassCastException(context.toString() + " must implement CreateHomeScreenShortcutListener.");
         }
@@ -63,6 +63,9 @@ public class CreateHomeScreenShortcutDialog extends AppCompatDialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Remove the incorrect lint warning below that `getLayoutInflater()` might be null.
+        assert getActivity() != null;
+
         // Get the activity's layout inflater.
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
 
@@ -83,55 +86,52 @@ public class CreateHomeScreenShortcutDialog extends AppCompatDialogFragment {
         dialogBuilder.setTitle(R.string.create_shortcut);
         dialogBuilder.setIcon(favoriteIconDrawable);
 
-        // Set the view.  The parent view is `null` because it will be assigned by `AlertDialog`.
+        // Set the view.  The parent view is null because it will be assigned by the alert dialog.
         dialogBuilder.setView(layoutInflater.inflate(R.layout.create_home_screen_shortcut_dialog, null));
 
-        // Setup the negative button.  Using `null` closes the dialog without doing anything else.
+        // Setup the negative button.  Using null closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.cancel, null);
 
         // Set an `onClick` listener on the positive button.
-        dialogBuilder.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                createHomeScreenShortcutListener.onCreateHomeScreenShortcut(CreateHomeScreenShortcutDialog.this);
-            }
-        });
+        dialogBuilder.setPositiveButton(R.string.create, (DialogInterface dialog, int which) -> createHomeScreenShortcutListener.onCreateHomeScreenShortcut(CreateHomeScreenShortcutDialog.this));
 
-
-        // Create an `AlertDialog` from the `AlertDialog.Builder`.
+        // Create an alert dialog from the alert dialog builder.
         final AlertDialog alertDialog = dialogBuilder.create();
 
-        // Remove the warning below that `setSoftInputMode` might produce `java.lang.NullPointerException`.
+        // Remove the warning below that `getWindow()` might be null.
         assert alertDialog.getWindow() != null;
+
+        // Disable screenshots if not allowed.
+        if (!MainWebViewActivity.allowScreenshots) {
+            alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
 
         // Show the keyboard when the Dialog is displayed on the screen.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
-        // We need to show `alertDialog` before we can call `setOnKeyListener()` below.
+        // We need to show the alert dialog before we can call `setOnKeyListener()` below.
         alertDialog.show();
 
         // Get a handle for `shortcut_name_edittext`.
-        EditText shortcutNameEditText = (EditText) alertDialog.findViewById(R.id.shortcut_name_edittext);
+        EditText shortcutNameEditText = alertDialog.findViewById(R.id.shortcut_name_edittext);
 
         // Set the current `WebView` title as the text for `shortcutNameEditText`.
         shortcutNameEditText.setText(MainWebViewActivity.webViewTitle);
 
         // Allow the "enter" key on the keyboard to create the shortcut.
-        shortcutNameEditText.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down on the "enter" button, select the PositiveButton "Create".
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    // Trigger the create listener.
-                    createHomeScreenShortcutListener.onCreateHomeScreenShortcut(CreateHomeScreenShortcutDialog.this);
+        shortcutNameEditText.setOnKeyListener((View v, int keyCode, KeyEvent event) -> {
+            // If the event is a key-down on the "enter" button, select the PositiveButton "Create".
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                // Trigger the create listener.
+                createHomeScreenShortcutListener.onCreateHomeScreenShortcut(CreateHomeScreenShortcutDialog.this);
 
-                    // Manually dismiss `alertDialog`.
-                    alertDialog.dismiss();
+                // Manually dismiss `alertDialog`.
+                alertDialog.dismiss();
 
-                    // Consume the event.
-                    return true;
-                } else {  // If any other key was pressed, do not consume the event.
-                    return false;
-                }
+                // Consume the event.
+                return true;
+            } else {  // If any other key was pressed, do not consume the event.
+                return false;
             }
         });
 

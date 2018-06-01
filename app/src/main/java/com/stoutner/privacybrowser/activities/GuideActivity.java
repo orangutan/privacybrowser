@@ -28,6 +28,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.WindowManager;
 
 import com.stoutner.privacybrowser.fragments.GuideTabFragment;
 import com.stoutner.privacybrowser.R;
@@ -35,6 +36,11 @@ import com.stoutner.privacybrowser.R;
 public class GuideActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Disable screenshots if not allowed.
+        if (!MainWebViewActivity.allowScreenshots) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
+
         // Set the theme.
         if (MainWebViewActivity.darkTheme) {
             setTheme(R.style.PrivacyBrowserDark_SecondaryActivity);

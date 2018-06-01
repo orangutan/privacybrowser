@@ -79,6 +79,12 @@
             android:title="@string/do_not_track"
             android:summary="@string/do_not_track_summary"
             android:defaultValue="false" />
+
+        <SwitchPreference
+            android:key="allow_screenshots"
+            android:title="@string/allow_screenshots"
+            android:summary="@string/allow_screenshots_summary"
+            android:defaultValue="false" />
     </PreferenceCategory>
 
     <PreferenceCategory

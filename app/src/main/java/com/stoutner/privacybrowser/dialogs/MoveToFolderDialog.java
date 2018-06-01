@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -39,6 +39,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CursorAdapter;
@@ -85,7 +86,7 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
         // Initialize the database helper.  The two `nulls` do not specify the database name or a `CursorFactory`.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
         bookmarksDatabaseHelper = new BookmarksDatabaseHelper(getContext(), null, null, 0);
 
-        // Use `AlertDialog.Builder` to create the `AlertDialog`.
+        // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
         // Set the style according to the theme.
@@ -98,24 +99,36 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
         // Set the title.
         dialogBuilder.setTitle(R.string.move_to_folder);
 
+        // Remove the incorrect lint warning that `getActivity()` might be null.
+        assert getActivity() != null;
+
         // Set the view.  The parent view is `null` because it will be assigned by `AlertDialog`.
         dialogBuilder.setView(getActivity().getLayoutInflater().inflate(R.layout.move_to_folder_dialog, null));
 
-        // Set an `onClick()` listener for the negative button.
+        // Set the listener for the negative button.
         dialogBuilder.setNegativeButton(R.string.cancel, (DialogInterface dialog, int which) -> {
             // Do nothing.  The `AlertDialog` will close automatically.
         });
 
-        // Set the `onClick()` listener fo the positive button.
+        // Set the listener fo the positive button.
         dialogBuilder.setPositiveButton(R.string.move, (DialogInterface dialog, int which) -> {
             // Return the `DialogFragment` to the parent activity on save.
             moveToFolderListener.onMoveToFolder(MoveToFolderDialog.this);
         });
 
-        // Create an `AlertDialog` from the `AlertDialog.Builder`.
+        // Create an alert dialog from the alert dialog builder.
         final AlertDialog alertDialog = dialogBuilder.create();
 
-        // Show the `AlertDialog` so the items in the layout can be modified.
+        // Disable screenshots if not allowed.
+        if (!MainWebViewActivity.allowScreenshots) {
+            // Remove the warning below that `getWindow()` might be null.
+            assert alertDialog.getWindow() != null;
+
+            // Disable screenshots.
+            alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
+
+        // Show the alert dialog so the items in the layout can be modified.
         alertDialog.show();
 
         // Get a handle for the positive button.
@@ -185,10 +198,12 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
                 }
             };
         } else {  // Display `Home Folder` at the top of the `ListView`.
-            // Get the home folder icon drawable and convert it to a `Bitmap`.  `this` specifies the current context.
+            // Get the home folder icon drawable and convert it to a `Bitmap`.
             Drawable homeFolderIconDrawable = ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.folder_gray_bitmap);
             BitmapDrawable homeFolderIconBitmapDrawable = (BitmapDrawable) homeFolderIconDrawable;
+            assert homeFolderIconDrawable != null;
             Bitmap homeFolderIconBitmap = homeFolderIconBitmapDrawable.getBitmap();
+
             // Convert the folder `Bitmap` to a byte array.  `0` is for lossless compression (the only option for a PNG).
             ByteArrayOutputStream homeFolderIconByteArrayOutputStream = new ByteArrayOutputStream();
             homeFolderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, homeFolderIconByteArrayOutputStream);

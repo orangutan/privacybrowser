@@ -108,7 +108,7 @@ public class DownloadImageDialog extends AppCompatDialogFragment {
         // Get the activity's layout inflater.
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
 
-        // Use `AlertDialog.Builder` to create the `AlertDialog`.
+        // Use and alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
         // Set the style according to the theme.
@@ -124,28 +124,33 @@ public class DownloadImageDialog extends AppCompatDialogFragment {
         // Set the view.  The parent view is `null` because it will be assigned by `AlertDialog`.
         dialogBuilder.setView(layoutInflater.inflate(R.layout.download_image_dialog, null));
 
-        // Set an `onClick()` listener on the negative button.
+        // Set an listener on the negative button.
         dialogBuilder.setNegativeButton(R.string.cancel, (DialogInterface dialog, int which) -> {
             // Do nothing if `Cancel` is clicked.
         });
 
-        // Set an `onClick()` listener on the positive button
+        // Set an listener on the positive button
         dialogBuilder.setPositiveButton(R.string.download, (DialogInterface dialog, int which) -> {
             // trigger `onDownloadFile()` and return the `DialogFragment` and the download URL to the parent activity.
             downloadImageListener.onDownloadImage(DownloadImageDialog.this, imageUrl);
         });
 
 
-        // Create an `AlertDialog` from the `AlertDialog.Builder`.
+        // Create an alert dialog from the alert dialog builder.
         final AlertDialog alertDialog = dialogBuilder.create();
 
-        // Remove the warning below that `setSoftInputMode` might produce `java.lang.NullPointerException`.
+        // Remove the warning below that `getWindow()` might be null.
         assert alertDialog.getWindow() != null;
+
+        // Disable screenshots if not allowed.
+        if (!MainWebViewActivity.allowScreenshots) {
+            alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
 
         // Show the keyboard when `alertDialog` is displayed on the screen.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
-        // We need to show `alertDialog` before we can modify the contents.
+        // The alert dialog must be shown before the contents can be modified.
         alertDialog.show();
 
         // Set the text for `downloadImageNameTextView`.

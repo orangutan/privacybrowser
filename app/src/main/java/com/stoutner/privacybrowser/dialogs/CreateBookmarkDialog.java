@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -81,32 +81,33 @@ public class CreateBookmarkDialog extends AppCompatDialogFragment {
         dialogBuilder.setTitle(R.string.create_bookmark);
         dialogBuilder.setIcon(favoriteIconDrawable);
 
+        // Remove the warning below that `getLayoutInflater()` might be null.
+        assert getActivity() != null;
+
         // Set the view.  The parent view is `null` because it will be assigned by the `AlertDialog`.
         dialogBuilder.setView(getActivity().getLayoutInflater().inflate(R.layout.create_bookmark_dialog, null));
 
         // Set an `onClick()` listener for the negative button.
-        dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Do nothing.  The `AlertDialog` will close automatically.
-            }
+        dialogBuilder.setNegativeButton(R.string.cancel, (DialogInterface dialog, int which) -> {
+            // Do nothing.  The `AlertDialog` will close automatically.
         });
 
         // Set an `onClick()` listener for the positive button.
-        dialogBuilder.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Return the `DialogFragment` to the parent activity.
-                createBookmarkListener.onCreateBookmark(CreateBookmarkDialog.this);
-            }
+        dialogBuilder.setPositiveButton(R.string.create, (DialogInterface dialog, int which) -> {
+            // Return the `DialogFragment` to the parent activity.
+            createBookmarkListener.onCreateBookmark(CreateBookmarkDialog.this);
         });
-
 
         // Create an `AlertDialog` from the `AlertDialog.Builder`.
         final AlertDialog alertDialog = dialogBuilder.create();
 
-        // Remove the warning below that `setSoftInputMode` might produce `java.lang.NullPointerException`.
+        // Remove the warning below that `getWindow()` might be null.
         assert alertDialog.getWindow() != null;
+
+        // Disable screenshots if not allowed.
+        if (!MainWebViewActivity.allowScreenshots) {
+            alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
 
         // Show the keyboard when the `AlertDialog` is displayed on the screen.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
@@ -115,50 +116,46 @@ public class CreateBookmarkDialog extends AppCompatDialogFragment {
         alertDialog.show();
 
         // Get a handle for `create_bookmark_name_edittext`.
-        EditText createBookmarkNameEditText = (EditText) alertDialog.findViewById(R.id.create_bookmark_name_edittext);
+        EditText createBookmarkNameEditText = alertDialog.findViewById(R.id.create_bookmark_name_edittext);
 
         // Set the current `WebView` title as the text for `create_bookmark_name_edittext`.
         createBookmarkNameEditText.setText(MainWebViewActivity.webViewTitle);
 
         // Allow the `enter` key on the keyboard to create the bookmark from `create_bookmark_name_edittext`.
-        createBookmarkNameEditText.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View view, int keyCode, KeyEvent event) {
-                // If the event is a key-down on the `enter` key, select the `PositiveButton` `Create`.
-                if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)) {
-                    // Trigger `createBookmarkListener` and return the `DialogFragment` to the parent activity.
-                    createBookmarkListener.onCreateBookmark(CreateBookmarkDialog.this);
+        createBookmarkNameEditText.setOnKeyListener((View view, int keyCode, KeyEvent event) -> {
+            // If the event is a key-down on the `enter` key, select the `PositiveButton` `Create`.
+            if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)) {
+                // Trigger `createBookmarkListener` and return the `DialogFragment` to the parent activity.
+                createBookmarkListener.onCreateBookmark(CreateBookmarkDialog.this);
 
-                    // Manually dismiss the `AlertDialog`.
-                    alertDialog.dismiss();
+                // Manually dismiss the `AlertDialog`.
+                alertDialog.dismiss();
 
-                    // Consume the event.
-                    return true;
-                } else {  // If any other key was pressed, do not consume the event.
-                    return false;
-                }
+                // Consume the event.
+                return true;
+            } else {  // If any other key was pressed, do not consume the event.
+                return false;
             }
         });
 
         // Set the formattedUrlString as the initial text of `create_bookmark_url_edittext`.
-        EditText createBookmarkUrlEditText = (EditText) alertDialog.findViewById(R.id.create_bookmark_url_edittext);
+        EditText createBookmarkUrlEditText = alertDialog.findViewById(R.id.create_bookmark_url_edittext);
         createBookmarkUrlEditText.setText(MainWebViewActivity.formattedUrlString);
 
         // Allow the `enter` key on the keyboard to create the bookmark from `create_bookmark_url_edittext`.
-        createBookmarkUrlEditText.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down on the "enter" key, select the PositiveButton "Create".
-                if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)) {
-                    // Trigger `createBookmarkListener` and return the DialogFragment to the parent activity.
-                    createBookmarkListener.onCreateBookmark(CreateBookmarkDialog.this);
+        createBookmarkUrlEditText.setOnKeyListener((View v, int keyCode, KeyEvent event) -> {
+            // If the event is a key-down on the "enter" key, select the PositiveButton "Create".
+            if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)) {
+                // Trigger `createBookmarkListener` and return the DialogFragment to the parent activity.
+                createBookmarkListener.onCreateBookmark(CreateBookmarkDialog.this);
 
-                    // Manually dismiss the `AlertDialog`.
-                    alertDialog.dismiss();
+                // Manually dismiss the `AlertDialog`.
+                alertDialog.dismiss();
 
-                    // Consume the event.
-                    return true;
-                } else { // If any other key was pressed, do not consume the event.
-                    return false;
-                }
+                // Consume the event.
+                return true;
+            } else { // If any other key was pressed, do not consume the event.
+                return false;
             }
         });
 

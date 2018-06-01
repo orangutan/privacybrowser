@@ -1,5 +1,5 @@
-<!-- `orbot_enabled_light.xml` comes from the Orbot project.  It is a modified version of <https://gitweb.torproject.org/orbot.git/tree/app/src/main/res/drawable-xxxhdpi/ic_stat_tor.png>, which is released under the 3-clause BSD license.
-    Modifications copyright Soren Stoutner <soren@stoutner.com> 2017.  The resulting image is released under the GPLv3+ license. -->
+<!-- `orbot_enabled_light.xml` comes from the Orbot project.  It is a modified version of <https://gitweb.torproject.org/orbot.git/tree/app/src/main/res/drawable-xxxhdpi/ic_stat_tor.png>,
+    which is released under the 3-clause BSD license.  Modifications copyright Soren Stoutner <soren@stoutner.com> 2017.  The resulting image is released under the GPLv3+ license. -->
 
 <!-- `tools:ignore="VectorRaster"` removes the lint warning about `android:autoMirrored="true"` not applying to API < 21. -->
 <vector

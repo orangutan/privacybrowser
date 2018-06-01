@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -22,6 +22,7 @@ package com.stoutner.privacybrowser.activities;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.WindowManager;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.fragments.SettingsFragment;
@@ -29,6 +30,11 @@ import com.stoutner.privacybrowser.fragments.SettingsFragment;
 public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Disable screenshots if not allowed.
+        if (!MainWebViewActivity.allowScreenshots) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
+
         // Set the activity theme.
         if (MainWebViewActivity.darkTheme) {
             setTheme(R.style.PrivacyBrowserSettingsDark);

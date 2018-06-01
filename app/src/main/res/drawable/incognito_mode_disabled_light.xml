@@ -1,4 +1,4 @@
-<!-- `incognito_mode_disabled_light.xml` comes from the Android Material icon set, where it is called `ic_visibility_off`.  It is released under the Apache License 2.0. -->
+<!-- `incognito_mode_disabled_light.xml` comes from the Android Material icon set, where it is called `visibility_off`.  It is released under the Apache License 2.0. -->
 
 <!-- `tools:ignore="VectorRaster"` removes the lint warning about `android:autoMirrored="true"` not applying to API < 21. -->
 <vector

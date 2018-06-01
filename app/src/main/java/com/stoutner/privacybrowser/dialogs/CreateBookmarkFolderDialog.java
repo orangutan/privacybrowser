@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -67,7 +67,7 @@ public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use `AlertDialog.Builder` to create the `AlertDialog`.
+        // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
         // Set the style according to the theme.
@@ -80,32 +80,34 @@ public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
         // Set the title.
         dialogBuilder.setTitle(R.string.create_folder);
 
+        // Remove the warning below that `getLayoutInflater()` might be null.
+        assert getActivity() != null;
+
         // Set the view.  The parent view is `null` because it will be assigned by the `AlertDialog`.
         dialogBuilder.setView(getActivity().getLayoutInflater().inflate(R.layout.create_bookmark_folder_dialog, null));
 
         // Set an `onClick()` listener for the negative button.
-        dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Do nothing.  The `AlertDialog` will close automatically.
-            }
+        dialogBuilder.setNegativeButton(R.string.cancel, (DialogInterface dialog, int which) -> {
+            // Do nothing.  The `AlertDialog` will close automatically.
         });
 
         // Set an `onClick()` listener fo the positive button.
-        dialogBuilder.setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Return the `DialogFragment` to the parent activity on create.
-                createBookmarkFolderListener.onCreateBookmarkFolder(CreateBookmarkFolderDialog.this);
-            }
+        dialogBuilder.setPositiveButton(R.string.create, (DialogInterface dialog, int which) -> {
+            // Return the `DialogFragment` to the parent activity on create.
+            createBookmarkFolderListener.onCreateBookmarkFolder(CreateBookmarkFolderDialog.this);
         });
 
 
         // Create an `AlertDialog` from the `AlertDialog.Builder`.
         final AlertDialog alertDialog = dialogBuilder.create();
 
-        // Remove the warning below that `setSoftInputMode` might produce `java.lang.NullPointerException`.
+        // Remove the warning below that `getWindow()` might be null.
         assert alertDialog.getWindow() != null;
+
+        // Disable screenshots if not allowed.
+        if (!MainWebViewActivity.allowScreenshots) {
+            alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
 
         // Show the keyboard when the `Dialog` is displayed on the screen.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
@@ -115,13 +117,13 @@ public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
 
         // Get handles for the views in the dialog.
         final Button createButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        EditText folderNameEditText = (EditText) alertDialog.findViewById(R.id.create_folder_name_edittext);
-        ImageView webPageIconImageView = (ImageView) alertDialog.findViewById(R.id.create_folder_web_page_icon);
+        EditText folderNameEditText = alertDialog.findViewById(R.id.create_folder_name_edittext);
+        ImageView webPageIconImageView = alertDialog.findViewById(R.id.create_folder_web_page_icon);
 
         // Initially disable the create button.
         createButton.setEnabled(false);
 
-        // Initialize the database helper.  The two `nulls` do not specify the database name or a `CursorFactory`.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
+        // Initialize the database helper.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
         final BookmarksDatabaseHelper bookmarksDatabaseHelper = new BookmarksDatabaseHelper(getContext(), null, null, 0);
 
         // Enable the create button if the new folder name is unique.
@@ -150,19 +152,17 @@ public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
         });
 
         // Allow the `enter` key on the keyboard to create the folder from `create_folder_name_edittext`.
-        folderNameEditText.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down on the `enter` key, select the `PositiveButton` `Create`.
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER) && createButton.isEnabled()) {  // The enter key was pressed and the create button is enabled.
-                    // Trigger `createBookmarkFolderListener` and return the `DialogFragment` to the parent activity.
-                    createBookmarkFolderListener.onCreateBookmarkFolder(CreateBookmarkFolderDialog.this);
-                    // Manually dismiss the `AlertDialog`.
-                    alertDialog.dismiss();
-                    // Consume the event.
-                    return true;
-                } else {  // If any other key was pressed, or if the create button is currently disabled, do not consume the event.
-                    return false;
-                }
+        folderNameEditText.setOnKeyListener((View v, int keyCode, KeyEvent event) -> {
+            // If the event is a key-down on the `enter` key, select the `PositiveButton` `Create`.
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER) && createButton.isEnabled()) {  // The enter key was pressed and the create button is enabled.
+                // Trigger `createBookmarkFolderListener` and return the `DialogFragment` to the parent activity.
+                createBookmarkFolderListener.onCreateBookmarkFolder(CreateBookmarkFolderDialog.this);
+                // Manually dismiss the `AlertDialog`.
+                alertDialog.dismiss();
+                // Consume the event.
+                return true;
+            } else {  // If any other key was pressed, or if the create button is currently disabled, do not consume the event.
+                return false;
             }
         });
 

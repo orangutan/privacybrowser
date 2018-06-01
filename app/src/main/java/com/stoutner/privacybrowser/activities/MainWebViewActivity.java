@@ -149,7 +149,7 @@ import java.util.Set;
 
 // AppCompatActivity from android.support.v7.app.AppCompatActivity must be used to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
-        CreateHomeScreenShortcutDialog.CreateHomeScreenSchortcutListener, DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener,
+        CreateHomeScreenShortcutDialog.CreateHomeScreenShortcutListener, DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener,
         DownloadLocationPermissionDialog.DownloadLocationPermissionDialogListener, EditBookmarkDialog.EditBookmarkListener, EditBookmarkFolderDialog.EditBookmarkFolderListener,
         HttpAuthenticationDialog.HttpAuthenticationListener, NavigationView.OnNavigationItemSelectedListener, PinnedSslCertificateMismatchDialog.PinnedSslCertificateMismatchListener,
         SslCertificateErrorDialog.SslCertificateErrorListener, UrlHistoryDialog.UrlHistoryListener {
@@ -159,6 +159,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `EditBookmarkDatabaseViewDialog`, `HttpAuthenticationDialog`, `MoveToFolderDialog`, `SslCertificateErrorDialog`, `UrlHistoryDialog`, `ViewSslCertificateDialog`, `CreateHomeScreenShortcutDialog`,
     //  and `OrbotProxyHelper`. It is also used in `onCreate()`, `applyAppSettings()`, `applyDomainSettings()`, and `updatePrivacyIcons()`.
     public static boolean darkTheme;
+
+    // `allowScreenshots` is public static so it can be accessed from everywhere.  It is also used in `onCreate()`.
+    public static boolean allowScreenshots;
 
     // `favoriteIconBitmap` is public static so it can be accessed from `CreateHomeScreenShortcutDialog`, `BookmarksActivity`, `BookmarksDatabaseViewActivity`, `CreateBookmarkDialog`,
     // `CreateBookmarkFolderDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`, `EditBookmarkDatabaseViewDialog`, and `ViewSslCertificateDialog`.  It is also used in `onCreate()`,
@@ -429,11 +432,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // Remove Android Studio's warning about deprecations.  We have to use the deprecated `getColor()` until API >= 23.
     @SuppressWarnings("deprecation")
     protected void onCreate(Bundle savedInstanceState) {
-        // Get a handle for `sharedPreferences`.  `this` references the current context.
+        // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Get the theme preference.
+        // Get the theme and screenshot preferences.
         darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
+        // Disable screenshots if not allowed.
+        if (!allowScreenshots) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
 
         // Set the activity theme.
         if (darkTheme) {

@@ -1,4 +1,4 @@
-<!-- `move_to_folder_light.xml` is derived from elements of `ic_folder` and `ic_exit_to_app`, which are part of the Android Material icon set.  They are released under the Apache License 2.0.
+<!-- `move_to_folder_light.xml` is derived from elements of `folder` and `exit_to_app`, which are part of the Android Material icon set.  They are released under the Apache License 2.0.
     Modifications copyright © 2017 Soren Stoutner <soren@stoutner.com>.  The resulting image is released under the GPLv3+ license. -->
 
 <!-- `tools:ignore="VectorRaster"` removes the lint warning about `android:autoMirrored="true"` not applying to API < 21. -->
