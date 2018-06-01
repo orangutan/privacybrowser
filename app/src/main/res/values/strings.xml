@@ -39,8 +39,8 @@
     <string name="third_party_cookies_disabled">Third-Party Cookies disabled</string>
     <string name="dom_storage_enabled">DOM Storage enabled</string>
     <string name="dom_storage_disabled">DOM Storage disabled</string>
-    <string name="form_data_enabled">Form Data enabled</string>
-    <string name="form_data_disabled">Form Data disabled</string>
+    <string name="form_data_enabled">Form Data enabled</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
+    <string name="form_data_disabled">Form Data disabled</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
     <string name="cookies_deleted">Cookies deleted</string>
     <string name="dom_storage_deleted">DOM Storage deleted</string>
     <string name="form_data_deleted">Form Data deleted</string>
@@ -126,8 +126,8 @@
     <string name="first_party_cookies">First-Party Cookies</string>
     <string name="third_party_cookies">Third-Party Cookies</string>
     <string name="dom_storage">DOM Storage</string>
-    <string name="form_data">Form Data</string>
-    <string name="clear_data">Clear Data</string>
+    <string name="form_data">Form Data</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
+    <string name="clear_data">Clear Data</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="clear_cookies">Clear Cookies</string>
         <string name="clear_dom_storage">Clear DOM Storage</string>
         <string name="clear_form_data">Clear Form Data</string>
@@ -268,8 +268,8 @@
         <string name="third_party_cookies_summary">This setting requires Android Lollipop (version 5.0) or higher.  It has no effect if first-party cookies are disabled.</string>
         <string name="dom_storage_preference">Enable DOM storage by default</string>
         <string name="dom_storage_preference_summary">JavaScript must be enabled for DOM storage to function.</string>
-        <string name="save_form_data_preference">Enable saving of form data by default</string>
-        <string name="save_form_data_preference_summary">Saved form data can auto-populate fields on websites.</string>
+        <string name="save_form_data_preference">Enable saving of form data by default</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
+        <string name="save_form_data_preference_summary">Saved form data can auto-populate fields on websites.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="user_agent">User agent</string>
         <string-array name="translated_user_agent_names">
             <item>Privacy Browser</item>
@@ -403,13 +403,14 @@
         <string name="translucent_navigation_bar">Translucent navigation bar</string>
         <string name="translucent_navigation_bar_summary">Make the navigation bar translucent in full screen browsing mode.</string>
     <string name="clear_everything">Clear everything</string>
+        <!-- The form data part of this string can be removed once the minimum API >= 26. -->
         <string name="clear_everything_summary">Clears cookies, DOM storage, form data, and WebView’s cache.  Then manually deletes the entire “app_webview” and “cache” directories.</string>
         <string name="clear_cookies_preference">Clear cookies</string>
         <string name="clear_cookies_summary">Clears first and third-party cookies.</string>
         <string name="clear_dom_storage_preference">Clear DOM storage</string>
         <string name="clear_dom_storage_summary">Clears DOM storage.</string>
-        <string name="clear_form_data_preference">Clear form data</string>
-        <string name="clear_form_data_summary">Clears form data.</string>
+        <string name="clear_form_data_preference">Clear form data</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
+        <string name="clear_form_data_summary">Clears form data.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="clear_cache">Clear cache</string>
         <string name="clear_cache_summary">Clears WebView’s cache.</string>
     <string name="general">General</string>

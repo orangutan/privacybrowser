@@ -47,6 +47,7 @@
             android:summary="@string/dom_storage_preference_summary"
             android:defaultValue="false" />
 
+        <!-- Save form data can be removed once the minimum API >= 26. -->
         <SwitchPreference
             android:key="save_form_data_enabled"
             android:title="@string/save_form_data_preference"
@@ -193,7 +194,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="clean_and_exit"
+        android:key="clear_and_exit"
         android:title="@string/clear_and_exit" >
 
         <SwitchPreference

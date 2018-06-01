@@ -391,7 +391,7 @@
         <string name="swipe_to_refresh_preference">Deslizar para actualizar</string>
         <string name="swipe_to_refresh_summary">Algunas webs no funcionan bien si la opción deslizar para actualizar está habilitada.</string>
         <string name="display_additional_app_bar_icons">Mostrar iconos adicionales en la barra de aplicación</string>
-        <string name="display_additional_app_bar_icons_summary">Mostrar iconos para alternar entre cookies, almacenamiento DOM, y datos de formulario en la barra de aplicación, si hay espacio.</string>
+        <string name="display_additional_app_bar_icons_summary">Mostrar iconos en la barra de aplicaciones para refrescar el WebView y, si hay espacio, para alternar entre cookies y almacenamiento DOM.</string>
         <string name="dark_theme">Tema oscuro</string>
         <string name="dark_theme_summary">Cambiar el tema reiniciará Navegador Privado.</string>
         <string name="night_mode">Modo noche</string>

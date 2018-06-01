@@ -38,7 +38,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
     public static final String ENABLE_FIRST_PARTY_COOKIES = "enablefirstpartycookies";
     public static final String ENABLE_THIRD_PARTY_COOKIES = "enablethirdpartycookies";
     public static final String ENABLE_DOM_STORAGE = "enabledomstorage";
-    public static final String ENABLE_FORM_DATA = "enableformdata";
+    public static final String ENABLE_FORM_DATA = "enableformdata";  // Form data can be removed once the minimum API >= 26.
     public static final String ENABLE_EASYLIST = "enableeasylist";
     public static final String ENABLE_EASYPRIVACY = "enableeasyprivacy";
     public static final String ENABLE_FANBOYS_ANNOYANCE_LIST = "enablefanboysannoyancelist";
@@ -259,7 +259,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         boolean firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies_enabled", false);
         boolean thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies_enabled", false);
         boolean domStorageEnabled = sharedPreferences.getBoolean("dom_storage_enabled", false);
-        boolean saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data_enabled", false);
+        boolean saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data_enabled", false);  // Form data can be removed once the minimum API >= 26.
         boolean easyListEnabled = sharedPreferences.getBoolean("easylist", true);
         boolean easyPrivacyEnabled = sharedPreferences.getBoolean("easyprivacy", true);
         boolean fanboyAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboy_annoyance_list", true);
@@ -271,7 +271,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainContentValues.put(ENABLE_FIRST_PARTY_COOKIES, firstPartyCookiesEnabled);
         domainContentValues.put(ENABLE_THIRD_PARTY_COOKIES, thirdPartyCookiesEnabled);
         domainContentValues.put(ENABLE_DOM_STORAGE, domStorageEnabled);
-        domainContentValues.put(ENABLE_FORM_DATA, saveFormDataEnabled);
+        domainContentValues.put(ENABLE_FORM_DATA, saveFormDataEnabled);  // Form data can be removed once the minimum API >= 26.
         domainContentValues.put(ENABLE_EASYLIST, easyListEnabled);
         domainContentValues.put(ENABLE_EASYPRIVACY, easyPrivacyEnabled);
         domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, fanboyAnnoyanceListEnabled);
@@ -308,7 +308,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainContentValues.put(ENABLE_FIRST_PARTY_COOKIES, firstPartyCookiesEnabled);
         domainContentValues.put(ENABLE_THIRD_PARTY_COOKIES, thirdPartyCookiesEnabled);
         domainContentValues.put(ENABLE_DOM_STORAGE, domStorageEnabled);
-        domainContentValues.put(ENABLE_FORM_DATA, formDataEnabled);
+        domainContentValues.put(ENABLE_FORM_DATA, formDataEnabled);  // Form data can be removed once the minimum API >= 26.
         domainContentValues.put(ENABLE_EASYLIST, easyListEnabled);
         domainContentValues.put(ENABLE_EASYPRIVACY, easyPrivacyEnabled);
         domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, fanboysAnnoyanceEnabled);
@@ -345,7 +345,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainContentValues.put(ENABLE_FIRST_PARTY_COOKIES, firstPartyCookiesEnabled);
         domainContentValues.put(ENABLE_THIRD_PARTY_COOKIES, thirdPartyCookiesEnabled);
         domainContentValues.put(ENABLE_DOM_STORAGE, domStorageEnabled);
-        domainContentValues.put(ENABLE_FORM_DATA, formDataEnabled);
+        domainContentValues.put(ENABLE_FORM_DATA, formDataEnabled);  // Form data can be removed once the minimum API >= 26.
         domainContentValues.put(ENABLE_EASYLIST, easyListEnabled);
         domainContentValues.put(ENABLE_EASYPRIVACY, easyPrivacyEnabled);
         domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, fanboysAnnoyanceEnabled);

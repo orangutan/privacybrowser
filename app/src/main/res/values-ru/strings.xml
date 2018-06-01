@@ -388,7 +388,7 @@
         <string name="swipe_to_refresh_preference">Потянуть для обновления</string>
         <string name="swipe_to_refresh_summary">Некоторые веб-сайты могут работать некорректно при включении данной опции.</string>
         <string name="display_additional_app_bar_icons">Отображать дополнительные значки на панели приложения</string>
-        <string name="display_additional_app_bar_icons_summary">Отображение значков для переключения файлов cookie, хранилища DOM и данных формы на панели приложения при наличии места.</string>
+        <string name="display_additional_app_bar_icons_summary">Отображать значки на панели приложения для обновления WebView и, при наличии места, для переключения файлов cookie и хранилища DOM</string>
         <string name="dark_theme">Темная тема</string>
         <string name="dark_theme_summary">Изменение темы перезапускает Privacy Browser.</string>
         <string name="night_mode">Ночной режим</string>

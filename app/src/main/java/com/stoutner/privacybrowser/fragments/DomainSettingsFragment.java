@@ -110,8 +110,8 @@ public class DomainSettingsFragment extends Fragment {
         final ImageView thirdPartyCookiesImageView = domainSettingsView.findViewById(R.id.domain_settings_third_party_cookies_imageview);
         final Switch domStorageEnabledSwitch = domainSettingsView.findViewById(R.id.domain_settings_dom_storage_switch);
         final ImageView domStorageImageView = domainSettingsView.findViewById(R.id.domain_settings_dom_storage_imageview);
-        Switch formDataEnabledSwitch = domainSettingsView.findViewById(R.id.domain_settings_form_data_switch);
-        final ImageView formDataImageView = domainSettingsView.findViewById(R.id.domain_settings_form_data_imageview);
+        Switch formDataEnabledSwitch = domainSettingsView.findViewById(R.id.domain_settings_form_data_switch);  // The form data views can be remove once the minimum API >= 26.
+        final ImageView formDataImageView = domainSettingsView.findViewById(R.id.domain_settings_form_data_imageview);  // The form data views can be remove once the minimum API >= 26.
         Switch easyListSwitch = domainSettingsView.findViewById(R.id.domain_settings_easylist_switch);
         ImageView easyListImageView = domainSettingsView.findViewById(R.id.domain_settings_easylist_imageview);
         Switch easyPrivacySwitch = domainSettingsView.findViewById(R.id.domain_settings_easyprivacy_switch);
@@ -181,7 +181,7 @@ public class DomainSettingsFragment extends Fragment {
         int firstPartyCookiesEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES));
         int thirdPartyCookiesEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES));
         final int domStorageEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE));
-        int formDataEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA));
+        int formDataEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA));  // Form data can be remove once the minimum API >= 26.
         int easyListEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYLIST));
         int easyPrivacyEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY));
         int fanboysAnnoyanceListInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST));
@@ -453,19 +453,24 @@ public class DomainSettingsFragment extends Fragment {
             }
         }
 
-        // Set the form data status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-        if (formDataEnabledInt == 1) {  // Form data is on.
-            formDataEnabledSwitch.setChecked(true);
-            formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_enabled));
-        } else {  // Form data is off.
-            // Turn the form data switch to off.
-            formDataEnabledSwitch.setChecked(false);
+        // Set the form data status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.  Form data can be removed once the minimum API >= 26.
+        if (Build.VERSION.SDK_INT >= 26) {  // Form data no longer applies to newer versions of Android.
+            // Hide the form data switch.
+            formDataEnabledSwitch.setVisibility(View.GONE);
+        } else {  // Form data should be displayed because this is an older version of Android.
+            if (formDataEnabledInt == 1) {  // Form data is on.
+                formDataEnabledSwitch.setChecked(true);
+                formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_enabled));
+            } else {  // Form data is off.
+                // Turn the form data switch to off.
+                formDataEnabledSwitch.setChecked(false);
 
-            // Set the icon according to the theme.
-            if (MainWebViewActivity.darkTheme) {
-                formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_disabled_dark));
-            } else {
-                formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_disabled_light));
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_disabled_dark));
+                } else {
+                    formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_disabled_light));
+                }
             }
         }
 
@@ -1160,20 +1165,22 @@ public class DomainSettingsFragment extends Fragment {
             }
         });
 
-        // Set the form data switch listener.
-        formDataEnabledSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            // Update the icon.
-            if (isChecked) {
-                formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_enabled));
-            } else {
-                // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
-                    formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_disabled_dark));
+        // Set the form data switch listener.  It can be removed once the minimum API >= 26.
+        if (Build.VERSION.SDK_INT < 26) {
+            formDataEnabledSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+                // Update the icon.
+                if (isChecked) {
+                    formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_enabled));
                 } else {
-                    formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_disabled_light));
+                    // Set the icon according to the theme.
+                    if (MainWebViewActivity.darkTheme) {
+                        formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_disabled_dark));
+                    } else {
+                        formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_disabled_light));
+                    }
                 }
-            }
-        });
+            });
+        }
 
         // Set the EasyList switch listener.
         easyListSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {

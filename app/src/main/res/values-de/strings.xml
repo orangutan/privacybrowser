@@ -341,7 +341,6 @@
         <string name="swipe_to_refresh_preference">Herunterziehen zum Aktualisieren</string>
         <string name="swipe_to_refresh_summary">Einige Websites funktionieren nicht, wenn "Herunterziehen zum Aktualisieren" eingeschaltet ist.</string>
         <string name="display_additional_app_bar_icons">Weitere Icons in der Titelleiste</string>
-        <string name="display_additional_app_bar_icons_summary">Icons zum Umschalten von Cookies, DOM-Speicher und Formulardaten neben der Adresszeile anzeigen, wenn noch Platz dafür da ist.</string>
 
     <!-- Download Location -->
     <string name="download_location">Download-Zielordner</string>

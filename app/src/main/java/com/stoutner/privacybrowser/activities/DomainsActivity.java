@@ -639,7 +639,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         Switch firstPartyCookiesSwitch = view.findViewById(R.id.domain_settings_first_party_cookies_switch);
         Switch thirdPartyCookiesSwitch = view.findViewById(R.id.domain_settings_third_party_cookies_switch);
         Switch domStorageSwitch = view.findViewById(R.id.domain_settings_dom_storage_switch);
-        Switch formDataSwitch = view.findViewById(R.id.domain_settings_form_data_switch);
+        Switch formDataSwitch = view.findViewById(R.id.domain_settings_form_data_switch);  // Form data can be removed once the minimum API >= 26.
         Switch easyListSwitch = view.findViewById(R.id.domain_settings_easylist_switch);
         Switch easyPrivacySwitch = view.findViewById(R.id.domain_settings_easyprivacy_switch);
         Switch fanboysAnnoyanceSwitch = view.findViewById(R.id.domain_settings_fanboys_annoyance_list_switch);
@@ -660,7 +660,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         boolean firstPartyCookiesEnabled = firstPartyCookiesSwitch.isChecked();
         boolean thirdPartyCookiesEnabled = thirdPartyCookiesSwitch.isChecked();
         boolean domStorageEnabled  = domStorageSwitch.isChecked();
-        boolean formDataEnabled = formDataSwitch.isChecked();
+        boolean formDataEnabled = formDataSwitch.isChecked();  // Form data can be removed once the minimum API >= 26.
         boolean easyListEnabled = easyListSwitch.isChecked();
         boolean easyPrivacyEnabled = easyPrivacySwitch.isChecked();
         boolean fanboysAnnoyanceEnabled = fanboysAnnoyanceSwitch.isChecked();

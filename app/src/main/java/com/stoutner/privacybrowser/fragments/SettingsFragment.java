@@ -26,6 +26,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,7 +56,7 @@ public class SettingsFragment extends PreferenceFragment {
         final Preference firstPartyCookiesPreference = findPreference("first_party_cookies_enabled");
         final Preference thirdPartyCookiesPreference = findPreference("third_party_cookies_enabled");
         final Preference domStoragePreference = findPreference("dom_storage_enabled");
-        final Preference saveFormDataPreference = findPreference("save_form_data_enabled");
+        final Preference saveFormDataPreference = findPreference("save_form_data_enabled");  // The form data preference can be removed once the minimum API >= 26.
         final Preference userAgentPreference = findPreference("user_agent");
         final Preference customUserAgentPreference = findPreference("custom_user_agent");
         final Preference incognitoModePreference = findPreference("incognito_mode");
@@ -77,7 +78,7 @@ public class SettingsFragment extends PreferenceFragment {
         final Preference clearEverythingPreference = findPreference("clear_everything");
         final Preference clearCookiesPreference = findPreference("clear_cookies");
         final Preference clearDomStoragePreference = findPreference("clear_dom_storage");
-        final Preference clearFormDataPreference = findPreference("clear_form_data");
+        final Preference clearFormDataPreference = findPreference("clear_form_data");  // The clear form data preference can be removed once the minimum API >= 26.
         final Preference clearCachePreference = findPreference("clear_cache");
         final Preference homepagePreference = findPreference("homepage");
         final Preference defaultFontSizePreference = findPreference("default_font_size");
@@ -96,7 +97,7 @@ public class SettingsFragment extends PreferenceFragment {
         String torSearchString = savedPreferences.getString("tor_search", "https://3g2upl4pq6kufc4m.onion/html/?q=");
         String searchString = savedPreferences.getString("search", "https://duckduckgo.com/html/?q=");
 
-        // Get booleans from the preferences.
+        // Get booleans that are used in multiple places from the preferences.
         final boolean javaScriptEnabled = savedPreferences.getBoolean("javascript_enabled", false);
         boolean firstPartyCookiesEnabled = savedPreferences.getBoolean("first_party_cookies_enabled", false);
         boolean thirdPartyCookiesEnabled = savedPreferences.getBoolean("third_party_cookies_enabled", false);
@@ -108,18 +109,29 @@ public class SettingsFragment extends PreferenceFragment {
         boolean clearEverything = savedPreferences.getBoolean("clear_everything", true);
         final boolean nightMode = savedPreferences.getBoolean("night_mode", false);
 
-        // Only enable the third-party preference if first-party cookies are enabled and API >= 21.
+        // Only enable the third-party cookies preference if first-party cookies are enabled and API >= 21.
         thirdPartyCookiesPreference.setEnabled(firstPartyCookiesEnabled && (Build.VERSION.SDK_INT >= 21));
 
         // Only enable the DOM storage preference if either JavaScript or Night Mode is enabled.
         domStoragePreference.setEnabled(javaScriptEnabled || nightMode);
 
+        // Remove the form data preferences if the API is >= 26 as they no longer do anything.
+        if (Build.VERSION.SDK_INT >= 26) {
+            // Get the categories.
+            PreferenceCategory privacyCategory = (PreferenceCategory) findPreference("privacy");
+            PreferenceCategory clearAndExitCategory = (PreferenceCategory) findPreference("clear_and_exit");
+
+            // Remove the form data preferences.
+            privacyCategory.removePreference(saveFormDataPreference);
+            clearAndExitCategory.removePreference(clearFormDataPreference);
+        }
+
         // Only enable Fanboy's social blocking list preference if Fanboy's annoyance list is disabled.
         fanboySocialBlockingListPreference.setEnabled(!fanboyAnnoyanceListEnabled);
 
-        // We need to inflated a `WebView` to get the default user agent.
+        // Inflate a WebView to get the default user agent.
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        // `@SuppressLint("InflateParams")` removes the warning about using `null` as the `ViewGroup`, which in this case makes sense because we don't want to display `bare_webview` on the screen.
+        // `@SuppressLint("InflateParams")` removes the warning about using `null` as the `ViewGroup`, which in this case makes sense because the `bare_webview` will not be displayed.
         @SuppressLint("InflateParams") View bareWebViewLayout = inflater.inflate(R.layout.bare_webview, null, false);
         final WebView bareWebView = bareWebViewLayout.findViewById(R.id.bare_webview);
 
@@ -201,7 +213,7 @@ public class SettingsFragment extends PreferenceFragment {
         // Set the status of the `Clear and Exit` preferences.
         clearCookiesPreference.setEnabled(!clearEverything);
         clearDomStoragePreference.setEnabled(!clearEverything);
-        clearFormDataPreference.setEnabled(!clearEverything);
+        clearFormDataPreference.setEnabled(!clearEverything);  // The form data line can be removed once the minimum API is >= 26.
         clearCachePreference.setEnabled(!clearEverything);
 
         // Set the homepage URL as the summary text for the homepage preference.
@@ -269,14 +281,16 @@ public class SettingsFragment extends PreferenceFragment {
             }
         }
 
-        // Set the save form data icon.
-        if (savedPreferences.getBoolean("save_form_data_enabled", false)) {
-            saveFormDataPreference.setIcon(R.drawable.form_data_enabled);
-        } else {
-            if (MainWebViewActivity.darkTheme) {
-                saveFormDataPreference.setIcon(R.drawable.form_data_disabled_dark);
+        // Set the save form data icon if API < 26.  Save form data has no effect on API >= 26.
+        if (Build.VERSION.SDK_INT < 26) {
+            if (savedPreferences.getBoolean("save_form_data_enabled", false)) {
+                saveFormDataPreference.setIcon(R.drawable.form_data_enabled);
             } else {
-                saveFormDataPreference.setIcon(R.drawable.form_data_disabled_light);
+                if (MainWebViewActivity.darkTheme) {
+                    saveFormDataPreference.setIcon(R.drawable.form_data_disabled_dark);
+                } else {
+                    saveFormDataPreference.setIcon(R.drawable.form_data_disabled_light);
+                }
             }
         }
 
@@ -551,15 +565,17 @@ public class SettingsFragment extends PreferenceFragment {
             clearDomStoragePreference.setIcon(R.drawable.dom_storage_warning);
         }
 
-        // Set the clear form data preference icon.
-        if (clearEverything || savedPreferences.getBoolean("clear_form_data", true)) {
-            if (MainWebViewActivity.darkTheme) {
-                clearFormDataPreference.setIcon(R.drawable.form_data_cleared_dark);
+        // Set the clear form data preference icon if the API < 26.  It has no effect on newer versions of Android.
+        if (Build.VERSION.SDK_INT < 26) {
+            if (clearEverything || savedPreferences.getBoolean("clear_form_data", true)) {
+                if (MainWebViewActivity.darkTheme) {
+                    clearFormDataPreference.setIcon(R.drawable.form_data_cleared_dark);
+                } else {
+                    clearFormDataPreference.setIcon(R.drawable.form_data_cleared_light);
+                }
             } else {
-                clearFormDataPreference.setIcon(R.drawable.form_data_cleared_light);
+                clearFormDataPreference.setIcon(R.drawable.form_data_warning);
             }
-        } else {
-            clearFormDataPreference.setIcon(R.drawable.form_data_warning);
         }
 
         // Set the clear cache preference icon.
@@ -749,6 +765,7 @@ public class SettingsFragment extends PreferenceFragment {
                     }
                     break;
 
+                // Save form data can be removed once the minimum API >= 26.
                 case "save_form_data_enabled":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("save_form_data_enabled", false)) {
@@ -1249,7 +1266,7 @@ public class SettingsFragment extends PreferenceFragment {
                     // Update the status of the `Clear and Exit` preferences.
                     clearCookiesPreference.setEnabled(!newClearEverythingBoolean);
                     clearDomStoragePreference.setEnabled(!newClearEverythingBoolean);
-                    clearFormDataPreference.setEnabled(!newClearEverythingBoolean);
+                    clearFormDataPreference.setEnabled(!newClearEverythingBoolean);  // This line can be removed once the minimum API >= 26.
                     clearCachePreference.setEnabled(!newClearEverythingBoolean);
 
                     // Update the `clearEverythingPreference` icon.
@@ -1285,15 +1302,17 @@ public class SettingsFragment extends PreferenceFragment {
                         clearDomStoragePreference.setIcon(R.drawable.dom_storage_warning);
                     }
 
-                    // Update the `clearFormDataPreference` icon.
-                    if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_form_data", true)) {
-                        if (MainWebViewActivity.darkTheme) {
-                            clearFormDataPreference.setIcon(R.drawable.form_data_cleared_dark);
+                    // Update the clear form data preference icon if the API < 26.
+                    if (Build.VERSION.SDK_INT < 26) {
+                        if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_form_data", true)) {
+                            if (MainWebViewActivity.darkTheme) {
+                                clearFormDataPreference.setIcon(R.drawable.form_data_cleared_dark);
+                            } else {
+                                clearFormDataPreference.setIcon(R.drawable.form_data_cleared_light);
+                            }
                         } else {
-                            clearFormDataPreference.setIcon(R.drawable.form_data_cleared_light);
+                            clearFormDataPreference.setIcon(R.drawable.form_data_warning);
                         }
-                    } else {
-                        clearFormDataPreference.setIcon(R.drawable.form_data_warning);
                     }
 
                     // Update the `clearCachePreference` icon.
@@ -1334,6 +1353,7 @@ public class SettingsFragment extends PreferenceFragment {
                     }
                     break;
 
+                // This section can be removed once the minimum API >= 26.
                 case "clear_form_data":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("clear_form_data", true)) {

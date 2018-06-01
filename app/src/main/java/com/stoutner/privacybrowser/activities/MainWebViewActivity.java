@@ -275,7 +275,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `domStorageEnabled` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applyDomainSettings()`.
     private boolean domStorageEnabled;
 
-    // `saveFormDataEnabled` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applyDomainSettings()`.
+    // `saveFormDataEnabled` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applyDomainSettings()`.  It can be removed once the minimum API >= 26.
     private boolean saveFormDataEnabled;
 
     // `nightMode` is used in `onCreate()` and  `applyDomainSettings()`.
@@ -1076,7 +1076,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         firstPartyCookiesEnabled = false;
         thirdPartyCookiesEnabled = false;
         domStorageEnabled = false;
-        saveFormDataEnabled = false;
+        saveFormDataEnabled = false;  // Form data can be removed once the minimum API >= 26.
         nightMode = false;
 
         // Initialize the WebView title.
@@ -1583,10 +1583,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem toggleFirstPartyCookiesMenuItem = menu.findItem(R.id.toggle_first_party_cookies);
         MenuItem toggleThirdPartyCookiesMenuItem = menu.findItem(R.id.toggle_third_party_cookies);
         MenuItem toggleDomStorageMenuItem = menu.findItem(R.id.toggle_dom_storage);
+        MenuItem toggleSaveFormDataMenuItem = menu.findItem(R.id.toggle_save_form_data);  // Form data can be removed once the minimum API >= 26.
+        MenuItem clearFormDataMenuItem = menu.findItem(R.id.clear_form_data);  // Form data can be removed once the minimum API >= 26.
         MenuItem refreshMenuItem = menu.findItem(R.id.refresh);
+        MenuItem adConsentMenuItem = menu.findItem(R.id.ad_consent);
 
-        // Only display third-party cookies if SDK >= 21
+        // Only display third-party cookies if API >= 21
         toggleThirdPartyCookiesMenuItem.setVisible(Build.VERSION.SDK_INT >= 21);
+
+        // Only display the form data menu items if the API < 26.
+        toggleSaveFormDataMenuItem.setVisible(Build.VERSION.SDK_INT < 26);
+        clearFormDataMenuItem.setVisible(Build.VERSION.SDK_INT < 26);
+
+        // Only show Ad Consent if this is the free flavor.
+        adConsentMenuItem.setVisible(BuildConfig.FLAVOR.contentEquals("free"));
 
         // Get the shared preference values.  `this` references the current context.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -1612,15 +1622,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem toggleFirstPartyCookiesMenuItem = menu.findItem(R.id.toggle_first_party_cookies);
         MenuItem toggleThirdPartyCookiesMenuItem = menu.findItem(R.id.toggle_third_party_cookies);
         MenuItem toggleDomStorageMenuItem = menu.findItem(R.id.toggle_dom_storage);
-        MenuItem toggleSaveFormDataMenuItem = menu.findItem(R.id.toggle_save_form_data);
+        MenuItem toggleSaveFormDataMenuItem = menu.findItem(R.id.toggle_save_form_data);  // Form data can be removed once the minimum API >= 26.
         MenuItem clearDataMenuItem = menu.findItem(R.id.clear_data);
         MenuItem clearCookiesMenuItem = menu.findItem(R.id.clear_cookies);
         MenuItem clearDOMStorageMenuItem = menu.findItem(R.id.clear_dom_storage);
-        MenuItem clearFormDataMenuItem = menu.findItem(R.id.clear_form_data);
+        MenuItem clearFormDataMenuItem = menu.findItem(R.id.clear_form_data);  // Form data can be removed once the minimum API >= 26.
         MenuItem fontSizeMenuItem = menu.findItem(R.id.font_size);
         MenuItem swipeToRefreshMenuItem = menu.findItem(R.id.swipe_to_refresh);
         MenuItem displayImagesMenuItem = menu.findItem(R.id.display_images);
-        MenuItem adConsentMenuItem = menu.findItem(R.id.ad_consent);
 
         // Set the text for the domain menu item.
         if (domainSettingsApplied) {
@@ -1633,7 +1642,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         toggleFirstPartyCookiesMenuItem.setChecked(firstPartyCookiesEnabled);
         toggleThirdPartyCookiesMenuItem.setChecked(thirdPartyCookiesEnabled);
         toggleDomStorageMenuItem.setChecked(domStorageEnabled);
-        toggleSaveFormDataMenuItem.setChecked(saveFormDataEnabled);
+        toggleSaveFormDataMenuItem.setChecked(saveFormDataEnabled);  // Form data can be removed once the minimum API >= 26.
         swipeToRefreshMenuItem.setChecked(swipeRefreshLayout.isEnabled());
         displayImagesMenuItem.setChecked(mainWebView.getSettings().getLoadsImagesAutomatically());
 
@@ -1663,9 +1672,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Enable `Clear DOM Storage` if there is any.
         clearDOMStorageMenuItem.setEnabled(localStorageDirectoryNumberOfFiles > 0 || indexedDBDirectoryNumberOfFiles > 0);
 
-        // Enable `Clear Form Data` is there is any.
-        WebViewDatabase mainWebViewDatabase = WebViewDatabase.getInstance(this);
-        clearFormDataMenuItem.setEnabled(mainWebViewDatabase.hasFormData());
+        // Enable `Clear Form Data` is there is any.  This can be removed once the minimum API >= 26.
+        if (Build.VERSION.SDK_INT < 26) {
+            WebViewDatabase mainWebViewDatabase = WebViewDatabase.getInstance(this);
+            clearFormDataMenuItem.setEnabled(mainWebViewDatabase.hasFormData());
+        }
 
         // Enable `Clear Data` if any of the submenu items are enabled.
         clearDataMenuItem.setEnabled(clearCookiesMenuItem.isEnabled() || clearDOMStorageMenuItem.isEnabled() || clearFormDataMenuItem.isEnabled());
@@ -1726,9 +1737,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Set the font size title and select the current size menu item.
         fontSizeMenuItem.setTitle(fontSizeTitle);
         selectedFontSizeMenuItem.setChecked(true);
-
-        // Only show Ad Consent if this is the free flavor.
-        adConsentMenuItem.setVisible(BuildConfig.FLAVOR.contentEquals("free"));
 
         // Run all the other default commands.
         super.onPrepareOptionsMenu(menu);
@@ -1886,6 +1894,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 mainWebView.reload();
                 return true;
 
+            // Form data can be removed once the minimum API >= 26.
             case R.id.toggle_save_form_data:
                 // Switch the status of saveFormDataEnabled.
                 saveFormDataEnabled = !saveFormDataEnabled;
@@ -1978,6 +1987,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         .show();
                 return true;
 
+            // Form data can be remove once the minimum API >= 26.
             case R.id.clear_form_data:
                 Snackbar.make(findViewById(R.id.main_webview), R.string.form_data_deleted, Snackbar.LENGTH_LONG)
                         .setAction(R.string.undo, v -> {
@@ -2259,8 +2269,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     }
                 }
 
-                // Clear form data.
-                if (clearEverything || sharedPreferences.getBoolean("clear_form_data", true)) {
+                // Clear form data if the API < 26.
+                if ((Build.VERSION.SDK_INT < 26) && (clearEverything || sharedPreferences.getBoolean("clear_form_data", true))) {
                     WebViewDatabase webViewDatabase = WebViewDatabase.getInstance(this);
                     webViewDatabase.clearFormData();
 
@@ -3394,6 +3404,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 firstPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES)) == 1);
                 thirdPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES)) == 1);
                 domStorageEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)) == 1);
+                // Form data can be removed once the minimum API >= 26.
                 saveFormDataEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA)) == 1);
                 easyListEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYLIST)) == 1);
                 easyPrivacyEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY)) == 1);
@@ -3449,7 +3460,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
                 cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
                 mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
-                mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
+
+                // Apply the form data setting if the API < 26.
+                if (Build.VERSION.SDK_INT < 26) {
+                    mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
+                }
 
                 // Apply the font size.
                 if (fontSize == 0) {  // Apply the default font size.
@@ -3545,7 +3560,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies_enabled", false);
                 thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies_enabled", false);
                 domStorageEnabled = sharedPreferences.getBoolean("dom_storage_enabled", false);
-                saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data_enabled", false);
+                saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data_enabled", false);  // Form data can be removed once the minimum API >= 26.
                 easyListEnabled = sharedPreferences.getBoolean("easylist", true);
                 easyPrivacyEnabled = sharedPreferences.getBoolean("easyprivacy", true);
                 fanboysAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboy_annoyance_list", true);
@@ -3560,9 +3575,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
                 cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
                 mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
-                mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
                 mainWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
                 swipeRefreshLayout.setEnabled(defaultSwipeToRefresh);
+
+                // Apply the form data setting if the API < 26.
+                if (Build.VERSION.SDK_INT < 26) {
+                    mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
+                }
 
                 // Reset the pinned SSL certificate information.
                 domainSettingsDatabaseId = -1;
