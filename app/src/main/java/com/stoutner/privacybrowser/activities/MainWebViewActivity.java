@@ -3094,7 +3094,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Decode `formattedUri` as a `String` in `UTF-8`.
             formattedUrlString = URLDecoder.decode(formattedUri.build().toString(), "UTF-8");
-        } else {
+        } else if (unformattedUrlString.isEmpty()){  // Load a blank web site.
+            // Load a blank string.
+            formattedUrlString = "";
+        } else {  // Search for the contents of the URL box.
             // Sanitize the search input and convert it to a search.
             final String encodedUrlString = URLEncoder.encode(unformattedUrlString, "UTF-8");
 
@@ -3105,6 +3108,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Clear the focus from the URL text box.  Otherwise, proximate typing in the box will retain the colorized formatting instead of being reset during refocus.
         urlTextBox.clearFocus();
 
+        // Make it so.
         loadUrl(formattedUrlString);
     }
 
@@ -3321,6 +3325,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             loadingNewDomainName = !hostName.equals(currentDomainName);
         }
 
+        // Strings don't like to be null.
+        if (hostName == null) {
+            hostName = "";
+        }
+
         // Only apply the domain settings if a new domain is being loaded.  This allows the user to set temporary settings for JavaScript, cookies, DOM storage, etc.
         if (loadingNewDomainName) {
             // Set the new `hostname` as the `currentDomainName`.
@@ -3370,20 +3379,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 domainNameInDatabase = hostName;
             }
 
-            // If `hostName` is not `null`, check all the subdomains of `hostName` against wildcard domains in `domainCursor`.
-            if (hostName != null) {
-                while (hostName.contains(".") && !domainSettingsApplied) {  // Stop checking if we run out of  `.` or if we already know that `domainSettingsApplied` is `true`.
-                    if (domainSettingsSet.contains("*." + hostName)) {  // Check the host name prepended by `*.`.
-                        domainSettingsApplied = true;
-                        domainNameInDatabase = "*." + hostName;
-                    }
+            // Check all the subdomains of the host name against wildcard domains in the domain cursor.
+            while (!domainSettingsApplied && hostName.contains(".")) {  // Stop checking if domain settings are already applied or there are no more `.` in the host name.
+                if (domainSettingsSet.contains("*." + hostName)) {  // Check the host name prepended by `*.`.
+                    // Apply the domain settings.
+                    domainSettingsApplied = true;
 
-                    // Strip out the lowest subdomain of `host`.
-                    hostName = hostName.substring(hostName.indexOf(".") + 1);
+                    // Store the applied domain names as it appears in the database.
+                    domainNameInDatabase = "*." + hostName;
                 }
+
+                // Strip out the lowest subdomain of of the host name.
+                hostName = hostName.substring(hostName.indexOf(".") + 1);
             }
 
-            // Get a handle for the shared preference.  `this` references the current context.
+
+            // Get a handle for the shared preference.
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
             // Store the general preference information.

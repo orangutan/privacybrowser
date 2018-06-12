@@ -201,11 +201,11 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase domainsDatabase = this.getReadableDatabase();
 
         // Get everything in `DOMAINS_TABLE` ordered by `DOMAIN_NAME`.
-        final String GET_CURSOR_ORDERED_BY_DOMAIN = "SELECT " + _ID + ", " + DOMAIN_NAME +
+        String GET_CURSOR_ORDERED_BY_DOMAIN = "SELECT " + _ID + ", " + DOMAIN_NAME +
                 " FROM " + DOMAINS_TABLE +
                 " ORDER BY " + DOMAIN_NAME + " ASC";
 
-        // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.  We can't close the `Cursor` because we need to use it in the parent activity.
+        // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.  The cursor can't be closed because it is needed in the calling activity.
         return domainsDatabase.rawQuery(GET_CURSOR_ORDERED_BY_DOMAIN, null);
     }
 
@@ -214,12 +214,12 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase domainsDatabase = this.getReadableDatabase();
 
         // Prepare the SQL statement to select all rows except that with `databaseId`.
-        final String GET_CURSOR_ORDERED_BY_DOMAIN_EXCEPT = "SELECT " + _ID + ", " + DOMAIN_NAME +
+        String GET_CURSOR_ORDERED_BY_DOMAIN_EXCEPT = "SELECT " + _ID + ", " + DOMAIN_NAME +
                 " FROM " + DOMAINS_TABLE +
                 " WHERE " + _ID + " IS NOT " + databaseId +
                 " ORDER BY " + DOMAIN_NAME + " ASC";
 
-        // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.  We can't close the `Cursor` because we need to use it in the calling activity.
+        // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.  The cursor can't be closed because it is needed in the calling activity.
         return domainsDatabase.rawQuery(GET_CURSOR_ORDERED_BY_DOMAIN_EXCEPT, null);
     }
 
@@ -228,10 +228,10 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase domainsDatabase = this.getReadableDatabase();
 
         // Prepare the SQL statement to get the `Cursor` for `databaseId`.
-        final String GET_CURSOR_FOR_ID = "SELECT * FROM " + DOMAINS_TABLE +
+        String GET_CURSOR_FOR_ID = "SELECT * FROM " + DOMAINS_TABLE +
                 " WHERE " + _ID + " = " + databaseId;
 
-        // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.  We can't close the `Cursor` because we need to use it in the calling activity.
+        // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.  The cursor can't be closed because it is needed in the calling activity.
         return domainsDatabase.rawQuery(GET_CURSOR_FOR_ID, null);
     }
 
@@ -239,12 +239,9 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         // Get a readable database handle.
         SQLiteDatabase domainsDatabase = this.getReadableDatabase();
 
-        // Prepare the SQL statement to get the `Cursor` for `domainName`.
-        final String GET_CURSOR_FOR_DOMAIN_NAME = "SELECT * FROM " + DOMAINS_TABLE +
-                " WHERE " + DOMAIN_NAME + " = " + "\"" + domainName + "\"";
+        // Return a cursor for the requested domain name.
+        return domainsDatabase.query(DOMAINS_TABLE, null, DOMAIN_NAME + " = " + "\"" + domainName + "\"", null, null, null, null);
 
-        // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.  We can't close the `Cursor` because we need to us it in the calling activity.
-        return domainsDatabase.rawQuery(GET_CURSOR_FOR_DOMAIN_NAME, null);
     }
 
     public int addDomain(String domainName) {

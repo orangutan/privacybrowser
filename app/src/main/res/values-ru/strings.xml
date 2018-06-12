@@ -71,7 +71,7 @@
     <string name="close">Закрыть</string>
     <string name="domain">Домен</string>
     <string name="domain_label">Домен:</string>
-    <string name="issued_to">Выдан</string>
+    <string name="issued_to">Кому выдан</string>
     <string name="issued_by">Кем выдан</string>
     <string name="common_name">Общепринятое имя (CN):</string>
     <string name="organization">Организация (O):</string>
@@ -148,13 +148,13 @@
     <string name="find_on_page">Найти на странице</string>
     <string name="print">Печать</string>
         <string name="privacy_browser_web_page">Privacy Browser веб-страница</string>
-    <string name="add_to_home_screen">Добавить на домашний экран</string>
+    <string name="add_to_home_screen">Добавить на главный экран</string>
     <string name="refresh">Обновить</string>
 
     <!-- Context Menus. -->
-    <string name="load_url">Загрузить URL</string>
+    <string name="load_url">Открыть URL</string>
     <string name="copy_url">Копировать URL</string>
-    <string name="download_url">Сохранить файл из URL</string>
+    <string name="download_url">Загрузить URL</string>
     <string name="email_address">Адрес email</string>
     <string name="copy_email_address">Копировать адрес email</string>
     <string name="write_email">Написать email</string>
@@ -177,15 +177,15 @@
         Это ограничение будет удалено в серии 4.x с выпуском Privacy WebView.</string>
 
     <!-- Create Home Screen Shortcut Alert Dialog. -->
-    <string name="create_shortcut">Создать ярлык</string>
+    <string name="create_shortcut">Создание ярлыка</string>
     <string name="shortcut_name">Имя ярлыка</string>
     <string name="cancel">Отмена</string>
     <string name="create">Создать</string>
 
     <!-- Bookmarks. -->
     <string name="database_view">Просмотр базы данных</string>
-    <string name="create_bookmark">Создать закладку</string>
-    <string name="create_folder">Создать папку</string>
+    <string name="create_bookmark">Создание закладки</string>
+    <string name="create_folder">Создание папки</string>
     <string name="current_bookmark_icon">Текущий значок закладки</string>
     <string name="current_folder_icon">Текущий значок папки</string>
     <string name="default_folder_icon">Значок папки по умолчанию</string>
@@ -224,12 +224,12 @@
     <!-- Domains. -->
     <string name="domains">Домены</string>
     <string name="domain_settings">Настройки домена</string>
-    <string name="add_domain">Добавить домен</string>
+    <string name="add_domain">Добавление домена</string>
     <string name="domain_name_already_exists">Доменное имя уже существует</string>
     <string name="add">Добавить</string>
     <string name="domain_name">Имя домена</string>
     <string name="domain_deleted">Домен удален</string>
-    <string name="domain_name_instructions">добавьте *. для включения всех поддоменов (напр. * .yandex.ru)</string>
+    <string name="domain_name_instructions">добавьте *. для включения всех поддоменов (напр. *.stoutner.com)</string>
     <string-array name="swipe_to_refresh_array">
         <item>Настройки по умолчанию</item>
         <item>Потянуть для обновления - включено</item>
@@ -283,7 +283,7 @@
             <item>Edge на Windows</item>
             <item>Internet Explorer на Windows</item>
             <item>Safari на macOS</item>
-            <item>Пользовательский</item>
+            <item>Настраиваемый</item>
         </string-array>
         <string-array name="translated_domain_settings_user_agent_names">  <!-- The translated names of the user agents with a System Default option for the domains spinner. -->
             <item>Настройки по умолчанию</item>
@@ -299,13 +299,13 @@
             <item>Edge на Windows</item>
             <item>Internet Explorer на Windows</item>
             <item>Safari на macOS</item>
-            <item>Пользовательский</item>
+            <item>Настраиваемый</item>
         </string-array>
-        <string name="custom_user_agent">Пользовательский user agent</string>
+        <string name="custom_user_agent">Настраиваемый user agent</string>
         <string name="incognito_mode">Режим инкогнито</string>
         <string name="incognito_mode_summary">Очистка журнала и кэша после завершения загрузки каждой веб-страницы. Кнопки \'Вперед\' и \'Назад\' не работают в этом режиме.</string>
         <string name="do_not_track">Не отслеживать</string>
-        <string name="do_not_track_summary">Отправлять заголовок \'не отслеживать\', являющийся пожеланием веб-серверу не отслеживать этот браузер.</string>
+        <string name="do_not_track_summary">Отправлять заголовок \'Не отслеживать\', предлагающий веб-серверу не отслеживать этот браузер.</string>
         <string name="allow_screenshots">Разрешить скриншоты</string>
         <string name="allow_screenshots_summary">Разрешить скриншоты, запись видео и просмотр на незащищенных дисплеях. При изменении этого параметра Privacy Browser будет перезапущен.</string>
     <string name="block_lists">Списки блокировки</string>
@@ -325,9 +325,9 @@
         <string-array name="tor_search_entries">
             <item>DuckDuckGo - JavaScript выключен</item>
             <item>DuckDuckGo - JavaScript включен</item>
-            <item>Пользовательский</item>
+            <item>Настраиваемый</item>
         </string-array>
-        <string name="tor_search_custom_url">Пользовательский URL-адрес поиска Tor</string>
+        <string name="tor_search_custom_url">Настраиваемый URL поиска Tor</string>
     <string name="search">Поиск</string>
         <string-array name="search_entries">
             <item>DuckDuckGo - JavaScript выключен</item>
@@ -340,13 +340,13 @@
             <item>Bing</item>
             <item>Yahoo - JavaScript выключен</item>
             <item>Yahoo - JavaScript включен</item>
-            <item>Пользовательский</item>
+            <item>Настраиваемый</item>
         </string-array>
-        <string name="search_custom_url">Пользовательский URL-адрес поиска</string>
-        <string name="custom_url">Пользовательский URL-адрес</string>
+        <string name="search_custom_url">Настраиваемый URL поиска</string>
+        <string name="custom_url">Настраиваемый URL</string>
     <string name="full_screen">Во весь экран</string>
         <string name="full_screen_browsing_mode">Полноэкранный режим просмотра</string>
-        <string name="full_screen_browsing_mode_summary">Двойное нажатие переключает режим просмотра.</string>
+        <string name="full_screen_browsing_mode_summary">Двойное касание переключает режим просмотра.</string>
         <string name="hide_system_bars">Скрыть системные панели</string>
         <string name="hide_system_bars_summary">Скрыть панели статуса и навигации в полноэкранном режиме просмотра. Это не работает при отображении клавиатуры во время полноэкранного просмотра.</string>
         <string name="translucent_navigation_bar">Полупрозрачная навигационная панель</string>

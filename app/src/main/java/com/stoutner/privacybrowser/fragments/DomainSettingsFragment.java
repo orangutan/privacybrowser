@@ -1703,15 +1703,15 @@ public class DomainSettingsFragment extends Fragment {
         // Initialize `domainNamesMatch`.
         boolean domainNamesMatch = false;
 
-        // Check if the domains match.
-        if (domainName.equals(certificateCommonName)) {
-            domainNamesMatch = true;
-        }
-
         // Check various wildcard permutations if `domainName` and `certificateCommonName` are not empty.
         // `noinspection ConstantCondition` removes Android Studio's incorrect lint warning that `domainName` can never be `null`.
         //noinspection ConstantConditions
         if ((domainName != null) && (certificateCommonName != null)) {
+            // Check if the domains match.
+            if (domainName.equals(certificateCommonName)) {
+                domainNamesMatch = true;
+            }
+
             // If `domainName` starts with a wildcard, check the base domain against all the subdomains of `certificateCommonName`.
             if (!domainNamesMatch && domainName.startsWith("*.") && (domainName.length() > 2)) {
                 // Remove the initial `*.`.
