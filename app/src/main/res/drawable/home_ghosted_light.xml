@@ -8,6 +8,6 @@
 
     <!-- A hard coded color must be used until API >= 21.  Then `@color` may be used. -->
     <path
-        android:fillColor="#44000000"
+        android:fillColor="#FFB7B7B7"
         android:pathData="M10,20v-6h4v6h5v-8h3L12,3 2,12h3v8z" />
 </vector>

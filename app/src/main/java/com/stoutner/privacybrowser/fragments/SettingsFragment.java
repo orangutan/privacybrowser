@@ -944,7 +944,7 @@ public class SettingsFragment extends PreferenceFragment {
                     boolean currentFanboySocialBlockingList = sharedPreferences.getBoolean("fanboy_social_blocking_list", true);
 
                     // Update the Fanboy icons.
-                    if (sharedPreferences.getBoolean("fanboy_annoyance_list", true)) {
+                    if (currentFanboyAnnoyanceList) {  // Fanboy's annoyance list is enabled.
                         if (MainWebViewActivity.darkTheme) {
                             // Update the Fanboy's annoyance list icon.
                             fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_enabled_dark);
@@ -958,16 +958,16 @@ public class SettingsFragment extends PreferenceFragment {
                             // Update the Fanboy's social blocking list icon.
                             fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_ghosted_light);
                         }
-                    } else {
+                    } else {  // Fanboy's annoyance list is disabled.
                         if (MainWebViewActivity.darkTheme) {
                             // Update the Fanboy's annoyance list icon.
                             fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_disabled_dark);
 
                             // Update the Fanboy's social blocking list icon.
                             if (currentFanboySocialBlockingList) {
-                                fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_enabled_dark);
+                                fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_enabled_dark);
                             } else {
-                                fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_disabled_dark);
+                                fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_dark);
                             }
                         } else {
                             // Update the Fanboy's annoyance list icon.
@@ -975,9 +975,9 @@ public class SettingsFragment extends PreferenceFragment {
 
                             // Update the Fanboy's social blocking list icon.
                             if (currentFanboySocialBlockingList) {
-                                fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_enabled_light);
+                                fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_enabled_light);
                             } else {
-                                fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_disabled_light);
+                                fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_light);
                             }
                         }
                     }
