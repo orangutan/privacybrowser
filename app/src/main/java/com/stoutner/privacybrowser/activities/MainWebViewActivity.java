@@ -1122,10 +1122,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.startsWith("http")) {  // Load the URL in Privacy Browser.
+                    // Hide the WebView while applying domain settings so changes to things like JavaScript aren't rendered on the current URL, which otherwise will reload automatically.
+                    mainWebView.setVisibility(View.INVISIBLE);
+
                     // Apply the domain settings for the new URL.
                     applyDomainSettings(url, true, false);
 
-                    // Returning false causes the current `WebView` to handle the URL and prevents it from adding redirects to the history list.
+                    // Display the WebView again so that the new URL can be loaded.
+                    mainWebView.setVisibility(View.VISIBLE);
+
+                    // Returning false causes the current WebView to handle the URL and prevents it from adding redirects to the history list.
                     return false;
                 } else if (url.startsWith("mailto:")) {  // Load the email address in an external email program.
                     // Use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
