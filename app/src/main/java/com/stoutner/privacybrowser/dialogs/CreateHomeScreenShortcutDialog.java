@@ -50,12 +50,11 @@ public class CreateHomeScreenShortcutDialog extends AppCompatDialogFragment {
 
     // Check to make sure that the parent activity implements the listener.
     public void onAttach(Context context) {
+        // Run the default commands.
         super.onAttach(context);
-        try {
-            createHomeScreenShortcutListener = (CreateHomeScreenShortcutListener) context;
-        } catch(ClassCastException exception) {
-            throw new ClassCastException(context.toString() + " must implement CreateHomeScreenShortcutListener.");
-        }
+
+        // Get a handle for `CreateHomeScreenShortcutListener` from the launching context.
+        createHomeScreenShortcutListener = (CreateHomeScreenShortcutListener) context;
     }
 
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.

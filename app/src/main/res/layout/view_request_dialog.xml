@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  Copyright © 2018 Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent" >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp" >
+
+        <!-- Disposition. -->
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/disposition"
+            android:textSize="12sp"
+            android:textColor="@color/blue_700"
+            android:layout_marginTop="5dp" />
+
+        <TextView
+            android:id="@+id/request_action"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textSize="16sp"
+            android:textColor="?android:textColorPrimary"
+            android:textIsSelectable="true" />
+
+        <!-- URL -->
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/url"
+            android:textSize="12sp"
+            android:textColor="@color/blue_700"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/request_url"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textSize="16sp"
+            android:textColor="?android:textColorPrimary"
+            android:textIsSelectable="true" />
+
+        <!-- Blocklist -->
+        <TextView
+            android:id="@+id/request_blocklist_label"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/blocklist"
+            android:textSize="12sp"
+            android:textColor="@color/blue_700"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/request_blocklist"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textSize="16sp"
+            android:textColor="?android:textColorPrimary"
+            android:textIsSelectable="true" />
+
+        <!-- Sublist -->
+        <TextView
+            android:id="@+id/request_sublist_label"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/sublist"
+            android:textSize="12sp"
+            android:textColor="@color/blue_700"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/request_sublist"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textSize="16sp"
+            android:textColor="?android:textColorPrimary"
+            android:textIsSelectable="true" />
+
+        <!-- Blocklist Entries. -->
+        <TextView
+            android:id="@+id/request_blocklist_entries_label"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/blocklist_entries"
+            android:textSize="12sp"
+            android:textColor="@color/blue_700"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/request_blocklist_entries"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textSize="16sp"
+            android:textColor="?android:textColorPrimary"
+            android:textIsSelectable="true" />
+
+        <!-- Blocklist Entries. -->
+        <TextView
+            android:id="@+id/request_blocklist_original_entry_label"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="@string/blocklist_original_entry"
+            android:textSize="12sp"
+            android:textColor="@color/blue_700"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/request_blocklist_original_entry"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textSize="16sp"
+            android:textColor="?android:textColorPrimary"
+            android:textIsSelectable="true" />
+    </LinearLayout>
+</ScrollView>

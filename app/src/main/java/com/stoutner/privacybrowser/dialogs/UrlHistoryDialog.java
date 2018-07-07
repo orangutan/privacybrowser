@@ -31,7 +31,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-// We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <= 22.  `android.support.v7.app.AlertDialog` also uses more of the horizontal screen real estate versus `android.app.AlertDialog's` smaller width.
+// `AppCompatDialogFragment` must be used instead of `DialogFragment` or an error is produced on API <= 22.
+// `android.support.v7.app.AlertDialog` also uses more of the horizontal screen real estate versus `android.app.AlertDialog's` smaller width.
 import android.support.v7.app.AppCompatDialogFragment;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -239,7 +240,7 @@ public class UrlHistoryDialog extends AppCompatDialogFragment{
         alertDialog.show();
 
         // Instantiate a `HistoryArrayAdapter`.
-        final HistoryArrayAdapter historyArrayAdapter = new HistoryArrayAdapter(getContext(), historyArrayList, currentPageId);
+        HistoryArrayAdapter historyArrayAdapter = new HistoryArrayAdapter(getContext(), historyArrayList, currentPageId);
 
         // Get a handle for the list view.
         ListView listView = alertDialog.findViewById(R.id.history_listview);
@@ -249,7 +250,7 @@ public class UrlHistoryDialog extends AppCompatDialogFragment{
 
         // Listen for clicks on entries in the list view.
         listView.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
-            // Convert the `long` `id` to an `int`.
+            // Convert the long ID to an int.
             int itemId = (int) id;
 
             // Only consume the click if it is not on the `currentPageId`.

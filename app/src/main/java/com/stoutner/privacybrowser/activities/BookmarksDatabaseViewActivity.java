@@ -108,14 +108,14 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         // Remove the incorrect warning in Android Studio that `appBar` might be null.
         assert appBar != null;
 
-        // Display the `Spinner` and the back arrow in the `AppBar`.
+        // Display the spinner and the back arrow in the app bar.
         appBar.setCustomView(R.layout.bookmarks_databaseview_spinner);
         appBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_HOME_AS_UP);
 
         // Initialize the database handler.  `this` specifies the context.  The two `null`s do not specify the database name or a `CursorFactory`.  The `0` is to specify a database version, but that is set instead using a constant in `BookmarksDatabaseHelper`.
         bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this, null, null, 0);
 
-        // Setup a `MatrixCursor` for "All Folders" and "Home Folder".
+        // Setup a matrix cursor for "All Folders" and "Home Folder".
         String[] matrixCursorColumnNames = {BookmarksDatabaseHelper._ID, BookmarksDatabaseHelper.BOOKMARK_NAME};
         MatrixCursor matrixCursor = new MatrixCursor(matrixCursorColumnNames);
         matrixCursor.addRow(new Object[]{ALL_FOLDERS_DATABASE_ID, getString(R.string.all_folders)});
@@ -127,28 +127,26 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         // Combine `matrixCursor` and `foldersCursor`.
         MergeCursor foldersMergeCursor = new MergeCursor(new Cursor[]{matrixCursor, foldersCursor});
 
-        // Create a `ResourceCursorAdapter` for the `Spinner` with `this` context.  `0` specifies no flags.;
+        // Create a resource cursor adapter for the spinner.
         ResourceCursorAdapter foldersCursorAdapter = new ResourceCursorAdapter(this, R.layout.bookmarks_databaseview_spinner_item, foldersMergeCursor, 0) {
             @Override
             public void bindView(View view, Context context, Cursor cursor) {
-                // Get a handle for the `Spinner` item `TextView`.
+                // Get a handle for the spinner item text view.
                 TextView spinnerItemTextView = view.findViewById(R.id.spinner_item_textview);
 
-                // Set the `TextView` to display the folder name.
+                // Set the text view to display the folder name.
                 spinnerItemTextView.setText(cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME)));
             }
         };
 
-        // Set the `ResourceCursorAdapter` drop drown view resource.
+        // Set the resource cursor adapter drop drown view resource.
         foldersCursorAdapter.setDropDownViewResource(R.layout.bookmarks_databaseview_spinner_dropdown_item);
 
-        // Get a handle for the folder `Spinner`.
+        // Get a handle for the folder spinner and set the adapter.
         Spinner folderSpinner = findViewById(R.id.bookmarks_databaseview_spinner);
-
-        // Set the adapter for the folder `Spinner`.
         folderSpinner.setAdapter(foldersCursorAdapter);
 
-        // Handle clicks on the `Spinner` dropdown.
+        // Handle clicks on the spinner dropdown.
         folderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -158,7 +156,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                 // Store the current folder database ID.
                 currentFolderDatabaseId = databaseId;
 
-                // Populate the bookmarks `ListView` based on the `Spinner` selection.
+                // Populate the bookmarks list view based on the spinner selection.
                 switch (databaseId) {
                     // Get a cursor with all the folders.
                     case ALL_FOLDERS_DATABASE_ID:
@@ -185,7 +183,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                         currentFolderName = folderName;
                 }
 
-                // Update the `ListView`.
+                // Update the list view.
                 bookmarksCursorAdapter.changeCursor(bookmarksCursor);
             }
 

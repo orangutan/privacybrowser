@@ -162,7 +162,7 @@
             <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text="@string/block_lists"
+                android:text="@string/blocklists"
                 android:textStyle="bold"
                 android:textSize="18sp"
                 android:textColor="?attr/aboutTitle"

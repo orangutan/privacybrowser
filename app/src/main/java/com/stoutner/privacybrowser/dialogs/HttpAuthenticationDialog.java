@@ -42,10 +42,22 @@ import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
 public class HttpAuthenticationDialog extends AppCompatDialogFragment{
+    // `httpAuthenticationListener` is used in `onAttach()` and `onCreateDialog()`
+    private HttpAuthenticationListener httpAuthenticationListener;
 
-    // The private variables are used in `onCreate()` and `onCreateDialog()`.
-    private String httpAuthHost;
-    private String httpAuthRealm;
+    // The public interface is used to send information back to the parent activity.
+    public interface HttpAuthenticationListener {
+        void onHttpAuthenticationCancel();
+
+        void onHttpAuthenticationProceed(AppCompatDialogFragment dialogFragment);
+    }
+
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        // Get a handle for `httpAuthenticationListener` from `context`.
+        httpAuthenticationListener = (HttpAuthenticationListener) context;
+    }
 
     public static HttpAuthenticationDialog displayDialog(String host, String realm) {
         // Store the strings in a `Bundle`.
@@ -59,44 +71,18 @@ public class HttpAuthenticationDialog extends AppCompatDialogFragment{
         return thisHttpAuthenticationDialog;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // Remove the incorrect lint warnings that `getString()` might be null.
-        assert getArguments() != null;
-
-        // Save the host and realm in class variables.
-        httpAuthHost = getArguments().getString("Host");
-        httpAuthRealm = getArguments().getString("Realm");
-    }
-
-    // The public interface is used to send information back to the parent activity.
-    public interface HttpAuthenticationListener {
-        void onHttpAuthenticationCancel();
-
-        void onHttpAuthenticationProceed(AppCompatDialogFragment dialogFragment);
-    }
-
-    // `httpAuthenticationListener` is used in `onAttach()` and `onCreateDialog()`
-    private HttpAuthenticationListener httpAuthenticationListener;
-
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        // Get a handle for `httpAuthenticationListener` from `context`.
-        try {
-            httpAuthenticationListener = (HttpAuthenticationListener) context;
-        } catch(ClassCastException exception) {
-            throw new ClassCastException(context.toString() + " must implement `HttpAuthenticationListener`.");
-        }
-    }
-
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Remove the incorrect lint warnings that `getString()` might be null.
+        assert getArguments() != null;
+
+        // Get the host and realm variables from the bundle.
+        String httpAuthHost = getArguments().getString("Host");
+        String httpAuthRealm = getArguments().getString("Realm");
+
         // Remove the incorrect lint warning that `getActivity()` might be null.
         assert getActivity() != null;
 

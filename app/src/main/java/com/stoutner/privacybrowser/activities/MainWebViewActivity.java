@@ -154,10 +154,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         HttpAuthenticationDialog.HttpAuthenticationListener, NavigationView.OnNavigationItemSelectedListener, PinnedSslCertificateMismatchDialog.PinnedSslCertificateMismatchListener,
         SslCertificateErrorDialog.SslCertificateErrorListener, UrlHistoryDialog.UrlHistoryListener {
 
-    // `darkTheme` is public static so it can be accessed from `AboutActivity`, `GuideActivity`, `AddDomainDialog`, `SettingsActivity`, `DomainsActivity`, `DomainsListFragment`, `BookmarksActivity`,
-    // `BookmarksDatabaseViewActivity`, `CreateBookmarkDialog`, `CreateBookmarkFolderDialog`, `DownloadFileDialog`, `DownloadImageDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`,
-    // `EditBookmarkDatabaseViewDialog`, `HttpAuthenticationDialog`, `MoveToFolderDialog`, `SslCertificateErrorDialog`, `UrlHistoryDialog`, `ViewSslCertificateDialog`, `CreateHomeScreenShortcutDialog`,
-    //  and `OrbotProxyHelper`. It is also used in `onCreate()`, `applyAppSettings()`, `applyDomainSettings()`, and `updatePrivacyIcons()`.
+    // `darkTheme` is public static so it can be accessed from everywhere.
     public static boolean darkTheme;
 
     // `allowScreenshots` is public static so it can be accessed from everywhere.  It is also used in `onCreate()`.
@@ -199,6 +196,44 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public static String easyPrivacyVersion;
     public static String fanboyAnnoyanceVersion;
     public static String fanboySocialVersion;
+
+    // The request items are public static so they can be accessed by `BlockListHelper`, `RequestsArrayAdapter`, and `ViewRequestsDialog`.  They are also used in `onCreate()`.
+    public static List<String[]> resourceRequests;
+    public static String[] whiteListResultStringArray;
+    public final static int REQUEST_DISPOSITION = 0;
+    public final static int REQUEST_URL = 1;
+    public final static int REQUEST_BLOCKLIST = 2;
+    public final static int REQUEST_SUBLIST = 3;
+    public final static int REQUEST_BLOCKLIST_ENTRIES = 4;
+    public final static int REQUEST_BLOCKLIST_ORIGINAL_ENTRY = 5;
+
+    public final static int REQUEST_DEFAULT = 0;
+    public final static int REQUEST_ALLOWED = 1;
+    public final static int REQUEST_BLOCKED = 2;
+
+    public final static int MAIN_WHITELIST = 1;
+    public final static int FINAL_WHITELIST = 2;
+    public final static int DOMAIN_WHITELIST = 3;
+    public final static int DOMAIN_INITIAL_WHITELIST = 4;
+    public final static int DOMAIN_FINAL_WHITELIST = 5;
+    public final static int THIRD_PARTY_WHITELIST = 6;
+    public final static int THIRD_PARTY_DOMAIN_WHITELIST = 7;
+    public final static int THIRD_PARTY_DOMAIN_INITIAL_WHITELIST = 8;
+
+    public final static int MAIN_BLACKLIST = 9;
+    public final static int INITIAL_BLACKLIST = 10;
+    public final static int FINAL_BLACKLIST = 11;
+    public final static int DOMAIN_BLACKLIST = 12;
+    public final static int DOMAIN_INITIAL_BLACKLIST = 13;
+    public final static int DOMAIN_FINAL_BLACKLIST = 14;
+    public final static int DOMAIN_REGULAR_EXPRESSION_BLACKLIST = 15;
+    public final static int THIRD_PARTY_BLACKLIST = 16;
+    public final static int THIRD_PARTY_INITIAL_BLACKLIST = 17;
+    public final static int THIRD_PARTY_DOMAIN_BLACKLIST = 18;
+    public final static int THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST = 19;
+    public final static int THIRD_PARTY_REGULAR_EXPRESSION_BLACKLIST = 20;
+    public final static int THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLACKLIST = 21;
+    public final static int REGULAR_EXPRESSION_BLACKLIST = 22;
 
     // `currentBookmarksFolder` is public static so it can be accessed from `BookmarksActivity`.  It is also used in `onCreate()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`,
     // `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `loadBookmarksFolder()`.
@@ -754,6 +789,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         final MenuItem navigationBackMenuItem = navigationMenu.getItem(1);
         final MenuItem navigationForwardMenuItem = navigationMenu.getItem(2);
         final MenuItem navigationHistoryMenuItem = navigationMenu.getItem(3);
+        final MenuItem navigationRequestsMenuItem = navigationMenu.getItem(4);
 
         // Initialize the bookmarks database helper.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
         // The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
@@ -816,7 +852,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             return true;
         });
 
-        // The `DrawerListener` allows us to update the Navigation Menu.
+        // The `DrawerListener` is used to update the Navigation Menu.
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
@@ -833,10 +869,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @Override
             public void onDrawerStateChanged(int newState) {
                 if ((newState == DrawerLayout.STATE_SETTLING) || (newState == DrawerLayout.STATE_DRAGGING)) {  // The drawer is opening or closing.
-                    // Update the `Back`, `Forward`, and `History` menu items.
+                    // Initialize a the blocked requests counter.
+                    int blockedRequests = 0;
+
+                    // Count the number of blocked requests.
+                    for (int i = 0; i < resourceRequests.size(); i++) {
+                        if (Integer.valueOf(resourceRequests.get(i)[REQUEST_DISPOSITION]) == REQUEST_BLOCKED) {
+                            blockedRequests++;
+                        }
+                    }
+
+                    // Update the back, forward, history, and requests menu items.
                     navigationBackMenuItem.setEnabled(mainWebView.canGoBack());
                     navigationForwardMenuItem.setEnabled(mainWebView.canGoForward());
                     navigationHistoryMenuItem.setEnabled((mainWebView.canGoBack() || mainWebView.canGoForward()));
+                    navigationRequestsMenuItem.setTitle(getResources().getString(R.string.requests) + " - " + blockedRequests);
 
                     // Hide the keyboard (if displayed) so we can see the navigation menu.  `0` indicates no additional flags.
                     inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
@@ -1103,6 +1150,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Instantiate the block list helper.
         BlockListHelper blockListHelper = new BlockListHelper();
 
+        // Initialize the list of resource requests.
+        resourceRequests = new ArrayList<>();
+
         // Parse the block lists.
         final ArrayList<List<String[]>> easyList = blockListHelper.parseBlockList(getAssets(), "blocklists/easylist.txt");
         final ArrayList<List<String[]>> easyPrivacy = blockListHelper.parseBlockList(getAssets(), "blocklists/easyprivacy.txt");
@@ -1188,12 +1238,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
             }
 
-            // Check requests against the block lists.  The deprecated `shouldInterceptRequest` must be used until minimum API >= 21.
+            // Check requests against the block lists.  The deprecated `shouldInterceptRequest()` must be used until minimum API >= 21.
             @SuppressWarnings("deprecation")
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url){
                 // Create an empty web resource response to be used if the resource request is blocked.
                 WebResourceResponse emptyWebResourceResponse = new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
+
+                // Reset `whiteListResultStringArray`.
+                whiteListResultStringArray = null;
 
                 // Check EasyList if it is enabled.
                 if (easyListEnabled) {
@@ -1224,6 +1277,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     }
                 }
 
+                // Add the request to the log.
+                if (whiteListResultStringArray != null ) {  // The request was processed by a whitelist.
+                    resourceRequests.add(whiteListResultStringArray);
+                } else {  // The request didn't match any blocklist entry.  Log it as a defult request.
+                    resourceRequests.add(new String[]{String.valueOf(REQUEST_DEFAULT), url});
+                }
+
                 // The resource request has not been blocked.  `return null` loads the requested resource.
                 return null;
             }
@@ -1241,7 +1301,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Update the URL in urlTextBox when the page starts to load.
             @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {// If night mode is enabled, hide `mainWebView` until after the night mode CSS is applied.
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                // Reset the list of resource requests.
+                resourceRequests.clear();
+
+                // If night mode is enabled, hide `mainWebView` until after the night mode CSS is applied.
                 if (nightMode) {
                     mainWebView.setVisibility(View.INVISIBLE);
                 }
@@ -2184,6 +2248,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 urlHistoryDialogFragment.show(getSupportFragmentManager(), getString(R.string.history));
                 break;
 
+            case R.id.requests:
+                // Launch the requests activity.
+                Intent requestsIntent = new Intent(this, RequestsActivity.class);
+                startActivity(requestsIntent);
+                break;
+
             case R.id.downloads:
                 // Launch the system Download Manager.
                 Intent downloadManagerIntent = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
@@ -2199,7 +2269,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 reapplyDomainSettingsOnRestart = true;
                 currentDomainName = "";
 
-                // Launch `DomainsActivity`.
+                // Launch the domains activity.
                 Intent domainsIntent = new Intent(this, DomainsActivity.class);
                 startActivity(domainsIntent);
                 break;
@@ -2212,7 +2282,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 reapplyDomainSettingsOnRestart = true;
                 currentDomainName = "";
 
-                // Launch `SettingsActivity`.
+                // Launch the settings activity.
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);
                 startActivity(settingsIntent);
                 break;
@@ -3123,11 +3193,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Apply any custom domain settings.
         applyDomainSettings(url, true, false);
 
-        // Load the URL.
-        mainWebView.loadUrl(url, customHeaders);
-
         // Set `urlIsLoading` to prevent changes in the user agent on websites with redirects from reloading the current website.
         urlIsLoading = true;
+
+        // Load the URL.
+        mainWebView.loadUrl(url, customHeaders);
     }
 
     public void findPreviousOnPage(View view) {

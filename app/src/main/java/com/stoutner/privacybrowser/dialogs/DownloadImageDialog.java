@@ -41,9 +41,23 @@ import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 // `android.support.v7.app.AlertDialog` uses more of the horizontal screen real estate versus `android.app.AlertDialog's` smaller width.
 // We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <=22.
 public class DownloadImageDialog extends AppCompatDialogFragment {
+    // `downloadImageListener` is used in `onAttach()` and `onCreateDialog()`.
+    private DownloadImageListener downloadImageListener;
 
-    private String imageUrl;
-    private String imageFileName;
+    // The public interface is used to send information back to the parent activity.
+    public interface DownloadImageListener {
+        void onDownloadImage(AppCompatDialogFragment dialogFragment, String downloadUrl);
+    }
+
+    // Check to make sure tha the parent activity implements the listener.
+    @Override
+    public void onAttach(Context context) {
+        // Run the default commands.
+        super.onAttach(context);
+
+        // Get a handle for `DownloadImageListener` from the launching context.
+        downloadImageListener = (DownloadImageListener) context;
+    }
 
     public static DownloadImageDialog imageUrl(String imageUrlString) {
         // Create an arguments bundle.
@@ -66,42 +80,18 @@ public class DownloadImageDialog extends AppCompatDialogFragment {
         return thisDownloadFileDialog;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // Remove the warning below that `getArguments()` might be null.
-        assert getArguments() != null;
-
-        // Store the strings in the local class variables.
-        imageUrl = getArguments().getString("URL");
-        imageFileName = getArguments().getString("Image_Name");
-    }
-
-    // The public interface is used to send information back to the parent activity.
-    public interface DownloadImageListener {
-        void onDownloadImage(AppCompatDialogFragment dialogFragment, String downloadUrl);
-    }
-
-    // `downloadImageListener` is used in `onAttach()` and `onCreateDialog()`.
-    private DownloadImageListener downloadImageListener;
-
-    // Check to make sure tha the parent activity implements the listener.
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try {
-            downloadImageListener = (DownloadImageListener) context;
-        } catch (ClassCastException exception) {
-            throw new ClassCastException(context.toString() + " must implement DownloadImageListener.");
-        }
-    }
-
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Remove the warning below that `getArguments()` might be null.
+        assert getArguments() != null;
+
+        // Get the strings from the bundle.
+        String imageUrl = getArguments().getString("URL");
+        String imageFileName = getArguments().getString("Image_Name");
+
         // Remove the warning below that `.getActivity()` might be null.
         assert getActivity() != null;
 

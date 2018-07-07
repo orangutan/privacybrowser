@@ -49,7 +49,6 @@ import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 public class EditBookmarkDialog extends AppCompatDialogFragment {
     // Instantiate the class variables.
     private EditBookmarkListener editBookmarkListener;
-    private int selectedBookmarkDatabaseId;
     private EditText nameEditText;
     private EditText urlEditText;
     private RadioButton newIconRadioButton;
@@ -66,12 +65,8 @@ public class EditBookmarkDialog extends AppCompatDialogFragment {
         // Run the default commands.
         super.onAttach(context);
 
-        // Get a handle for `EditBookmarkListener` from `context`.
-        try {
-            editBookmarkListener = (EditBookmarkListener) context;
-        } catch(ClassCastException exception) {
-            throw new ClassCastException(context.toString() + " must implement EditBookmarkListener.");
-        }
+        // Get a handle for `EditBookmarkListener` from the launching context.
+        editBookmarkListener = (EditBookmarkListener) context;
     }
 
     // Store the database ID in the arguments bundle.
@@ -90,24 +85,18 @@ public class EditBookmarkDialog extends AppCompatDialogFragment {
         return editBookmarkDialog;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        // Run the default commands.
-        super.onCreate(savedInstanceState);
-
-        // Remove the incorrect lint warning that `getInt()` might be null.
-        assert getArguments() != null;
-
-        // Store the bookmark database ID in the class variable.
-        selectedBookmarkDatabaseId = getArguments().getInt("Database ID");
-    }
-
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Initialize the database helper.  The two `nulls` do not specify the database name or a `CursorFactory`.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
+        // Remove the incorrect lint warning that `getInt()` might be null.
+        assert getArguments() != null;
+
+        // Store the bookmark database ID in the class variable.
+        int selectedBookmarkDatabaseId = getArguments().getInt("Database ID");
+
+        // Initialize the database helper.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
         BookmarksDatabaseHelper bookmarksDatabaseHelper = new BookmarksDatabaseHelper(getContext(), null, null, 0);
 
         // Get a `Cursor` with the selected bookmark and move it to the first position.
@@ -130,7 +119,7 @@ public class EditBookmarkDialog extends AppCompatDialogFragment {
         // Remove the incorrect lint warning that `getActivity()` might be null.
         assert getActivity() != null;
 
-        // Set the view.  The parent view is `null` because it will be assigned by `AlertDialog`.
+        // Set the view.  The parent view is null because it will be assigned by the alert dialog.
         dialogBuilder.setView(getActivity().getLayoutInflater().inflate(R.layout.edit_bookmark_dialog, null));
 
         // Set the listener for the negative button.

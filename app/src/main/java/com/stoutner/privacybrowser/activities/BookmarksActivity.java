@@ -136,15 +136,15 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         final Toolbar bookmarksAppBar = findViewById(R.id.bookmarks_toolbar);
         setSupportActionBar(bookmarksAppBar);
 
-        // Get a handle for the activity, the app bar, and the `ListView`.
+        // Get a handle for the activity, the app bar, and the ListView.
         final Activity bookmarksActivity = this;
         appBar = getSupportActionBar();
         bookmarksListView = findViewById(R.id.bookmarks_listview);
 
-        // This assert removes the incorrect warning in Android Studio on the following line that `appBar` might be null.
+        // Remove the incorrect lint warning that `appBar` might be null.
         assert appBar != null;
 
-        // Display the home arrow on `SupportActionBar`.
+        // Display the home arrow on the app bar.
         appBar.setDisplayHomeAsUpEnabled(true);
 
         // Initialize the database helper.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.

@@ -308,7 +308,7 @@
         <string name="do_not_track_summary">Отправлять заголовок \'Не отслеживать\', предлагающий веб-серверу не отслеживать этот браузер.</string>
         <string name="allow_screenshots">Разрешить скриншоты</string>
         <string name="allow_screenshots_summary">Разрешить скриншоты, запись видео и просмотр на незащищенных дисплеях. При изменении этого параметра Privacy Browser будет перезапущен.</string>
-    <string name="block_lists">Списки блокировки</string>
+    <string name="blocklists">Списки блокировки</string>
         <string name="easylist">EasyList</string>
         <string name="easylist_summary">Основной список блокировки рекламы.</string>
         <string name="easyprivacy">EasyPrivacy</string>

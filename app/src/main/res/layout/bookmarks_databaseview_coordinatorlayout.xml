@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -28,7 +28,7 @@
     android:layout_width="match_parent"
     android:fitsSystemWindows="true" >
 
-    <!-- The `LinearLayout` with `orientation="vertical"` moves the `ListView` below the `AppBarLayout`. -->
+    <!-- The `LinearLayout` with `orientation="vertical"` moves the list view below the app bar layout. -->
     <LinearLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"

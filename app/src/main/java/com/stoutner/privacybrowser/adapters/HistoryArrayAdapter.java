@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -40,7 +40,7 @@ public class HistoryArrayAdapter extends ArrayAdapter<History> {
     private final int currentPage;
 
     public HistoryArrayAdapter(Context context, ArrayList<History> historyArrayList, int currentPageId) {
-        // We need to call `super` from the base `ArrayAdapter`.  `0` is the `textViewResourceId`.
+        // `super` must be called from the base `ArrayAdapter`.  `0` is the `textViewResourceId`, which is unused.
         super(context, 0, historyArrayList);
 
         // Store `currentPageId` in the class variable.
@@ -50,15 +50,15 @@ public class HistoryArrayAdapter extends ArrayAdapter<History> {
     @Override
     @NonNull
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-        // Inflate the view if it is `null`.
+        // Inflate the view if it is null.
         if (convertView == null) {
             // `false` does not attach `url_history_item_linearlayout` to `parent`.
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.url_history_item_linearlayout, parent, false);
         }
 
         // Get handles for `favoriteIconImageView` and `urlTextView`.
-        ImageView favoriteIconImageView = (ImageView) convertView.findViewById(R.id.history_favorite_icon_imageview);
-        TextView urlTextView = (TextView) convertView.findViewById(R.id.history_url_textview);
+        ImageView favoriteIconImageView = convertView.findViewById(R.id.history_favorite_icon_imageview);
+        TextView urlTextView = convertView.findViewById(R.id.history_url_textview);
 
         // Get the URL history for this position.
         History history = getItem(position);

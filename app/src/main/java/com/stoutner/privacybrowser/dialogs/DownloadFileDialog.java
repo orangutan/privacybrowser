@@ -42,10 +42,22 @@ import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import java.util.Locale;
 
 public class DownloadFileDialog extends AppCompatDialogFragment {
+    // `downloadFileListener` is used in `onAttach()` and `onCreateDialog()`.
+    private DownloadFileListener downloadFileListener;
 
-    private String downloadUrl;
-    private String downloadFileName;
-    private String fileSize;
+    // The public interface is used to send information back to the parent activity.
+    public interface DownloadFileListener {
+        void onDownloadFile(AppCompatDialogFragment dialogFragment, String downloadUrl);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        // Run the default commands.
+        super.onAttach(context);
+
+        // Get a handle for `DownloadFileListener` from the launching context.
+        downloadFileListener = (DownloadFileListener) context;
+    }
 
     public static DownloadFileDialog fromUrl(String urlString, String contentDisposition, long contentLength) {
         // Create an arguments bundle.
@@ -78,18 +90,20 @@ public class DownloadFileDialog extends AppCompatDialogFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    @NonNull
+    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
+    @SuppressLint("InflateParams")
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Remove the warning below that `getArguments()` might be null.
         assert getArguments() != null;
 
-        // Store the strings in the local class variables.
-        downloadUrl = getArguments().getString("URL");
-        downloadFileName = getArguments().getString("File_Name");
-
-        // Get the `File_Size`.
+        // Store the variables from the bundle.
+        String downloadUrl = getArguments().getString("URL");
+        String downloadFileName = getArguments().getString("File_Name");
         long fileSizeLong = getArguments().getLong("File_Size");
+
+        // Initialize the file size string.
+        String fileSize;
 
         // Convert `fileSizeLong` to a String.
         if (fileSizeLong == -1) {  // We don't know the file size.
@@ -97,33 +111,7 @@ public class DownloadFileDialog extends AppCompatDialogFragment {
         } else {  // Convert `fileSize` to MB and store it in `fileSizeString`.  `%.3g` displays the three most significant digits.
             fileSize = String.format(Locale.getDefault(), "%.3g", (float) fileSizeLong / 1048576) + " MB";
         }
-    }
 
-    // The public interface is used to send information back to the parent activity.
-    public interface DownloadFileListener {
-        void onDownloadFile(AppCompatDialogFragment dialogFragment, String downloadUrl);
-    }
-
-    // `downloadFileListener` is used in `onAttach()` and `onCreateDialog()`.
-    private DownloadFileListener downloadFileListener;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        // Check to make sure the parent activity implements the listener.
-        try {
-            downloadFileListener = (DownloadFileListener) context;
-        } catch (ClassCastException exception) {
-            throw new ClassCastException(context.toString() + " must implement DownloadFileListener.");
-        }
-    }
-
-    @Override
-    @NonNull
-    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
-    @SuppressLint("InflateParams")
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Remove the warning below that `getActivity()` might be null;
         assert getActivity() != null;
 

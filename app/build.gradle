@@ -77,5 +77,5 @@ dependencies {
     freeImplementation 'com.google.firebase:firebase-ads:15.0.1'
 
     // Only compile the consent library for the free flavor.  It is used to comply with the GDPR in Europe.
-    freeImplementation 'com.google.android.ads.consent:consent-library:1.0.4'
+    freeImplementation 'com.google.android.ads.consent:consent-library:1.0.6'
 }

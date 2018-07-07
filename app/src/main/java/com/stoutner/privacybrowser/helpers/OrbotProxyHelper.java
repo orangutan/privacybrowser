@@ -57,7 +57,7 @@ public class OrbotProxyHelper {
             mLoadedApkField.setAccessible(true);
             Object mLoadedApkObject = mLoadedApkField.get(privacyBrowserContext);
 
-            // Suppress the lint warning that reflection may not alwasy work in the future and on all devices.
+            // Suppress the lint warning that reflection may not always work in the future and on all devices.
             @SuppressLint("PrivateApi") Class loadedApkClass = Class.forName("android.app.LoadedApk");
             Field mReceiversField = loadedApkClass.getDeclaredField("mReceivers");
 

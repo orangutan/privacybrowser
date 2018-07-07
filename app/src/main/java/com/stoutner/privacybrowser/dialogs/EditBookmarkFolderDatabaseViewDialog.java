@@ -60,7 +60,6 @@ public class EditBookmarkFolderDatabaseViewDialog extends AppCompatDialogFragmen
     // Instantiate the class variables.
     private EditBookmarkFolderDatabaseViewListener editBookmarkFolderDatabaseViewListener;
     private BookmarksDatabaseHelper bookmarksDatabaseHelper;
-    private int folderDatabaseId;
     private StringBuilder exceptFolders;
     private String currentFolderName;
     private int currentParentFolderDatabaseId;
@@ -80,12 +79,8 @@ public class EditBookmarkFolderDatabaseViewDialog extends AppCompatDialogFragmen
         // Run the default commands.
         super.onAttach(context);
 
-        // Get a handle for `EditBookmarkDatabaseViewListener` from `context`.
-        try {
-            editBookmarkFolderDatabaseViewListener = (EditBookmarkFolderDatabaseViewListener) context;
-        } catch(ClassCastException exception) {
-            throw new ClassCastException(context.toString() + " must implement EditBookmarkFolderDatabaseViewListener.");
-        }
+        // Get a handle for `EditBookmarkDatabaseViewListener` from the launching context.
+        editBookmarkFolderDatabaseViewListener = (EditBookmarkFolderDatabaseViewListener) context;
     }
 
     // Store the database ID in the arguments bundle.
@@ -104,23 +99,17 @@ public class EditBookmarkFolderDatabaseViewDialog extends AppCompatDialogFragmen
         return editBookmarkFolderDatabaseViewDialog;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        // Run the default commands.
-        super.onCreate(savedInstanceState);
-
-        // Remove the incorrect lint warning that `getInt()` might be null.
-        assert getArguments() != null;
-
-        // Store the bookmark database ID in the class variable.
-        folderDatabaseId = getArguments().getInt("Database ID");
-    }
-
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Remove the incorrect lint warning that `getInt()` might be null.
+        assert getArguments() != null;
+
+        // Get the bookmark database ID from the bundle.
+        int folderDatabaseId = getArguments().getInt("Database ID");
+
         // Initialize the database helper.  The two `nulls` do not specify the database name or a `CursorFactory`.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
         bookmarksDatabaseHelper = new BookmarksDatabaseHelper(getContext(), null, null, 0);
 
@@ -250,7 +239,7 @@ public class EditBookmarkFolderDatabaseViewDialog extends AppCompatDialogFragmen
         // Select the current folder in the `Spinner` if the bookmark isn't in the "Home Folder".
         if (!parentFolder.equals("")) {
             // Get the database ID of the parent folder.
-            int folderDatabaseId = bookmarksDatabaseHelper.getFolderDatabaseId(folderCursor.getString(folderCursor.getColumnIndex(BookmarksDatabaseHelper.PARENT_FOLDER)));
+            int parentFolderDatabaseId = bookmarksDatabaseHelper.getFolderDatabaseId(folderCursor.getString(folderCursor.getColumnIndex(BookmarksDatabaseHelper.PARENT_FOLDER)));
 
             // Initialize `parentFolderPosition` and the iteration variable.
             int parentFolderPosition = 0;
@@ -258,7 +247,7 @@ public class EditBookmarkFolderDatabaseViewDialog extends AppCompatDialogFragmen
 
             // Find the parent folder position in folders `ResourceCursorAdapter`.
             do {
-                if (foldersCursorAdapter.getItemId(i) == folderDatabaseId) {
+                if (foldersCursorAdapter.getItemId(i) == parentFolderDatabaseId) {
                     // Store the current position for the parent folder.
                     parentFolderPosition = i;
                 } else {

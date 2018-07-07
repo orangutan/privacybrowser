@@ -222,6 +222,42 @@
     <string name="parent_folder">Parent folder:</string>
     <string name="display_order">Display order:</string>
 
+    <!-- Block Lists. -->
+    <string name="requests">Requests</string>
+    <string name="request_details">Request details</string>
+    <string name="disposition">Disposition</string>
+        <string name="all">All</string>
+        <string name="default_label">Default</string>
+        <string name="default_allowed">Default - Allowed</string>
+        <string name="allowed">Allowed</string>
+        <string name="blocked">Blocked</string>
+    <string name="blocklist">Blocklist</string>
+    <string name="sublist">Sublist</string>
+        <string name="main_whitelist">Main whitelist</string>
+        <string name="final_whitelist">Final whitelist</string>
+        <string name="domain_whitelist">Domain whitelist</string>
+        <string name="domain_initial_whitelist">Domain initial whitelist</string>
+        <string name="domain_final_whitelist">Domain final whitelist</string>
+        <string name="third_party_whiteist">Third-party whitelist</string>
+        <string name="third_party_domain_whitelist">Third-party domain whitelist</string>
+        <string name="third_party_domain_initial_whitelist">Third-party domain initial whitelist</string>
+        <string name="main_blacklist">Main blacklist</string>
+        <string name="initial_blacklist">Initial blacklist</string>
+        <string name="final_blacklist">Final blacklist</string>
+        <string name="domain_blacklist">Domain blacklist</string>
+        <string name="domain_initial_blacklist">Domain initial blacklist</string>
+        <string name="domain_final_blacklist">Domain final blacklist</string>
+        <string name="domain_regular_expression_blacklist">Domain regular expression blacklist</string>
+        <string name="third_party_blacklist">Third-party blacklist</string>
+        <string name="third_party_initial_blacklist">Third-party blacklist</string>
+        <string name="third_party_domain_blacklist">Third-party domain blacklist</string>
+        <string name="third_party_domain_initial_blacklist">Third-party domain initial blacklist</string>
+        <string name="third_party_regular_expression_blacklist">Third-party regular expression blacklist</string>
+        <string name="third_party_domain_regular_expression_blacklist">Third-party domain regular expression blacklist</string>
+        <string name="regular_expression_blacklist">Regular expression blacklist</string>
+    <string name="blocklist_entries">Blocklist entries</string>
+    <string name="blocklist_original_entry">Blocklist original entry</string>
+
     <!-- Domains. -->
     <string name="domains">Domains</string>
     <string name="domain_settings">Domain Settings</string>
@@ -340,7 +376,7 @@
         <string name="do_not_track_summary">Send the Do Not Track header, which politely suggests that web servers not track this browser.</string>
         <string name="allow_screenshots">Allow screenshots</string>
         <string name="allow_screenshots_summary">Allow screenshots, video recording, and viewing on non-secure displays. Changing this setting will restart Privacy Browser.</string>
-    <string name="block_lists">Block Lists</string>
+    <string name="blocklists">Blocklists</string>
         <string name="easylist">EasyList</string>
         <string name="easylist_summary">Main ad blocking list.</string>
         <string name="easyprivacy">EasyPrivacy</string>

@@ -44,18 +44,23 @@ import java.text.DateFormat;
 import java.util.Date;
 
 public class SslCertificateErrorDialog extends AppCompatDialogFragment {
+    // `sslCertificateErrorListener` is used in `onAttach` and `onCreateDialog`.
+    private SslCertificateErrorListener sslCertificateErrorListener;
 
-    // The private variables are used in `onCreate()` and `onCreateDialog()`.
-    private int primaryErrorInt;
-    private String urlWithError;
-    private String issuedToCName;
-    private String issuedToOName;
-    private String issuedToUName;
-    private String issuedByCName;
-    private String issuedByOName;
-    private String issuedByUName;
-    private String startDate;
-    private String endDate;
+    // The public interface is used to send information back to the parent activity.
+    public interface SslCertificateErrorListener {
+        void onSslErrorCancel();
+
+        void onSslErrorProceed();
+    }
+
+    public void onAttach(Context context) {
+        // Run the default commands.
+        super.onAttach(context);
+
+        // Get a handle for `SslCertificateErrorListener` from the launching context.
+        sslCertificateErrorListener = (SslCertificateErrorListener) context;
+    }
 
     public static SslCertificateErrorDialog displayDialog(SslError error) {
         // Get the various components of the SSL error message.
@@ -90,53 +95,27 @@ public class SslCertificateErrorDialog extends AppCompatDialogFragment {
         return thisSslCertificateErrorDialog;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // Remove the incorrect lint warning that `getArguments()` might be null.
-        assert getArguments() != null;
-
-        // Save the components of the SSL error message in class variables.
-        primaryErrorInt = getArguments().getInt("PrimaryErrorInt");
-        urlWithError = getArguments().getString("UrlWithError");
-        issuedToCName = getArguments().getString("IssuedToCName");
-        issuedToOName = getArguments().getString("IssuedToOName");
-        issuedToUName = getArguments().getString("IssuedToUName");
-        issuedByCName = getArguments().getString("IssuedByCName");
-        issuedByOName = getArguments().getString("IssuedByOName");
-        issuedByUName = getArguments().getString("IssuedByUName");
-        startDate = getArguments().getString("StartDate");
-        endDate = getArguments().getString("EndDate");
-    }
-
-    // The public interface is used to send information back to the parent activity.
-    public interface SslCertificateErrorListener {
-        void onSslErrorCancel();
-
-        void onSslErrorProceed();
-    }
-
-    // `sslCertificateErrorListener` is used in `onAttach` and `onCreateDialog`.
-    private SslCertificateErrorListener sslCertificateErrorListener;
-
-    // Check to make sure that the parent activity implements the listener.
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        try {
-            sslCertificateErrorListener = (SslCertificateErrorListener) context;
-        } catch(ClassCastException exception) {
-            throw new ClassCastException(context.toString() + " must implement SslCertificateErrorListener");
-        }
-    }
-
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
     @SuppressWarnings("deprecation")
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Remove the incorrect lint warning that `getArguments()` might be null.
+        assert getArguments() != null;
+
+        // Get the components of the SSL error message from the bundle.
+        int primaryErrorInt = getArguments().getInt("PrimaryErrorInt");
+        String urlWithError = getArguments().getString("UrlWithError");
+        String issuedToCName = getArguments().getString("IssuedToCName");
+        String issuedToOName = getArguments().getString("IssuedToOName");
+        String issuedToUName = getArguments().getString("IssuedToUName");
+        String issuedByCName = getArguments().getString("IssuedByCName");
+        String issuedByOName = getArguments().getString("IssuedByOName");
+        String issuedByUName = getArguments().getString("IssuedByUName");
+        String startDate = getArguments().getString("StartDate");
+        String endDate = getArguments().getString("EndDate");
+
         // Remove the incorrect lint warning that `getActivity()` might be null.
         assert getActivity() != null;
 

@@ -21,46 +21,46 @@ package com.stoutner.privacybrowser.helpers;
 
 import android.content.res.AssetManager;
 import android.net.Uri;
-import android.util.Log;
+
+import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
 public class BlockListHelper {
     public ArrayList<List<String[]>> parseBlockList(AssetManager assets, String blockListName) {
         // Initialize the header list.
-        List<String[]> headers = new ArrayList<>();
+        List<String[]> headers = new ArrayList<>();  // 0.
 
         // Initialize the white lists.
-        List<String[]> mainWhiteList = new ArrayList<>();
-        List<String[]> finalWhiteList = new ArrayList<>();
-        List<String[]> domainWhiteList = new ArrayList<>();
-        List<String[]> domainInitialWhiteList = new ArrayList<>();
-        List<String[]> domainFinalWhiteList = new ArrayList<>();
-        List<String[]> thirdPartyWhiteList = new ArrayList<>();
-        List<String[]> thirdPartyDomainWhiteList = new ArrayList<>();
-        List<String[]> thirdPartyDomainInitialWhiteList = new ArrayList<>();
+        List<String[]> mainWhiteList = new ArrayList<>();  // 1.
+        List<String[]> finalWhiteList = new ArrayList<>();  // 2.
+        List<String[]> domainWhiteList = new ArrayList<>();  // 3.
+        List<String[]> domainInitialWhiteList = new ArrayList<>();  // 4.
+        List<String[]> domainFinalWhiteList = new ArrayList<>();  // 5.
+        List<String[]> thirdPartyWhiteList = new ArrayList<>();  // 6.
+        List<String[]> thirdPartyDomainWhiteList = new ArrayList<>();  // 7.
+        List<String[]> thirdPartyDomainInitialWhiteList = new ArrayList<>();  // 8.
 
         // Initialize the black lists
-        List<String[]> mainBlackList = new ArrayList<>();
-        List<String[]> initialBlackList = new ArrayList<>();
-        List<String[]> finalBlackList = new ArrayList<>();
-        List<String[]> domainBlackList = new ArrayList<>();
-        List<String[]> domainInitialBlackList = new ArrayList<>();
-        List<String[]> domainFinalBlackList = new ArrayList<>();
-        List<String[]> thirdPartyBlackList = new ArrayList<>();
-        List<String[]> thirdPartyInitialBlackList = new ArrayList<>();
-        List<String[]> thirdPartyDomainBlackList = new ArrayList<>();
-        List<String[]> thirdPartyDomainInitialBlackList = new ArrayList<>();
-        List<String[]> regularExpressionBlackList = new ArrayList<>();
-        List<String[]> domainRegularExpressionBlackList = new ArrayList<>();
-        List<String[]> thirdPartyRegularExpressionBlackList = new ArrayList<>();
-        List<String[]> thirdPartyDomainRegularExpressionBlackList = new ArrayList<>();
+        List<String[]> mainBlackList = new ArrayList<>();  // 9.
+        List<String[]> initialBlackList = new ArrayList<>();  // 10.
+        List<String[]> finalBlackList = new ArrayList<>();  // 11.
+        List<String[]> domainBlackList = new ArrayList<>();  // 12.
+        List<String[]> domainInitialBlackList = new ArrayList<>();  // 13.
+        List<String[]> domainFinalBlackList = new ArrayList<>();  // 14.
+        List<String[]> domainRegularExpressionBlackList = new ArrayList<>();  // 15.
+        List<String[]> thirdPartyBlackList = new ArrayList<>();  // 16.
+        List<String[]> thirdPartyInitialBlackList = new ArrayList<>();  // 17.
+        List<String[]> thirdPartyDomainBlackList = new ArrayList<>();  // 18.
+        List<String[]> thirdPartyDomainInitialBlackList = new ArrayList<>();  // 19.
+        List<String[]> regularExpressionBlackList = new ArrayList<>();  // 20.
+        List<String[]> thirdPartyRegularExpressionBlackList = new ArrayList<>();  // 21.
+        List<String[]> thirdPartyDomainRegularExpressionBlackList = new ArrayList<>();  // 22.
 
 
         // Populate the block lists.  The `try` is required by `InputStreamReader`.
@@ -73,6 +73,7 @@ public class BlockListHelper {
 
             // Parse the block list.
             while ((blockListEntry = bufferedReader.readLine()) != null) {
+                // Store the original block list entry.
                 String originalBlockListEntry = blockListEntry;
 
                 // Remove any `^` from the block list entry.  Privacy Browser does not process them in the interest of efficiency.
@@ -163,7 +164,7 @@ public class BlockListHelper {
                                                 String secondEntry = entry.substring(wildcardIndex + 1);
 
                                                 // Create an entry string array.
-                                                String[] domainDoubleEntry = {domain, firstEntry, secondEntry};
+                                                String[] domainDoubleEntry = {domain, firstEntry, secondEntry, originalBlockListEntry};
 
                                                 // Add the entry to the white list.
                                                 thirdPartyDomainInitialWhiteList.add(domainDoubleEntry);
@@ -172,7 +173,7 @@ public class BlockListHelper {
                                                 //        "  -  " + originalBlockListEntry);
                                             } else {  // Process a third-party domain initial white list single entry.
                                                 // Create a domain entry string array.
-                                                String[] domainEntry = {domain, entry};
+                                                String[] domainEntry = {domain, entry, originalBlockListEntry};
 
                                                 // Add the entry to the third party domain initial white list.
                                                 thirdPartyDomainInitialWhiteList.add(domainEntry);
@@ -211,7 +212,7 @@ public class BlockListHelper {
                                             String secondEntry = entry.substring(wildcardIndex + 1);
 
                                             // Create an entry string array.
-                                            String[] domainDoubleEntry = {domain, firstEntry, secondEntry};
+                                            String[] domainDoubleEntry = {domain, firstEntry, secondEntry, originalBlockListEntry};
 
                                             // Add the entry to the white list.
                                             thirdPartyDomainWhiteList.add(domainDoubleEntry);
@@ -220,7 +221,7 @@ public class BlockListHelper {
                                             //        originalBlockListEntry);
                                         } else {  // Process a third-party domain single entry.
                                             // Create an entry string array.
-                                            String[] domainEntry = {domain, entry};
+                                            String[] domainEntry = {domain, entry, originalBlockListEntry};
 
                                             // Add the entry to the white list.
                                             thirdPartyDomainWhiteList.add(domainEntry);
@@ -266,7 +267,7 @@ public class BlockListHelper {
                                                 String fifthEntry = fourthEntry.substring(fourthWildcardIndex + 1);
 
                                                 // Create an entry string array.
-                                                String[] quintupleEntry = {firstEntry, realSecondEntry, realThirdEntry, realFourthEntry, fifthEntry};
+                                                String[] quintupleEntry = {firstEntry, realSecondEntry, realThirdEntry, realFourthEntry, fifthEntry, originalBlockListEntry};
 
                                                 // Add the entry to the white list.
                                                 thirdPartyWhiteList.add(quintupleEntry);
@@ -275,7 +276,7 @@ public class BlockListHelper {
                                                 //        realFourthEntry + " , " + fifthEntry + "  -  " + originalBlockListEntry);
                                             } else {  // Process a third-party white list quadruple entry.
                                                 // Create an entry string array.
-                                                String[] quadrupleEntry = {firstEntry, realSecondEntry, realThirdEntry, fourthEntry};
+                                                String[] quadrupleEntry = {firstEntry, realSecondEntry, realThirdEntry, fourthEntry, originalBlockListEntry};
 
                                                 // Add the entry to the white list.
                                                 thirdPartyWhiteList.add(quadrupleEntry);
@@ -285,7 +286,7 @@ public class BlockListHelper {
                                             }
                                         } else {  // Process a third-party white list triple entry.
                                             // Create an entry string array.
-                                            String[] tripleEntry = {firstEntry, realSecondEntry, thirdEntry};
+                                            String[] tripleEntry = {firstEntry, realSecondEntry, thirdEntry, originalBlockListEntry};
 
                                             // Add the entry to the white list.
                                             thirdPartyWhiteList.add(tripleEntry);
@@ -295,7 +296,7 @@ public class BlockListHelper {
                                         }
                                     } else {  // Process a third-party white list double entry.
                                         // Create an entry string array.
-                                        String[] doubleEntry = {firstEntry, secondEntry};
+                                        String[] doubleEntry = {firstEntry, secondEntry, originalBlockListEntry};
 
                                         // Add the entry to the white list.
                                         thirdPartyWhiteList.add(doubleEntry);
@@ -304,7 +305,7 @@ public class BlockListHelper {
                                     }
                                 } else {  // Process a third-party white list single entry.
                                     // Create an entry string array.
-                                    String[] singleEntry = {entry};
+                                    String[] singleEntry = {entry, originalBlockListEntry};
 
                                     // Add the entry to the white list.
                                     thirdPartyWhiteList.add(singleEntry);
@@ -360,7 +361,7 @@ public class BlockListHelper {
                                                 String thirdEntry = secondEntry.substring(secondWildcardIndex + 1);
 
                                                 // Create an entry string array.
-                                                String[] domainTripleEntry = {domain, firstEntry, realSecondEntry, thirdEntry};
+                                                String[] domainTripleEntry = {domain, firstEntry, realSecondEntry, thirdEntry, originalBlockListEntry};
 
                                                 // Add the entry to the white list.
                                                 domainInitialWhiteList.add(domainTripleEntry);
@@ -369,7 +370,7 @@ public class BlockListHelper {
                                                 //        thirdEntry + "  -  " + originalBlockListEntry);
                                             } else {  // Process a domain initial double entry.
                                                 // Create an entry string array.
-                                                String[] domainDoubleEntry = {domain, firstEntry, secondEntry};
+                                                String[] domainDoubleEntry = {domain, firstEntry, secondEntry, originalBlockListEntry};
 
                                                 // Add the entry to the white list.
                                                 domainInitialWhiteList.add(domainDoubleEntry);
@@ -379,7 +380,7 @@ public class BlockListHelper {
                                             }
                                         } else {  // Process a domain initial single entry.
                                             // Create an entry string array.
-                                            String[] domainEntry = {domain, entry};
+                                            String[] domainEntry = {domain, entry, originalBlockListEntry};
 
                                             // Add the entry to the white list.
                                             domainInitialWhiteList.add(domainEntry);
@@ -416,7 +417,7 @@ public class BlockListHelper {
                                         String secondEntry = entry.substring(wildcardIndex + 1);
 
                                         // Create an entry string array.
-                                        String[] domainDoubleEntry = {domain, firstEntry, secondEntry};
+                                        String[] domainDoubleEntry = {domain, firstEntry, secondEntry, originalBlockListEntry};
 
                                         // Add the entry to the white list.
                                         domainFinalWhiteList.add(domainDoubleEntry);
@@ -425,7 +426,7 @@ public class BlockListHelper {
                                         //        originalBlockListEntry);
                                     } else {  // Process a domain final white list single entry.
                                         // create an entry string array.
-                                        String[] domainEntry = {domain, entry};
+                                        String[] domainEntry = {domain, entry, originalBlockListEntry};
 
                                         // Add the entry to the white list.
                                         domainFinalWhiteList.add(domainEntry);
@@ -481,7 +482,7 @@ public class BlockListHelper {
                                                     String fourthEntry = thirdEntry.substring(thirdWildcardIndex + 1);
 
                                                     // Create an entry string array.
-                                                    String[] domainQuadrupleEntry = {domain, firstEntry, realSecondEntry, realThirdEntry, fourthEntry};
+                                                    String[] domainQuadrupleEntry = {domain, firstEntry, realSecondEntry, realThirdEntry, fourthEntry, originalBlockListEntry};
 
                                                     // Add the entry to the white list.
                                                     domainWhiteList.add(domainQuadrupleEntry);
@@ -490,7 +491,7 @@ public class BlockListHelper {
                                                     //        realThirdEntry + " , " + fourthEntry + "  -  " + originalBlockListEntry);
                                                 } else {  // Process a domain white list triple entry.
                                                     // Create an entry string array.
-                                                    String[] domainTripleEntry = {domain, firstEntry, realSecondEntry, thirdEntry};
+                                                    String[] domainTripleEntry = {domain, firstEntry, realSecondEntry, thirdEntry, originalBlockListEntry};
 
                                                     // Add the entry to the white list.
                                                     domainWhiteList.add(domainTripleEntry);
@@ -500,7 +501,7 @@ public class BlockListHelper {
                                                 }
                                             } else {  // Process a domain white list double entry.
                                                 // Create an entry string array.
-                                                String[] domainDoubleEntry = {domain, firstEntry, secondEntry};
+                                                String[] domainDoubleEntry = {domain, firstEntry, secondEntry, originalBlockListEntry};
 
                                                 // Add the entry to the white list.
                                                 domainWhiteList.add(domainDoubleEntry);
@@ -510,7 +511,7 @@ public class BlockListHelper {
                                             }
                                         } else {  // Process a domain white list single entry.
                                             // Create an entry string array.
-                                            String[] domainEntry = {domain, entry};
+                                            String[] domainEntry = {domain, entry, originalBlockListEntry};
 
                                             // Add the entry to the white list.
                                             domainWhiteList.add(domainEntry);
@@ -534,7 +535,7 @@ public class BlockListHelper {
                             String secondEntry = entry.substring(wildcardIndex + 1);
 
                             // Create an entry string array.
-                            String[] doubleEntry = {firstEntry, secondEntry};
+                            String[] doubleEntry = {firstEntry, secondEntry, originalBlockListEntry};
 
                             // Add the entry to the white list.
                             finalWhiteList.add(doubleEntry);
@@ -542,7 +543,7 @@ public class BlockListHelper {
                             //Log.i("BlockLists", headers.get(1)[0] + " final white list added: " + firstEntry + " , " + secondEntry + "  -  " + originalBlockListEntry);
                         } else {  // Process a final white list single entry.
                             // Create an entry string array.
-                            String[] singleEntry = {entry};
+                            String[] singleEntry = {entry, originalBlockListEntry};
 
                             // Add the entry to the white list.
                             finalWhiteList.add(singleEntry);
@@ -567,7 +568,7 @@ public class BlockListHelper {
                                 String thirdEntry = secondEntry.substring(secondWildcardIndex + 1);
 
                                 // Create an entry string array.
-                                String[] tripleEntry = {firstEntry, realSecondEntry, thirdEntry};
+                                String[] tripleEntry = {firstEntry, realSecondEntry, thirdEntry, originalBlockListEntry};
 
                                 // Add the entry to the white list.
                                 mainWhiteList.add(tripleEntry);
@@ -575,7 +576,7 @@ public class BlockListHelper {
                                 //Log.i("BlockLists", headers.get(1)[0] + " main white list added: " + firstEntry + " , " + realSecondEntry + " , " + thirdEntry + "  -  " + originalBlockListEntry);
                             } else {  // Process a main white list double entry.
                                 // Create an entry string array.
-                                String[] doubleEntry = {firstEntry, secondEntry};
+                                String[] doubleEntry = {firstEntry, secondEntry, originalBlockListEntry};
 
                                 // Add the entry to the white list.
                                 mainWhiteList.add(doubleEntry);
@@ -584,7 +585,7 @@ public class BlockListHelper {
                             }
                         } else {  // Process a main white list single entry.
                             // Create an entry string array.
-                            String[] singleEntry = {blockListEntry};
+                            String[] singleEntry = {blockListEntry, originalBlockListEntry};
 
                             // Add the entry to the white list.
                             mainWhiteList.add(singleEntry);
@@ -610,7 +611,7 @@ public class BlockListHelper {
                         String secondEntry = entry.substring(wildcardIndex + 1);
 
                         // Create an entry string array.
-                        String[] doubleEntry = {firstEntry, secondEntry};
+                        String[] doubleEntry = {firstEntry, secondEntry, originalBlockListEntry};
 
                         // Add the entry to the black list.
                         finalBlackList.add(doubleEntry);
@@ -618,7 +619,7 @@ public class BlockListHelper {
                         //Log.i("BlockLists", headers.get(1)[0] + " final black list added: " + firstEntry + " , " + secondEntry + "  -  " + originalBlockListEntry);
                     } else {  // Process a final black list single entry.
                         // create an entry string array.
-                        String[] singleEntry = {entry};
+                        String[] singleEntry = {entry, originalBlockListEntry};
 
                         // Add the entry to the black list.
                         finalBlackList.add(singleEntry);
@@ -686,7 +687,7 @@ public class BlockListHelper {
                                                 String thirdEntry = secondEntry.substring(secondWildcardIndex + 1);
 
                                                 // Create an entry string array.
-                                                String[] tripleDomainEntry = {domain, firstEntry, realSecondEntry, thirdEntry};
+                                                String[] tripleDomainEntry = {domain, firstEntry, realSecondEntry, thirdEntry, originalBlockListEntry};
 
                                                 // Add the entry to the black list.
                                                 thirdPartyDomainInitialBlackList.add(tripleDomainEntry);
@@ -695,7 +696,7 @@ public class BlockListHelper {
                                                 //        " , " + thirdEntry + "  -  " + originalBlockListEntry);
                                             } else {  // Process a third-party domain initial black list double entry.
                                                 // Create an entry string array.
-                                                String[] doubleDomainEntry = {domain, firstEntry, secondEntry};
+                                                String[] doubleDomainEntry = {domain, firstEntry, secondEntry, originalBlockListEntry};
 
                                                 // Add the entry to the black list.
                                                 thirdPartyDomainInitialBlackList.add(doubleDomainEntry);
@@ -705,7 +706,7 @@ public class BlockListHelper {
                                             }
                                         } else {  // Process a third-party domain initial black list single entry.
                                             // Create an entry string array.
-                                            String[] singleEntry = {domain, entry};
+                                            String[] singleEntry = {domain, entry, originalBlockListEntry};
 
                                             // Add the entry to the black list.
                                             thirdPartyDomainInitialBlackList.add(singleEntry);
@@ -736,7 +737,7 @@ public class BlockListHelper {
                                     }
 
                                     // Create an entry string array.
-                                    String[] domainEntry = {domain, entry};
+                                    String[] domainEntry = {domain, entry, originalBlockListEntry};
 
                                     // Add the entry to the black list.
                                     thirdPartyDomainRegularExpressionBlackList.add(domainEntry);
@@ -789,7 +790,7 @@ public class BlockListHelper {
                                             String secondEntry = entry.substring(wildcardIndex + 1);
 
                                             // Create an entry string array.
-                                            String[] domainDoubleEntry = {domain, firstEntry, secondEntry};
+                                            String[] domainDoubleEntry = {domain, firstEntry, secondEntry, originalBlockListEntry};
 
                                             // Add the entry to the white list.
                                             thirdPartyDomainWhiteList.add(domainDoubleEntry);
@@ -798,7 +799,7 @@ public class BlockListHelper {
                                             //        originalBlockListEntry);
                                         } else {  // Process a third-party domain white list single entry.
                                             // Create an entry string array.
-                                            String[] domainEntry = {domain, entry};
+                                            String[] domainEntry = {domain, entry, originalBlockListEntry};
 
                                             // Add the entry to the white list.
                                             thirdPartyDomainWhiteList.add(domainEntry);
@@ -815,7 +816,7 @@ public class BlockListHelper {
                                             String secondEntry = entry.substring(wildcardIndex + 1);
 
                                             // Create an entry string array.
-                                            String[] domainDoubleEntry = {domain, firstEntry, secondEntry};
+                                            String[] domainDoubleEntry = {domain, firstEntry, secondEntry, originalBlockListEntry};
 
                                             // Add the entry to the black list
                                             thirdPartyDomainBlackList.add(domainDoubleEntry);
@@ -824,7 +825,7 @@ public class BlockListHelper {
                                             //        originalBlockListEntry);
                                         } else {  // Process a third-party domain black list single entry.
                                             // Create an entry string array.
-                                            String[] domainEntry = {domain, entry};
+                                            String[] domainEntry = {domain, entry, originalBlockListEntry};
 
                                             // Add the entry to the black list.
                                             thirdPartyDomainBlackList.add(domainEntry);
@@ -845,7 +846,7 @@ public class BlockListHelper {
                                         String secondEntry = entry.substring(wildcardIndex + 1);
 
                                         // Create an entry string array.
-                                        String[] doubleEntry = {firstEntry, secondEntry};
+                                        String[] doubleEntry = {firstEntry, secondEntry, originalBlockListEntry};
 
                                         // Add the entry to the black list.
                                         thirdPartyBlackList.add(doubleEntry);
@@ -853,7 +854,7 @@ public class BlockListHelper {
                                         //Log.i("BlockLists", headers.get(1)[0] + " third-party black list added: " + firstEntry + " , " + secondEntry + "  -  " + originalBlockListEntry);
                                     } else {  // Process a third-party black list single entry.
                                         // Create an entry string array.
-                                        String[] singleEntry = {entry};
+                                        String[] singleEntry = {entry, originalBlockListEntry};
 
                                         // Add an entry to the black list.
                                         thirdPartyBlackList.add(singleEntry);
@@ -878,7 +879,7 @@ public class BlockListHelper {
                                 String secondEntry = entry.substring(wildcardIndex + 1);
 
                                 // Create an entry string array.
-                                String[] thirdPartyDoubleEntry = {firstEntry, secondEntry};
+                                String[] thirdPartyDoubleEntry = {firstEntry, secondEntry, originalBlockListEntry};
 
                                 // Add the entry to the black list.
                                 thirdPartyInitialBlackList.add(thirdPartyDoubleEntry);
@@ -886,7 +887,7 @@ public class BlockListHelper {
                                 //Log.i("BlockLists", headers.get(1)[0] + " third-party initial black list added: " + firstEntry + " , " + secondEntry + "  -  " + originalBlockListEntry);
                             } else {  // Process a third-party initial black list single entry.
                                 // Create an entry string array.
-                                String[] singleEntry = {entry};
+                                String[] singleEntry = {entry, originalBlockListEntry};
 
                                 // Add the entry to the black list.
                                 thirdPartyInitialBlackList.add(singleEntry);
@@ -905,7 +906,7 @@ public class BlockListHelper {
                             }
 
                             // Create an entry string array.
-                            String[] singleEntry = {entry};
+                            String[] singleEntry = {entry, originalBlockListEntry};
 
                             // Add the entry to the black list.
                             thirdPartyRegularExpressionBlackList.add(singleEntry);
@@ -920,7 +921,7 @@ public class BlockListHelper {
                                 entry = entry.substring(0, entry.length() - 1);
 
                                 // Create an entry string array.
-                                String[] singleEntry = {entry};
+                                String[] singleEntry = {entry, originalBlockListEntry};
 
                                 // Add the entry to the black list.
                                 thirdPartyBlackList.add(singleEntry);
@@ -951,7 +952,7 @@ public class BlockListHelper {
                                         String fourthEntry = thirdEntry.substring(thirdWildcardIndex + 1);
 
                                         // Create an entry string array.
-                                        String[] quadrupleEntry = {firstEntry, realSecondEntry, realThirdEntry, fourthEntry};
+                                        String[] quadrupleEntry = {firstEntry, realSecondEntry, realThirdEntry, fourthEntry, originalBlockListEntry};
 
                                         // Add the entry to the black list.
                                         thirdPartyBlackList.add(quadrupleEntry);
@@ -960,7 +961,7 @@ public class BlockListHelper {
                                         //        fourthEntry + "  -  " + originalBlockListEntry);
                                     } else {  // Process a third-party black list triple entry.
                                         // Create an entry string array.
-                                        String[] tripleEntry = {firstEntry, realSecondEntry, thirdEntry};
+                                        String[] tripleEntry = {firstEntry, realSecondEntry, thirdEntry, originalBlockListEntry};
 
                                         // Add the entry to the black list.
                                         thirdPartyBlackList.add(tripleEntry);
@@ -970,7 +971,7 @@ public class BlockListHelper {
                                     }
                                 } else {  // Process a third-party black list double entry.
                                     // Create an entry string array.
-                                    String[] doubleEntry = {firstEntry, secondEntry};
+                                    String[] doubleEntry = {firstEntry, secondEntry, originalBlockListEntry};
 
                                     // Add the entry to the black list.
                                     thirdPartyBlackList.add(doubleEntry);
@@ -983,7 +984,7 @@ public class BlockListHelper {
                             String entry = blockListEntry.substring(0, blockListEntry.indexOf("$"));
 
                             // Create an entry string array.
-                            String[] singleEntry = {entry};
+                            String[] singleEntry = {entry, originalBlockListEntry};
 
                             // Add the entry to the black list.
                             thirdPartyBlackList.add(singleEntry);
@@ -1037,7 +1038,7 @@ public class BlockListHelper {
                                         String thirdEntry = secondEntry.substring((secondWildcardIndex + 1));
 
                                         // Create an entry string array.
-                                        String[] domainTripleEntry = {domain, firstEntry, realSecondEntry, thirdEntry};
+                                        String[] domainTripleEntry = {domain, firstEntry, realSecondEntry, thirdEntry, originalBlockListEntry};
 
                                         // Add the entry to the white list.
                                         domainWhiteList.add(domainTripleEntry);
@@ -1046,7 +1047,7 @@ public class BlockListHelper {
                                         //        "  -  " + originalBlockListEntry);
                                     } else {  // Process a domain white list double entry.
                                         // Create an entry string array.
-                                        String[] domainDoubleEntry = {domain, firstEntry, secondEntry};
+                                        String[] domainDoubleEntry = {domain, firstEntry, secondEntry, originalBlockListEntry};
 
                                         // Add the entry to the white list.
                                         domainWhiteList.add(domainDoubleEntry);
@@ -1055,7 +1056,7 @@ public class BlockListHelper {
                                     }
                                 } else {  // Process a domain white list single entry.
                                     // Create an entry string array.
-                                    String[] domainEntry = {domain, entry};
+                                    String[] domainEntry = {domain, entry, originalBlockListEntry};
 
                                     // Add the entry to the white list.
                                     domainWhiteList.add(domainEntry);
@@ -1098,7 +1099,7 @@ public class BlockListHelper {
                                             //Log.i("BlockLists", headers.get(1)[0] + " not added: " + originalBlockListEntry);
                                         } else {  // Process a domain initial black list entry
                                             // Create an entry string array.
-                                            String[] domainEntry = {domain, entryBase};
+                                            String[] domainEntry = {domain, entryBase, originalBlockListEntry};
 
                                             // Add the entry to the black list.
                                             domainInitialBlackList.add(domainEntry);
@@ -1118,7 +1119,7 @@ public class BlockListHelper {
                                             String secondEntry = entryBase.substring(wildcardIndex + 1);
 
                                             // Create an entry string array.
-                                            String[] domainDoubleEntry = {domain, firstEntry, secondEntry};
+                                            String[] domainDoubleEntry = {domain, firstEntry, secondEntry, originalBlockListEntry};
 
                                             // Add the entry to the black list.
                                             domainFinalBlackList.add(domainDoubleEntry);
@@ -1127,7 +1128,7 @@ public class BlockListHelper {
                                             //        originalBlockListEntry);
                                         } else {  // Process a domain final black list single entry.
                                             // Create an entry string array.
-                                            String[] domainEntry = {domain, entryBase};
+                                            String[] domainEntry = {domain, entryBase, originalBlockListEntry};
 
                                             // Add the entry to the black list.
                                             domainFinalBlackList.add(domainEntry);
@@ -1136,7 +1137,7 @@ public class BlockListHelper {
                                         }
                                     } else if (entry.contains("\\")) {  // Process a domain regular expression black list entry.
                                         // Create an entry string array.
-                                        String[] domainEntry = {domain, entry};
+                                        String[] domainEntry = {domain, entry, originalBlockListEntry};
 
                                         // Add the entry to the black list.
                                         domainRegularExpressionBlackList.add(domainEntry);
@@ -1159,7 +1160,7 @@ public class BlockListHelper {
                                             String thirdEntry = secondEntry.substring(secondWildcardIndex + 1);
 
                                             // Create an entry string array.
-                                            String[] domainTripleEntry = {domain, firstEntry, realSecondEntry, thirdEntry};
+                                            String[] domainTripleEntry = {domain, firstEntry, realSecondEntry, thirdEntry, originalBlockListEntry};
 
                                             // Add the entry to the black list.
                                             domainBlackList.add(domainTripleEntry);
@@ -1168,7 +1169,7 @@ public class BlockListHelper {
                                             //        "  -  " + originalBlockListEntry);
                                         } else {  // Process a domain black list double entry.
                                             // Create an entry string array.
-                                            String[] domainDoubleEntry = {domain, firstEntry, secondEntry};
+                                            String[] domainDoubleEntry = {domain, firstEntry, secondEntry, originalBlockListEntry};
 
                                             // Add the entry to the black list.
                                             domainBlackList.add(domainDoubleEntry);
@@ -1178,7 +1179,7 @@ public class BlockListHelper {
                                         }
                                     } else {  // Process a domain black list single entry.
                                         // Create an entry string array.
-                                        String[] domainEntry = {domain, entry};
+                                        String[] domainEntry = {domain, entry, originalBlockListEntry};
 
                                         // Add the entry to the black list.
                                         domainBlackList.add(domainEntry);
@@ -1206,7 +1207,7 @@ public class BlockListHelper {
                             String secondEntry = blockListEntry.substring(wildcardIndex + 1);
 
                             // Create an entry string array.
-                            String[] doubleEntry = {firstEntry, secondEntry};
+                            String[] doubleEntry = {firstEntry, secondEntry, originalBlockListEntry};
 
                             // Add the entry to the white list.
                             mainWhiteList.add(doubleEntry);
@@ -1214,7 +1215,7 @@ public class BlockListHelper {
                             //Log.i("BlockLists", headers.get(1)[0] + " main white list added: " + firstEntry + " , " + secondEntry + "  -  " + originalBlockListEntry);
                         } else {  // Process a white list single entry.
                             // Create an entry string array.
-                            String[] singleEntry = {blockListEntry};
+                            String[] singleEntry = {blockListEntry, originalBlockListEntry};
 
                             // Add the entry to the white list.
                             mainWhiteList.add(singleEntry);
@@ -1226,7 +1227,7 @@ public class BlockListHelper {
                         blockListEntry = blockListEntry.substring(0, blockListEntry.indexOf("$"));
 
                         // Create an entry string array.
-                        String[] singleEntry = {blockListEntry};
+                        String[] singleEntry = {blockListEntry, originalBlockListEntry};
 
                         // Add the entry to the black list.
                         regularExpressionBlackList.add(singleEntry);
@@ -1256,7 +1257,7 @@ public class BlockListHelper {
                                 String secondEntry = entry.substring(wildcardIndex + 1);
 
                                 // Create an entry string array.
-                                String[] doubleEntry = {firstEntry, secondEntry};
+                                String[] doubleEntry = {firstEntry, secondEntry, originalBlockListEntry};
 
                                 // Add the entry to the black list.
                                 initialBlackList.add(doubleEntry);
@@ -1264,7 +1265,7 @@ public class BlockListHelper {
                                 //Log.i("BlockLists", headers.get(1)[0] + " initial black list added: " + firstEntry + " , " + secondEntry + "  -  " + originalBlockListEntry);
                             } else {  // Process an initial black list single entry.
                                 // Create an entry string array.
-                                String[] singleEntry = {entry};
+                                String[] singleEntry = {entry, originalBlockListEntry};
 
                                 // Add the entry to the black list.
                                 initialBlackList.add(singleEntry);
@@ -1294,7 +1295,7 @@ public class BlockListHelper {
                                         String thirdEntry = secondEntry.substring(secondWildcardIndex + 1);
 
                                         // Create an entry string array.
-                                        String[] tripleEntry = {firstEntry, realSecondEntry, thirdEntry};
+                                        String[] tripleEntry = {firstEntry, realSecondEntry, thirdEntry, originalBlockListEntry};
 
                                         // Add the entry to the black list.
                                         finalBlackList.add(tripleEntry);
@@ -1303,7 +1304,7 @@ public class BlockListHelper {
                                         //        originalBlockListEntry);
                                     } else {  // Process a final black list double entry.
                                         // Create an entry string array.
-                                        String[] doubleEntry = {firstEntry, secondEntry};
+                                        String[] doubleEntry = {firstEntry, secondEntry, originalBlockListEntry};
 
                                         // Add the entry to the black list.
                                         finalBlackList.add(doubleEntry);
@@ -1312,7 +1313,7 @@ public class BlockListHelper {
                                     }
                                 } else {  // Process a final black list single entry.
                                     // Create an entry sting array.
-                                    String[] singleEntry = {entry};
+                                    String[] singleEntry = {entry, originalBlockListEntry};
 
                                     // Add the entry to the black list.
                                     finalBlackList.add(singleEntry);
@@ -1337,7 +1338,7 @@ public class BlockListHelper {
                                 String thirdEntry = secondEntry.substring(secondWildcardIndex + 1);
 
                                 // Create an entry string array.
-                                String[] tripleEntry = {firstEntry, realSecondEntry, thirdEntry};
+                                String[] tripleEntry = {firstEntry, realSecondEntry, thirdEntry, originalBlockListEntry};
 
                                 // Add the entry to the black list.
                                 mainBlackList.add(tripleEntry);
@@ -1345,7 +1346,7 @@ public class BlockListHelper {
                                 //Log.i("BlockLists", headers.get(1)[0] + " main black list added: " + firstEntry + " , " + realSecondEntry + " , " + thirdEntry + "  -  " + originalBlockListEntry);
                             } else {  // Process a main black list double entry.
                                 // Create an entry string array.
-                                String[] doubleEntry = {firstEntry, secondEntry};
+                                String[] doubleEntry = {firstEntry, secondEntry, originalBlockListEntry};
 
                                 // Add the entry to the black list.
                                 mainBlackList.add(doubleEntry);
@@ -1354,7 +1355,7 @@ public class BlockListHelper {
                             }
                         } else {  // Process a main black list single entry.
                             // Create an entry string array.
-                            String[] singleEntry = {blockListEntry};
+                            String[] singleEntry = {blockListEntry, originalBlockListEntry};
 
                             // Add the entry to the black list.
                             mainBlackList.add(singleEntry);
@@ -1391,7 +1392,7 @@ public class BlockListHelper {
                             String secondEntry = entry.substring(wildcardIndex + 1);
 
                             // Create an entry string array.
-                            String[] doubleEntry = {firstEntry, secondEntry};
+                            String[] doubleEntry = {firstEntry, secondEntry, originalBlockListEntry};
 
                             // Add the entry to the black list.
                             initialBlackList.add(doubleEntry);
@@ -1399,7 +1400,7 @@ public class BlockListHelper {
                             //Log.i("BlockLists", headers.get(1)[0] + " initial black list added: " + firstEntry + " , " + secondEntry + "  -  " + originalBlockListEntry);
                         } else {  // Process an initial black list single entry.
                             // Create an entry string array.
-                            String[] singleEntry = {entry};
+                            String[] singleEntry = {entry, originalBlockListEntry};
 
                             // Add the entry to the black list.
                             initialBlackList.add(singleEntry);
@@ -1427,7 +1428,7 @@ public class BlockListHelper {
                                 String thirdEntry = secondEntry.substring(secondWildcardIndex + 1);
 
                                 // Create an entry string array.
-                                String[] tripleEntry = {firstEntry, realSecondEntry, thirdEntry};
+                                String[] tripleEntry = {firstEntry, realSecondEntry, thirdEntry, originalBlockListEntry};
 
                                 // Add the entry to the black list.
                                 finalBlackList.add(tripleEntry);
@@ -1436,7 +1437,7 @@ public class BlockListHelper {
                                 //        originalBlockListEntry);
                             } else {  // Process a final black list double entry.
                                 // Create an entry string array.
-                                String[] doubleEntry = {firstEntry, secondEntry};
+                                String[] doubleEntry = {firstEntry, secondEntry, originalBlockListEntry};
 
                                 // Add the entry to the black list.
                                 finalBlackList.add(doubleEntry);
@@ -1445,7 +1446,7 @@ public class BlockListHelper {
                             }
                         } else {  // Process a final black list single entry.
                             // Create an entry string array.
-                            String[] singleEntry = {entry};
+                            String[] singleEntry = {entry, originalBlockListEntry};
 
                             // Add the entry to the black list.
                             finalBlackList.add(singleEntry);
@@ -1486,7 +1487,7 @@ public class BlockListHelper {
                                         String fifthEntry = fourthEntry.substring(fourthWildcardIndex + 1);
 
                                         // Create an entry string array.
-                                        String[] quintupleEntry = {firstEntry, realSecondEntry, realThirdEntry, realFourthEntry, fifthEntry};
+                                        String[] quintupleEntry = {firstEntry, realSecondEntry, realThirdEntry, realFourthEntry, fifthEntry, originalBlockListEntry};
 
                                         // Add the entry to the black list.
                                         mainBlackList.add(quintupleEntry);
@@ -1495,7 +1496,7 @@ public class BlockListHelper {
                                         //        realFourthEntry + " , " + fifthEntry + "  -  " + originalBlockListEntry);
                                     } else {  // Process a main black list quadruple entry.
                                         // Create an entry string array.
-                                        String[] quadrupleEntry = {firstEntry, realSecondEntry, realThirdEntry, fourthEntry};
+                                        String[] quadrupleEntry = {firstEntry, realSecondEntry, realThirdEntry, fourthEntry, originalBlockListEntry};
 
                                         // Add the entry to the black list.
                                         mainBlackList.add(quadrupleEntry);
@@ -1505,7 +1506,7 @@ public class BlockListHelper {
                                     }
                                 } else {  // Process a main black list triple entry.
                                     // Create an entry string array.
-                                    String[] tripleEntry = {firstEntry, realSecondEntry, thirdEntry};
+                                    String[] tripleEntry = {firstEntry, realSecondEntry, thirdEntry, originalBlockListEntry};
 
                                     // Add the entry to the black list.
                                     mainBlackList.add(tripleEntry);
@@ -1514,7 +1515,7 @@ public class BlockListHelper {
                                 }
                             } else {  // Process a main black list double entry.
                                 // Create an entry string array.
-                                String[] doubleEntry = {firstEntry, secondEntry};
+                                String[] doubleEntry = {firstEntry, secondEntry, originalBlockListEntry};
 
                                 // Add the entry to the black list.
                                 mainBlackList.add(doubleEntry);
@@ -1523,7 +1524,7 @@ public class BlockListHelper {
                             }
                         } else {  // Process a main black list single entry.
                             // Create an entry string array.
-                            String[] singleEntry = {blockListEntry};
+                            String[] singleEntry = {blockListEntry, originalBlockListEntry};
 
                             // Add the entry to the black list.
                             mainBlackList.add(singleEntry);
@@ -1575,15 +1576,18 @@ public class BlockListHelper {
     }
 
     public boolean isBlocked(String currentUrl, String resourceUrl, ArrayList<List<String[]>> blockList) {
-        // Get the list title.
-        String blockListTitle = blockList.get(0).get(1)[0];
+        // Get the block list name.
+        String BLOCK_LIST_NAME_STRING = blockList.get(0).get(1)[0];
 
+        // Get the current domain.
         Uri currentUri = Uri.parse(currentUrl);
         String currentDomain = currentUri.getHost();
 
+        // Get the resource domain.
         Uri resourceUri = Uri.parse(resourceUrl);
         String resourceDomain = resourceUri.getHost();
 
+        // Initialize the third-party request tracker.
         boolean thirdPartyRequest = false;
 
         // If one of the domains is `about:blank` it will throw a null object reference on the string comparison.
@@ -1593,30 +1597,36 @@ public class BlockListHelper {
 
         // Process the white lists.
         // Main white list.
-        for (String[] whiteListEntry : blockList.get(1)) {
+        for (String[] whiteListEntry : blockList.get(MainWebViewActivity.MAIN_WHITELIST)) {
             switch (whiteListEntry.length) {
-                case 1:  // There is one entry.
+                case 2:  // There is one entry.
                     if (resourceUrl.contains(whiteListEntry[0])) {
-                        Log.i("BlockLists", "Request allowed by " + blockListTitle + " main white list: " + whiteListEntry[0] + "  -  " + resourceUrl);
+                        // Store the entry in the resource request log.
+                        MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                String.valueOf(MainWebViewActivity.MAIN_WHITELIST), whiteListEntry[0], whiteListEntry[1]};
 
                         // Not blocked.
                         return false;
                     }
                     break;
 
-                case 2:
+                case 3:  // There are two entries.
                     if (resourceUrl.contains(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1])) {
-                        Log.i("BlockLists", "Request allowed by " + blockListTitle + " main white list:  " + whiteListEntry[0] + " , " + whiteListEntry[1] + "  -  " + resourceUrl);
+                        // Store the entry in the resource request log.
+                        MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                String.valueOf(MainWebViewActivity.MAIN_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1],
+                                whiteListEntry[2]};
 
                         // Not blocked.
                         return false;
                     }
                     break;
 
-                case 3:
+                case 4:  // There are three entries.
                     if (resourceUrl.contains(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1]) && resourceUrl.contains(whiteListEntry[2])) {
-                        Log.i("BlockLists", "Request allowed by " + blockListTitle + " main white list:  " + whiteListEntry[0] + " , " + whiteListEntry[1] + " , " + whiteListEntry[2] + "  -  " +
-                                resourceUrl);
+                        // Store the entry in the resource request log.
+                        MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                String.valueOf(MainWebViewActivity.MAIN_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2], whiteListEntry[3]};
 
                         // Not blocked.
                         return false;
@@ -1626,17 +1636,21 @@ public class BlockListHelper {
         }
 
         // Final white list.
-        for (String[] whiteListEntry : blockList.get(2)) {
-            if (whiteListEntry.length == 1) {  // There is one entry.
+        for (String[] whiteListEntry : blockList.get(MainWebViewActivity.FINAL_WHITELIST)) {
+            if (whiteListEntry.length == 2) {  // There is one entry.
                 if (resourceUrl.contains(whiteListEntry[0])) {
-                    Log.i("BlockLists", "Request allowed by " + blockListTitle + " final white list: " + whiteListEntry[0] + "  -  " + resourceUrl);
+                    // Store the entry in the resource request log.
+                    MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                            String.valueOf(MainWebViewActivity.FINAL_WHITELIST), whiteListEntry[0], whiteListEntry[1]};
 
                     // Not blocked.
                     return false;
                 }
             } else {  // There are two entries.
                 if (resourceUrl.contains(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1])) {
-                    Log.i("BlockLists", "Request allowed by " + blockListTitle + " final white list: " + whiteListEntry[0] + " , " + whiteListEntry[1] + "  -  " + resourceUrl);
+                    // Store the entry in the resource request log.
+                    MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                            String.valueOf(MainWebViewActivity.FINAL_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1], whiteListEntry[2]};
 
                     // Not blocked.
                     return false;
@@ -1647,42 +1661,49 @@ public class BlockListHelper {
         // Only check the domain lists if the current domain is not null (like `about:blank`).
         if (currentDomain != null) {
             // Domain white list.
-            for (String[] whiteListEntry : blockList.get(3)) {
+            for (String[] whiteListEntry : blockList.get(MainWebViewActivity.DOMAIN_WHITELIST)) {
                 switch (whiteListEntry.length) {
-                    case 2:  // There is one entry.
+                    case 3:  // There is one entry.
                         if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1])) {
-                            Log.i("BlockLists", "Request allowed by " + blockListTitle + " domain white list: " + whiteListEntry[0] + " , " + whiteListEntry[1] + " --" + resourceUrl);
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.DOMAIN_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1], whiteListEntry[2]};
 
                             // Not blocked.
                             return false;
                         }
                         break;
 
-                    case 3:  // There are two entries.
+                    case 4:  // There are two entries.
                         if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1]) && resourceUrl.contains(whiteListEntry[2])) {
-                            Log.i("BlockLists", "Request allowed by " + blockListTitle + " domain white list: " + whiteListEntry[0] + " , " + whiteListEntry[1] + " , " + whiteListEntry[2] +
-                                    "  -  " + resourceUrl);
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.DOMAIN_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2], whiteListEntry[3]};
 
                             // Not blocked.
                             return false;
                         }
                         break;
 
-                    case 4:  // There are three entries.
+                    case 5:  // There are three entries.
                         if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1]) && resourceUrl.contains(whiteListEntry[2]) && resourceUrl.contains(whiteListEntry[3])) {
-                            Log.i("BlockLists", "Request allowed by " + blockListTitle + " domain white list: " + whiteListEntry[0] + " , " + whiteListEntry[1] + " , " + whiteListEntry[2] +
-                                    " , " + whiteListEntry[3] + "  -  " + resourceUrl);
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.DOMAIN_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2] + "\n" + whiteListEntry[3],
+                                    whiteListEntry[4]};
 
                             // Not blocked.
                             return false;
                         }
                         break;
 
-                    case 5:  // There are four entries.
+                    case 6:  // There are four entries.
                         if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1]) && resourceUrl.contains(whiteListEntry[2]) && resourceUrl.contains(whiteListEntry[3]) &&
                                 resourceUrl.contains(whiteListEntry[4])) {
-                            Log.i("BlockLists", "Request allowed by " + blockListTitle + " domain white list: " + whiteListEntry[0] + " , " + whiteListEntry[1] + " , " + whiteListEntry[2] +
-                                    " , " + whiteListEntry[3] + " , " + whiteListEntry[4] + "  -  " + resourceUrl);
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.DOMAIN_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2] + "\n" + whiteListEntry[3] + "\n" +
+                                    whiteListEntry[4], whiteListEntry[5]};
 
                             // Not blocked.
                             return false;
@@ -1692,31 +1713,36 @@ public class BlockListHelper {
             }
 
             // Domain initial white list.
-            for (String[] whiteListEntry : blockList.get(4)) {
+            for (String[] whiteListEntry : blockList.get(MainWebViewActivity.DOMAIN_INITIAL_WHITELIST)) {
                 switch (whiteListEntry.length) {
-                    case 2:  // There is one entry.
+                    case 3:  // There is one entry.
                         if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.startsWith(whiteListEntry[1])) {
-                            Log.i("BlockLists", "Request allowed by " + blockListTitle + " domain initial white list: " + whiteListEntry[0] + " , " + whiteListEntry[1] + "  -  " + resourceUrl);
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.DOMAIN_INITIAL_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1], whiteListEntry[2]};
 
                             // Not blocked.
                             return false;
                         }
                         break;
 
-                    case 3:  // There are two entries.
+                    case 4:  // There are two entries.
                         if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.startsWith(whiteListEntry[1]) && resourceUrl.contains(whiteListEntry[2])) {
-                            Log.i("BlockLists", "Request allowed by " + blockListTitle + " domain initial white list: " + whiteListEntry[0] + " , " + whiteListEntry[1] + " , " +
-                                    whiteListEntry[2] + "  -  " + resourceUrl);
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.DOMAIN_INITIAL_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2], whiteListEntry[3]};
 
                             // Not blocked.
                             return false;
                         }
                         break;
 
-                    case 4:  // There are three entries.
+                    case 5:  // There are three entries.
                         if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.startsWith(whiteListEntry[1]) && resourceUrl.contains(whiteListEntry[2]) && resourceUrl.startsWith(whiteListEntry[3])) {
-                            Log.i("BlockLists", "Request allowed by " + blockListTitle + " domain initial white list: " + whiteListEntry[0] + " , " + whiteListEntry[1] + " , " +
-                                    whiteListEntry[2] + " , " + whiteListEntry[3] + "  -  " + resourceUrl);
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.DOMAIN_INITIAL_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2] + "\n" + whiteListEntry[3],
+                                    whiteListEntry[4]};
 
                             // Not blocked.
                             return false;
@@ -1726,21 +1752,25 @@ public class BlockListHelper {
             }
 
             // Domain final white list.
-            for (String[] whiteListEntry : blockList.get(5)) {
+            for (String[] whiteListEntry : blockList.get(MainWebViewActivity.DOMAIN_FINAL_WHITELIST)) {
                 switch (whiteListEntry.length) {
-                    case 2:  // There is one entry;
+                    case 3:  // There is one entry;
                         if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.endsWith(whiteListEntry[1])) {
-                            Log.i("BlockLists", "Request allowed by " + blockListTitle + " domain final white list: " + whiteListEntry[0] + " , " + whiteListEntry[1] + "  -  " + resourceUrl);
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.DOMAIN_FINAL_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1], whiteListEntry[2]};
 
                             // Not blocked.
                             return false;
                         }
                         break;
 
-                    case 3:  // There are two entries;
+                    case 4:  // There are two entries;
                         if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1]) && resourceUrl.endsWith(whiteListEntry[2])) {
-                            Log.i("BlockLists", "Request allowed by " + blockListTitle + " domain final white list: " + whiteListEntry[0] + " , " + whiteListEntry[1] + " , " +
-                                    whiteListEntry[2] + "  -  " + resourceUrl);
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.DOMAIN_FINAL_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2], whiteListEntry[3]};
+
 
                             // Not blocked.
                             return false;
@@ -1753,51 +1783,59 @@ public class BlockListHelper {
         // Only check the third-party white lists if this is a third-party request.
         if (thirdPartyRequest) {
             // Third-party white list.
-            for (String[] whiteListEntry : blockList.get(6)) {
+            for (String[] whiteListEntry : blockList.get(MainWebViewActivity.THIRD_PARTY_WHITELIST)) {
                 switch (whiteListEntry.length) {
-                    case 1:  // There is one entry
+                    case 2:  // There is one entry
                         if (resourceUrl.contains(whiteListEntry[0])) {
-                            Log.i("BlockLists", "Request allowed by " + blockListTitle + " third-party white list: " + whiteListEntry[0] + "  -  " + resourceUrl);
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.THIRD_PARTY_WHITELIST), whiteListEntry[0], whiteListEntry[1]};
 
                             // Not blocked.
                             return false;
                         }
                         break;
 
-                    case 2:  // There are two entries.
+                    case 3:  // There are two entries.
                         if (resourceUrl.contains(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1])) {
-                            Log.i("BlockLists", "Request allowed by " + blockListTitle + " third-party white list: " + whiteListEntry[0] + " , " + whiteListEntry[1] + "  -  " + resourceUrl);
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.THIRD_PARTY_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1], whiteListEntry[2]};
 
                             // Not blocked.
                             return false;
                         }
                         break;
 
-                    case 3:  // There are three entries.
+                    case 4:  // There are three entries.
                         if (resourceUrl.contains(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1]) && resourceUrl.contains(whiteListEntry[2])) {
-                            Log.i("BlockLists", "Request allowed by " + blockListTitle + " third-party white list: " + whiteListEntry[0] + " , " + whiteListEntry[1] + " , " + whiteListEntry[2] +
-                                    "  -  " + resourceUrl);
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.THIRD_PARTY_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2], whiteListEntry[3]};
 
                             // Not blocked.
                             return false;
                         }
                         break;
 
-                    case 4:  // There are four entries.
+                    case 5:  // There are four entries.
                         if (resourceUrl.contains(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1]) && resourceUrl.contains(whiteListEntry[2]) && resourceUrl.contains(whiteListEntry[3])) {
-                            Log.i("BlockLists", "Request allowed by " + blockListTitle + " third-party white list: " + whiteListEntry[0] + " , " + whiteListEntry[1] + " , " + whiteListEntry[2] +
-                                    " , " + whiteListEntry[3] + "  -  " + resourceUrl);
-
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.THIRD_PARTY_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2] + "\n" + whiteListEntry[3],
+                                    whiteListEntry[4]};
                             // Not blocked.
                             return false;
                         }
                         break;
 
-                    case 5:  // There are five entries.
+                    case 6:  // There are five entries.
                         if (resourceUrl.contains(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1]) && resourceUrl.contains(whiteListEntry[2]) && resourceUrl.contains(whiteListEntry[3]) &&
                                 resourceUrl.contains(whiteListEntry[4])) {
-                            Log.i("BlockLists", "Request allowed by " + blockListTitle + " third-party white list: " + whiteListEntry[0] + " , " + whiteListEntry[1] + " , " + whiteListEntry[2] +
-                                    " , " + whiteListEntry[3] + " , " + whiteListEntry[4] + "  -  " + resourceUrl);
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.THIRD_PARTY_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2] + "\n" + whiteListEntry[3] + "\n" +
+                                    whiteListEntry[4], whiteListEntry[5]};
 
                             // Not blocked.
                             return false;
@@ -1807,18 +1845,21 @@ public class BlockListHelper {
             }
 
             // Third-party domain white list.
-            for (String[] whiteListEntry : blockList.get(7)) {
-                if (whiteListEntry.length == 2) {  // There is one entry.
+            for (String[] whiteListEntry : blockList.get(MainWebViewActivity.THIRD_PARTY_DOMAIN_WHITELIST)) {
+                if (whiteListEntry.length == 3) {  // There is one entry.
                     if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1])) {
-                        Log.i("BlockLists", "Request allowed by " + blockListTitle + " third-party domain white list: " + whiteListEntry[0] + " , " + whiteListEntry[1] + "  -  " + resourceUrl);
+                        // Store the entry in the resource request log.
+                        MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                String.valueOf(MainWebViewActivity.THIRD_PARTY_DOMAIN_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1], whiteListEntry[2]};
 
                         // Not blocked.
                         return false;
                     }
                 } else {  // There are two entries.
                     if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1]) && resourceUrl.contains(whiteListEntry[2])) {
-                        Log.i("BlockLists", "Request allowed by " + blockListTitle + " third-party domain white list: " + whiteListEntry[0] + " , " + whiteListEntry[1] + " , " +
-                                whiteListEntry[2] + "  -  " + resourceUrl);
+                        // Store the entry in the resource request log.
+                        MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                String.valueOf(MainWebViewActivity.THIRD_PARTY_DOMAIN_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2], whiteListEntry[3]};
 
                         // Not blocked.
                         return false;
@@ -1827,19 +1868,21 @@ public class BlockListHelper {
             }
 
             // Third-party domain initial white list.
-            for (String[] whiteListEntry : blockList.get(8)) {
-                if (whiteListEntry.length == 2) {  // There is one entry.
+            for (String[] whiteListEntry : blockList.get(MainWebViewActivity.THIRD_PARTY_DOMAIN_INITIAL_WHITELIST)) {
+                if (whiteListEntry.length == 3) {  // There is one entry.
                     if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.startsWith(whiteListEntry[1])) {
-                        Log.i("BlockLists", "Request allowed by " + blockListTitle + " third-party domain initial white list: " + whiteListEntry[0] + " , " + whiteListEntry[1] + "  -  " +
-                                resourceUrl);
+                        // Store the entry in the resource request log.
+                        MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                String.valueOf(MainWebViewActivity.THIRD_PARTY_DOMAIN_INITIAL_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1], whiteListEntry[2]};
 
                         // Not blocked.
                         return false;
                     }
                 } else {  // There are two entries.
                     if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.startsWith(whiteListEntry[1]) && resourceUrl.contains(whiteListEntry[2])) {
-                        Log.i("BlockLists", "Request allowed by " + blockListTitle + " third-party domain initial white list: " + whiteListEntry[0] + " , " + whiteListEntry[1] + " , " +
-                                whiteListEntry[2] + "  -  " + resourceUrl);
+                        // Store the entry in the resource request log.
+                        MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                String.valueOf(MainWebViewActivity.THIRD_PARTY_DOMAIN_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2], whiteListEntry[3]};
 
                         // Not blocked.
                         return false;
@@ -1850,51 +1893,59 @@ public class BlockListHelper {
 
         // Process the black lists.
         // Main black list.
-        for (String[] blackListEntry : blockList.get(9)) {
+        for (String[] blackListEntry : blockList.get(MainWebViewActivity.MAIN_BLACKLIST)) {
             switch (blackListEntry.length) {
-                case 1:  // There is one entry.
+                case 2:  // There is one entry.
                     if (resourceUrl.contains(blackListEntry[0])) {
-                        Log.i("BlockLists", "Request blocked by " + blockListTitle + " main black list: " + blackListEntry[0] + "  -  " + resourceUrl);
+                        // Store the entry in the resource request log.
+                        MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                String.valueOf(MainWebViewActivity.MAIN_BLACKLIST), blackListEntry[0], blackListEntry[1]});
 
                         // Blocked.
                         return true;
                     }
                     break;
 
-                case 2:  // There are two entries.
+                case 3:  // There are two entries.
                     if (resourceUrl.contains(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1])) {
-                        Log.i("BlockLists", "Request blocked by " + blockListTitle + " main black list: " + blackListEntry[0] + " , " + blackListEntry[1] + "  -  " + resourceUrl);
+                        // Store the entry in the resource request log.
+                        MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                String.valueOf(MainWebViewActivity.MAIN_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]});
 
                         // Blocked.
                         return true;
                     }
                     break;
 
-                case 3:  // There are three entries.
+                case 4:  // There are three entries.
                     if (resourceUrl.contains(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1]) && resourceUrl.contains(blackListEntry[2])) {
-                        Log.i("BlockLists", "Request blocked by " + blockListTitle + " main black list: " + blackListEntry[0] + " , " + blackListEntry[1] + " , " + blackListEntry[2] + "  -  " +
-                                resourceUrl);
+                        // Store the entry in the resource request log.
+                        MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                String.valueOf(MainWebViewActivity.MAIN_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2], blackListEntry[3]});
 
                         // Blocked.
                         return true;
                     }
                     break;
 
-                case 4:  // There are four entries.
+                case 5:  // There are four entries.
                     if (resourceUrl.contains(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1]) && resourceUrl.contains(blackListEntry[2]) && resourceUrl.contains(blackListEntry[3])) {
-                        Log.i("BlockLists", "Request blocked by " + blockListTitle + " main black list: " + blackListEntry[0] + " , " + blackListEntry[1] + " , " + blackListEntry[2] + " , " +
-                                blackListEntry[3] + "  -  " + resourceUrl);
+                        // Store the entry in the resource request log.
+                        MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                String.valueOf(MainWebViewActivity.MAIN_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2] + "\n" + blackListEntry[3], blackListEntry[4]});
 
                         // Blocked.
                         return true;
                     }
                     break;
 
-                case 5:  // There are five entries.
+                case 6:  // There are five entries.
                     if (resourceUrl.contains(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1]) && resourceUrl.contains(blackListEntry[2]) && resourceUrl.contains(blackListEntry[3]) &&
                             resourceUrl.contains(blackListEntry[4])) {
-                        Log.i("BlockLists", "Request blocked by " + blockListTitle + " main black list: " + blackListEntry[0] + " , " + blackListEntry[1] + " , " + blackListEntry[2] + " , " +
-                                blackListEntry[3] + ", " + blackListEntry[4] + "  -  " + resourceUrl);
+                        // Store the entry in the resource request log.
+                        MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                String.valueOf(MainWebViewActivity.MAIN_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2] + "\n" + blackListEntry[3] + "\n" +
+                                blackListEntry[4], blackListEntry[5]});
 
                         // Blocked.
                         return true;
@@ -1904,17 +1955,21 @@ public class BlockListHelper {
         }
 
         // Initial black list.
-        for (String[] blackListEntry : blockList.get(10)) {
-            if (blackListEntry.length == 1) {  // There is one entry.
+        for (String[] blackListEntry : blockList.get(MainWebViewActivity.INITIAL_BLACKLIST)) {
+            if (blackListEntry.length == 2) {  // There is one entry.
                 if (resourceUrl.startsWith(blackListEntry[0])) {
-                    Log.i("BlockLists", "Request blocked by " + blockListTitle + " initial black list: " + blackListEntry[0] + "  -  " + resourceUrl);
+                    // Store the entry in the resource request log.
+                    MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                            String.valueOf(MainWebViewActivity.INITIAL_BLACKLIST), blackListEntry[0], blackListEntry[1]});
 
                     // Blocked.
                     return true;
                 }
             } else {  // There are two entries
                 if (resourceUrl.startsWith(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1])) {
-                    Log.i("BlockLists", "Request blocked by " + blockListTitle + " initial black list: " + blackListEntry[0] + " , " + blackListEntry[1] + "  -  " + resourceUrl);
+                    // Store the entry in the resource request log.
+                    MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                            String.valueOf(MainWebViewActivity.INITIAL_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]});
 
                     // Blocked.
                     return true;
@@ -1923,30 +1978,35 @@ public class BlockListHelper {
         }
 
         // Final black list.
-        for (String[] blackListEntry : blockList.get(11)) {
+        for (String[] blackListEntry : blockList.get(MainWebViewActivity.FINAL_BLACKLIST)) {
             switch (blackListEntry.length) {
-                case 1:  // There is one entry.
+                case 2:  // There is one entry.
                     if (resourceUrl.endsWith(blackListEntry[0])) {
-                        Log.i("BlockLists", "Request blocked by " + blockListTitle + " final black list: " + blackListEntry[0] + "  -  " + resourceUrl);
+                        // Store the entry in the resource request log.
+                        MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                String.valueOf(MainWebViewActivity.FINAL_BLACKLIST), blackListEntry[0], blackListEntry[1]});
 
                         // Blocked.
                         return true;
                     }
                     break;
 
-                case 2:  // There are two entries.
+                case 3:  // There are two entries.
                     if (resourceUrl.contains(blackListEntry[0]) && resourceUrl.endsWith(blackListEntry[1])) {
-                        Log.i("BlockLists", "Request blocked by " + blockListTitle + " final black list: " + blackListEntry[0] + " , " + blackListEntry[1] + "  -  " + resourceUrl);
+                        // Store the entry in the resource request log.
+                        MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                String.valueOf(MainWebViewActivity.FINAL_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]});
 
                         // Blocked.
                         return true;
                     }
                     break;
 
-                case 3:  // There are three entries.
+                case 4:  // There are three entries.
                     if (resourceUrl.contains(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1]) && resourceUrl.endsWith(blackListEntry[2])) {
-                        Log.i("BlockLists", "Request blocked by " + blockListTitle + " final black list: " + blackListEntry[0] + " , " + blackListEntry[1] + " , " + blackListEntry[2] + "  -  " +
-                                resourceUrl);
+                        // Store the entry in the resource request log.
+                        MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                String.valueOf(MainWebViewActivity.FINAL_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2], blackListEntry[3]});
 
                         // Blocked.
                         return true;
@@ -1958,31 +2018,36 @@ public class BlockListHelper {
         // Only check the domain lists if the current domain is not null (like `about:blank`).
         if (currentDomain != null) {
             // Domain black list.
-            for (String[] blackListEntry : blockList.get(12)) {
+            for (String[] blackListEntry : blockList.get(MainWebViewActivity.DOMAIN_BLACKLIST)) {
                 switch (blackListEntry.length) {
-                    case 2:  // There is one entry.
+                    case 3:  // There is one entry.
                         if (currentDomain.endsWith(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1])) {
-                            Log.i("BlockLists", "Request blocked by " + blockListTitle + " domain black list: " + blackListEntry[0] + " , " + blackListEntry[1] + "  -  " + resourceUrl);
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.DOMAIN_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]});
 
                             // Blocked.
                             return true;
                         }
                         break;
 
-                    case 3:  // There are two entries.
+                    case 4:  // There are two entries.
                         if (currentDomain.endsWith(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1]) && resourceUrl.contains(blackListEntry[2])) {
-                            Log.i("BlockLists", "Request blocked by " + blockListTitle + " domain black list: " + blackListEntry[0] + " , " + blackListEntry[1] + " , " + blackListEntry[2] +
-                                    "  -  " + resourceUrl);
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.DOMAIN_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2], blackListEntry[3]});
 
                             // Blocked.
                             return true;
                         }
                         break;
 
-                    case 4:  // There are three entries.
+                    case 5:  // There are three entries.
                         if (currentDomain.endsWith(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1]) && resourceUrl.contains(blackListEntry[2]) && resourceUrl.contains(blackListEntry[3])) {
-                            Log.i("BlockLists", "Request blocked by " + blockListTitle + " domain black list: " + blackListEntry[0] + " , " + blackListEntry[1] + " , " + blackListEntry[2] +
-                                    " , " + blackListEntry[3] + "  -  " + resourceUrl);
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.DOMAIN_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2] + "\n" + blackListEntry[3],
+                                    blackListEntry[4]});
 
                             // Blocked.
                             return true;
@@ -1992,9 +2057,12 @@ public class BlockListHelper {
             }
 
             // Domain initial black list.
-            for (String[] blackListEntry : blockList.get(13)) {
+            for (String[] blackListEntry : blockList.get(MainWebViewActivity.DOMAIN_INITIAL_BLACKLIST)) {
+                // Store the entry in the resource request log.
                 if (currentDomain.endsWith(blackListEntry[0]) && resourceUrl.startsWith(blackListEntry[1])) {
-                    Log.i("BlockLists", "Request blocked by " + blockListTitle + " domain initial black list: " + blackListEntry[0] + " , " + blackListEntry[1] + "  -  " + resourceUrl);
+                    MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                            String.valueOf(MainWebViewActivity.DOMAIN_INITIAL_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1],
+                            blackListEntry[2]});
 
                     // Blocked.
                     return true;
@@ -2002,21 +2070,24 @@ public class BlockListHelper {
             }
 
             // Domain final black list.
-            for (String[] blackListEntry : blockList.get(14)) {
+            for (String[] blackListEntry : blockList.get(MainWebViewActivity.DOMAIN_FINAL_BLACKLIST)) {
                 switch (blackListEntry.length) {
-                    case 2:  // There is one entry.
+                    case 3:  // There is one entry.
                         if (currentDomain.endsWith(blackListEntry[0]) && resourceUrl.endsWith(blackListEntry[1])) {
-                            Log.i("BlockLists", "Request blocked by " + blockListTitle + " domain final black list: " + blackListEntry[0] + " , " + blackListEntry[1] + "  -  " + resourceUrl);
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.DOMAIN_FINAL_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]});
 
                             // Blocked.
                             return true;
                         }
                         break;
 
-                    case 3:  // There are two entries.
+                    case 4:  // There are two entries.
                         if (currentDomain.endsWith(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1]) && resourceUrl.endsWith(blackListEntry[2])) {
-                            Log.i("BlockLists", "Request blocked by " + blockListTitle + " domain final black list: " + blackListEntry[0] + " , " + blackListEntry[1] + " , " + blackListEntry[2] +
-                                    "  -  " + resourceUrl);
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.DOMAIN_FINAL_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2], blackListEntry[3]});
 
                             // Blocked.
                             return true;
@@ -2026,9 +2097,11 @@ public class BlockListHelper {
             }
 
             // Domain regular expression black list.
-            for (String[] blackListEntry : blockList.get(15)) {
+            for (String[] blackListEntry : blockList.get(MainWebViewActivity.DOMAIN_REGULAR_EXPRESSION_BLACKLIST)) {
                 if (currentDomain.endsWith(blackListEntry[0]) && Pattern.matches(blackListEntry[1], resourceUrl)) {
-                    Log.i("BlockLists", "Request blocked by " + blockListTitle + " domain regular expression black list: " + blackListEntry[0] + " , " + blackListEntry[1] + "  -  " + resourceUrl);
+                    // Store the entry in the resource request log.
+                    MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                            String.valueOf(MainWebViewActivity.DOMAIN_REGULAR_EXPRESSION_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]});
 
                     // Blocked.
                     return true;
@@ -2039,40 +2112,47 @@ public class BlockListHelper {
         // Only check the third-party black lists if this is a third-party request.
         if (thirdPartyRequest) {
             // Third-party black list.
-            for (String[] blackListEntry : blockList.get(16)) {
+            for (String[] blackListEntry : blockList.get(MainWebViewActivity.THIRD_PARTY_BLACKLIST)) {
                 switch (blackListEntry.length) {
-                    case 1:  // There is one entry.
+                    case 2:  // There is one entry.
                         if (resourceUrl.contains(blackListEntry[0])) {
-                            Log.i("BlockLists", "Request blocked by " + blockListTitle + " third-party black list: " + blackListEntry[0] + "  -  " + resourceUrl);
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.THIRD_PARTY_BLACKLIST), blackListEntry[0], blackListEntry[1]});
 
                             // Blocked.
                             return true;
                         }
                         break;
 
-                    case 2:  // There are two entries.
+                    case 3:  // There are two entries.
                         if (resourceUrl.contains(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1])) {
-                            Log.i("BlockLists", "Request blocked by " + blockListTitle + " third-party black list: " + blackListEntry[0] + " , " + blackListEntry[1] + "  -  " + resourceUrl);
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.THIRD_PARTY_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]});
 
                             // Blocked.
                             return true;
                         }
                         break;
 
-                    case 3:  // There are three entries.
+                    case 4:  // There are three entries.
                         if (resourceUrl.contains(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1]) && resourceUrl.contains(blackListEntry[2])) {
-                            Log.i("BlockLists", "Request blocked by " + blockListTitle + " third-party black list: " + blackListEntry[0] + " , " + blackListEntry[1] + " , " + blackListEntry[2] +
-                                    "  -  " + resourceUrl);
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.THIRD_PARTY_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2], blackListEntry[3]});
 
                             // Blocked.
                             return true;
                         }
                         break;
 
-                    case 4:  // There are four entries.
+                    case 5:  // There are four entries.
                         if (resourceUrl.contains(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1]) && resourceUrl.contains(blackListEntry[2]) && resourceUrl.contains(blackListEntry[3])) {
-                            Log.i("BlockLists", "Request blocked by " + blockListTitle + " third-party black list: " + blackListEntry[0] + " , " + blackListEntry[1] + " , " + blackListEntry[2] +
-                                    " , " + blackListEntry[3] + "  -  " + resourceUrl);
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.THIRD_PARTY_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2] + "\n" + blackListEntry[3],
+                                    blackListEntry[4]});
 
                             // Blocked.
                             return true;
@@ -2082,17 +2162,21 @@ public class BlockListHelper {
             }
 
             // Third-party initial black list.
-            for (String[] blackListEntry : blockList.get(17)) {
-                if (blackListEntry.length == 1) {  // There is one entry.
+            for (String[] blackListEntry : blockList.get(MainWebViewActivity.THIRD_PARTY_INITIAL_BLACKLIST)) {
+                if (blackListEntry.length == 2) {  // There is one entry.
                     if (resourceUrl.startsWith(blackListEntry[0])) {
-                        Log.i("BlockLists", "Request blocked by " + blockListTitle + " third-party initial black list: " + blackListEntry[0] + "  -  " + resourceUrl);
+                        // Store the entry in the resource request log.
+                        MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                String.valueOf(MainWebViewActivity.THIRD_PARTY_INITIAL_BLACKLIST), blackListEntry[0], blackListEntry[1]});
 
                         // Blocked.
                         return true;
                     }
                 } else {  // There are two entries.
                     if (resourceUrl.startsWith(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1])) {
-                        Log.i("BlockLists", "Request blocked by " + blockListTitle + " third-party initial black list: " + blackListEntry[0] + " , " + blackListEntry[1] + "  -  " + resourceUrl);
+                        // Store the entry in the resource request log.
+                        MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                String.valueOf(MainWebViewActivity.THIRD_PARTY_INITIAL_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]});
 
                         // Blocked.
                         return true;
@@ -2101,18 +2185,21 @@ public class BlockListHelper {
             }
 
             // Third-party domain black list.
-            for (String[] blackListEntry : blockList.get(18)) {
-                if (blackListEntry.length == 2) {  // There is one entry.
+            for (String[] blackListEntry : blockList.get(MainWebViewActivity.THIRD_PARTY_DOMAIN_BLACKLIST)) {
+                if (blackListEntry.length == 3) {  // There is one entry.
                     if (currentDomain.endsWith(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1])) {
-                        Log.i("BlockLists", "Request blocked by " + blockListTitle + " third-party domain black list: " + blackListEntry[0] + " , " + blackListEntry[1] + "  -  " + resourceUrl);
+                        // Store the entry in the resource request log.
+                        MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                String.valueOf(MainWebViewActivity.THIRD_PARTY_DOMAIN_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]});
 
                         // Blocked.
                         return true;
                     }
                 } else { // There are two entries.
                     if (currentDomain.endsWith(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1]) && resourceUrl.contains(blackListEntry[2])) {
-                        Log.i("BlockLists", "Request blocked by " + blockListTitle + " third-party domain black list: " + blackListEntry[0] + " , " + blackListEntry[1] +  " , " +
-                                blackListEntry[2] + "  -  " + resourceUrl);
+                        // Store the entry in the resource request log.
+                        MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                String.valueOf(MainWebViewActivity.THIRD_PARTY_DOMAIN_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2], blackListEntry[3]});
 
                         // Blocked.
                         return true;
@@ -2121,32 +2208,35 @@ public class BlockListHelper {
             }
 
             // Third-party domain initial black list.
-            for (String[] blackListEntry : blockList.get(19)) {
+            for (String[] blackListEntry : blockList.get(MainWebViewActivity.THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST)) {
                 switch (blackListEntry.length) {
-                    case 2:  // There is one entry.
+                    case 3:  // There is one entry.
                         if (currentDomain.endsWith(blackListEntry[0]) && resourceUrl.startsWith(blackListEntry[1])) {
-                            Log.i("BlockLists", "Request blocked by " + blockListTitle + " third-party domain initial black list: " + blackListEntry[0] + " , " + blackListEntry[1] + "  -  " +
-                                    resourceUrl);
-
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]});
                             // Blocked.
                             return true;
                         }
                         break;
 
-                    case 3:  // There are two entries.
+                    case 4:  // There are two entries.
                         if (currentDomain.endsWith(blackListEntry[0]) && resourceUrl.startsWith(blackListEntry[1]) && resourceUrl.contains(blackListEntry[2])) {
-                            Log.i("BlockLists", "Request blocked by " + blockListTitle + " third-party domain initial black list: " + blackListEntry[0] + " , " + blackListEntry[1] + " , " +
-                                    blackListEntry[2] + "  -  " + resourceUrl);
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2], blackListEntry[3]});
 
                             // Blocked.
                             return true;
                         }
                         break;
 
-                    case 4:  // There are three entries.
+                    case 5:  // There are three entries.
                         if (currentDomain.endsWith(blackListEntry[0]) && resourceUrl.startsWith(blackListEntry[1]) && resourceUrl.contains(blackListEntry[2]) && resourceUrl.contains(blackListEntry[3])) {
-                            Log.i("BlockLists", "Request blocked by " + blockListTitle + " third-party domain initial black list: " + blackListEntry[0] + " , " + blackListEntry[1] + " , " +
-                                    blackListEntry[2] + blackListEntry[3] + "  -  " + resourceUrl);
+                            // Store the entry in the resource request log.
+                            MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                                    String.valueOf(MainWebViewActivity.THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2] + "\n" + blackListEntry[3],
+                                    blackListEntry[4]});
 
                             // Blocked.
                             return true;
@@ -2156,9 +2246,11 @@ public class BlockListHelper {
             }
 
             // Third-party regular expression black list.
-            for (String[] blackListEntry : blockList.get(20)) {
+            for (String[] blackListEntry : blockList.get(MainWebViewActivity.THIRD_PARTY_REGULAR_EXPRESSION_BLACKLIST)) {
                 if (Pattern.matches(blackListEntry[0], resourceUrl)) {
-                    Log.i("BlockLists", "Request blocked by " + blockListTitle + " third-party regular expression black list: " + blackListEntry[0] + "  -  " + resourceUrl);
+                    // Store the entry in the resource request log.
+                    MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                            String.valueOf(MainWebViewActivity.THIRD_PARTY_REGULAR_EXPRESSION_BLACKLIST), blackListEntry[0], blackListEntry[1]});
 
                     // Blocked.
                     return true;
@@ -2166,10 +2258,11 @@ public class BlockListHelper {
             }
 
             // Third-party domain regular expression black list.
-            for (String[] blackListEntry : blockList.get(21)) {
+            for (String[] blackListEntry : blockList.get(MainWebViewActivity.THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLACKLIST)) {
                 if (currentDomain.endsWith(blackListEntry[0]) && Pattern.matches(blackListEntry[1], resourceUrl)) {
-                    Log.i("BlockLists", "Request blocked by " + blockListTitle + " third-party domain regular expression black list: " + blackListEntry[0] + " , " + blackListEntry[1] + "  -  " +
-                            resourceUrl);
+                    // Store the entry in the resource request log.
+                    MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                            String.valueOf(MainWebViewActivity.THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]});
 
                     // Blocked.
                     return true;
@@ -2178,9 +2271,11 @@ public class BlockListHelper {
         }
 
         // Regular expression black list.
-        for (String[] blackListEntry : blockList.get(22)) {
+        for (String[] blackListEntry : blockList.get(MainWebViewActivity.REGULAR_EXPRESSION_BLACKLIST)) {
             if (Pattern.matches(blackListEntry[0], resourceUrl)) {
-                Log.i("BlockLists", "Request blocked by " + blockListTitle + " regular expression black list: " + blackListEntry[0] + "  -  " + resourceUrl);
+                // Store the entry in the resource request log.
+                MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
+                        String.valueOf(MainWebViewActivity.REGULAR_EXPRESSION_BLACKLIST), blackListEntry[0], blackListEntry[1]});
 
                 // blocked.
                 return true;

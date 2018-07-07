@@ -55,7 +55,8 @@ import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 import java.io.ByteArrayOutputStream;
 
 public class MoveToFolderDialog extends AppCompatDialogFragment {
-    // Instantiate class variables.
+    // Instantiate the class variables.
+    private MoveToFolderListener moveToFolderListener;
     private BookmarksDatabaseHelper bookmarksDatabaseHelper;
     private StringBuilder exceptFolders;
 
@@ -64,18 +65,12 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
         void onMoveToFolder(AppCompatDialogFragment dialogFragment);
     }
 
-    // `moveToFolderListener` is used in `onAttach()` and `onCreateDialog`.
-    private MoveToFolderListener moveToFolderListener;
-
     public void onAttach(Context context) {
+        // Run the default commands.
         super.onAttach(context);
 
-        // Get a handle for `MoveToFolderListener` from `parentActivity`.
-        try {
-            moveToFolderListener = (MoveToFolderListener) context;
-        } catch(ClassCastException exception) {
-            throw new ClassCastException(context.toString() + " must implement EditBookmarkFolderListener.");
-        }
+        // Get a handle for `MoveToFolderListener` from the launching context.
+        moveToFolderListener = (MoveToFolderListener) context;
     }
 
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.

@@ -34,7 +34,22 @@ public class DownloadLocationPermissionDialog extends DialogFragment {
     public static final int DOWNLOAD_FILE = 1;
     public static final int DOWNLOAD_IMAGE = 2;
 
-    private int downloadType;
+    // `downloadLocationPermissionDialogListener` is used in `onAttach()` and `onCreateDialog()`.
+    private DownloadLocationPermissionDialogListener downloadLocationPermissionDialogListener;
+
+    // The public interface is used to send information back to the parent activity.
+    public interface DownloadLocationPermissionDialogListener {
+        void onCloseDownloadLocationPermissionDialog(int downloadType);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        // Run the default commands.
+        super.onAttach(context);
+
+        // Get a handle for `DownloadLocationPermissionDialogListener` from the launching context.
+        downloadLocationPermissionDialogListener = (DownloadLocationPermissionDialogListener) context;
+    }
 
     public static DownloadLocationPermissionDialog downloadType(int type) {
         // Create an arguments bundle.
@@ -50,35 +65,10 @@ public class DownloadLocationPermissionDialog extends DialogFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // Store the download type in the local class variable.
-        downloadType = getArguments().getInt("Download_Type");
-    }
-
-    // The public interface is used to send information back to the parent activity.
-    public interface DownloadLocationPermissionDialogListener {
-        void onCloseDownloadLocationPermissionDialog(int downloadType);
-    }
-
-    // `downloadLocationPermissionDialogListener` is used in `onAttach()` and `onCreateDialog()`.
-    private DownloadLocationPermissionDialogListener downloadLocationPermissionDialogListener;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        // Check to make sure the parent activity implements the listener.
-        try {
-            downloadLocationPermissionDialogListener = (DownloadLocationPermissionDialogListener) context;
-        } catch (ClassCastException exception) {
-            throw new ClassCastException(context.toString() + " must implement DownloadLocationPermissionDialogListener.");
-        }
-    }
-
-    @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Store the download type in the local class variable.
+        int downloadType = getArguments().getInt("Download_Type");
+
         // Use a builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 

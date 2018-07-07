@@ -58,7 +58,6 @@ public class EditBookmarkDatabaseViewDialog extends AppCompatDialogFragment {
 
     // Instantiate the class variables.
     private EditBookmarkDatabaseViewListener editBookmarkDatabaseViewListener;
-    private int bookmarkDatabaseId;
     private String currentBookmarkName;
     private String currentUrl;
     private int currentFolderDatabaseId;
@@ -80,12 +79,9 @@ public class EditBookmarkDatabaseViewDialog extends AppCompatDialogFragment {
         // Run the default commands.
         super.onAttach(context);
 
-        // Get a handle for `EditBookmarkDatabaseViewListener` from `context`.
-        try {
-            editBookmarkDatabaseViewListener = (EditBookmarkDatabaseViewListener) context;
-        } catch(ClassCastException exception) {
-            throw new ClassCastException(context.toString() + " must implement EditBookmarkDatabaseViewListener.");
-        }
+        // Get a handle for `EditBookmarkDatabaseViewListener` from the launching context.
+
+        editBookmarkDatabaseViewListener = (EditBookmarkDatabaseViewListener) context;
     }
 
     // Store the database ID in the arguments bundle.
@@ -104,24 +100,18 @@ public class EditBookmarkDatabaseViewDialog extends AppCompatDialogFragment {
         return editBookmarkDatabaseViewDialog;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        // Run the default commands.
-        super.onCreate(savedInstanceState);
-
-        // Remove the incorrect lint warning below that `getInt()` might be null.
-        assert getArguments() != null;
-
-        // Store the bookmark database ID in the class variable.
-        bookmarkDatabaseId = getArguments().getInt("Database ID");
-    }
-
-    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
+        // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Initialize the database helper.  The two `nulls` do not specify the database name or a `CursorFactory`.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
+        // Remove the incorrect lint warning below that `getInt()` might be null.
+        assert getArguments() != null;
+
+        // Get the bookmark database ID from the bundle.
+        int bookmarkDatabaseId = getArguments().getInt("Database ID");
+
+        // Initialize the database helper.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
         BookmarksDatabaseHelper bookmarksDatabaseHelper = new BookmarksDatabaseHelper(getContext(), null, null, 0);
 
         // Get a cursor with the selected bookmark and move it to the first position.

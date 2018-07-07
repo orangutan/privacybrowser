@@ -49,10 +49,9 @@ import java.text.DateFormat;
 import java.util.Date;
 
 public class PinnedSslCertificateMismatchDialog extends AppCompatDialogFragment {
-    // `layoutInflater` is used in `onCreateDialog()` and `pagerAdapter`.
+    // Instantiate the class variables.
+    private PinnedSslCertificateMismatchListener pinnedSslCertificateMismatchListener;
     private LayoutInflater layoutInflater;
-
-    // The current website SSL certificate variables are used in `onCreateDialog()` and `pagerAdapter()`.
     private String currentSslIssuedToCNameString;
     private String currentSslIssuedToONameString;
     private String currentSslIssuedToUNameString;
@@ -69,18 +68,13 @@ public class PinnedSslCertificateMismatchDialog extends AppCompatDialogFragment 
         void onSslMismatchProceed();
     }
 
-    // `sslCertificateErrorListener` is used in `onAttach` and `onCreateDialog`.
-    private PinnedSslCertificateMismatchDialog.PinnedSslCertificateMismatchListener pinnedSslCertificateMismatchListener;
-
     // Check to make sure that the parent activity implements the listener.
     public void onAttach(Context context) {
+        // Run the default commands.
         super.onAttach(context);
 
-        try {
-            pinnedSslCertificateMismatchListener = (PinnedSslCertificateMismatchDialog.PinnedSslCertificateMismatchListener) context;
-        } catch(ClassCastException exception) {
-            throw new ClassCastException(context.toString() + " must implement PinnedSslCertificateMismatchListener");
-        }
+        // Get a handle for `PinnedSslCertificateMismatchListener` from the launching context.
+        pinnedSslCertificateMismatchListener = (PinnedSslCertificateMismatchListener) context;
     }
 
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.

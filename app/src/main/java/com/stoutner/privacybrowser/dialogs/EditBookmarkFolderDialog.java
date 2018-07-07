@@ -47,25 +47,20 @@ import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 
 public class EditBookmarkFolderDialog extends AppCompatDialogFragment {
+    // Instantiate the class variable.
+    private EditBookmarkFolderListener editBookmarkFolderListener;
+
     // The public interface is used to send information back to the parent activity.
     public interface EditBookmarkFolderListener {
         void onSaveBookmarkFolder(AppCompatDialogFragment dialogFragment, int selectedFolderDatabaseId);
     }
 
-    // Instantiate the class variables.
-    private EditBookmarkFolderListener editBookmarkFolderListener;
-    private int selectedFolderDatabaseId;
-
     public void onAttach(Context context) {
         // Run the default commands.
         super.onAttach(context);
 
-        // Get a handle for `EditFolderListener` from `parentActivity`.
-        try {
-            editBookmarkFolderListener = (EditBookmarkFolderListener) context;
-        } catch(ClassCastException exception) {
-            throw new ClassCastException(context.toString() + " must implement EditBookmarkFolderListener.");
-        }
+        // Get a handle for `EditFolderListener` from the launching context.
+        editBookmarkFolderListener = (EditBookmarkFolderListener) context;
     }
 
     // Store the database ID in the arguments bundle.
@@ -84,23 +79,17 @@ public class EditBookmarkFolderDialog extends AppCompatDialogFragment {
         return editBookmarkFolderDialog;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        // Run the default commands.
-        super.onCreate(savedInstanceState);
-
-        // Remove the incorrect lint warning that `getInt()` might be null.
-        assert getArguments() != null;
-
-        // Store the folder database ID in the class variable.
-        selectedFolderDatabaseId = getArguments().getInt("Database ID");
-    }
-
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Remove the incorrect lint warning that `getInt()` might be null.
+        assert getArguments() != null;
+
+        // Store the folder database ID in the class variable.
+        int selectedFolderDatabaseId = getArguments().getInt("Database ID");
+
         // Initialize the database helper.  The two `nulls` do not specify the database name or a `CursorFactory`.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
         final BookmarksDatabaseHelper bookmarksDatabaseHelper = new BookmarksDatabaseHelper(getContext(), null, null, 0);
 

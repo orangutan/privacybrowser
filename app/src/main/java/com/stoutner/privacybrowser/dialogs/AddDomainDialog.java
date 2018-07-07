@@ -53,14 +53,11 @@ public class AddDomainDialog extends AppCompatDialogFragment {
 
 
     public void onAttach(Context context) {
+        // Run the default commands.
         super.onAttach(context);
 
-        // Get a handle for `AddDomainListener` from `context`.
-        try {
-            addDomainListener = (AddDomainListener) context;
-        } catch(ClassCastException exception) {
-            throw new ClassCastException(context.toString() + " must implement `AddDomainListener`.");
-        }
+        // Get a handle for the listener from the launching context.
+        addDomainListener = (AddDomainListener) context;
     }
 
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.

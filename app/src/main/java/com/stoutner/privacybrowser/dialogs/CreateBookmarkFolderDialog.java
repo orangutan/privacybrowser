@@ -54,12 +54,8 @@ public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        // Get a handle for `createBookmarkFolderListener` from `context`.
-        try {
-            createBookmarkFolderListener = (CreateBookmarkFolderListener) context;
-        } catch(ClassCastException exception) {
-            throw new ClassCastException(context.toString() + " must implement CreateBookmarkFolderListener.");
-        }
+        // Get a handle for `createBookmarkFolderListener` from the launching context.
+        createBookmarkFolderListener = (CreateBookmarkFolderListener) context;
     }
 
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.

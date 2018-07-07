@@ -308,7 +308,7 @@
         <string name="allow_screenshots">Permetti gli screenshot</string>
         <string name="allow_screenshots_summary">Permette gli screenshot, la registrazione di video, e la possibilità di visualizzare su schermi non sicuri.
             La modifica di questa impostazione provoca il riavvio di Privacy Browser.</string>
-    <string name="block_lists">Block List</string>
+    <string name="blocklists">Blocklist</string>
         <string name="easylist">EasyList</string>
         <string name="easylist_summary">Blocking list principale.</string>
         <string name="easyprivacy">EasyPrivacy</string>

@@ -89,8 +89,8 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="block_lists"
-        android:title="@string/block_lists" >
+        android:key="blocklists"
+        android:title="@string/blocklists" >
 
         <SwitchPreference
             android:key="easylist"
