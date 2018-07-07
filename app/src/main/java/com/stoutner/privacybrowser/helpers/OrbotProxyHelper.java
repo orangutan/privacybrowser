@@ -39,7 +39,6 @@ import java.lang.reflect.Method;
 
 public class OrbotProxyHelper {
     public static void setProxy(Context privacyBrowserContext, Activity parentActivity, String proxyHost, String proxyPort) {
-
         // Set the proxy values
         System.setProperty("http.proxyHost", proxyHost);
         System.setProperty("http.proxyPort", proxyPort);
@@ -48,33 +47,40 @@ public class OrbotProxyHelper {
 
         // Use reflection to apply the new proxy values.
         try {
+            // Get the application and APK classes.  Suppress the lint warning that reflection may not always work in the future and on all devices.
             Class applicationClass = Class.forName("android.app.Application");
-
-            // Suppress the lint warning that `mLoadedApk` cannot be resolved.
-            @SuppressWarnings("JavaReflectionMemberAccess") Field mLoadedApkField = applicationClass.getDeclaredField("mLoadedApk");
-
-            // `setAccessible(true)` allows the value of `mLoadedApkField` to be changed..
-            mLoadedApkField.setAccessible(true);
-            Object mLoadedApkObject = mLoadedApkField.get(privacyBrowserContext);
-
-            // Suppress the lint warning that reflection may not always work in the future and on all devices.
             @SuppressLint("PrivateApi") Class loadedApkClass = Class.forName("android.app.LoadedApk");
+
+            // Get the declared fields.  Suppress the lint warning that `mLoadedApk` cannot be resolved.
+            @SuppressWarnings("JavaReflectionMemberAccess") Field mLoadedApkField = applicationClass.getDeclaredField("mLoadedApk");
             Field mReceiversField = loadedApkClass.getDeclaredField("mReceivers");
 
-            // `setAccessible(true)` allows the value of `mReceiversField` to be changed.
+            // Allow the values to be changed.
+            mLoadedApkField.setAccessible(true);
             mReceiversField.setAccessible(true);
 
+            // Get the APK object.
+            Object mLoadedApkObject = mLoadedApkField.get(privacyBrowserContext);
+
+            // Get an array map of the receivers.
             ArrayMap receivers = (ArrayMap) mReceiversField.get(mLoadedApkObject);
 
+            // Set the proxy.
             for (Object receiverMap : receivers.values()) {
                 for (Object receiver : ((ArrayMap) receiverMap).keySet()) {
-                    // `Class<?>`, which is an `unbounded wildcard parameterized type`, must be used instead of `Class`, which is a `raw type`.
-                    // Otherwise, `receiveClass.getDeclaredMethod` below will produce an error.
+                    // `Class<?>`, which is an `unbounded wildcard parameterized type`, must be used instead of `Class`, which is a `raw type`.  Otherwise, `receiveClass.getDeclaredMethod` is unhappy.
                     Class<?> receiverClass = receiver.getClass();
-                    if (receiverClass.getName().contains("ProxyChangeListener")) {
-                        Method onReceiveMethod = receiverClass.getDeclaredMethod("onReceive", Context.class, Intent.class);
-                        Intent intent = new Intent(Proxy.PROXY_CHANGE_ACTION);
-                        onReceiveMethod.invoke(receiver, privacyBrowserContext, intent);
+
+                    // Get the declared fields.
+                    final Field[] declaredFieldArray = receiverClass.getDeclaredFields();
+
+                    // Set the proxy for each field that is a `ProxyChangeListener`.
+                    for (Field field : declaredFieldArray) {
+                        if (field.getType().getName().contains("ProxyChangeListener")) {
+                            Method onReceiveMethod = receiverClass.getDeclaredMethod("onReceive", Context.class, Intent.class);
+                            Intent intent = new Intent(Proxy.PROXY_CHANGE_ACTION);
+                            onReceiveMethod.invoke(receiver, privacyBrowserContext, intent);
+                        }
                     }
                 }
             }

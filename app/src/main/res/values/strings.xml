@@ -222,7 +222,7 @@
     <string name="parent_folder">Parent folder:</string>
     <string name="display_order">Display order:</string>
 
-    <!-- Block Lists. -->
+    <!-- Requests. -->
     <string name="requests">Requests</string>
     <string name="request_details">Request details</string>
     <string name="disposition">Disposition</string>
