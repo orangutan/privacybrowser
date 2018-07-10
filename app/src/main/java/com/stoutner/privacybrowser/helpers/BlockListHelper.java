@@ -36,7 +36,7 @@ public class BlockListHelper {
         // Initialize the header list.
         List<String[]> headers = new ArrayList<>();  // 0.
 
-        // Initialize the white lists.
+        // Initialize the whitelists.
         List<String[]> mainWhiteList = new ArrayList<>();  // 1.
         List<String[]> finalWhiteList = new ArrayList<>();  // 2.
         List<String[]> domainWhiteList = new ArrayList<>();  // 3.
@@ -46,7 +46,7 @@ public class BlockListHelper {
         List<String[]> thirdPartyDomainWhiteList = new ArrayList<>();  // 7.
         List<String[]> thirdPartyDomainInitialWhiteList = new ArrayList<>();  // 8.
 
-        // Initialize the black lists
+        // Initialize the blacklists
         List<String[]> mainBlackList = new ArrayList<>();  // 9.
         List<String[]> initialBlackList = new ArrayList<>();  // 10.
         List<String[]> finalBlackList = new ArrayList<>();  // 11.
@@ -85,6 +85,11 @@ public class BlockListHelper {
                     // Do nothing.  Privacy Browser does not currently use these entries.
 
                     //Log.i("BlockLists", "Not added: " + blockListEntry);
+                } else //noinspection StatementWithEmptyBody
+                    if (blockListEntry.contains("$csp=script-src")) {  // Ignore entries that contain `$csp=script-src`.
+                    // Do nothing.  It is uncertain what this directive is even supposed to mean, and it is blocking entire websites like androidcentral.com.  https://redmine.stoutner.com/issues/306.
+
+                    //Log.i("BlockLists", headers.get(1)[0] + " not added: " + originalBlockListEntry);
                 } else if (blockListEntry.startsWith("!")) {  //  Comment entries.
                     if (blockListEntry.startsWith("! Version:")) {
                         // Get the list version number.
