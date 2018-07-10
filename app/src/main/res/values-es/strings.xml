@@ -221,6 +221,44 @@
     <string name="parent_folder">Carpeta superior:</string>
     <string name="display_order">Mostrar orden:</string>
 
+    <!-- Requests. -->
+    <string name="requests">Peticiones</string>
+    <string name="request_details">Detalles de petición</string>
+    <string name="disposition">Disposición</string>
+        <string name="all">Todas</string>
+        <string name="default_label">Por defecto</string>
+        <string name="default_allowed">Por defecto - Permitida</string>
+        <string name="allowed">Permitida</string>
+        <string name="allowed_plural">Permitidas</string>
+        <string name="blocked">Bloqueada</string>
+        <string name="blocked_plural">Bloqueadas</string>
+    <string name="blocklist">Lista de bloqueo</string>
+    <string name="sublist">Sublista</string>
+        <string name="main_whitelist">Lista blanca principal</string>
+        <string name="final_whitelist">Lista blanca final</string>
+        <string name="domain_whitelist">Lista blanca de dominios</string>
+        <string name="domain_initial_whitelist">Lista blanca inicial de dominios</string>
+        <string name="domain_final_whitelist">Lista blanca final de dominios</string>
+        <string name="third_party_whitelist">Lista blanca de terceros</string>
+        <string name="third_party_domain_whitelist">Lista blanca de dominios de terceros</string>
+        <string name="third_party_domain_initial_whitelist">Lista blanca inicial de dominios de terceros</string>
+        <string name="main_blacklist">Lista negra principal</string>
+        <string name="initial_blacklist">Lista negra inicial</string>
+        <string name="final_blacklist">Lista negra final</string>
+        <string name="domain_blacklist">Lista negra de dominios</string>
+        <string name="domain_initial_blacklist">Lista negra inicial de dominios</string>
+        <string name="domain_final_blacklist">Lista negra final de dominios</string>
+        <string name="domain_regular_expression_blacklist">Lista negra de expresiones regulares de dominios</string>
+        <string name="third_party_blacklist">Lista negra de terceros</string>
+        <string name="third_party_initial_blacklist">Lista negra inicial de terceros</string>
+        <string name="third_party_domain_blacklist">Lista negra de dominios de terceros</string>
+        <string name="third_party_domain_initial_blacklist">Lista negra inicial de dominios de terceros</string>
+        <string name="third_party_regular_expression_blacklist">Lista negra de expresiones regulares de terceros</string>
+        <string name="third_party_domain_regular_expression_blacklist">Lista negra de expresiones regulares de dominios de terceros</string>
+        <string name="regular_expression_blacklist">Lista negra de expresiones regulares</string>
+    <string name="blocklist_entries">Entradas de la lista de bloqueo</string>
+    <string name="blocklist_original_entry">Entrada original de la lista de bloqueo</string>
+
     <!-- Domains. -->
     <string name="domains">Dominios</string>
     <string name="domain_settings">Configuración de dominio</string>

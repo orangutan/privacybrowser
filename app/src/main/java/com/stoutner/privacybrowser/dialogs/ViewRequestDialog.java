@@ -239,7 +239,7 @@ public class ViewRequestDialog extends AppCompatDialogFragment {
                     break;
 
                 case MainWebViewActivity.THIRD_PARTY_WHITELIST:
-                    requestSubList.setText(R.string.third_party_whiteist);
+                    requestSubList.setText(R.string.third_party_whitelist);
                     break;
 
                 case MainWebViewActivity.THIRD_PARTY_DOMAIN_WHITELIST:

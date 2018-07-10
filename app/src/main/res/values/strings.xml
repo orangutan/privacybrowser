@@ -230,7 +230,9 @@
         <string name="default_label">Default</string>
         <string name="default_allowed">Default - Allowed</string>
         <string name="allowed">Allowed</string>
+        <string name="allowed_plural">Allowed</string>
         <string name="blocked">Blocked</string>
+        <string name="blocked_plural">Blocked</string>
     <string name="blocklist">Blocklist</string>
     <string name="sublist">Sublist</string>
         <string name="main_whitelist">Main whitelist</string>
@@ -238,7 +240,7 @@
         <string name="domain_whitelist">Domain whitelist</string>
         <string name="domain_initial_whitelist">Domain initial whitelist</string>
         <string name="domain_final_whitelist">Domain final whitelist</string>
-        <string name="third_party_whiteist">Third-party whitelist</string>
+        <string name="third_party_whitelist">Third-party whitelist</string>
         <string name="third_party_domain_whitelist">Third-party domain whitelist</string>
         <string name="third_party_domain_initial_whitelist">Third-party domain initial whitelist</string>
         <string name="main_blacklist">Main blacklist</string>
@@ -249,7 +251,7 @@
         <string name="domain_final_blacklist">Domain final blacklist</string>
         <string name="domain_regular_expression_blacklist">Domain regular expression blacklist</string>
         <string name="third_party_blacklist">Third-party blacklist</string>
-        <string name="third_party_initial_blacklist">Third-party blacklist</string>
+        <string name="third_party_initial_blacklist">Third-party initial blacklist</string>
         <string name="third_party_domain_blacklist">Third-party domain blacklist</string>
         <string name="third_party_domain_initial_blacklist">Third-party domain initial blacklist</string>
         <string name="third_party_regular_expression_blacklist">Third-party regular expression blacklist</string>
@@ -356,13 +358,13 @@
         <string-array name="user_agent_data" translatable="false">  <!-- The data used to populate the actual user agents.  They should not be translated because they are referenced in code.-->
             <item>PrivacyBrowser/1.0</item>
             <item>WebView default user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
-            <item>Mozilla/5.0 (Android 8.1.0; Mobile; rv:60.0) Gecko/60.0 Firefox/60.0</item>
-            <item>Mozilla/5.0 (Linux; Android 8.1.0; Pixel 2 XL Build/OPM4.171019.016.B1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.158 Mobile Safari/537.36</item>
+            <item>Mozilla/5.0 (Android 8.1.0; Mobile; rv:61.0) Gecko/61.0 Firefox/61.0</item>
+            <item>Mozilla/5.0 (Linux; Android 8.1.0; Pixel 2 XL Build/OPM4.171019.021.E1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Mobile Safari/537.36</item>
             <item>Mozilla/5.0 (iPhone; CPU iPhone OS 11_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.0 Mobile/15E148 Safari/604.1</item>
             <item>Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0</item>
-            <item>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36</item>
-            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0</item>
-            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.170 Safari/537.36</item>
+            <item>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36</item>
+            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0</item>
+            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36</item>
             <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134</item>
             <item>Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko</item>
             <item>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.1 Safari/605.1.15</item>

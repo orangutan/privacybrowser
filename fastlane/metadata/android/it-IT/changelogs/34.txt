@@ -1,0 +1,11 @@
+• Aggiunta di una scheda delle richieste che mostra quante richieste di risorse sono state bloccate.
+• Correzione di un problema con il proxy attraverso Orbot per le versioni più recenti di WebView.
+• Aggiunta di un'opzione per disabilitare gli screenshot e la registrazione dello schermo.
+• Aggiunta la possibilità di effettuare lo swipe per aggiornare ai domini e alle impostazioni rapide.
+• Sostituzione dell'icona dei dati dei form nella barra dell'app con un icona per l'aggiornamento.
+• Rimozione delle opzioni dei dati dei form in Android Oreo.
+• Eliminazione di un crash che avveniva quando si guardavano o si caricavano le impostazioni dei domini con una URL vuota.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
+• Aggiornamento parziale della traduzione in Tedesco da parte di Stefan Erhardt.
+• Aggiornamento della traduzione Russo.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León Becerra.

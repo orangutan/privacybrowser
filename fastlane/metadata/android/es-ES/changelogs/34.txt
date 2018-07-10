@@ -1,0 +1,11 @@
+• Añadir una Actividad de peticiones que muestre cuantas peticiones de recursos se han bloqueado.
+• Solucionar un problema con el proxy a través de Orbot en versiones recientes de WebView.
+• Añadir una opción para desactivar las capturas y grabaciones de pantalla.
+• Añadir una opción “Deslizar para actualizar” a la configuración de dominio y a la de sobre la marcha.
+• Reemplazar el icono de la barra de aplicaciones de datos de formulario por un icono de actualización.
+• Eliminar las opciones de datos de formulario comenzando en Android Oreo.
+• Corregir un error al ver o cargar la configuración de dominio con una URL en blanco.
+• Actualizada la traducción al español proporcionada por Jose A. León Becerra.
+• Traducción al alemán parcialmente actualizada proporcionada por Stefan Erhardt.
+• Actualizada la traducción al italiano proporcionada por Francesco Buratti.
+• Actualizada la traducción al ruso.

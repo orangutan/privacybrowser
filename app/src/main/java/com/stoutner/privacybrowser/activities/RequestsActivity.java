@@ -108,8 +108,8 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
         MatrixCursor spinnerCursor = new MatrixCursor(new String[]{"_id", "Requests"});
         spinnerCursor.addRow(new Object[]{0, getString(R.string.all) + " - " + MainWebViewActivity.resourceRequests.size()});
         spinnerCursor.addRow(new Object[]{1, getString(R.string.default_label) + " - " + defaultResourceRequests.size()});
-        spinnerCursor.addRow(new Object[]{2, getString(R.string.allowed) + " - " + allowedResourceRequests.size()});
-        spinnerCursor.addRow(new Object[]{3, getString(R.string.blocked) + " - " + blockedResourceRequests.size()});
+        spinnerCursor.addRow(new Object[]{2, getString(R.string.allowed_plural) + " - " + allowedResourceRequests.size()});
+        spinnerCursor.addRow(new Object[]{3, getString(R.string.blocked_plural) + " - " + blockedResourceRequests.size()});
 
         // Create a resource cursor adapter for the spinner.
         ResourceCursorAdapter spinnerCursorAdapter = new ResourceCursorAdapter(this, R.layout.requests_spinner_item, spinnerCursor, 0) {

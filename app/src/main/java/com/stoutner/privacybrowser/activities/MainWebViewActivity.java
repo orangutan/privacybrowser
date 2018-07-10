@@ -1172,14 +1172,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.startsWith("http")) {  // Load the URL in Privacy Browser.
-                    // Hide the WebView while applying domain settings so changes to things like JavaScript aren't rendered on the current URL, which otherwise will reload automatically.
-                    mainWebView.setVisibility(View.INVISIBLE);
-
-                    // Apply the domain settings for the new URL.
+                    // Apply the domain settings for the new URL.  `applyDomainSettings` doesn't do anything if the domain has not changed.
                     applyDomainSettings(url, true, false);
-
-                    // Display the WebView again so that the new URL can be loaded.
-                    mainWebView.setVisibility(View.VISIBLE);
 
                     // Returning false causes the current WebView to handle the URL and prevents it from adding redirects to the history list.
                     return false;
@@ -1313,7 +1307,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Hide the keyboard.  `0` indicates no additional flags.
                 inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
 
-                // Check to see if we are waiting on Orbot.
+                // Check to see if Privacy Browser is waiting on Orbot.
                 if (!waitingForOrbot) {  // We are not waiting on Orbot, so we need to process the URL.
                     // We need to update `formattedUrlString` at the beginning of the load, so that if the user toggles JavaScript during the load the new website is reloaded.
                     formattedUrlString = url;
@@ -3188,9 +3182,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         loadUrl(formattedUrlString);
     }
 
-
-    private void loadUrl(String url) {
-        // Apply any custom domain settings.
+    private void loadUrl(String url) {// Apply any custom domain settings.
         applyDomainSettings(url, true, false);
 
         // Set `urlIsLoading` to prevent changes in the user agent on websites with redirects from reloading the current website.
@@ -3641,7 +3633,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 } else {
                     urlAppBarRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_light_green));
                 }
-            } else {  // The URL we are loading does not have custom domain settings.  Load the defaults.
+            } else {  // The new URL does not have custom domain settings.  Load the defaults.
                 // Store the values from `sharedPreferences` in variables.
                 javaScriptEnabled = sharedPreferences.getBoolean("javascript_enabled", false);
                 firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies_enabled", false);
@@ -3734,11 +3726,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             if (mainMenu != null) {
                 updatePrivacyIcons(true);
             }
+        }
 
-            // Reload the website if returning from the Domains activity.
-            if (reloadWebsite) {
-                mainWebView.reload();
-            }
+        // Reload the website if returning from the Domains activity.
+        if (reloadWebsite) {
+            mainWebView.reload();
         }
     }
 

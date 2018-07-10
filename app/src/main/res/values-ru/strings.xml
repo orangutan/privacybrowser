@@ -221,6 +221,44 @@
     <string name="parent_folder">Родительская папка:</string>
     <string name="display_order">Порядок отображения:</string>
 
+    <!-- Requests. -->
+    <string name="requests">Запросы</string>
+    <string name="request_details">Детали запроса</string>
+    <string name="disposition">Поведение</string>
+        <string name="all">Все</string>
+        <string name="default_label">По умолчанию</string>
+        <string name="default_allowed">По умолчанию - Разрешен</string>
+        <string name="allowed">Разрешен</string>
+        <string name="allowed_plural">Разрешено</string>
+        <string name="blocked">Блокирован</string>
+        <string name="blocked_plural">Блокировано</string>
+    <string name="blocklist">Список блокировки</string>
+    <string name="sublist">Подсписок</string>
+        <string name="main_whitelist">Основной белый список</string>
+        <string name="final_whitelist">Конец белого списка</string>
+        <string name="domain_whitelist">Белый список доменов</string>
+        <string name="domain_initial_whitelist">Начало белого списка доменов</string>
+        <string name="domain_final_whitelist">Конец белого списка доменов</string>
+        <string name="third_party_whitelist">Сторонний белый список</string>
+        <string name="third_party_domain_whitelist">Сторонний белый список доменов</string>
+        <string name="third_party_domain_initial_whitelist">Начало стороннего белого списка доменов</string>
+        <string name="main_blacklist">Основной черный список</string>
+        <string name="initial_blacklist">Начало черного списка</string>
+        <string name="final_blacklist">Конец черного списка</string>
+        <string name="domain_blacklist">Черный список доменов</string>
+        <string name="domain_initial_blacklist">Начало черного списка доменов</string>
+        <string name="domain_final_blacklist">Конец черного списка доменов</string>
+        <string name="domain_regular_expression_blacklist">Регулярные выражения черного списка доменов</string>
+        <string name="third_party_blacklist">Сторонний черный список</string>
+        <string name="third_party_initial_blacklist">Начало стороннего черного списка доменов</string>
+        <string name="third_party_domain_blacklist">Сторонний черный список доменов</string>
+        <string name="third_party_domain_initial_blacklist">Начало стороннего черного списка доменов</string>
+        <string name="third_party_regular_expression_blacklist">Регулярные выражения стороннего черного списка</string>
+        <string name="third_party_domain_regular_expression_blacklist">Регулярные выражения стороннего черного списка доменов</string>
+        <string name="regular_expression_blacklist">Регулярные выражения черного списка</string>
+    <string name="blocklist_entries">Записи списка блокировки</string>
+    <string name="blocklist_original_entry">Исходная запись списка блокировки</string>
+
     <!-- Domains. -->
     <string name="domains">Домены</string>
     <string name="domain_settings">Настройки домена</string>

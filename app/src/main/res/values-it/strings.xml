@@ -220,6 +220,44 @@
     <string name="parent_folder">Cartella superiore:</string>
     <string name="display_order">Ordine di visualizzazione:</string>
 
+    <!-- Requests. -->
+    <string name="requests">Richieste</string>
+    <string name="request_details">Dettagli sulle richieste</string>
+    <string name="disposition">Scelta</string>
+        <string name="all">Tutte</string>
+        <string name="default_label">Default</string>
+        <string name="default_allowed">Default - Permessa</string>
+        <string name="allowed">Permessa</string>
+        <string name="allowed_plural">Permesse</string>
+        <string name="blocked">Bloccata</string>
+        <string name="blocked_plural">Bloccate</string>
+    <string name="blocklist">Blocklist</string>
+    <string name="sublist">Sublist</string>
+        <string name="main_whitelist">Whitelist principale</string>
+        <string name="final_whitelist">Whitelist finale</string>
+        <string name="domain_whitelist">Whitelist per i domini</string>
+        <string name="domain_initial_whitelist">Whitelist iniziale</string>
+        <string name="domain_final_whitelist">Whitelist finale</string>
+        <string name="third_party_whiteist">Whitelist di terze parti</string>
+        <string name="third_party_domain_whitelist">Whitelist di terze parti per i domini</string>
+        <string name="third_party_domain_initial_whitelist">Whitelist di terze parti iniziale per i domini</string>
+        <string name="main_blacklist">Blacklist principale</string>
+        <string name="initial_blacklist">Blacklist iniziale</string>
+        <string name="final_blacklist">Blacklist finale</string>
+        <string name="domain_blacklist">Blacklist per i domini</string>
+        <string name="domain_initial_blacklist">Blacklist iniziale</string>
+        <string name="domain_final_blacklist">Blacklist finale</string>
+        <string name="domain_regular_expression_blacklist">Blacklist per le espressioni regolari</string>
+        <string name="third_party_blacklist">Blacklist di terze parti</string>
+        <string name="third_party_initial_blacklist">Blacklist di terze parti iniziale</string>
+        <string name="third_party_domain_blacklist">Blacklist di terze parti per i domini</string>
+        <string name="third_party_domain_initial_blacklist">Blacklist di terze parti iniziale per i domini</string>
+        <string name="third_party_regular_expression_blacklist">Blacklist di terze parti per le espressioni regolari</string>
+        <string name="third_party_domain_regular_expression_blacklist">Blacklist di terze parti per le espressioni regolari per i domini</string>
+        <string name="regular_expression_blacklist">Blacklist per le espressioni regolari</string>
+    <string name="blocklist_entries">Elementi della Blocklist</string>
+    <string name="blocklist_original_entry">Elemento originale della Blocklist</string>
+
     <!-- Domains. -->
     <string name="domains">Domini</string>
     <string name="domain_settings">Impostazioni Domini</string>

@@ -1,0 +1,11 @@
+• Add a Requests activity that shows how many resource requests have been blocked.
+• Fix a problem with proxying through Orbot on recent versions of WebView.
+• Add an option to disable screenshots and screen recordings.
+• Add swipe to refresh to domain and on-the-fly settings.
+• Replace the form data app bar icon with a refresh icon.
+• Remove form data options beginning in Android Oreo.
+• Fix a crash when viewing or loading domain settings with a blank URL.
+• Partially updated German translation provided by Stefan Erhardt.
+• Updated Italian translation provided by Francesco Buratti.
+• Updated Russian translation.
+• Updated Spanish translation provided by Jose A. León Becerra.
