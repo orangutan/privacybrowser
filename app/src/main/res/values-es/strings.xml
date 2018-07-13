@@ -130,6 +130,8 @@
         <string name="clear_cookies">Borrar cookies</string>
         <string name="clear_dom_storage">Borrar almacenamiento DOM</string>
         <string name="clear_form_data">Borrar datos de formulario</string>
+    <string name="options_fanboys_annoyance_list">Lista molesta de Fanboy</string>
+    <string name="options_fanboys_social_blocking_list">Lista de bloqueo social de Fanboy</string>
     <string name="layout">Diseño</string>
         <string name="font_size">Tamaño de fuente</string>
             <string name="twenty_five_percent">25%</string>

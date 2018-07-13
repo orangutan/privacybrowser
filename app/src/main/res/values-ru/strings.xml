@@ -131,6 +131,8 @@
         <string name="clear_cookies">Очистить cookie</string>
         <string name="clear_dom_storage"> Очистить хранилище DOM</string>
         <string name="clear_form_data">Очистить данные формы</string>
+    <string name="options_fanboys_annoyance_list">Fanboy’s annoyance list</string>
+    <string name="options_fanboys_social_blocking_list">Fanboy’s social blocking list</string>
     <string name="layout">Внешний вид</string>
         <string name="font_size">Размер шрифта</string>
             <string name="twenty_five_percent">25%</string>

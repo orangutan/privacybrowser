@@ -996,6 +996,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Set `rootCoordinatorLayout` to fill the entire screen.
                 rootCoordinatorLayout.setFitsSystemWindows(false);
 
+                // Disable the sliding drawers.
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
                 // Add `view` to `fullScreenVideoFrameLayout` and display it on the screen.
                 fullScreenVideoFrameLayout.addView(view);
                 fullScreenVideoFrameLayout.setVisibility(View.VISIBLE);
@@ -1007,6 +1010,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Hide `fullScreenVideoFrameLayout`.
                 fullScreenVideoFrameLayout.removeAllViews();
                 fullScreenVideoFrameLayout.setVisibility(View.GONE);
+
+                // Enable the sliding drawers.
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 
                 // Add the translucent status flag.  This also resets `drawerLayout's` `View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN`.
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
