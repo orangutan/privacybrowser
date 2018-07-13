@@ -106,14 +106,14 @@
 
         <SwitchPreference
             android:key="fanboy_annoyance_list"
-            android:title="@string/fanboy_annoyance_list"
-            android:summary="@string/fanboy_annoyance_list_summary"
+            android:title="@string/fanboys_annoyance_list"
+            android:summary="@string/fanboys_annoyance_list_summary"
             android:defaultValue="true" />
 
         <SwitchPreference
             android:key="fanboy_social_blocking_list"
-            android:title="@string/fanboy_social_blocking_list"
-            android:summary="@string/fanboy_social_blocking_list_summary"
+            android:title="@string/fanboys_social_blocking_list"
+            android:summary="@string/fanboys_social_blocking_list_summary"
             android:defaultValue="true" />
     </PreferenceCategory>
 

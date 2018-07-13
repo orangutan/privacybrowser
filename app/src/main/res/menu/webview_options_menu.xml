@@ -92,16 +92,53 @@
     </item>
 
     <item
+        android:id="@+id/blocklists"
+        android:title="@string/blocklists"
+        android:orderInCategory="800"
+        app:showAsAction="never" >
+
+        <menu>
+            <item
+                android:id="@+id/easylist"
+                android:title="@string/easylist"
+                android:orderInCategory="810"
+                android:checkable="true"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/easyprivacy"
+                android:title="@string/easyprivacy"
+                android:orderInCategory="820"
+                android:checkable="true"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/fanboys_annoyance_list"
+                android:title="@string/options_fanboys_annoyance_list"
+                android:orderInCategory="830"
+                android:checkable="true"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/fanboys_social_blocking_list"
+                android:title="@string/options_fanboys_social_blocking_list"
+                android:orderInCategory="840"
+                android:checkable="true"
+                app:showAsAction="never" />
+        </menu>
+    </item>
+
+    <item
         android:id="@+id/layout"
         android:title="@string/layout"
-        android:orderInCategory="800"
+        android:orderInCategory="900"
         app:showAsAction="never" >
 
         <menu>
             <item
                 android:id="@+id/font_size"
                 android:title="@string/font_size"
-                android:orderInCategory="810"
+                android:orderInCategory="910"
                 app:showAsAction="never" >
 
                 <menu>
@@ -109,49 +146,49 @@
                         <item
                             android:id="@+id/font_size_twenty_five_percent"
                             android:title="@string/twenty_five_percent"
-                            android:orderInCategory="811"
+                            android:orderInCategory="911"
                             app:showAsAction="never" />
 
                         <item
                             android:id="@+id/font_size_fifty_percent"
                             android:title="@string/fifty_percent"
-                            android:orderInCategory="812"
+                            android:orderInCategory="912"
                             app:showAsAction="never" />
 
                         <item
                             android:id="@+id/font_size_seventy_five_percent"
                             android:title="@string/seventy_five_percent"
-                            android:orderInCategory="813"
+                            android:orderInCategory="913"
                             app:showAsAction="never" />
 
                         <item
                             android:id="@+id/font_size_one_hundred_percent"
                             android:title="@string/one_hundred_percent"
-                            android:orderInCategory="814"
+                            android:orderInCategory="914"
                             app:showAsAction="never" />
 
                         <item
                             android:id="@+id/font_size_one_hundred_twenty_five_percent"
                             android:title="@string/one_hundred_twenty_five_percent"
-                            android:orderInCategory="815"
+                            android:orderInCategory="915"
                             app:showAsAction="never" />
 
                         <item
                             android:id="@+id/font_size_one_hundred_fifty_percent"
                             android:title="@string/one_hundred_fifty_percent"
-                            android:orderInCategory="816"
+                            android:orderInCategory="916"
                             app:showAsAction="never" />
 
                         <item
                             android:id="@+id/font_size_one_hundred_seventy_five_percent"
                             android:title="@string/one_hundred_seventy_five_percent"
-                            android:orderInCategory="817"
+                            android:orderInCategory="917"
                             app:showAsAction="never" />
 
                         <item
                             android:id="@+id/font_size_two_hundred_percent"
                             android:title="@string/two_hundred_percent"
-                            android:orderInCategory="818"
+                            android:orderInCategory="918"
                             app:showAsAction="never" />
                     </group>
                 </menu>
@@ -160,21 +197,21 @@
             <item
                 android:id="@+id/swipe_to_refresh"
                 android:title="@string/swipe_to_refresh_options_menu"
-                android:orderInCategory="820"
+                android:orderInCategory="920"
                 android:checkable="true"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/display_images"
                 android:title="@string/display_images"
-                android:orderInCategory="830"
+                android:orderInCategory="930"
                 android:checkable="true"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/view_source"
                 android:title="@string/view_source"
-                android:orderInCategory="840"
+                android:orderInCategory="940"
                 app:showAsAction="never" />
         </menu>
     </item>
@@ -182,35 +219,35 @@
     <item
         android:id="@+id/share"
         android:title="@string/share"
-        android:orderInCategory="900"
+        android:orderInCategory="1000"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/find_on_page"
         android:title="@string/find_on_page"
-        android:orderInCategory="1000"
+        android:orderInCategory="1100"
         app:showAsAction="never|collapseActionView" />
     <item
         android:id="@+id/print"
         android:title="@string/print"
-        android:orderInCategory="1100"
+        android:orderInCategory="1200"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/add_to_homescreen"
         android:title="@string/add_to_home_screen"
-        android:orderInCategory="1200"
+        android:orderInCategory="1300"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/refresh"
         android:title="@string/refresh"
-        android:orderInCategory="1300"
+        android:orderInCategory="1400"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/ad_consent"
         android:title="@string/ad_consent"
-        android:orderInCategory="1400"
+        android:orderInCategory="1500"
         app:showAsAction="never" />
 </menu>

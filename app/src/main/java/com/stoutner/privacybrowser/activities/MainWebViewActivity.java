@@ -283,7 +283,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `fullScreenVideoFrameLayout` is used in `onCreate()` and `onConfigurationChanged()`.
     private FrameLayout fullScreenVideoFrameLayout;
 
-    // `swipeRefreshLayout` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsMenuSelected()`, and `onRestart()`.
+    // `swipeRefreshLayout` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `onRestart()`.
     private SwipeRefreshLayout swipeRefreshLayout;
 
     // `urlAppBarRelativeLayout` is used in `onCreate()` and `applyDomainSettings()`.
@@ -325,7 +325,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `searchURL` is used in `loadURLFromTextBox()` and `applyAppSettings()`.
     private String searchURL;
 
-    // The block list variables are used in `onCreate()` and `applyAppSettings()`.
+    // The block list variables are used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applyAppSettings()`.
     private boolean easyListEnabled;
     private boolean easyPrivacyEnabled;
     private boolean fanboysAnnoyanceListEnabled;
@@ -1691,6 +1691,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem clearCookiesMenuItem = menu.findItem(R.id.clear_cookies);
         MenuItem clearDOMStorageMenuItem = menu.findItem(R.id.clear_dom_storage);
         MenuItem clearFormDataMenuItem = menu.findItem(R.id.clear_form_data);  // Form data can be removed once the minimum API >= 26.
+        MenuItem easyListMenuItem = menu.findItem(R.id.easylist);
+        MenuItem easyPrivacyMenuItem = menu.findItem(R.id.easyprivacy);
+        MenuItem fanboysAnnoyanceListMenuItem = menu.findItem(R.id.fanboys_annoyance_list);
+        MenuItem fanboysSocialBlockingListMenuItem = menu.findItem(R.id.fanboys_social_blocking_list);
         MenuItem fontSizeMenuItem = menu.findItem(R.id.font_size);
         MenuItem swipeToRefreshMenuItem = menu.findItem(R.id.swipe_to_refresh);
         MenuItem displayImagesMenuItem = menu.findItem(R.id.display_images);
@@ -1707,43 +1711,50 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         toggleThirdPartyCookiesMenuItem.setChecked(thirdPartyCookiesEnabled);
         toggleDomStorageMenuItem.setChecked(domStorageEnabled);
         toggleSaveFormDataMenuItem.setChecked(saveFormDataEnabled);  // Form data can be removed once the minimum API >= 26.
+        easyListMenuItem.setChecked(easyListEnabled);
+        easyPrivacyMenuItem.setChecked(easyPrivacyEnabled);
+        fanboysAnnoyanceListMenuItem.setChecked(fanboysAnnoyanceListEnabled);
+        fanboysSocialBlockingListMenuItem.setChecked(fanboysSocialBlockingListEnabled);
         swipeToRefreshMenuItem.setChecked(swipeRefreshLayout.isEnabled());
         displayImagesMenuItem.setChecked(mainWebView.getSettings().getLoadsImagesAutomatically());
 
         // Enable third-party cookies if first-party cookies are enabled.
         toggleThirdPartyCookiesMenuItem.setEnabled(firstPartyCookiesEnabled);
 
-        // Enable `DOM Storage` if JavaScript is enabled.
+        // Enable DOM Storage if JavaScript is enabled.
         toggleDomStorageMenuItem.setEnabled(javaScriptEnabled);
 
-        // Enable `Clear Cookies` if there are any.
+        // Enable Clear Cookies if there are any.
         clearCookiesMenuItem.setEnabled(cookieManager.hasCookies());
 
-        // Get a count of the number of files in the `Local Storage` directory.
+        // Get a count of the number of files in the Local Storage directory.
         File localStorageDirectory = new File (privateDataDirectoryString + "/app_webview/Local Storage/");
         int localStorageDirectoryNumberOfFiles = 0;
         if (localStorageDirectory.exists()) {
             localStorageDirectoryNumberOfFiles = localStorageDirectory.list().length;
         }
 
-        // Get a count of the number of files in the `IndexedDB` directory.
+        // Get a count of the number of files in the IndexedDB directory.
         File indexedDBDirectory = new File (privateDataDirectoryString + "/app_webview/IndexedDB");
         int indexedDBDirectoryNumberOfFiles = 0;
         if (indexedDBDirectory.exists()) {
             indexedDBDirectoryNumberOfFiles = indexedDBDirectory.list().length;
         }
 
-        // Enable `Clear DOM Storage` if there is any.
+        // Enable Clear DOM Storage if there is any.
         clearDOMStorageMenuItem.setEnabled(localStorageDirectoryNumberOfFiles > 0 || indexedDBDirectoryNumberOfFiles > 0);
 
-        // Enable `Clear Form Data` is there is any.  This can be removed once the minimum API >= 26.
+        // Enable Clear Form Data is there is any.  This can be removed once the minimum API >= 26.
         if (Build.VERSION.SDK_INT < 26) {
             WebViewDatabase mainWebViewDatabase = WebViewDatabase.getInstance(this);
             clearFormDataMenuItem.setEnabled(mainWebViewDatabase.hasFormData());
         }
 
-        // Enable `Clear Data` if any of the submenu items are enabled.
+        // Enable Clear Data if any of the submenu items are enabled.
         clearDataMenuItem.setEnabled(clearCookiesMenuItem.isEnabled() || clearDOMStorageMenuItem.isEnabled() || clearFormDataMenuItem.isEnabled());
+
+        // Disable Fanboy's Social Blocking List if Fanboy's Annoyance List is checked.
+        fanboysSocialBlockingListMenuItem.setEnabled(!fanboysAnnoyanceListEnabled);
 
         // Initialize font size variables.
         int fontSize = mainWebView.getSettings().getTextZoom();
@@ -2130,6 +2141,54 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Launch the View Source activity.
                 Intent viewSourceIntent = new Intent(this, ViewSourceActivity.class);
                 startActivity(viewSourceIntent);
+                return true;
+
+            case R.id.easylist:
+                // Toggle the EasyList status.
+                easyListEnabled = !easyListEnabled;
+
+                // Update the menu checkbox.
+                menuItem.setChecked(easyListEnabled);
+
+                // Reload the main WebView.
+                mainWebView.reload();
+                return true;
+
+            case R.id.easyprivacy:
+                // Toggle the EasyPrivacy status.
+                easyPrivacyEnabled = !easyPrivacyEnabled;
+
+                // Update the menu checkbox.
+                menuItem.setChecked(easyPrivacyEnabled);
+
+                // Reload the main WebView.
+                mainWebView.reload();
+                return true;
+
+            case R.id.fanboys_annoyance_list:
+                // Toggle Fanboy's Annoyance List status.
+                fanboysAnnoyanceListEnabled = !fanboysAnnoyanceListEnabled;
+
+                // Update the menu checkbox.
+                menuItem.setChecked(fanboysAnnoyanceListEnabled);
+
+                // Update the staus of Fanboy's Social Blocking List.
+                MenuItem fanboysSocialBlockingListMenuItem = mainMenu.findItem(R.id.fanboys_social_blocking_list);
+                fanboysSocialBlockingListMenuItem.setEnabled(!fanboysAnnoyanceListEnabled);
+
+                // Reload the main WebView.
+                mainWebView.reload();
+                return true;
+
+            case R.id.fanboys_social_blocking_list:
+                // Toggle Fanboy's Social Blocking List status.
+                fanboysSocialBlockingListEnabled = !fanboysSocialBlockingListEnabled;
+
+                // Update teh menu checkbox.
+                menuItem.setChecked(fanboysSocialBlockingListEnabled);
+
+                // Reload the main WebView.
+                mainWebView.reload();
                 return true;
 
             case R.id.share:
