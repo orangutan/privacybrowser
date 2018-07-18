@@ -1580,24 +1580,14 @@ public class BlockListHelper {
         return combinedLists;
     }
 
-    public boolean isBlocked(String currentUrl, String resourceUrl, ArrayList<List<String[]>> blockList) {
+    public boolean isBlocked(String currentDomain, String resourceUrl, boolean isThirdPartyRequest, ArrayList<List<String[]>> blockList) {
         // Get the block list name.
         String BLOCK_LIST_NAME_STRING = blockList.get(0).get(1)[0];
 
-        // Get the current domain.
-        Uri currentUri = Uri.parse(currentUrl);
-        String currentDomain = currentUri.getHost();
-
-        // Get the resource domain.
-        Uri resourceUri = Uri.parse(resourceUrl);
-        String resourceDomain = resourceUri.getHost();
-
-        // Initialize the third-party request tracker.
-        boolean thirdPartyRequest = false;
-
-        // If one of the domains is `about:blank` it will throw a null object reference on the string comparison.
-        if ((currentDomain != null) && (resourceDomain != null)) {
-            thirdPartyRequest = !resourceDomain.equals(currentDomain);
+        // Assert that currentDomain != null only if this is a third party request.  Apparently, lint can't tell that this isn't redundant.
+        //noinspection RedundantIfStatement
+        if (isThirdPartyRequest) {
+            assert currentDomain != null;
         }
 
         // Process the white lists.
@@ -1786,7 +1776,7 @@ public class BlockListHelper {
         }
 
         // Only check the third-party white lists if this is a third-party request.
-        if (thirdPartyRequest) {
+        if (isThirdPartyRequest) {
             // Third-party white list.
             for (String[] whiteListEntry : blockList.get(MainWebViewActivity.THIRD_PARTY_WHITELIST)) {
                 switch (whiteListEntry.length) {
@@ -2115,7 +2105,7 @@ public class BlockListHelper {
         }
 
         // Only check the third-party black lists if this is a third-party request.
-        if (thirdPartyRequest) {
+        if (isThirdPartyRequest) {
             // Third-party black list.
             for (String[] blackListEntry : blockList.get(MainWebViewActivity.THIRD_PARTY_BLACKLIST)) {
                 switch (blackListEntry.length) {

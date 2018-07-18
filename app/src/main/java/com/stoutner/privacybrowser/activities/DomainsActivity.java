@@ -644,6 +644,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         Switch easyPrivacySwitch = view.findViewById(R.id.domain_settings_easyprivacy_switch);
         Switch fanboysAnnoyanceSwitch = view.findViewById(R.id.domain_settings_fanboys_annoyance_list_switch);
         Switch fanboysSocialBlockingSwitch = view.findViewById(R.id.domain_settings_fanboys_social_blocking_list_switch);
+        Switch blockAllThirdPartyRequestsSwitch = view.findViewById(R.id.domain_settings_block_all_third_party_requests_switch);
         Spinner userAgentSpinner = view.findViewById(R.id.domain_settings_user_agent_spinner);
         EditText customUserAgentEditText = view.findViewById(R.id.domain_settings_custom_user_agent_edittext);
         Spinner fontSizeSpinner = view.findViewById(R.id.domain_settings_font_size_spinner);
@@ -665,6 +666,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         boolean easyPrivacyEnabled = easyPrivacySwitch.isChecked();
         boolean fanboysAnnoyanceEnabled = fanboysAnnoyanceSwitch.isChecked();
         boolean fanboysSocialBlockingEnabled = fanboysSocialBlockingSwitch.isChecked();
+        boolean blockAllThirdPartyRequests = blockAllThirdPartyRequestsSwitch.isChecked();
         int userAgentPosition = userAgentSpinner.getSelectedItemPosition();
         int fontSizePosition = fontSizeSpinner.getSelectedItemPosition();
         int swipeToRefreshInt = swipeToRefreshSpinner.getSelectedItemPosition();
@@ -702,8 +704,8 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         if (savedSslCertificateRadioButton.isChecked()) {  // The current certificate is being used.
             // Update the database except for the certificate.
             domainsDatabaseHelper.updateDomainExceptCertificate(DomainsActivity.currentDomainDatabaseId, domainNameString, javaScriptEnabled, firstPartyCookiesEnabled, thirdPartyCookiesEnabled,
-                    domStorageEnabled, formDataEnabled, easyListEnabled, easyPrivacyEnabled, fanboysAnnoyanceEnabled, fanboysSocialBlockingEnabled, userAgentName, fontSizeInt, swipeToRefreshInt, nightModeInt,
-                    displayWebpageImagesInt, pinnedSslCertificate);
+                    domStorageEnabled, formDataEnabled, easyListEnabled, easyPrivacyEnabled, fanboysAnnoyanceEnabled, fanboysSocialBlockingEnabled, blockAllThirdPartyRequests, userAgentName, fontSizeInt,
+                    swipeToRefreshInt, nightModeInt, displayWebpageImagesInt, pinnedSslCertificate);
         } else if (currentWebsiteCertificateRadioButton.isChecked()) {  // The certificate is being updated with the current website certificate.
             // Get the current website SSL certificate.
             SslCertificate currentWebsiteSslCertificate = MainWebViewActivity.sslCertificate;
@@ -720,15 +722,15 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
             // Update the database.
             domainsDatabaseHelper.updateDomainWithCertificate(currentDomainDatabaseId, domainNameString, javaScriptEnabled, firstPartyCookiesEnabled, thirdPartyCookiesEnabled, domStorageEnabled,
-                    formDataEnabled, easyListEnabled, easyPrivacyEnabled, fanboysAnnoyanceEnabled, fanboysSocialBlockingEnabled, userAgentName, fontSizeInt, swipeToRefreshInt,  nightModeInt,
-                    displayWebpageImagesInt, pinnedSslCertificate, issuedToCommonName, issuedToOrganization, issuedToOrganizationalUnit, issuedByCommonName, issuedByOrganization, issuedByOrganizationalUnit,
-                    startDateLong, endDateLong);
+                    formDataEnabled, easyListEnabled, easyPrivacyEnabled, fanboysAnnoyanceEnabled, fanboysSocialBlockingEnabled, blockAllThirdPartyRequests, userAgentName, fontSizeInt, swipeToRefreshInt,
+                    nightModeInt, displayWebpageImagesInt, pinnedSslCertificate, issuedToCommonName, issuedToOrganization, issuedToOrganizationalUnit, issuedByCommonName, issuedByOrganization,
+                    issuedByOrganizationalUnit, startDateLong, endDateLong);
 
         } else {  // No certificate is selected.
             // Update the database, with PINNED_SSL_CERTIFICATE set to false.
             domainsDatabaseHelper.updateDomainExceptCertificate(currentDomainDatabaseId, domainNameString, javaScriptEnabled, firstPartyCookiesEnabled, thirdPartyCookiesEnabled, domStorageEnabled,
-                    formDataEnabled, easyListEnabled, easyPrivacyEnabled, fanboysAnnoyanceEnabled, fanboysSocialBlockingEnabled, userAgentName, fontSizeInt,  swipeToRefreshInt, nightModeInt,
-                    displayWebpageImagesInt,false);
+                    formDataEnabled, easyListEnabled, easyPrivacyEnabled, fanboysAnnoyanceEnabled, fanboysSocialBlockingEnabled, blockAllThirdPartyRequests, userAgentName, fontSizeInt,  swipeToRefreshInt,
+                    nightModeInt, displayWebpageImagesInt,false);
         }
     }
 

@@ -115,6 +115,12 @@
             android:title="@string/fanboys_social_blocking_list"
             android:summary="@string/fanboys_social_blocking_list_summary"
             android:defaultValue="true" />
+
+        <SwitchPreference
+            android:key="block_all_third_party_requests"
+            android:title="@string/block_all_third_party_requests"
+            android:summary="@string/block_all_third_party_requests_summary"
+            android:defaultValue="false" />
     </PreferenceCategory>
 
     <PreferenceCategory

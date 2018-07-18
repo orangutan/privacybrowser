@@ -68,7 +68,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/home/soren/Android/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_camera_enhance_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/home/soren/Android/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/av/ic_new_releases_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -78,7 +78,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="allow_screenshots_enabled_dark" />
+                            <entry key="outputName" value="block_all_third_party_requests_enabled_light" />
                             <entry key="sourceFile" value="$USER_HOME$" />
                           </map>
                         </option>

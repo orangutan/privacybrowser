@@ -51,7 +51,7 @@ public class SettingsFragment extends PreferenceFragment {
         // Initialize savedPreferences.
         savedPreferences = getPreferenceScreen().getSharedPreferences();
 
-        // Get handles for the preferences we need to modify.
+        // Get handles for the preferences.
         final Preference javaScriptPreference = findPreference("javascript_enabled");
         final Preference firstPartyCookiesPreference = findPreference("first_party_cookies_enabled");
         final Preference thirdPartyCookiesPreference = findPreference("third_party_cookies_enabled");
@@ -66,6 +66,7 @@ public class SettingsFragment extends PreferenceFragment {
         final Preference easyPrivacyPreference = findPreference("easyprivacy");
         final Preference fanboyAnnoyanceListPreference = findPreference("fanboy_annoyance_list");
         final Preference fanboySocialBlockingListPreference = findPreference("fanboy_social_blocking_list");
+        final Preference blockAllThirdPartyRequestsPreference = findPreference("block_all_third_party_requests");
         final Preference proxyThroughOrbotPreference = findPreference("proxy_through_orbot");
         final Preference torHomepagePreference = findPreference("tor_homepage");
         final Preference torSearchPreference = findPreference("tor_search");
@@ -420,6 +421,21 @@ public class SettingsFragment extends PreferenceFragment {
                 } else {
                     fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_light);
                 }
+            }
+        }
+
+        // Set the block all third-party requests icon.
+        if (savedPreferences.getBoolean("block_all_third_party_requests", false)) {
+            if (MainWebViewActivity.darkTheme) {
+                blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_enabled_dark);
+            } else {
+                blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_enabled_light);
+            }
+        } else {
+            if (MainWebViewActivity.darkTheme) {
+                blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_disabled_dark);
+            } else {
+                blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_disabled_light);
             }
         }
 
@@ -999,6 +1015,23 @@ public class SettingsFragment extends PreferenceFragment {
                             fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_dark);
                         } else {
                             fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_light);
+                        }
+                    }
+                    break;
+
+                case "block_all_third_party_requests":
+                    // Update the icon.
+                    if (sharedPreferences.getBoolean("block_all_third_party_requests", false)) {
+                        if (MainWebViewActivity.darkTheme) {
+                            blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_enabled_dark);
+                        } else {
+                            blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_enabled_light);
+                        }
+                    } else {
+                        if (MainWebViewActivity.darkTheme) {
+                            blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_disabled_dark);
+                        } else {
+                            blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_disabled_light);
                         }
                     }
                     break;

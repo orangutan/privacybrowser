@@ -142,7 +142,7 @@ public class ViewRequestDialog extends AppCompatDialogFragment {
         alertDialog.show();
 
         // Get handles for the dialog views.
-        TextView requestAction = alertDialog.findViewById(R.id.request_action);
+        TextView requestDisposition = alertDialog.findViewById(R.id.request_disposition);
         TextView requestUrl = alertDialog.findViewById(R.id.request_url);
         TextView requestBlockListLabel = alertDialog.findViewById(R.id.request_blocklist_label);
         TextView requestBlockList = alertDialog.findViewById(R.id.request_blocklist);
@@ -165,33 +165,45 @@ public class ViewRequestDialog extends AppCompatDialogFragment {
         switch (Integer.valueOf(requestDetails[MainWebViewActivity.REQUEST_DISPOSITION])) {
             case MainWebViewActivity.REQUEST_DEFAULT:
                 // Set the text.
-                requestAction.setText(R.string.default_allowed);
+                requestDisposition.setText(R.string.default_allowed);
 
                 // Set the background color.
-                requestAction.setBackgroundColor(getResources().getColor(R.color.transparent));
+                requestDisposition.setBackgroundColor(getResources().getColor(R.color.transparent));
                 break;
 
             case MainWebViewActivity.REQUEST_ALLOWED:
                 // Set the text.
-                requestAction.setText(R.string.allowed);
+                requestDisposition.setText(R.string.allowed);
 
                 // Set the background color.
                 if (MainWebViewActivity.darkTheme) {
-                    requestAction.setBackgroundColor(getResources().getColor(R.color.blue_700_50));
+                    requestDisposition.setBackgroundColor(getResources().getColor(R.color.blue_700_50));
                 } else {
-                    requestAction.setBackgroundColor(getResources().getColor(R.color.blue_100));
+                    requestDisposition.setBackgroundColor(getResources().getColor(R.color.blue_100));
+                }
+                break;
+
+            case MainWebViewActivity.REQUEST_THIRD_PARTY:
+                // Set the text.
+                requestDisposition.setText(R.string.third_party_blocked);
+
+                // Set the background color.
+                if (MainWebViewActivity.darkTheme) {
+                    requestDisposition.setBackgroundColor(getResources().getColor(R.color.yellow_700_50));
+                } else {
+                    requestDisposition.setBackgroundColor(getResources().getColor(R.color.yellow_100));
                 }
                 break;
 
             case MainWebViewActivity.REQUEST_BLOCKED:
                 // Set the text.
-                requestAction.setText(R.string.blocked);
+                requestDisposition.setText(R.string.blocked);
 
                 // Set the background color.
                 if (MainWebViewActivity.darkTheme) {
-                    requestAction.setBackgroundColor(getResources().getColor(R.color.red_700_50));
+                    requestDisposition.setBackgroundColor(getResources().getColor(R.color.red_700_40));
                 } else {
-                    requestAction.setBackgroundColor(getResources().getColor(R.color.red_100));
+                    requestDisposition.setBackgroundColor(getResources().getColor(R.color.red_100));
                 }
                 break;
         }

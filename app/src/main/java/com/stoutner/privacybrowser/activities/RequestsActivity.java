@@ -86,6 +86,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
         List<String[]> allResourceRequests = new ArrayList<>();
         List<String[]> defaultResourceRequests = new ArrayList<>();
         List<String[]> allowedResourceRequests = new ArrayList<>();
+        List<String[]> thirdPartyResourceRequests = new ArrayList<>();
         List<String[]> blockedResourceRequests = new ArrayList<>();
 
         // Populate the resource array lists.
@@ -107,6 +108,14 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
                     allowedResourceRequests.add(request);
                     break;
 
+                case MainWebViewActivity.REQUEST_THIRD_PARTY:
+                    // Add the request to the list of all requests.
+                    allResourceRequests.add(request);
+
+                    // Add the request to the list of third-party requests.
+                    thirdPartyResourceRequests.add(request);
+                    break;
+
                 case MainWebViewActivity.REQUEST_BLOCKED:
                     // Add the request to the list of all requests.
                     allResourceRequests.add(request);
@@ -122,7 +131,10 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
         spinnerCursor.addRow(new Object[]{0, getString(R.string.all) + " - " + allResourceRequests.size()});
         spinnerCursor.addRow(new Object[]{1, getString(R.string.default_label) + " - " + defaultResourceRequests.size()});
         spinnerCursor.addRow(new Object[]{2, getString(R.string.allowed_plural) + " - " + allowedResourceRequests.size()});
-        spinnerCursor.addRow(new Object[]{3, getString(R.string.blocked_plural) + " - " + blockedResourceRequests.size()});
+        if (MainWebViewActivity.blockAllThirdPartyRequests) {
+            spinnerCursor.addRow(new Object[]{3, getString(R.string.third_party_plural) + " - " + thirdPartyResourceRequests.size()});
+        }
+        spinnerCursor.addRow(new Object[]{4, getString(R.string.blocked_plural) + " - " + blockedResourceRequests.size()});
 
         // Create a resource cursor adapter for the spinner.
         ResourceCursorAdapter spinnerCursorAdapter = new ResourceCursorAdapter(this, R.layout.requests_spinner_item, spinnerCursor, 0) {
@@ -147,7 +159,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
         appBarSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
+                switch ((int) id) {
                     case 0:  // All requests.
                         // Get an adapter for all the request.
                         ArrayAdapter<String[]> allResourceRequestsArrayAdapter = new RequestsArrayAdapter(getApplicationContext(), allResourceRequests);
@@ -172,7 +184,15 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
                         resourceRequestsListView.setAdapter(allowedResourceRequestsArrayAdapter);
                         break;
 
-                    case 3:  // Blocked requests.
+                    case 3:  // Third-party requests.
+                        // Get an adapter for the third-party requests.
+                        ArrayAdapter<String[]> thirdPartyResourceRequestsArrayAdapter = new RequestsArrayAdapter(getApplicationContext(), thirdPartyResourceRequests);
+
+                        //Display the adapter in the list view.
+                        resourceRequestsListView.setAdapter(thirdPartyResourceRequestsArrayAdapter);
+                        break;
+
+                    case 4:  // Blocked requests.
                         // Get an adapter fo the blocked requests.
                         ArrayAdapter<String[]> blockedResourceRequestsArrayAdapter = new RequestsArrayAdapter(getApplicationContext(), blockedResourceRequests);
 

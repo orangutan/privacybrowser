@@ -52,7 +52,7 @@ public class RequestsArrayAdapter extends ArrayAdapter<String[]> {
 
         // Get handles for the views.
         LinearLayout linearLayout = view.findViewById(R.id.request_item_linearlayout);
-        TextView actionTextView = view.findViewById(R.id.request_item_action);
+        TextView dispositionTextView = view.findViewById(R.id.request_item_disposition);
         TextView urlTextView = view.findViewById(R.id.request_item_url);
 
         // Get the string array for this entry.
@@ -71,7 +71,7 @@ public class RequestsArrayAdapter extends ArrayAdapter<String[]> {
                 String requestDefault = id + ". " + context.getResources().getString(R.string.allowed);
 
                 // Set the disposition text.
-                actionTextView.setText(requestDefault);
+                dispositionTextView.setText(requestDefault);
 
                 // Set the background color.
                 linearLayout.setBackgroundColor(context.getResources().getColor(R.color.transparent));
@@ -82,7 +82,7 @@ public class RequestsArrayAdapter extends ArrayAdapter<String[]> {
                 String requestAllowed = id + ". " + context.getResources().getString(R.string.allowed);
 
                 // Set the disposition text.
-                actionTextView.setText(requestAllowed);
+                dispositionTextView.setText(requestAllowed);
 
                 // Set the background color.
                 if (MainWebViewActivity.darkTheme) {
@@ -92,17 +92,32 @@ public class RequestsArrayAdapter extends ArrayAdapter<String[]> {
                 }
                 break;
 
+            case MainWebViewActivity.REQUEST_THIRD_PARTY:
+                // Create the disposition string.
+                String requestThirdParty = id + ". " + context.getResources().getString(R.string.blocked);
+
+                // Set the disposition text.
+                dispositionTextView.setText(requestThirdParty);
+
+                // Set the background color.
+                if (MainWebViewActivity.darkTheme) {
+                    linearLayout.setBackgroundColor(context.getResources().getColor(R.color.yellow_700_50));
+                } else {
+                    linearLayout.setBackgroundColor(context.getResources().getColor(R.color.yellow_100));
+                }
+                break;
+
 
             case MainWebViewActivity.REQUEST_BLOCKED:
                 // Create the disposition string.
                 String requestBlocked = id + ". " + context.getResources().getString(R.string.blocked);
 
                 // Set the disposition text.
-                actionTextView.setText(requestBlocked);
+                dispositionTextView.setText(requestBlocked);
 
                 // Set the background color.
                 if (MainWebViewActivity.darkTheme) {
-                    linearLayout.setBackgroundColor(context.getResources().getColor(R.color.red_700_50));
+                    linearLayout.setBackgroundColor(context.getResources().getColor(R.color.red_700_40));
                 } else {
                     linearLayout.setBackgroundColor(context.getResources().getColor(R.color.red_100));
                 }
@@ -114,10 +129,10 @@ public class RequestsArrayAdapter extends ArrayAdapter<String[]> {
 
         // Set the text color.  For some unexplained reason, `android:textColor="?android:textColorPrimary"` doesn't work in the layout file.  Probably some bug relating to array adapters.
         if (MainWebViewActivity.darkTheme) {
-            actionTextView.setTextColor(context.getResources().getColor(R.color.gray_200));
+            dispositionTextView.setTextColor(context.getResources().getColor(R.color.gray_200));
             urlTextView.setTextColor(context.getResources().getColor(R.color.gray_200));
         } else {
-            actionTextView.setTextColor(context.getResources().getColor(R.color.black));
+            dispositionTextView.setTextColor(context.getResources().getColor(R.color.black));
             urlTextView.setTextColor(context.getResources().getColor(R.color.black));
         }
 

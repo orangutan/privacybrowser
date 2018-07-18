@@ -194,8 +194,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // The block list versions are public static so they can be accessed from `AboutTabFragment`.  They are also used in `onCreate()`.
     public static String easyListVersion;
     public static String easyPrivacyVersion;
-    public static String fanboyAnnoyanceVersion;
-    public static String fanboySocialVersion;
+    public static String fanboysAnnoyanceVersion;
+    public static String fanboysSocialVersion;
 
     // The request items are public static so they can be accessed by `BlockListHelper`, `RequestsArrayAdapter`, and `ViewRequestsDialog`.  They are also used in `onCreate()`.
     public static List<String[]> resourceRequests;
@@ -209,7 +209,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     public final static int REQUEST_DEFAULT = 0;
     public final static int REQUEST_ALLOWED = 1;
-    public final static int REQUEST_BLOCKED = 2;
+    public final static int REQUEST_THIRD_PARTY = 2;
+    public final static int REQUEST_BLOCKED = 3;
 
     public final static int MAIN_WHITELIST = 1;
     public final static int FINAL_WHITELIST = 2;
@@ -234,6 +235,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public final static int THIRD_PARTY_REGULAR_EXPRESSION_BLACKLIST = 20;
     public final static int THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLACKLIST = 21;
     public final static int REGULAR_EXPRESSION_BLACKLIST = 22;
+
+    // `blockAllThirdPartyRequests` is public static so it can be accessed from `RequestsActivity`.
+    // It is also used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applyAppSettings()`
+    public static boolean blockAllThirdPartyRequests;
 
     // `currentBookmarksFolder` is public static so it can be accessed from `BookmarksActivity`.  It is also used in `onCreate()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`,
     // `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `loadBookmarksFolder()`.
@@ -874,7 +879,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Count the number of blocked requests.
                     for (int i = 0; i < resourceRequests.size(); i++) {
+                        // Add the blocked requests.
                         if (Integer.valueOf(resourceRequests.get(i)[REQUEST_DISPOSITION]) == REQUEST_BLOCKED) {
+                            blockedRequests++;
+                        }
+
+                        // Add the third-party requests if they are blocked.
+                        if (blockAllThirdPartyRequests && (Integer.valueOf(resourceRequests.get(i)[REQUEST_DISPOSITION]) == REQUEST_THIRD_PARTY)) {
                             blockedRequests++;
                         }
                     }
@@ -1162,14 +1173,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Parse the block lists.
         final ArrayList<List<String[]>> easyList = blockListHelper.parseBlockList(getAssets(), "blocklists/easylist.txt");
         final ArrayList<List<String[]>> easyPrivacy = blockListHelper.parseBlockList(getAssets(), "blocklists/easyprivacy.txt");
-        final ArrayList<List<String[]>> fanboyAnnoyance = blockListHelper.parseBlockList(getAssets(), "blocklists/fanboy-annoyance.txt");
-        final ArrayList<List<String[]>> fanboySocial = blockListHelper.parseBlockList(getAssets(), "blocklists/fanboy-social.txt");
+        final ArrayList<List<String[]>> fanboysAnnoyanceList = blockListHelper.parseBlockList(getAssets(), "blocklists/fanboy-annoyance.txt");
+        final ArrayList<List<String[]>> fanboysSocialList = blockListHelper.parseBlockList(getAssets(), "blocklists/fanboy-social.txt");
 
         // Store the list versions.
         easyListVersion = easyList.get(0).get(0)[0];
         easyPrivacyVersion = easyPrivacy.get(0).get(0)[0];
-        fanboyAnnoyanceVersion = fanboyAnnoyance.get(0).get(0)[0];
-        fanboySocialVersion = fanboySocial.get(0).get(0)[0];
+        fanboysAnnoyanceVersion = fanboysAnnoyanceList.get(0).get(0)[0];
+        fanboysSocialVersion = fanboysSocialList.get(0).get(0)[0];
 
         mainWebView.setWebViewClient(new WebViewClient() {
             // `shouldOverrideUrlLoading` makes this `WebView` the default handler for URLs inside the app, so that links are not kicked out to other apps.
@@ -1248,9 +1259,56 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Reset `whiteListResultStringArray`.
                 whiteListResultStringArray = null;
 
+                // Initialize the third party request tracker.
+                boolean isThirdPartyRequest = false;
+
+                //
+                String currentDomain = "";
+
+                // Nobody is happy when comparing null strings.
+                if (!(formattedUrlString == null) && !(url == null)) {
+                    // Get the domain strings to URIs.
+                    Uri currentDomainUri = Uri.parse(formattedUrlString);
+                    Uri requestDomainUri = Uri.parse(url);
+
+                    // Get the domain host names.
+                    String currentBaseDomain = currentDomainUri.getHost();
+                    String requestBaseDomain = requestDomainUri.getHost();
+
+                    // Update the current domain variable.
+                    currentDomain = currentBaseDomain;
+
+                    // Only compare the current base domain and the request base domain if neither is null.
+                    if (!(currentBaseDomain == null) && !(requestBaseDomain == null)) {
+                        // Determine the current base domain.
+                        while (currentBaseDomain.indexOf(".", currentBaseDomain.indexOf(".") + 1) > 0) {  // There is at least one subdomain.
+                            // Remove the first subdomain.
+                            currentBaseDomain = currentBaseDomain.substring(currentBaseDomain.indexOf(".") + 1);
+                        }
+
+                        // Determine the request base domain.
+                        while (requestBaseDomain.indexOf(".", requestBaseDomain.indexOf(".") + 1) > 0) {  // There is at least one subdomain.
+                            // Remove the first subdomain.
+                            requestBaseDomain = requestBaseDomain.substring(requestBaseDomain.indexOf(".") + 1);
+                        }
+
+                        // Update the third party request tracker.
+                        isThirdPartyRequest = !currentBaseDomain.equals(requestBaseDomain);
+                    }
+                }
+
+                // Block third-party requests if enabled.
+                if (isThirdPartyRequest && blockAllThirdPartyRequests) {
+                    // Add the request to the log.
+                    resourceRequests.add(new String[]{String.valueOf(REQUEST_THIRD_PARTY), url});
+
+                    // Return an empty web resource response.
+                    return emptyWebResourceResponse;
+                }
+
                 // Check EasyList if it is enabled.
                 if (easyListEnabled) {
-                    if (blockListHelper.isBlocked(formattedUrlString, url, easyList)) {
+                    if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, easyList)) {
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse;
                     }
@@ -1258,7 +1316,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Check EasyPrivacy if it is enabled.
                 if (easyPrivacyEnabled) {
-                    if (blockListHelper.isBlocked(formattedUrlString, url, easyPrivacy)) {
+                    if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, easyPrivacy)) {
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse;
                     }
@@ -1266,18 +1324,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Check Fanboy’s Annoyance List if it is enabled.
                 if (fanboysAnnoyanceListEnabled) {
-                    if (blockListHelper.isBlocked(formattedUrlString, url, fanboyAnnoyance)) {
+                    if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, fanboysAnnoyanceList)) {
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse;
                     }
                 } else if (fanboysSocialBlockingListEnabled){  // Only check Fanboy’s Social Blocking List if Fanboy’s Annoyance List is disabled.
-                    if (blockListHelper.isBlocked(formattedUrlString, url, fanboySocial)) {
+                    if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, fanboysSocialList)) {
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse;
                     }
                 }
 
-                // Add the request to the log.
+                // Add the request to the log because it hasn't been processed by any of the previous checks.
                 if (whiteListResultStringArray != null ) {  // The request was processed by a whitelist.
                     resourceRequests.add(whiteListResultStringArray);
                 } else {  // The request didn't match any blocklist entry.  Log it as a defult request.
@@ -1511,12 +1569,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Check to see if the intent contains a new URL.
         if (intent.getData() != null) {
-            // Get the intent data and convert it to a string.
+            // Get the intent data.
             final Uri intentUriData = intent.getData();
-            formattedUrlString = intentUriData.toString();
 
             // Load the website.
-            loadUrl(formattedUrlString);
+            loadUrl(intentUriData.toString());
 
             // Close the navigation drawer if it is open.
             if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
@@ -1701,6 +1758,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem easyPrivacyMenuItem = menu.findItem(R.id.easyprivacy);
         MenuItem fanboysAnnoyanceListMenuItem = menu.findItem(R.id.fanboys_annoyance_list);
         MenuItem fanboysSocialBlockingListMenuItem = menu.findItem(R.id.fanboys_social_blocking_list);
+        MenuItem blockAllThirdParyRequestsMenuItem = menu.findItem(R.id.block_all_third_party_requests);
         MenuItem fontSizeMenuItem = menu.findItem(R.id.font_size);
         MenuItem swipeToRefreshMenuItem = menu.findItem(R.id.swipe_to_refresh);
         MenuItem displayImagesMenuItem = menu.findItem(R.id.display_images);
@@ -1721,6 +1779,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         easyPrivacyMenuItem.setChecked(easyPrivacyEnabled);
         fanboysAnnoyanceListMenuItem.setChecked(fanboysAnnoyanceListEnabled);
         fanboysSocialBlockingListMenuItem.setChecked(fanboysSocialBlockingListEnabled);
+        blockAllThirdParyRequestsMenuItem.setChecked(blockAllThirdPartyRequests);
         swipeToRefreshMenuItem.setChecked(swipeRefreshLayout.isEnabled());
         displayImagesMenuItem.setChecked(mainWebView.getSettings().getLoadsImagesAutomatically());
 
@@ -2190,8 +2249,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Toggle Fanboy's Social Blocking List status.
                 fanboysSocialBlockingListEnabled = !fanboysSocialBlockingListEnabled;
 
-                // Update teh menu checkbox.
+                // Update the menu checkbox.
                 menuItem.setChecked(fanboysSocialBlockingListEnabled);
+
+                // Reload the main WebView.
+                mainWebView.reload();
+                return true;
+
+            case R.id.block_all_third_party_requests:
+                //Toggle the third-party requests blocker status.
+                blockAllThirdPartyRequests = !blockAllThirdPartyRequests;
+
+                // Update the menu checkbox.
+                menuItem.setChecked(blockAllThirdPartyRequests);
 
                 // Reload the main WebView.
                 mainWebView.reload();
@@ -3248,6 +3318,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void loadUrl(String url) {// Apply any custom domain settings.
+        // Set the URL as the formatted URL string so that checking third-party requests works correctly.
+        formattedUrlString = url;
+
+        // Apply the domain settings.
         applyDomainSettings(url, true, false);
 
         // Set `urlIsLoading` to prevent changes in the user agent on websites with redirects from reloading the current website.
@@ -3554,6 +3628,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 easyPrivacyEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY)) == 1);
                 fanboysAnnoyanceListEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST)) == 1);
                 fanboysSocialBlockingListEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)) == 1);
+                blockAllThirdPartyRequests = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)) == 1);
                 String userAgentName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
                 int fontSize = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
                 int swipeToRefreshInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SWIPE_TO_REFRESH));
@@ -3709,6 +3784,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 easyPrivacyEnabled = sharedPreferences.getBoolean("easyprivacy", true);
                 fanboysAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboy_annoyance_list", true);
                 fanboysSocialBlockingListEnabled = sharedPreferences.getBoolean("fanboy_social_blocking_list", true);
+                blockAllThirdPartyRequests = sharedPreferences.getBoolean("block_all_third_party_requests", false);
 
                 // Set `javaScriptEnabled` to be `true` if `night_mode` is `true`.
                 if (nightMode) {

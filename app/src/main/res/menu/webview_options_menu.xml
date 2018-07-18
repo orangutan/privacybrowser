@@ -125,6 +125,13 @@
                 android:orderInCategory="840"
                 android:checkable="true"
                 app:showAsAction="never" />
+
+            <item
+                android:id="@+id/block_all_third_party_requests"
+                android:title="@string/options_block_all_third_party_requests"
+                android:orderInCategory="850"
+                android:checkable="true"
+                app:showAsAction="never" />
         </menu>
     </item>
 

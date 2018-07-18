@@ -181,8 +181,8 @@ public class AboutTabFragment extends Fragment {
             SpannableStringBuilder chromeStringBuilder = new SpannableStringBuilder(chromeLabel + chrome);
             SpannableStringBuilder easyListStringBuilder = new SpannableStringBuilder(easyListLabel + MainWebViewActivity.easyListVersion);
             SpannableStringBuilder easyPrivacyStringBuilder = new SpannableStringBuilder(easyPrivacyLabel + MainWebViewActivity.easyPrivacyVersion);
-            SpannableStringBuilder fanboyAnnoyanceStringBuilder = new SpannableStringBuilder(fanboyAnnoyanceLabel + MainWebViewActivity.fanboyAnnoyanceVersion);
-            SpannableStringBuilder fanboySocialStringBuilder = new SpannableStringBuilder(fanboySocialLabel + MainWebViewActivity.fanboySocialVersion);
+            SpannableStringBuilder fanboyAnnoyanceStringBuilder = new SpannableStringBuilder(fanboyAnnoyanceLabel + MainWebViewActivity.fanboysAnnoyanceVersion);
+            SpannableStringBuilder fanboySocialStringBuilder = new SpannableStringBuilder(fanboySocialLabel + MainWebViewActivity.fanboysSocialVersion);
 
             // Create the `blueColorSpan` variable.
             ForegroundColorSpan blueColorSpan;

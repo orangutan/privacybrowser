@@ -133,6 +133,7 @@
         <string name="clear_form_data">Clear Form Data</string>
     <string name="options_fanboys_annoyance_list">Fanboy’s Annoyance List</string>
     <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking List</string>
+    <string name="options_block_all_third_party_requests">Block All Third-Party Requests</string>
     <string name="layout">Layout</string>
         <string name="font_size">Font Size</string>
             <string name="twenty_five_percent">25%</string>
@@ -233,6 +234,8 @@
         <string name="default_allowed">Default - Allowed</string>
         <string name="allowed">Allowed</string>
         <string name="allowed_plural">Allowed</string>
+        <string name="third_party_plural">Third-party</string>
+        <string name="third_party_blocked">Third-party - Blocked</string>
         <string name="blocked">Blocked</string>
         <string name="blocked_plural">Blocked</string>
     <string name="blocklist">Blocklist</string>
@@ -389,6 +392,8 @@
         <string name="fanboys_annoyance_list_summary">Block annoying popups and links.  Includes Fanboy’s social blocking lists.</string>
         <string name="fanboys_social_blocking_list">Fanboy’s social blocking list</string>
         <string name="fanboys_social_blocking_list_summary">Blocks third-party social media content.</string>
+        <string name="block_all_third_party_requests">Block all third-party requests</string>
+        <string name="block_all_third_party_requests_summary">Blocking all third-party requests increases privacy, but it breaks many websites.</string>
     <string name="tor">Tor</string>
         <string name="proxy_through_orbot">Proxy through Orbot</string>
         <string name="proxy_through_orbot_summary">Proxy all web traffic through Orbot on localhost:8118.</string>

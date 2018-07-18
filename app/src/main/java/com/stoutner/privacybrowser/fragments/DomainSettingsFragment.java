@@ -120,6 +120,8 @@ public class DomainSettingsFragment extends Fragment {
         ImageView fanboysAnnoyanceListImageView = domainSettingsView.findViewById(R.id.domain_settings_fanboys_annoyance_list_imageview);
         Switch fanboysSocialBlockingListSwitch = domainSettingsView.findViewById(R.id.domain_settings_fanboys_social_blocking_list_switch);
         ImageView fanboysSocialBlockingListImageView = domainSettingsView.findViewById(R.id.domain_settings_fanboys_social_blocking_list_imageview);
+        Switch blockAllThirdPartyRequestsSwitch = domainSettingsView.findViewById(R.id.domain_settings_block_all_third_party_requests_switch);
+        ImageView blockAllThirdPartyRequestsImageView = domainSettingsView.findViewById(R.id.domain_settings_block_all_third_party_requests_imageview);
         final Spinner userAgentSpinner = domainSettingsView.findViewById(R.id.domain_settings_user_agent_spinner);
         final TextView userAgentTextView = domainSettingsView.findViewById(R.id.domain_settings_user_agent_textview);
         final EditText customUserAgentEditText = domainSettingsView.findViewById(R.id.domain_settings_custom_user_agent_edittext);
@@ -186,6 +188,7 @@ public class DomainSettingsFragment extends Fragment {
         int easyPrivacyEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY));
         int fanboysAnnoyanceListInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST));
         int fanboysSocialBlockingListInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST));
+        int blockAllThirdPartyRequestsInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS));
         final String currentUserAgentName = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
         int fontSizeInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
         int swipeToRefreshInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.SWIPE_TO_REFRESH));
@@ -586,6 +589,29 @@ public class DomainSettingsFragment extends Fragment {
                 fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_ghosted_dark));
             } else {
                 fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_ghosted_light));
+            }
+        }
+
+        // Set the third-party resource blocking status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
+        if (blockAllThirdPartyRequestsInt == 1) {  // Blocking all third-party requests is on.
+            // Turn the switch on.
+            blockAllThirdPartyRequestsSwitch.setChecked(true);
+
+            // Set the icon according to the theme.
+            if (MainWebViewActivity.darkTheme) {
+                blockAllThirdPartyRequestsImageView.setImageDrawable(resources.getDrawable(R.drawable.block_all_third_party_requests_enabled_dark));
+            } else {
+                blockAllThirdPartyRequestsImageView.setImageDrawable(resources.getDrawable(R.drawable.block_all_third_party_requests_enabled_light));
+            }
+        } else {  // Blocking all third-party requests is off.
+            // Turn the switch off.
+            blockAllThirdPartyRequestsSwitch.setChecked(false);
+
+            // Set the icon according to the theme.
+            if (MainWebViewActivity.darkTheme) {
+                blockAllThirdPartyRequestsImageView.setImageDrawable(resources.getDrawable(R.drawable.block_all_third_party_requests_disabled_dark));
+            } else {
+                blockAllThirdPartyRequestsImageView.setImageDrawable(resources.getDrawable(R.drawable.block_all_third_party_requests_disabled_light));
             }
         }
 
@@ -1289,6 +1315,26 @@ public class DomainSettingsFragment extends Fragment {
                     fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_dark));
                 } else {
                     fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_light));
+                }
+            }
+        });
+
+        // Set the block all third-party requests switch listener.
+        blockAllThirdPartyRequestsSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            // Update the icon.
+            if (isChecked) {  // Blocking all third-party requests is on.
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    blockAllThirdPartyRequestsImageView.setImageDrawable(resources.getDrawable(R.drawable.block_all_third_party_requests_enabled_dark));
+                } else {
+                    blockAllThirdPartyRequestsImageView.setImageDrawable(resources.getDrawable(R.drawable.block_all_third_party_requests_enabled_light));
+                }
+            } else {  // Blocking all third-party requests is off.
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    blockAllThirdPartyRequestsImageView.setImageDrawable(resources.getDrawable(R.drawable.block_all_third_party_requests_disabled_dark));
+                } else {
+                    blockAllThirdPartyRequestsImageView.setImageDrawable(resources.getDrawable(R.drawable.block_all_third_party_requests_disabled_light));
                 }
             }
         });
