@@ -82,7 +82,7 @@ public class GuideActivity extends AppCompatActivity {
         @Override
         // Get the count of the number of tabs.
         public int getCount() {
-            return 9;
+            return 10;
         }
 
         @Override
@@ -102,18 +102,21 @@ public class GuideActivity extends AppCompatActivity {
                     return getString(R.string.user_agent);
 
                 case 4:
-                    return getString(R.string.domain_settings);
+                    return getString(R.string.requests);
 
                 case 5:
-                    return getString(R.string.ssl_certificates);
+                    return getString(R.string.domain_settings);
 
                 case 6:
-                    return getString(R.string.tor);
+                    return getString(R.string.ssl_certificates);
 
                 case 7:
-                    return getString(R.string.tracking_ids);
+                    return getString(R.string.tor);
 
                 case 8:
+                    return getString(R.string.tracking_ids);
+
+                case 9:
                     return getString(R.string.bookmarks);
 
                 default:

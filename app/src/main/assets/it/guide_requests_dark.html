@@ -1,0 +1,79 @@
+<!--
+  Copyright © 2018 Soren Stoutner <soren@stoutner.com>.
+
+  Translation 2018 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+
+        <link rel="stylesheet" href="../css/dark_theme.css">
+    </head>
+
+    <body>
+        <h3><img class="title" src="../shared_images/local_activity_blue_dark.png"> Resource Requests</h3>
+
+        <p>When a URL is loaded, it typically makes a number of resource requests for CCS, JavaScript, image, and other files. Details about these requests can be viewed in the Requests activity.
+            The navigation drawer has a link to the Requests activity and also shows how many requests were blocked. Tapping on a request displays details about why it was allowed or blocked.</p>
+
+        <p><img class="center21" src="images/request_details.png"></p>
+
+        <p>Privacy Browser includes four <a href="https://easylist.to/">blocklists</a> based on the <a href="https://adblockplus.org/filters">Adblock syntax</a>:
+            EasyList, EasyPrivacy, Fanboy’s Annoyance List, and Fanboy’s Social Blocking List.
+            These blocklists are processed by Privacy Browser into the following 22 sublists, which check resource requests in the order listed.</p>
+
+        <ol>
+            <li>Whitelist principale</li>
+            <li>Whitelist finale</li>
+            <li>Whitelist per i domini</li>
+            <li>Whitelist iniziale</li>
+            <li>Whitelist finale</li>
+            <li>Whitelist di terze parti</li>
+            <li>Whitelist di terze parti per i domini</li>
+            <li>Whitelist di terze parti iniziale per i domini</li>
+            <li>Blacklist principale</li>
+            <li>Blacklist iniziale</li>
+            <li>Blacklist finale</li>
+            <li>Blacklist per i domini</li>
+            <li>Blacklist iniziale</li>
+            <li>Blacklist finale</li>
+            <li>Blacklist per le espressioni regolari</li>
+            <li>Blacklist di terze parti</li>
+            <li>Blacklist di terze parti iniziale</li>
+            <li>Blacklist di terze parti per i domini</li>
+            <li>Blacklist di terze parti iniziale per i domini</li>
+            <li>Blacklist di terze parti per le espressioni regolari</li>
+            <li>Blacklist di terze parti per le espressioni regolari per i domini</li>
+            <li>Blacklist per le espressioni regolari</li>
+        </ol>
+
+        <p>Initial lists check against the beginning of the URL. Final lists check against the end of the URL. Domain lists only check against certain domains.
+            Third-party lists only apply if the root domain of the request is different than the root domain of the main URL.
+            Regular expression lists follow the <a href="https://en.wikipedia.org/wiki/Regular_expression">regular expression syntax</a>. Each sublist item has one or more entry.
+            In the case of domain sublists, the resource request is only checked against the item if the first entry matches the domain of the main URL.</p>
+
+        <p>Because of limitations in Android’s WebView, and to speed up processing of requests, Privacy Browser implements a simplified interpretation of the Adblock syntax.
+            This can sometimes lead to false positives, where resources are allowed or blocked in ways that weren’t intended by the original entry.
+            A more detailed description of how the blocklist entries are processed is available at <a href="https://www.stoutner.com/privacy-browser/blocklists/">stoutner.com</a>.</p>
+
+        <p>Privacy Browser has a fifth blocklist that blocks all third-party requests. A request is only considered third-party if the base domain of the request is different than the base domain of the URL.
+            For example, if <code>www.website.com</code> loads a picture from <code>images.website.com</code>,
+            this is not blocked as a third-party request because they both share the same base domain of <code>website.com</code>.
+            Blocking all third-party requests increases privacy, but this blocklist is disabled by default because it breaks a large number of websites.</p>
+    </body>
+</html>

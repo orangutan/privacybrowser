@@ -74,7 +74,7 @@ public class GuideTabFragment extends Fragment {
 
         // Load the tabs according to the theme.
         if (MainWebViewActivity.darkTheme) {  // The dark theme is applied.
-            // Set the background color.  We have to use the deprecated `.getColor()` until API >= 23.
+            // Set the background color.  The deprecated `.getColor()` must be used until API >= 23.
             //noinspection deprecation
             tabWebView.setBackgroundColor(getResources().getColor(R.color.gray_850));
 
@@ -97,22 +97,26 @@ public class GuideTabFragment extends Fragment {
                     break;
 
                 case 4:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_domain_settings_dark.html");
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_requests_dark.html");
                     break;
 
                 case 5:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_ssl_certificates_dark.html");
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_domain_settings_dark.html");
                     break;
 
                 case 6:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_tor_dark.html");
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_ssl_certificates_dark.html");
                     break;
 
                 case 7:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_tracking_ids_dark.html");
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_tor_dark.html");
                     break;
 
                 case 8:
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_tracking_ids_dark.html");
+                    break;
+
+                case 9:
                     tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_bookmarks_dark.html");
                     break;
             }
@@ -136,22 +140,26 @@ public class GuideTabFragment extends Fragment {
                     break;
 
                 case 4:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_domain_settings_light.html");
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_requests_light.html");
                     break;
 
                 case 5:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_ssl_certificates_light.html");
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_domain_settings_light.html");
                     break;
 
                 case 6:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_tor_light.html");
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_ssl_certificates_light.html");
                     break;
 
                 case 7:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_tracking_ids_light.html");
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_tor_light.html");
                     break;
 
                 case 8:
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_tracking_ids_light.html");
+                    break;
+
+                case 9:
                     tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_bookmarks_light.html");
             }
         }

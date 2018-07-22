@@ -28,35 +28,32 @@
     <body>
         <h3><img class="title" src="../shared_images/devices_other_blue_light.png"> Browser-Identifikation</h3>
 
-        <p>Wenn Internetbrowser sich mit Websites verbinden senden sie einen sog. User Agent, welcher den Browser und die
-            Rendering-Möglichkeiten an die Website kommuniziert. Die Website kann diese Informationen nutzen, um zu entscheiden, welche Version der Website
-            an den Browser übermittelt werden soll.  Viele Websites haben beispielsweise verschiedene Versionen für Desktopcomputer
-            mobile Browser.</p>
+        <p>When web browsers connect to websites, they send a user agent, which identifies the browser and the rendering capabilities it possesses.
+            The web server can use this information to decide which version of the website to send to the browser.
+            For example, many websites have different versions for desktop and mobile browsers.</p>
 
-        <p>Privacy Browser nutzt standardmäßig den auf dem Gerät in WebView integrierten User Agent.
-            Sie können nachsehen, welcher es ist, wenn Sie in die <strong>Einstellungen</strong> gehen und den <strong>User Agent</strong> auf <strong>WebView-Standard</strong> stellen.
-            Der Screenshot unten zeigt ein Nexus 6P mit Android 7.1.2 und installiertem Android System WebView 60.0.3112.107.</p>
+        <p>By default, Privacy Browser uses its own user agent, which is PrivacyBrowser/1.0. This sends a minimum of information to the web server.
+            Because web servers do not recognize this to be a mobile user agent, they typically display the desktop version of the site.</p>
 
-        <img class="center" src="images/user_agent.png">
+        <p>By comparison, WebView’s default user agent divulges a large amount of information about the hardware and software of the device.
+            On the <strong>Settings</strong> screen, selecting <strong>WebView Default</strong> as the <strong>User agent</strong> displays the user agent that will be sent.
+            The screenshot below shows a Pixel 2 XL running Android 8.1.0 with Android System WebView 67.0.3396.87 installed.
+            Most web servers will recognize this as a mobile browser and will display the mobile version of the site if they have one.</p>
 
-        <p>Im User Agent sind genügend Informationen, sodass manchmal nur einige wenige Besucher einer Website denselben haben. Wenn der User Agent
-            mit einem anderen Teil von nicht-einmaligen Identifizierungsinformationen kombiniert wird, resultiert das oft in einem einmaligen "Fingerabdruck".
-            Die Electronic Frontier Foundation hat ein Tool namens <a href="https://panopticlick.eff.org/">Panopticlick</a> erstellt,
-            um zu demonstrieren, wie viele Informationen aus diesen Quellen bezogen werden können. Wenn dieser Test mit aktiviertem Javascript ausgeführt wird
-            wächst die Anzahl an Sammelband Informationen drastisch.</p>
+        <img class="center21" src="images/user_agent.png">
+
+        <p>There is enough information in the user agent that sometimes only a few visitors to a website will be the same.
+            If the user agent is combined with another piece of non-unique identifying information, often it results in a unique fingerprint.
+            The Electronic Frontier Foundation created a tool called <a href="https://panopticlick.eff.org/">Panopticlick</a> to demonstrate how much information can be gleaned from these sources.
+            If this test is run with JavaScript enabled the amount of information that is disclosed increases greatly.
+            <a href="https://www.browserleaks.com">Browser Leaks</a> and <a href="https://amiunique.org/">Am I Unique</a> are also good sources of information on this topic.</p>
 
         <img class="center" src="../en/images/panopticlick.png">
 
-        <p>Privacy Browser erlaubt Ihnen den User Agent zu ändern. Es gibt einige vorgegebenen Optionen, die auf übliche Browser und Betriebssysteme zutreffen.
-            Privacy Browser hat außerdem seinen eigenen User Agent, welcher ganz einfach PrivacyBrowser/1.0 ist. Beim Tracking gilt: Alles was selten ist, ist einfacher
-            zu verfolgen. Wenn Privacy Browser bekannter wird und mehr Leute PrivacyBrowser/1.0 als User Agent nutzen wird es eine gute Wahl für Privatsphäre darstellen.
-            Momentan ermöglicht das Wählen von etwas, das viele Klicks auf dem Server hat, wie <strong>Edge 13 auf Windows 10</strong>, das Untertauchen in der
-            Menge der Nutzer. Firefox oder Chrome bieten weniger Privatsphäre, da sie automatisch aktualisiert werden und ihre Versionsnummer so schnell wechselt, sodass
-            die in Privacy Browser eingepflegte Version wahrscheinlich schnell überholt wird und so oft aus der auf Server Logs auftauchenden Menge heraussticht.</p>
-
-        <p>Ein zweiter Grund für das Ändern des User Agents ist das Überzeugen des Servers, dass er die Desktopversion der Website anzeigen soll, welche oftmals
-            besser auf modernen Smartphones läuft als die mobile Seite. Für diesen Zweck funktioniert PrivacyBrowser/1.0 sehr gut, da Webserver für gewöhnlich
-            die Desktopversion als Standardversion anzeigen, wenn sie keinen mobilen Browser als User Agent erhalten.</p>
+        <p>There are several preset user agents that match common browsers and operating systems. For browser fingerprinting purposes, anything that is rare is easier to track.
+            If Privacy Browser becomes common and many people use PrivacyBrowser/1.0 as their user agent, it will be a good choice for privacy.
+            Firefox or Chrome are the most common user agents, but they auto-update and their version numbers change so quickly that it is likely the user agents included in Privacy Browser
+            will often be out of step with the majority of user agents in the server logs.</p>
 
         <p>Some websites <a href="https://www.stoutner.com/user-agent-problems/">do not function correctly</a> if they do not recognize the user agent.
             Using domain settings to set the user agent to <strong>WebView Default</strong>, or another user agent that is commonly recognized, usually resolves the problem.

@@ -133,6 +133,7 @@
         <string name="clear_form_data">Очистить данные формы</string>
     <string name="options_fanboys_annoyance_list">Fanboy’s annoyance list</string>
     <string name="options_fanboys_social_blocking_list">Fanboy’s social blocking list</string>
+    <string name="options_block_all_third_party_requests">Блокировать все сторонние запросы</string>
     <string name="layout">Внешний вид</string>
         <string name="font_size">Размер шрифта</string>
             <string name="twenty_five_percent">25%</string>
@@ -232,6 +233,8 @@
         <string name="default_allowed">По умолчанию - Разрешен</string>
         <string name="allowed">Разрешен</string>
         <string name="allowed_plural">Разрешено</string>
+        <string name="third_party_plural">Сторонние</string>
+        <string name="third_party_blocked">Сторонние - Блокировано</string>
         <string name="blocked">Блокирован</string>
         <string name="blocked_plural">Блокировано</string>
     <string name="blocklist">Список блокировки</string>
@@ -353,10 +356,12 @@
         <string name="easylist_summary">Основной список блокировки рекламы.</string>
         <string name="easyprivacy">EasyPrivacy</string>
         <string name="easyprivacy_summary">Основной список блокировки отслеживания.</string>
-        <string name="fanboy_annoyance_list">Fanboy’s annoyance list</string>
-        <string name="fanboy_annoyance_list_summary">Блокирует раздражающие всплывающие окна и ссылки.  Включает в себя Fanboy’s social blocking lists.</string>
-        <string name="fanboy_social_blocking_list">Fanboy’s social blocking list</string>
-        <string name="fanboy_social_blocking_list_summary">Блокирует содержимое социальных сетей.</string>
+        <string name="fanboys_annoyance_list">Fanboy’s annoyance list</string>
+        <string name="fanboys_annoyance_list_summary">Блокирует раздражающие всплывающие окна и ссылки.  Включает в себя Fanboy’s social blocking lists.</string>
+        <string name="fanboys_social_blocking_list">Fanboy’s social blocking list</string>
+        <string name="fanboys_social_blocking_list_summary">Блокирует содержимое социальных сетей.</string>
+        <string name="block_all_third_party_requests">Блокировать все сторонние запросы</string>
+        <string name="block_all_third_party_requests_summary">Блокировка всех сторонних запросов повышает конфиденциальность, но ломает многие веб-сайты.</string>
     <string name="tor">Tor</string>
         <string name="proxy_through_orbot">Прокси через Orbot</string>
         <string name="proxy_through_orbot_summary">Проксировать весь веб-трафик через Orbot на localhost:8118.</string>

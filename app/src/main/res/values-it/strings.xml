@@ -132,6 +132,7 @@
         <string name="clear_form_data">Elimina dati dei moduli</string>
     <string name="options_fanboys_annoyance_list">Fanboy’s annoyance list</string>
     <string name="options_fanboys_social_blocking_list">Fanboy’s social blocking list</string>
+    <string name="options_block_all_third_party_requests">Blocca tutte le richieste di Terze Parti</string>
     <string name="layout">Layout</string>
         <string name="font_size">Dimensione font</string>
             <string name="twenty_five_percent">25%</string>
@@ -231,6 +232,8 @@
         <string name="default_allowed">Default - Permessa</string>
         <string name="allowed">Permessa</string>
         <string name="allowed_plural">Permesse</string>
+        <string name="third_party_plural">Terze parti</string>
+        <string name="third_party_blocked">Terze parti - Bloccate</string>
         <string name="blocked">Bloccata</string>
         <string name="blocked_plural">Bloccate</string>
     <string name="blocklist">Blocklist</string>
@@ -240,7 +243,7 @@
         <string name="domain_whitelist">Whitelist per i domini</string>
         <string name="domain_initial_whitelist">Whitelist iniziale</string>
         <string name="domain_final_whitelist">Whitelist finale</string>
-        <string name="third_party_whiteist">Whitelist di terze parti</string>
+        <string name="third_party_whitelist">Whitelist di terze parti</string>
         <string name="third_party_domain_whitelist">Whitelist di terze parti per i domini</string>
         <string name="third_party_domain_initial_whitelist">Whitelist di terze parti iniziale per i domini</string>
         <string name="main_blacklist">Blacklist principale</string>
@@ -353,10 +356,12 @@
         <string name="easylist_summary">Blocking list principale.</string>
         <string name="easyprivacy">EasyPrivacy</string>
         <string name="easyprivacy_summary">Tracker blocking list principale.</string>
-        <string name="fanboy_annoyance_list">Fanboy’s annoyance list</string>
-        <string name="fanboy_annoyance_list_summary">Blocca fastidiosi pop-up e collegamenti.  Include le liste Fanboy’s social blocking.</string>
-        <string name="fanboy_social_blocking_list">Fanboy’s social blocking list</string>
-        <string name="fanboy_social_blocking_list_summary">Blocca contenuti di terze parti sui social media .</string>
+        <string name="fanboys_annoyance_list">Fanboy’s annoyance list</string>
+        <string name="fanboys_annoyance_list_summary">Blocca fastidiosi pop-up e collegamenti.  Include le liste Fanboy’s social blocking.</string>
+        <string name="fanboys_social_blocking_list">Fanboy’s social blocking list</string>
+        <string name="fanboys_social_blocking_list_summary">Blocca contenuti di terze parti sui social media .</string>
+    <string name="block_all_third_party_requests">Blocca tutte le richieste di Terze Parti</string>
+    <string name="block_all_third_party_requests_summary">Il blocco di tutte le richieste di Terze Parti aumenta privacy, ma impedisce la visualizzazione di molti siti web.</string>
     <string name="tor">Tor</string>
         <string name="proxy_through_orbot">Utilizza Proxy con Orbot</string>
         <string name="proxy_through_orbot_summary">Utilizza Proxy attraverso Orbot su localhost:8118.</string>

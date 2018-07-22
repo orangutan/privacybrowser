@@ -1384,6 +1384,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Apply any custom domain settings if the URL was loaded by navigating history.
                     if (navigatingHistory) {
+                        // Reset `navigatingHistory`.
+                        navigatingHistory = false;
+
+                        // Apply the domain settings.
                         applyDomainSettings(url, true, false);
                     }
 
@@ -2350,6 +2354,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.back:
                 if (mainWebView.canGoBack()) {
+                    // Reset the formatted URL string so the page will load correctly if blocking of third-party requests is enabled.
+                    formattedUrlString = "";
+
                     // Set `navigatingHistory` so that the domain settings are applied when the new URL is loaded.
                     navigatingHistory = true;
 
@@ -2360,6 +2367,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.forward:
                 if (mainWebView.canGoForward()) {
+                    // Reset the formatted URL string so the page will load correctly if blocking of third-party requests is enabled.
+                    formattedUrlString = "";
+
                     // Set `navigatingHistory` so that the domain settings are applied when the new URL is loaded.
                     navigatingHistory = true;
 
@@ -3193,6 +3203,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     @Override
     public void onSslMismatchBack() {
         if (mainWebView.canGoBack()) {  // There is a back page in the history.
+            // Reset the formatted URL string so the page will load correctly if blocking of third-party requests is enabled.
+            formattedUrlString = "";
+
             // Set `navigatingHistory` so that the domain settings are applied when the new URL is loaded.
             navigatingHistory = true;
 
@@ -3212,6 +3225,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void onUrlHistoryEntrySelected(int moveBackOrForwardSteps) {
+        // Reset the formatted URL string so the page will load correctly if blocking of third-party requests is enabled.
+        formattedUrlString = "";
+
         // Set `navigatingHistory` so that the domain settings are applied when the new URL is loaded.
         navigatingHistory = true;
 
@@ -3244,6 +3260,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
 
         } else if (mainWebView.canGoBack()) {  // There is at least one item in the `WebView` history.
+            // Reset the formatted URL string so the page will load correctly if blocking of third-party requests is enabled.
+            formattedUrlString = "";
+
             // Set `navigatingHistory` so that the domain settings are applied when the new URL is loaded.
             navigatingHistory = true;
 
@@ -3511,9 +3530,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // The deprecated `.getDrawable()` must be used until the minimum API >= 21.
     @SuppressWarnings("deprecation")
     private void applyDomainSettings(String url, boolean resetFavoriteIcon, boolean reloadWebsite) {
-        // Reset `navigatingHistory`.
-        navigatingHistory = false;
-
         // Parse the URL into a URI.
         Uri uri = Uri.parse(url);
 

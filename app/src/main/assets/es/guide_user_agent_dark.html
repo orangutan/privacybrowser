@@ -37,10 +37,10 @@
 
         <p>En comparación, el agente de usuario por defecto de WebView divulga una gran cantidad de información sobre el hardware y el software del dispositivo.
             En la ventana <strong>Configuración</strong>, seleccionando <strong>WebView por defecto</strong> como el <strong>Agente de usuario</strong> muestra el agente de usuario que se enviará.
-            La captura de pantalla de abajo muestra un Nexus 6P corriendo Android 7.1.2 con el sistema de android WebView 60.0.3112.107 instalado.
+            La captura de pantalla de abajo muestra un Pixel 2 XL corriendo Android 8.1.0 con el sistema de android WebView 67.0.3396.87 instalado.
             La mayoría de servidores web reconocerán esto como un navegador móvil y mostrará la versión móvil del sitio si dispone de ella.</p>
 
-        <img class="center" src="images/user_agent.png">
+        <img class="center21" src="images/user_agent.png">
 
         <p>Existe tanta información en el agente de usuario que algunas veces será el mismo con sólo unos pocos visitantes a una página web.
             Si el agente de usuario es combinado con otra pieza de información identificativa que no es única, esto da lugar a menudo a una huella única.
@@ -49,7 +49,7 @@
             Si esta prueba se realiza con javascript habilitado, la cantidad de información que es revelada aumenta grandemente.
             <a href="https://www.browserleaks.com">Browser Leaks (Fugas del navegador)</a> y <a href="https://amiunique.org/">Am I Unique (¿Soy único?)</a> son también buenas fuentes de información.</p>
 
-        <img class="center" src="../shared_images/panopticlick.png">
+        <img class="center" src="../en/images/panopticlick.png">
 
         <p>Existen varios agentes de usuario preestablecidos que coinciden con los más comunes navegadores y sistemas operativos.
             A los efectos de huellas del navegador, todo lo que sea extraño es más fácil de rastrear.
@@ -57,7 +57,7 @@
             Firefox o Chrome son los usuarios de agente más comunes, pero se actualizan automáticamente y sus números de versión cambian tan rápidamente que es probable que los usuarios de agente incluídos
             en Privacy Browser no estén ya en sintonía con la mayoría de agentes de usuario en los registros del servidor.</p>
 
-        <p>Algunas páginas web<a href="https://www.stoutner.com/user-agent-problems/">no funcionan correctamente</a> si no reconocen el agente de usuario.
+        <p>Algunas páginas web <a href="https://www.stoutner.com/user-agent-problems/">no funcionan correctamente</a> si no reconocen el agente de usuario.
             Usando la configuración de dominios para establecer el agente de usuario a <strong>WebView por defecto</strong>,
             o a otro agente de usuario que sea normalmente reconocido, suele resolver el problema.
             El WebView de android no permite que el agente de usuario esté en blanco. Si lo está, WebView simplemente envía el agente de usuario por defecto al servidor.</p>
