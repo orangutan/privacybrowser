@@ -78,8 +78,10 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="block_all_third_party_requests_enabled_light" />
-                            <entry key="sourceFile" value="$USER_HOME$" />
+                            <entry key="assetSourceType" value="FILE" />
+                            <entry key="autoMirrored" value="true" />
+                            <entry key="outputName" value="bookmarks_light" />
+                            <entry key="sourceFile" value="$USER_HOME$/ownCloud/Android/Privacy Browser/Icons/Icons/bookmarks_light.svg" />
                           </map>
                         </option>
                       </PersistentState>
