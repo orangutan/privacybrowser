@@ -173,7 +173,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // and `ViewSslCertificateDialog`.  It is also used in `onCreate()`.
     public static SslCertificate sslCertificate;
 
-    // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`.
+    // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()` and `onResume()`.
     public static String orbotStatus;
 
     // `webViewTitle` is public static so it can be accessed from `CreateBookmarkDialog` and `CreateHomeScreenShortcutDialog`.  It is also used in `onCreate()`.
@@ -369,7 +369,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `ignorePinnedSslCertificateForDomain` is used in `onCreate()`, `onSslMismatchProceed()`, and `applyDomainSettings()`.
     private boolean ignorePinnedSslCertificate;
 
-    // `waitingForOrbot` is used in `onCreate()` and `applyAppSettings()`.
+    // `waitingForOrbot` is used in `onCreate()`, `onResume()`, and `applyAppSettings()`.
     private boolean waitingForOrbot;
 
     // `domainSettingsApplied` is used in `prepareOptionsMenu()`, `applyDomainSettings()`, and `setDisplayWebpageImages()`.
@@ -1189,6 +1189,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.startsWith("http")) {  // Load the URL in Privacy Browser.
+                    // Reset the formatted URL string so the page will load correctly if blocking of third-party requests is enabled.
+                    formattedUrlString = "";
+
                     // Apply the domain settings for the new URL.  `applyDomainSettings` doesn't do anything if the domain has not changed.
                     applyDomainSettings(url, true, false);
 
@@ -1262,7 +1265,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Initialize the third party request tracker.
                 boolean isThirdPartyRequest = false;
 
-                //
+                // Initialize the current domain string.
                 String currentDomain = "";
 
                 // Nobody is happy when comparing null strings.
@@ -1679,6 +1682,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         if (BuildConfig.FLAVOR.contentEquals("free")) {
             // The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
             AdHelper.resumeAd(findViewById(R.id.adview));
+        }
+
+        // Display a message to the user if waiting for Orbot.
+        if (waitingForOrbot && !orbotStatus.equals("ON")) {
+            // Load a waiting page.  `null` specifies no encoding, which defaults to ASCII.
+            mainWebView.loadData(waitingForOrbotHTMLString, "text/html", null);
         }
     }
 
@@ -3423,7 +3432,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 appBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.blue_50));
             }
 
-            // Display a message to the user if we are waiting on Orbot.
+            // Display a message to the user if waiting for Orbot.
             if (!orbotStatus.equals("ON")) {
                 // Set `waitingForOrbot`.
                 waitingForOrbot = true;

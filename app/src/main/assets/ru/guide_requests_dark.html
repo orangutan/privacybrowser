@@ -24,16 +24,17 @@
     </head>
 
     <body>
-        <h3><img class="title" src="../shared_images/local_activity_blue_dark.png"> Resource Requests</h3>
+        <h3><img class="title" src="../shared_images/local_activity_blue_dark.png"> Запросы ресурсов</h3>
 
-        <p>When a URL is loaded, it typically makes a number of resource requests for CCS, JavaScript, image, and other files. Details about these requests can be viewed in the Requests activity.
-            The navigation drawer has a link to the Requests activity and also shows how many requests were blocked. Tapping on a request displays details about why it was allowed or blocked.</p>
+        <p>При загрузке URL-адреса обычно происходит ряд запросов ресурсов для CCS, JavaScript, изображений и других файлов. Сведения об этих запросах можно просмотреть в активности запросов.
+            В навигационном меню имеется ссылка на активность запросов, а также показано, сколько запросов было заблокировано.
+            При нажатии на запрос отображаются сведения о том, почему он был разрешен или заблокирован.</p>
 
         <p><img class="center21" src="images/request_details.png"></p>
 
-        <p>Privacy Browser includes four <a href="https://easylist.to/">blocklists</a> based on the <a href="https://adblockplus.org/filters">Adblock syntax</a>:
-            EasyList, EasyPrivacy, Fanboy’s Annoyance List, and Fanboy’s Social Blocking List.
-            These blocklists are processed by Privacy Browser into the following 22 sublists, which check resource requests in the order listed.</p>
+        <p>Privacy Browser включает в себя четыре <a href="https://easylist.to/">списка блокировки</a>, основанных на <a href="https://adblockplus.org/filters">синтаксисе Adblock</a>:
+            EasyList, EasyPrivacy, Fanboy’s Annoyance List, и Fanboy’s Social Blocking List.
+            Эти списки блокировки обрабатываются Privacy Browser в следующих 22 подсписках, которые проверяют запросы ресурсов в указанном порядке.</p>
 
         <ol>
             <li>Основной белый список</li>
@@ -60,18 +61,19 @@
             <li>Регулярные выражения черного списка</li>
         </ol>
 
-        <p>Initial lists check against the beginning of the URL. Final lists check against the end of the URL. Domain lists only check against certain domains.
-            Third-party lists only apply if the root domain of the request is different than the root domain of the main URL.
-            Regular expression lists follow the <a href="https://en.wikipedia.org/wiki/Regular_expression">regular expression syntax</a>. Each sublist item has one or more entry.
-            In the case of domain sublists, the resource request is only checked against the item if the first entry matches the domain of the main URL.</p>
+        <p>Исходные списки проверяются на начало URL-адреса. Окончательные списки проверяются на конец URL-адреса. Списки доменов проверяют только определенные домены.
+            Сторонние списки применяются только в том случае, если корневой домен запроса отличается от корневого домена основного URL-адреса.
+            Списки регулярных выражений следуют за <a href="https://ru.wikipedia.org/wiki/Регулярные_выражения">синтаксисом регулярных выражений</a>.
+            Каждый элемент подсписка имеет одну или несколько записей.
+            В случае подсписков домена, запрос ресурса проверяется только в отношении элемента, если первая запись соответствует домену основного URL-адреса.</p>
 
-        <p>Because of limitations in Android’s WebView, and to speed up processing of requests, Privacy Browser implements a simplified interpretation of the Adblock syntax.
-            This can sometimes lead to false positives, where resources are allowed or blocked in ways that weren’t intended by the original entry.
-            A more detailed description of how the blocklist entries are processed is available at <a href="https://www.stoutner.com/privacy-browser/blocklists/">stoutner.com</a>.</p>
+        <p>Из-за ограничений в Android WebView, а также для ускорения обработки запросов, в Privacy Browser реализована упрощенная интерпретация синтаксиса Adblock.
+            Иногда это может привести к ложным срабатываниям, когда ресурсы разрешаются или блокируются способами, которые не были предназначены для исходной записи.
+            Более подробное описание способа обработки записей списка блокировки доступно на <a href="https://www.stoutner.com/privacy-browser/blocklists/">stoutner.com</a>.</p>
 
-        <p>Privacy Browser has a fifth blocklist that blocks all third-party requests. A request is only considered third-party if the base domain of the request is different than the base domain of the URL.
-            For example, if <code>www.website.com</code> loads a picture from <code>images.website.com</code>,
-            this is not blocked as a third-party request because they both share the same base domain of <code>website.com</code>.
-            Blocking all third-party requests increases privacy, but this blocklist is disabled by default because it breaks a large number of websites.</p>
+        <p>Privacy Browser имеет пятый список блокировки, блокирующий все сторонние запросы. Запрос считается сторонним, только если базовый домен запроса отличается от базового домена URL-адреса.
+            Например, если <code>www.website.com</code> загружает изображение с сайта <code>images.website.com</code>,
+            запрос не будет считаться сторонним и не будет заблокирован, так как они оба используют один и тот же базовый домен <code>website.com</code>.
+            Блокировка всех сторонних запросов увеличивает конфиденциальность, но этот список блокировки по умолчанию отключен, поскольку он ломает большое количество веб-сайтов.</p>
     </body>
 </html>

@@ -26,16 +26,18 @@
     </head>
 
     <body>
-        <h3><img class="title" src="../shared_images/local_activity_blue_dark.png"> Resource Requests</h3>
+        <h3><img class="title" src="../shared_images/local_activity_blue_dark.png"> Richieste di Risorse</h3>
 
-        <p>When a URL is loaded, it typically makes a number of resource requests for CCS, JavaScript, image, and other files. Details about these requests can be viewed in the Requests activity.
-            The navigation drawer has a link to the Requests activity and also shows how many requests were blocked. Tapping on a request displays details about why it was allowed or blocked.</p>
+        <p>Quando viene caricata un URL, generalmente effettua un certo numero di richieste di risorse per CCS, JavaScript, immagini, e altri files.
+            I dettagli relativi a queste richieste possono essere visualizzati nella scheda delle Richieste.
+            Il menù a cassetto ha un collegamento alla scheda delle richieste e mostra quante sono state bloccate.
+            Se si tocca una delle richieste in elenco vengono mostrati i dettagli sui motivi per cui è stata permessa o bloccata.</p>
 
         <p><img class="center21" src="images/request_details.png"></p>
 
-        <p>Privacy Browser includes four <a href="https://easylist.to/">blocklists</a> based on the <a href="https://adblockplus.org/filters">Adblock syntax</a>:
-            EasyList, EasyPrivacy, Fanboy’s Annoyance List, and Fanboy’s Social Blocking List.
-            These blocklists are processed by Privacy Browser into the following 22 sublists, which check resource requests in the order listed.</p>
+        <p>Privacy Browser include quattro <a href="https://easylist.to/">liste di blocco</a> basate sulla <a href="https://adblockplus.org/filters">Sintassi di Adblock</a>:
+            EasyList, EasyPrivacy, Fanboy’s Annoyance List, e Fanboy’s Social Blocking List.
+            Queste blocklist sono processate da Privacy Browser nelle seguenti 22 liste secondarie, che verificano le richieste di risorse nell'ordine elencato.</p>
 
         <ol>
             <li>Whitelist principale</li>
@@ -62,18 +64,20 @@
             <li>Blacklist per le espressioni regolari</li>
         </ol>
 
-        <p>Initial lists check against the beginning of the URL. Final lists check against the end of the URL. Domain lists only check against certain domains.
-            Third-party lists only apply if the root domain of the request is different than the root domain of the main URL.
-            Regular expression lists follow the <a href="https://en.wikipedia.org/wiki/Regular_expression">regular expression syntax</a>. Each sublist item has one or more entry.
-            In the case of domain sublists, the resource request is only checked against the item if the first entry matches the domain of the main URL.</p>
+        <p>Le liste iniziali servono per la verifica della parte iniziale delle URL. Le liste iniziali servono per la verifica della parte finale delle URL.
+            Le liste dei domini servono per la verifica di certi domini. Le liste di terze parti si applicano solo se il dominio di root della richiesta è diverso dal dominio di root della URL principale.
+            Le liste per le espressioni regolari seguono la <a href="https://it.wikipedia.org/wiki/Espressione_regolare">sintassi delle espressioni regolari</a>.
+            Ogni oggetto delle liste secondarie ha uno o più elementi.
+            Nel caso delle liste secondarie dei domini, la richiesta di risorse è verificata solo se il primo elemento combacia con il dominio della URL principale.</p>
 
-        <p>Because of limitations in Android’s WebView, and to speed up processing of requests, Privacy Browser implements a simplified interpretation of the Adblock syntax.
-            This can sometimes lead to false positives, where resources are allowed or blocked in ways that weren’t intended by the original entry.
-            A more detailed description of how the blocklist entries are processed is available at <a href="https://www.stoutner.com/privacy-browser/blocklists/">stoutner.com</a>.</p>
+        <p>A causa delle limitazioni della WebView di Android, e per velocizzare il processo delle richiesta, Privacy Browser implementa una versione semplificata della sintassi di Adblock.
+            Questo approccio potrebbe a volte portare ad avere falsi positivi, nel caso in cui le risorse siano bloccate o permesse in modi che non erano previsti dall'elemento originale.
+            Una descrizione più dettagliata su come sono processati gli elementi delle liste di blocco è disponibile su <a href="https://www.stoutner.com/privacy-browser/blocklists/">stoutner.com</a>.</p>
 
-        <p>Privacy Browser has a fifth blocklist that blocks all third-party requests. A request is only considered third-party if the base domain of the request is different than the base domain of the URL.
-            For example, if <code>www.website.com</code> loads a picture from <code>images.website.com</code>,
-            this is not blocked as a third-party request because they both share the same base domain of <code>website.com</code>.
-            Blocking all third-party requests increases privacy, but this blocklist is disabled by default because it breaks a large number of websites.</p>
+        <p>Privacy Browser ha una quinta lista di blocco che blocca tutte le richieste di terze parti.
+            Una richiesta è considerata di terze parti solo se il dominio di base della richiesta è diverso dal dominio di base della URL.
+            Ad esempio se <code>www.website.com</code> carica un'immagine da <code>images.website.com</code>,
+            questa non è bloccata come richiesta di terze parti, perchè il dominio di base è lo stesso: <code>website.com</code>.
+            Il blocco di tutte le richieste di terze parti aumenta la privacy, ma questa lista di blocco è disabilitata di default perchè impedisce la corretta visualizzazione di un gran numero di siti web.</p>
     </body>
 </html>
