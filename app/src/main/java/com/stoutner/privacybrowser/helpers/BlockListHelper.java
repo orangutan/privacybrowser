@@ -86,9 +86,14 @@ public class BlockListHelper {
                     //Log.i("BlockLists", "Not added: " + blockListEntry);
                 } else //noinspection StatementWithEmptyBody
                     if (blockListEntry.contains("$csp=script-src")) {  // Ignore entries that contain `$csp=script-src`.
-                    // Do nothing.  It is uncertain what this directive is even supposed to mean, and it is blocking entire websites like androidcentral.com.  https://redmine.stoutner.com/issues/306.
+                        // Do nothing.  It is uncertain what this directive is even supposed to mean, and it is blocking entire websites like androidcentral.com.  https://redmine.stoutner.com/issues/306.
 
-                    //Log.i("BlockLists", headers.get(1)[0] + " not added: " + originalBlockListEntry);
+                        //Log.i("BlockLists", headers.get(1)[0] + " not added: " + originalBlockListEntry);
+                } else //noinspection StatementWithEmptyBody
+                    if (blockListEntry.contains("$websocket") || blockListEntry.contains("$third-party,websocket") || blockListEntry.contains("$script,websocket")) {  // Ignore entries with `websocket`.
+                        // Do nothing.  Privacy Browser does not differentiate between websocket requests and other requests and these entries cause a lot of false positivies.
+
+                        //Log.i("BlockLists", headers.get(1)[0] + " not added: " + originalBlockListEntry);
                 } else if (blockListEntry.startsWith("!")) {  //  Comment entries.
                     if (blockListEntry.startsWith("! Version:")) {
                         // Get the list version number.
