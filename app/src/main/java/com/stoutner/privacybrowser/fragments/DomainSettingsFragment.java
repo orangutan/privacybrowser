@@ -120,6 +120,8 @@ public class DomainSettingsFragment extends Fragment {
         ImageView fanboysAnnoyanceListImageView = domainSettingsView.findViewById(R.id.domain_settings_fanboys_annoyance_list_imageview);
         Switch fanboysSocialBlockingListSwitch = domainSettingsView.findViewById(R.id.domain_settings_fanboys_social_blocking_list_switch);
         ImageView fanboysSocialBlockingListImageView = domainSettingsView.findViewById(R.id.domain_settings_fanboys_social_blocking_list_imageview);
+        Switch ultraPrivacySwitch = domainSettingsView.findViewById(R.id.domain_settings_ultraprivacy_switch);
+        ImageView ultraPrivacyImageView = domainSettingsView.findViewById(R.id.domain_settings_ultraprivacy_imageview);
         Switch blockAllThirdPartyRequestsSwitch = domainSettingsView.findViewById(R.id.domain_settings_block_all_third_party_requests_switch);
         ImageView blockAllThirdPartyRequestsImageView = domainSettingsView.findViewById(R.id.domain_settings_block_all_third_party_requests_imageview);
         final Spinner userAgentSpinner = domainSettingsView.findViewById(R.id.domain_settings_user_agent_spinner);
@@ -188,6 +190,7 @@ public class DomainSettingsFragment extends Fragment {
         int easyPrivacyEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY));
         int fanboysAnnoyanceListInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST));
         int fanboysSocialBlockingListInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST));
+        int ultraPrivacyEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY));
         int blockAllThirdPartyRequestsInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS));
         final String currentUserAgentName = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
         int fontSizeInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
@@ -589,6 +592,29 @@ public class DomainSettingsFragment extends Fragment {
                 fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_ghosted_dark));
             } else {
                 fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_ghosted_light));
+            }
+        }
+
+        // Set the UltraPrivacy status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
+        if (ultraPrivacyEnabledInt == 1) {  // UltraPrivacy is on.
+            // Turn the switch on.
+            ultraPrivacySwitch.setChecked(true);
+
+            // Set the icon according to the theme.
+            if (MainWebViewActivity.darkTheme) {
+                ultraPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_enabled_dark));
+            } else {
+                ultraPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_enabled_light));
+            }
+        } else {  // EasyPrivacy is off.
+            // Turn the switch off.
+            ultraPrivacySwitch.setChecked(false);
+
+            // Set the icon according to the theme.
+            if (MainWebViewActivity.darkTheme) {
+                ultraPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_disabled_dark));
+            } else {
+                ultraPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_disabled_light));
             }
         }
 
@@ -1315,6 +1341,26 @@ public class DomainSettingsFragment extends Fragment {
                     fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_dark));
                 } else {
                     fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_light));
+                }
+            }
+        });
+
+        // Set the UltraPrivacy switch listener.
+        ultraPrivacySwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            // Update the icon.
+            if (isChecked) {  // UltraPrivacy is on.
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    ultraPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_enabled_dark));
+                } else {
+                    ultraPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_enabled_light));
+                }
+            } else {  // UltraPrivacy is off.
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    ultraPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_disabled_dark));
+                } else {
+                    ultraPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_disabled_light));
                 }
             }
         });

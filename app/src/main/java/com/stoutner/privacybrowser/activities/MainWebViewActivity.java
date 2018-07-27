@@ -196,6 +196,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public static String easyPrivacyVersion;
     public static String fanboysAnnoyanceVersion;
     public static String fanboysSocialVersion;
+    public static String ultraPrivacyVersion;
 
     // The request items are public static so they can be accessed by `BlockListHelper`, `RequestsArrayAdapter`, and `ViewRequestsDialog`.  They are also used in `onCreate()`.
     public static List<String[]> resourceRequests;
@@ -335,6 +336,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private boolean easyPrivacyEnabled;
     private boolean fanboysAnnoyanceListEnabled;
     private boolean fanboysSocialBlockingListEnabled;
+    private boolean ultraPrivacyEnabled;
 
     // `privacyBrowserRuntime` is used in `onCreate()`, `onOptionsItemSelected()`, and `applyAppSettings()`.
     private Runtime privacyBrowserRuntime;
@@ -1235,12 +1237,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         final ArrayList<List<String[]>> easyPrivacy = blockListHelper.parseBlockList(getAssets(), "blocklists/easyprivacy.txt");
         final ArrayList<List<String[]>> fanboysAnnoyanceList = blockListHelper.parseBlockList(getAssets(), "blocklists/fanboy-annoyance.txt");
         final ArrayList<List<String[]>> fanboysSocialList = blockListHelper.parseBlockList(getAssets(), "blocklists/fanboy-social.txt");
+        final ArrayList<List<String[]>> ultraPrivacy = blockListHelper.parseBlockList(getAssets(), "blocklists/ultraprivacy.txt");
 
         // Store the list versions.
         easyListVersion = easyList.get(0).get(0)[0];
         easyPrivacyVersion = easyPrivacy.get(0).get(0)[0];
         fanboysAnnoyanceVersion = fanboysAnnoyanceList.get(0).get(0)[0];
         fanboysSocialVersion = fanboysSocialList.get(0).get(0)[0];
+        ultraPrivacyVersion = ultraPrivacy.get(0).get(0)[0];
 
         mainWebView.setWebViewClient(new WebViewClient() {
             // `shouldOverrideUrlLoading` makes this `WebView` the default handler for URLs inside the app, so that links are not kicked out to other apps.
@@ -1367,6 +1371,23 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Return an empty web resource response.
                     return emptyWebResourceResponse;
+                }
+
+                // Check UltraPrivacy if it is enabled.
+                if (ultraPrivacyEnabled) {
+                    if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, ultraPrivacy)) {
+                        // The resource request was blocked.  Return an empty web resource response.
+                        return emptyWebResourceResponse;
+                    }
+
+                    // If the whitelist result is not null, the request has been allowed by UltraPrivacy.
+                    if (whiteListResultStringArray != null) {
+                        // Add a whitelist entry to the resource requests array.
+                        resourceRequests.add(whiteListResultStringArray);
+
+                        // The resource request has been allowed by UltraPrivacy.  `return null` loads the requested resource.
+                        return null;
+                    }
                 }
 
                 // Check EasyList if it is enabled.
@@ -1845,6 +1866,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem easyPrivacyMenuItem = menu.findItem(R.id.easyprivacy);
         MenuItem fanboysAnnoyanceListMenuItem = menu.findItem(R.id.fanboys_annoyance_list);
         MenuItem fanboysSocialBlockingListMenuItem = menu.findItem(R.id.fanboys_social_blocking_list);
+        MenuItem ultraPrivacyMenuItem = menu.findItem(R.id.ultraprivacy);
         MenuItem blockAllThirdParyRequestsMenuItem = menu.findItem(R.id.block_all_third_party_requests);
         MenuItem fontSizeMenuItem = menu.findItem(R.id.font_size);
         MenuItem swipeToRefreshMenuItem = menu.findItem(R.id.swipe_to_refresh);
@@ -1866,6 +1888,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         easyPrivacyMenuItem.setChecked(easyPrivacyEnabled);
         fanboysAnnoyanceListMenuItem.setChecked(fanboysAnnoyanceListEnabled);
         fanboysSocialBlockingListMenuItem.setChecked(fanboysSocialBlockingListEnabled);
+        ultraPrivacyMenuItem.setChecked(ultraPrivacyEnabled);
         blockAllThirdParyRequestsMenuItem.setChecked(blockAllThirdPartyRequests);
         swipeToRefreshMenuItem.setChecked(swipeRefreshLayout.isEnabled());
         displayImagesMenuItem.setChecked(mainWebView.getSettings().getLoadsImagesAutomatically());
@@ -2338,6 +2361,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Update the menu checkbox.
                 menuItem.setChecked(fanboysSocialBlockingListEnabled);
+
+                // Reload the main WebView.
+                mainWebView.reload();
+                return true;
+
+            case R.id.ultraprivacy:
+                // Toggle the UltraPrivacy status.
+                ultraPrivacyEnabled = !ultraPrivacyEnabled;
+
+                // Update the menu checkbox.
+                menuItem.setChecked(ultraPrivacyEnabled);
 
                 // Reload the main WebView.
                 mainWebView.reload();
@@ -3730,6 +3764,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 easyPrivacyEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY)) == 1);
                 fanboysAnnoyanceListEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST)) == 1);
                 fanboysSocialBlockingListEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)) == 1);
+                ultraPrivacyEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY)) == 1);
                 blockAllThirdPartyRequests = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)) == 1);
                 String userAgentName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
                 int fontSize = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
@@ -3886,6 +3921,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 easyPrivacyEnabled = sharedPreferences.getBoolean("easyprivacy", true);
                 fanboysAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboy_annoyance_list", true);
                 fanboysSocialBlockingListEnabled = sharedPreferences.getBoolean("fanboy_social_blocking_list", true);
+                ultraPrivacyEnabled = sharedPreferences.getBoolean("ultraprivacy", true);
                 blockAllThirdPartyRequests = sharedPreferences.getBoolean("block_all_third_party_requests", false);
 
                 // Set `javaScriptEnabled` to be `true` if `night_mode` is `true`.

@@ -1,0 +1,10 @@
+[Adblock Plus 2.0]
+! Version: 1
+! Title: UltraPrivacy
+! Last modified: 25 Jul 2018 20:41 UTC
+! Expires: 90 days (update frequency)
+! Homepage: https://www.stoutner.com/privacy-browser/blocklists/ultraprivacy/
+! Licence: GPLv3+ http://www.gnu.org/licenses/gpl-3.0.html
+!
+! I can't imagine that anything that includes `analytics` is good for your privacy.  https://redmine.stoutner.com/issues/312.
+analytics

@@ -117,6 +117,12 @@
             android:defaultValue="true" />
 
         <SwitchPreference
+            android:key="ultraprivacy"
+            android:title="@string/ultraprivacy"
+            android:summary="@string/ultraprivacy_summary"
+            android:defaultValue="true" />
+
+        <SwitchPreference
             android:key="block_all_third_party_requests"
             android:title="@string/block_all_third_party_requests"
             android:summary="@string/block_all_third_party_requests_summary"

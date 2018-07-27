@@ -20,7 +20,6 @@
 package com.stoutner.privacybrowser.helpers;
 
 import android.content.res.AssetManager;
-import android.net.Uri;
 
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 

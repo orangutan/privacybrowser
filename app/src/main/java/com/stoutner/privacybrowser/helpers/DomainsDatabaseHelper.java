@@ -28,7 +28,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
 
 public class DomainsDatabaseHelper extends SQLiteOpenHelper {
-    private static final int SCHEMA_VERSION = 7;
+    private static final int SCHEMA_VERSION = 8;
     private static final String DOMAINS_DATABASE = "domains.db";
     private static final String DOMAINS_TABLE = "domains";
 
@@ -42,8 +42,9 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
     public static final String ENABLE_EASYLIST = "enableeasylist";
     public static final String ENABLE_EASYPRIVACY = "enableeasyprivacy";
     public static final String ENABLE_FANBOYS_ANNOYANCE_LIST = "enablefanboysannoyancelist";
-    public static final String BLOCK_ALL_THIRD_PARTY_REQUESTS = "blockallthirdpartyrequests";
     public static final String ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST = "enablefanboyssocialblockinglist";
+    public static final String ENABLE_ULTRAPRIVACY = "enableultraprivacy";
+    public static final String BLOCK_ALL_THIRD_PARTY_REQUESTS = "blockallthirdpartyrequests";
     public static final String USER_AGENT = "useragent";
     public static final String FONT_SIZE = "fontsize";
     public static final String SWIPE_TO_REFRESH = "swipetorefresh";
@@ -99,6 +100,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
                 ENABLE_EASYPRIVACY + " BOOLEAN, " +
                 ENABLE_FANBOYS_ANNOYANCE_LIST + " BOOLEAN, " +
                 ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST + " BOOLEAN, " +
+                ENABLE_ULTRAPRIVACY + " BOOLEAN, " +
                 BLOCK_ALL_THIRD_PARTY_REQUESTS + " BOOLEAN, " +
                 USER_AGENT + " TEXT, " +
                 FONT_SIZE + " INTEGER, " +
@@ -200,6 +202,14 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
             case 6:
                 // Add the block all third-party requests column.
                 domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + BLOCK_ALL_THIRD_PARTY_REQUESTS + " BOOLEAN");
+
+            // Upgrade from schema version 7.
+            case 7:
+                // Add the UltraPrivacy column.
+                domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + ENABLE_ULTRAPRIVACY + " BOOLEAN");
+
+                // Enable it for all existing rows.
+                domainsDatabase.execSQL("UPDATE " + DOMAINS_TABLE + " SET " + ENABLE_ULTRAPRIVACY + " = " + 1);
         }
     }
 
@@ -268,6 +278,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         boolean easyPrivacyEnabled = sharedPreferences.getBoolean("easyprivacy", true);
         boolean fanboyAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboy_annoyance_list", true);
         boolean fanboySocialBlockingListEnabled = sharedPreferences.getBoolean("fanboy_social_blocking_list", true);
+        boolean ultraPrivacyEnabled = sharedPreferences.getBoolean("ultraprivacy", true);
         boolean blockAllThirdPartyRequests = sharedPreferences.getBoolean("block_all_third_party_requests", false);
 
         // Create entries for the database fields.  The ID is created automatically.  The pinned SSL certificate information is not created unless added by the user.
@@ -281,6 +292,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainContentValues.put(ENABLE_EASYPRIVACY, easyPrivacyEnabled);
         domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, fanboyAnnoyanceListEnabled);
         domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, fanboySocialBlockingListEnabled);
+        domainContentValues.put(ENABLE_ULTRAPRIVACY, ultraPrivacyEnabled);
         domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, blockAllThirdPartyRequests);
         domainContentValues.put(USER_AGENT, "System default user agent");
         domainContentValues.put(FONT_SIZE, 0);
@@ -303,7 +315,8 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
 
     public void updateDomainExceptCertificate(int databaseId, String domainName, boolean javaScriptEnabled, boolean firstPartyCookiesEnabled, boolean thirdPartyCookiesEnabled, boolean domStorageEnabled,
                                               boolean formDataEnabled, boolean easyListEnabled, boolean easyPrivacyEnabled, boolean fanboysAnnoyanceEnabled, boolean fanboysSocialBlockingEnabled,
-                                              boolean blockAllThirdPartyRequests, String userAgent, int fontSize, int swipeToRefresh, int nightMode, int displayImages, boolean pinnedSslCertificate) {
+                                              boolean ultraPrivacyEnabled, boolean blockAllThirdPartyRequests, String userAgent, int fontSize, int swipeToRefresh, int nightMode, int displayImages,
+                                              boolean pinnedSslCertificate) {
 
         // Store the domain data in a `ContentValues`.
         ContentValues domainContentValues = new ContentValues();
@@ -319,6 +332,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainContentValues.put(ENABLE_EASYPRIVACY, easyPrivacyEnabled);
         domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, fanboysAnnoyanceEnabled);
         domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, fanboysSocialBlockingEnabled);
+        domainContentValues.put(ENABLE_ULTRAPRIVACY, ultraPrivacyEnabled);
         domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, blockAllThirdPartyRequests);
         domainContentValues.put(USER_AGENT, userAgent);
         domainContentValues.put(FONT_SIZE, fontSize);
@@ -339,9 +353,9 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
 
     public void updateDomainWithCertificate(int databaseId, String domainName, boolean javaScriptEnabled, boolean firstPartyCookiesEnabled, boolean thirdPartyCookiesEnabled, boolean domStorageEnabled,
                                             boolean formDataEnabled, boolean easyListEnabled, boolean easyPrivacyEnabled, boolean fanboysAnnoyanceEnabled, boolean fanboysSocialBlockingEnabled,
-                                            boolean blockAllThirdPartyRequests, String userAgent, int fontSize, int swipeToRefresh, int nightMode, int displayImages, boolean pinnedSslCertificate,
-                                            String sslIssuedToCommonName, String sslIssuedToOrganization, String sslIssuedToOrganizationalUnit, String sslIssuedByCommonName, String sslIssuedByOrganization,
-                                            String sslIssuedByOrganizationalUnit, long sslStartDate, long sslEndDate) {
+                                            boolean ultraPrivacyEnabled, boolean blockAllThirdPartyRequests, String userAgent, int fontSize, int swipeToRefresh, int nightMode, int displayImages,
+                                            boolean pinnedSslCertificate, String sslIssuedToCommonName, String sslIssuedToOrganization, String sslIssuedToOrganizationalUnit, String sslIssuedByCommonName,
+                                            String sslIssuedByOrganization, String sslIssuedByOrganizationalUnit, long sslStartDate, long sslEndDate) {
 
         // Store the domain data in a `ContentValues`.
         ContentValues domainContentValues = new ContentValues();
@@ -357,6 +371,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainContentValues.put(ENABLE_EASYPRIVACY, easyPrivacyEnabled);
         domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, fanboysAnnoyanceEnabled);
         domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, fanboysSocialBlockingEnabled);
+        domainContentValues.put(ENABLE_ULTRAPRIVACY, ultraPrivacyEnabled);
         domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, blockAllThirdPartyRequests);
         domainContentValues.put(USER_AGENT, userAgent);
         domainContentValues.put(FONT_SIZE, fontSize);

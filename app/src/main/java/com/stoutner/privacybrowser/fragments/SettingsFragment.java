@@ -66,6 +66,7 @@ public class SettingsFragment extends PreferenceFragment {
         final Preference easyPrivacyPreference = findPreference("easyprivacy");
         final Preference fanboyAnnoyanceListPreference = findPreference("fanboy_annoyance_list");
         final Preference fanboySocialBlockingListPreference = findPreference("fanboy_social_blocking_list");
+        final Preference ultraPrivacyPreference = findPreference("ultraprivacy");
         final Preference blockAllThirdPartyRequestsPreference = findPreference("block_all_third_party_requests");
         final Preference proxyThroughOrbotPreference = findPreference("proxy_through_orbot");
         final Preference torHomepagePreference = findPreference("tor_homepage");
@@ -421,6 +422,21 @@ public class SettingsFragment extends PreferenceFragment {
                 } else {
                     fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_light);
                 }
+            }
+        }
+
+        // Set the UltraPrivacy icon.
+        if (savedPreferences.getBoolean("ultraprivacy", true)) {
+            if (MainWebViewActivity.darkTheme) {
+                ultraPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_dark);
+            } else {
+                ultraPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_light);
+            }
+        } else {
+            if (MainWebViewActivity.darkTheme) {
+                ultraPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_dark);
+            } else {
+                ultraPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_light);
             }
         }
 
@@ -1015,6 +1031,23 @@ public class SettingsFragment extends PreferenceFragment {
                             fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_dark);
                         } else {
                             fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_light);
+                        }
+                    }
+                    break;
+
+                case "ultraprivacy":
+                    // Update the icon.
+                    if (sharedPreferences.getBoolean("ultraprivacy", true)) {
+                        if (MainWebViewActivity.darkTheme) {
+                            ultraPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_dark);
+                        } else {
+                            ultraPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_light);
+                        }
+                    } else {
+                        if (MainWebViewActivity.darkTheme) {
+                            ultraPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_dark);
+                        } else {
+                            ultraPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_light);
                         }
                     }
                     break;

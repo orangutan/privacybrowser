@@ -107,6 +107,7 @@ public class AboutTabFragment extends Fragment {
             TextView versionEasyPrivacyTextView = tabLayout.findViewById(R.id.about_version_easyprivacy);
             TextView versionFanboyAnnoyanceTextView = tabLayout.findViewById(R.id.about_version_fanboy_annoyance);
             TextView versionFanboySocialTextView = tabLayout.findViewById(R.id.about_version_fanboy_social);
+            TextView versionUltraPrivacyTextView = tabLayout.findViewById(R.id.about_version_ultraprivacy);
             TextView certificateIssuerDNTextView = tabLayout.findViewById(R.id.about_version_certificate_issuer_dn);
             TextView certificateSubjectDNTextView = tabLayout.findViewById(R.id.about_version_certificate_subject_dn);
             TextView certificateStartDateTextView = tabLayout.findViewById(R.id.about_version_certificate_start_date);
@@ -130,6 +131,7 @@ public class AboutTabFragment extends Fragment {
             String easyPrivacyLabel = getString(R.string.easyprivacy_label) + "  ";
             String fanboyAnnoyanceLabel = getString(R.string.fanboy_annoyance_label) + "  ";
             String fanboySocialLabel = getString(R.string.fanboy_social_label) + "  ";
+            String ultraPrivacyLabel = getString(R.string.ultraprivacy_label) + "  ";
             String issuerDNLabel = getString(R.string.issuer_dn) + "  ";
             String subjectDNLabel = getString(R.string.subject_dn) + "  ";
             String startDateLabel = getString(R.string.start_date) + "  ";
@@ -183,6 +185,7 @@ public class AboutTabFragment extends Fragment {
             SpannableStringBuilder easyPrivacyStringBuilder = new SpannableStringBuilder(easyPrivacyLabel + MainWebViewActivity.easyPrivacyVersion);
             SpannableStringBuilder fanboyAnnoyanceStringBuilder = new SpannableStringBuilder(fanboyAnnoyanceLabel + MainWebViewActivity.fanboysAnnoyanceVersion);
             SpannableStringBuilder fanboySocialStringBuilder = new SpannableStringBuilder(fanboySocialLabel + MainWebViewActivity.fanboysSocialVersion);
+            SpannableStringBuilder ultraPrivacyStringBuilder = new SpannableStringBuilder(ultraPrivacyLabel + MainWebViewActivity.ultraPrivacyVersion);
 
             // Create the `blueColorSpan` variable.
             ForegroundColorSpan blueColorSpan;
@@ -210,6 +213,7 @@ public class AboutTabFragment extends Fragment {
             easyPrivacyStringBuilder.setSpan(blueColorSpan, easyPrivacyLabel.length(), easyPrivacyStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             fanboyAnnoyanceStringBuilder.setSpan(blueColorSpan, fanboyAnnoyanceLabel.length(), fanboyAnnoyanceStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             fanboySocialStringBuilder.setSpan(blueColorSpan, fanboySocialLabel.length(), fanboySocialStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            ultraPrivacyStringBuilder.setSpan(blueColorSpan, ultraPrivacyLabel.length(), ultraPrivacyStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
             // Display the strings in the text boxes.
             versionNumberTextView.setText(version);
@@ -226,6 +230,7 @@ public class AboutTabFragment extends Fragment {
             versionEasyPrivacyTextView.setText(easyPrivacyStringBuilder);
             versionFanboyAnnoyanceTextView.setText(fanboyAnnoyanceStringBuilder);
             versionFanboySocialTextView.setText(fanboySocialStringBuilder);
+            versionUltraPrivacyTextView.setText(ultraPrivacyStringBuilder);
 
             // Build.VERSION.SECURITY_PATCH is only available for SDK_INT >= 23.
             if (Build.VERSION.SDK_INT >= 23) {
