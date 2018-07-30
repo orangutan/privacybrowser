@@ -207,6 +207,9 @@
     <!-- Bookmarks Contextual App Bar. -->
     <string name="one_selected">1 Selected</string>
     <string name="selected">Selected</string>  <!--This is a plural adjective.-->
+    <string name="selected_russian_ends_in_1">выбрана</string>
+    <string name="selected_russian_ends_in_2">выбраны</string>
+    <string name="selected_russian_everything_else">выбрано</string>
     <string name="move_up">Move Up</string>
     <string name="move_down">Move Down</string>
     <string name="edit">Edit</string>
@@ -214,6 +217,9 @@
     <string name="select_all">Select All</string>
     <string name="one_bookmark_deleted">1 Bookmark Deleted</string>
     <string name="bookmarks_deleted">Bookmarks Deleted</string>
+    <string name="bookmarks_deleted_russian_ends_in_1">закладка удалена</string>
+    <string name="bookmarks_deleted_russian_ends_in_2">закладки удалены</string>
+    <string name="bookmarks_deleted_russian_everything_else">акладок удалено</string>
     <string name="undo">Undo</string>
 
     <!-- Bookmarks Database View. -->

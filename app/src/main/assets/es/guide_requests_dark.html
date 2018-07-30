@@ -34,7 +34,7 @@
 
         <p><img class="center21" src="images/request_details.png"></p>
 
-        <p>Navegador Privado incluye cuatro <a href="https://easylist.to/">listas de bloqueo</a> basadas en la <a href="https://adblockplus.org/filters">sintaxis de Adblock</a>:
+        <p>Navegador Privado incluye cuatro <a href="https://easylist.to/">listas de bloqueo comunes</a> basadas en la <a href="https://adblockplus.org/filters">sintaxis de Adblock</a>:
             EasyList, EasyPrivacy, Lista molesta de Fanboy y Lista de bloqueo social de Fanboy.
             Estas listas de bloqueo son procesadas por Navegador Privado en las siguientes 22 sublistas, que verifican las solicitudes de recursos en el orden listado.</p>
 
@@ -73,8 +73,9 @@
             Esto puede conducir a veces a falsos positivos, en los que los recursos se permiten o bloquean de formas que no estaban previstas en la entrada original.
             Una descripción más detallada de cómo se procesan las entradas de la lista de bloqueo está disponible en <a href="https://www.stoutner.com/privacy-browser/blocklists/">stoutner.com</a>.</p>
 
-        <p>Navegador Privado tiene una quinta lista de bloqueo que bloquea todas las solicitudes de terceras partes.
-            Una solicitud sólo se considera de terceras partes si el dominio base de la solicitud es diferente del dominio base de la URL.
+        <p>Navegador Privado tiene 2 listas de bloqueo adicionales,
+            una llamada <a href="https://www.stoutner.com/privacy-browser/blocklists/ultraprivacy/">Ultra Privacidad</a> que bloquea rastreadores que permite EasyPrivacy,
+            y otra que bloquea todas las solicitudes de terceras partes. Una solicitud sólo se considera de terceras partes si el dominio base de la solicitud es diferente del dominio base de la URL.
             Por ejemplo, si <code>www.website.com</code> carga una imagen de <code>images.website.com</code>,
             esto no se bloquea como petición de una tercera parte porque ambos comparten el mismo dominio base de <code>website.com</code>.
             El bloqueo de todas las solicitudes de terceras partes aumenta la privacidad, pero esta lista de bloqueo está desactivada por defecto porque rompe un gran número de páginas web.</p>
