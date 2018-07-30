@@ -541,7 +541,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             }
 
             // Dismiss the undo delete SnackBar if it is shown.
-            if (undoDeleteSnackbar != null && undoDeleteSnackbar.isShown()) {
+            if ((undoDeleteSnackbar != null) && undoDeleteSnackbar.isShown()) {
                 undoDeleteSnackbar.dismiss();
 
                 // Create a runnable to return to the main activity.
@@ -579,7 +579,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             deleteMenuItem.setVisible(false);
         } else {  // The device is in single-paned mode and the domain list fragment is displayed.
             // Dismiss the undo delete SnackBar if it is shown.
-            if (undoDeleteSnackbar != null && undoDeleteSnackbar.isShown()) {
+            if ((undoDeleteSnackbar != null) && undoDeleteSnackbar.isShown()) {
                 undoDeleteSnackbar.dismiss();
 
                 // Create a runnable to return to the main activity.
@@ -598,7 +598,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
     @Override
     public void onAddDomain(AppCompatDialogFragment dialogFragment) {
         // Dismiss the undo delete snackbar if it is currently displayed.
-        if ((undoDeleteSnackbar != null) && (undoDeleteSnackbar.isShown())) {
+        if ((undoDeleteSnackbar != null) && undoDeleteSnackbar.isShown()) {
             undoDeleteSnackbar.dismiss();
         }
 
