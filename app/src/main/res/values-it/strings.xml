@@ -360,8 +360,10 @@
         <string name="fanboys_annoyance_list_summary">Blocca fastidiosi pop-up e collegamenti.  Include le liste Fanboy’s social blocking.</string>
         <string name="fanboys_social_blocking_list">Fanboy’s social blocking list</string>
         <string name="fanboys_social_blocking_list_summary">Blocca contenuti di terze parti sui social media .</string>
-    <string name="block_all_third_party_requests">Blocca tutte le richieste di Terze Parti</string>
-    <string name="block_all_third_party_requests_summary">Il blocco di tutte le richieste di Terze Parti aumenta privacy, ma impedisce la visualizzazione di molti siti web.</string>
+        <string name="ultraprivacy">UltraPrivacy</string>
+        <string name="ultraprivacy_summary">L\'UltraPrivacy blocca i tracciamenti che EasyPrivacy ignora perché potrebbero impedire la visualizzazione dei siti web.</string>
+        <string name="block_all_third_party_requests">Blocca tutte le richieste di Terze Parti</string>
+        <string name="block_all_third_party_requests_summary">Il blocco di tutte le richieste di Terze Parti aumenta privacy, ma impedisce la visualizzazione di molti siti web.</string>
     <string name="tor">Tor</string>
         <string name="proxy_through_orbot">Utilizza Proxy con Orbot</string>
         <string name="proxy_through_orbot_summary">Utilizza Proxy attraverso Orbot su localhost:8118.</string>
@@ -476,6 +478,7 @@
             <string name="easyprivacy_label">EasyPrivacy:</string>
             <string name="fanboy_annoyance_label">Fanboy’s Annoyance List:</string>
             <string name="fanboy_social_label">Fanboy’s Social Blocking List:</string>
+            <string name="ultraprivacy_label">UltraPrivacy:</string>
         <string name="package_signature">Firma del Pacchetto</string>
             <string name="issuer_dn">Emittente:</string>
             <string name="subject_dn">Soggetto:</string>

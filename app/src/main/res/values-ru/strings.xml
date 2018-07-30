@@ -360,6 +360,8 @@
         <string name="fanboys_annoyance_list_summary">Блокирует раздражающие всплывающие окна и ссылки.  Включает в себя Fanboy’s social blocking lists.</string>
         <string name="fanboys_social_blocking_list">Fanboy’s social blocking list</string>
         <string name="fanboys_social_blocking_list_summary">Блокирует содержимое социальных сетей.</string>
+        <string name="ultraprivacy">UltraPrivacy</string>
+        <string name="ultraprivacy_summary">UltraPrivacy блокирует трекеры, которые пропускает EasyPrivacy, чтобы не ломать веб-сайты.</string>
         <string name="block_all_third_party_requests">Блокировать все сторонние запросы</string>
         <string name="block_all_third_party_requests_summary">Блокировка всех сторонних запросов повышает конфиденциальность, но ломает многие веб-сайты.</string>
     <string name="tor">Tor</string>
@@ -474,6 +476,7 @@
             <string name="easyprivacy_label">EasyPrivacy:</string>
             <string name="fanboy_annoyance_label">Fanboy’s Annoyance List:</string>
             <string name="fanboy_social_label">Fanboy’s Social Blocking List:</string>
+            <string name="ultraprivacy_label">UltraPrivacy:</string>
         <string name="package_signature">Подпись пакета</string>
             <string name="issuer_dn">DN эмитента:</string>
             <string name="subject_dn">DN субъекта:</string>

@@ -1323,7 +1323,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Create an empty web resource response to be used if the resource request is blocked.
                 WebResourceResponse emptyWebResourceResponse = new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
 
-                // Reset `whiteListResultStringArray`.
+                // Reset the whitelist results tracker.
                 whiteListResultStringArray = null;
 
                 // Initialize the third party request tracker.
@@ -1393,6 +1393,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Check EasyList if it is enabled.
                 if (easyListEnabled) {
                     if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, easyList)) {
+                        // Reset the whitelist results tracker (because otherwise it will sometimes add results to the list due to a race condition).
+                        whiteListResultStringArray = null;
+
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse;
                     }
@@ -1401,6 +1404,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Check EasyPrivacy if it is enabled.
                 if (easyPrivacyEnabled) {
                     if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, easyPrivacy)) {
+                        // Reset the whitelist results tracker (because otherwise it will sometimes add results to the list due to a race condition).
+                        whiteListResultStringArray = null;
+
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse;
                     }
@@ -1409,11 +1415,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Check Fanboy’s Annoyance List if it is enabled.
                 if (fanboysAnnoyanceListEnabled) {
                     if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, fanboysAnnoyanceList)) {
+                        // Reset the whitelist results tracker (because otherwise it will sometimes add results to the list due to a race condition).
+                        whiteListResultStringArray = null;
+
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse;
                     }
                 } else if (fanboysSocialBlockingListEnabled){  // Only check Fanboy’s Social Blocking List if Fanboy’s Annoyance List is disabled.
                     if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, fanboysSocialList)) {
+                        // Reset the whitelist results tracker (because otherwise it will sometimes add results to the list due to a race condition).
+                        whiteListResultStringArray = null;
+
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse;
                     }
