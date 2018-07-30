@@ -507,6 +507,8 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                                 }
                             }
                         });
+
+                // Show the Snackbar.
                 undoDeleteSnackbar.show();
                 break;
         }

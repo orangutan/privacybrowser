@@ -96,8 +96,8 @@ public class SettingsFragment extends PreferenceFragment {
         hideSystemBarsPreference.setDependency("full_screen_browsing_mode");
 
         // Get Strings from the preferences.
-        String torSearchString = savedPreferences.getString("tor_search", "https://3g2upl4pq6kufc4m.onion/html/?q=");
-        String searchString = savedPreferences.getString("search", "https://duckduckgo.com/html/?q=");
+        String torSearchString = savedPreferences.getString("tor_search", "http://ulrn6sryqaifefld.onion/?q=");
+        String searchString = savedPreferences.getString("search", "https://searx.me/?q=");
 
         // Get booleans that are used in multiple places from the preferences.
         final boolean javaScriptEnabled = savedPreferences.getBoolean("javascript_enabled", false);
@@ -175,11 +175,11 @@ public class SettingsFragment extends PreferenceFragment {
         customUserAgentPreference.setEnabled(userAgentPreference.getSummary().equals(getString(R.string.custom_user_agent)));
 
 
-        // Set the Tor homepage URL as the summary text for the `tor_homepage` preference when the preference screen is loaded.  The default is DuckDuckGo: `https://3g2upl4pq6kufc4m.onion`.
-        torHomepagePreference.setSummary(savedPreferences.getString("tor_homepage", "https://3g2upl4pq6kufc4m.onion"));
+        // Set the Tor homepage URL as the summary text for the `tor_homepage` preference when the preference screen is loaded.  The default is Searx: `http://ulrn6sryqaifefld.onion/`.
+        torHomepagePreference.setSummary(savedPreferences.getString("tor_homepage", "http://ulrn6sryqaifefld.onion/"));
 
 
-        // Set the Tor search URL as the summary text for the Tor preference when the preference screen is loaded.  The default is `https://3g2upl4pq6kufc4m.onion/html/?q=`
+        // Set the Tor search URL as the summary text for the Tor preference when the preference screen is loaded.
         if (torSearchString.equals("Custom URL")) {
             // Use R.string.custom_url, which will be translated, instead of the array value, which will not.
             torSearchPreference.setSummary(R.string.custom_url);
@@ -195,7 +195,7 @@ public class SettingsFragment extends PreferenceFragment {
         torSearchCustomURLPreference.setEnabled(proxyThroughOrbot && torSearchString.equals("Custom URL"));
 
 
-        // Set the search URL as the summary text for the search preference when the preference screen is loaded.  The default is `https://duckduckgo.com/html/?q=`.
+        // Set the search URL as the summary text for the search preference when the preference screen is loaded.
         if (searchString.equals("Custom URL")) {
             // Use R.string.custom_url, which will be translated, instead of the array value, which will not.
             searchPreference.setSummary(R.string.custom_url);
@@ -219,7 +219,7 @@ public class SettingsFragment extends PreferenceFragment {
         clearCachePreference.setEnabled(!clearEverything);
 
         // Set the homepage URL as the summary text for the homepage preference.
-        homepagePreference.setSummary(savedPreferences.getString("homepage", "https://duckduckgo.com/?kao=-1&amp;kak=-1"));
+        homepagePreference.setSummary(savedPreferences.getString("homepage", "https://searx.me/"));
 
         // Set the default font size as the summary text for the preference.
         defaultFontSizePreference.setSummary(savedPreferences.getString("default_font_size", "100") + "%%");
@@ -1072,7 +1072,7 @@ public class SettingsFragment extends PreferenceFragment {
                 case "proxy_through_orbot":
                     // Get current settings.
                     boolean currentProxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
-                    String currentTorSearchString = sharedPreferences.getString("tor_search", "https://3g2upl4pq6kufc4m.onion/html/?q=");
+                    String currentTorSearchString = sharedPreferences.getString("tor_search", "http://ulrn6sryqaifefld.onion/?q=");
 
                     // Enable the Tor custom URL search option only if `currentProxyThroughOrbot` is true and the search is set to `Custom URL`.
                     torSearchCustomURLPreference.setEnabled(currentProxyThroughOrbot && currentTorSearchString.equals("Custom URL"));
@@ -1119,13 +1119,13 @@ public class SettingsFragment extends PreferenceFragment {
                     break;
 
                 case "tor_homepage":
-                    // Set the new tor homepage URL as the summary text for the `tor_homepage` preference.  The default is DuckDuckGo:  `https://3g2upl4pq6kufc4m.onion`.
-                    torHomepagePreference.setSummary(sharedPreferences.getString("tor_homepage", "https://3g2upl4pq6kufc4m.onion"));
+                    // Set the new tor homepage URL as the summary text for the `tor_homepage` preference.  The default is Searx:  `http://ulrn6sryqaifefld.onion/`.
+                    torHomepagePreference.setSummary(sharedPreferences.getString("tor_homepage", "http://ulrn6sryqaifefld.onion/"));
                     break;
 
                 case "tor_search":
                     // Get the present search string.
-                    String presentTorSearchString = sharedPreferences.getString("tor_search", "https://3g2upl4pq6kufc4m.onion/html/?q=");
+                    String presentTorSearchString = sharedPreferences.getString("tor_search", "http://ulrn6sryqaifefld.onion/?q=");
 
                     // Update the preferences.
                     if (presentTorSearchString.equals("Custom URL")) {
@@ -1164,7 +1164,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                 case "search":
                     // Store the new search string.
-                    String newSearchString = sharedPreferences.getString("search", "https://duckduckgo.com/html/?q=");
+                    String newSearchString = sharedPreferences.getString("search", "https://searx.me/?q=");
 
                     // Update `searchPreference` and `searchCustomURLPreference`.
                     if (newSearchString.equals("Custom URL")) {  // `Custom URL` is selected.
@@ -1447,8 +1447,8 @@ public class SettingsFragment extends PreferenceFragment {
                     break;
 
                 case "homepage":
-                    // Set the new homepage URL as the summary text for the Homepage preference.  The default is `https://www.duckduckgo.com`.
-                    homepagePreference.setSummary(sharedPreferences.getString("homepage", "https://www.duckduckgo.com"));
+                    // Set the new homepage URL as the summary text for the Homepage preference.
+                    homepagePreference.setSummary(sharedPreferences.getString("homepage", "https://searx.me/"));
                     break;
 
                 case "default_font_size":

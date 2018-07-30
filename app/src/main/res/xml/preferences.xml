@@ -142,7 +142,7 @@
         <EditTextPreference
             android:key="tor_homepage"
             android:title="@string/tor_homepage"
-            android:defaultValue="https://3g2upl4pq6kufc4m.onion/"
+            android:defaultValue="http://ulrn6sryqaifefld.onion/"
             android:inputType="textUri" />
 
         <ListPreference
@@ -150,7 +150,7 @@
             android:title="@string/tor_search"
             android:entries="@array/tor_search_entries"
             android:entryValues="@array/tor_search_entry_values"
-            android:defaultValue="https://3g2upl4pq6kufc4m.onion/html/?q=" />
+            android:defaultValue="http://ulrn6sryqaifefld.onion/?q=" />
 
         <!--suppress AndroidDomInspection -->
         <!--`suppress AndroidDomInspection` removes the error about the default value being blank. -->
@@ -170,7 +170,7 @@
             android:title="@string/search"
             android:entries="@array/search_entries"
             android:entryValues="@array/search_entry_values"
-            android:defaultValue="https://duckduckgo.com/html/?q="
+            android:defaultValue="https://searx.me/?q="
             android:icon="?attr/searchIcon" />
 
         <!--suppress AndroidDomInspection -->
@@ -247,7 +247,7 @@
         <EditTextPreference
             android:key="homepage"
             android:title="@string/homepage"
-            android:defaultValue="https://duckduckgo.com/?kao=-1&amp;kak=-1"
+            android:defaultValue="https://searx.me/"
             android:inputType="textUri"
             android:icon="?attr/homepageIcon" />
 

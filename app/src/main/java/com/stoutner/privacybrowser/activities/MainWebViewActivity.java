@@ -3511,11 +3511,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Store the values from the shared preferences in variables.
-        String homepageString = sharedPreferences.getString("homepage", "https://start.duckduckgo.com");
-        String torHomepageString = sharedPreferences.getString("tor_homepage", "https://3g2upl4pq6kufc4m.onion");
-        String torSearchString = sharedPreferences.getString("tor_search", "https://3g2upl4pq6kufc4m.onion/html/?q=");
+        String homepageString = sharedPreferences.getString("homepage", "https://searx.me/");
+        String torHomepageString = sharedPreferences.getString("tor_homepage", "http://ulrn6sryqaifefld.onion/");
+        String torSearchString = sharedPreferences.getString("tor_search", "http://ulrn6sryqaifefld.onion/?q=");
         String torSearchCustomURLString = sharedPreferences.getString("tor_search_custom_url", "");
-        String searchString = sharedPreferences.getString("search", "https://duckduckgo.com/html/?q=");
+        String searchString = sharedPreferences.getString("search", "https://searx.me/?q=");
         String searchCustomURLString = sharedPreferences.getString("search_custom_url", "");
         incognitoModeEnabled = sharedPreferences.getBoolean("incognito_mode", false);
         boolean doNotTrackEnabled = sharedPreferences.getBoolean("do_not_track", false);

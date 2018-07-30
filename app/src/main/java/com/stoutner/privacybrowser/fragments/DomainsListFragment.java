@@ -76,7 +76,7 @@ public class DomainsListFragment extends Fragment {
             Bundle argumentsBundle = new Bundle();
             argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, DomainsActivity.currentDomainDatabaseId);
 
-            // Add `argumentsBundle` to `domainSettingsFragment`.
+            // Add the arguments bundle to the domain settings fragment.
             DomainSettingsFragment domainSettingsFragment = new DomainSettingsFragment();
             domainSettingsFragment.setArguments(argumentsBundle);
 
@@ -84,7 +84,7 @@ public class DomainsListFragment extends Fragment {
             if (DomainsActivity.twoPanedMode) {  // The device in in two-paned mode.
                 // enable `deleteMenuItem` if the system is not waiting for a `Snackbar` to be dismissed.
                 if (!DomainsActivity.dismissingSnackbar) {
-                    // Enable `deleteMenuItem`.
+                    // Enable the delete menu item.
                     DomainsActivity.deleteMenuItem.setEnabled(true);
 
                     // Set the delete icon according to the theme.
@@ -95,7 +95,7 @@ public class DomainsListFragment extends Fragment {
                     }
                 }
 
-                // Display `domainSettingsFragment`.
+                // Display the domain settings fragment.
                 supportFragmentManager.beginTransaction().replace(R.id.domain_settings_fragment_container, domainSettingsFragment).commit();
             } else { // The device in in single-paned mode
                 // Show `deleteMenuItem` if the system is not waiting for a `Snackbar` to be dismissed.
@@ -103,11 +103,11 @@ public class DomainsListFragment extends Fragment {
                     DomainsActivity.deleteMenuItem.setVisible(true);
                 }
 
-                // Hide `add_domain_fab`.
+                // Hide the add domain FAB.
                 FloatingActionButton addDomainFAB = getActivity().findViewById(R.id.add_domain_fab);
                 addDomainFAB.setVisibility(View.GONE);
 
-                // Display `domainSettingsFragment`.
+                // Display the domain settings fragment.
                 supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
             }
         });

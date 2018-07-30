@@ -376,6 +376,7 @@
         <string name="tor_homepage">Домашняя страница Tor</string>
         <string name="tor_search">Поиск Tor</string>
         <string-array name="tor_search_entries">
+            <item>Searx</item>
             <item>DuckDuckGo - JavaScript выключен</item>
             <item>DuckDuckGo - JavaScript включен</item>
             <item>Настраиваемый</item>
@@ -383,12 +384,12 @@
         <string name="tor_search_custom_url">Настраиваемый URL поиска Tor</string>
     <string name="search">Поиск</string>
         <string-array name="search_entries">
+            <item>Searx</item>
+            <item>StartPage</item>
             <item>DuckDuckGo - JavaScript выключен</item>
             <item>DuckDuckGo - JavaScript включен</item>
-            <item>StartPage</item>
             <item>Qwant - JavaScript выключен</item>
             <item>Qwant - JavaScript включен</item>
-            <item>Searx</item>
             <item>Google</item>
             <item>Bing</item>
             <item>Yahoo - JavaScript выключен</item>

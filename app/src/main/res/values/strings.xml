@@ -408,11 +408,13 @@
         <string name="tor_homepage">Tor homepage</string>
         <string name="tor_search">Tor search</string>
         <string-array name="tor_search_entries">
+            <item>Searx</item>
             <item>DuckDuckGo - JavaScript disabled</item>
             <item>DuckDuckGo - JavaScript enabled</item>
             <item>Custom</item>
         </string-array>
         <string-array name="tor_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
+            <item>http://ulrn6sryqaifefld.onion/?q=</item>
             <item>https://3g2upl4pq6kufc4m.onion/html/?q=</item>
             <item>https://3g2upl4pq6kufc4m.onion/?q=</item>
             <item>Custom URL</item><!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
@@ -420,12 +422,12 @@
         <string name="tor_search_custom_url">Tor search custom URL</string>
     <string name="search">Search</string>
         <string-array name="search_entries">
+            <item>Searx</item>
+            <item>StartPage</item>
             <item>DuckDuckGo - JavaScript disabled</item>
             <item>DuckDuckGo - JavaScript enabled</item>
-            <item>StartPage</item>
             <item>Qwant - JavaScript disabled</item>
             <item>Qwant - JavaScript enabled</item>
-            <item>Searx</item>
             <item>Google</item>
             <item>Bing</item>
             <item>Yahoo - JavaScript disabled</item>
@@ -433,12 +435,12 @@
             <item>Custom</item>
         </string-array>
         <string-array name="search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
+            <item>https://searx.me/?q=</item>
+            <item>https://www.startpage.com/do/search?query=</item>
             <item>https://duckduckgo.com/html/?q=</item>
             <item>https://duckduckgo.com/?q=</item>
-            <item>https://www.startpage.com/do/search?query=</item>
             <item>https://lite.qwant.com/?q=</item>
             <item>https://www.qwant.com/?q=</item>
-            <item>https://searx.me/?q=</item>
             <item>https://www.google.com/search?q=</item>
             <item>https://www.bing.com/search?q=</item>
             <item>https://search.yahoo.com/mobile/s?nojs=1&amp;p=</item>

@@ -315,14 +315,20 @@
     <string name="tor">Tor</string>
         <string name="proxy_through_orbot">Proxy durch Orbot</string>
         <string name="proxy_through_orbot_summary">Sämtlichen Web-Verkehr durch Orbot mittels localhost:8118 leiten.</string>
-    <string name="search">Suche</string>
-        <string-array name="search_entries">
+        <string-array name="tor_search_entries">
+            <item>Searx</item>
             <item>DuckDuckGo - JavaScript disabled</item>
             <item>DuckDuckGo - JavaScript enabled</item>
+            <item>Eigene</item>
+        </string-array>
+    <string name="search">Suche</string>
+        <string-array name="search_entries">
+            <item>Searx</item>
             <item>StartPage</item>
+            <item>DuckDuckGo - JavaScript disabled</item>
+            <item>DuckDuckGo - JavaScript enabled</item>
             <item>Qwant - JavaScript disabled</item>
             <item>Qwant - JavaScript enabled</item>
-            <item>Searx</item>
             <item>Google</item>
             <item>Bing</item>
             <item>Yahoo - JavaScript disabled</item>

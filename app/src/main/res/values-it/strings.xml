@@ -376,6 +376,7 @@
         <string name="tor_homepage">Tor Homepage</string>
         <string name="tor_search">Tor - Ricerca</string>
         <string-array name="tor_search_entries">
+            <item>Searx</item>
             <item>DuckDuckGo - JavaScript disabilitato</item>
             <item>DuckDuckGo - JavaScript abilitato</item>
             <item>Personalizzata</item>
@@ -383,12 +384,12 @@
         <string name="tor_search_custom_url">Tor - Ricerca personalizzata</string>
     <string name="search">Ricerca</string>
         <string-array name="search_entries">
+            <item>Searx</item>
+            <item>StartPage</item>
             <item>DuckDuckGo - JavaScript disabilitato</item>
             <item>DuckDuckGo - JavaScript abilitato</item>
-            <item>StartPage</item>
             <item>Qwant - JavaScript disabilitato</item>
             <item>Qwant - JavaScript abilitato</item>
-            <item>Searx</item>
             <item>Google</item>
             <item>Bing</item>
             <item>Yahoo - JavaScript disabilitato</item>
