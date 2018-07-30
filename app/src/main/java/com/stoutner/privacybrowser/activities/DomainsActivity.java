@@ -19,6 +19,7 @@
 
 package com.stoutner.privacybrowser.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -69,6 +70,9 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
     // `dismissingSnackbar` is public static so it can be accessed from `DomainsListFragment`.  It is also used in `onOptionsItemSelected()`.
     public static boolean dismissingSnackbar;
+
+    // `closeActivityAfterDismissingSnackbar` is used in `onOptionsItemSelected()`, and `onBackPressed()`.
+    private boolean closeActivityAfterDismissingSnackbar;
 
     // `context` is used in `onCreate()`, `onOptionsItemSelected()`, and `onAddDomain()`.
     private Context context;
@@ -284,17 +288,11 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
                     // Dismiss the undo delete `SnackBar` if it is shown.
                     if (undoDeleteSnackbar != null && undoDeleteSnackbar.isShown()) {
+                        // Set the close flag.
+                        closeActivityAfterDismissingSnackbar = true;
+
+                        // Dismiss the snackbar.
                         undoDeleteSnackbar.dismiss();
-
-                        // Create a `Runnable` to return to the main activity.
-                        Runnable navigateHomeRunnable = () -> {
-                            // Go home.
-                            NavUtils.navigateUpFromSameTask(this);
-                        };
-
-                        // Navigate home after 300 milliseconds to make sure that the previous domain has been deleted from the database.
-                        Handler handler = new Handler();
-                        handler.postDelayed(navigateHomeRunnable, 300);
                     } else {
                         // Go home.
                         NavUtils.navigateUpFromSameTask(this);
@@ -325,17 +323,11 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                 } else {  // The device is in single-paned mode and `DomainsListFragment` is displayed.
                     // Dismiss the undo delete `SnackBar` if it is shown.
                     if (undoDeleteSnackbar != null && undoDeleteSnackbar.isShown()) {
+                        // Set the close flag.
+                        closeActivityAfterDismissingSnackbar = true;
+
+                        // Dismiss the snackbar.
                         undoDeleteSnackbar.dismiss();
-
-                        // Create a `Runnable` to return to the main activity.
-                        Runnable navigateHomeRunnable = () -> {
-                            // Go home.
-                            NavUtils.navigateUpFromSameTask(this);
-                        };
-
-                        // Navigate home after 300 milliseconds to make sure that the previous domain has been deleted from the database.
-                        Handler handler = new Handler();
-                        handler.postDelayed(navigateHomeRunnable, 300);
                     } else {
                         // Go home.
                         NavUtils.navigateUpFromSameTask(this);
@@ -399,6 +391,9 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
                 // Update the `ListView`.
                 domainsListView.setAdapter(domainsPendingDeleteCursorAdapter);
+
+                // Get a handle for the activity.
+                Activity activity = this;
 
                 // Display a `Snackbar`.
                 undoDeleteSnackbar = Snackbar.make(domainsListView, R.string.domain_deleted, Snackbar.LENGTH_LONG)
@@ -473,7 +468,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                                         // Delete the selected domain.
                                         domainsDatabaseHelper.deleteDomain(databaseIdToDelete);
 
-                                        // enable `deleteMenuItem` if the system was waiting for a `Snackbar` to be dismissed.
+                                        // Enable the delete menu item if the system was waiting for a snackbar to be dismissed.
                                         if (dismissingSnackbar) {
                                             // Create a `Runnable` to enable the delete menu item.
                                             Runnable enableDeleteMenuItemRunnable = () -> {
@@ -497,10 +492,17 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                                                 dismissingSnackbar = false;
                                             };
 
-                                            // Run `enableDeleteMenuItemRunnable` after 100 milliseconds to make sure that the previous domain has been deleted from the database.
+                                            // Enable the delete menu icon after 100 milliseconds to make sure that the previous domain has been deleted from the database.
                                             Handler handler = new Handler();
                                             handler.postDelayed(enableDeleteMenuItemRunnable, 100);
                                         }
+
+                                        // Close the activity if back was pressed.
+                                        if (closeActivityAfterDismissingSnackbar) {
+                                            // Go home.
+                                            NavUtils.navigateUpFromSameTask(activity);
+                                        }
+
                                         break;
                                 }
                             }
@@ -542,14 +544,11 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
             // Dismiss the undo delete SnackBar if it is shown.
             if ((undoDeleteSnackbar != null) && undoDeleteSnackbar.isShown()) {
+                // Set the close flag.
+                closeActivityAfterDismissingSnackbar = true;
+
+                // Dismiss the snackbar.
                 undoDeleteSnackbar.dismiss();
-
-                // Create a runnable to return to the main activity.
-                Runnable navigateHomeRunnable = super::onBackPressed;
-
-                // Navigate home after 300 milliseconds to make sure that the previous domain has been deleted from the database.
-                Handler handler = new Handler();
-                handler.postDelayed(navigateHomeRunnable, 300);
             } else {
                 // Pass `onBackPressed()` to the system.
                 super.onBackPressed();
@@ -580,14 +579,11 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         } else {  // The device is in single-paned mode and the domain list fragment is displayed.
             // Dismiss the undo delete SnackBar if it is shown.
             if ((undoDeleteSnackbar != null) && undoDeleteSnackbar.isShown()) {
+                // Set the close flag.
+                closeActivityAfterDismissingSnackbar = true;
+
+                // Dismiss the snackbar.
                 undoDeleteSnackbar.dismiss();
-
-                // Create a runnable to return to the main activity.
-                Runnable navigateHomeRunnable = super::onBackPressed;
-
-                // Navigate home after 300 milliseconds to make sure that the previous domain has been deleted from the database.
-                Handler handler = new Handler();
-                handler.postDelayed(navigateHomeRunnable, 300);
             } else {
                 // Pass `onBackPressed()` to the system.
                 super.onBackPressed();
