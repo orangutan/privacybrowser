@@ -1,0 +1,11 @@
+• Change the default homepage and search engine to Searx.me.
+• Add UltraPrivacy to the blocklists.
+• Add an option to block all third-party resource requests.
+• Add blocklist controls to the options menu.
+• Add a Guide tab explaining the Requests activity.
+• Fix the “Waiting for Orbot” message.
+• Fix two bugs in the blocklist processing.
+• Fix two problems with full screen video mode.
+• Updated Italian translation provided by Francesco Buratti.
+• Updated Russian translation.
+• Updated Spanish translation provided by Jose A. León Becerra.
