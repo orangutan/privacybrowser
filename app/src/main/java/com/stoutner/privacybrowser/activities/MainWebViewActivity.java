@@ -198,9 +198,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public static String fanboysSocialVersion;
     public static String ultraPrivacyVersion;
 
-    // The request items are public static so they can be accessed by `BlockListHelper`, `RequestsArrayAdapter`, and `ViewRequestsDialog`.  They are also used in `onCreate()`.
+    // The request items are public static so they can be accessed by `BlockListHelper`, `RequestsArrayAdapter`, and `ViewRequestsDialog`.  They are also used in `onCreate()` and `onPrepareOptionsMenu()`.
     public static List<String[]> resourceRequests;
     public static String[] whiteListResultStringArray;
+    int easyListBlockedRequests;
+    int easyPrivacyBlockedRequests;
+    int fanboysAnnoyanceListBlockedRequests;
+    int fanboysSocialBlockingListBlockedRequests;
+    int ultraPrivacyBlockedRequests;
+    int thirdPartyBlockedRequests;
+
     public final static int REQUEST_DISPOSITION = 0;
     public final static int REQUEST_URL = 1;
     public final static int REQUEST_BLOCKLIST = 2;
@@ -882,27 +889,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @Override
             public void onDrawerStateChanged(int newState) {
                 if ((newState == DrawerLayout.STATE_SETTLING) || (newState == DrawerLayout.STATE_DRAGGING)) {  // The drawer is opening or closing.
-                    // Initialize a the blocked requests counter.
-                    int blockedRequests = 0;
-
-                    // Count the number of blocked requests.
-                    for (int i = 0; i < resourceRequests.size(); i++) {
-                        // Add the blocked requests.
-                        if (Integer.valueOf(resourceRequests.get(i)[REQUEST_DISPOSITION]) == REQUEST_BLOCKED) {
-                            blockedRequests++;
-                        }
-
-                        // Add the third-party requests if they are blocked.
-                        if (blockAllThirdPartyRequests && (Integer.valueOf(resourceRequests.get(i)[REQUEST_DISPOSITION]) == REQUEST_THIRD_PARTY)) {
-                            blockedRequests++;
-                        }
-                    }
+                    // Calculate the total blocked requests counter.
+                    int totalBlockedRequests = easyListBlockedRequests + easyPrivacyBlockedRequests + fanboysAnnoyanceListBlockedRequests + fanboysSocialBlockingListBlockedRequests +
+                            ultraPrivacyBlockedRequests + thirdPartyBlockedRequests;
 
                     // Update the back, forward, history, and requests menu items.
                     navigationBackMenuItem.setEnabled(mainWebView.canGoBack());
                     navigationForwardMenuItem.setEnabled(mainWebView.canGoForward());
                     navigationHistoryMenuItem.setEnabled((mainWebView.canGoBack() || mainWebView.canGoForward()));
-                    navigationRequestsMenuItem.setTitle(getResources().getString(R.string.requests) + " - " + blockedRequests);
+                    navigationRequestsMenuItem.setTitle(getResources().getString(R.string.requests) + " - " + totalBlockedRequests);
 
                     // Hide the keyboard (if displayed) so we can see the navigation menu.  `0` indicates no additional flags.
                     inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
@@ -1369,6 +1364,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Block third-party requests if enabled.
                 if (isThirdPartyRequest && blockAllThirdPartyRequests) {
+                    // Increment the third-party blocked requests counter.
+                    thirdPartyBlockedRequests++;
+
                     // Add the request to the log.
                     resourceRequests.add(new String[]{String.valueOf(REQUEST_THIRD_PARTY), url});
 
@@ -1379,6 +1377,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Check UltraPrivacy if it is enabled.
                 if (ultraPrivacyEnabled) {
                     if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, ultraPrivacy)) {
+                        // Increment the UltraPrivacy blocked requests counter.
+                        ultraPrivacyBlockedRequests++;
+
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse;
                     }
@@ -1396,6 +1397,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Check EasyList if it is enabled.
                 if (easyListEnabled) {
                     if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, easyList)) {
+                        // Increment the EasyList blocked requests counter.
+                        easyListBlockedRequests++;
+
                         // Reset the whitelist results tracker (because otherwise it will sometimes add results to the list due to a race condition).
                         whiteListResultStringArray = null;
 
@@ -1407,6 +1411,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Check EasyPrivacy if it is enabled.
                 if (easyPrivacyEnabled) {
                     if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, easyPrivacy)) {
+                        // Increment the EasyPrivacy blocked requests counter.
+                        easyPrivacyBlockedRequests++;
+
                         // Reset the whitelist results tracker (because otherwise it will sometimes add results to the list due to a race condition).
                         whiteListResultStringArray = null;
 
@@ -1418,6 +1425,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Check Fanboy’s Annoyance List if it is enabled.
                 if (fanboysAnnoyanceListEnabled) {
                     if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, fanboysAnnoyanceList)) {
+                        // Increment the Fanboy's Annoyance List blocked requests counter.
+                        fanboysAnnoyanceListBlockedRequests++;
+
                         // Reset the whitelist results tracker (because otherwise it will sometimes add results to the list due to a race condition).
                         whiteListResultStringArray = null;
 
@@ -1426,6 +1436,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     }
                 } else if (fanboysSocialBlockingListEnabled){  // Only check Fanboy’s Social Blocking List if Fanboy’s Annoyance List is disabled.
                     if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, fanboysSocialList)) {
+                        // Increment the Fanboy's Social Blocking List blocked requests counter.
+                        fanboysSocialBlockingListBlockedRequests++;
+
                         // Reset the whitelist results tracker (because otherwise it will sometimes add results to the list due to a race condition).
                         whiteListResultStringArray = null;
 
@@ -1461,6 +1474,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 // Reset the list of resource requests.
                 resourceRequests.clear();
+
+                // Initialize the counters for requests blocked by each blocklist.
+                easyListBlockedRequests = 0;
+                easyPrivacyBlockedRequests = 0;
+                fanboysAnnoyanceListBlockedRequests = 0;
+                fanboysSocialBlockingListBlockedRequests = 0;
+                ultraPrivacyBlockedRequests = 0;
+                thirdPartyBlockedRequests = 0;
 
                 // If night mode is enabled, hide `mainWebView` until after the night mode CSS is applied.
                 if (nightMode) {
@@ -1955,6 +1976,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Enable Clear Data if any of the submenu items are enabled.
         clearDataMenuItem.setEnabled(clearCookiesMenuItem.isEnabled() || clearDOMStorageMenuItem.isEnabled() || clearFormDataMenuItem.isEnabled());
+
+        // Update the display names for the blocklists with the number of blocked requests.
+        easyListMenuItem.setTitle(easyListBlockedRequests + " - " + getString(R.string.easylist));
+        easyPrivacyMenuItem.setTitle(easyPrivacyBlockedRequests + " - " + getString(R.string.easyprivacy));
+        fanboysAnnoyanceListMenuItem.setTitle(fanboysAnnoyanceListBlockedRequests + " - " + getString(R.string.fanboys_annoyance_list));
+        fanboysSocialBlockingListMenuItem.setTitle(fanboysSocialBlockingListBlockedRequests + " - " + getString(R.string.fanboys_social_blocking_list));
+        ultraPrivacyMenuItem.setTitle(ultraPrivacyBlockedRequests + " - " + getString(R.string.ultraprivacy));
+        blockAllThirdParyRequestsMenuItem.setTitle(thirdPartyBlockedRequests + " - " + getString(R.string.block_all_third_party_requests));
 
         // Disable Fanboy's Social Blocking List if Fanboy's Annoyance List is checked.
         fanboysSocialBlockingListMenuItem.setEnabled(!fanboysAnnoyanceListEnabled);
