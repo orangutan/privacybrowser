@@ -75,7 +75,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
     public static final int DISPLAY_WEBPAGE_IMAGES_ENABLED = 1;
     public static final int DISPLAY_WEBPAGE_IMAGES_DISABLED = 2;
 
-    private Context appContext;
+    private final Context appContext;
 
     // Initialize the database.  The lint warnings for the unused parameters are suppressed.
     public DomainsDatabaseHelper(Context context, @SuppressWarnings("UnusedParameters") String name, SQLiteDatabase.CursorFactory cursorFactory, @SuppressWarnings("UnusedParameters") int version) {

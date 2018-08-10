@@ -1,11 +1,11 @@
-• Change the default homepage and search engine to Searx.me.
-• Add UltraPrivacy to the blocklists.
-• Add an option to block all third-party resource requests.
-• Add blocklist controls to the options menu.
-• Add a Guide tab explaining the Requests activity.
-• Fix the “Waiting for Orbot” message.
-• Fix two bugs in the blocklist processing.
-• Fix two problems with full screen video mode.
+• Modifica della home-page e del motore di ricerca di default in Searx.me.
+• Aggiunta la UltraPrivacy alle blocklist.
+• Aggiunta di un'opzione per bloccare tutte le richieste di risorse di terze parti.
+• Aggiunti i controlli delle blocklist al menu delle opzioni.
+• Aggiunta una scheda nella Guida per descrivere la scheda delle richieste.
+• Correzione del messaggio “In attesa di Orbot”.
+• Correzione di due bachi nel processo delle blocklist.
+• Correzione di due problemi nella modalità video a schermo intero.
 • Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
 • Aggiornamento della traduzione Russo.
 • Aggiornamento della traduzione Spagnola fornita da Jose A. León Becerra.

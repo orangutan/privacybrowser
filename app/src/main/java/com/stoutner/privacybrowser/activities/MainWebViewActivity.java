@@ -1935,6 +1935,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         if (Build.VERSION.SDK_INT < 26) {
             WebViewDatabase mainWebViewDatabase = WebViewDatabase.getInstance(this);
             clearFormDataMenuItem.setEnabled(mainWebViewDatabase.hasFormData());
+        } else {
+            // Disable clear form data because it is not supported on current version of Android.
+            clearFormDataMenuItem.setEnabled(false);
         }
 
         // Enable Clear Data if any of the submenu items are enabled.

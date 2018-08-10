@@ -62,7 +62,7 @@ import java.util.Locale;
 
 public class ViewSourceActivity extends AppCompatActivity {
     // `activity` is used in `onCreate()` and `goBack()`.
-    Activity activity;
+    private Activity activity;
 
     // The color spans are used in `onCreate()` and `highlightUrlText()`.
     private ForegroundColorSpan redColorSpan;
