@@ -20,7 +20,6 @@
 package com.stoutner.privacybrowser.activities;
 
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 
@@ -45,8 +44,7 @@ public class SettingsActivity extends AppCompatActivity {
         // Run the default commands.
         super.onCreate(savedInstanceState);
 
-        // Display SettingsFragment.
-        PreferenceFragment settingsFragment = new SettingsFragment();
-        getFragmentManager().beginTransaction().replace(android.R.id.content, settingsFragment).commit();
+        // Display the settings fragment.
+        getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
     }
 }

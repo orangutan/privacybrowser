@@ -374,6 +374,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `ignorePinnedSslCertificateForDomain` is used in `onCreate()`, `onSslMismatchProceed()`, and `applyDomainSettings()`.
     private boolean ignorePinnedSslCertificate;
 
+    // `orbotStatusBroadcastReciever` is used in `onCreate()` and `onDestroy()`.
+    private BroadcastReceiver orbotStatusBroadcastReceiver;
+
     // `waitingForOrbot` is used in `onCreate()`, `onResume()`, and `applyAppSettings()`.
     private boolean waitingForOrbot;
 
@@ -565,7 +568,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         waitingForOrbot = false;
 
         // Create an Orbot status `BroadcastReceiver`.
-        BroadcastReceiver orbotStatusBroadcastReceiver = new BroadcastReceiver() {
+        orbotStatusBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 // Store the content of the status message in `orbotStatus`.
@@ -1173,7 +1176,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Replace the header that `WebView` creates for `X-Requested-With` with a null value.  The default value is the application ID (com.stoutner.privacybrowser.standard).
         customHeaders.put("X-Requested-With", "");
 
-        // Initialize the default preference values the first time the program is run.  `this` is the context.  `false` keeps this command from resetting any current preferences back to default.
+        // Initialize the default preference values the first time the program is run.  `false` keeps this command from resetting any current preferences back to default.
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         // Get the intent that started the app.
@@ -1800,6 +1803,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void onPause() {
+        // Run the default commands.
         super.onPause();
 
         // Pause `mainWebView`.
@@ -1813,6 +1817,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Pause the ad.
             AdHelper.pauseAd(findViewById(R.id.adview));
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        // Unregister the Orbot status broadcast receiver.
+        this.unregisterReceiver(orbotStatusBroadcastReceiver);
+
+        // Run the default commands.
+        super.onDestroy();
     }
 
     @Override

@@ -42,7 +42,10 @@ public class SettingsFragment extends PreferenceFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // Run the default commands.
         super.onCreate(savedInstanceState);
+
+        // Load the preferences from the XML file.
         addPreferencesFromResource(R.xml.preferences);
 
         // Get a handle for the context.
