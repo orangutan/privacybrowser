@@ -153,6 +153,7 @@
         <string name="privacy_browser_web_page">Privacy Browser Web Page</string>
     <string name="add_to_home_screen">Add to Home Screen</string>
     <string name="refresh">Refresh</string>
+    <string name="stop">Stop</string>
 
     <!-- Context Menus. -->
     <string name="load_url">Load URL</string>

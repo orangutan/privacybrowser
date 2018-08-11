@@ -411,6 +411,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `mainMenu` is used in `onCreateOptionsMenu()` and `updatePrivacyIcons()`.
     private Menu mainMenu;
 
+    // `refreshMenuItem` is used in `onCreate()` and `onCreateOptionsItem()`.
+    private MenuItem refreshMenuItem;
+
+    // `displayAdditionalAppBarIcons` is used in `onCreate()` and `onCreateOptionsMenu()`.
+    private boolean displayAdditionalAppBarIcons;
+
     // `drawerToggle` is used in `onCreate()`, `onPostCreate()`, `onConfigurationChanged()`, `onNewIntent()`, and `onNavigationItemSelected()`.
     private ActionBarDrawerToggle drawerToggle;
 
@@ -437,7 +443,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `mainWebViewRelativeLayout` is used in `onCreate()` and `onNavigationItemSelected()`.
     private RelativeLayout mainWebViewRelativeLayout;
 
-    // `urlIsLoading` is used in `onCreate()`, `loadUrl()`, and `applyDomainSettings()`.
+    // `urlIsLoading` is used in `onCreate()`, `onCreateOptionsMenu()`, `loadUrl()`, and `applyDomainSettings()`.
     private boolean urlIsLoading;
 
     // `pinnedDomainSslCertificate` is used in `onCreate()` and `applyDomainSettings()`.
@@ -1513,6 +1519,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Set `urlIsLoading` to `true`, so that redirects while loading do not trigger changes in the user agent, which forces another reload of the existing page.
                     urlIsLoading = true;
+
+                    // Replace Refresh with Stop if the menu item has been created.  (The WebView typically begins loading before the menu items are instantiated.)
+                    if (refreshMenuItem != null) {
+                        // Set the title.
+                        refreshMenuItem.setTitle(R.string.stop);
+
+                        // If the icon is displayed in the AppBar, set it according to the theme.
+                        if (displayAdditionalAppBarIcons) {
+                            if (darkTheme) {
+                                refreshMenuItem.setIcon(R.drawable.close_dark);
+                            } else {
+                                refreshMenuItem.setIcon(R.drawable.close_light);
+                            }
+                        }
+                    }
                 }
             }
 
@@ -1522,6 +1543,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Flush any cookies to persistent storage.  `CookieManager` has become very lazy about flushing cookies in recent versions.
                 if (firstPartyCookiesEnabled && Build.VERSION.SDK_INT >= 21) {
                     cookieManager.flush();
+                }
+
+                // Reset the Refresh title.
+                refreshMenuItem.setTitle(R.string.refresh);
+
+                // If the icon is displayed in the AppBar, reset it according to the theme.
+                if (displayAdditionalAppBarIcons) {
+                    if (darkTheme) {
+                        refreshMenuItem.setIcon(R.drawable.refresh_enabled_dark);
+                    } else {
+                        refreshMenuItem.setIcon(R.drawable.refresh_enabled_light);
+                    }
                 }
 
                 // Reset `urlIsLoading`, which is used to prevent reloads on redirect if the user agent changes.
@@ -1866,7 +1899,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem toggleDomStorageMenuItem = menu.findItem(R.id.toggle_dom_storage);
         MenuItem toggleSaveFormDataMenuItem = menu.findItem(R.id.toggle_save_form_data);  // Form data can be removed once the minimum API >= 26.
         MenuItem clearFormDataMenuItem = menu.findItem(R.id.clear_form_data);  // Form data can be removed once the minimum API >= 26.
-        MenuItem refreshMenuItem = menu.findItem(R.id.refresh);
+        refreshMenuItem = menu.findItem(R.id.refresh);
         MenuItem adConsentMenuItem = menu.findItem(R.id.ad_consent);
 
         // Only display third-party cookies if API >= 21
@@ -1879,11 +1912,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Only show Ad Consent if this is the free flavor.
         adConsentMenuItem.setVisible(BuildConfig.FLAVOR.contentEquals("free"));
 
-        // Get the shared preference values.  `this` references the current context.
+        // Get the shared preference values.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
+        // Get the status of the additional AppBar icons.
+        displayAdditionalAppBarIcons = sharedPreferences.getBoolean("display_additional_app_bar_icons", false);
+
         // Set the status of the additional app bar icons.  Setting the refresh menu item to `SHOW_AS_ACTION_ALWAYS` makes it appear even on small devices like phones.
-        if (sharedPreferences.getBoolean("display_additional_app_bar_icons", false)) {
+        if (displayAdditionalAppBarIcons) {
             toggleFirstPartyCookiesMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             toggleDomStorageMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             refreshMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -1891,6 +1927,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             toggleFirstPartyCookiesMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
             toggleDomStorageMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
             refreshMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        }
+
+        // Replace Refresh with Stop if a URL is already loading.
+        if (urlIsLoading) {
+            // Set the title.
+            refreshMenuItem.setTitle(R.string.stop);
+
+            // If the icon is displayed in the AppBar, set it according to the theme.
+            if (displayAdditionalAppBarIcons) {
+                if (darkTheme) {
+                    refreshMenuItem.setIcon(R.drawable.close_dark);
+                } else {
+                    refreshMenuItem.setIcon(R.drawable.close_light);
+                }
+            }
         }
 
         return true;
@@ -2500,7 +2551,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 return true;
 
             case R.id.refresh:
-                mainWebView.reload();
+                if (menuItem.getTitle().equals(getString(R.string.refresh))) {  // The refresh button was pushed.
+                    // Reload the WebView.
+                    mainWebView.reload();
+                } else {  // The stop button was pushed.
+                    // Stop the loading of the WebView.
+                    mainWebView.stopLoading();
+                }
                 return true;
 
             case R.id.ad_consent:
@@ -3517,8 +3574,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Apply the domain settings.
         applyDomainSettings(url, true, false);
 
-        // Set `urlIsLoading` to prevent changes in the user agent on websites with redirects from reloading the current website.
-        urlIsLoading = true;
+        // If loading a website, set `urlIsLoading` to prevent changes in the user agent on websites with redirects from reloading the current website.
+        urlIsLoading = !url.equals("");
 
         // Load the URL.
         mainWebView.loadUrl(url, customHeaders);

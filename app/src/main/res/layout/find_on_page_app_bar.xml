@@ -75,7 +75,7 @@
 
     <ImageView
         android:id="@+id/close_find"
-        android:src="@drawable/close"
+        android:src="@drawable/close_light"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_marginStart="4dp"
