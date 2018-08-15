@@ -153,6 +153,7 @@
         <string name="privacy_browser_web_page">Privacy Browser веб-страница</string>
     <string name="add_to_home_screen">Добавить на главный экран</string>
     <string name="refresh">Обновить</string>
+    <string name="stop">Остановить</string>
 
     <!-- Context Menus. -->
     <string name="load_url">Открыть URL</string>

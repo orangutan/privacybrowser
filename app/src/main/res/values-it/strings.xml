@@ -152,6 +152,7 @@
         <string name="privacy_browser_web_page">Pagina web di Privacy Browser</string>
     <string name="add_to_home_screen">Aggiungi collegamento</string>
     <string name="refresh">Aggiorna</string>
+    <string name="stop">Stop</string>
 
     <!-- Context Menus. -->
     <string name="load_url">Apri URL</string>
@@ -455,7 +456,7 @@
     <!-- Download Location -->
     <string name="download_location">Cartella di Download</string>
     <string name="download_location_message">Privacy Browser necessita del permesso di accesso alla memoria di storage per utilizzare la cartella pubblica di download.
-        Nel caso in cui il permesso sia negato sarà utilizzata la cartella di download dell'applicazione.</string>
+        Nel caso in cui il permesso sia negato sarà utilizzata la cartella di download dell\'applicazione.</string>
     <string name="ok">OK</string>
 
     <!-- Orbot. -->

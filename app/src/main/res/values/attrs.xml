@@ -25,6 +25,7 @@
     <attr name="tabLayoutTheme" format="reference" />
     <attr name="dialogTabLayoutTheme" format="reference" />
 
+    <attr name="mainStatusBarBackground" format="reference" />
     <attr name="aboutTitle" format="reference" />
     <attr name="aboutText" format="reference" />
     <attr name="aboutBackground" format="reference" />

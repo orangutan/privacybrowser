@@ -1545,15 +1545,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     cookieManager.flush();
                 }
 
-                // Reset the Refresh title.
-                refreshMenuItem.setTitle(R.string.refresh);
+                // Update the Refresh menu item if it has been created.
+                if (refreshMenuItem != null) {
+                    // Reset the Refresh title.
+                    refreshMenuItem.setTitle(R.string.refresh);
 
-                // If the icon is displayed in the AppBar, reset it according to the theme.
-                if (displayAdditionalAppBarIcons) {
-                    if (darkTheme) {
-                        refreshMenuItem.setIcon(R.drawable.refresh_enabled_dark);
-                    } else {
-                        refreshMenuItem.setIcon(R.drawable.refresh_enabled_light);
+                    // If the icon is displayed in the AppBar, reset it according to the theme.
+                    if (displayAdditionalAppBarIcons) {
+                        if (darkTheme) {
+                            refreshMenuItem.setIcon(R.drawable.refresh_enabled_dark);
+                        } else {
+                            refreshMenuItem.setIcon(R.drawable.refresh_enabled_light);
+                        }
                     }
                 }
 

@@ -46,7 +46,9 @@
     <!-- `windowActionModeOverlay` makes the contextual app bar cover the support app bar. -->
     <style name="PrivacyBrowserLight.SecondaryActivity" >
         <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowTranslucentStatus">false</item>
         <item name="colorPrimaryDark">@color/blue_700</item>
+        <item name="android:statusBarColor">@color/blue_900</item>
         <item name="android:textColorHighlight">@color/blue_200</item>
         <item name="android:actionModeBackground">@color/blue_700</item>
         <item name="bookmarksSpinnerHeaderTextColor">@color/white</item>
@@ -141,7 +143,9 @@
     <!-- `windowActionModeOverlay` makes the contextual app bar cover the support app bar.  `colorPrimaryDark` goes behind the status bar, which is then darkened by the overlay.-->
     <style name="PrivacyBrowserDark.SecondaryActivity" >
         <item name="windowActionModeOverlay">true</item>
-        <item name="colorPrimaryDark">@color/blue_900</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="colorPrimaryDark">@color/blue_800</item>
+        <item name="android:statusBarColor">@color/blue_900</item>
         <item name="android:actionModeBackground">@color/blue_800</item>
         <item name="bookmarksSpinnerHeaderTextColor">@color/gray_300</item>
         <item name="bookmarksSpinnerTextColorSelector">@color/bookmarks_spinner_color_selector_dark</item>
@@ -186,7 +190,7 @@
 
     <!-- Configure the About and Guide `TabLayouts`. -->
     <style name="PrivacyBrowserTabLayoutDark" parent="Widget.Design.TabLayout" >
-        <item name="tabBackground">@color/blue_900</item>
+        <item name="tabBackground">@color/blue_800</item>
         <item name="android:textColorSecondary">@color/blue_300</item>
         <item name="tabIndicatorColor">@color/gray_300</item>
     </style>
