@@ -23,6 +23,7 @@ package com.stoutner.privacybrowser.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.DownloadManager;
 import android.content.ActivityNotFoundException;
@@ -201,6 +202,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // The request items are public static so they can be accessed by `BlockListHelper`, `RequestsArrayAdapter`, and `ViewRequestsDialog`.  They are also used in `onCreate()` and `onPrepareOptionsMenu()`.
     public static List<String[]> resourceRequests;
     public static String[] whiteListResultStringArray;
+    int blockedRequests;
     int easyListBlockedRequests;
     int easyPrivacyBlockedRequests;
     int fanboysAnnoyanceListBlockedRequests;
@@ -338,7 +340,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `searchURL` is used in `loadURLFromTextBox()` and `applyAppSettings()`.
     private String searchURL;
 
-    // The block list variables are used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applyAppSettings()`.
+    // The blocklist variables are used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applyAppSettings()`.
     private boolean easyListEnabled;
     private boolean easyPrivacyEnabled;
     private boolean fanboysAnnoyanceListEnabled;
@@ -411,8 +413,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `mainMenu` is used in `onCreateOptionsMenu()` and `updatePrivacyIcons()`.
     private Menu mainMenu;
 
-    // `refreshMenuItem` is used in `onCreate()` and `onCreateOptionsItem()`.
+    // `refreshMenuItem` is used in `onCreate()` and `onCreateOptionsMenu()`.
     private MenuItem refreshMenuItem;
+
+    // The blocklist menu items are used in `onCreate()` and `onCreateOptionsMenu()`.
+    MenuItem easyListMenuItem;
+    MenuItem easyPrivacyMenuItem;
+    MenuItem fanboysAnnoyanceListMenuItem;
+    MenuItem fanboysSocialBlockingListMenuItem;
+    MenuItem ultraPrivacyMenuItem;
+    MenuItem blockAllThirdParyRequestsMenuItem;
 
     // `displayAdditionalAppBarIcons` is used in `onCreate()` and `onCreateOptionsMenu()`.
     private boolean displayAdditionalAppBarIcons;
@@ -878,7 +888,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             return true;
         });
 
-        // The `DrawerListener` is used to update the Navigation Menu.
+        // The drawer listener is used to update the navigation menu.
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
@@ -894,21 +904,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             @Override
             public void onDrawerStateChanged(int newState) {
-                if ((newState == DrawerLayout.STATE_SETTLING) || (newState == DrawerLayout.STATE_DRAGGING)) {  // The drawer is opening or closing.
-                    // Calculate the total blocked requests counter.
-                    int totalBlockedRequests = easyListBlockedRequests + easyPrivacyBlockedRequests + fanboysAnnoyanceListBlockedRequests + fanboysSocialBlockingListBlockedRequests +
-                            ultraPrivacyBlockedRequests + thirdPartyBlockedRequests;
-
+                if ((newState == DrawerLayout.STATE_SETTLING) || (newState == DrawerLayout.STATE_DRAGGING)) {  // A drawer is opening or closing.
                     // Update the back, forward, history, and requests menu items.
                     navigationBackMenuItem.setEnabled(mainWebView.canGoBack());
                     navigationForwardMenuItem.setEnabled(mainWebView.canGoForward());
                     navigationHistoryMenuItem.setEnabled((mainWebView.canGoBack() || mainWebView.canGoForward()));
-                    navigationRequestsMenuItem.setTitle(getResources().getString(R.string.requests) + " - " + totalBlockedRequests);
+                    navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
 
-                    // Hide the keyboard (if displayed) so we can see the navigation menu.  `0` indicates no additional flags.
+                    // Hide the keyboard (if displayed).
                     inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
 
-                    // Clear the focus from `urlTextBox` if it has it.
+                    // Clear the focus from from the URL text box.
                     urlTextBox.clearFocus();
                 }
             }
@@ -1250,6 +1256,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         fanboysSocialVersion = fanboysSocialList.get(0).get(0)[0];
         ultraPrivacyVersion = ultraPrivacy.get(0).get(0)[0];
 
+        // Get a handle for the activity.  This is used to update the requests counter while the navigation menu is open.
+        Activity activity = this;
+
         mainWebView.setWebViewClient(new WebViewClient() {
             // `shouldOverrideUrlLoading` makes this `WebView` the default handler for URLs inside the app, so that links are not kicked out to other apps.
             // The deprecated `shouldOverrideUrlLoading` must be used until API >= 24.
@@ -1370,8 +1379,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Block third-party requests if enabled.
                 if (isThirdPartyRequest && blockAllThirdPartyRequests) {
-                    // Increment the third-party blocked requests counter.
+                    // Increment the blocked requests counters.
+                    blockedRequests++;
                     thirdPartyBlockedRequests++;
+
+                    // Update the titles of the blocklist menu items.  This must be run from the UI thread.
+                    activity.runOnUiThread(() -> {
+                        navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                        blockAllThirdParyRequestsMenuItem.setTitle(thirdPartyBlockedRequests + " - " + getString(R.string.block_all_third_party_requests));
+                    });
 
                     // Add the request to the log.
                     resourceRequests.add(new String[]{String.valueOf(REQUEST_THIRD_PARTY), url});
@@ -1383,8 +1399,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Check UltraPrivacy if it is enabled.
                 if (ultraPrivacyEnabled) {
                     if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, ultraPrivacy)) {
-                        // Increment the UltraPrivacy blocked requests counter.
+                        // Increment the blocked requests counters.
+                        blockedRequests++;
                         ultraPrivacyBlockedRequests++;
+
+                        // Update the titles of the blocklist menu items.  This must be run from the UI thread.
+                        activity.runOnUiThread(() -> {
+                            navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                            ultraPrivacyMenuItem.setTitle(ultraPrivacyBlockedRequests + " - " + getString(R.string.ultraprivacy));
+                        });
 
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse;
@@ -1403,8 +1426,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Check EasyList if it is enabled.
                 if (easyListEnabled) {
                     if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, easyList)) {
-                        // Increment the EasyList blocked requests counter.
+                        // Increment the blocked requests counters.
+                        blockedRequests++;
                         easyListBlockedRequests++;
+
+                        // Update the titles of the blocklist menu items.  This must be run from the UI thread.
+                        activity.runOnUiThread(() -> {
+                            navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                            easyListMenuItem.setTitle(easyListBlockedRequests + " - " + getString(R.string.easylist));
+                        });
 
                         // Reset the whitelist results tracker (because otherwise it will sometimes add results to the list due to a race condition).
                         whiteListResultStringArray = null;
@@ -1417,8 +1447,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Check EasyPrivacy if it is enabled.
                 if (easyPrivacyEnabled) {
                     if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, easyPrivacy)) {
-                        // Increment the EasyPrivacy blocked requests counter.
+                        // Increment the blocked requests counters.
+                        blockedRequests++;
                         easyPrivacyBlockedRequests++;
+
+                        // Update the titles of the blocklist menu items.  This must be run from the UI thread.
+                        activity.runOnUiThread(() -> {
+                            navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                            easyPrivacyMenuItem.setTitle(easyPrivacyBlockedRequests + " - " + getString(R.string.easyprivacy));
+                        });
 
                         // Reset the whitelist results tracker (because otherwise it will sometimes add results to the list due to a race condition).
                         whiteListResultStringArray = null;
@@ -1431,8 +1468,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Check Fanboy’s Annoyance List if it is enabled.
                 if (fanboysAnnoyanceListEnabled) {
                     if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, fanboysAnnoyanceList)) {
-                        // Increment the Fanboy's Annoyance List blocked requests counter.
+                        // Increment the blocked requests counters.
+                        blockedRequests++;
                         fanboysAnnoyanceListBlockedRequests++;
+
+                        // Update the titles of the blocklist menu items.  This must be run from the UI thread.
+                        activity.runOnUiThread(() -> {
+                            navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                            fanboysAnnoyanceListMenuItem.setTitle(fanboysAnnoyanceListBlockedRequests + " - " + getString(R.string.fanboys_annoyance_list));
+                        });
 
                         // Reset the whitelist results tracker (because otherwise it will sometimes add results to the list due to a race condition).
                         whiteListResultStringArray = null;
@@ -1442,8 +1486,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     }
                 } else if (fanboysSocialBlockingListEnabled){  // Only check Fanboy’s Social Blocking List if Fanboy’s Annoyance List is disabled.
                     if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, fanboysSocialList)) {
-                        // Increment the Fanboy's Social Blocking List blocked requests counter.
+                        // Increment the blocked requests counters.
+                        blockedRequests++;
                         fanboysSocialBlockingListBlockedRequests++;
+
+                        // Update the titles of the blocklist menu items.  This must be run from the UI thread.
+                        activity.runOnUiThread(() -> {
+                            navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                            fanboysSocialBlockingListMenuItem.setTitle(fanboysSocialBlockingListBlockedRequests + " - " + getString(R.string.fanboys_social_blocking_list));
+                        });
 
                         // Reset the whitelist results tracker (because otherwise it will sometimes add results to the list due to a race condition).
                         whiteListResultStringArray = null;
@@ -1482,6 +1533,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 resourceRequests.clear();
 
                 // Initialize the counters for requests blocked by each blocklist.
+                blockedRequests = 0;
                 easyListBlockedRequests = 0;
                 easyPrivacyBlockedRequests = 0;
                 fanboysAnnoyanceListBlockedRequests = 0;
@@ -1903,6 +1955,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem toggleSaveFormDataMenuItem = menu.findItem(R.id.toggle_save_form_data);  // Form data can be removed once the minimum API >= 26.
         MenuItem clearFormDataMenuItem = menu.findItem(R.id.clear_form_data);  // Form data can be removed once the minimum API >= 26.
         refreshMenuItem = menu.findItem(R.id.refresh);
+        easyListMenuItem = menu.findItem(R.id.easylist);
+        easyPrivacyMenuItem = menu.findItem(R.id.easyprivacy);
+        fanboysAnnoyanceListMenuItem = menu.findItem(R.id.fanboys_annoyance_list);
+        fanboysSocialBlockingListMenuItem = menu.findItem(R.id.fanboys_social_blocking_list);
+        ultraPrivacyMenuItem = menu.findItem(R.id.ultraprivacy);
+        blockAllThirdParyRequestsMenuItem = menu.findItem(R.id.block_all_third_party_requests);
         MenuItem adConsentMenuItem = menu.findItem(R.id.ad_consent);
 
         // Only display third-party cookies if API >= 21
@@ -1931,6 +1989,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             toggleDomStorageMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
             refreshMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
+
+        // Update the display names for the blocklists with the number of blocked requests.
+        easyListMenuItem.setTitle(easyListBlockedRequests + " - " + getString(R.string.easylist));
+        easyPrivacyMenuItem.setTitle(easyPrivacyBlockedRequests + " - " + getString(R.string.easyprivacy));
+        fanboysAnnoyanceListMenuItem.setTitle(fanboysAnnoyanceListBlockedRequests + " - " + getString(R.string.fanboys_annoyance_list));
+        fanboysSocialBlockingListMenuItem.setTitle(fanboysSocialBlockingListBlockedRequests + " - " + getString(R.string.fanboys_social_blocking_list));
+        ultraPrivacyMenuItem.setTitle(ultraPrivacyBlockedRequests + " - " + getString(R.string.ultraprivacy));
+        blockAllThirdParyRequestsMenuItem.setTitle(thirdPartyBlockedRequests + " - " + getString(R.string.block_all_third_party_requests));
 
         // Replace Refresh with Stop if a URL is already loading.
         if (urlIsLoading) {
@@ -1962,12 +2028,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem clearCookiesMenuItem = menu.findItem(R.id.clear_cookies);
         MenuItem clearDOMStorageMenuItem = menu.findItem(R.id.clear_dom_storage);
         MenuItem clearFormDataMenuItem = menu.findItem(R.id.clear_form_data);  // Form data can be removed once the minimum API >= 26.
-        MenuItem easyListMenuItem = menu.findItem(R.id.easylist);
-        MenuItem easyPrivacyMenuItem = menu.findItem(R.id.easyprivacy);
-        MenuItem fanboysAnnoyanceListMenuItem = menu.findItem(R.id.fanboys_annoyance_list);
-        MenuItem fanboysSocialBlockingListMenuItem = menu.findItem(R.id.fanboys_social_blocking_list);
-        MenuItem ultraPrivacyMenuItem = menu.findItem(R.id.ultraprivacy);
-        MenuItem blockAllThirdParyRequestsMenuItem = menu.findItem(R.id.block_all_third_party_requests);
         MenuItem fontSizeMenuItem = menu.findItem(R.id.font_size);
         MenuItem swipeToRefreshMenuItem = menu.findItem(R.id.swipe_to_refresh);
         MenuItem displayImagesMenuItem = menu.findItem(R.id.display_images);
@@ -2030,14 +2090,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Enable Clear Data if any of the submenu items are enabled.
         clearDataMenuItem.setEnabled(clearCookiesMenuItem.isEnabled() || clearDOMStorageMenuItem.isEnabled() || clearFormDataMenuItem.isEnabled());
-
-        // Update the display names for the blocklists with the number of blocked requests.
-        easyListMenuItem.setTitle(easyListBlockedRequests + " - " + getString(R.string.easylist));
-        easyPrivacyMenuItem.setTitle(easyPrivacyBlockedRequests + " - " + getString(R.string.easyprivacy));
-        fanboysAnnoyanceListMenuItem.setTitle(fanboysAnnoyanceListBlockedRequests + " - " + getString(R.string.fanboys_annoyance_list));
-        fanboysSocialBlockingListMenuItem.setTitle(fanboysSocialBlockingListBlockedRequests + " - " + getString(R.string.fanboys_social_blocking_list));
-        ultraPrivacyMenuItem.setTitle(ultraPrivacyBlockedRequests + " - " + getString(R.string.ultraprivacy));
-        blockAllThirdParyRequestsMenuItem.setTitle(thirdPartyBlockedRequests + " - " + getString(R.string.block_all_third_party_requests));
 
         // Disable Fanboy's Social Blocking List if Fanboy's Annoyance List is checked.
         fanboysSocialBlockingListMenuItem.setEnabled(!fanboysAnnoyanceListEnabled);
