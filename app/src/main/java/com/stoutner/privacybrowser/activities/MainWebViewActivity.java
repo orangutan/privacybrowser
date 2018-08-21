@@ -340,6 +340,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `searchURL` is used in `loadURLFromTextBox()` and `applyAppSettings()`.
     private String searchURL;
 
+    // `mainMenu` is used in `onCreateOptionsMenu()` and `updatePrivacyIcons()`.
+    private Menu mainMenu;
+
+    // `refreshMenuItem` is used in `onCreate()` and `onCreateOptionsMenu()`.
+    private MenuItem refreshMenuItem;
+
+    // The blocklist menu items are used in `onCreate()`, `onCreateOptionsMenu()`, and `onPrepareOptionsMenu()`.
+    private MenuItem blocklistsMenuItem;
+    private MenuItem easyListMenuItem;
+    private MenuItem easyPrivacyMenuItem;
+    private MenuItem fanboysAnnoyanceListMenuItem;
+    private MenuItem fanboysSocialBlockingListMenuItem;
+    private MenuItem ultraPrivacyMenuItem;
+    private MenuItem blockAllThirdParyRequestsMenuItem;
+
     // The blocklist variables are used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applyAppSettings()`.
     private boolean easyListEnabled;
     private boolean easyPrivacyEnabled;
@@ -409,20 +424,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // `findOnPageEditText` is used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
     private EditText findOnPageEditText;
-
-    // `mainMenu` is used in `onCreateOptionsMenu()` and `updatePrivacyIcons()`.
-    private Menu mainMenu;
-
-    // `refreshMenuItem` is used in `onCreate()` and `onCreateOptionsMenu()`.
-    private MenuItem refreshMenuItem;
-
-    // The blocklist menu items are used in `onCreate()` and `onCreateOptionsMenu()`.
-    MenuItem easyListMenuItem;
-    MenuItem easyPrivacyMenuItem;
-    MenuItem fanboysAnnoyanceListMenuItem;
-    MenuItem fanboysSocialBlockingListMenuItem;
-    MenuItem ultraPrivacyMenuItem;
-    MenuItem blockAllThirdParyRequestsMenuItem;
 
     // `displayAdditionalAppBarIcons` is used in `onCreate()` and `onCreateOptionsMenu()`.
     private boolean displayAdditionalAppBarIcons;
@@ -1037,7 +1038,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @Override
             public void onHideCustomView() {
                 // Unset the full screen video flag.
-                displayingFullScreenVideo = true;
+                displayingFullScreenVideo = false;
 
                 // Hide `fullScreenVideoFrameLayout`.
                 fullScreenVideoFrameLayout.removeAllViews();
@@ -1386,6 +1387,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Update the titles of the blocklist menu items.  This must be run from the UI thread.
                     activity.runOnUiThread(() -> {
                         navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                        blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
                         blockAllThirdParyRequestsMenuItem.setTitle(thirdPartyBlockedRequests + " - " + getString(R.string.block_all_third_party_requests));
                     });
 
@@ -1406,6 +1408,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Update the titles of the blocklist menu items.  This must be run from the UI thread.
                         activity.runOnUiThread(() -> {
                             navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                            blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
                             ultraPrivacyMenuItem.setTitle(ultraPrivacyBlockedRequests + " - " + getString(R.string.ultraprivacy));
                         });
 
@@ -1433,6 +1436,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Update the titles of the blocklist menu items.  This must be run from the UI thread.
                         activity.runOnUiThread(() -> {
                             navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                            blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
                             easyListMenuItem.setTitle(easyListBlockedRequests + " - " + getString(R.string.easylist));
                         });
 
@@ -1454,6 +1458,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Update the titles of the blocklist menu items.  This must be run from the UI thread.
                         activity.runOnUiThread(() -> {
                             navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                            blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
                             easyPrivacyMenuItem.setTitle(easyPrivacyBlockedRequests + " - " + getString(R.string.easyprivacy));
                         });
 
@@ -1475,6 +1480,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Update the titles of the blocklist menu items.  This must be run from the UI thread.
                         activity.runOnUiThread(() -> {
                             navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                            blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
                             fanboysAnnoyanceListMenuItem.setTitle(fanboysAnnoyanceListBlockedRequests + " - " + getString(R.string.fanboys_annoyance_list));
                         });
 
@@ -1493,6 +1499,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Update the titles of the blocklist menu items.  This must be run from the UI thread.
                         activity.runOnUiThread(() -> {
                             navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                            blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
                             fanboysSocialBlockingListMenuItem.setTitle(fanboysSocialBlockingListBlockedRequests + " - " + getString(R.string.fanboys_social_blocking_list));
                         });
 
@@ -1955,6 +1962,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem toggleSaveFormDataMenuItem = menu.findItem(R.id.toggle_save_form_data);  // Form data can be removed once the minimum API >= 26.
         MenuItem clearFormDataMenuItem = menu.findItem(R.id.clear_form_data);  // Form data can be removed once the minimum API >= 26.
         refreshMenuItem = menu.findItem(R.id.refresh);
+        blocklistsMenuItem = menu.findItem(R.id.blocklists);
         easyListMenuItem = menu.findItem(R.id.easylist);
         easyPrivacyMenuItem = menu.findItem(R.id.easyprivacy);
         fanboysAnnoyanceListMenuItem = menu.findItem(R.id.fanboys_annoyance_list);
@@ -1989,14 +1997,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             toggleDomStorageMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
             refreshMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
-
-        // Update the display names for the blocklists with the number of blocked requests.
-        easyListMenuItem.setTitle(easyListBlockedRequests + " - " + getString(R.string.easylist));
-        easyPrivacyMenuItem.setTitle(easyPrivacyBlockedRequests + " - " + getString(R.string.easyprivacy));
-        fanboysAnnoyanceListMenuItem.setTitle(fanboysAnnoyanceListBlockedRequests + " - " + getString(R.string.fanboys_annoyance_list));
-        fanboysSocialBlockingListMenuItem.setTitle(fanboysSocialBlockingListBlockedRequests + " - " + getString(R.string.fanboys_social_blocking_list));
-        ultraPrivacyMenuItem.setTitle(ultraPrivacyBlockedRequests + " - " + getString(R.string.ultraprivacy));
-        blockAllThirdParyRequestsMenuItem.setTitle(thirdPartyBlockedRequests + " - " + getString(R.string.block_all_third_party_requests));
 
         // Replace Refresh with Stop if a URL is already loading.
         if (urlIsLoading) {
@@ -2093,6 +2093,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Disable Fanboy's Social Blocking List if Fanboy's Annoyance List is checked.
         fanboysSocialBlockingListMenuItem.setEnabled(!fanboysAnnoyanceListEnabled);
+
+        // Initialize the display names for the blocklists with the number of blocked requests.
+        blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + blockedRequests);
+        easyListMenuItem.setTitle(easyListBlockedRequests + " - " + getString(R.string.easylist));
+        easyPrivacyMenuItem.setTitle(easyPrivacyBlockedRequests + " - " + getString(R.string.easyprivacy));
+        fanboysAnnoyanceListMenuItem.setTitle(fanboysAnnoyanceListBlockedRequests + " - " + getString(R.string.fanboys_annoyance_list));
+        fanboysSocialBlockingListMenuItem.setTitle(fanboysSocialBlockingListBlockedRequests + " - " + getString(R.string.fanboys_social_blocking_list));
+        ultraPrivacyMenuItem.setTitle(ultraPrivacyBlockedRequests + " - " + getString(R.string.ultraprivacy));
+        blockAllThirdParyRequestsMenuItem.setTitle(thirdPartyBlockedRequests + " - " + getString(R.string.block_all_third_party_requests));
 
         // Initialize font size variables.
         int fontSize = mainWebView.getSettings().getTextZoom();
