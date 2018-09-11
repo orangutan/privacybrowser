@@ -562,7 +562,6 @@
                 <string name="api">API</string>
             <string name="build">Build:</string>
             <string name="security_patch">Security Patch:</string>
-            <string name="webkit">WebKit:</string>
             <string name="chrome">Chrome:</string>
             <string name="orbot">Orbot:</string>
             <string name="easylist_label">EasyList:</string>

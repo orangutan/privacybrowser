@@ -492,7 +492,6 @@
                 <string name="api">API</string>
             <string name="build">Versión de compilación:</string>
             <string name="security_patch">Parche de seguridad:</string>
-            <string name="webkit">WebKit:</string>
             <string name="chrome">Chrome:</string>
             <string name="orbot">Orbot:</string>
             <string name="easylist_label">EasyList:</string>
