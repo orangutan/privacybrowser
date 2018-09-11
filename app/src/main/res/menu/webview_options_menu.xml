@@ -150,9 +150,98 @@
 
         <menu>
             <item
+                android:id="@+id/user_agent"
+                android:title="@string/user_agent"
+                android:orderInCategory="910"
+                app:showAsAction="never" >
+
+                <menu>
+                    <group android:checkableBehavior ="single">
+                        <item
+                            android:id="@+id/user_agent_privacy_browser"
+                            android:title="@string/privacy_browser"
+                            android:orderInCategory="911"
+                            app:showAsAction="never" />
+
+                        <item
+                            android:id="@+id/user_agent_webview_default"
+                            android:title="@string/user_agent_webview_default"
+                            android:orderInCategory="912"
+                            app:showAsAction="never" />
+
+                        <item
+                            android:id="@+id/user_agent_firefox_on_android"
+                            android:title="@string/user_agent_firefox_on_android"
+                            android:orderInCategory="913"
+                            app:showAsAction="never" />
+
+                        <item
+                            android:id="@+id/user_agent_chrome_on_android"
+                            android:title="@string/user_agent_chrome_on_android"
+                            android:orderInCategory="914"
+                            app:showAsAction="never" />
+
+                        <item
+                            android:id="@+id/user_agent_safari_on_ios"
+                            android:title="@string/user_agent_safari_on_ios"
+                            android:orderInCategory="915"
+                            app:showAsAction="never" />
+
+                        <item
+                            android:id="@+id/user_agent_firefox_on_linux"
+                            android:title="@string/user_agent_firefox_on_linux"
+                            android:orderInCategory="916"
+                            app:showAsAction="never" />
+
+                        <item
+                            android:id="@+id/user_agent_chromium_on_linux"
+                            android:title="@string/user_agent_chromium_on_linux"
+                            android:orderInCategory="917"
+                            app:showAsAction="never" />
+
+                        <item
+                            android:id="@+id/user_agent_firefox_on_windows"
+                            android:title="@string/user_agent_firefox_on_windows"
+                            android:orderInCategory="918"
+                            app:showAsAction="never" />
+
+                        <item
+                            android:id="@+id/user_agent_chrome_on_windows"
+                            android:title="@string/user_agent_chrome_on_windows"
+                            android:orderInCategory="919"
+                            app:showAsAction="never" />
+
+                        <item
+                            android:id="@+id/user_agent_edge_on_windows"
+                            android:title="@string/user_agent_edge_on_windows"
+                            android:orderInCategory="920"
+                            app:showAsAction="never" />
+
+                        <item
+                            android:id="@+id/user_agent_internet_explorer_on_windows"
+                            android:title="@string/user_agent_internet_explorer_on_windows"
+                            android:orderInCategory="921"
+                            app:showAsAction="never" />
+
+                        <item
+                            android:id="@+id/user_agent_safari_on_macos"
+                            android:title="@string/user_agent_safari_on_macos"
+                            android:orderInCategory="922"
+                            app:showAsAction="never" />
+
+                        <item
+                            android:id="@+id/user_agent_custom"
+                            android:title="@string/user_agent_custom"
+                            android:orderInCategory="923"
+                            app:showAsAction="never" />
+                    </group>
+                </menu>
+            </item>
+
+            <item
                 android:id="@+id/font_size"
                 android:title="@string/font_size"
-                android:orderInCategory="910"
+                android:orderInCategory="930"
                 app:showAsAction="never" >
 
                 <menu>
@@ -160,49 +249,49 @@
                         <item
                             android:id="@+id/font_size_twenty_five_percent"
                             android:title="@string/twenty_five_percent"
-                            android:orderInCategory="911"
+                            android:orderInCategory="931"
                             app:showAsAction="never" />
 
                         <item
                             android:id="@+id/font_size_fifty_percent"
                             android:title="@string/fifty_percent"
-                            android:orderInCategory="912"
+                            android:orderInCategory="932"
                             app:showAsAction="never" />
 
                         <item
                             android:id="@+id/font_size_seventy_five_percent"
                             android:title="@string/seventy_five_percent"
-                            android:orderInCategory="913"
+                            android:orderInCategory="933"
                             app:showAsAction="never" />
 
                         <item
                             android:id="@+id/font_size_one_hundred_percent"
                             android:title="@string/one_hundred_percent"
-                            android:orderInCategory="914"
+                            android:orderInCategory="934"
                             app:showAsAction="never" />
 
                         <item
                             android:id="@+id/font_size_one_hundred_twenty_five_percent"
                             android:title="@string/one_hundred_twenty_five_percent"
-                            android:orderInCategory="915"
+                            android:orderInCategory="935"
                             app:showAsAction="never" />
 
                         <item
                             android:id="@+id/font_size_one_hundred_fifty_percent"
                             android:title="@string/one_hundred_fifty_percent"
-                            android:orderInCategory="916"
+                            android:orderInCategory="936"
                             app:showAsAction="never" />
 
                         <item
                             android:id="@+id/font_size_one_hundred_seventy_five_percent"
                             android:title="@string/one_hundred_seventy_five_percent"
-                            android:orderInCategory="917"
+                            android:orderInCategory="937"
                             app:showAsAction="never" />
 
                         <item
                             android:id="@+id/font_size_two_hundred_percent"
                             android:title="@string/two_hundred_percent"
-                            android:orderInCategory="918"
+                            android:orderInCategory="938"
                             app:showAsAction="never" />
                     </group>
                 </menu>
@@ -211,21 +300,21 @@
             <item
                 android:id="@+id/swipe_to_refresh"
                 android:title="@string/swipe_to_refresh_options_menu"
-                android:orderInCategory="920"
+                android:orderInCategory="940"
                 android:checkable="true"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/display_images"
                 android:title="@string/display_images"
-                android:orderInCategory="930"
+                android:orderInCategory="950"
                 android:checkable="true"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/view_source"
                 android:title="@string/view_source"
-                android:orderInCategory="940"
+                android:orderInCategory="960"
                 app:showAsAction="never" />
         </menu>
     </item>

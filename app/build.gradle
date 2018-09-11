@@ -71,7 +71,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:design:28.0.0-rc01'
+    implementation 'com.android.support:design:28.0.0-rc02'
 
     // Only compile Firebase ads for the free flavor.
     freeImplementation 'com.google.firebase:firebase-ads:15.0.1'

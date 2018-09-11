@@ -362,6 +362,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private boolean fanboysSocialBlockingListEnabled;
     private boolean ultraPrivacyEnabled;
 
+    // `webViewDefaultUserAgent` is used in `onCreate()` and `onPrepareOptionsMenu()`.
+    private String webViewDefaultUserAgent;
+
+    // `defaultCustomUserAgentString` is used in `onPrepareOptionsMenu()` and `applyDomainSettings()`.
+    private String defaultCustomUserAgentString;
+
     // `privacyBrowserRuntime` is used in `onCreate()`, `onOptionsItemSelected()`, and `applyAppSettings()`.
     private Runtime privacyBrowserRuntime;
 
@@ -1215,6 +1221,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         domStorageEnabled = false;
         saveFormDataEnabled = false;  // Form data can be removed once the minimum API >= 26.
         nightMode = false;
+
+        // Store the default user agent.
+        webViewDefaultUserAgent = mainWebView.getSettings().getUserAgentString();
 
         // Initialize the WebView title.
         webViewTitle = getString(R.string.no_title);
@@ -2103,6 +2112,38 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         ultraPrivacyMenuItem.setTitle(ultraPrivacyBlockedRequests + " - " + getString(R.string.ultraprivacy));
         blockAllThirdParyRequestsMenuItem.setTitle(thirdPartyBlockedRequests + " - " + getString(R.string.block_all_third_party_requests));
 
+        // Get the current user agent.
+        String currentUserAgent = mainWebView.getSettings().getUserAgentString();
+
+        // Select the current user agent menu item.  A switch statement cannot be used because the user agents are not compile time constants.
+        if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[0])) {  // Privacy Browser.
+            menu.findItem(R.id.user_agent_privacy_browser).setChecked(true);
+        } else if (currentUserAgent.equals(webViewDefaultUserAgent)) {  // WebView Default.
+            menu.findItem(R.id.user_agent_webview_default).setChecked(true);
+        } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[2])) {  // Firefox on Android.
+            menu.findItem(R.id.user_agent_firefox_on_android).setChecked(true);
+        } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[3])) {  // Chrome on Android.
+            menu.findItem(R.id.user_agent_chrome_on_android).setChecked(true);
+        } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[4])) {  // Safari on iOS.
+            menu.findItem(R.id.user_agent_safari_on_ios).setChecked(true);
+        } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[5])) {  // Firefox on Linux.
+            menu.findItem(R.id.user_agent_firefox_on_linux).setChecked(true);
+        } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[6])) {  // Chromium on Linux.
+            menu.findItem(R.id.user_agent_chromium_on_linux).setChecked(true);
+        } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[7])) {  // Firefox on Windows.
+            menu.findItem(R.id.user_agent_firefox_on_windows).setChecked(true);
+        } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[8])) {  // Chrome on Windows.
+            menu.findItem(R.id.user_agent_chrome_on_windows).setChecked(true);
+        } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[9])) {  // Edge on Windows.
+            menu.findItem(R.id.user_agent_edge_on_windows).setChecked(true);
+        } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[10])) {  // Internet Explorer on Windows.
+            menu.findItem(R.id.user_agent_internet_explorer_on_windows).setChecked(true);
+        } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[11])) {  // Safari on macOS.
+            menu.findItem(R.id.user_agent_safari_on_macos).setChecked(true);
+        } else {  // Custom user agent.
+            menu.findItem(R.id.user_agent_custom).setChecked(true);
+        }
+
         // Initialize font size variables.
         int fontSize = mainWebView.getSettings().getTextZoom();
         String fontSizeTitle;
@@ -2435,61 +2476,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         .show();
                 return true;
 
-            case R.id.font_size_twenty_five_percent:
-                mainWebView.getSettings().setTextZoom(25);
-                return true;
-
-            case R.id.font_size_fifty_percent:
-                mainWebView.getSettings().setTextZoom(50);
-                return true;
-
-            case R.id.font_size_seventy_five_percent:
-                mainWebView.getSettings().setTextZoom(75);
-                return true;
-
-            case R.id.font_size_one_hundred_percent:
-                mainWebView.getSettings().setTextZoom(100);
-                return true;
-
-            case R.id.font_size_one_hundred_twenty_five_percent:
-                mainWebView.getSettings().setTextZoom(125);
-                return true;
-
-            case R.id.font_size_one_hundred_fifty_percent:
-                mainWebView.getSettings().setTextZoom(150);
-                return true;
-
-            case R.id.font_size_one_hundred_seventy_five_percent:
-                mainWebView.getSettings().setTextZoom(175);
-                return true;
-
-            case R.id.font_size_two_hundred_percent:
-                mainWebView.getSettings().setTextZoom(200);
-                return true;
-
-            case R.id.swipe_to_refresh:
-                // Toggle swipe to refresh.
-                swipeRefreshLayout.setEnabled(!swipeRefreshLayout.isEnabled());
-                return true;
-
-            case R.id.display_images:
-                if (mainWebView.getSettings().getLoadsImagesAutomatically()) {  // Images are currently loaded automatically.
-                    mainWebView.getSettings().setLoadsImagesAutomatically(false);
-                    mainWebView.reload();
-                } else {  // Images are not currently loaded automatically.
-                    mainWebView.getSettings().setLoadsImagesAutomatically(true);
-                }
-
-                // Set `onTheFlyDisplayImagesSet`.
-                onTheFlyDisplayImagesSet = true;
-                return true;
-
-            case R.id.view_source:
-                // Launch the View Source activity.
-                Intent viewSourceIntent = new Intent(this, ViewSourceActivity.class);
-                startActivity(viewSourceIntent);
-                return true;
-
             case R.id.easylist:
                 // Toggle the EasyList status.
                 easyListEnabled = !easyListEnabled;
@@ -2558,6 +2544,165 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the main WebView.
                 mainWebView.reload();
+                return true;
+
+            case R.id.user_agent_privacy_browser:
+                // Update the user agent.
+                mainWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[0]);
+
+                // Reload the WebView.
+                mainWebView.reload();
+                return true;
+
+            case R.id.user_agent_webview_default:
+                // Update the user agent.
+                mainWebView.getSettings().setUserAgentString("");
+
+                // Reload the WebView.
+                mainWebView.reload();
+                return true;
+
+            case R.id.user_agent_firefox_on_android:
+                // Update the user agent.
+                mainWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[2]);
+
+                // Reload the WebView.
+                mainWebView.reload();
+                return true;
+
+            case R.id.user_agent_chrome_on_android:
+                // Update the user agent.
+                mainWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[3]);
+
+                // Reload the WebView.
+                mainWebView.reload();
+                return true;
+
+            case R.id.user_agent_safari_on_ios:
+                // Update the user agent.
+                mainWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[4]);
+
+                // Reload the WebView.
+                mainWebView.reload();
+                return true;
+
+            case R.id.user_agent_firefox_on_linux:
+                // Update the user agent.
+                mainWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[5]);
+
+                // Reload the WebView.
+                mainWebView.reload();
+                return true;
+
+            case R.id.user_agent_chromium_on_linux:
+                // Update the user agent.
+                mainWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[6]);
+
+                // Reload the WebView.
+                mainWebView.reload();
+                return true;
+
+            case R.id.user_agent_firefox_on_windows:
+                // Update the user agent.
+                mainWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[7]);
+
+                // Reload the WebView.
+                mainWebView.reload();
+                return true;
+
+            case R.id.user_agent_chrome_on_windows:
+                // Update the user agent.
+                mainWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[8]);
+
+                // Reload the WebView.
+                mainWebView.reload();
+                return true;
+
+            case R.id.user_agent_edge_on_windows:
+                // Update the user agent.
+                mainWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[9]);
+
+                // Reload the WebView.
+                mainWebView.reload();
+                return true;
+
+            case R.id.user_agent_internet_explorer_on_windows:
+                // Update the user agent.
+                mainWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[10]);
+
+                // Reload the WebView.
+                mainWebView.reload();
+                return true;
+
+            case R.id.user_agent_safari_on_macos:
+                // Update the user agent.
+                mainWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[11]);
+
+                // Reload the WebView.
+                mainWebView.reload();
+                return true;
+
+            case R.id.user_agent_custom:
+                // Update the user agent.
+                mainWebView.getSettings().setUserAgentString(defaultCustomUserAgentString);
+
+                // Reload the WebView.
+                mainWebView.reload();
+                return true;
+
+            case R.id.font_size_twenty_five_percent:
+                mainWebView.getSettings().setTextZoom(25);
+                return true;
+
+            case R.id.font_size_fifty_percent:
+                mainWebView.getSettings().setTextZoom(50);
+                return true;
+
+            case R.id.font_size_seventy_five_percent:
+                mainWebView.getSettings().setTextZoom(75);
+                return true;
+
+            case R.id.font_size_one_hundred_percent:
+                mainWebView.getSettings().setTextZoom(100);
+                return true;
+
+            case R.id.font_size_one_hundred_twenty_five_percent:
+                mainWebView.getSettings().setTextZoom(125);
+                return true;
+
+            case R.id.font_size_one_hundred_fifty_percent:
+                mainWebView.getSettings().setTextZoom(150);
+                return true;
+
+            case R.id.font_size_one_hundred_seventy_five_percent:
+                mainWebView.getSettings().setTextZoom(175);
+                return true;
+
+            case R.id.font_size_two_hundred_percent:
+                mainWebView.getSettings().setTextZoom(200);
+                return true;
+
+            case R.id.swipe_to_refresh:
+                // Toggle swipe to refresh.
+                swipeRefreshLayout.setEnabled(!swipeRefreshLayout.isEnabled());
+                return true;
+
+            case R.id.display_images:
+                if (mainWebView.getSettings().getLoadsImagesAutomatically()) {  // Images are currently loaded automatically.
+                    mainWebView.getSettings().setLoadsImagesAutomatically(false);
+                    mainWebView.reload();
+                } else {  // Images are not currently loaded automatically.
+                    mainWebView.getSettings().setLoadsImagesAutomatically(true);
+                }
+
+                // Set `onTheFlyDisplayImagesSet`.
+                onTheFlyDisplayImagesSet = true;
+                return true;
+
+            case R.id.view_source:
+                // Launch the View Source activity.
+                Intent viewSourceIntent = new Intent(this, ViewSourceActivity.class);
+                startActivity(viewSourceIntent);
                 return true;
 
             case R.id.share:
@@ -3921,7 +4066,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Store the general preference information.
             String defaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
             String defaultUserAgentName = sharedPreferences.getString("user_agent", "Privacy Browser");
-            String defaultCustomUserAgentString = sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0");
+            defaultCustomUserAgentString = sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0");
             boolean defaultSwipeToRefresh = sharedPreferences.getBoolean("swipe_to_refresh", true);
             nightMode = sharedPreferences.getBoolean("night_mode", false);
 
