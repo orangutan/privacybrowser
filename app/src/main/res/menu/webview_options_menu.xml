@@ -312,9 +312,16 @@
                 app:showAsAction="never" />
 
             <item
+                android:id="@+id/night_mode"
+                android:title="@string/night_mode"
+                android:orderInCategory="960"
+                android:checkable="true"
+                app:showAsAction="never" />
+
+            <item
                 android:id="@+id/view_source"
                 android:title="@string/view_source"
-                android:orderInCategory="960"
+                android:orderInCategory="970"
                 app:showAsAction="never" />
         </menu>
     </item>

@@ -328,7 +328,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `saveFormDataEnabled` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applyDomainSettings()`.  It can be removed once the minimum API >= 26.
     private boolean saveFormDataEnabled;
 
-    // `nightMode` is used in `onCreate()` and  `applyDomainSettings()`.
+    // `nightMode` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and  `applyDomainSettings()`.
     private boolean nightMode;
 
     // `displayWebpageImagesBoolean` is used in `applyAppSettings()` and `applyDomainSettings()`.
@@ -412,6 +412,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // `domainSettingsApplied` is used in `prepareOptionsMenu()`, `applyDomainSettings()`, and `setDisplayWebpageImages()`.
     private boolean domainSettingsApplied;
+
+    // `domainSettingsJavaScriptEnabled` is used in `onOptionsItemSelected()` and `applyDomainSettings()`.
+    private Boolean domainSettingsJavaScriptEnabled;
 
     // `displayWebpageImagesInt` is used in `applyDomainSettings()` and `setDisplayWebpageImages()`.
     private int displayWebpageImagesInt;
@@ -2040,6 +2043,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem fontSizeMenuItem = menu.findItem(R.id.font_size);
         MenuItem swipeToRefreshMenuItem = menu.findItem(R.id.swipe_to_refresh);
         MenuItem displayImagesMenuItem = menu.findItem(R.id.display_images);
+        MenuItem nightModeMenuItem = menu.findItem(R.id.night_mode);
 
         // Set the text for the domain menu item.
         if (domainSettingsApplied) {
@@ -2061,6 +2065,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         blockAllThirdParyRequestsMenuItem.setChecked(blockAllThirdPartyRequests);
         swipeToRefreshMenuItem.setChecked(swipeRefreshLayout.isEnabled());
         displayImagesMenuItem.setChecked(mainWebView.getSettings().getLoadsImagesAutomatically());
+        nightModeMenuItem.setChecked(nightMode);
 
         // Enable third-party cookies if first-party cookies are enabled.
         toggleThirdPartyCookiesMenuItem.setEnabled(firstPartyCookiesEnabled);
@@ -2697,6 +2702,35 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Set `onTheFlyDisplayImagesSet`.
                 onTheFlyDisplayImagesSet = true;
+                return true;
+
+            case R.id.night_mode:
+                // Toggle night mode.
+                nightMode = !nightMode;
+
+                // Enable or disable JavaScript according to night mode, the global preference, and any domain settings.
+                if (nightMode) {  // Night mode is enabled.  Enable JavaScript.
+                    // Update the global variable.
+                    javaScriptEnabled = true;
+                } else if (domainSettingsApplied) {  // Night mode is disabled and domain settings are applied.  Set JavaScript according to the domain settings.
+                    // Get the JavaScript preference that was stored the last time domain settings were loaded.
+                    javaScriptEnabled = domainSettingsJavaScriptEnabled;
+                } else {  // Night mode is disabled and domain settings are not applied.  Set JavaScript according to the global preference.
+                    // Get a handle for the shared preference.
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+                    // Get the JavaScript preference.
+                    javaScriptEnabled = sharedPreferences.getBoolean("javascript_enabled", false);
+                }
+
+                // Apply the JavaScript setting to the WebView.
+                mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
+
+                // Update the privacy icons.
+                updatePrivacyIcons(false);
+
+                // Reload the website.
+                mainWebView.reload();
                 return true;
 
             case R.id.view_source:
@@ -4010,8 +4044,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 favoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(favoriteIconBitmap, 64, 64, true));
             }
 
-            // Initialize the database handler.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
-            // The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
+            // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
             DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
 
             // Get a full cursor from `domainsDatabaseHelper`.
@@ -4113,7 +4146,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         break;
                 }
 
-                // Set `javaScriptEnabled` to be `true` if `night_mode` is `true`.
+                // Store the domain JavaScript status.  This is used by the options menu night mode toggle.
+                domainSettingsJavaScriptEnabled = javaScriptEnabled;
+
+                // Enable JavaScript if night mode is enabled.
                 if (nightMode) {
                     javaScriptEnabled = true;
                 }
