@@ -607,7 +607,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Store the content of the status message in `orbotStatus`.
                 orbotStatus = intent.getStringExtra("org.torproject.android.intent.extra.STATUS");
 
-                // If we are waiting on Orbot, load the website now that Orbot is connected.
+                // If Privacy Browser is waiting on Orbot, load the website now that Orbot is connected.
                 if (orbotStatus.equals("ON") && waitingForOrbot) {
                     // Reset `waitingForOrbot`.
                     waitingForOrbot = false;
@@ -1611,6 +1611,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // It is necessary to update `formattedUrlString` and `urlTextBox` after the page finishes loading because the final URL can change during load.
             @Override
             public void onPageFinished(WebView view, String url) {
+                // Reset the wide view port if it has been turned off by the waiting for Orbot message.
+                if (!waitingForOrbot) {
+                    mainWebView.getSettings().setUseWideViewPort(true);
+                }
+
                 // Flush any cookies to persistent storage.  `CookieManager` has become very lazy about flushing cookies in recent versions.
                 if (firstPartyCookiesEnabled && Build.VERSION.SDK_INT >= 21) {
                     cookieManager.flush();
@@ -1910,6 +1915,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Display a message to the user if waiting for Orbot.
         if (waitingForOrbot && !orbotStatus.equals("ON")) {
+            // Disable the wide view port so that the waiting for Orbot text is displayed correctly.
+            mainWebView.getSettings().setUseWideViewPort(false);
+
             // Load a waiting page.  `null` specifies no encoding, which defaults to ASCII.
             mainWebView.loadData(waitingForOrbotHTMLString, "text/html", null);
         }
@@ -3901,6 +3909,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             if (!orbotStatus.equals("ON")) {
                 // Set `waitingForOrbot`.
                 waitingForOrbot = true;
+
+                // Disable the wide view port so that the waiting for Orbot text is displayed correctly.
+                mainWebView.getSettings().setUseWideViewPort(false);
 
                 // Load a waiting page.  `null` specifies no encoding, which defaults to ASCII.
                 mainWebView.loadData(waitingForOrbotHTMLString, "text/html", null);
