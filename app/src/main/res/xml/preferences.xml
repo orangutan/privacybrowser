@@ -27,19 +27,19 @@
             android:key="javascript_enabled"
             android:title="@string/javascript_preference"
             android:summary="@string/javascript_preference_summary"
-            android:defaultValue="false" />
+            android:defaultValue="true" />
 
         <SwitchPreference
             android:key="first_party_cookies_enabled"
             android:title="@string/first_party_cookies_preference"
             android:summary="@string/first_party_cookies_preference_summary"
-            android:defaultValue="false" />
+            android:defaultValue="true" />
 
         <SwitchPreference
             android:key="third_party_cookies_enabled"
             android:title="@string/third_party_cookies_preference"
             android:summary="@string/third_party_cookies_summary"
-            android:defaultValue="false" />
+            android:defaultValue="true" />
 
         <SwitchPreference
             android:key="dom_storage_enabled"
@@ -79,7 +79,7 @@
             android:key="do_not_track"
             android:title="@string/do_not_track"
             android:summary="@string/do_not_track_summary"
-            android:defaultValue="false" />
+            android:defaultValue="true" />
 
         <SwitchPreference
             android:key="allow_screenshots"
@@ -170,7 +170,7 @@
             android:title="@string/search"
             android:entries="@array/search_entries"
             android:entryValues="@array/search_entry_values"
-            android:defaultValue="https://searx.me/?q="
+            android:defaultValue="https://duckduckgo.com/?q="
             android:icon="?attr/searchIcon" />
 
         <!--suppress AndroidDomInspection -->
@@ -247,7 +247,7 @@
         <EditTextPreference
             android:key="homepage"
             android:title="@string/homepage"
-            android:defaultValue="https://searx.me/"
+            android:defaultValue="https://duckduckgo.com/"
             android:inputType="textUri"
             android:icon="?attr/homepageIcon" />
 
@@ -275,7 +275,7 @@
             android:key="dark_theme"
             android:title="@string/dark_theme"
             android:summary="@string/dark_theme_summary"
-            android:defaultValue="false" />
+            android:defaultValue="true" />
 
         <SwitchPreference
             android:key="night_mode"
