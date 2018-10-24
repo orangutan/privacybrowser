@@ -45,7 +45,7 @@
             android:key="dom_storage_enabled"
             android:title="@string/dom_storage_preference"
             android:summary="@string/dom_storage_preference_summary"
-            android:defaultValue="false" />
+            android:defaultValue="true" />
 
         <!-- Save form data can be removed once the minimum API >= 26. -->
         <SwitchPreference
