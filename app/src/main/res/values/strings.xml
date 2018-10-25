@@ -317,7 +317,6 @@
     <!-- Import/Export. -->
     <string name="browse">Browse</string>
     <string name="file_permissions_explanation">Accessing files in public directories requires the storage permission. Otherwise only private directories will work.</string>
-    <string name="privacy_browser_backup">Privacy Browser Backup</string>
     <string name="export_settings">Export Settings</string>
     <string name="import_settings">Import Settings</string>
     <string name="export_file_name">Export file name</string>

@@ -3787,9 +3787,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Check to see if `unformattedUrlString` is a valid URL.  Otherwise, convert it into a search.
         if ((Patterns.WEB_URL.matcher(unformattedUrlString).matches()) || (unformattedUrlString.startsWith("http://")) || (unformattedUrlString.startsWith("https://"))) {
-            // Add `http://` at the beginning if it is missing.  Otherwise the app will segfault.
+            // Add `https://` at the beginning if it is missing.  Otherwise the app will segfault.
             if (!unformattedUrlString.startsWith("http")) {
-                unformattedUrlString = "http://" + unformattedUrlString;
+                unformattedUrlString = "https://" + unformattedUrlString;
             }
 
             // Initialize `unformattedUrl`.

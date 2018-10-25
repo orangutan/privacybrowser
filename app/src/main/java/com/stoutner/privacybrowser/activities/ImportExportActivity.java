@@ -132,10 +132,17 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
             }
         });
 
-        // Set the default download file path if the storage permission has not been granted.
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+        // Set the initial file paths.
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
+            // Create a string for the external public path.
+            String EXTERNAL_PUBLIC_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" + getString(R.string.privacy_browser_settings);
+
+            // Set the default path.
+            exportFileEditText.setText(EXTERNAL_PUBLIC_PATH);
+            importFileEditText.setText(EXTERNAL_PUBLIC_PATH);
+        } else {  // The storage permission has not been granted.
             // Create a string for the external private path.
-            String EXTERNAL_PRIVATE_PATH = getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "/Privacy Browser Backup";
+            String EXTERNAL_PRIVATE_PATH = getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "/" + getString(R.string.privacy_browser_settings);
 
             // Set the default path.
             exportFileEditText.setText(EXTERNAL_PRIVATE_PATH);
@@ -156,7 +163,7 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
         intent.setType("*/*");
 
         // Set the initial export file name.
-        intent.putExtra(Intent.EXTRA_TITLE, getString(R.string.privacy_browser_backup));
+        intent.putExtra(Intent.EXTRA_TITLE, getString(R.string.privacy_browser_settings));
 
         // Set the initial directory if API >= 26.
         if (Build.VERSION.SDK_INT >= 26) {

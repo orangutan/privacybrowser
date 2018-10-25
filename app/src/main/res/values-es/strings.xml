@@ -114,6 +114,7 @@
     <string name="bookmarks">Favoritos</string>
     <string name="downloads">Descargas</string>
     <string name="settings">Configuración</string>
+    <string name="import_export">Importar/Exportar</string>
     <string name="guide">Guía</string>
     <string name="about">Acerca de</string>
     <string name="clear_and_exit">Borrar y salir</string>
@@ -311,6 +312,25 @@
     <string name="saved_ssl_certificate">Certificado SSL guardado</string>
     <string name="current_website_ssl_certificate">Certificado SSL actual de la web</string>
     <string name="load_an_encrypted_website">Cargar una página web cifrada antes de abrir la configuración de dominio para rellenar el certificado SSL de la página web actual.</string>
+
+    <!-- Import/Export. -->
+    <string name="browse">Navegar</string>
+    <string name="file_permissions_explanation">Acceder a los archivos en directorios públicos requiere el permiso de almacenamiento. De lo contrario, sólo funcionarán los directorios privados.</string>
+    <string name="export_settings">Exportar los ajustes</string>
+    <string name="import_settings">Importar los ajustes</string>
+    <string name="export_file_name">Exportar nombre de archivo</string>
+    <string name="import_file_name">Importar nombre de archivo</string>
+    <string name="export">Exportar</string>
+    <string name="import_button">Importar</string>  <!-- `import` is a reserved word and cannot be used as the name -->
+    <string name="export_successful">Exportación exitosa.</string>
+    <string name="export_failed">Exportación fallida:</string>
+    <string name="import_failed">Importación fallida:</string>
+    <string name="cannot_export">Los ajustes no pueden exportarse a esta ubicación porque no se ha concedido el permiso de almacenamiento.</string>
+    <string name="cannot_import">Los ajustes no pueden importarse a esta ubicación porque no se ha concedido el permiso de almacenamiento.</string>
+    <string name="invalid_location">no es una ubicación válida.</string>
+    <string name="storage_permission">Permiso de almacenamiento</string>
+    <string name="storage_permission_message">Navegador Privado necesita el permiso de almacenamiento para acceder a los directorios públicos.
+        Si se deniega, el directorio privado de la aplicación todavía puede utilizarse.</string>
 
     <!-- Guide. -->
     <string name="privacy_browser_guide">Guía de Navegador Privado</string>
