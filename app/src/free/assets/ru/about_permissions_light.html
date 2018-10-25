@@ -32,10 +32,14 @@
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#INSTALL_SHORTCUT">com.android.launcher.permission.INSTALL_SHORTCUT</a></p>
         <p>Требуется для добавления ярлыков веб-сайтов на главный экран.</p>
 
-        <h3>Доступ к хранилищу</h3>
-        <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WRITE_EXTERNAL_STORAGE"> android.permission.WRITE_EXTERNAL_STORAGE</a></p>
-        <p>Требуется для загрузки файлов в общую папку загрузок.
-            В Android Marshmallow (API 23) и новее, если это разрешение получено не будет, Privacy Browser для загрузок будет использовать папку приложения.</p>
+        <h3>Read storage</h3>
+        <p><a href="https://developer.android.com/reference/android/Manifest.permission#READ_EXTERNAL_STORAGE">android.permission.READ_EXTERNAL_STORAGE</a></p>
+        <p>Required to import settings from public folders. On Android Marshmallow (API 23) and newer, if this permission is denied Privacy Browser can import settings from the app’s folders instead.</p>
+
+        <h3>Write storage</h3>
+        <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WRITE_EXTERNAL_STORAGE">android.permission.WRITE_EXTERNAL_STORAGE</a></p>
+        <p>Required to export settings and download files to the public folders.
+            On Android Marshmallow (API 23) and newer, if this permission is denied Privacy Browser can export settings and store downloads in the app’s folders instead.</p>
 
         <br/>
         <hr/>
@@ -58,6 +62,10 @@
         <h3>Предотвращение засыпания устройства</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WAKE_LOCK">android.permission.WAKE_LOCK</a></p>
         <p>Позволяет рекламе предотвращать переход процессора в режим сна и экран от выключения. Результаты тестировании не свидетельствуют о том, что реклама на самом деле это делает.</p>
+
+        <h3>Track installs from ads</h3>
+        <p><a href="https://android-developers.googleblog.com/2017/11/google-play-referrer-api-track-and.html">com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE</a></p>
+        <p>Allows other apps to tell if their installation was launched from an ad in Privacy Browser Free.</p>
 
         <h3>Получение данных из интернета</h3>
         <p><a href="http://androidpermissions.com/permission/com.google.android.c2dm.permission.RECEIVE">com.google.android.c2dm.permission.RECEIVE</a></p>

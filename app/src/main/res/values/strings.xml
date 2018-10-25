@@ -316,7 +316,6 @@
 
     <!-- Import/Export. -->
     <string name="browse">Browse</string>
-    <string name="file_permissions_explanation">Accessing files in public directories requires the storage permission. Otherwise only private directories will work.</string>
     <string name="export_settings">Export Settings</string>
     <string name="import_settings">Import Settings</string>
     <string name="export_file_name">Export file name</string>
@@ -330,7 +329,8 @@
     <string name="cannot_import">The settings cannot be imported to this location because the storage permission has not been granted.</string>
     <string name="invalid_location">is not a valid location.</string>
     <string name="storage_permission">Storage Permission</string>
-    <string name="storage_permission_message">Privacy Browser needs the storage permission to access public directories. If it is denied, the app’s private directory can still be used.</string>
+    <string name="storage_permission_message">Privacy Browser needs the storage permission to access public directories. If it is denied, the app’s directories can still be used.</string>
+    <string name="storage_permission_explanation">Accessing files in public directories requires the storage permission. Otherwise, only app directories will work.</string>
 
     <!-- Guide. -->
     <string name="privacy_browser_guide">Privacy Browser Guide</string>
