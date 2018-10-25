@@ -30,17 +30,17 @@ import android.view.WindowManager;
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
-public class DownloadLocationPermissionDialog extends DialogFragment {
-    // The constants are used to differentiate between the two download types.
-    public static final int DOWNLOAD_FILE = 1;
-    public static final int DOWNLOAD_IMAGE = 2;
+public class ImportExportStoragePermissionDialog extends DialogFragment {
+    // The constants are used to differentiate between the two commands.
+    public static final int EXPORT_SETTINGS = 1;
+    public static final int IMPORT_SETTINGS = 2;
 
     // The listener is used in `onAttach()` and `onCreateDialog()`.
-    private DownloadLocationPermissionDialogListener downloadLocationPermissionDialogListener;
+    private ImportExportStoragePermissionDialogListener importExportStoragePermissionDialogListener;
 
     // The public interface is used to send information back to the parent activity.
-    public interface DownloadLocationPermissionDialogListener {
-        void onCloseDownloadLocationPermissionDialog(int downloadType);
+    public interface ImportExportStoragePermissionDialogListener {
+        void onCloseImportExportStoragePermissionDialog(int type);
     }
 
     @Override
@@ -49,26 +49,26 @@ public class DownloadLocationPermissionDialog extends DialogFragment {
         super.onAttach(context);
 
         // Get a handle for the listener from the launching context.
-        downloadLocationPermissionDialogListener = (DownloadLocationPermissionDialogListener) context;
+        importExportStoragePermissionDialogListener = (ImportExportStoragePermissionDialogListener) context;
     }
 
-    public static DownloadLocationPermissionDialog downloadType(int type) {
+    public static ImportExportStoragePermissionDialog type(int type) {
         // Create an arguments bundle.
         Bundle argumentsBundle = new Bundle();
 
         // Store the download type in the bundle.
-        argumentsBundle.putInt("download_type", type);
+        argumentsBundle.putInt("type", type);
 
         // Add the arguments bundle to this instance of the dialog.
-        DownloadLocationPermissionDialog thisDownloadLocationPermissionDialog = new DownloadLocationPermissionDialog();
-        thisDownloadLocationPermissionDialog.setArguments(argumentsBundle);
-        return thisDownloadLocationPermissionDialog;
+        ImportExportStoragePermissionDialog thisImportExportStoragePermissionDialog = new ImportExportStoragePermissionDialog();
+        thisImportExportStoragePermissionDialog.setArguments(argumentsBundle);
+        return thisImportExportStoragePermissionDialog;
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Store the download type in a local variable.
-        int downloadType = getArguments().getInt("download_type");
+        int type = getArguments().getInt("type");
 
         // Use a builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
@@ -76,22 +76,22 @@ public class DownloadLocationPermissionDialog extends DialogFragment {
         // Set the style and the icon according to the theme.
         if (MainWebViewActivity.darkTheme) {
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
-            dialogBuilder.setIcon(R.drawable.downloads_dark);
+            dialogBuilder.setIcon(R.drawable.import_export_dark);
         } else {
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
-            dialogBuilder.setIcon(R.drawable.downloads_light);
+            dialogBuilder.setIcon(R.drawable.import_export_light);
         }
 
         // Set the title.
-        dialogBuilder.setTitle(R.string.download_location);
+        dialogBuilder.setTitle(R.string.storage_permission);
 
         // Set the text.
-        dialogBuilder.setMessage(R.string.download_location_message);
+        dialogBuilder.setMessage(R.string.storage_permission_message);
 
         // Set an `onClick` listener on the negative button.
         dialogBuilder.setNegativeButton(R.string.ok, (DialogInterface dialog, int which) -> {
             // Inform the parent activity that the dialog was closed.
-            downloadLocationPermissionDialogListener.onCloseDownloadLocationPermissionDialog(downloadType);
+            importExportStoragePermissionDialogListener.onCloseImportExportStoragePermissionDialog(type);
         });
 
         // Create an alert dialog from the builder.

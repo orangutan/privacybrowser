@@ -39,7 +39,7 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         ads:adSize="SMART_BANNER"
-        ads:adUnitId="@string/ad_id" >
+        ads:adUnitId="@string/ad_unit_id" >
     </com.google.android.gms.ads.AdView>
 
     <android.support.v4.widget.SwipeRefreshLayout

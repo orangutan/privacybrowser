@@ -66,22 +66,25 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         EditBookmarkFolderDialog.EditBookmarkFolderListener, MoveToFolderDialog.MoveToFolderListener {
 
     // `currentFolder` is public static so it can be accessed from `MoveToFolderDialog`.
-    // It is used in `onCreate`, `onOptionsItemSelected()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`, and `loadFolder()`.
+    // It is used in `onCreate`, `onOptionsItemSelected()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`,
+    // and `loadFolder()`.
     public static String currentFolder;
 
-    // `checkedItemIds` is public static so it can be accessed from `MoveToFolderDialog`.  It is also used in `onCreate()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`, and `updateMoveIcons()`.
+    // `checkedItemIds` is public static so it can be accessed from `MoveToFolderDialog`.  It is also used in `onCreate()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`,
+    // and `updateMoveIcons()`.
     public static long[] checkedItemIds;
 
 
-    // `bookmarksDatabaseHelper` is used in `onCreate()`, `onOptionsItemSelected()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`, `deleteBookmarkFolderContents()`,
-    // and `loadFolder().
+    // `bookmarksDatabaseHelper` is used in `onCreate()`, `onOptionsItemSelected()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`,
+    // `onMoveToFolder()`, `deleteBookmarkFolderContents()`, `loadFolder()`, and `onDestroy()`.
     private BookmarksDatabaseHelper bookmarksDatabaseHelper;
 
-    // `bookmarksListView` is used in `onCreate()`, `onOptionsItemSelected()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`, `updateMoveIcons()`, `scrollBookmarks()`,
-    // and `loadFolder()`.
+    // `bookmarksListView` is used in `onCreate()`, `onOptionsItemSelected()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`,
+    // `updateMoveIcons()`, `scrollBookmarks()`, and `loadFolder()`.
     private ListView bookmarksListView;
 
-    // `bookmarksCursor` is used in `onCreate()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`, `deleteBookmarkFolderContents()`, and `loadFolder()`.
+    // `bookmarksCursor` is used in `onCreate()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`, `deleteBookmarkFolderContents()`,
+    // `loadFolder()`, and `onDestroy()`.
     private Cursor bookmarksCursor;
 
     // `bookmarksCursorAdapter` is used in `onCreate(), `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`, and `onLoadFolder()`.
@@ -1071,5 +1074,15 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         } else {
             appBar.setTitle(currentFolder);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        // Close the bookmarks cursor and database.
+        bookmarksCursor.close();
+        bookmarksDatabaseHelper.close();
+
+        // Run the default commands.
+        super.onDestroy();
     }
 }

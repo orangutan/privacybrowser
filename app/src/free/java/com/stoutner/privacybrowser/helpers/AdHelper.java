@@ -40,10 +40,10 @@ import com.stoutner.privacybrowser.dialogs.AdConsentDialog;
 public class AdHelper {
     private static boolean initialized;
 
-    public static void initializeAds (View view, Context applicationContext, FragmentManager fragmentManager, String adId) {
+    public static void initializeAds (View view, Context applicationContext, FragmentManager fragmentManager, String googleAppId, String adUnitId) {
         if (!initialized) {  // This is the first run.
             // Initialize mobile ads.
-            MobileAds.initialize(applicationContext, adId);
+            MobileAds.initialize(applicationContext, googleAppId);
 
             // Store the publisher ID in a string array.
             String[] publisherIds = {"pub-5962503714887045"};
@@ -62,7 +62,7 @@ public class AdHelper {
                         consentInformation.setTagForUnderAgeOfConsent(true);
 
                         // Load an ad.
-                        loadAd(view, applicationContext, adId);
+                        loadAd(view, applicationContext, adUnitId);
                     }
                 }
 
@@ -72,7 +72,7 @@ public class AdHelper {
                     consentInformation.setTagForUnderAgeOfConsent(true);
 
                     // Load an ad.
-                    loadAd(view, applicationContext, adId);
+                    loadAd(view, applicationContext, adUnitId);
                 }
             });
 
@@ -80,11 +80,11 @@ public class AdHelper {
             initialized = true;
         } else {  // Ads have previously been initialized.
             // Load an ad.
-            loadAd(view, applicationContext, adId);
+            loadAd(view, applicationContext, adUnitId);
         }
     }
 
-    public static void loadAd (View view, Context applicationContext, String adId) {
+    public static void loadAd (View view, Context applicationContext, String adUnitId) {
         // Cast the generic view to an AdView.
         AdView adView = (AdView) view;
 
@@ -98,7 +98,7 @@ public class AdHelper {
         // Setup the new AdView.  This is necessary because the size of the banner ad can change on rotate.
         adView = new AdView(applicationContext);
         adView.setAdSize(AdSize.SMART_BANNER);
-        adView.setAdUnitId(adId);
+        adView.setAdUnitId(adUnitId);
         adView.setId(R.id.adview);
         adView.setLayoutParams(adViewLayoutParameters);
 
@@ -111,6 +111,8 @@ public class AdHelper {
 
         // Request a new ad.
         AdRequest adRequest = new AdRequest.Builder().addNetworkExtrasBundle(AdMobAdapter.class, adSettingsBundle).build();
+        // Pixel 2 XL test ads.
+        // AdRequest adRequest = new AdRequest.Builder().addTestDevice("137D42984218CEECDFD11927BB7D6416").addNetworkExtrasBundle(AdMobAdapter.class, adSettingsBundle).build();
         adView.loadAd(adRequest);
     }
 

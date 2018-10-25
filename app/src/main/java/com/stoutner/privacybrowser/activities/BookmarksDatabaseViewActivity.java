@@ -60,10 +60,10 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
     private static final int ALL_FOLDERS_DATABASE_ID = -2;
     private static final int HOME_FOLDER_DATABASE_ID = -1;
 
-    // `bookmarksDatabaseHelper` is used in `onCreate()` and `updateBookmarksListView()`.
+    // `bookmarksDatabaseHelper` is used in `onCreate()`, `updateBookmarksListView()`, and `onDestroy()`.
     private BookmarksDatabaseHelper bookmarksDatabaseHelper;
 
-    // `bookmarksCursor` is used in `onCreate()`, `updateBookmarksListView()`, `onSaveBookmark()`, and `onSaveBookmarkFolder()`.
+    // `bookmarksCursor` is used in `onCreate()`, `updateBookmarksListView()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, and `onDestroy()`.
     private Cursor bookmarksCursor;
 
     // `bookmarksCursorAdapter` is used in `onCreate()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`.
@@ -434,5 +434,15 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
 
         // Update the `ListView`.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
+    }
+
+    @Override
+    public void onDestroy() {
+        // Close the bookmarks cursor and database.
+        bookmarksCursor.close();
+        bookmarksDatabaseHelper.close();
+
+        // Run the default commands.
+        super.onDestroy();
     }
 }

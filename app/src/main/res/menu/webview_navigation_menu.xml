@@ -46,8 +46,7 @@
 
     <!-- If a group has an id, a line is drawn above it in the navigation view. -->
     <group
-        android:id="@+id/navigationGroup1" >
-
+        android:id="@+id/features_group" >
         <item
             android:id="@+id/requests"
             android:title="@string/requests"
@@ -59,7 +58,11 @@
             android:title="@string/downloads"
             android:icon="@drawable/downloads_light"
             android:orderInCategory="60" />
+    </group>
 
+    <!-- If a group has an id, a line is drawn above it in the navigation view. -->
+    <group
+        android:id="@+id/settings_group" >
         <item
             android:id="@+id/domains"
             android:title="@string/domains"
@@ -71,31 +74,37 @@
             android:title="@string/settings"
             android:icon="@drawable/settings"
             android:orderInCategory="80" />
+
+        <item
+            android:id="@+id/import_export"
+            android:title="@string/import_export"
+            android:icon="@drawable/import_export_light"
+            android:orderInCategory="90" />
     </group>
 
     <!-- If a group has an id, a line is drawn above it in the navigation view. -->
     <group
-        android:id="@+id/navigationGroup2" >
+        android:id="@+id/info_group" >
         <item
             android:id="@+id/guide"
             android:title="@string/guide"
             android:icon="@drawable/guide"
-            android:orderInCategory="90" />
+            android:orderInCategory="100" />
 
         <item
             android:id="@+id/about"
             android:title="@string/about"
             android:icon="@drawable/about_light"
-            android:orderInCategory="100" />
+            android:orderInCategory="110" />
     </group>
 
     <!-- If a group has an id, a line is drawn above it in the navigation view. -->
     <group
-        android:id="@+id/navigationGroup3" >
+        android:id="@+id/exit_group" >
         <item
             android:id="@+id/clearAndExit"
             android:title="@string/clear_and_exit"
             android:icon="@drawable/clear_and_exit"
-            android:orderInCategory="110" />
+            android:orderInCategory="120" />
     </group>
 </menu>

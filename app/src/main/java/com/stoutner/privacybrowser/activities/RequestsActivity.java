@@ -45,7 +45,7 @@ import java.util.List;
 
 public class RequestsActivity extends AppCompatActivity implements ViewRequestDialog.ViewRequestListener {
     // The list view is used in `onCreate()` and `launchViewRequestDialog()`.
-    private ListView resourceRequestsListView;
+    private ListView requestsListView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,12 +68,12 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
         setContentView(R.layout.requests_coordinatorlayout);
 
         // Use the `SupportActionBar` from `android.support.v7.app.ActionBar` until the minimum API is >= 21.
-        Toolbar blockListsAppBar = findViewById(R.id.blocklists_toolbar);
-        setSupportActionBar(blockListsAppBar);
+        Toolbar requestsAppBar = findViewById(R.id.requests_toolbar);
+        setSupportActionBar(requestsAppBar);
 
         // Get a handle for the app bar and the list view.
         ActionBar appBar = getSupportActionBar();
-        resourceRequestsListView = findViewById(R.id.resource_requests_listview);
+        requestsListView = findViewById(R.id.requests_listview);
 
         // Remove the incorrect lint warning that `appBar` might be null.
         assert appBar != null;
@@ -165,7 +165,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
                         ArrayAdapter<String[]> allResourceRequestsArrayAdapter = new RequestsArrayAdapter(getApplicationContext(), allResourceRequests);
 
                         // Display the adapter in the list view.
-                        resourceRequestsListView.setAdapter(allResourceRequestsArrayAdapter);
+                        requestsListView.setAdapter(allResourceRequestsArrayAdapter);
                         break;
 
                     case 1:  // Default requests.
@@ -173,7 +173,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
                         ArrayAdapter<String[]> defaultResourceRequestsArrayAdapter = new RequestsArrayAdapter(getApplicationContext(), defaultResourceRequests);
 
                         // Display the adapter in the list view.
-                        resourceRequestsListView.setAdapter(defaultResourceRequestsArrayAdapter);
+                        requestsListView.setAdapter(defaultResourceRequestsArrayAdapter);
                         break;
 
                     case 2:  // Allowed requests.
@@ -181,7 +181,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
                         ArrayAdapter<String[]> allowedResourceRequestsArrayAdapter = new RequestsArrayAdapter(getApplicationContext(), allowedResourceRequests);
 
                         // Display the adapter in the list view.
-                        resourceRequestsListView.setAdapter(allowedResourceRequestsArrayAdapter);
+                        requestsListView.setAdapter(allowedResourceRequestsArrayAdapter);
                         break;
 
                     case 3:  // Third-party requests.
@@ -189,7 +189,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
                         ArrayAdapter<String[]> thirdPartyResourceRequestsArrayAdapter = new RequestsArrayAdapter(getApplicationContext(), thirdPartyResourceRequests);
 
                         //Display the adapter in the list view.
-                        resourceRequestsListView.setAdapter(thirdPartyResourceRequestsArrayAdapter);
+                        requestsListView.setAdapter(thirdPartyResourceRequestsArrayAdapter);
                         break;
 
                     case 4:  // Blocked requests.
@@ -197,7 +197,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
                         ArrayAdapter<String[]> blockedResourceRequestsArrayAdapter = new RequestsArrayAdapter(getApplicationContext(), blockedResourceRequests);
 
                         // Display the adapter in the list view.
-                        resourceRequestsListView.setAdapter(blockedResourceRequestsArrayAdapter);
+                        requestsListView.setAdapter(blockedResourceRequestsArrayAdapter);
                         break;
                 }
             }
@@ -212,10 +212,10 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
         ArrayAdapter<String[]> resourceRequestsArrayAdapter = new RequestsArrayAdapter(getApplicationContext(), allResourceRequests);
 
         // Populate the list view with the resource requests adapter.
-        resourceRequestsListView.setAdapter(resourceRequestsArrayAdapter);
+        requestsListView.setAdapter(resourceRequestsArrayAdapter);
 
         // Listen for taps on entries in the list view.
-        resourceRequestsListView.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
+        requestsListView.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
             // Display the view request dialog.  The list view is 0 based, so the position must be incremented by 1.
             launchViewRequestDialog(position + 1);
         });
@@ -235,10 +235,10 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
 
     private void launchViewRequestDialog(int id) {
         // Determine if this is the last request in the list.
-        boolean isLastRequest = (id == resourceRequestsListView.getCount());
+        boolean isLastRequest = (id == requestsListView.getCount());
 
         // Get the string array for the selected resource request.  The resource requests list view is zero based.
-        String[] selectedRequestStringArray = (String[]) resourceRequestsListView.getItemAtPosition(id - 1);
+        String[] selectedRequestStringArray = (String[]) requestsListView.getItemAtPosition(id - 1);
 
         // Remove the warning that `selectedRequest` might be null.
         assert selectedRequestStringArray != null;

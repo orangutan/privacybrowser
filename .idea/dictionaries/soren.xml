@@ -54,6 +54,7 @@
       <w>enableformdata</w>
       <w>enablejavascript</w>
       <w>enablethirdpartycookies</w>
+      <w>externalstorage</w>
       <w>exynos</w>
       <w>fanboy</w>
       <w>fanboys</w>
@@ -123,6 +124,7 @@
       <w>snackbar</w>
       <w>snackbars</w>
       <w>softkeyboard</w>
+      <w>sqlite</w>
       <w>sslenddate</w>
       <w>sslissuedbycommonname</w>
       <w>sslissuedbyorganization</w>
