@@ -326,7 +326,7 @@
     <string name="export_failed">Export failed:</string>
     <string name="import_failed">Import failed:</string>
     <string name="cannot_export">The settings cannot be exported to this location because the storage permission has not been granted.</string>
-    <string name="cannot_import">The settings cannot be imported to this location because the storage permission has not been granted.</string>
+    <string name="cannot_import">The settings cannot be imported from this location because the storage permission has not been granted.</string>
     <string name="invalid_location">is not a valid location.</string>
     <string name="storage_permission">Storage Permission</string>
     <string name="storage_permission_message">Privacy Browser needs the storage permission to access public directories. If it is denied, the app’s directories can still be used.</string>

@@ -115,6 +115,7 @@
     <string name="bookmarks">Закладки</string>
     <string name="downloads">Загрузки</string>
     <string name="settings">Настройки</string>
+    <string name="import_export">Импорт/Экспорт</string>
     <string name="guide">Руководство</string>
     <string name="about">О Privacy Browser</string>
     <string name="clear_and_exit">Очистить и выйти</string>
@@ -311,6 +312,24 @@
     <string name="saved_ssl_certificate">Сохраненный сертификат SSL</string>
     <string name="current_website_ssl_certificate">Текущий сертификат SSL сайта</string>
     <string name="load_an_encrypted_website">Откройте зашифрованный сайт перед настройкой домена, чтобы заполнить текущий сертификат SSL веб-сайта.</string>
+
+    <!-- Import/Export. -->
+    <string name="browse">Обзор</string>
+    <string name="export_settings">Экспорт настроек</string>
+    <string name="import_settings">Импорт настроек</string>
+    <string name="export_file_name">Имя файла экспорта</string>
+    <string name="import_file_name">Имя файла импорта</string>
+    <string name="export">Экспорт</string>
+    <string name="import_button">Импорт</string>  <!-- `import` is a reserved word and cannot be used as the name -->
+    <string name="export_successful">Экспорт выполнен.</string>
+    <string name="export_failed">Сбой при экспорте:</string>
+    <string name="import_failed">Сбой при импорте:</string>
+    <string name="cannot_export">Настройки не могут быть экспортированы в это расположение, так как не было предоставлено разрешение на доступ к хранилищу.</string>
+    <string name="cannot_import">Настройки не могут быть импортированы из этого расположения, так как не было предоставлено разрешение на доступ к хранилищу.</string>
+    <string name="invalid_location">- недопустимое расположение.</string>
+    <string name="storage_permission">Доступ к хранилищу</string>
+    <string name="storage_permission_message">Privacy Browser необходимо разрешение на доступ к внешним папкам. Если доступ предоставлен не будет, можно использовать локальную папку приложения.</string>
+    <string name="storage_permission_explanation">Для доступа к файлам во внешних папках требуется соответствующее разрешение. В противном случае будут работать только локальные папки.</string>
 
     <!-- Guide. -->
     <string name="privacy_browser_guide">Руководство по Privacy Browser</string>
