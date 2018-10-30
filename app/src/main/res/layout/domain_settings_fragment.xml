@@ -406,8 +406,7 @@
                 <Spinner
                     android:id="@+id/domain_settings_user_agent_spinner"
                     android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:labelFor="@+id/domain_settings_custom_user_agent_edittext" />
+                    android:layout_width="match_parent" />
             </LinearLayout>
 
             <TextView
@@ -418,14 +417,17 @@
                 android:layout_marginEnd="36dp"
                 android:textSize="13sp" />
 
+            <!-- `android:autofillHints` only applies to API >= 26.  `tools:ignore="UnusedAttribute"` removes the lint warning. -->
             <EditText
-                android:id="@id/domain_settings_custom_user_agent_edittext"
+                android:id="@+id/domain_settings_custom_user_agent_edittext"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginStart="40dp"
                 android:layout_marginEnd="60dp"
                 android:inputType="textUri"
-                android:hint="@string/custom_user_agent"/>
+                android:hint="@string/custom_user_agent"
+                android:autofillHints=""
+                tools:ignore="UnusedAttribute" />
         </LinearLayout>
 
         <!-- Font Size. -->
@@ -673,7 +675,6 @@
 
                     <TextView
                         android:id="@+id/saved_ssl_certificate_issued_by_cname"
-
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent" />
 

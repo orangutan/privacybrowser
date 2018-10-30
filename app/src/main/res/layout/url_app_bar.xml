@@ -38,7 +38,8 @@
         android:onClick="viewSslCertificate"
         android:contentDescription="@string/favorite_icon" />
 
-    <!-- `android:imeOptions="actionGo"` sets the keyboard to have a go key instead of a new line key.  `android:inputType="textUri"` disables spell check in the `EditText`. -->
+    <!-- `android:imeOptions="actionGo"` sets the keyboard to have a go key instead of a new line key.  `android:inputType="textUri"` disables spell check in the `EditText`.
+     `android:autofillHints` only applies to API >= 26.  `tools:ignore="UnusedAttribute"` removes the lint warning. -->
     <EditText
         android:id="@+id/url_edittext"
         android:layout_height="wrap_content"
@@ -47,5 +48,7 @@
         android:hint="@string/url_or_search_terms"
         android:imeOptions="actionGo"
         android:inputType="textUri"
-        android:selectAllOnFocus="true" />
+        android:selectAllOnFocus="true"
+        android:autofillHints=""
+        tools:ignore="UnusedAttribute" />
 </RelativeLayout>

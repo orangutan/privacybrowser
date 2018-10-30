@@ -564,12 +564,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Remove the formatting from `urlTextBar` when the user is editing the text.
         urlTextBox.setOnFocusChangeListener((View v, boolean hasFocus) -> {
-            if (hasFocus) {  // The user is editing `urlTextBox`.
+            if (hasFocus) {  // The user is editing the URL text box.
                 // Remove the highlighting.
                 urlTextBox.getText().removeSpan(redColorSpan);
                 urlTextBox.getText().removeSpan(initialGrayColorSpan);
                 urlTextBox.getText().removeSpan(finalGrayColorSpan);
-            } else {  // The user has stopped editing `urlTextBox`.
+            } else {  // The user has stopped editing the URL text box.
+                // Move to the beginning of the string.
+                urlTextBox.setSelection(0);
+
                 // Reapply the highlighting.
                 highlightUrlText();
             }

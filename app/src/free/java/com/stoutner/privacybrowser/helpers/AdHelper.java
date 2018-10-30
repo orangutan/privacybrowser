@@ -111,6 +111,8 @@ public class AdHelper {
 
         // Request a new ad.
         AdRequest adRequest = new AdRequest.Builder().addNetworkExtrasBundle(AdMobAdapter.class, adSettingsBundle).build();
+        // Pixel test ads.
+        // AdRequest adRequest = new AdRequest.Builder().addTestDevice("20DAEEF7662E2238C99A509BE5D78A26").addNetworkExtrasBundle(AdMobAdapter.class, adSettingsBundle).build();
         // Pixel 2 XL test ads.
         // AdRequest adRequest = new AdRequest.Builder().addTestDevice("137D42984218CEECDFD11927BB7D6416").addNetworkExtrasBundle(AdMobAdapter.class, adSettingsBundle).build();
         adView.loadAd(adRequest);
