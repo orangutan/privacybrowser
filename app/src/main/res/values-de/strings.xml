@@ -184,7 +184,7 @@
     <string name="error_body">Fehler</string>
     <string name="about_view_source">Über Quelltext</string>
     <string name="about_view_source_message">Weil Androids WebView keine Quelltext-Informationen zur Verfügung stellt, muss eine separate a separate Serveranfrage mit system tools gestellt werden,
-        die hier dargestellten Daten erhält. Deshalb können Unterschiede zwischen diesen Daten und der mit Webview dargestellten Webseite auftreten.
+        die hier dargestellten Daten erhält. Deshalb können Unterschiede zwischen diesen Daten und der mit WebView dargestellten Webseite auftreten.
         Es ist geplant, mit Version 4.x eine eigene Engine einzuführen, die diese Einschränkungen umgeht.</string>
 
     <!-- Create Home Screen Shortcut Alert Dialog. -->
@@ -391,7 +391,7 @@
                 <string name="api">API</string>
             <string name="build">Build:</string>
             <string name="security_patch">Sicherheits-Patch:</string>
-            <string name="chrome">Chrome:</string>
+            <string name="webview">WebView:</string>
             <string name="orbot">Orbot:</string>
             <string name="easylist_label">EasyList:</string>
             <string name="easyprivacy_label">EasyPrivacy:</string>

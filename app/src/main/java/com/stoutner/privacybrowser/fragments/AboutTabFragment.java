@@ -100,7 +100,7 @@ public class AboutTabFragment extends Fragment {
             TextView versionAndroidTextView = tabLayout.findViewById(R.id.about_version_android);
             TextView versionSecurityPatchTextView = tabLayout.findViewById(R.id.about_version_securitypatch);
             TextView versionBuildTextView = tabLayout.findViewById(R.id.about_version_build);
-            TextView versionChromeTextView = tabLayout.findViewById(R.id.about_version_chrome);
+            TextView versionWebViewTextView = tabLayout.findViewById(R.id.about_version_webview);
             TextView versionOrbotTextView = tabLayout.findViewById(R.id.about_version_orbot);
             TextView versionEasyListTextView = tabLayout.findViewById(R.id.about_version_easylist);
             TextView versionEasyPrivacyTextView = tabLayout.findViewById(R.id.about_version_easyprivacy);
@@ -124,7 +124,7 @@ public class AboutTabFragment extends Fragment {
             String bootloaderLabel = getString(R.string.bootloader) + "  ";
             String androidLabel = getString(R.string.android) + "  ";
             String buildLabel = getString(R.string.build) + "  ";
-            String chromeLabel = getString(R.string.chrome) + "  ";
+            String webViewLabel = getString(R.string.webview) + "  ";
             String easyListLabel = getString(R.string.easylist_label) + "  ";
             String easyPrivacyLabel = getString(R.string.easyprivacy_label) + "  ";
             String fanboyAnnoyanceLabel = getString(R.string.fanboy_annoyance_label) + "  ";
@@ -153,7 +153,7 @@ public class AboutTabFragment extends Fragment {
             String android = Build.VERSION.RELEASE + " (" + getString(R.string.api) + " " + Integer.toString(Build.VERSION.SDK_INT) + ")";
             String build = Build.DISPLAY;
             // Select the substring that begins after `Chrome/` and goes until the next ` `.
-            String chrome = userAgentString.substring(userAgentString.indexOf("Chrome/") + 7, userAgentString.indexOf(" ", userAgentString.indexOf("Chrome/")));
+            String webView = userAgentString.substring(userAgentString.indexOf("Chrome/") + 7, userAgentString.indexOf(" ", userAgentString.indexOf("Chrome/")));
 
             // Get the Orbot version name if Orbot is installed.
             String orbot;
@@ -175,7 +175,7 @@ public class AboutTabFragment extends Fragment {
             SpannableStringBuilder bootloaderStringBuilder = new SpannableStringBuilder(bootloaderLabel + bootloader);
             SpannableStringBuilder androidStringBuilder = new SpannableStringBuilder(androidLabel + android);
             SpannableStringBuilder buildStringBuilder = new SpannableStringBuilder(buildLabel + build);
-            SpannableStringBuilder chromeStringBuilder = new SpannableStringBuilder(chromeLabel + chrome);
+            SpannableStringBuilder webViewStringBuilder = new SpannableStringBuilder(webViewLabel + webView);
             SpannableStringBuilder easyListStringBuilder = new SpannableStringBuilder(easyListLabel + MainWebViewActivity.easyListVersion);
             SpannableStringBuilder easyPrivacyStringBuilder = new SpannableStringBuilder(easyPrivacyLabel + MainWebViewActivity.easyPrivacyVersion);
             SpannableStringBuilder fanboyAnnoyanceStringBuilder = new SpannableStringBuilder(fanboyAnnoyanceLabel + MainWebViewActivity.fanboysAnnoyanceVersion);
@@ -202,7 +202,7 @@ public class AboutTabFragment extends Fragment {
             bootloaderStringBuilder.setSpan(blueColorSpan, bootloaderLabel.length(), bootloaderStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             androidStringBuilder.setSpan(blueColorSpan, androidLabel.length(), androidStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             buildStringBuilder.setSpan(blueColorSpan, buildLabel.length(), buildStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            chromeStringBuilder.setSpan(blueColorSpan, chromeLabel.length(), chromeStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            webViewStringBuilder.setSpan(blueColorSpan, webViewLabel.length(), webViewStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             easyListStringBuilder.setSpan(blueColorSpan, easyListLabel.length(), easyListStringBuilder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
             easyPrivacyStringBuilder.setSpan(blueColorSpan, easyPrivacyLabel.length(), easyPrivacyStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             fanboyAnnoyanceStringBuilder.setSpan(blueColorSpan, fanboyAnnoyanceLabel.length(), fanboyAnnoyanceStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
@@ -218,7 +218,7 @@ public class AboutTabFragment extends Fragment {
             versionBootloaderTextView.setText(bootloaderStringBuilder);
             versionAndroidTextView.setText(androidStringBuilder);
             versionBuildTextView.setText(buildStringBuilder);
-            versionChromeTextView.setText(chromeStringBuilder);
+            versionWebViewTextView.setText(webViewStringBuilder);
             versionEasyListTextView.setText(easyListStringBuilder);
             versionEasyPrivacyTextView.setText(easyPrivacyStringBuilder);
             versionFanboyAnnoyanceTextView.setText(fanboyAnnoyanceStringBuilder);
