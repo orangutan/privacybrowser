@@ -2452,19 +2452,27 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                         WebStorage webStorage = WebStorage.getInstance();
                                         webStorage.deleteAllData();
 
-                                        // Manually delete the DOM storage files and directories.
-                                        try {
-                                            // A `String[]` must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
-                                            privacyBrowserRuntime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Local Storage/"});
+                                        // Initialize a handler to manually delete the DOM storage files and directories.
+                                        Handler deleteDomStorageHandler = new Handler();
 
-                                            // Multiple commands must be used because `Runtime.exec()` does not like `*`.
-                                            privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/IndexedDB");
-                                            privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager");
-                                            privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager-journal");
-                                            privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/databases");
-                                        } catch (IOException e) {
-                                            // Do nothing if an error is thrown.
-                                        }
+                                        // Setup a runnable to manually delete the DOM storage files and directories.
+                                        Runnable deleteDomStorageRunnable = () -> {
+                                            try {
+                                                // A `String[]` must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
+                                                privacyBrowserRuntime.exec(new String[]{"rm", "-rf", privateDataDirectoryString + "/app_webview/Local Storage/"});
+
+                                                // Multiple commands must be used because `Runtime.exec()` does not like `*`.
+                                                privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/IndexedDB");
+                                                privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager");
+                                                privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager-journal");
+                                                privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/databases");
+                                            } catch (IOException e) {
+                                                // Do nothing if an error is thrown.
+                                            }
+                                        };
+
+                                        // Manually delete the DOM storage files after 200 milliseconds.
+                                        deleteDomStorageHandler.postDelayed(deleteDomStorageRunnable, 200);
                                 }
                             }
                         })
