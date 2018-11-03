@@ -59,7 +59,7 @@
             android:title="@string/user_agent"
             android:entries="@array/translated_user_agent_names"
             android:entryValues="@array/user_agent_names"
-            android:defaultValue="Privacy Browser"
+            android:defaultValue="@string/user_agent_chrome_on_android"
             android:icon="?attr/userAgentIcon" />
 
         <!-- android:inputType="textVisiblePassword" sets the keyboard to have a dedicated number row.-->
