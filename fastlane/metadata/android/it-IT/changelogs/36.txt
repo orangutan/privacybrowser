@@ -9,4 +9,4 @@
 • Aggiornamento della target API a 28 (Android 9 Pie).
 • Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
 • Aggiornamento della traduzione Russo.
-• Aggiornamento della traduzione Spagnola fornita da Jose A. León Becerra.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León.

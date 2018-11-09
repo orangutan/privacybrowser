@@ -8,4 +8,4 @@
 • Miglioramento del comportamento nell'aggiunta e nella modifica delle impostazioni dei domini dal menu delle opzioni.
 • Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
 • Aggiornamento della traduzione Russo.
-• Aggiornamento della traduzione Spagnola fornita da Jose A. León Becerra.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León.

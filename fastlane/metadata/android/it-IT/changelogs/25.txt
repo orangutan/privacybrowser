@@ -8,4 +8,4 @@
 • Correzione di un baco che provocava modifiche ai siti web (visualizzati come semplici elenchi) nel caso in cui Privacy Browser venisse messo in background.
 • Svariati piccoli miglioramenti sono stati apportati alla schermata dei domini.
 • Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
-• Aggiornamento della traduzione Spagnola fornita da Jose A. León Becerra.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León.

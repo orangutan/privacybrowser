@@ -9,4 +9,4 @@
 • Bump target API to 28 (Android 9 Pie).
 • Updated Italian translation provided by Francesco Buratti.
 • Updated Russian translation.
-• Updated Spanish translation provided by Jose A. León Becerra.
+• Updated Spanish translation provided by Jose A. León.

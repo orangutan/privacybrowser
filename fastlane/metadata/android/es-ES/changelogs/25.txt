@@ -7,5 +7,5 @@
 • Arreglar un error que algunas veces provocaba que fallaran los agentes de usuario de un dominio personalizado.
 • Arreglar un error que provocaba que la modificación de una página web (como la clasificación de una lista) se perdiera si Navegador Privado se llevaba a segundo plano.
 • Muchas pequeñas mejoras se han hecho a la actividad de los Dominios.
-• Actualizada la traducción al español proporcionada por Jose A. León Becerra.
+• Actualizada la traducción al español proporcionada por Jose A. León.
 • Actualizada la traducción al italiano proporcionada por Francesco Buratti.

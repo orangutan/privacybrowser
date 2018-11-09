@@ -2,4 +2,4 @@
 • Open telephone number hyperlinks in the dialer.
 • Fix a build error that prevented the release of 2.7 and 2.7.1 on F-Droid.
 • Updated Italian translation provided by Francesco Buratti.
-• Updated Spanish translation provided by Jose A. León Becerra.
+• Updated Spanish translation provided by Jose A. León.

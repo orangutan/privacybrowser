@@ -28,19 +28,17 @@
 
         <p>Первичные файлы cookie устанавливаются тем веб-сайтом, который указан в строке URL.</p>
 
-        <p>С первых дней интернета стало очевидно, что веб-сайтам было бы выгодно хранить информацию на компьютере для последующего доступа к ней. Например, веб-сайт, отображающий информацию о погоде,
-            может запросить у пользователя название города, а затем сохранить его в файле cookie.
-            В следующий раз, когда пользователь посетит веб-сайт, информация о погоде будет автоматически загружена для этого города, без необходимости вводить название снова,
-            и без необходимости создания пользователем учетной записи на веб-сайте (что было бы излишним для таких простых задач).</p>
+        <p>From the early days of the internet, it became obvious that it would be advantageous for websites to be able to store information on a computer for future access.
+            For example, a website that displays weather information could ask the user for a zip code, and then store it in a cookie.
+            The next time the user visited the website, weather information would automatically load for that zip code, without the user having to enter it again.</p>
 
-        <p>Как и со всем остальным в интернете, умные люди выяснили все способы злоупотребления файлами cookie, чтобы делать то, что пользователи не одобрят, если узнают что происходит.
-            Например, веб-сайт может установить cookie на устройстве с уникальным номером.
-            Затем каждый раз, когда пользователь посещает веб-сайт на этом устройстве, он связывается с уникальным профилем, который сервер поддерживает для данного номера,
-            даже если устройство подключается с разных IP-адресов, как это часто делают сотовые телефоны.</p>
+        <p>Like everything else on the web, clever people figured out all types of ways to abuse cookies to do things that users would not approve of if they knew they were happening.
+            For example, a website can set a cookie with a unique serial number on a device.
+            Then, every time a user visits the website on that device, it can be linked to a unique profile the server maintains for that serial number,
+            even if the device connects from different IP addresses.</p>
 
-        <p>Многие веб-сайты с возможностью авторизации требуют обязательного включения первичных файлов cookie для того, чтобы пользователь оставался авторизованным.
-            Файлы cookie - не единственный способ, которым веб-сайт может поддерживать постоянную авторизацию пользователя на сайте, но если на конкретном веб-сайте это реализовано именно так,
-            то включение первичных файлов cookie будет единственным способом.</p>
+        <p>Almost all websites with logins require first-party cookies to be enabled for a user to log in.
+            That is how they make sure it is still you as you move from page to page on the site, and is, in my opinion, one of the few legitimate uses for cookies.</p>
 
         <p>Если первичные файлы cookie включены, но JavaScript отключен, значок конфиденциальности будет желтым <img class="inline" src="../shared_images/warning.png"> как предупреждение.</p>
 
@@ -49,7 +47,7 @@
 
         <p>Сторонние файлы cookie устанавливаются частями веб-сайта, которые загружаются с серверов, отличных от указанного в строке URL.
             Например, большинство веб-сайтов, на которых есть реклама, загружают их со стороннего рекламного брокера, например,
-            <a href="https://www.google.com/adsense/start/#?modal_active=none">Google AdSense</a>. Каждый раз, когда сайт загружается, он запрашивает у рекламного брокера рекламу.
+            <a href="https://www.google.com/adsense/start/">Google AdSense</a>. Каждый раз, когда сайт загружается, он запрашивает у рекламного брокера рекламу.
             Рекламный брокер анализирует любую информацию, которую они могут иметь о пользователе, просматривает текущую ставку,
             которую рекламодатели готовы заплатить за свою рекламу, и выбирает ту, которая будет отображаться.
             Раздел веб-сайта, на котором отображается реклама, загружается с сервера рекламного брокера, а не с основного сервера.</p>
@@ -70,22 +68,24 @@
             Со временем такие компании, как Facebook (который также запустил рекламную сеть), создали довольно большое количество подробных профилей о людях,
             у которых <a href = "http://www.theverge.com/2016/5/27/11795248/facebook-ad-network-non-users-cookies-plug-ins"> даже не было аккаунта на сайте социальной сети</a>.</p>
 
-        <p>Нет никаких серьезных оснований для того, чтобы когда-либо разрешать сторонние файлы cookie. На устройствах с Android KitKat или старше (версия <= 4.4.4 или API <= 20), WebView не
-            <a href="https://developer.android.com/reference/android/webkit/CookieManager.html#setAcceptThirdPartyCookies(android.webkit.WebView, boolean)">различает первичные и сторонние файлы cookie</a>.
-            Таким образом, включение первичных файлов cookie также разрешит и сторонние.</p>
+        <p>There is no good reason to ever enable third-party cookies. On devices with Android KitKat or older (version <= 4.4.4 or API <= 20), WebView does not
+            <a href="https://developer.android.com/reference/android/webkit/CookieManager.html#setAcceptThirdPartyCookies(android.webkit.WebView, boolean)">differentiate
+            between first-party and third-party cookies</a>. Thus, enabling first-party cookies will also enable third-party cookies.</p>
 
 
         <h3><img class="title" src="../shared_images/web_blue_dark.png"> Хранилище DOM</h3>
 
-        <p>Хранилище объектной модели документа (Document Object Model), также известное как веб-хранилище, называют cookie (печенье) на стероидах.
-            В то время как максимальный объем хранения для всех файлов cookie с одного URL-адреса составляет 4 килобайта,
-            хранилище DOM может содержать <a href="https://en.wikipedia.org/wiki/Web_storage#Storage_size">мегабайты на сайт</a>.
-            Поскольку хранилище DOM использует JavaScript для чтения и записи данных, включение его ни на что не влияет при отключенном JavaScript.</p>
+        <p>Document Object Model storage, also known as web storage, is like cookies on steroids.
+            Whereas the maximum combined storage size for all cookies from a single URL is 4 kilobytes,
+            DOM storage can hold <a href="https://en.wikipedia.org/wiki/Web_storage#Storage_size">megabytes per site</a>.
+            Because DOM storage uses JavaScript to read and write data, it cannot be enabled unless JavaScript is also enabled.</p>
 
 
         <h3><img class="title" src="../shared_images/subtitles_blue_dark.png"> Данные формы</h3>
 
-        <p>Данные формы содержат информацию, вводимую в веб-формы, такие как имена пользователей, адреса, телефонные номера и т. д., и перечисляются в раскрывающемся списке при будущих посещениях.
-            В отличие от других форм локального хранилища данные формы не отправляются на веб-сервер без специального взаимодействия с пользователем.</p>
+        <p>Form data contains information typed into web forms, like user names, addresses, phone numbers, etc., and lists them in a drop-down box on future visits.
+            Unlike the other forms of local storage, form data is not sent to the web server without specific user interaction.
+            Beginning in Android Oreo (8.0), WebView’s form data was replaced by the the <a href="https://medium.com/@bherbst/getting-androids-autofill-to-work-for-you-21435debea1">Autofill service</a>.
+            As such, controls for form data no longer appear on newer Android devices.</p>
     </body>
 </html>

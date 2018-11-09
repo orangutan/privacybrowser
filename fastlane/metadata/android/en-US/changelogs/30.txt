@@ -7,4 +7,4 @@
 • Bump target API to 27 (Android Oreo, 8.1.0).
 • Updated Italian translation provided by Francesco Buratti.
 • Partial Russian translation.
-• Updated Spanish translation provided by Jose A. León Becerra.
+• Updated Spanish translation provided by Jose A. León.
