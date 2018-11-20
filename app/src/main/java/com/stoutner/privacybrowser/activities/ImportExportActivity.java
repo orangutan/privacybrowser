@@ -31,6 +31,7 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -40,8 +41,11 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.stoutner.privacybrowser.R;
@@ -49,12 +53,27 @@ import com.stoutner.privacybrowser.dialogs.ImportExportStoragePermissionDialog;
 import com.stoutner.privacybrowser.helpers.ImportExportDatabaseHelper;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
+import java.util.Arrays;
+
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 public class ImportExportActivity extends AppCompatActivity implements ImportExportStoragePermissionDialog.ImportExportStoragePermissionDialogListener {
-    private final static int EXPORT_FILE_PICKER_REQUEST_CODE = 1;
-    private final static int IMPORT_FILE_PICKER_REQUEST_CODE = 2;
-    private final static int EXPORT_REQUEST_CODE = 3;
-    private final static int IMPORT_REQUEST_CODE = 4;
+    // Create the encryption constants.
+    private final int NO_ENCRYPTION = 0;
+    private final int PASSWORD_ENCRYPTION = 1;
+    private final int GPG_ENCRYPTION = 2;
+
+    // Create the action constants.
+    private final int IMPORT = 0;
+    private final int EXPORT = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,68 +105,164 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
         appBar.setDisplayHomeAsUpEnabled(true);
 
         // Get handles for the views that need to be modified.
-        EditText exportFileEditText = findViewById(R.id.export_file_edittext);
-        Button exportButton = findViewById(R.id.export_button);
-        EditText importFileEditText = findViewById(R.id.import_file_edittext);
-        Button importButton = findViewById(R.id.import_button);
+        Spinner encryptionSpinner = findViewById(R.id.encryption_spinner);
+        TextInputLayout passwordEncryptionTextInputLayout = findViewById(R.id.password_encryption_textinputlayout);
+        EditText encryptionPasswordEditText = findViewById(R.id.password_encryption_edittext);
+        Spinner importExportSpinner = findViewById(R.id.import_export_spinner);
+        EditText fileNameEditText = findViewById(R.id.file_name_edittext);
+        Button importExportButton = findViewById(R.id.import_export_button);
         TextView storagePermissionTextView = findViewById(R.id.import_export_storage_permission_textview);
 
-        // Initially disable the buttons.
-        exportButton.setEnabled(false);
-        importButton.setEnabled(false);
+        // Create array adapters for the spinners.
+        ArrayAdapter<CharSequence> encryptionArrayAdapter = ArrayAdapter.createFromResource(this, R.array.encryption_type, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> importExportArrayAdapter = ArrayAdapter.createFromResource(this, R.array.import_export_spinner, R.layout.spinner_item);
 
-        // Enable the export button when the export file EditText isn't empty.
-        exportFileEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Do nothing.
-            }
+        // Set the drop down view resource on the spinners.
+        encryptionArrayAdapter.setDropDownViewResource(R.layout.spinner_dropdown_items);
+        importExportArrayAdapter.setDropDownViewResource(R.layout.spinner_dropdown_items);
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Do nothing.
-            }
+        // Set the array adapters for the spinners.
+        encryptionSpinner.setAdapter(encryptionArrayAdapter);
+        importExportSpinner.setAdapter(importExportArrayAdapter);
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                exportButton.setEnabled(!exportFileEditText.getText().toString().isEmpty());
-            }
-        });
+        // Initially hide the encryption layout items.
+        passwordEncryptionTextInputLayout.setVisibility(View.GONE);
 
-        // Enable the import button when the export file EditText isn't empty.
-        importFileEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Do nothing.
-            }
+        // Create strings for the default file paths.
+        String defaultFilePath;
+        String defaultPasswordEncryptionFilePath;
+        String defaultGpgEncryptionFilePath;
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Do nothing.
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                importButton.setEnabled(!importFileEditText.getText().toString().isEmpty());
-            }
-        });
-
-        // Set the initial file paths.
+        // Set the default file paths according to the storage permission status.
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
-            // Create a string for the external public path.
-            String EXTERNAL_PUBLIC_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" + getString(R.string.privacy_browser_settings);
-
-            // Set the default path.
-            exportFileEditText.setText(EXTERNAL_PUBLIC_PATH);
-            importFileEditText.setText(EXTERNAL_PUBLIC_PATH);
+            // Set the default file paths to use the external public directory.
+            defaultFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" + getString(R.string.privacy_browser_settings);
+            defaultPasswordEncryptionFilePath = defaultFilePath + ".aes";
+            defaultGpgEncryptionFilePath = defaultFilePath + ".gpg";
         } else {  // The storage permission has not been granted.
-            // Create a string for the external private path.
-            String EXTERNAL_PRIVATE_PATH = getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "/" + getString(R.string.privacy_browser_settings);
-
-            // Set the default path.
-            exportFileEditText.setText(EXTERNAL_PRIVATE_PATH);
-            importFileEditText.setText(EXTERNAL_PRIVATE_PATH);
+            // Set the default file paths to use the external private directory.
+            defaultFilePath = getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "/" + getString(R.string.privacy_browser_settings);
+            defaultPasswordEncryptionFilePath = defaultFilePath + ".aes";
+            defaultGpgEncryptionFilePath = defaultFilePath + ".gpg";
         }
+
+        // Set the default file path.
+        fileNameEditText.setText(defaultFilePath);
+
+        // Display the encryption information when the spinner changes.
+        encryptionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case NO_ENCRYPTION:
+                        // Hide the encryption layout items.
+                        passwordEncryptionTextInputLayout.setVisibility(View.GONE);
+
+                        // Reset the default file path.
+                        fileNameEditText.setText(defaultFilePath);
+
+                        // Enable the import/export button if a file name exists.
+                        importExportButton.setEnabled(!fileNameEditText.getText().toString().isEmpty());
+                        break;
+
+                    case PASSWORD_ENCRYPTION:
+                        // Show the password encryption layout items.
+                        passwordEncryptionTextInputLayout.setVisibility(View.VISIBLE);
+
+                        // Update the default file path.
+                        fileNameEditText.setText(defaultPasswordEncryptionFilePath);
+
+                        // Enable the import/export button if a file name and password exists.
+                        importExportButton.setEnabled(!fileNameEditText.getText().toString().isEmpty() && !encryptionPasswordEditText.getText().toString().isEmpty());
+                        break;
+
+                    case GPG_ENCRYPTION:
+                        // Hide the password encryption layout items.
+                        passwordEncryptionTextInputLayout.setVisibility(View.GONE);
+
+                        // Update the default file path.
+                        fileNameEditText.setText(defaultGpgEncryptionFilePath);
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        // Update the import/export button when the spinner changes.
+        importExportSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case IMPORT:
+                        importExportButton.setText(R.string.import_button);
+                        break;
+
+                    case EXPORT:
+                        importExportButton.setText(R.string.export);
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        // Update the status of the import/export button when the password changes.
+        encryptionPasswordEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing.
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Do nothing.
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Enable the import/export button if a file name and password exists.
+                importExportButton.setEnabled(!fileNameEditText.getText().toString().isEmpty() && !encryptionPasswordEditText.getText().toString().isEmpty());
+            }
+        });
+
+        // Update the status of the import/export button when the file name EditText changes.
+        fileNameEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing.
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Do nothing.
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Adjust the export button according to the encryption spinner position.
+                switch (encryptionSpinner.getSelectedItemPosition()) {
+                    case NO_ENCRYPTION:
+                        // Enable the import/export button if a file name exists.
+                        importExportButton.setEnabled(!fileNameEditText.getText().toString().isEmpty());
+                        break;
+
+                    case PASSWORD_ENCRYPTION:
+                        // Enable the import/export button if a file name and password exists.
+                        importExportButton.setEnabled(!fileNameEditText.getText().toString().isEmpty() && !encryptionPasswordEditText.getText().toString().isEmpty());
+                        break;
+
+                    case GPG_ENCRYPTION:
+                        break;
+                }
+            }
+        });
 
         // Hide the storage permissions TextView on API < 23 as permissions on older devices are automatically granted.
         if (Build.VERSION.SDK_INT < 23) {
@@ -155,39 +270,71 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
         }
     }
 
-    public void exportBrowse(View view) {
-        // Create the file picker intent.
-        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+    public void browse(View view) {
+        // Get a handle for the import/export spinner.
+        Spinner importExportSpinner = findViewById(R.id.import_export_spinner);
 
-        // Set the intent MIME type to include all files.
-        intent.setType("*/*");
+        // Check to see if import or export is selected.
+        if (importExportSpinner.getSelectedItemPosition() == IMPORT) {  // Import is selected.
+            // Create the file picker intent.
+            Intent importIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
 
-        // Set the initial export file name.
-        intent.putExtra(Intent.EXTRA_TITLE, getString(R.string.privacy_browser_settings));
+            // Set the intent MIME type to include all files.
+            importIntent.setType("*/*");
 
-        // Set the initial directory if API >= 26.
-        if (Build.VERSION.SDK_INT >= 26) {
-            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Environment.getExternalStorageDirectory());
+            // Set the initial directory if API >= 26.
+            if (Build.VERSION.SDK_INT >= 26) {
+                importIntent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Environment.getExternalStorageDirectory());
+            }
+
+            // Specify that a file that can be opened is requested.
+            importIntent.addCategory(Intent.CATEGORY_OPENABLE);
+
+            // Launch the file picker.
+            startActivityForResult(importIntent, 0);
+        } else {  // Export is selected
+            // Create the file picker intent.
+            Intent exportIntent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+
+            // Set the intent MIME type to include all files.
+            exportIntent.setType("*/*");
+
+            // Set the initial export file name.
+            exportIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.privacy_browser_settings));
+
+            // Set the initial directory if API >= 26.
+            if (Build.VERSION.SDK_INT >= 26) {
+                exportIntent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Environment.getExternalStorageDirectory());
+            }
+
+            // Specify that a file that can be opened is requested.
+            exportIntent.addCategory(Intent.CATEGORY_OPENABLE);
+
+            // Launch the file picker.
+            startActivityForResult(exportIntent, 0);
         }
-
-        // Specify that a file that can be opened is requested.
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-
-        // Launch the file picker.
-        startActivityForResult(intent, EXPORT_FILE_PICKER_REQUEST_CODE);
     }
 
-    public void onClickExport(View view) {
+    public void importExport(View view) {
+        // Get a handle for the import/export spinner.
+        Spinner importExportSpinner = findViewById(R.id.import_export_spinner);
+
         // Check to see if the storage permission has been granted.
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // Storage permission granted.
-            // Export the settings.
-            exportSettings();
+            // Check to see if import or export is selected.
+            if (importExportSpinner.getSelectedItemPosition() == IMPORT) {  // Import is selected.
+                // Import the settings.
+                importSettings();
+            } else {  // Export is selected.
+                // Export the settings.
+                exportSettings();
+            }
         } else {  // Storage permission not granted.
-            // Get a handle for the export file EditText.
-            EditText exportFileEditText = findViewById(R.id.export_file_edittext);
+            // Get a handle for the file name EditText.
+            EditText fileNameEditText = findViewById(R.id.file_name_edittext);
 
-            // Get the export file string.
-            String exportFileString = exportFileEditText.getText().toString();
+            // Get the file name string.
+            String fileNameString = fileNameEditText.getText().toString();
 
             // Get the external private directory `File`.
             File externalPrivateDirectoryFile = getApplicationContext().getExternalFilesDir(null);
@@ -198,82 +345,61 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
             // Get the external private directory string.
             String externalPrivateDirectory = externalPrivateDirectoryFile.toString();
 
-            // Check to see if the export file path is in the external private directory.
-            if (exportFileString.startsWith(externalPrivateDirectory)) {  // The export path is in the external private directory.
-                // Export the settings.
-                exportSettings();
-            } else {  // The export path is in a public directory.
+            // Check to see if the file path is in the external private directory.
+            if (fileNameString.startsWith(externalPrivateDirectory)) {  // The file path is in the external private directory.
+                // Check to see if import or export is selected.
+                if (importExportSpinner.getSelectedItemPosition() == IMPORT) {  // Import is selected.
+                    // Import the settings.
+                    importSettings();
+                } else {  // Export is selected.
+                    // Export the settings.
+                    exportSettings();
+                }
+            } else {  // The file path is in a public directory.
                 // Check if the user has previously denied the storage permission.
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
-                    // Instantiate the storage permission alert dialog and set the type to EXPORT_SETTINGS.
-                    DialogFragment importExportStoragePermissionDialogFragment = ImportExportStoragePermissionDialog.type(ImportExportStoragePermissionDialog.EXPORT_SETTINGS);
+                    // Instantiate the storage permission alert dialog.
+                    DialogFragment importExportStoragePermissionDialogFragment = new ImportExportStoragePermissionDialog();
 
                     // Show the storage permission alert dialog.  The permission will be requested when the dialog is closed.
                     importExportStoragePermissionDialogFragment.show(getFragmentManager(), getString(R.string.storage_permission));
                 } else {  // Show the permission request directly.
                     // Request the storage permission.  The export will be run when it finishes.
-                    ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, EXPORT_REQUEST_CODE);
+                    ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
                 }
             }
         }
     }
 
-    public void importBrowse(View view) {
-        // Create the file picker intent.
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-
-        // Set the intent MIME type to include all files.
-        intent.setType("*/*");
-
-        // Set the initial directory if API >= 26.
-        if (Build.VERSION.SDK_INT >= 26) {
-            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Environment.getExternalStorageDirectory());
-        }
-
-        // Specify that a file that can be opened is requested.
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-
-        // Launch the file picker.
-        startActivityForResult(intent, IMPORT_FILE_PICKER_REQUEST_CODE);
+    @Override
+    public void onCloseImportExportStoragePermissionDialog() {
+        // Request the write external storage permission.  The import/export will be run when it finishes.
+        ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
     }
 
-    public void onClickImport(View view) {
-        // Check to see if the storage permission has been granted.
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // Storage permission granted.
-            // Import the settings.
-            importSettings();
-        } else {  // Storage permission not granted.
-            // Get a handle for the import file EditText.
-            EditText importFileEditText = findViewById(R.id.import_file_edittext);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        // Get a handle for the import/export spinner.
+        Spinner importExportSpinner = findViewById(R.id.import_export_spinner);
 
-            // Get the import file string.
-            String importFileString = importFileEditText.getText().toString();
-
-            // Get the external private directory `File`.
-            File externalPrivateDirectoryFile = getApplicationContext().getExternalFilesDir(null);
-
-            // Remove the lint error below that `File` might be null.
-            assert externalPrivateDirectoryFile != null;
-
-            // Get the external private directory string.
-            String externalPrivateDirectory = externalPrivateDirectoryFile.toString();
-
-            // Check to see if the import file path is in the external private directory.
-            if (importFileString.startsWith(externalPrivateDirectory)) {  // The import path is in the external private directory.
+        // Check to see if import or export is selected.
+        if (importExportSpinner.getSelectedItemPosition() == IMPORT) {  // Import is selected.
+            // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
+            if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
                 // Import the settings.
                 importSettings();
-            } else {  // The import path is in a public directory.
-                // Check if the user has previously denied the storage permission.
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
-                    // Instantiate the storage permission alert dialog and set the type to IMPORT_SETTINGS.
-                    DialogFragment importExportStoragePermissionDialogFragment = ImportExportStoragePermissionDialog.type(ImportExportStoragePermissionDialog.IMPORT_SETTINGS);
-
-                    // Show the storage permission alert dialog.  The permission will be requested when the dialog is closed.
-                    importExportStoragePermissionDialogFragment.show(getFragmentManager(), getString(R.string.storage_permission));
-                } else {  // Show the permission request directly.
-                    // Request the storage permission.  The export will be run when it finishes.
-                    ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, IMPORT_REQUEST_CODE);
-                }
+            } else {  // The storage permission was not granted.
+                // Display an error snackbar.
+                Snackbar.make(importExportSpinner, getString(R.string.cannot_import), Snackbar.LENGTH_LONG).show();
+            }
+        } else {  // Export is selected.
+            // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
+            if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
+                // Export the settings.
+                exportSettings();
+            } else {  // The storage permission was not granted.
+                // Display an error snackbar.
+                Snackbar.make(importExportSpinner, getString(R.string.cannot_export), Snackbar.LENGTH_LONG).show();
             }
         }
     }
@@ -282,199 +408,326 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Don't do anything if the user pressed back from the file picker.
         if (resultCode == Activity.RESULT_OK) {
-            // Run the commands for the specific request code.
-            switch (requestCode) {
-                case EXPORT_FILE_PICKER_REQUEST_CODE:
-                    // Get a handle for the export file EditText.
-                    EditText exportFileEditText = findViewById(R.id.export_file_edittext);
+            // Get a handle for the file name EditText.
+            EditText fileNameEditText = findViewById(R.id.file_name_edittext);
 
-                    // Get the selected export file.
-                    Uri exportUri = data.getData();
+            // Get the file name URI.
+            Uri fileNameUri = data.getData();
 
-                    // Remove the lint warning that the export URI might be null.
-                    assert exportUri != null;
+            // Remove the lint warning that the file name URI might be null.
+            assert fileNameUri != null;
 
-                    // Get the raw export path.
-                    String rawExportPath = exportUri.getPath();
+            // Get the raw file name path.
+            String rawFileNamePath = fileNameUri.getPath();
 
-                    // Remove the warning that the raw export path might be null.
-                    assert rawExportPath != null;
+            // Remove the warning that the file name path might be null.
+            assert rawFileNamePath != null;
 
-                    // Check to see if the rawExportPath includes a valid storage location.
-                    if (rawExportPath.contains(":")) {  // The path is valid.
-                        // Split the path into the initial content uri and the path information.
-                        String exportContentPath = rawExportPath.substring(0, rawExportPath.indexOf(":"));
-                        String exportFilePath = rawExportPath.substring(rawExportPath.indexOf(":") + 1);
+            // Check to see if the file name Path includes a valid storage location.
+            if (rawFileNamePath.contains(":")) {  // The path is valid.
+                // Split the path into the initial content uri and the final path information.
+                String fileNameContentPath = rawFileNamePath.substring(0, rawFileNamePath.indexOf(":"));
+                String fileNameFinalPath = rawFileNamePath.substring(rawFileNamePath.indexOf(":") + 1);
 
-                        // Create the export path string.
-                        String exportPath;
+                // Create the file name path string.
+                String fileNamePath;
 
-                        // Construct the export path.
-                        switch (exportContentPath) {
-                            // The documents home has a special content path.
-                            case "/document/home":
-                                exportPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" + exportFilePath;
-                                break;
+                // Construct the file name path.
+                switch (fileNameContentPath) {
+                    // The documents home has a special content path.
+                    case "/document/home":
+                        fileNamePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" + fileNameFinalPath;
+                        break;
 
-                            // Everything else for the primary user should be in `/document/primary`.
-                            case "/document/primary":
-                                exportPath = Environment.getExternalStorageDirectory() + "/" + exportFilePath;
-                                break;
+                    // Everything else for the primary user should be in `/document/primary`.
+                    case "/document/primary":
+                        fileNamePath = Environment.getExternalStorageDirectory() + "/" + fileNameFinalPath;
+                        break;
 
-                            // Just in case, catch everything else and place it in the external storage directory.
-                            default:
-                                exportPath = Environment.getExternalStorageDirectory() + "/" + exportFilePath;
-                                break;
-                        }
+                    // Just in case, catch everything else and place it in the external storage directory.
+                    default:
+                        fileNamePath = Environment.getExternalStorageDirectory() + "/" + fileNameFinalPath;
+                        break;
+                }
 
-                        // Set the export file URI as the text for the export file EditText.
-                        exportFileEditText.setText(exportPath);
-                    } else {  // The path is invalid.
-                        Snackbar.make(exportFileEditText, rawExportPath + " + " + getString(R.string.invalid_location), Snackbar.LENGTH_INDEFINITE).show();
-                    }
-                    break;
-
-                case IMPORT_FILE_PICKER_REQUEST_CODE:
-                    // Get a handle for the import file EditText.
-                    EditText importFileEditText = findViewById(R.id.import_file_edittext);
-
-                    // Get the selected import file.
-                    Uri importUri = data.getData();
-
-                    // Remove the lint warning that the import URI might be null.
-                    assert importUri != null;
-
-                    // Get the raw import path.
-                    String rawImportPath = importUri.getPath();
-
-                    // Remove the warning that the raw import path might be null.
-                    assert rawImportPath != null;
-
-                    // Check to see if the rawExportPath includes a valid storage location.
-                    if (rawImportPath.contains(":")) {  // The path is valid.
-                        // Split the path into the initial content uri and the path information.
-                        String importContentPath = rawImportPath.substring(0, rawImportPath.indexOf(":"));
-                        String importFilePath = rawImportPath.substring(rawImportPath.indexOf(":") + 1);
-
-                        // Create the export path string.
-                        String importPath;
-
-                        // Construct the export path.
-                        switch (importContentPath) {
-                            // The documents folder has a special content path.
-                            case "/document/home":
-                                importPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" + importFilePath;
-                                break;
-
-                            // Everything else for the primary user should be in `/document/primary`.
-                            case "/document/primary":
-                                importPath = Environment.getExternalStorageDirectory() + "/" + importFilePath;
-                                break;
-
-                            // Just in case, catch everything else and place it in the external storage directory.
-                            default:
-                                importPath = Environment.getExternalStorageDirectory() + "/" + importFilePath;
-                                break;
-                        }
-
-                        // Set the export file URI as the text for the export file EditText.
-                        importFileEditText.setText(importPath);
-                    } else {  // The path is invalid.
-                        Snackbar.make(importFileEditText, rawImportPath + " + " + getString(R.string.invalid_location), Snackbar.LENGTH_INDEFINITE).show();
-                    }
-                    break;
+                // Set the file name path as the text of the file name EditText.
+                fileNameEditText.setText(fileNamePath);
+            } else {  // The path is invalid.
+                Snackbar.make(fileNameEditText, rawFileNamePath + " + " + getString(R.string.invalid_location), Snackbar.LENGTH_INDEFINITE).show();
             }
         }
     }
 
-    @Override
-    public void onCloseImportExportStoragePermissionDialog(int type) {
-        // Request the storage permission based on the button that was pressed.
-        switch (type) {
-            case ImportExportStoragePermissionDialog.EXPORT_SETTINGS:
-                // Request the storage permission.  The export will be run when it finishes.
-                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, EXPORT_REQUEST_CODE);
-                break;
-
-            case ImportExportStoragePermissionDialog.IMPORT_SETTINGS:
-                // Request the storage permission.  The import will be run when it finishes.
-                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, IMPORT_REQUEST_CODE);
-                break;
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case EXPORT_REQUEST_CODE:
-                // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
-                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
-                    // Export the settings.
-                    exportSettings();
-                } else {  // The storage permission was not granted.
-                    // Get a handle for the export file EditText.
-                    EditText exportFileEditText = findViewById(R.id.export_file_edittext);
-
-                    // Display an error snackbar.
-                    Snackbar.make(exportFileEditText, getString(R.string.cannot_export), Snackbar.LENGTH_LONG).show();
-                }
-                break;
-
-            case IMPORT_REQUEST_CODE:
-                // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
-                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
-                    // Import the settings.
-                    importSettings();
-                } else {  // The storage permission was not granted.
-                    // Get a handle for the import file EditText.
-                    EditText importFileEditText = findViewById(R.id.import_file_edittext);
-
-                    // Display an error snackbar.
-                    Snackbar.make(importFileEditText, getString(R.string.cannot_import), Snackbar.LENGTH_LONG).show();
-                }
-                break;
-        }
-    }
-
     private void exportSettings() {
-        // Get a handle for the export file EditText.
-        EditText exportFileEditText = findViewById(R.id.export_file_edittext);
-
-        // Get the export file string.
-        String exportFileString = exportFileEditText.getText().toString();
-
-        // Set the export file.
-        File exportFile = new File(exportFileString);
+        // Get a handle for the views.
+        Spinner encryptionSpinner = findViewById(R.id.encryption_spinner);
+        EditText fileNameEditText = findViewById(R.id.file_name_edittext);
 
         // Instantiate the import export database helper.
         ImportExportDatabaseHelper importExportDatabaseHelper = new ImportExportDatabaseHelper();
 
-        // Export the unencrypted file.
-        String exportStatus = importExportDatabaseHelper.exportUnencrypted(exportFile, getApplicationContext());
+        // Get the export file.
+        File exportFile = new File(fileNameEditText.getText().toString());
+
+        // Initialize the export status string.
+        String exportStatus = "";
+
+        // Export according to the encryption type.
+        switch (encryptionSpinner.getSelectedItemPosition()) {
+            case NO_ENCRYPTION:
+                // Export the unencrypted file.
+                exportStatus = importExportDatabaseHelper.exportUnencrypted(exportFile, this);
+                break;
+
+            case PASSWORD_ENCRYPTION:
+                // Use a private temporary export location.
+                File temporaryUnencryptedExportFile = new File(getApplicationContext().getCacheDir() + "/export.temp");
+
+                // Create an unencrypted export in the private location.
+                exportStatus = importExportDatabaseHelper.exportUnencrypted(temporaryUnencryptedExportFile, this);
+
+                try {
+                    // Create an unencrypted export file input stream.
+                    FileInputStream unencryptedExportFileInputStream = new FileInputStream(temporaryUnencryptedExportFile);
+
+                    // Delete the encrypted export file if it exists.
+                    if (exportFile.exists()) {
+                        //noinspection ResultOfMethodCallIgnored
+                        exportFile.delete();
+                    }
+
+                    // Create an encrypted export file output stream.
+                    FileOutputStream encryptedExportFileOutputStream = new FileOutputStream(exportFile);
+
+                    // Get a handle for the encryption password EditText.
+                    EditText encryptionPasswordEditText = findViewById(R.id.password_encryption_edittext);
+
+                    // Get the encryption password.
+                    String encryptionPasswordString = encryptionPasswordEditText.getText().toString();
+
+                    // Initialize a secure random number generator.
+                    SecureRandom secureRandom = new SecureRandom();
+
+                    // Get a 256 bit (32 byte) random salt.
+                    byte[] saltByteArray = new byte[32];
+                    secureRandom.nextBytes(saltByteArray);
+
+                    // Convert the encryption password to a byte array.
+                    byte[] encryptionPasswordByteArray = encryptionPasswordString.getBytes("UTF-8");
+
+                    // Append the salt to the encryption password byte array.  This protects against rainbow table attacks.
+                    byte[] encryptionPasswordWithSaltByteArray = new byte[encryptionPasswordByteArray.length + saltByteArray.length];
+                    System.arraycopy(encryptionPasswordByteArray, 0, encryptionPasswordWithSaltByteArray, 0, encryptionPasswordByteArray.length);
+                    System.arraycopy(saltByteArray, 0, encryptionPasswordWithSaltByteArray, encryptionPasswordByteArray.length, saltByteArray.length);
+
+                    // Get a SHA-512 message digest.
+                    MessageDigest messageDigest = MessageDigest.getInstance("SHA-512");
+
+                    // Hash the salted encryption password.  Otherwise, any characters after the 32nd character in the password are ignored.
+                    byte[] hashedEncryptionPasswordWithSaltByteArray = messageDigest.digest(encryptionPasswordWithSaltByteArray);
+
+                    // Truncate the encryption password byte array to 256 bits (32 bytes).
+                    byte[] truncatedHashedEncryptionPasswordWithSaltByteArray = Arrays.copyOf(hashedEncryptionPasswordWithSaltByteArray, 32);
+
+                    // Create an AES secret key from the encryption password byte array.
+                    SecretKeySpec secretKey = new SecretKeySpec(truncatedHashedEncryptionPasswordWithSaltByteArray, "AES");
+
+                    // Generate a random 12 byte initialization vector.  According to NIST, a 12 byte initialization vector is more secure than a 16 byte one.
+                    byte[] initializationVector = new byte[12];
+                    secureRandom.nextBytes(initializationVector);
+
+                    // Get a Advanced Encryption Standard, Galois/Counter Mode, No Padding cipher instance. Galois/Counter mode protects against modification of the ciphertext.  It doesn't use padding.
+                    Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+
+                    // Set the GCM tag length to be 128 bits (the maximum) and apply the initialization vector.
+                    GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, initializationVector);
+
+                    // Initialize the cipher.
+                    cipher.init(Cipher.ENCRYPT_MODE, secretKey, gcmParameterSpec);
+
+                    // Add the salt and the initialization vector to the export file.
+                    encryptedExportFileOutputStream.write(saltByteArray);
+                    encryptedExportFileOutputStream.write(initializationVector);
+
+                    // Create a cipher output stream.
+                    CipherOutputStream cipherOutputStream = new CipherOutputStream(encryptedExportFileOutputStream, cipher);
+
+                    // Initialize variables to store data as it is moved from the unencrypted export file input stream to the cipher output stream.  Move 128 bits (16 bytes) at a time.
+                    int numberOfBytesRead;
+                    byte[] encryptedBytes = new byte[16];
+
+                    // Read up to 128 bits (16 bytes) of data from the unencrypted export file stream.  `-1` will be returned when the end of the file is reached.
+                    while ((numberOfBytesRead = unencryptedExportFileInputStream.read(encryptedBytes)) != -1) {
+                        // Write the data to the cipher output stream.
+                        cipherOutputStream.write(encryptedBytes, 0, numberOfBytesRead);
+                    }
+
+                    // Close the streams.
+                    cipherOutputStream.flush();
+                    cipherOutputStream.close();
+                    encryptedExportFileOutputStream.close();
+                    unencryptedExportFileInputStream.close();
+
+                    // Wipe the encryption data from memory.
+                    //noinspection UnusedAssignment
+                    encryptionPasswordString = "";
+                    Arrays.fill(saltByteArray, (byte) 0);
+                    Arrays.fill(encryptionPasswordByteArray, (byte) 0);
+                    Arrays.fill(encryptionPasswordWithSaltByteArray, (byte) 0);
+                    Arrays.fill(hashedEncryptionPasswordWithSaltByteArray, (byte) 0);
+                    Arrays.fill(truncatedHashedEncryptionPasswordWithSaltByteArray, (byte) 0);
+                    Arrays.fill(initializationVector, (byte) 0);
+                    Arrays.fill(encryptedBytes, (byte) 0);
+
+                    // Delete the temporary unencrypted export file.
+                    //noinspection ResultOfMethodCallIgnored
+                    temporaryUnencryptedExportFile.delete();
+                } catch (Exception exception) {
+                    exportStatus = exception.toString();
+                }
+                break;
+
+            case GPG_ENCRYPTION:
+
+                break;
+        }
 
         // Show a disposition snackbar.
         if (exportStatus.equals(ImportExportDatabaseHelper.EXPORT_SUCCESSFUL)) {
-            Snackbar.make(exportFileEditText, getString(R.string.export_successful), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(fileNameEditText, getString(R.string.export_successful), Snackbar.LENGTH_SHORT).show();
         } else {
-            Snackbar.make(exportFileEditText, getString(R.string.export_failed) + "  " + exportStatus, Snackbar.LENGTH_INDEFINITE).show();
+            Snackbar.make(fileNameEditText, getString(R.string.export_failed) + "  " + exportStatus, Snackbar.LENGTH_INDEFINITE).show();
         }
     }
 
     private void importSettings() {
-        // Get a handle for the import file EditText.
-        EditText importFileEditText = findViewById(R.id.import_file_edittext);
-
-        // Get the import file string.
-        String importFileString = importFileEditText.getText().toString();
-
-        // Set the import file.
-        File importFile = new File(importFileString);
+        // Get a handle for the views.
+        Spinner encryptionSpinner = findViewById(R.id.encryption_spinner);
+        EditText fileNameEditText = findViewById(R.id.file_name_edittext);
 
         // Instantiate the import export database helper.
         ImportExportDatabaseHelper importExportDatabaseHelper = new ImportExportDatabaseHelper();
 
-        // Import the unencrypted file.
-        String importStatus = importExportDatabaseHelper.importUnencrypted(importFile, getApplicationContext());
+        // Get the import file.
+        File importFile = new File(fileNameEditText.getText().toString());
+
+        // Initialize the import status string
+        String importStatus = "";
+
+        // Import according to the encryption type.
+        switch (encryptionSpinner.getSelectedItemPosition()) {
+            case NO_ENCRYPTION:
+                // Import the unencrypted file.
+                importStatus = importExportDatabaseHelper.importUnencrypted(importFile, this);
+                break;
+
+            case PASSWORD_ENCRYPTION:
+                // Use a private temporary import location.
+                File temporaryUnencryptedImportFile = new File(getApplicationContext().getCacheDir() + "/import.temp");
+
+                try {
+                    // Create an encrypted import file input stream.
+                    FileInputStream encryptedImportFileInputStream = new FileInputStream(importFile);
+
+                    // Delete the temporary import file if it exists.
+                    if (temporaryUnencryptedImportFile.exists()) {
+                        //noinspection ResultOfMethodCallIgnored
+                        temporaryUnencryptedImportFile.delete();
+                    }
+
+                    // Create an unencrypted import file output stream.
+                    FileOutputStream unencryptedImportFileOutputStream = new FileOutputStream(temporaryUnencryptedImportFile);
+
+                    // Get a handle for the encryption password EditText.
+                    EditText encryptionPasswordEditText = findViewById(R.id.password_encryption_edittext);
+
+                    // Get the encryption password.
+                    String encryptionPasswordString = encryptionPasswordEditText.getText().toString();
+
+                    // Get the salt from the beginning of the import file.
+                    byte[] saltByteArray = new byte[32];
+                    //noinspection ResultOfMethodCallIgnored
+                    encryptedImportFileInputStream.read(saltByteArray);
+
+                    // Get the initialization vector from the import file.
+                    byte[] initializationVector = new byte[12];
+                    //noinspection ResultOfMethodCallIgnored
+                    encryptedImportFileInputStream.read(initializationVector);
+
+                    // Convert the encryption password to a byte array.
+                    byte[] encryptionPasswordByteArray = encryptionPasswordString.getBytes("UTF-8");
+
+                    // Append the salt to the encryption password byte array.  This protects against rainbow table attacks.
+                    byte[] encryptionPasswordWithSaltByteArray = new byte[encryptionPasswordByteArray.length + saltByteArray.length];
+                    System.arraycopy(encryptionPasswordByteArray, 0, encryptionPasswordWithSaltByteArray, 0, encryptionPasswordByteArray.length);
+                    System.arraycopy(saltByteArray, 0, encryptionPasswordWithSaltByteArray, encryptionPasswordByteArray.length, saltByteArray.length);
+
+                    // Get a SHA-512 message digest.
+                    MessageDigest messageDigest = MessageDigest.getInstance("SHA-512");
+
+                    // Hash the salted encryption password.  Otherwise, any characters after the 32nd character in the password are ignored.
+                    byte[] hashedEncryptionPasswordWithSaltByteArray = messageDigest.digest(encryptionPasswordWithSaltByteArray);
+
+                    // Truncate the encryption password byte array to 256 bits (32 bytes).
+                    byte[] truncatedHashedEncryptionPasswordWithSaltByteArray = Arrays.copyOf(hashedEncryptionPasswordWithSaltByteArray, 32);
+
+                    // Create an AES secret key from the encryption password byte array.
+                    SecretKeySpec secretKey = new SecretKeySpec(truncatedHashedEncryptionPasswordWithSaltByteArray, "AES");
+
+                    // Get a Advanced Encryption Standard, Galois/Counter Mode, No Padding cipher instance. Galois/Counter mode protects against modification of the ciphertext.  It doesn't use padding.
+                    Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+
+                    // Set the GCM tag length to be 128 bits (the maximum) and apply the initialization vector.
+                    GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, initializationVector);
+
+                    // Initialize the cipher.
+                    cipher.init(Cipher.DECRYPT_MODE, secretKey, gcmParameterSpec);
+
+                    // Create a cipher input stream.
+                    CipherInputStream cipherInputStream = new CipherInputStream(encryptedImportFileInputStream, cipher);
+
+                    // Initialize variables to store data as it is moved from the cipher input stream to the unencrypted import file output stream.  Move 128 bits (16 bytes) at a time.
+                    int numberOfBytesRead;
+                    byte[] decryptedBytes = new byte[16];
+
+                    // Read up to 128 bits (16 bytes) of data from the cipher input stream.  `-1` will be returned when the end fo the file is reached.
+                    while ((numberOfBytesRead = cipherInputStream.read(decryptedBytes)) != -1) {
+                        // Write the data to the unencrypted import file output stream.
+                        unencryptedImportFileOutputStream.write(decryptedBytes, 0, numberOfBytesRead);
+                    }
+
+                    // Close the streams.
+                    unencryptedImportFileOutputStream.flush();
+                    unencryptedImportFileOutputStream.close();
+                    cipherInputStream.close();
+                    encryptedImportFileInputStream.close();
+
+                    // Wipe the encryption data from memory.
+                    //noinspection UnusedAssignment
+                    encryptionPasswordString = "";
+                    Arrays.fill(saltByteArray, (byte) 0);
+                    Arrays.fill(initializationVector, (byte) 0);
+                    Arrays.fill(encryptionPasswordByteArray, (byte) 0);
+                    Arrays.fill(encryptionPasswordWithSaltByteArray, (byte) 0);
+                    Arrays.fill(hashedEncryptionPasswordWithSaltByteArray, (byte) 0);
+                    Arrays.fill(truncatedHashedEncryptionPasswordWithSaltByteArray, (byte) 0);
+                    Arrays.fill(decryptedBytes, (byte) 0);
+
+                    // Import the unencrypted database from the private location.
+                    importStatus = importExportDatabaseHelper.importUnencrypted(temporaryUnencryptedImportFile, this);
+
+                    // Delete the temporary unencrypted import file.
+                    //noinspection ResultOfMethodCallIgnored
+                    temporaryUnencryptedImportFile.delete();
+                } catch (Exception exception) {
+                    importStatus = exception.toString();
+                }
+                break;
+
+            case GPG_ENCRYPTION:
+
+                break;
+        }
 
         // Respond to the import disposition.
         if (importStatus.equals(ImportExportDatabaseHelper.IMPORT_SUCCESSFUL)) {  // The import was successful.
@@ -491,7 +744,7 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
             startActivity(restartIntent);
         } else {  // The import was not successful.
             // Display a snack bar with the import error.
-            Snackbar.make(importFileEditText, getString(R.string.import_failed) + "  " + importStatus, Snackbar.LENGTH_INDEFINITE).show();
+            Snackbar.make(fileNameEditText, getString(R.string.import_failed) + "  " + importStatus, Snackbar.LENGTH_INDEFINITE).show();
         }
     }
 }

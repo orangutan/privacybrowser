@@ -315,11 +315,18 @@
     <string name="load_an_encrypted_website">Load an encrypted website before opening Domain Settings to populate the current website SSL certificate.</string>
 
     <!-- Import/Export. -->
+    <string name="encryption">Encryption</string>
+    <string-array name="encryption_type">
+        <item>None</item>
+        <item>Password</item>
+        <item>GPG</item>
+    </string-array>
+    <string name="file_location">File Location</string>
+    <string-array name="import_export_spinner">
+        <item>Import</item>
+        <item>Export</item>
+    </string-array>
     <string name="browse">Browse</string>
-    <string name="export_settings">Export Settings</string>
-    <string name="import_settings">Import Settings</string>
-    <string name="export_file_name">Export file name</string>
-    <string name="import_file_name">Import file name</string>
     <string name="export">Export</string>
     <string name="import_button">Import</string>  <!-- `import` is a reserved word and cannot be used as the name -->
     <string name="export_successful">Export successful.</string>

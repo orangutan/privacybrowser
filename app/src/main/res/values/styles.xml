@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2018 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -49,13 +49,12 @@
         <item name="colorPrimaryDark">@color/blue_700</item>
         <item name="android:textColorHighlight">@color/blue_200</item>
         <item name="android:actionModeBackground">@color/blue_700</item>
-        <item name="bookmarksSpinnerHeaderTextColor">@color/white</item>
-        <item name="bookmarksSpinnerTextColorSelector">@color/bookmarks_spinner_color_selector_light</item>
-        <item name="bookmarksSpinnerBackground">@color/blue_750</item>
-        <item name="editBookmarkSpinnerTextColorSelector">@color/edit_bookmark_spinner_color_selector_light</item>
-        <item name="requestsSpinnerHeaderTextColor">@color/white</item>
-        <item name="requestsSpinnerTextColorSelector">@color/requests_spinner_color_selector_light</item>
-        <item name="requestsSpinnerBackground">@color/blue_750</item>
+        <item name="spinnerHeaderTextColor">@color/white</item>
+        <item name="spinnerBackground">@color/blue_750</item>
+        <item name="spinnerTextColorSelector">@color/spinner_color_selector_light</item>
+        <item name="appbarSpinnerTextColorSelector">@color/appbar_spinner_color_selector_light</item>
+        <item name="buttonTextColorSelector">@color/button_text_color_selector_light</item>
+        <item name="buttonBackgroundColorSelector">@color/button_background_color_selector_light</item>
         <item name="listSelectorDrawable">@drawable/list_selector_light</item>
         <item name="aboutTitle">@color/blue_900</item>
         <item name="aboutText">@color/blue_700</item>
@@ -143,13 +142,12 @@
         <item name="windowActionModeOverlay">true</item>
         <item name="colorPrimaryDark">@color/blue_900</item>
         <item name="android:actionModeBackground">@color/blue_800</item>
-        <item name="bookmarksSpinnerHeaderTextColor">@color/gray_300</item>
-        <item name="bookmarksSpinnerTextColorSelector">@color/bookmarks_spinner_color_selector_dark</item>
-        <item name="bookmarksSpinnerBackground">@color/blue_830</item>
-        <item name="editBookmarkSpinnerTextColorSelector">@color/edit_bookmark_spinner_color_selector_dark</item>
-        <item name="requestsSpinnerHeaderTextColor">@color/gray_300</item>
-        <item name="requestsSpinnerTextColorSelector">@color/requests_spinner_color_selector_dark</item>
-        <item name="requestsSpinnerBackground">@color/blue_830</item>
+        <item name="spinnerHeaderTextColor">@color/gray_300</item>
+        <item name="spinnerBackground">@color/blue_830</item>
+        <item name="spinnerTextColorSelector">@color/spinner_color_selector_dark</item>
+        <item name="appbarSpinnerTextColorSelector">@color/appbar_spinner_color_selector_dark</item>
+        <item name="buttonTextColorSelector">@color/button_text_color_selector_dark</item>
+        <item name="buttonBackgroundColorSelector">@color/button_background_color_selector_dark</item>
         <item name="aboutTitle">@color/blue_600</item>
         <item name="aboutText">@color/blue_400</item>
         <item name="aboutBackground">@color/gray_850</item>

@@ -109,7 +109,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         assert appBar != null;
 
         // Display the spinner and the back arrow in the app bar.
-        appBar.setCustomView(R.layout.bookmarks_databaseview_spinner);
+        appBar.setCustomView(R.layout.spinner);
         appBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_HOME_AS_UP);
 
         // Initialize the database handler.  `this` specifies the context.  The two `null`s do not specify the database name or a `CursorFactory`.  The `0` is to specify a database version, but that is set instead using a constant in `BookmarksDatabaseHelper`.
@@ -128,7 +128,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         MergeCursor foldersMergeCursor = new MergeCursor(new Cursor[]{matrixCursor, foldersCursor});
 
         // Create a resource cursor adapter for the spinner.
-        ResourceCursorAdapter foldersCursorAdapter = new ResourceCursorAdapter(this, R.layout.bookmarks_databaseview_spinner_item, foldersMergeCursor, 0) {
+        ResourceCursorAdapter foldersCursorAdapter = new ResourceCursorAdapter(this, R.layout.appbar_spinner_item, foldersMergeCursor, 0) {
             @Override
             public void bindView(View view, Context context, Cursor cursor) {
                 // Get a handle for the spinner item text view.
@@ -140,10 +140,10 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         };
 
         // Set the resource cursor adapter drop drown view resource.
-        foldersCursorAdapter.setDropDownViewResource(R.layout.bookmarks_databaseview_spinner_dropdown_item);
+        foldersCursorAdapter.setDropDownViewResource(R.layout.appbar_spinner_dropdown_item);
 
         // Get a handle for the folder spinner and set the adapter.
-        Spinner folderSpinner = findViewById(R.id.bookmarks_databaseview_spinner);
+        Spinner folderSpinner = findViewById(R.id.spinner);
         folderSpinner.setAdapter(foldersCursorAdapter);
 
         // Handle clicks on the spinner dropdown.

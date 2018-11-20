@@ -1247,7 +1247,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
 
         // Initialize the user agent array adapter and string array.
-        userAgentNamesArray = ArrayAdapter.createFromResource(this, R.array.user_agent_names, R.layout.domain_settings_spinner_item);
+        userAgentNamesArray = ArrayAdapter.createFromResource(this, R.array.user_agent_names, R.layout.spinner_item);
         userAgentDataArray = getResources().getStringArray(R.array.user_agent_data);
 
         // Apply the app settings from the shared preferences.

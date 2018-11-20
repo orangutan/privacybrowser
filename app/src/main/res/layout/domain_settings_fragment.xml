@@ -417,7 +417,6 @@
                 android:layout_marginEnd="36dp"
                 android:textSize="13sp" />
 
-            <!-- `android:autofillHints` only applies to API >= 26.  `tools:ignore="UnusedAttribute"` removes the lint warning. -->
             <EditText
                 android:id="@+id/domain_settings_custom_user_agent_edittext"
                 android:layout_height="wrap_content"
@@ -426,8 +425,8 @@
                 android:layout_marginEnd="60dp"
                 android:inputType="textUri"
                 android:hint="@string/custom_user_agent"
-                android:autofillHints=""
-                tools:ignore="UnusedAttribute" />
+                android:importantForAutofill="no"
+                tools:targetApi="26" />
         </LinearLayout>
 
         <!-- Font Size. -->

@@ -31,16 +31,12 @@ import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
 public class ImportExportStoragePermissionDialog extends DialogFragment {
-    // The constants are used to differentiate between the two commands.
-    public static final int EXPORT_SETTINGS = 1;
-    public static final int IMPORT_SETTINGS = 2;
-
     // The listener is used in `onAttach()` and `onCreateDialog()`.
     private ImportExportStoragePermissionDialogListener importExportStoragePermissionDialogListener;
 
     // The public interface is used to send information back to the parent activity.
     public interface ImportExportStoragePermissionDialogListener {
-        void onCloseImportExportStoragePermissionDialog(int type);
+        void onCloseImportExportStoragePermissionDialog();
     }
 
     @Override
@@ -52,24 +48,8 @@ public class ImportExportStoragePermissionDialog extends DialogFragment {
         importExportStoragePermissionDialogListener = (ImportExportStoragePermissionDialogListener) context;
     }
 
-    public static ImportExportStoragePermissionDialog type(int type) {
-        // Create an arguments bundle.
-        Bundle argumentsBundle = new Bundle();
-
-        // Store the download type in the bundle.
-        argumentsBundle.putInt("type", type);
-
-        // Add the arguments bundle to this instance of the dialog.
-        ImportExportStoragePermissionDialog thisImportExportStoragePermissionDialog = new ImportExportStoragePermissionDialog();
-        thisImportExportStoragePermissionDialog.setArguments(argumentsBundle);
-        return thisImportExportStoragePermissionDialog;
-    }
-
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Store the download type in a local variable.
-        int type = getArguments().getInt("type");
-
         // Use a builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
@@ -91,7 +71,7 @@ public class ImportExportStoragePermissionDialog extends DialogFragment {
         // Set an `onClick` listener on the negative button.
         dialogBuilder.setNegativeButton(R.string.ok, (DialogInterface dialog, int which) -> {
             // Inform the parent activity that the dialog was closed.
-            importExportStoragePermissionDialogListener.onCloseImportExportStoragePermissionDialog(type);
+            importExportStoragePermissionDialogListener.onCloseImportExportStoragePermissionDialog();
         });
 
         // Create an alert dialog from the builder.

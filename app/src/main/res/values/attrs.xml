@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -32,13 +32,12 @@
     <attr name="sslTitle" format="reference" />
     <attr name="sslHeader" format="reference" />
     <attr name="urlHistoryText" format="reference" />
-    <attr name="bookmarksSpinnerHeaderTextColor" format="reference" />
-    <attr name="bookmarksSpinnerTextColorSelector" format="reference" />
-    <attr name="bookmarksSpinnerBackground" format="reference" />
-    <attr name="requestsSpinnerHeaderTextColor" format="reference" />
-    <attr name="requestsSpinnerTextColorSelector" format="reference" />
-    <attr name="requestsSpinnerBackground" format="reference" />
-    <attr name="editBookmarkSpinnerTextColorSelector" format="reference" />
+    <attr name="spinnerHeaderTextColor" format="reference" />
+    <attr name="spinnerBackground" format="reference" />
+    <attr name="spinnerTextColorSelector" format="reference" />
+    <attr name="appbarSpinnerTextColorSelector" format="reference" />
+    <attr name="buttonTextColorSelector" format="reference" />
+    <attr name="buttonBackgroundColorSelector" format="reference" />
     <attr name="redText" format="reference" />
 
     <attr name="navigationHeaderBackground" format="reference" />

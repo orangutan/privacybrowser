@@ -79,7 +79,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
         assert appBar != null;
 
         // Display the spinner and the back arrow in the app bar.
-        appBar.setCustomView(R.layout.requests_spinner);
+        appBar.setCustomView(R.layout.spinner);
         appBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_HOME_AS_UP);
 
         // Initialize the resource array lists.  A list is needed for all the resource requests, or the activity can crash if `MainWebViewActivity.resourceRequests` is modified after the activity loads.
@@ -137,7 +137,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
         spinnerCursor.addRow(new Object[]{4, getString(R.string.blocked_plural) + " - " + blockedResourceRequests.size()});
 
         // Create a resource cursor adapter for the spinner.
-        ResourceCursorAdapter spinnerCursorAdapter = new ResourceCursorAdapter(this, R.layout.requests_spinner_item, spinnerCursor, 0) {
+        ResourceCursorAdapter spinnerCursorAdapter = new ResourceCursorAdapter(this, R.layout.appbar_spinner_item, spinnerCursor, 0) {
             @Override
             public void bindView(View view, Context context, Cursor cursor) {
                 // Get a handle for the spinner item text view.
@@ -149,10 +149,10 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
         };
 
         // Set the resource cursor adapter drop down view resource.
-        spinnerCursorAdapter.setDropDownViewResource(R.layout.requests_spinner_dropdown_item);
+        spinnerCursorAdapter.setDropDownViewResource(R.layout.appbar_spinner_dropdown_item);
 
         // Get a handle for the app bar spinner and set the adapter.
-        Spinner appBarSpinner = findViewById(R.id.requests_spinner);
+        Spinner appBarSpinner = findViewById(R.id.spinner);
         appBarSpinner.setAdapter(spinnerCursorAdapter);
 
         // Handle clicks on the spinner dropdown.

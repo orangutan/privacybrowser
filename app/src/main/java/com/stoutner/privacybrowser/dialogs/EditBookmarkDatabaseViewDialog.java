@@ -216,7 +216,7 @@ public class EditBookmarkDatabaseViewDialog extends AppCompatDialogFragment {
         assert getContext() != null;
 
         // Create a `ResourceCursorAdapter` for the `Spinner`.  `0` specifies no flags.;
-        ResourceCursorAdapter foldersCursorAdapter = new ResourceCursorAdapter(getContext(), R.layout.edit_bookmark_databaseview_spinner_item, foldersMergeCursor, 0) {
+        ResourceCursorAdapter foldersCursorAdapter = new ResourceCursorAdapter(getContext(), R.layout.spinner_item, foldersMergeCursor, 0) {
             @Override
             public void bindView(View view, Context context, Cursor cursor) {
                 // Get a handle for the `Spinner` item `TextView`.
@@ -228,7 +228,7 @@ public class EditBookmarkDatabaseViewDialog extends AppCompatDialogFragment {
         };
 
         // Set the `ResourceCursorAdapter` drop drown view resource.
-        foldersCursorAdapter.setDropDownViewResource(R.layout.edit_bookmark_databaseview_spinner_dropdown_item);
+        foldersCursorAdapter.setDropDownViewResource(R.layout.spinner_dropdown_items);
 
         // Set the adapter for the folder `Spinner`.
         folderSpinner.setAdapter(foldersCursorAdapter);
