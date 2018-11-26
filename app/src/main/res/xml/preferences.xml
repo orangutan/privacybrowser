@@ -247,7 +247,7 @@
         <EditTextPreference
             android:key="homepage"
             android:title="@string/homepage"
-            android:defaultValue="https://duckduckgo.com/"
+            android:defaultValue="https://start.duckduckgo.com/"
             android:inputType="textUri"
             android:icon="?attr/homepageIcon" />
 
