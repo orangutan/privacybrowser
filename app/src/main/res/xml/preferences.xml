@@ -261,15 +261,7 @@
         <EditTextPreference
             android:key="homepage"
             android:title="@string/homepage"
-<<<<<<< HEAD
-<<<<<<< HEAD
             android:defaultValue="https://start.duckduckgo.com/"
-=======
-            android:defaultValue="@string/homepage_default_value"
->>>>>>> upstream/master
-=======
-            android:defaultValue="https://duckduckgo.com/"
->>>>>>> 76b2254d... initital settings
             android:inputType="textUri"
             android:icon="?attr/homepageIcon" />
 
