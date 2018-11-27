@@ -65,6 +65,18 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/google_app_id" />
 
+        <!-- The file provider is required to encrypt files with OpenKeychain. -->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="@string/file_provider"
+            android:exported="false"
+            android:grantUriPermissions="true" >
+
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_paths" />
+        </provider>
+        
         <!-- The theme has to be defined here or an ugly title bar is displayed when the app launches.
              `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes, which preserves scroll location in the WebView.
              `android:launchMode="singleTask"` makes the app launch in a new task instead of inside the task of the program that sends it an intent.

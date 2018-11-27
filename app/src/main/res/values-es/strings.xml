@@ -314,10 +314,6 @@
     <string name="load_an_encrypted_website">Cargar una página web cifrada antes de abrir la configuración de dominio para rellenar el certificado SSL de la página web actual.</string>
 
     <!-- Import/Export. -->
-    <string-array name="import_export_spinner">
-        <item>Importar</item>
-        <item>Exportar</item>
-    </string-array>
     <string name="browse">Navegar</string>
     <string name="export">Exportar</string>
     <string name="import_button">Importar</string>  <!-- `import` is a reserved word and cannot be used as the name -->

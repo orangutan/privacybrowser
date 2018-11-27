@@ -314,10 +314,6 @@
     <string name="load_an_encrypted_website">Откройте зашифрованный сайт перед настройкой домена, чтобы заполнить текущий сертификат SSL веб-сайта.</string>
 
     <!-- Import/Export. -->
-    <string-array name="import_export_spinner">
-        <item>Импорт</item>
-        <item>Экспорт</item>
-    </string-array>
     <string name="browse">Обзор</string>
     <string name="export">Экспорт</string>
     <string name="import_button">Импорт</string>  <!-- `import` is a reserved word and cannot be used as the name -->

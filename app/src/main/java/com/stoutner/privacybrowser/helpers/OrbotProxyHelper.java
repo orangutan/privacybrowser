@@ -43,7 +43,7 @@ public class OrbotProxyHelper {
         System.setProperty("proxyHost", proxyHost);
         System.setProperty("proxyPort", proxyPort);
 
-        // These entries shouldn't be needed if the above general settings are applied.  But I leave them in here for troubleshooting just in case.
+        // These entries shouldn't be needed if the above general settings are applied.  They are here for troubleshooting just in case.
         //System.setProperty("http.proxyHost", proxyHost);
         //System.setProperty("http.proxyPort", proxyPort);
         //System.setProperty("https.proxyHost", proxyHost);
@@ -95,7 +95,7 @@ public class OrbotProxyHelper {
         if (proxyPort.equals("8118")) {  // Orbot proxy was turned on.
             try {  // Check to see if Orbot is installed.
                 PackageManager packageManager = privacyBrowserContext.getPackageManager();
-                packageManager.getPackageInfo("org.torproject.android", PackageManager.GET_ACTIVITIES);
+                packageManager.getPackageInfo("org.torproject.android", 0);
 
                 // Ask Orbot to connect if its current status is not "ON".
                 if (!MainWebViewActivity.orbotStatus.equals("ON")) {

@@ -34,8 +34,10 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -45,6 +47,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -69,11 +73,14 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
     // Create the encryption constants.
     private final int NO_ENCRYPTION = 0;
     private final int PASSWORD_ENCRYPTION = 1;
-    private final int GPG_ENCRYPTION = 2;
+    private final int OPENPGP_ENCRYPTION = 2;
 
-    // Create the action constants.
-    private final int IMPORT = 0;
-    private final int EXPORT = 1;
+    // Create the activity result constants.
+    private final int BROWSE_RESULT_CODE = 0;
+    private final int OPENPGP_EXPORT_RESULT_CODE = 1;
+
+    // `openKeychainInstalled` is accessed from an inner class.
+    boolean openKeychainInstalled;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -104,46 +111,61 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
         assert appBar != null;// This assert removes the incorrect warning in Android Studio on the following line that `appBar` might be null.
         appBar.setDisplayHomeAsUpEnabled(true);
 
+        // Find out if we are running KitKat
+        boolean runningKitKat = (Build.VERSION.SDK_INT == 19);
+
+        // Find out if OpenKeychain is installed.
+        try {
+            openKeychainInstalled = !getPackageManager().getPackageInfo("org.sufficientlysecure.keychain", 0).versionName.isEmpty();
+        } catch (PackageManager.NameNotFoundException exception) {
+            openKeychainInstalled = false;
+        }
+
         // Get handles for the views that need to be modified.
         Spinner encryptionSpinner = findViewById(R.id.encryption_spinner);
         TextInputLayout passwordEncryptionTextInputLayout = findViewById(R.id.password_encryption_textinputlayout);
         EditText encryptionPasswordEditText = findViewById(R.id.password_encryption_edittext);
-        Spinner importExportSpinner = findViewById(R.id.import_export_spinner);
+        TextView kitKatPasswordEncryptionTextView = findViewById(R.id.kitkat_password_encryption_textview);
+        TextView openKeychainRequiredTextView = findViewById(R.id.openkeychain_required_textview);
+        CardView fileLocationCardView = findViewById(R.id.file_location_cardview);
+        RadioButton importRadioButton = findViewById(R.id.import_radiobutton);
+        RadioButton exportRadioButton = findViewById(R.id.export_radiobutton);
+        LinearLayout fileNameLinearLayout = findViewById(R.id.file_name_linearlayout);
         EditText fileNameEditText = findViewById(R.id.file_name_edittext);
+        TextView openKeychainImportInstructionsTextView = findViewById(R.id.openkeychain_import_instructions_textview);
         Button importExportButton = findViewById(R.id.import_export_button);
         TextView storagePermissionTextView = findViewById(R.id.import_export_storage_permission_textview);
 
-        // Create array adapters for the spinners.
+        // Create an array adapter for the spinner.
         ArrayAdapter<CharSequence> encryptionArrayAdapter = ArrayAdapter.createFromResource(this, R.array.encryption_type, R.layout.spinner_item);
-        ArrayAdapter<CharSequence> importExportArrayAdapter = ArrayAdapter.createFromResource(this, R.array.import_export_spinner, R.layout.spinner_item);
 
-        // Set the drop down view resource on the spinners.
+        // Set the drop down view resource on the spinner.
         encryptionArrayAdapter.setDropDownViewResource(R.layout.spinner_dropdown_items);
-        importExportArrayAdapter.setDropDownViewResource(R.layout.spinner_dropdown_items);
 
-        // Set the array adapters for the spinners.
+        // Set the array adapter for the spinner.
         encryptionSpinner.setAdapter(encryptionArrayAdapter);
-        importExportSpinner.setAdapter(importExportArrayAdapter);
 
-        // Initially hide the encryption layout items.
+        // Initially hide the unneeded views.
         passwordEncryptionTextInputLayout.setVisibility(View.GONE);
+        kitKatPasswordEncryptionTextView.setVisibility(View.GONE);
+        openKeychainRequiredTextView.setVisibility(View.GONE);
+        fileNameLinearLayout.setVisibility(View.GONE);
+        openKeychainImportInstructionsTextView.setVisibility(View.GONE);
+        importExportButton.setVisibility(View.GONE);
 
         // Create strings for the default file paths.
         String defaultFilePath;
         String defaultPasswordEncryptionFilePath;
-        String defaultGpgEncryptionFilePath;
 
         // Set the default file paths according to the storage permission status.
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
             // Set the default file paths to use the external public directory.
-            defaultFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" + getString(R.string.privacy_browser_settings);
+            defaultFilePath = Environment.getExternalStorageDirectory() + "/" + getString(R.string.privacy_browser_settings);
             defaultPasswordEncryptionFilePath = defaultFilePath + ".aes";
-            defaultGpgEncryptionFilePath = defaultFilePath + ".gpg";
         } else {  // The storage permission has not been granted.
             // Set the default file paths to use the external private directory.
-            defaultFilePath = getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + "/" + getString(R.string.privacy_browser_settings);
+            defaultFilePath = getApplicationContext().getExternalFilesDir(null) + "/" + getString(R.string.privacy_browser_settings);
             defaultPasswordEncryptionFilePath = defaultFilePath + ".aes";
-            defaultGpgEncryptionFilePath = defaultFilePath + ".gpg";
         }
 
         // Set the default file path.
@@ -155,8 +177,24 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case NO_ENCRYPTION:
-                        // Hide the encryption layout items.
+                        // Hide the unneeded layout items.
                         passwordEncryptionTextInputLayout.setVisibility(View.GONE);
+                        kitKatPasswordEncryptionTextView.setVisibility(View.GONE);
+                        openKeychainRequiredTextView.setVisibility(View.GONE);
+                        openKeychainImportInstructionsTextView.setVisibility(View.GONE);
+
+                        // Show the file location card.
+                        fileLocationCardView.setVisibility(View.VISIBLE);
+
+                        // Show the file name linear layout if either import or export is checked.
+                        if (importRadioButton.isChecked() || exportRadioButton.isChecked()) {
+                            fileNameLinearLayout.setVisibility(View.VISIBLE);
+                        }
+
+                        // Reset the text of the import button, which may have been changed to `Decrypt`.
+                        if (importRadioButton.isChecked()) {
+                            importExportButton.setText(R.string.import_button);
+                        }
 
                         // Reset the default file path.
                         fileNameEditText.setText(defaultFilePath);
@@ -166,43 +204,80 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
                         break;
 
                     case PASSWORD_ENCRYPTION:
-                        // Show the password encryption layout items.
-                        passwordEncryptionTextInputLayout.setVisibility(View.VISIBLE);
+                        if (runningKitKat) {
+                            // Show the KitKat password encryption message.
+                            kitKatPasswordEncryptionTextView.setVisibility(View.VISIBLE);
 
-                        // Update the default file path.
-                        fileNameEditText.setText(defaultPasswordEncryptionFilePath);
+                            // Hide the OpenPGP required text view and the file location card.
+                            openKeychainRequiredTextView.setVisibility(View.GONE);
+                            fileLocationCardView.setVisibility(View.GONE);
+                        } else {
+                            // Hide the OpenPGP layout items.
+                            openKeychainRequiredTextView.setVisibility(View.GONE);
+                            openKeychainImportInstructionsTextView.setVisibility(View.GONE);
 
-                        // Enable the import/export button if a file name and password exists.
-                        importExportButton.setEnabled(!fileNameEditText.getText().toString().isEmpty() && !encryptionPasswordEditText.getText().toString().isEmpty());
+                            // Show the password encryption layout items.
+                            passwordEncryptionTextInputLayout.setVisibility(View.VISIBLE);
+
+                            // Show the file location card.
+                            fileLocationCardView.setVisibility(View.VISIBLE);
+
+                            // Show the file name linear layout if either import or export is checked.
+                            if (importRadioButton.isChecked() || exportRadioButton.isChecked()) {
+                                fileNameLinearLayout.setVisibility(View.VISIBLE);
+                            }
+
+                            // Reset the text of the import button, which may have been changed to `Decrypt`.
+                            if (importRadioButton.isChecked()) {
+                                importExportButton.setText(R.string.import_button);
+                            }
+
+                            // Update the default file path.
+                            fileNameEditText.setText(defaultPasswordEncryptionFilePath);
+
+                            // Enable the import/export button if a password exists.
+                            importExportButton.setEnabled(!encryptionPasswordEditText.getText().toString().isEmpty());
+                        }
                         break;
 
-                    case GPG_ENCRYPTION:
+                    case OPENPGP_ENCRYPTION:
                         // Hide the password encryption layout items.
                         passwordEncryptionTextInputLayout.setVisibility(View.GONE);
+                        kitKatPasswordEncryptionTextView.setVisibility(View.GONE);
 
-                        // Update the default file path.
-                        fileNameEditText.setText(defaultGpgEncryptionFilePath);
-                        break;
-                }
-            }
+                        // Updated items based on the installation status of OpenKeychain.
+                        if (openKeychainInstalled) {  // OpenKeychain is installed.
+                            // Remove the default file path.
+                            fileNameEditText.setText("");
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+                            // Show the file location card.
+                            fileLocationCardView.setVisibility(View.VISIBLE);
 
-            }
-        });
+                            if (importRadioButton.isChecked()) {
+                                // Show the file name linear layout and the OpenKeychain import instructions.
+                                fileNameLinearLayout.setVisibility(View.VISIBLE);
+                                openKeychainImportInstructionsTextView.setVisibility(View.VISIBLE);
 
-        // Update the import/export button when the spinner changes.
-        importExportSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case IMPORT:
-                        importExportButton.setText(R.string.import_button);
-                        break;
+                                // Set the text of the import button to be `Decrypt`.
+                                importExportButton.setText(R.string.decrypt);
 
-                    case EXPORT:
-                        importExportButton.setText(R.string.export);
+                                // Disable the import/export button.  The user needs to select a file to import first.
+                                importExportButton.setEnabled(false);
+                            } else if (exportRadioButton.isChecked()) {
+                                // Hide the file name linear layout and the OpenKeychain import instructions.
+                                fileNameLinearLayout.setVisibility(View.GONE);
+                                openKeychainImportInstructionsTextView.setVisibility(View.GONE);
+
+                                // Enable the import/export button.
+                                importExportButton.setEnabled(true);
+                            }
+                        } else {  // OpenKeychain is not installed.
+                            // Show the OpenPGP required layout item.
+                            openKeychainRequiredTextView.setVisibility(View.VISIBLE);
+
+                            // Hide the file location card.
+                            fileLocationCardView.setVisibility(View.GONE);
+                        }
                         break;
                 }
             }
@@ -258,7 +333,9 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
                         importExportButton.setEnabled(!fileNameEditText.getText().toString().isEmpty() && !encryptionPasswordEditText.getText().toString().isEmpty());
                         break;
 
-                    case GPG_ENCRYPTION:
+                    case OPENPGP_ENCRYPTION:
+                        // Enable the import/export button if OpenKeychain is installed and a file name exists.
+                        importExportButton.setEnabled(openKeychainInstalled && !fileNameEditText.getText().toString().isEmpty());
                         break;
                 }
             }
@@ -270,66 +347,130 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
         }
     }
 
+    public void onClickRadioButton(View view) {
+        // Get handles for the views.
+        Spinner encryptionSpinner = findViewById(R.id.encryption_spinner);
+        LinearLayout fileNameLinearLayout = findViewById(R.id.file_name_linearlayout);
+        EditText fileNameEditText = findViewById(R.id.file_name_edittext);
+        TextView openKeychainImportInstructionTextView = findViewById(R.id.openkeychain_import_instructions_textview);
+        Button importExportButton = findViewById(R.id.import_export_button);
+
+        // Check to see if import or export was selected.
+        switch (view.getId()) {
+            case R.id.import_radiobutton:
+                // Check to see if OpenPGP encryption is selected.
+                if (encryptionSpinner.getSelectedItemPosition() == OPENPGP_ENCRYPTION) {  // OpenPGP encryption selected.
+                    // Show the OpenKeychain import instructions.
+                    openKeychainImportInstructionTextView.setVisibility(View.VISIBLE);
+
+                    // Set the text on the import/export button to be `Decrypt`.
+                    importExportButton.setText(R.string.decrypt);
+
+                    // Enable the decrypt button if there is a file name.
+                    importExportButton.setEnabled(!fileNameEditText.getText().toString().isEmpty());
+                } else {  // OpenPGP encryption not selected.
+                    // Hide the OpenKeychain import instructions.
+                    openKeychainImportInstructionTextView.setVisibility(View.GONE);
+
+                    // Set the text on the import/export button to be `Import`.
+                    importExportButton.setText(R.string.import_button);
+                }
+
+                // Display the file name views.
+                fileNameLinearLayout.setVisibility(View.VISIBLE);
+                importExportButton.setVisibility(View.VISIBLE);
+                break;
+
+            case R.id.export_radiobutton:
+                // Hide the OpenKeychain import instructions.
+                openKeychainImportInstructionTextView.setVisibility(View.GONE);
+
+                // Set the text on the import/export button to be `Export`.
+                importExportButton.setText(R.string.export);
+
+                // Show the import/export button.
+                importExportButton.setVisibility(View.VISIBLE);
+
+                // Check to see if OpenPGP encryption is selected.
+                if (encryptionSpinner.getSelectedItemPosition() == OPENPGP_ENCRYPTION) {  // OpenPGP encryption is selected.
+                    // Hide the file name views.
+                    fileNameLinearLayout.setVisibility(View.GONE);
+
+                    // Enable the export button.
+                    importExportButton.setEnabled(true);
+                } else {  // OpenPGP encryption is not selected.
+                    // Show the file name views.
+                    fileNameLinearLayout.setVisibility(View.VISIBLE);
+                }
+                break;
+        }
+    }
+
     public void browse(View view) {
-        // Get a handle for the import/export spinner.
-        Spinner importExportSpinner = findViewById(R.id.import_export_spinner);
+        // Get a handle for the import radiobutton.
+        RadioButton importRadioButton = findViewById(R.id.import_radiobutton);
 
         // Check to see if import or export is selected.
-        if (importExportSpinner.getSelectedItemPosition() == IMPORT) {  // Import is selected.
+        if (importRadioButton.isChecked()) {  // Import is selected.
             // Create the file picker intent.
-            Intent importIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            Intent importBrowseIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
 
             // Set the intent MIME type to include all files.
-            importIntent.setType("*/*");
+            importBrowseIntent.setType("*/*");
 
             // Set the initial directory if API >= 26.
             if (Build.VERSION.SDK_INT >= 26) {
-                importIntent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Environment.getExternalStorageDirectory());
+                importBrowseIntent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Environment.getExternalStorageDirectory());
             }
 
             // Specify that a file that can be opened is requested.
-            importIntent.addCategory(Intent.CATEGORY_OPENABLE);
+            importBrowseIntent.addCategory(Intent.CATEGORY_OPENABLE);
 
             // Launch the file picker.
-            startActivityForResult(importIntent, 0);
+            startActivityForResult(importBrowseIntent, BROWSE_RESULT_CODE);
         } else {  // Export is selected
             // Create the file picker intent.
-            Intent exportIntent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+            Intent exportBrowseIntent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
 
             // Set the intent MIME type to include all files.
-            exportIntent.setType("*/*");
+            exportBrowseIntent.setType("*/*");
 
             // Set the initial export file name.
-            exportIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.privacy_browser_settings));
+            exportBrowseIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.privacy_browser_settings));
 
             // Set the initial directory if API >= 26.
             if (Build.VERSION.SDK_INT >= 26) {
-                exportIntent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Environment.getExternalStorageDirectory());
+                exportBrowseIntent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Environment.getExternalStorageDirectory());
             }
 
             // Specify that a file that can be opened is requested.
-            exportIntent.addCategory(Intent.CATEGORY_OPENABLE);
+            exportBrowseIntent.addCategory(Intent.CATEGORY_OPENABLE);
 
             // Launch the file picker.
-            startActivityForResult(exportIntent, 0);
+            startActivityForResult(exportBrowseIntent, BROWSE_RESULT_CODE);
         }
     }
 
     public void importExport(View view) {
-        // Get a handle for the import/export spinner.
-        Spinner importExportSpinner = findViewById(R.id.import_export_spinner);
+        // Get a handle for the views.
+        Spinner encryptionSpinner = findViewById(R.id.encryption_spinner);
+        RadioButton importRadioButton = findViewById(R.id.import_radiobutton);
+        RadioButton exportRadioButton = findViewById(R.id.export_radiobutton);
 
-        // Check to see if the storage permission has been granted.
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // Storage permission granted.
+        // Check to see if the storage permission is needed.
+        if ((encryptionSpinner.getSelectedItemPosition() == OPENPGP_ENCRYPTION) && exportRadioButton.isChecked()) {  // Permission not needed to export via OpenKeychain.
+            // Export the settings.
+            exportSettings();
+        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
             // Check to see if import or export is selected.
-            if (importExportSpinner.getSelectedItemPosition() == IMPORT) {  // Import is selected.
+            if (importRadioButton.isChecked()) {  // Import is selected.
                 // Import the settings.
                 importSettings();
             } else {  // Export is selected.
                 // Export the settings.
                 exportSettings();
             }
-        } else {  // Storage permission not granted.
+        } else {  // The storage permission has not been granted.
             // Get a handle for the file name EditText.
             EditText fileNameEditText = findViewById(R.id.file_name_edittext);
 
@@ -348,7 +489,7 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
             // Check to see if the file path is in the external private directory.
             if (fileNameString.startsWith(externalPrivateDirectory)) {  // The file path is in the external private directory.
                 // Check to see if import or export is selected.
-                if (importExportSpinner.getSelectedItemPosition() == IMPORT) {  // Import is selected.
+                if (importRadioButton.isChecked()) {  // Import is selected.
                     // Import the settings.
                     importSettings();
                 } else {  // Export is selected.
@@ -379,18 +520,18 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        // Get a handle for the import/export spinner.
-        Spinner importExportSpinner = findViewById(R.id.import_export_spinner);
+        // Get a handle for the import radiobutton.
+        RadioButton importRadioButton = findViewById(R.id.import_radiobutton);
 
         // Check to see if import or export is selected.
-        if (importExportSpinner.getSelectedItemPosition() == IMPORT) {  // Import is selected.
+        if (importRadioButton.isChecked()) {  // Import is selected.
             // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
             if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
                 // Import the settings.
                 importSettings();
             } else {  // The storage permission was not granted.
                 // Display an error snackbar.
-                Snackbar.make(importExportSpinner, getString(R.string.cannot_import), Snackbar.LENGTH_LONG).show();
+                Snackbar.make(importRadioButton, getString(R.string.cannot_import), Snackbar.LENGTH_LONG).show();
             }
         } else {  // Export is selected.
             // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
@@ -399,62 +540,77 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
                 exportSettings();
             } else {  // The storage permission was not granted.
                 // Display an error snackbar.
-                Snackbar.make(importExportSpinner, getString(R.string.cannot_export), Snackbar.LENGTH_LONG).show();
+                Snackbar.make(importRadioButton, getString(R.string.cannot_export), Snackbar.LENGTH_LONG).show();
             }
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Don't do anything if the user pressed back from the file picker.
-        if (resultCode == Activity.RESULT_OK) {
-            // Get a handle for the file name EditText.
-            EditText fileNameEditText = findViewById(R.id.file_name_edittext);
+        switch (requestCode) {
+            case (BROWSE_RESULT_CODE):
+                // Don't do anything if the user pressed back from the file picker.
+                if (resultCode == Activity.RESULT_OK) {
+                    // Get a handle for the file name EditText.
+                    EditText fileNameEditText = findViewById(R.id.file_name_edittext);
 
-            // Get the file name URI.
-            Uri fileNameUri = data.getData();
+                    // Get the file name URI.
+                    Uri fileNameUri = data.getData();
 
-            // Remove the lint warning that the file name URI might be null.
-            assert fileNameUri != null;
+                    // Remove the lint warning that the file name URI might be null.
+                    assert fileNameUri != null;
 
-            // Get the raw file name path.
-            String rawFileNamePath = fileNameUri.getPath();
+                    // Get the raw file name path.
+                    String rawFileNamePath = fileNameUri.getPath();
 
-            // Remove the warning that the file name path might be null.
-            assert rawFileNamePath != null;
+                    // Remove the warning that the file name path might be null.
+                    assert rawFileNamePath != null;
 
-            // Check to see if the file name Path includes a valid storage location.
-            if (rawFileNamePath.contains(":")) {  // The path is valid.
-                // Split the path into the initial content uri and the final path information.
-                String fileNameContentPath = rawFileNamePath.substring(0, rawFileNamePath.indexOf(":"));
-                String fileNameFinalPath = rawFileNamePath.substring(rawFileNamePath.indexOf(":") + 1);
+                    // Check to see if the file name Path includes a valid storage location.
+                    if (rawFileNamePath.contains(":")) {  // The path is valid.
+                        // Split the path into the initial content uri and the final path information.
+                        String fileNameContentPath = rawFileNamePath.substring(0, rawFileNamePath.indexOf(":"));
+                        String fileNameFinalPath = rawFileNamePath.substring(rawFileNamePath.indexOf(":") + 1);
 
-                // Create the file name path string.
-                String fileNamePath;
+                        // Create the file name path string.
+                        String fileNamePath;
 
-                // Construct the file name path.
-                switch (fileNameContentPath) {
-                    // The documents home has a special content path.
-                    case "/document/home":
-                        fileNamePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" + fileNameFinalPath;
-                        break;
+                        // Construct the file name path.
+                        switch (fileNameContentPath) {
+                            // The documents home has a special content path.
+                            case "/document/home":
+                                fileNamePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" + fileNameFinalPath;
+                                break;
 
-                    // Everything else for the primary user should be in `/document/primary`.
-                    case "/document/primary":
-                        fileNamePath = Environment.getExternalStorageDirectory() + "/" + fileNameFinalPath;
-                        break;
+                            // Everything else for the primary user should be in `/document/primary`.
+                            case "/document/primary":
+                                fileNamePath = Environment.getExternalStorageDirectory() + "/" + fileNameFinalPath;
+                                break;
 
-                    // Just in case, catch everything else and place it in the external storage directory.
-                    default:
-                        fileNamePath = Environment.getExternalStorageDirectory() + "/" + fileNameFinalPath;
-                        break;
+                            // Just in case, catch everything else and place it in the external storage directory.
+                            default:
+                                fileNamePath = Environment.getExternalStorageDirectory() + "/" + fileNameFinalPath;
+                                break;
+                        }
+
+                        // Set the file name path as the text of the file name EditText.
+                        fileNameEditText.setText(fileNamePath);
+                    } else {  // The path is invalid.
+                        Snackbar.make(fileNameEditText, rawFileNamePath + " " + getString(R.string.invalid_location), Snackbar.LENGTH_INDEFINITE).show();
+                    }
                 }
+                break;
 
-                // Set the file name path as the text of the file name EditText.
-                fileNameEditText.setText(fileNamePath);
-            } else {  // The path is invalid.
-                Snackbar.make(fileNameEditText, rawFileNamePath + " + " + getString(R.string.invalid_location), Snackbar.LENGTH_INDEFINITE).show();
-            }
+            case OPENPGP_EXPORT_RESULT_CODE:
+                // Get the temporary unencrypted export file.
+                File temporaryUnencryptedExportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.privacy_browser_settings));
+
+                // Delete the temporary unencrypted export file if it exists.
+                if (temporaryUnencryptedExportFile.exists()) {
+                    //noinspection ResultOfMethodCallIgnored
+                    temporaryUnencryptedExportFile.delete();
+                }
+                break;
         }
     }
 
@@ -466,24 +622,29 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
         // Instantiate the import export database helper.
         ImportExportDatabaseHelper importExportDatabaseHelper = new ImportExportDatabaseHelper();
 
-        // Get the export file.
+        // Get the export and temporary unencrypted export files.
         File exportFile = new File(fileNameEditText.getText().toString());
+        File temporaryUnencryptedExportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.privacy_browser_settings));
 
         // Initialize the export status string.
-        String exportStatus = "";
+        String exportStatus;
 
         // Export according to the encryption type.
         switch (encryptionSpinner.getSelectedItemPosition()) {
             case NO_ENCRYPTION:
                 // Export the unencrypted file.
                 exportStatus = importExportDatabaseHelper.exportUnencrypted(exportFile, this);
+
+                // Show a disposition snackbar.
+                if (exportStatus.equals(ImportExportDatabaseHelper.EXPORT_SUCCESSFUL)) {
+                    Snackbar.make(fileNameEditText, getString(R.string.export_successful), Snackbar.LENGTH_SHORT).show();
+                } else {
+                    Snackbar.make(fileNameEditText, getString(R.string.export_failed) + "  " + exportStatus, Snackbar.LENGTH_INDEFINITE).show();
+                }
                 break;
 
             case PASSWORD_ENCRYPTION:
-                // Use a private temporary export location.
-                File temporaryUnencryptedExportFile = new File(getApplicationContext().getCacheDir() + "/export.temp");
-
-                // Create an unencrypted export in the private location.
+                // Create an unencrypted export in a private directory.
                 exportStatus = importExportDatabaseHelper.exportUnencrypted(temporaryUnencryptedExportFile, this);
 
                 try {
@@ -585,18 +746,34 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
                 } catch (Exception exception) {
                     exportStatus = exception.toString();
                 }
+
+                // Show a disposition snackbar.
+                if (exportStatus.equals(ImportExportDatabaseHelper.EXPORT_SUCCESSFUL)) {
+                    Snackbar.make(fileNameEditText, getString(R.string.export_successful), Snackbar.LENGTH_SHORT).show();
+                } else {
+                    Snackbar.make(fileNameEditText, getString(R.string.export_failed) + "  " + exportStatus, Snackbar.LENGTH_INDEFINITE).show();
+                }
                 break;
 
-            case GPG_ENCRYPTION:
+            case OPENPGP_ENCRYPTION:
+                // Create an unencrypted export in the private location.
+                importExportDatabaseHelper.exportUnencrypted(temporaryUnencryptedExportFile, this);
 
+                // Create an encryption intent for OpenKeychain.
+                Intent openKeychainEncryptIntent = new Intent("org.sufficientlysecure.keychain.action.ENCRYPT_DATA");
+
+                // Include the temporary unencrypted export file URI.
+                openKeychainEncryptIntent.setData(FileProvider.getUriForFile(this, getString(R.string.file_provider), temporaryUnencryptedExportFile));
+
+                // Allow OpenKeychain to read the file URI.
+                openKeychainEncryptIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                // Send the intent to the OpenKeychain package.
+                openKeychainEncryptIntent.setPackage("org.sufficientlysecure.keychain");
+
+                // Make it so.
+                startActivityForResult(openKeychainEncryptIntent, OPENPGP_EXPORT_RESULT_CODE);
                 break;
-        }
-
-        // Show a disposition snackbar.
-        if (exportStatus.equals(ImportExportDatabaseHelper.EXPORT_SUCCESSFUL)) {
-            Snackbar.make(fileNameEditText, getString(R.string.export_successful), Snackbar.LENGTH_SHORT).show();
-        } else {
-            Snackbar.make(fileNameEditText, getString(R.string.export_failed) + "  " + exportStatus, Snackbar.LENGTH_INDEFINITE).show();
         }
     }
 
@@ -623,7 +800,7 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
 
             case PASSWORD_ENCRYPTION:
                 // Use a private temporary import location.
-                File temporaryUnencryptedImportFile = new File(getApplicationContext().getCacheDir() + "/import.temp");
+                File temporaryUnencryptedImportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.privacy_browser_settings));
 
                 try {
                     // Create an encrypted import file input stream.
@@ -724,8 +901,26 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
                 }
                 break;
 
-            case GPG_ENCRYPTION:
+            case OPENPGP_ENCRYPTION:
+                try {
+                    // Create an decryption intent for OpenKeychain.
+                    Intent openKeychainDecryptIntent = new Intent("org.sufficientlysecure.keychain.action.DECRYPT_DATA");
 
+                    // Include the URI to be decrypted.
+                    openKeychainDecryptIntent.setData(FileProvider.getUriForFile(this, getString(R.string.file_provider), importFile));
+
+                    // Allow OpenKeychain to read the file URI.
+                    openKeychainDecryptIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                    // Send the intent to the OpenKeychain package.
+                    openKeychainDecryptIntent.setPackage("org.sufficientlysecure.keychain");
+
+                    // Make it so.
+                    startActivity(openKeychainDecryptIntent);
+                } catch (IllegalArgumentException exception) {  // The file import location is not valid.
+                    // Display a snack bar with the import error.
+                    Snackbar.make(fileNameEditText, getString(R.string.import_failed) + "  " + exception.toString(), Snackbar.LENGTH_INDEFINITE).show();
+                }
                 break;
         }
 
@@ -742,7 +937,7 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
 
             // Make it so.
             startActivity(restartIntent);
-        } else {  // The import was not successful.
+        } else if (!(encryptionSpinner.getSelectedItemPosition() == OPENPGP_ENCRYPTION)){  // The import was not successful.
             // Display a snack bar with the import error.
             Snackbar.make(fileNameEditText, getString(R.string.import_failed) + "  " + importStatus, Snackbar.LENGTH_INDEFINITE).show();
         }

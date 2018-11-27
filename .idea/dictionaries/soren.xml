@@ -27,6 +27,7 @@
       <w>buildapi</w>
       <w>buildversion</w>
       <w>buratti</w>
+      <w>cardview</w>
       <w>checkedtextview</w>
       <w>chromebooks</w>
       <w>chromeversion</w>
@@ -64,6 +65,7 @@
       <w>fbee</w>
       <w>fdfilter</w>
       <w>fdid</w>
+      <w>fileprovider</w>
       <w>firebase</w>
       <w>fontsize</w>
       <w>framelayout</w>
@@ -99,6 +101,7 @@
       <w>nist</w>
       <w>nojs</w>
       <w>oname</w>
+      <w>openkeychain</w>
       <w>openpgp</w>
       <w>orbot</w>
       <w>panopticlick</w>
@@ -143,6 +146,7 @@
       <w>subdomains</w>
       <w>subfolders</w>
       <w>sublists</w>
+      <w>sufficientlysecure</w>
       <w>swipetorefresh</w>
       <w>tablayout</w>
       <w>techrepublic</w>

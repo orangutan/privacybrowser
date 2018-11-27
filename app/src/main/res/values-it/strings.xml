@@ -313,10 +313,6 @@
     <string name="load_an_encrypted_website">Carica un sito Web criptato prima di aprire le impostazioni dei domini per popolare il certificato SSL del sito attuale.</string>
 
     <!-- Import/Export. -->
-    <string-array name="import_export_spinner">
-        <item>Importa</item>
-        <item>Esporta</item>
-    </string-array>
     <string name="browse">Sfoglia</string>
     <string name="export">Esporta</string>
     <string name="import_button">Importa</string>  <!-- `import` is a reserved word and cannot be used as the name -->

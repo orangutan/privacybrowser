@@ -72,7 +72,10 @@
                         android:layout_height="match_parent"
                         android:layout_width="match_parent"
                         android:orientation="vertical"
-                        android:layout_margin="10dp" >
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp" >
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -104,11 +107,34 @@
                                 android:hint="@string/password"
                                 android:inputType="textPassword"/>
                         </android.support.design.widget.TextInputLayout>
+
+                        <!-- KitKat password encryption message. -->
+                        <TextView
+                            android:id="@+id/kitkat_password_encryption_textview"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/kitkat_password_encryption_message"
+                            android:textColor="?android:textColorPrimary"
+                            android:textAlignment="center" />
+
+                        <!-- OpenKeychain required message. -->
+                        <TextView
+                            android:id="@+id/openkeychain_required_textview"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/openkeychain_required"
+                            android:textColor="?android:textColorPrimary"
+                            android:textAlignment="center" />
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
 
                 <!-- The file location card. -->
                 <android.support.v7.widget.CardView
+                    android:id="@+id/file_location_cardview"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
                     android:layout_marginTop="5dp"
@@ -121,7 +147,10 @@
                         android:layout_height="match_parent"
                         android:layout_width="match_parent"
                         android:orientation="vertical"
-                        android:layout_margin="10dp" >
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp" >
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -133,14 +162,31 @@
                             android:textStyle="bold"
                             android:textColor="?colorAccent" />
 
-                        <Spinner
-                            android:id="@+id/import_export_spinner"
+                        <RadioGroup
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
-                            android:layout_gravity="center_horizontal" />
+                            android:layout_gravity="center_horizontal"
+                            android:orientation="horizontal" >
+
+                            <RadioButton
+                                android:id="@+id/import_radiobutton"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:text="@string/import_button"
+                                android:layout_marginEnd="10dp"
+                                android:onClick="onClickRadioButton" />
+
+                            <RadioButton
+                                android:id="@+id/export_radiobutton"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:text="@string/export"
+                                android:onClick="onClickRadioButton" />
+                        </RadioGroup>
 
                         <!-- Align the EditText and the select file button horizontally. -->
                         <LinearLayout
+                            android:id="@+id/file_name_linearlayout"
                             android:layout_height="wrap_content"
                             android:layout_width="match_parent"
                             android:orientation="horizontal"
@@ -170,11 +216,23 @@
                                 android:onClick="browse" />
                         </LinearLayout>
 
+                        <!-- OpenKeychain import instructions -->
+                        <TextView
+                            android:id="@+id/openkeychain_import_instructions_textview"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_margin="5dp"
+                            android:text="@string/openkeychain_import_instructions"
+                            android:textColor="?android:textColorPrimary"
+                            android:textAlignment="center" />
+
                         <Button
                             android:id="@+id/import_export_button"
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
                             android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="10dp"
                             android:text="@string/import_button"
                             android:textSize="18sp"
                             android:onClick="importExport"
