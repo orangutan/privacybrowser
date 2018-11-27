@@ -34,10 +34,15 @@
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#INSTALL_SHORTCUT">com.android.launcher.permission.INSTALL_SHORTCUT</a></p>
         <p>E' richiesto per poter creare collegamenti a siti web sulla schermata principale del dispositivo.</p>
 
-        <h3>Scrittura sulla memoria</h3>
-        <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WRITE_EXTERNAL_STORAGE"> android.permission.WRITE_EXTERNAL_STORAGE</a></p>
-        <p>E' richiesto per scaricare file nella cartella pubblica di download.
-            In Android Marshmallow (API 23) e successivi, se questo permesso è negato Privacy Browser salverà i file scaricati nella cartella di download dell'applicazione.</p>
+        <h3>Lettura dalla memoria</h3>
+        <p><a href="https://developer.android.com/reference/android/Manifest.permission#READ_EXTERNAL_STORAGE">android.permission.READ_EXTERNAL_STORAGE</a></p>
+        <p>Richiesta per l'importazione delle impostazioni dalle cartelle pubbliche.
+            A partire da Android Marshmallow (API 23), se questo permesso è negato Privacy Browser può importare le impostazioni solo dalle cartelle dell'applicazione.</p>
+
+        <h3>Scrittura della memoria</h3>
+        <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WRITE_EXTERNAL_STORAGE">android.permission.WRITE_EXTERNAL_STORAGE</a></p>
+        <p>Richiesta per l'esportazione delle applicazioni e per il download di file nelle cartelle pubbliche.
+            A partire da Android Marshmallow (API 23), se questo permesso è negato Privacy Browser può esportare le impostazioni e salvare i download solo nelle cartelle dell'applicazione.</p>
 
         <br/>
         <hr/>
@@ -61,6 +66,10 @@
         <h3>Impedire al dispositivo di entrare in modalità sleeping</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WAKE_LOCK">android.permission.WAKE_LOCK</a></p>
         <p>Permette agli annunci di impedire al processore di entrare in modalità sleeping e allo schermo di spegnersi, anche se dopo vari test eseguiti non sembra che il comportamento sia questo.</p>
+
+        <h3>Tracciamento delle installazioni dagli annunci</h3>
+        <p><a href="https://android-developers.googleblog.com/2017/11/google-play-referrer-api-track-and.html">com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE</a></p>
+        <p>Permette alle altre applicazioni di informare se la loro installazione è stata eseguita attraverso un annuncio pubblicitario in Privacy Browser Free.</p>
 
         <h3>Ricezione dati da Internet</h3>
         <p><a href="http://androidpermissions.com/permission/com.google.android.c2dm.permission.RECEIVE">com.google.android.c2dm.permission.RECEIVE</a></p>

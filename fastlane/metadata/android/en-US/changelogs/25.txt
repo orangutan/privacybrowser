@@ -8,4 +8,4 @@
 • Fix a bug that caused website modifications (like the sorting of a list) to be lost if Privacy Browser was moved to the background.
 • Many small improvements were made to the Domains activity.
 • Updated Italian translation provided by Francesco Buratti.
-• Updated Spanish translation provided by Jose A. León Becerra.
+• Updated Spanish translation provided by Jose A. León.

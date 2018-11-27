@@ -23,6 +23,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation" >
 
+    <!-- Providers. -->
+    <string name="file_provider" translatable="false">com.stoutner.privacybrowser.fileprovider.standard</string>
+
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser</string>
     <string name="privacy_browser_settings">Privacy Browser Settings</string>
@@ -115,6 +118,7 @@
     <string name="bookmarks">Bookmarks</string>
     <string name="downloads">Downloads</string>
     <string name="settings">Settings</string>
+    <string name="import_export">Import/Export</string>
     <string name="guide">Guide</string>
     <string name="about">About</string>
     <string name="clear_and_exit">Clear and Exit</string>
@@ -312,6 +316,31 @@
     <string name="saved_ssl_certificate">Saved SSL certificate</string>
     <string name="current_website_ssl_certificate">Current website SSL certificate</string>
     <string name="load_an_encrypted_website">Load an encrypted website before opening Domain Settings to populate the current website SSL certificate.</string>
+
+    <!-- Import/Export. -->
+    <string name="encryption">Encryption</string>
+    <string-array name="encryption_type">
+        <item>None</item>
+        <item>Password</item>
+        <item>OpenPGP</item>
+    </string-array>
+    <string name="kitkat_password_encryption_message">Password encryption does not work on Android KitKat.</string>
+    <string name="openkeychain_required">OpenPGP encryption requires that OpenKeychain be installed.</string>
+    <string name="openkeychain_import_instructions">The unencrypted file will have to be imported in a separate step after it is decrypted.</string>
+    <string name="file_location">File Location</string>
+    <string name="browse">Browse</string>
+    <string name="export">Export</string>
+    <string name="import_button">Import</string>  <!-- `import` is a reserved word and cannot be used as the name -->
+    <string name="decrypt">Decrypt</string>
+    <string name="export_successful">Export successful.</string>
+    <string name="export_failed">Export failed:</string>
+    <string name="import_failed">Import failed:</string>
+    <string name="cannot_export">The settings cannot be exported to this location because the storage permission has not been granted.</string>
+    <string name="cannot_import">The settings cannot be imported from this location because the storage permission has not been granted.</string>
+    <string name="invalid_location">is not a valid location.</string>
+    <string name="storage_permission">Storage Permission</string>
+    <string name="storage_permission_message">Privacy Browser needs the storage permission to access public directories. If it is denied, the app’s directories can still be used.</string>
+    <string name="storage_permission_explanation">Accessing files in public directories requires the storage permission. Otherwise, only app directories will work.</string>
 
     <!-- Guide. -->
     <string name="privacy_browser_guide">Privacy Browser Guide</string>
@@ -562,8 +591,9 @@
                 <string name="api">API</string>
             <string name="build">Build:</string>
             <string name="security_patch">Security Patch:</string>
-            <string name="chrome">Chrome:</string>
+            <string name="webview">WebView:</string>
             <string name="orbot">Orbot:</string>
+            <string name="open_keychain">OpenKeychain:</string>
             <string name="easylist_label">EasyList:</string>
             <string name="easyprivacy_label">EasyPrivacy:</string>
             <string name="fanboy_annoyance_label">Fanboy’s Annoyance List:</string>
@@ -583,6 +613,7 @@
     <string name="links">Links</string>
 
     <!-- Ad Control. There are no ads in the standard flavor, but these strings must exist because they are referenced in the code. -->
-    <string name="ad_id" translatable="false">Null</string>
+    <string name="google_app_id" translatable="false">Null</string>
+    <string name="ad_unit_id" translatable="false">Null</string>
     <string name="ad_consent">Ad Consent</string>
 </resources>

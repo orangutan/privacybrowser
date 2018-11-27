@@ -66,22 +66,25 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         EditBookmarkFolderDialog.EditBookmarkFolderListener, MoveToFolderDialog.MoveToFolderListener {
 
     // `currentFolder` is public static so it can be accessed from `MoveToFolderDialog`.
-    // It is used in `onCreate`, `onOptionsItemSelected()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`, and `loadFolder()`.
+    // It is used in `onCreate`, `onOptionsItemSelected()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`,
+    // and `loadFolder()`.
     public static String currentFolder;
 
-    // `checkedItemIds` is public static so it can be accessed from `MoveToFolderDialog`.  It is also used in `onCreate()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`, and `updateMoveIcons()`.
+    // `checkedItemIds` is public static so it can be accessed from `MoveToFolderDialog`.  It is also used in `onCreate()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`,
+    // and `updateMoveIcons()`.
     public static long[] checkedItemIds;
 
 
-    // `bookmarksDatabaseHelper` is used in `onCreate()`, `onOptionsItemSelected()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`, `deleteBookmarkFolderContents()`,
-    // and `loadFolder().
+    // `bookmarksDatabaseHelper` is used in `onCreate()`, `onOptionsItemSelected()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`,
+    // `onMoveToFolder()`, `deleteBookmarkFolderContents()`, `loadFolder()`, and `onDestroy()`.
     private BookmarksDatabaseHelper bookmarksDatabaseHelper;
 
-    // `bookmarksListView` is used in `onCreate()`, `onOptionsItemSelected()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`, `updateMoveIcons()`, `scrollBookmarks()`,
-    // and `loadFolder()`.
+    // `bookmarksListView` is used in `onCreate()`, `onOptionsItemSelected()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`,
+    // `updateMoveIcons()`, `scrollBookmarks()`, and `loadFolder()`.
     private ListView bookmarksListView;
 
-    // `bookmarksCursor` is used in `onCreate()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`, `deleteBookmarkFolderContents()`, and `loadFolder()`.
+    // `bookmarksCursor` is used in `onCreate()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`, `deleteBookmarkFolderContents()`,
+    // `loadFolder()`, and `onDestroy()`.
     private Cursor bookmarksCursor;
 
     // `bookmarksCursorAdapter` is used in `onCreate(), `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`, and `onLoadFolder()`.
@@ -558,10 +561,10 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
                                         // Close the activity if back has been pressed.
                                         if (closeActivityAfterDismissingSnackbar) {
-                                            // Update the bookmarks folder for the bookmarks drawer in `MainWebViewActivity`.
-                                            MainWebViewActivity.currentBookmarksFolder = "";
+                                            // Update the bookmarks folder for the bookmarks drawer in the main WebView activity.
+                                            MainWebViewActivity.currentBookmarksFolder = currentFolder;
 
-                                            // Close the bookmarks drawer and reload the bookmarks `ListView` when returning to `MainWebViewActivity`.
+                                            // Close the bookmarks drawer and reload the bookmarks ListView when returning to the main WebView activity.
                                             MainWebViewActivity.restartFromBookmarksActivity = true;
 
                                             // Return to `MainWebViewActivity`.
@@ -681,30 +684,22 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
     @Override
     public void onBackPressed() {
-        if (currentFolder.isEmpty()) {  // Currently in the home folder.
-            // Go home.
-            if ((bookmarksDeletedSnackbar != null) && bookmarksDeletedSnackbar.isShown()) {  // Close the bookmarks delete snackbar before going home.
-                // Set the close flag.
-                closeActivityAfterDismissingSnackbar = true;
+        // Check to see if a snackbar is currently displayed.  If so, it must be closed before exiting so that a pending delete is completed before reloading the ListView in the bookmarks drawer.
+        if ((bookmarksDeletedSnackbar != null) && bookmarksDeletedSnackbar.isShown()) {  // Close the bookmarks delete snackbar before going home.
+            // Set the close flag.
+            closeActivityAfterDismissingSnackbar = true;
 
-                // Dismiss the snackbar.
-                bookmarksDeletedSnackbar.dismiss();
-            } else {  // Go home immediately.
-                // Update the bookmarks folder for the bookmarks drawer in `MainWebViewActivity`.
-                MainWebViewActivity.currentBookmarksFolder = "";
+            // Dismiss the snackbar.
+            bookmarksDeletedSnackbar.dismiss();
+        } else {  // Go home immediately.
+            // Update the bookmarks folder for the bookmarks drawer in the main WebView activity.
+            MainWebViewActivity.currentBookmarksFolder = currentFolder;
 
-                // Close the bookmarks drawer and reload the bookmarks `ListView` when returning to `MainWebViewActivity`.
-                MainWebViewActivity.restartFromBookmarksActivity = true;
+            // Close the bookmarks drawer and reload the bookmarks ListView when returning to the main WebView activity.
+            MainWebViewActivity.restartFromBookmarksActivity = true;
 
-                // Exit `BookmarksActivity`.
-                super.onBackPressed();
-            }
-        } else {  // Currently in a subfolder.
-            // Place the former parent folder in `currentFolder`.
-            currentFolder = bookmarksDatabaseHelper.getParentFolder(currentFolder);
-
-            // Load the new folder.
-            loadFolder();
+            // Exit `BookmarksActivity`.
+            super.onBackPressed();
         }
     }
 
@@ -1071,5 +1066,15 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         } else {
             appBar.setTitle(currentFolder);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        // Close the bookmarks cursor and database.
+        bookmarksCursor.close();
+        bookmarksDatabaseHelper.close();
+
+        // Run the default commands.
+        super.onDestroy();
     }
 }

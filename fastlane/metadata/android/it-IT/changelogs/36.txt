@@ -1,0 +1,12 @@
+• Aggiunta la funzionalità di importazione e esportazione dei segnalibri e delle impostazioni (include il permesso di lettura della memoria).
+• Modificato il caricamento di default delle URL da HTTP a HTTPS.
+• Visualizzazione di quanto oggetti sono bloccati da ogni lista di blocco con aggiornamento in tempo reale.
+• Aggiunta del pulsante di stop del caricamento.
+• Aggiunta dei controlli dello user agent e della Modalità notte al menù delle opzioni.
+• Correzione di un baco per cui scomparivano le barre di sistema dopo la visualizzazione di video a schermo intero.
+• Sistemazione della voce del menu “Elimina dati” su Oreo (Android 8.0) o più recenti versioni di Android.
+• Correzione delle dimensioni del messaggio “In atteso di Orbot”.
+• Aggiornamento della target API a 28 (Android 9 Pie).
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
+• Aggiornamento della traduzione Russo.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León.

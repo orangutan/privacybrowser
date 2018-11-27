@@ -7,4 +7,4 @@
 • Correzione di un baco che provocava la perdita di modifiche pendenti al momento del riavvio.
 • Correzione di un baco che si verificava con lo spinner layout di alcuni dispositivi Huawei.
 • Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
-• Aggiornamento della traduzione Spagnola fornita da Jose A. León Becerra.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León.

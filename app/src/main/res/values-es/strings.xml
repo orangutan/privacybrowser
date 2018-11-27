@@ -114,6 +114,7 @@
     <string name="bookmarks">Favoritos</string>
     <string name="downloads">Descargas</string>
     <string name="settings">Configuración</string>
+    <string name="import_export">Importar/Exportar</string>
     <string name="guide">Guía</string>
     <string name="about">Acerca de</string>
     <string name="clear_and_exit">Borrar y salir</string>
@@ -312,6 +313,22 @@
     <string name="current_website_ssl_certificate">Certificado SSL actual de la web</string>
     <string name="load_an_encrypted_website">Cargar una página web cifrada antes de abrir la configuración de dominio para rellenar el certificado SSL de la página web actual.</string>
 
+    <!-- Import/Export. -->
+    <string name="browse">Navegar</string>
+    <string name="export">Exportar</string>
+    <string name="import_button">Importar</string>  <!-- `import` is a reserved word and cannot be used as the name -->
+    <string name="export_successful">Exportación exitosa.</string>
+    <string name="export_failed">Exportación fallida:</string>
+    <string name="import_failed">Importación fallida:</string>
+    <string name="cannot_export">Los ajustes no pueden exportarse a esta ubicación porque no se ha concedido el permiso de almacenamiento.</string>
+    <string name="cannot_import">Los ajustes no pueden importarse desde esta ubicación porque no se ha concedido el permiso de almacenamiento.</string>
+    <string name="invalid_location">no es una ubicación válida.</string>
+    <string name="storage_permission">Permiso de almacenamiento</string>
+    <string name="storage_permission_message">Navegador Privado necesita el permiso de almacenamiento para acceder a los directorios públicos.
+        Si se deniega, los directorios de la aplicación pueden seguir utilizándose.</string>
+    <string name="storage_permission_explanation">El acceso a los archivos en directorios públicos requiere el permiso de almacenamiento.
+        De lo contrario, sólo funcionarán los directorios de aplicaciones.</string>
+
     <!-- Guide. -->
     <string name="privacy_browser_guide">Guía de Navegador Privado</string>
     <string name="overview">Visión general</string>
@@ -492,7 +509,7 @@
                 <string name="api">API</string>
             <string name="build">Versión de compilación:</string>
             <string name="security_patch">Parche de seguridad:</string>
-            <string name="chrome">Chrome:</string>
+            <string name="webview">WebView:</string>
             <string name="orbot">Orbot:</string>
             <string name="easylist_label">EasyList:</string>
             <string name="easyprivacy_label">EasyPrivacy:</string>

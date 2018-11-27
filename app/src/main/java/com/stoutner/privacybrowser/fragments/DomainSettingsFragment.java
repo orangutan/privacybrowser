@@ -218,29 +218,29 @@ public class DomainSettingsFragment extends Fragment {
             savedSslCertificateEndDate = new Date(domainCursor.getLong(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)));
         }
 
-        // Create `ArrayAdapters` for the `Spinners`and their `entry values`.
-        ArrayAdapter<CharSequence> translatedUserAgentArrayAdapter = ArrayAdapter.createFromResource(context, R.array.translated_domain_settings_user_agent_names, R.layout.domain_settings_spinner_item);
-        ArrayAdapter<CharSequence> fontSizeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.domain_settings_font_size_entries, R.layout.domain_settings_spinner_item);
-        ArrayAdapter<CharSequence> fontSizeEntryValuesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.domain_settings_font_size_entry_values, R.layout.domain_settings_spinner_item);
-        ArrayAdapter<CharSequence> swipeToRefreshArrayAdapter = ArrayAdapter.createFromResource(context, R.array.swipe_to_refresh_array, R.layout.domain_settings_spinner_item);
-        ArrayAdapter<CharSequence> nightModeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.night_mode_array, R.layout.domain_settings_spinner_item);
-        ArrayAdapter<CharSequence> displayImagesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.display_webpage_images_array, R.layout.domain_settings_spinner_item);
+        // Create array adapters for the spinners.
+        ArrayAdapter<CharSequence> translatedUserAgentArrayAdapter = ArrayAdapter.createFromResource(context, R.array.translated_domain_settings_user_agent_names, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> fontSizeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.domain_settings_font_size_entries, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> fontSizeEntryValuesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.domain_settings_font_size_entry_values, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> swipeToRefreshArrayAdapter = ArrayAdapter.createFromResource(context, R.array.swipe_to_refresh_array, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> nightModeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.night_mode_array, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> displayImagesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.display_webpage_images_array, R.layout.spinner_item);
 
-        // Set the `DropDownViewResource` on the `Spinners`.
+        // Set the drop down view resource on the spinners.
         translatedUserAgentArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items);
         fontSizeArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items);
         swipeToRefreshArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items);
         nightModeArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items);
         displayImagesArrayAdapter.setDropDownViewResource(R.layout.domain_settings_spinner_dropdown_items);
 
-        // Set the `ArrayAdapters` for the `Spinners`.
+        // Set the array adapters for the spinners.
         userAgentSpinner.setAdapter(translatedUserAgentArrayAdapter);
         fontSizeSpinner.setAdapter(fontSizeArrayAdapter);
         swipeToRefreshSpinner.setAdapter(swipeToRefreshArrayAdapter);
         nightModeSpinner.setAdapter(nightModeArrayAdapter);
         displayWebpageImagesSpinner.setAdapter(displayImagesArrayAdapter);
 
-        // Create a `SpannableStringBuilder` for each `TextView` that needs multiple colors of text.
+        // Create a spannable string builder for each TextView that needs multiple colors of text.
         SpannableStringBuilder savedSslCertificateIssuedToCNameStringBuilder = new SpannableStringBuilder(cNameLabel + savedSslCertificateIssuedToCNameString);
         SpannableStringBuilder savedSslCertificateIssuedToONameStringBuilder = new SpannableStringBuilder(oNameLabel + savedSslCertificateIssuedToONameString);
         SpannableStringBuilder savedSslCertificateIssuedToUNameStringBuilder = new SpannableStringBuilder(uNameLabel + savedSslCertificateIssuedToUNameString);
@@ -648,7 +648,7 @@ public class DomainSettingsFragment extends Fragment {
         final String webViewDefaultUserAgentString = bareWebView.getSettings().getUserAgentString();
 
         // Get a handle for the user agent array adapter.  This array does not contain the `System default` entry.
-        ArrayAdapter<CharSequence> userAgentNamesArray = ArrayAdapter.createFromResource(context, R.array.user_agent_names, R.layout.domain_settings_spinner_item);
+        ArrayAdapter<CharSequence> userAgentNamesArray = ArrayAdapter.createFromResource(context, R.array.user_agent_names, R.layout.spinner_item);
 
         // Get the positions of the user agent and the default user agent.
         int userAgentArrayPosition = userAgentNamesArray.getPosition(currentUserAgentName);

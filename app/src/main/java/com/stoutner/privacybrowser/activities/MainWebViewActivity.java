@@ -167,14 +167,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public static Bitmap favoriteIconBitmap;
 
     // `formattedUrlString` is public static so it can be accessed from `BookmarksActivity`, `CreateBookmarkDialog`, and `AddDomainDialog`.
-    // It is also used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onCreateHomeScreenShortcutCreate()`, and `loadUrlFromTextBox()`.
+    // It is also used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onCreateHomeScreenShortcutCreate()`, `loadUrlFromTextBox()`, and `applyProxyThroughOrbot()`.
     public static String formattedUrlString;
 
     // `sslCertificate` is public static so it can be accessed from `DomainsActivity`, `DomainsListFragment`, `DomainSettingsFragment`, `PinnedSslCertificateMismatchDialog`,
     // and `ViewSslCertificateDialog`.  It is also used in `onCreate()`.
     public static SslCertificate sslCertificate;
 
-    // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()` and `onResume()`.
+    // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxyThroughOrbot()`.
     public static String orbotStatus;
 
     // `webViewTitle` is public static so it can be accessed from `CreateBookmarkDialog` and `CreateHomeScreenShortcutDialog`.  It is also used in `onCreate()`.
@@ -202,13 +202,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // The request items are public static so they can be accessed by `BlockListHelper`, `RequestsArrayAdapter`, and `ViewRequestsDialog`.  They are also used in `onCreate()` and `onPrepareOptionsMenu()`.
     public static List<String[]> resourceRequests;
     public static String[] whiteListResultStringArray;
-    int blockedRequests;
-    int easyListBlockedRequests;
-    int easyPrivacyBlockedRequests;
-    int fanboysAnnoyanceListBlockedRequests;
-    int fanboysSocialBlockingListBlockedRequests;
-    int ultraPrivacyBlockedRequests;
-    int thirdPartyBlockedRequests;
+    private int blockedRequests;
+    private int easyListBlockedRequests;
+    private int easyPrivacyBlockedRequests;
+    private int fanboysAnnoyanceListBlockedRequests;
+    private int fanboysSocialBlockingListBlockedRequests;
+    private int ultraPrivacyBlockedRequests;
+    private int thirdPartyBlockedRequests;
 
     public final static int REQUEST_DISPOSITION = 0;
     public final static int REQUEST_URL = 1;
@@ -276,7 +276,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public final static int DOMAINS_CUSTOM_USER_AGENT = 13;
 
 
-    // `appBar` is used in `onCreate()`, `onOptionsItemSelected()`, `closeFindOnPage()`, and `applyAppSettings()`.
+    // `appBar` is used in `onCreate()`, `onOptionsItemSelected()`, `closeFindOnPage()`, `applyAppSettings()`, and `applyProxyThroughOrbot()`.
     private ActionBar appBar;
 
     // `navigatingHistory` is used in `onCreate()`, `onNavigationItemSelected()`, `onSslMismatchBack()`, and `applyDomainSettings()`.
@@ -292,7 +292,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private CoordinatorLayout rootCoordinatorLayout;
 
     // `mainWebView` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`,
-    // `findNextOnPage()`, `closeFindOnPage()`, `loadUrlFromTextBox()`, `onSslMismatchBack()`, and `setDisplayWebpageImages()`.
+    // `findNextOnPage()`, `closeFindOnPage()`, `loadUrlFromTextBox()`, `onSslMismatchBack()`, `setDisplayWebpageImages()`, and `applyProxyThroughOrbot()`.
     private WebView mainWebView;
 
     // `fullScreenVideoFrameLayout` is used in `onCreate()` and `onConfigurationChanged()`.
@@ -334,10 +334,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `displayWebpageImagesBoolean` is used in `applyAppSettings()` and `applyDomainSettings()`.
     private boolean displayWebpageImagesBoolean;
 
-    // 'homepage' is used in `onCreate()`, `onNavigationItemSelected()`, and `applyAppSettings()`.
+    // 'homepage' is used in `onCreate()`, `onNavigationItemSelected()`, and `applyProxyThroughOrbot()`.
     private String homepage;
 
-    // `searchURL` is used in `loadURLFromTextBox()` and `applyAppSettings()`.
+    // `searchURL` is used in `loadURLFromTextBox()` and `applyProxyThroughOrbot()`.
     private String searchURL;
 
     // `mainMenu` is used in `onCreateOptionsMenu()` and `updatePrivacyIcons()`.
@@ -353,7 +353,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private MenuItem fanboysAnnoyanceListMenuItem;
     private MenuItem fanboysSocialBlockingListMenuItem;
     private MenuItem ultraPrivacyMenuItem;
-    private MenuItem blockAllThirdParyRequestsMenuItem;
+    private MenuItem blockAllThirdPartyRequestsMenuItem;
 
     // The blocklist variables are used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applyAppSettings()`.
     private boolean easyListEnabled;
@@ -371,7 +371,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `privacyBrowserRuntime` is used in `onCreate()`, `onOptionsItemSelected()`, and `applyAppSettings()`.
     private Runtime privacyBrowserRuntime;
 
-    // `proxyThroughOrbot` is used in `onRestart()` and `applyAppSettings()`.
+    // `proxyThroughOrbot` is used in `onRestart()`, `onOptionsItemSelected()`, `applyAppSettings()`, and `applyProxyThroughOrbot()`.
     private boolean proxyThroughOrbot;
 
     // `incognitoModeEnabled` is used in `onCreate()` and `applyAppSettings()`.
@@ -404,10 +404,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `ignorePinnedSslCertificateForDomain` is used in `onCreate()`, `onSslMismatchProceed()`, and `applyDomainSettings()`.
     private boolean ignorePinnedSslCertificate;
 
-    // `orbotStatusBroadcastReciever` is used in `onCreate()` and `onDestroy()`.
+    // `orbotStatusBroadcastReceiver` is used in `onCreate()` and `onDestroy()`.
     private BroadcastReceiver orbotStatusBroadcastReceiver;
 
-    // `waitingForOrbot` is used in `onCreate()`, `onResume()`, and `applyAppSettings()`.
+    // `waitingForOrbot` is used in `onCreate()`, `onResume()`, and `applyProxyThroughOrbot()`.
     private boolean waitingForOrbot;
 
     // `domainSettingsApplied` is used in `prepareOptionsMenu()`, `applyDomainSettings()`, and `setDisplayWebpageImages()`.
@@ -422,8 +422,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `onTheFlyDisplayImagesSet` is used in `applyDomainSettings()` and `setDisplayWebpageImages()`.
     private boolean onTheFlyDisplayImagesSet;
 
-    // `waitingForOrbotData` is used in `onCreate()` and `applyAppSettings()`.
-    private String waitingForOrbotHTMLString;
+    // `waitingForOrbotHtmlString` is used in `onCreate()` and `applyProxyThroughOrbot()`.
+    private String waitingForOrbotHtmlString;
 
     // `privateDataDirectoryString` is used in `onCreate()`, `onOptionsItemSelected()`, and `onNavigationItemSelected()`.
     private String privateDataDirectoryString;
@@ -469,7 +469,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `pinnedDomainSslCertificate` is used in `onCreate()` and `applyDomainSettings()`.
     private boolean pinnedDomainSslCertificate;
 
-    // `bookmarksDatabaseHelper` is used in `onCreate()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `loadBookmarksFolder()`.
+    // `bookmarksDatabaseHelper` is used in `onCreate()`, `onDestroy`, `onOptionsItemSelected()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`,
+    // and `loadBookmarksFolder()`.
     private BookmarksDatabaseHelper bookmarksDatabaseHelper;
 
     // `bookmarksListView` is used in `onCreate()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, and `loadBookmarksFolder()`.
@@ -478,7 +479,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `bookmarksTitleTextView` is used in `onCreate()` and `loadBookmarksFolder()`.
     private TextView bookmarksTitleTextView;
 
-    // `bookmarksCursor` is used in `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `loadBookmarksFolder()`.
+    // `bookmarksCursor` is used in `onDestroy()`, `onOptionsItemSelected()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `loadBookmarksFolder()`.
     private Cursor bookmarksCursor;
 
     // `bookmarksCursorAdapter` is used in `onCreateBookmark()`, `onCreateBookmarkFolder()` `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `loadBookmarksFolder()`.
@@ -563,12 +564,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Remove the formatting from `urlTextBar` when the user is editing the text.
         urlTextBox.setOnFocusChangeListener((View v, boolean hasFocus) -> {
-            if (hasFocus) {  // The user is editing `urlTextBox`.
+            if (hasFocus) {  // The user is editing the URL text box.
                 // Remove the highlighting.
                 urlTextBox.getText().removeSpan(redColorSpan);
                 urlTextBox.getText().removeSpan(initialGrayColorSpan);
                 urlTextBox.getText().removeSpan(finalGrayColorSpan);
-            } else {  // The user has stopped editing `urlTextBox`.
+            } else {  // The user has stopped editing the URL text box.
+                // Move to the beginning of the string.
+                urlTextBox.setSelection(0);
+
                 // Reapply the highlighting.
                 highlightUrlText();
             }
@@ -593,7 +597,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         });
 
         // Set `waitingForOrbotHTMLString`.
-        waitingForOrbotHTMLString = "<html><body><br/><center><h1>" + getString(R.string.waiting_for_orbot) + "</h1></center></body></html>";
+        waitingForOrbotHtmlString = "<html><body><br/><center><h1>" + getString(R.string.waiting_for_orbot) + "</h1></center></body></html>";
 
         // Initialize `currentDomainName`, `orbotStatus`, and `waitingForOrbot`.
         currentDomainName = "";
@@ -728,7 +732,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Show the `BannerAd` in the free flavor.
                         if (BuildConfig.FLAVOR.contentEquals("free")) {
                             // Reload the ad.  The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
-                            AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_id));
+                            AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_unit_id));
                         }
 
                         // Remove the translucent navigation bar flag if it is set.
@@ -949,10 +953,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     mainWebView.evaluateJavascript("(function() {var parent = document.getElementsByTagName('head').item(0); var style = document.createElement('style'); style.type = 'text/css'; " +
                             "style.innerHTML = '* {background-color: #212121 !important; color: #BDBDBD !important; box-shadow: none !important; text-decoration: none !important;" +
                             "text-shadow: none !important; border: none !important;} a {color: #1565C0 !important;}'; parent.appendChild(style)})()", value -> {
-                                // Initialize a `Handler` to display `mainWebView`.
+                                // Initialize a handler to display `mainWebView`.
                                 Handler displayWebViewHandler = new Handler();
 
-                                // Setup a `Runnable` to display `mainWebView` after a delay to allow the CSS to be applied.
+                                // Setup a runnable to display `mainWebView` after a delay to allow the CSS to be applied.
                                 Runnable displayWebViewRunnable = () -> {
                                     // Only display `mainWebView` if the progress bar is one.  This prevents the display of the `WebView` while it is still loading.
                                     if (progressBar.getVisibility() == View.GONE) {
@@ -960,7 +964,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                     }
                                 };
 
-                                // Use `displayWebViewHandler` to delay the displaying of `mainWebView` for 500 milliseconds.
+                                // Displaying of `mainWebView` after 500 milliseconds.
                                 displayWebViewHandler.postDelayed(displayWebViewRunnable, 500);
                             });
                 }
@@ -1097,7 +1101,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Show the `BannerAd` in the free flavor.
                     if (BuildConfig.FLAVOR.contentEquals("free")) {
                         // Initialize the ad.  The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
-                        AdHelper.initializeAds(findViewById(R.id.adview), getApplicationContext(), getFragmentManager(), getString(R.string.ad_id));
+                        AdHelper.initializeAds(findViewById(R.id.adview), getApplicationContext(), getFragmentManager(), getString(R.string.google_app_id), getString(R.string.ad_unit_id));
                     }
 
                     // Remove any `SYSTEM_UI` flags from `rootCoordinatorLayout`.
@@ -1116,7 +1120,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Show the ad if this is the free flavor.
                 if (BuildConfig.FLAVOR.contentEquals("free")) {
                     // Reload the ad.  The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
-                    AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_id));
+                    AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_unit_id));
                 }
             }
 
@@ -1154,7 +1158,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Show a dialog if the user has previously denied the permission.
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
-                    // Get a handle for the download location permission alert dialog and set the download type to DOWNLOAD_FILE.
+                    // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_FILE.
                     DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_FILE);
 
                     // Show the download location permission alert dialog.  The permission will be requested when the the dialog is closed.
@@ -1163,7 +1167,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
                     ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_FILE_REQUEST_CODE);
                 }
-            } else {  // The WRITE_EXTERNAL_STORAGE permission has already been granted.
+            } else {  // The storage permission has already been granted.
                 // Get a handle for the download file alert dialog.
                 AppCompatDialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(url, contentDisposition, contentLength);
 
@@ -1243,7 +1247,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
 
         // Initialize the user agent array adapter and string array.
-        userAgentNamesArray = ArrayAdapter.createFromResource(this, R.array.user_agent_names, R.layout.domain_settings_spinner_item);
+        userAgentNamesArray = ArrayAdapter.createFromResource(this, R.array.user_agent_names, R.layout.spinner_item);
         userAgentDataArray = getResources().getStringArray(R.array.user_agent_data);
 
         // Apply the app settings from the shared preferences.
@@ -1400,7 +1404,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     activity.runOnUiThread(() -> {
                         navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
                         blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                        blockAllThirdParyRequestsMenuItem.setTitle(thirdPartyBlockedRequests + " - " + getString(R.string.block_all_third_party_requests));
+                        blockAllThirdPartyRequestsMenuItem.setTitle(thirdPartyBlockedRequests + " - " + getString(R.string.block_all_third_party_requests));
                     });
 
                     // Add the request to the log.
@@ -1526,7 +1530,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Add the request to the log because it hasn't been processed by any of the previous checks.
                 if (whiteListResultStringArray != null ) {  // The request was processed by a whitelist.
                     resourceRequests.add(whiteListResultStringArray);
-                } else {  // The request didn't match any blocklist entry.  Log it as a defult request.
+                } else {  // The request didn't match any blocklist entry.  Log it as a default request.
                     resourceRequests.add(new String[]{String.valueOf(REQUEST_DEFAULT), url});
                 }
 
@@ -1919,7 +1923,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             mainWebView.getSettings().setUseWideViewPort(false);
 
             // Load a waiting page.  `null` specifies no encoding, which defaults to ASCII.
-            mainWebView.loadData(waitingForOrbotHTMLString, "text/html", null);
+            mainWebView.loadData(waitingForOrbotHtmlString, "text/html", null);
         }
 
         if (displayingFullScreenVideo) {
@@ -1960,6 +1964,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Unregister the Orbot status broadcast receiver.
         this.unregisterReceiver(orbotStatusBroadcastReceiver);
 
+        // Close the bookmarks cursor and database.
+        bookmarksCursor.close();
+        bookmarksDatabaseHelper.close();
+
         // Run the default commands.
         super.onDestroy();
     }
@@ -1988,7 +1996,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         fanboysAnnoyanceListMenuItem = menu.findItem(R.id.fanboys_annoyance_list);
         fanboysSocialBlockingListMenuItem = menu.findItem(R.id.fanboys_social_blocking_list);
         ultraPrivacyMenuItem = menu.findItem(R.id.ultraprivacy);
-        blockAllThirdParyRequestsMenuItem = menu.findItem(R.id.block_all_third_party_requests);
+        blockAllThirdPartyRequestsMenuItem = menu.findItem(R.id.block_all_third_party_requests);
         MenuItem adConsentMenuItem = menu.findItem(R.id.ad_consent);
 
         // Only display third-party cookies if API >= 21
@@ -2052,6 +2060,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem swipeToRefreshMenuItem = menu.findItem(R.id.swipe_to_refresh);
         MenuItem displayImagesMenuItem = menu.findItem(R.id.display_images);
         MenuItem nightModeMenuItem = menu.findItem(R.id.night_mode);
+        MenuItem proxyThroughOrbotMenuItem = menu.findItem(R.id.proxy_through_orbot);
 
         // Set the text for the domain menu item.
         if (domainSettingsApplied) {
@@ -2070,10 +2079,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         fanboysAnnoyanceListMenuItem.setChecked(fanboysAnnoyanceListEnabled);
         fanboysSocialBlockingListMenuItem.setChecked(fanboysSocialBlockingListEnabled);
         ultraPrivacyMenuItem.setChecked(ultraPrivacyEnabled);
-        blockAllThirdParyRequestsMenuItem.setChecked(blockAllThirdPartyRequests);
+        blockAllThirdPartyRequestsMenuItem.setChecked(blockAllThirdPartyRequests);
         swipeToRefreshMenuItem.setChecked(swipeRefreshLayout.isEnabled());
         displayImagesMenuItem.setChecked(mainWebView.getSettings().getLoadsImagesAutomatically());
         nightModeMenuItem.setChecked(nightMode);
+        proxyThroughOrbotMenuItem.setChecked(proxyThroughOrbot);
 
         // Enable third-party cookies if first-party cookies are enabled.
         toggleThirdPartyCookiesMenuItem.setEnabled(firstPartyCookiesEnabled);
@@ -2123,7 +2133,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         fanboysAnnoyanceListMenuItem.setTitle(fanboysAnnoyanceListBlockedRequests + " - " + getString(R.string.fanboys_annoyance_list));
         fanboysSocialBlockingListMenuItem.setTitle(fanboysSocialBlockingListBlockedRequests + " - " + getString(R.string.fanboys_social_blocking_list));
         ultraPrivacyMenuItem.setTitle(ultraPrivacyBlockedRequests + " - " + getString(R.string.ultraprivacy));
-        blockAllThirdParyRequestsMenuItem.setTitle(thirdPartyBlockedRequests + " - " + getString(R.string.block_all_third_party_requests));
+        blockAllThirdPartyRequestsMenuItem.setTitle(thirdPartyBlockedRequests + " - " + getString(R.string.block_all_third_party_requests));
 
         // Get the current user agent.
         String currentUserAgent = mainWebView.getSettings().getUserAgentString();
@@ -2444,19 +2454,27 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                         WebStorage webStorage = WebStorage.getInstance();
                                         webStorage.deleteAllData();
 
-                                        // Manually delete the DOM storage files and directories.
-                                        try {
-                                            // A `String[]` must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
-                                            privacyBrowserRuntime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Local Storage/"});
+                                        // Initialize a handler to manually delete the DOM storage files and directories.
+                                        Handler deleteDomStorageHandler = new Handler();
 
-                                            // Multiple commands must be used because `Runtime.exec()` does not like `*`.
-                                            privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/IndexedDB");
-                                            privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager");
-                                            privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager-journal");
-                                            privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/databases");
-                                        } catch (IOException e) {
-                                            // Do nothing if an error is thrown.
-                                        }
+                                        // Setup a runnable to manually delete the DOM storage files and directories.
+                                        Runnable deleteDomStorageRunnable = () -> {
+                                            try {
+                                                // A `String[]` must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
+                                                privacyBrowserRuntime.exec(new String[]{"rm", "-rf", privateDataDirectoryString + "/app_webview/Local Storage/"});
+
+                                                // Multiple commands must be used because `Runtime.exec()` does not like `*`.
+                                                privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/IndexedDB");
+                                                privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager");
+                                                privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager-journal");
+                                                privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/databases");
+                                            } catch (IOException e) {
+                                                // Do nothing if an error is thrown.
+                                            }
+                                        };
+
+                                        // Manually delete the DOM storage files after 200 milliseconds.
+                                        deleteDomStorageHandler.postDelayed(deleteDomStorageRunnable, 200);
                                 }
                             }
                         })
@@ -2741,10 +2759,32 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 mainWebView.reload();
                 return true;
 
+            case R.id.print:
+                // Get a `PrintManager` instance.
+                PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
+
+                // Convert `mainWebView` to `printDocumentAdapter`.
+                PrintDocumentAdapter printDocumentAdapter = mainWebView.createPrintDocumentAdapter();
+
+                // Remove the lint error below that `printManager` might be `null`.
+                assert printManager != null;
+
+                // Print the document.  The print attributes are `null`.
+                printManager.print(getString(R.string.privacy_browser_web_page), printDocumentAdapter, null);
+                return true;
+
             case R.id.view_source:
                 // Launch the View Source activity.
                 Intent viewSourceIntent = new Intent(this, ViewSourceActivity.class);
                 startActivity(viewSourceIntent);
+                return true;
+
+            case R.id.proxy_through_orbot:
+                // Toggle the proxy through Orbot variable.
+                proxyThroughOrbot = !proxyThroughOrbot;
+
+                // Apply the proxy through Orbot settings.
+                applyProxyThroughOrbot(true);
                 return true;
 
             case R.id.share:
@@ -2777,20 +2817,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Display the keyboard.  `0` sets no input flags.
                     inputMethodManager.showSoftInput(findOnPageEditText, 0);
                 }, 200);
-                return true;
-
-            case R.id.print:
-                // Get a `PrintManager` instance.
-                PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
-
-                // Convert `mainWebView` to `printDocumentAdapter`.
-                PrintDocumentAdapter printDocumentAdapter = mainWebView.createPrintDocumentAdapter();
-
-                // Remove the lint error below that `printManager` might be `null`.
-                assert printManager != null;
-
-                // Print the document.  The print attributes are `null`.
-                printManager.print(getString(R.string.privacy_browser_web_page), printDocumentAdapter, null);
                 return true;
 
             case R.id.add_to_homescreen:
@@ -2908,6 +2934,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 startActivity(settingsIntent);
                 break;
 
+            case R.id.import_export:
+                // Launch the import/export activity.
+                Intent importExportIntent = new Intent (this, ImportExportActivity.class);
+                startActivity(importExportIntent);
+                break;
+
             case R.id.guide:
                 // Launch `GuideActivity`.
                 Intent guideIntent = new Intent(this, GuideActivity.class);
@@ -2921,6 +2953,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 break;
 
             case R.id.clearAndExit:
+                // Close the bookmarks cursor and database.
+                bookmarksCursor.close();
+                bookmarksDatabaseHelper.close();
+
                 // Get a handle for `sharedPreferences`.  `this` references the current context.
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -3059,7 +3095,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Reload the ad for the free flavor if we not in full screen mode.
         if (BuildConfig.FLAVOR.contentEquals("free") && !inFullScreenBrowsingMode) {
             // Reload the ad.  The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
-            AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_id));
+            AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_unit_id));
         }
 
         // `invalidateOptionsMenu` should recalculate the number of action buttons from the menu to display on the app bar, but it doesn't because of the this bug:
@@ -3120,7 +3156,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // Show a dialog if the user has previously denied the permission.
                         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
-                            // Get a handle for the download location permission alert dialog and set the download type to DOWNLOAD_FILE.
+                            // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_FILE.
                             DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_FILE);
 
                             // Show the download location permission alert dialog.  The permission will be requested when the the dialog is closed.
@@ -3205,7 +3241,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // Show a dialog if the user has previously denied the permission.
                         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
-                            // Get a handle for the download location permission alert dialog and set the download type to DOWNLOAD_IMAGE.
+                            // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_IMAGE.
                             DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_IMAGE);
 
                             // Show the download location permission alert dialog.  The permission will be requested when the dialog is closed.
@@ -3264,7 +3300,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // Show a dialog if the user has previously denied the permission.
                         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
-                            // Get a handle for the download location permission alert dialog and set the download type to DOWNLOAD_IMAGE.
+                            // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_IMAGE.
                             DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_IMAGE);
 
                             // Show the download location permission alert dialog.  The permission will be requested when the dialog is closed.
@@ -3417,7 +3453,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case DOWNLOAD_FILE_REQUEST_CODE:
                 // Show the download file alert dialog.  When the dialog closes, the correct command will be used based on the permission status.
@@ -3772,9 +3808,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Check to see if `unformattedUrlString` is a valid URL.  Otherwise, convert it into a search.
         if ((Patterns.WEB_URL.matcher(unformattedUrlString).matches()) || (unformattedUrlString.startsWith("http://")) || (unformattedUrlString.startsWith("https://"))) {
-            // Add `http://` at the beginning if it is missing.  Otherwise the app will segfault.
+            // Add `https://` at the beginning if it is missing.  Otherwise the app will segfault.
             if (!unformattedUrlString.startsWith("http")) {
-                unformattedUrlString = "http://" + unformattedUrlString;
+                unformattedUrlString = "https://" + unformattedUrlString;
             }
 
             // Initialize `unformattedUrl`.
@@ -3864,12 +3900,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Store the values from the shared preferences in variables.
-        String homepageString = sharedPreferences.getString("homepage", "https://searx.me/");
-        String torHomepageString = sharedPreferences.getString("tor_homepage", "http://ulrn6sryqaifefld.onion/");
-        String torSearchString = sharedPreferences.getString("tor_search", "http://ulrn6sryqaifefld.onion/?q=");
-        String torSearchCustomURLString = sharedPreferences.getString("tor_search_custom_url", "");
-        String searchString = sharedPreferences.getString("search", "https://searx.me/?q=");
-        String searchCustomURLString = sharedPreferences.getString("search_custom_url", "");
         incognitoModeEnabled = sharedPreferences.getBoolean("incognito_mode", false);
         boolean doNotTrackEnabled = sharedPreferences.getBoolean("do_not_track", false);
         proxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
@@ -3878,73 +3908,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         translucentNavigationBarOnFullscreen = sharedPreferences.getBoolean("translucent_navigation_bar", true);
         displayWebpageImagesBoolean = sharedPreferences.getBoolean("display_webpage_images", true);
 
-        // Set the homepage, search, and proxy options.
-        if (proxyThroughOrbot) {  // Set the Tor options.
-            // Set `torHomepageString` as `homepage`.
-            homepage = torHomepageString;
-
-            // If formattedUrlString is null assign the homepage to it.
-            if (formattedUrlString == null) {
-                formattedUrlString = homepage;
-            }
-
-            // Set the search URL.
-            if (torSearchString.equals("Custom URL")) {  // Get the custom URL string.
-                searchURL = torSearchCustomURLString;
-            } else {  // Use the string from the pre-built list.
-                searchURL = torSearchString;
-            }
-
-            // Set the proxy.  `this` refers to the current activity where an `AlertDialog` might be displayed.
-            OrbotProxyHelper.setProxy(getApplicationContext(), this, "localhost", "8118");
-
-            // Set the `appBar` background to indicate proxying through Orbot is enabled.  `this` refers to the context.
-            if (darkTheme) {
-                appBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.dark_blue_30));
-            } else {
-                appBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.blue_50));
-            }
-
-            // Display a message to the user if waiting for Orbot.
-            if (!orbotStatus.equals("ON")) {
-                // Set `waitingForOrbot`.
-                waitingForOrbot = true;
-
-                // Disable the wide view port so that the waiting for Orbot text is displayed correctly.
-                mainWebView.getSettings().setUseWideViewPort(false);
-
-                // Load a waiting page.  `null` specifies no encoding, which defaults to ASCII.
-                mainWebView.loadData(waitingForOrbotHTMLString, "text/html", null);
-            }
-        } else {  // Set the non-Tor options.
-            // Set `homepageString` as `homepage`.
-            homepage = homepageString;
-
-            // If formattedUrlString is null assign the homepage to it.
-            if (formattedUrlString == null) {
-                formattedUrlString = homepage;
-            }
-
-            // Set the search URL.
-            if (searchString.equals("Custom URL")) {  // Get the custom URL string.
-                searchURL = searchCustomURLString;
-            } else {  // Use the string from the pre-built list.
-                searchURL = searchString;
-            }
-
-            // Reset the proxy to default.  The host is `""` and the port is `"0"`.
-            OrbotProxyHelper.setProxy(getApplicationContext(), this, "", "0");
-
-            // Set the default `appBar` background.  `this` refers to the context.
-            if (darkTheme) {
-                appBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.gray_900));
-            } else {
-                appBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.gray_100));
-            }
-
-            // Reset `waitingForOrbot.
-            waitingForOrbot = false;
-        }
+        // Apply the proxy through Orbot settings.
+        applyProxyThroughOrbot(false);
 
         // Set Do Not Track status.
         if (doNotTrackEnabled) {
@@ -3997,7 +3962,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Show the `BannerAd` in the free flavor.
             if (BuildConfig.FLAVOR.contentEquals("free")) {
                 // Initialize the ad.  The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
-                AdHelper.initializeAds(findViewById(R.id.adview), getApplicationContext(), getFragmentManager(), getString(R.string.ad_id));
+                AdHelper.initializeAds(findViewById(R.id.adview), getApplicationContext(), getFragmentManager(), getString(R.string.google_app_id), getString(R.string.ad_unit_id));
             }
 
             // Remove any `SYSTEM_UI` flags from `rootCoordinatorLayout`.
@@ -4364,7 +4329,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 urlAppBarRelativeLayout.setBackgroundDrawable(getResources().getDrawable(R.color.transparent));
             }
 
-            // Close `domainsDatabaseHelper`.
+            // Close the domains database helper.
             domainsDatabaseHelper.close();
 
             // Remove the `onTheFlyDisplayImagesSet` flag and set the display webpage images mode.  `true` indicates that custom domain settings are applied.
@@ -4380,6 +4345,95 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Reload the website if returning from the Domains activity.
         if (reloadWebsite) {
             mainWebView.reload();
+        }
+    }
+
+    private void applyProxyThroughOrbot(boolean reloadWebsite) {
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Get the search preferences.
+        String homepageString = sharedPreferences.getString("homepage", "https://searx.me/");
+        String torHomepageString = sharedPreferences.getString("tor_homepage", "http://ulrn6sryqaifefld.onion/");
+        String torSearchString = sharedPreferences.getString("tor_search", "http://ulrn6sryqaifefld.onion/?q=");
+        String torSearchCustomUrlString = sharedPreferences.getString("tor_search_custom_url", "");
+        String searchString = sharedPreferences.getString("search", "https://searx.me/?q=");
+        String searchCustomUrlString = sharedPreferences.getString("search_custom_url", "");
+
+        // Set the homepage, search, and proxy options.
+        if (proxyThroughOrbot) {  // Set the Tor options.
+            // Set `torHomepageString` as `homepage`.
+            homepage = torHomepageString;
+
+            // If formattedUrlString is null assign the homepage to it.
+            if (formattedUrlString == null) {
+                formattedUrlString = homepage;
+            }
+
+            // Set the search URL.
+            if (torSearchString.equals("Custom URL")) {  // Get the custom URL string.
+                searchURL = torSearchCustomUrlString;
+            } else {  // Use the string from the pre-built list.
+                searchURL = torSearchString;
+            }
+
+            // Set the proxy.  `this` refers to the current activity where an `AlertDialog` might be displayed.
+            OrbotProxyHelper.setProxy(getApplicationContext(), this, "localhost", "8118");
+
+            // Set the `appBar` background to indicate proxying through Orbot is enabled.  `this` refers to the context.
+            if (darkTheme) {
+                appBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.dark_blue_30));
+            } else {
+                appBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.blue_50));
+            }
+
+            // Check to see if Orbot is ready.
+            if (!orbotStatus.equals("ON")) {  // Orbot is not ready.
+                // Set `waitingForOrbot`.
+                waitingForOrbot = true;
+
+                // Disable the wide view port so that the waiting for Orbot text is displayed correctly.
+                mainWebView.getSettings().setUseWideViewPort(false);
+
+                // Load a waiting page.  `null` specifies no encoding, which defaults to ASCII.
+                mainWebView.loadData(waitingForOrbotHtmlString, "text/html", null);
+            } else if (reloadWebsite) {  // Orbot is ready and the website should be reloaded.
+                // Reload the website.
+                mainWebView.reload();
+            }
+        } else {  // Set the non-Tor options.
+            // Set `homepageString` as `homepage`.
+            homepage = homepageString;
+
+            // If formattedUrlString is null assign the homepage to it.
+            if (formattedUrlString == null) {
+                formattedUrlString = homepage;
+            }
+
+            // Set the search URL.
+            if (searchString.equals("Custom URL")) {  // Get the custom URL string.
+                searchURL = searchCustomUrlString;
+            } else {  // Use the string from the pre-built list.
+                searchURL = searchString;
+            }
+
+            // Reset the proxy to default.  The host is `""` and the port is `"0"`.
+            OrbotProxyHelper.setProxy(getApplicationContext(), this, "", "0");
+
+            // Set the default `appBar` background.  `this` refers to the context.
+            if (darkTheme) {
+                appBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.gray_900));
+            } else {
+                appBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.gray_100));
+            }
+
+            // Reset `waitingForOrbot.
+            waitingForOrbot = false;
+
+            // Reload the website if requested.
+            if (reloadWebsite) {
+                mainWebView.reload();
+            }
         }
     }
 

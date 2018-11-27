@@ -25,11 +25,11 @@ import android.view.View;
 
 @SuppressWarnings("unused")
 public class AdHelper {
-    public static void initializeAds(View view, Context applicationContext, FragmentManager fragmentManager, String ad_id) {
+    public static void initializeAds(View view, Context applicationContext, FragmentManager fragmentManager, String googleAppId, String adUnitId) {
         // Do nothing because this is the standard flavor.
     }
 
-    public static void loadAd(View view, Context applicationContext, String ad_id) {
+    public static void loadAd(View view, Context applicationContext, String adUnitId) {
         // Do nothing because this is the standard flavor.
     }
 

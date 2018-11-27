@@ -3,4 +3,4 @@
 • Aggiornamento degli user agents.
 • Adeguamento della API target a 26 (Android Oreo, 8.0.0).
 • Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
-• Aggiornamento della traduzione Spagnola fornita da Jose A. León Becerra.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León.

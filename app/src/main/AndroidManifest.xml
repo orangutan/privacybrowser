@@ -28,7 +28,10 @@
     <!-- Required to create home screen shortcuts. -->
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 
-    <!-- Required to save files to the public download folder. -->
+    <!-- Required to import settings from external storage. -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <!-- Required to export settings and save files to public storage. -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 
@@ -57,6 +60,23 @@
             android:name="android.webkit.WebView.EnableSafeBrowsing"
             android:value="false" />
 
+        <!-- Specify the Application ID used by the ads in the free flavor. -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/google_app_id" />
+
+        <!-- The file provider is required to encrypt files with OpenKeychain. -->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="@string/file_provider"
+            android:exported="false"
+            android:grantUriPermissions="true" >
+
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_paths" />
+        </provider>
+        
         <!-- The theme has to be defined here or an ugly title bar is displayed when the app launches.
              `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes, which preserves scroll location in the WebView.
              `android:launchMode="singleTask"` makes the app launch in a new task instead of inside the task of the program that sends it an intent.
@@ -143,6 +163,18 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/privacy_browser_settings"
+            android:parentActivityName=".activities.MainWebViewActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="fullUser"
+            android:persistableMode="persistNever"
+            tools:ignore="UnusedAttribute" />
+
+        <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
+             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
+             `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
+        <activity
+            android:name=".activities.ImportExportActivity"
+            android:label="@string/import_export"
             android:parentActivityName=".activities.MainWebViewActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullUser"

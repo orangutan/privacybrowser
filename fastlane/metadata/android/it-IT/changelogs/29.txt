@@ -2,4 +2,4 @@
 • Possibilità di aprire i numeri di telefono con il dialer.
 • Correzione di un errore di compilazione che impediva la pubblicazione delle versioni 2.7 e 2.7.1 su F-Droid.
 • Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
-• Aggiornamento della traduzione Spagnola fornita da Jose A. León Becerra.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León.

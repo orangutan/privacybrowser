@@ -29,8 +29,8 @@ import android.preference.PreferenceManager;
 
 public class DomainsDatabaseHelper extends SQLiteOpenHelper {
     private static final int SCHEMA_VERSION = 8;
-    private static final String DOMAINS_DATABASE = "domains.db";
-    private static final String DOMAINS_TABLE = "domains";
+    static final String DOMAINS_DATABASE = "domains.db";
+    static final String DOMAINS_TABLE = "domains";
 
     public static final String _ID = "_id";
     public static final String DOMAIN_NAME = "domainname";
@@ -75,6 +75,35 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
     public static final int DISPLAY_WEBPAGE_IMAGES_ENABLED = 1;
     public static final int DISPLAY_WEBPAGE_IMAGES_DISABLED = 2;
 
+    static final String CREATE_DOMAINS_TABLE = "CREATE TABLE " + DOMAINS_TABLE + " (" +
+            _ID + " INTEGER PRIMARY KEY, " +
+            DOMAIN_NAME + " TEXT, " +
+            ENABLE_JAVASCRIPT + " BOOLEAN, " +
+            ENABLE_FIRST_PARTY_COOKIES + " BOOLEAN, " +
+            ENABLE_THIRD_PARTY_COOKIES + " BOOLEAN, " +
+            ENABLE_DOM_STORAGE + " BOOLEAN, " +
+            ENABLE_FORM_DATA + " BOOLEAN, " +
+            ENABLE_EASYLIST + " BOOLEAN, " +
+            ENABLE_EASYPRIVACY + " BOOLEAN, " +
+            ENABLE_FANBOYS_ANNOYANCE_LIST + " BOOLEAN, " +
+            ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST + " BOOLEAN, " +
+            ENABLE_ULTRAPRIVACY + " BOOLEAN, " +
+            BLOCK_ALL_THIRD_PARTY_REQUESTS + " BOOLEAN, " +
+            USER_AGENT + " TEXT, " +
+            FONT_SIZE + " INTEGER, " +
+            SWIPE_TO_REFRESH + " INTEGER, " +
+            NIGHT_MODE + " INTEGER, " +
+            DISPLAY_IMAGES + " INTEGER, " +
+            PINNED_SSL_CERTIFICATE + " BOOLEAN, " +
+            SSL_ISSUED_TO_COMMON_NAME + " TEXT, " +
+            SSL_ISSUED_TO_ORGANIZATION + " TEXT, " +
+            SSL_ISSUED_TO_ORGANIZATIONAL_UNIT + " TEXT, " +
+            SSL_ISSUED_BY_COMMON_NAME + " TEXT, " +
+            SSL_ISSUED_BY_ORGANIZATION + " TEXT, " +
+            SSL_ISSUED_BY_ORGANIZATIONAL_UNIT + " TEXT, " +
+            SSL_START_DATE + " INTEGER, " +
+            SSL_END_DATE + " INTEGER)";
+
     private final Context appContext;
 
     // Initialize the database.  The lint warnings for the unused parameters are suppressed.
@@ -87,37 +116,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase domainsDatabase) {
-        // Setup the SQL string to create the `domains` table.
-        String CREATE_DOMAINS_TABLE = "CREATE TABLE " + DOMAINS_TABLE + " (" +
-                _ID + " INTEGER PRIMARY KEY, " +
-                DOMAIN_NAME + " TEXT, " +
-                ENABLE_JAVASCRIPT + " BOOLEAN, " +
-                ENABLE_FIRST_PARTY_COOKIES + " BOOLEAN, " +
-                ENABLE_THIRD_PARTY_COOKIES + " BOOLEAN, " +
-                ENABLE_DOM_STORAGE + " BOOLEAN, " +
-                ENABLE_FORM_DATA + " BOOLEAN, " +
-                ENABLE_EASYLIST + " BOOLEAN, " +
-                ENABLE_EASYPRIVACY + " BOOLEAN, " +
-                ENABLE_FANBOYS_ANNOYANCE_LIST + " BOOLEAN, " +
-                ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST + " BOOLEAN, " +
-                ENABLE_ULTRAPRIVACY + " BOOLEAN, " +
-                BLOCK_ALL_THIRD_PARTY_REQUESTS + " BOOLEAN, " +
-                USER_AGENT + " TEXT, " +
-                FONT_SIZE + " INTEGER, " +
-                SWIPE_TO_REFRESH + " INTEGER, " +
-                NIGHT_MODE + " INTEGER, " +
-                DISPLAY_IMAGES + " INTEGER, " +
-                PINNED_SSL_CERTIFICATE + " BOOLEAN, " +
-                SSL_ISSUED_TO_COMMON_NAME + " TEXT, " +
-                SSL_ISSUED_TO_ORGANIZATION + " TEXT, " +
-                SSL_ISSUED_TO_ORGANIZATIONAL_UNIT + " TEXT, " +
-                SSL_ISSUED_BY_COMMON_NAME + " TEXT, " +
-                SSL_ISSUED_BY_ORGANIZATION + " TEXT, " +
-                SSL_ISSUED_BY_ORGANIZATIONAL_UNIT + " TEXT, " +
-                SSL_START_DATE + " INTEGER, " +
-                SSL_END_DATE + " INTEGER);";
-
-        // Make it so.
+        // Create the domains table.
         domainsDatabase.execSQL(CREATE_DOMAINS_TABLE);
     }
 
@@ -213,11 +212,19 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    Cursor getCompleteCursorOrderedByDomain() {
+        // Get a readable database handle.
+        SQLiteDatabase domainsDatabase = this.getReadableDatabase();
+
+        // Return everything in the domains table ordered by the domain name.  The second argument is `null` because there are no `selectionArgs`.
+        return domainsDatabase.rawQuery("SELECT * FROM " + DOMAINS_TABLE + " ORDER BY " + DOMAIN_NAME + " ASC", null);
+    }
+
     public Cursor getDomainNameCursorOrderedByDomain() {
         // Get a readable database handle.
         SQLiteDatabase domainsDatabase = this.getReadableDatabase();
 
-        // Get everything in `DOMAINS_TABLE` ordered by `DOMAIN_NAME`.
+        // Get everything in the domains table ordered by the domain name.
         String GET_CURSOR_ORDERED_BY_DOMAIN = "SELECT " + _ID + ", " + DOMAIN_NAME +
                 " FROM " + DOMAINS_TABLE +
                 " ORDER BY " + DOMAIN_NAME + " ASC";
@@ -311,6 +318,17 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
 
         // Return the new domain database ID.
         return newDomainDatabaseId;
+    }
+
+    void addDomain(ContentValues contentValues) {
+        // Get a writable database handle.
+        SQLiteDatabase domainsDatabase = this.getWritableDatabase();
+
+        // Add the new domain.
+        domainsDatabase.insert(DOMAINS_TABLE, null, contentValues);
+
+        // Close the database handle.
+        domainsDatabase.close();
     }
 
     public void updateDomainExceptCertificate(int databaseId, String domainName, boolean javaScriptEnabled, boolean firstPartyCookiesEnabled, boolean thirdPartyCookiesEnabled, boolean domStorageEnabled,

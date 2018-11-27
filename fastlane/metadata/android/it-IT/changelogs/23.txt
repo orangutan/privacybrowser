@@ -7,4 +7,4 @@
 • Disabilita l'impostazione relativa ai cookie di terze parti in KitKat perchè disponibile solo con Lollipop o successivi.
 • Spostato il comando di Refresh in fondo al menu delle impostazioni.
 • Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
-• Aggiornamento della traduzione Spagnola fornita da Jose A. León Becerra.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León.

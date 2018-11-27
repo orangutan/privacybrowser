@@ -7,4 +7,4 @@
 • Adeguamento della API target a 27 (Android Oreo, 8.1.0).
 • Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
 • Traduzione parziale in Russo.
-• Aggiornamento della traduzione Spagnola fornita da Jose A. León Becerra.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León.

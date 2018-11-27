@@ -5,6 +5,6 @@
 • Corregir el formato de color en el cuadro de texto URL.
 • Clarificar el lenguaje en la política de privacidad.
 • Aumentar la API dirigido a 27 (Android Oreo, 8.1.0).
-• Actualizada la traducción al español proporcionada por Jose A. León Becerra.
+• Actualizada la traducción al español proporcionada por Jose A. León.
 • Actualizada la traducción al italiano proporcionada por Francesco Buratti.
 • Traducción parcial al ruso.

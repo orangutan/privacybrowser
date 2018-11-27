@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  Copyright © 2018 Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<!-- `android:fitsSystemWindows="true"` moves the AppBar below the status bar.
+    When it is specified the theme should include `<item name="android:windowTranslucentStatus">true</item>` to make the status bar a transparent, darkened overlay. -->
+<android.support.design.widget.CoordinatorLayout
+    android:id="@+id/import_export_coordinatorlayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true" >
+
+    <!-- the `LinearLayout` with `orientation="vertical"` moves the content below the `AppBarLayout`. -->
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical" >
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/import_export_appbarlayout"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent" >
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/import_export_toolbar"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:background="?attr/colorPrimaryDark"
+                android:theme="?attr/appBarTextTheme"
+                app:popupTheme="?attr/popupsTheme" />
+        </android.support.design.widget.AppBarLayout>
+
+        <ScrollView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent" >
+
+            <!-- Align the cards vertically. -->
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="vertical" >
+
+                <!-- The encryption card. -->
+                <android.support.v7.widget.CardView
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp" >
+
+                    <!-- Align the contents of the card vertically. -->
+                    <LinearLayout
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:orientation="vertical"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="6dp"
+                            android:text="@string/encryption"
+                            android:textSize="25sp"
+                            android:textStyle="bold"
+                            android:textColor="?colorAccent" />
+
+                        <Spinner
+                            android:id="@+id/encryption_spinner"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_gravity="center_horizontal" />
+
+                        <!-- The encryption password. -->
+                        <android.support.design.widget.TextInputLayout
+                            android:id="@+id/password_encryption_textinputlayout"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            app:passwordToggleEnabled="true" >
+
+                            <android.support.design.widget.TextInputEditText
+                                android:id="@+id/password_encryption_edittext"
+                                android:layout_height="wrap_content"
+                                android:layout_width="match_parent"
+                                android:hint="@string/password"
+                                android:inputType="textPassword"/>
+                        </android.support.design.widget.TextInputLayout>
+
+                        <!-- KitKat password encryption message. -->
+                        <TextView
+                            android:id="@+id/kitkat_password_encryption_textview"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/kitkat_password_encryption_message"
+                            android:textColor="?android:textColorPrimary"
+                            android:textAlignment="center" />
+
+                        <!-- OpenKeychain required message. -->
+                        <TextView
+                            android:id="@+id/openkeychain_required_textview"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/openkeychain_required"
+                            android:textColor="?android:textColorPrimary"
+                            android:textAlignment="center" />
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <!-- The file location card. -->
+                <android.support.v7.widget.CardView
+                    android:id="@+id/file_location_cardview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp" >
+
+                    <!-- Align the contents of the card vertically. -->
+                    <LinearLayout
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:orientation="vertical"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="6dp"
+                            android:text="@string/file_location"
+                            android:textSize="25sp"
+                            android:textStyle="bold"
+                            android:textColor="?colorAccent" />
+
+                        <RadioGroup
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:orientation="horizontal" >
+
+                            <RadioButton
+                                android:id="@+id/import_radiobutton"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:text="@string/import_button"
+                                android:layout_marginEnd="10dp"
+                                android:onClick="onClickRadioButton" />
+
+                            <RadioButton
+                                android:id="@+id/export_radiobutton"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:text="@string/export"
+                                android:onClick="onClickRadioButton" />
+                        </RadioGroup>
+
+                        <!-- Align the EditText and the select file button horizontally. -->
+                        <LinearLayout
+                            android:id="@+id/file_name_linearlayout"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="10dp">
+
+                            <!-- `android.support.design.widget.TextInputLayout` makes the `android:hint` float above the `EditText`. -->
+                            <android.support.design.widget.TextInputLayout
+                                android:layout_height="wrap_content"
+                                android:layout_width="0dp"
+                                android:layout_weight="1" >
+
+                                <!-- `android:inputType="textUri" disables spell check and places an `/` on the main keyboard. -->
+                                <android.support.design.widget.TextInputEditText
+                                    android:id="@+id/file_name_edittext"
+                                    android:layout_height="wrap_content"
+                                    android:layout_width="match_parent"
+                                    android:hint="@string/file_name"
+                                    android:inputType="textMultiLine|textUri" />
+                            </android.support.design.widget.TextInputLayout>
+
+                            <Button
+                                android:id="@+id/browser_button"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:text="@string/browse"
+                                android:onClick="browse" />
+                        </LinearLayout>
+
+                        <!-- OpenKeychain import instructions -->
+                        <TextView
+                            android:id="@+id/openkeychain_import_instructions_textview"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_margin="5dp"
+                            android:text="@string/openkeychain_import_instructions"
+                            android:textColor="?android:textColorPrimary"
+                            android:textAlignment="center" />
+
+                        <Button
+                            android:id="@+id/import_export_button"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/import_button"
+                            android:textSize="18sp"
+                            android:onClick="importExport"
+                            app:backgroundTint="?attr/buttonBackgroundColorSelector"
+                            android:textColor="?attr/buttonTextColorSelector" />
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <TextView
+                    android:id="@+id/import_export_storage_permission_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:text="@string/storage_permission_explanation"
+                    android:textColor="?android:textColorPrimary"
+                    android:textAlignment="center" />
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

@@ -19,15 +19,19 @@
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
 <resources>
+    <!-- Providers. -->
+    <string name="file_provider" translatable="false">com.stoutner.privacybrowser.fileprovider.free</string>
+
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser Free</string>
 
     <!-- Ad Control. -->
-    <string name="ad_id" translatable="false">ca-app-pub-5962503714887045/2738552414</string>
+    <string name="google_app_id" translatable="false">ca-app-pub-5962503714887045~2738552414</string>
+    <string name="ad_unit_id" translatable="false">ca-app-pub-5962503714887045/2738552414</string>
 
     <!-- Test Ad Control.
-    <string name="ad_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
-    -->
+    <string name="google_app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string> -->
 
     <!-- Ad Consent. -->
     <string name="ad_consent_text">Privacy Browser Free displays a banner ad on the bottom of the screen.

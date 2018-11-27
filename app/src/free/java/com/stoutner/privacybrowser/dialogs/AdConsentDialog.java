@@ -81,7 +81,7 @@ public class AdConsentDialog extends DialogFragment {
             consentInformation.setTagForUnderAgeOfConsent(true);
 
             // Load an ad.
-            AdHelper.loadAd(getActivity().findViewById(R.id.adview), getActivity().getApplicationContext(), getString(R.string.ad_id));
+            AdHelper.loadAd(getActivity().findViewById(R.id.adview), getActivity().getApplicationContext(), getString(R.string.ad_unit_id));
         });
 
         // Return the alert dialog.

@@ -55,6 +55,8 @@ import com.stoutner.privacybrowser.fragments.DomainSettingsFragment;
 import com.stoutner.privacybrowser.fragments.DomainsListFragment;
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 
+import java.util.Objects;
+
 public class DomainsActivity extends AppCompatActivity implements AddDomainDialog.AddDomainListener {
     // `twoPanedMode` is public static so it can be accessed from `DomainsListFragment`.  It is also used in `onCreate()`, `onCreateOptionsMenu()`, and `populateDomainsListView()`.
     public static boolean twoPanedMode;
@@ -80,7 +82,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
     // `supportFragmentManager` is used in `onCreate()` and `onCreateOptionsMenu()`.
     private FragmentManager supportFragmentManager;
 
-    // `domainsDatabaseHelper` is used in `onCreate()` and `saveDomainSettings()`.
+    // `domainsDatabaseHelper` is used in `onCreate()`, `saveDomainSettings()`, and `onDestroy()`.
     private static DomainsDatabaseHelper domainsDatabaseHelper;
 
     // `domainsListView` is used in `onCreate()` and `populateDomainsList()`.
@@ -159,12 +161,12 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         final Toolbar domainsAppBar = findViewById(R.id.domains_toolbar);
         setSupportActionBar(domainsAppBar);
 
-        // Display the home arrow on `SupportActionBar`.
+        // Display the home arrow on the support action bar.
         ActionBar appBar = getSupportActionBar();
         assert appBar != null;// This assert removes the incorrect warning in Android Studio on the following line that `appBar` might be null.
         appBar.setDisplayHomeAsUpEnabled(true);
 
-        // Initialize the database handler.  The two `nulls` do not specify the database name or a `CursorFactory`.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
+        // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
         domainsDatabaseHelper = new DomainsDatabaseHelper(context, null, null, 0);
 
         // Determine if we are in two pane mode.  `domain_settings_fragment_container` does not exist on devices with a width less than 900dp.
@@ -352,7 +354,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                     deleteMenuItem.setIcon(R.drawable.delete_blue);
 
                     // Remove the domain settings fragment.
-                    supportFragmentManager.beginTransaction().remove(supportFragmentManager.findFragmentById(R.id.domain_settings_fragment_container)).commit();
+                    supportFragmentManager.beginTransaction().remove(Objects.requireNonNull(supportFragmentManager.findFragmentById(R.id.domain_settings_fragment_container))).commit();
                 } else {  // Single-paned mode.
                     // Display `DomainsListFragment`.
                     DomainsListFragment domainsListFragment = new DomainsListFragment();
@@ -812,5 +814,14 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             deleteMenuItem.setEnabled(false);
             deleteMenuItem.setIcon(R.drawable.delete_blue);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        // Close the domains database helper.
+        domainsDatabaseHelper.close();
+
+        // Run the default commands.
+        super.onDestroy();
     }
 }

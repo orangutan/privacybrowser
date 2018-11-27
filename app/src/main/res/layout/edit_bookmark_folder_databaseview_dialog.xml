@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -20,6 +20,7 @@
 
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="wrap_content"
     android:layout_width="match_parent" >
 
@@ -203,7 +204,9 @@
                 android:layout_width="match_parent"
                 android:imeOptions="actionGo"
                 android:inputType="number"
-                android:selectAllOnFocus="true" />
+                android:selectAllOnFocus="true"
+                android:importantForAutofill="no"
+                tools:targetApi="26" />
         </LinearLayout>
 
         <TextView

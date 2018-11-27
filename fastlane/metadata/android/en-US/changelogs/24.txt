@@ -7,4 +7,4 @@
 • Fix a bug that caused pending changes to be lost on restart.
 • Fix a bug with the spinner layout on some Huawei devices.
 • Updated Italian translation provided by Francesco Buratti.
-• Updated Spanish translation provided by Jose A. León Becerra.
+• Updated Spanish translation provided by Jose A. León.

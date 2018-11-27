@@ -3,4 +3,4 @@
 • Update the user agents.
 • Bump target API to 26 (Android Oreo, 8.0.0).
 • Updated Italian translation provided by Francesco Buratti.
-• Updated Spanish translation provided by Jose A. León Becerra.
+• Updated Spanish translation provided by Jose A. León.

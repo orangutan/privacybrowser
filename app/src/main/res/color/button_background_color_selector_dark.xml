@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -18,8 +18,7 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<Spinner
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/bookmarks_databaseview_spinner"
-    android:layout_height="wrap_content"
-    android:layout_width="wrap_content" />
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:state_enabled="true" android:color="@color/blue_600" />
+    <item android:color="@color/gray_750" />
+</selector>

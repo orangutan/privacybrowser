@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -20,6 +20,6 @@
 
 <!-- Highlight the selected item when the spinner is open. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:state_checked="true" android:color="@color/gray_300" />
-    <item android:color="@color/blue_300" />
+    <item android:state_checked="true" android:color="@color/white" />
+    <item android:color="@color/blue_100" />
 </selector>

@@ -34,10 +34,15 @@
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#INSTALL_SHORTCUT">com.android.launcher.permission.INSTALL_SHORTCUT</a></p>
         <p>Requerido para añadir accesos directos de páginas web en el escritorio.</p>
 
+        <h3>Almacenamiento de lectura</h3>
+        <p><a href="https://developer.android.com/reference/android/Manifest.permission#READ_EXTERNAL_STORAGE">android.permission.READ_EXTERNAL_STORAGE</a></p>
+        <p>Requerido para importar la configuración de las carpetas públicas.
+            En Android Marshmallow (API 23) y posteriores, si se niega este permiso, Privacy Browser puede en cambio importar la configuración desde las carpetas de la aplicación.</p>
+
         <h3>Almacenamiento de escritura</h3>
-        <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WRITE_EXTERNAL_STORAGE"> android.permission.WRITE_EXTERNAL_STORAGE</a></p>
-        <p>Requerido para descargar archivos a la carpeta de descarga pública.
-            En Android Marshmallow (API 23) y posteriores, si se niega este permiso, Navegador Privado almacenará las descargas en la carpeta de descargas de la aplicación.</p>
+        <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WRITE_EXTERNAL_STORAGE">android.permission.WRITE_EXTERNAL_STORAGE</a></p>
+        <p>Requerido para exportar la configuración y descargar archivos a las carpetas públicas.
+            En Android Marshmallow (API 23) y posteriores, si se niega este permiso, Privacy Browser puede en cambio exportar la configuración y almacenar las descargas en las carpetas de la aplicación.</p>
 
         <br/>
         <hr/>
@@ -61,6 +66,10 @@
         <h3>Impedir que el teléfono entre en modo de suspensión</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WAKE_LOCK">android.permission.WAKE_LOCK</a></p>
         <p>Permite a los anuncios impedir al procesador dormir y a la pantalla atenuar, aunque en mis pruebas no parece que los anuncios lo hagan así.</p>
+
+        <h3>Seguimiento de instalaciones desde los anuncios</h3>
+        <p><a href="https://android-developers.googleblog.com/2017/11/google-play-referrer-api-track-and.html">com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE</a></p>
+        <p>Permite a otras aplicaciones saber si su instalación se ha iniciado desde un anuncio en el Navegador Privado gratuito.</p>
 
         <h3>Recibir datos de internet</h3>
         <p><a href="http://androidpermissions.com/permission/com.google.android.c2dm.permission.RECEIVE">com.google.android.c2dm.permission.RECEIVE</a></p>

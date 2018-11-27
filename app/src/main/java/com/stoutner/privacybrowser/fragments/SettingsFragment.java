@@ -141,7 +141,7 @@ public class SettingsFragment extends PreferenceFragment {
         final WebView bareWebView = bareWebViewLayout.findViewById(R.id.bare_webview);
 
         // Get the user agent arrays.
-        ArrayAdapter<CharSequence> userAgentNamesArray = ArrayAdapter.createFromResource(context, R.array.user_agent_names, R.layout.domain_settings_spinner_item);
+        ArrayAdapter<CharSequence> userAgentNamesArray = ArrayAdapter.createFromResource(context, R.array.user_agent_names, R.layout.spinner_item);
         String[] translatedUserAgentNamesArray = getResources().getStringArray(R.array.translated_user_agent_names);
         String[] userAgentDataArray = getResources().getStringArray(R.array.user_agent_data);
 

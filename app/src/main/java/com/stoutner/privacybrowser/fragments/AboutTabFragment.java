@@ -20,6 +20,7 @@
 package com.stoutner.privacybrowser.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Build;
@@ -82,7 +83,12 @@ public class AboutTabFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Create a tab layout view.
         View tabLayout;
+
+        // Get a handle for the context and assert that it isn't null.
+        Context context = getContext();
+        assert context != null;
 
         // Load the tabs.  Tab numbers start at 0.
         if (tabNumber == 0) {  // Load the about tab.
@@ -90,30 +96,31 @@ public class AboutTabFragment extends Fragment {
             tabLayout = inflater.inflate(R.layout.about_tab_version, container, false);
 
             // Get handles for the `TextViews`.
-            TextView versionNumberTextView = tabLayout.findViewById(R.id.about_version_number);
-            TextView versionBrandTextView = tabLayout.findViewById(R.id.about_version_brand);
-            TextView versionManufacturerTextView = tabLayout.findViewById(R.id.about_version_manufacturer);
-            TextView versionModelTextView = tabLayout.findViewById(R.id.about_version_model);
-            TextView versionDeviceTextView = tabLayout.findViewById(R.id.about_version_device);
-            TextView versionBootloaderTextView = tabLayout.findViewById(R.id.about_version_bootloader);
-            TextView versionRadioTextView = tabLayout.findViewById(R.id.about_version_radio);
-            TextView versionAndroidTextView = tabLayout.findViewById(R.id.about_version_android);
-            TextView versionSecurityPatchTextView = tabLayout.findViewById(R.id.about_version_securitypatch);
-            TextView versionBuildTextView = tabLayout.findViewById(R.id.about_version_build);
-            TextView versionChromeTextView = tabLayout.findViewById(R.id.about_version_chrome);
-            TextView versionOrbotTextView = tabLayout.findViewById(R.id.about_version_orbot);
-            TextView versionEasyListTextView = tabLayout.findViewById(R.id.about_version_easylist);
-            TextView versionEasyPrivacyTextView = tabLayout.findViewById(R.id.about_version_easyprivacy);
-            TextView versionFanboyAnnoyanceTextView = tabLayout.findViewById(R.id.about_version_fanboy_annoyance);
-            TextView versionFanboySocialTextView = tabLayout.findViewById(R.id.about_version_fanboy_social);
-            TextView versionUltraPrivacyTextView = tabLayout.findViewById(R.id.about_version_ultraprivacy);
-            TextView certificateIssuerDNTextView = tabLayout.findViewById(R.id.about_version_certificate_issuer_dn);
-            TextView certificateSubjectDNTextView = tabLayout.findViewById(R.id.about_version_certificate_subject_dn);
-            TextView certificateStartDateTextView = tabLayout.findViewById(R.id.about_version_certificate_start_date);
-            TextView certificateEndDateTextView = tabLayout.findViewById(R.id.about_version_certificate_end_date);
-            TextView certificateVersionTextView = tabLayout.findViewById(R.id.about_version_certificate_version);
-            TextView certificateSerialNumberTextView = tabLayout.findViewById(R.id.about_version_certificate_serial_number);
-            TextView certificateSignatureAlgorithmTextView = tabLayout.findViewById(R.id.about_version_certificate_signature_algorithm);
+            TextView versionTextView = tabLayout.findViewById(R.id.version);
+            TextView brandTextView = tabLayout.findViewById(R.id.brand);
+            TextView manufacturerTextView = tabLayout.findViewById(R.id.manufacturer);
+            TextView modelTextView = tabLayout.findViewById(R.id.model);
+            TextView deviceTextView = tabLayout.findViewById(R.id.device);
+            TextView bootloaderTextView = tabLayout.findViewById(R.id.bootloader);
+            TextView radioTextView = tabLayout.findViewById(R.id.radio);
+            TextView androidTextView = tabLayout.findViewById(R.id.android);
+            TextView securityPatchTextView = tabLayout.findViewById(R.id.security_patch);
+            TextView buildTextView = tabLayout.findViewById(R.id.build);
+            TextView webViewTextView = tabLayout.findViewById(R.id.webview);
+            TextView orbotTextView = tabLayout.findViewById(R.id.orbot);
+            TextView openKeychainTextView = tabLayout.findViewById(R.id.open_keychain);
+            TextView easyListTextView = tabLayout.findViewById(R.id.easylist);
+            TextView easyPrivacyTextView = tabLayout.findViewById(R.id.easyprivacy);
+            TextView fanboyAnnoyanceTextView = tabLayout.findViewById(R.id.fanboy_annoyance);
+            TextView fanboySocialTextView = tabLayout.findViewById(R.id.fanboy_social);
+            TextView ultraPrivacyTextView = tabLayout.findViewById(R.id.ultraprivacy);
+            TextView certificateIssuerDNTextView = tabLayout.findViewById(R.id.certificate_issuer_dn);
+            TextView certificateSubjectDNTextView = tabLayout.findViewById(R.id.certificate_subject_dn);
+            TextView certificateStartDateTextView = tabLayout.findViewById(R.id.certificate_start_date);
+            TextView certificateEndDateTextView = tabLayout.findViewById(R.id.certificate_end_date);
+            TextView certificateVersionTextView = tabLayout.findViewById(R.id.certificate_version);
+            TextView certificateSerialNumberTextView = tabLayout.findViewById(R.id.certificate_serial_number);
+            TextView certificateSignatureAlgorithmTextView = tabLayout.findViewById(R.id.certificate_signature_algorithm);
 
             // Setup the labels.
             String version = getString(R.string.version) + " " + BuildConfig.VERSION_NAME + " (" + getString(R.string.version_code) + " " + Integer.toString(BuildConfig.VERSION_CODE) + ")";
@@ -124,7 +131,7 @@ public class AboutTabFragment extends Fragment {
             String bootloaderLabel = getString(R.string.bootloader) + "  ";
             String androidLabel = getString(R.string.android) + "  ";
             String buildLabel = getString(R.string.build) + "  ";
-            String chromeLabel = getString(R.string.chrome) + "  ";
+            String webViewLabel = getString(R.string.webview) + "  ";
             String easyListLabel = getString(R.string.easylist_label) + "  ";
             String easyPrivacyLabel = getString(R.string.easyprivacy_label) + "  ";
             String fanboyAnnoyanceLabel = getString(R.string.fanboy_annoyance_label) + "  ";
@@ -153,18 +160,24 @@ public class AboutTabFragment extends Fragment {
             String android = Build.VERSION.RELEASE + " (" + getString(R.string.api) + " " + Integer.toString(Build.VERSION.SDK_INT) + ")";
             String build = Build.DISPLAY;
             // Select the substring that begins after `Chrome/` and goes until the next ` `.
-            String chrome = userAgentString.substring(userAgentString.indexOf("Chrome/") + 7, userAgentString.indexOf(" ", userAgentString.indexOf("Chrome/")));
+            String webView = userAgentString.substring(userAgentString.indexOf("Chrome/") + 7, userAgentString.indexOf(" ", userAgentString.indexOf("Chrome/")));
 
             // Get the Orbot version name if Orbot is installed.
             String orbot;
             try {
-                // Remove the lint warning that `getContext()` might be null.
-                assert getContext() != null;
-
                 // Store the version name.
-                orbot = getContext().getPackageManager().getPackageInfo("org.torproject.android", PackageManager.GET_CONFIGURATIONS).versionName;
-            } catch (PackageManager.NameNotFoundException e) {  // Orbot is not installed.
+                orbot = context.getPackageManager().getPackageInfo("org.torproject.android", 0).versionName;
+            } catch (PackageManager.NameNotFoundException exception) {  // Orbot is not installed.
                 orbot = "";
+            }
+
+            // Get the OpenKeychain version name if it is installed.
+            String openKeychain;
+            try {
+                // Store the version name.
+                openKeychain = context.getPackageManager().getPackageInfo("org.sufficientlysecure.keychain", 0).versionName;
+            } catch (PackageManager.NameNotFoundException exception) {  // OpenKeychain is not installed.
+                openKeychain = "";
             }
 
             // Create a `SpannableStringBuilder` for the hardware and software `TextViews` that needs multiple colors of text.
@@ -175,7 +188,7 @@ public class AboutTabFragment extends Fragment {
             SpannableStringBuilder bootloaderStringBuilder = new SpannableStringBuilder(bootloaderLabel + bootloader);
             SpannableStringBuilder androidStringBuilder = new SpannableStringBuilder(androidLabel + android);
             SpannableStringBuilder buildStringBuilder = new SpannableStringBuilder(buildLabel + build);
-            SpannableStringBuilder chromeStringBuilder = new SpannableStringBuilder(chromeLabel + chrome);
+            SpannableStringBuilder webViewStringBuilder = new SpannableStringBuilder(webViewLabel + webView);
             SpannableStringBuilder easyListStringBuilder = new SpannableStringBuilder(easyListLabel + MainWebViewActivity.easyListVersion);
             SpannableStringBuilder easyPrivacyStringBuilder = new SpannableStringBuilder(easyPrivacyLabel + MainWebViewActivity.easyPrivacyVersion);
             SpannableStringBuilder fanboyAnnoyanceStringBuilder = new SpannableStringBuilder(fanboyAnnoyanceLabel + MainWebViewActivity.fanboysAnnoyanceVersion);
@@ -202,7 +215,7 @@ public class AboutTabFragment extends Fragment {
             bootloaderStringBuilder.setSpan(blueColorSpan, bootloaderLabel.length(), bootloaderStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             androidStringBuilder.setSpan(blueColorSpan, androidLabel.length(), androidStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             buildStringBuilder.setSpan(blueColorSpan, buildLabel.length(), buildStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            chromeStringBuilder.setSpan(blueColorSpan, chromeLabel.length(), chromeStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            webViewStringBuilder.setSpan(blueColorSpan, webViewLabel.length(), webViewStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             easyListStringBuilder.setSpan(blueColorSpan, easyListLabel.length(), easyListStringBuilder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
             easyPrivacyStringBuilder.setSpan(blueColorSpan, easyPrivacyLabel.length(), easyPrivacyStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             fanboyAnnoyanceStringBuilder.setSpan(blueColorSpan, fanboyAnnoyanceLabel.length(), fanboyAnnoyanceStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
@@ -210,20 +223,20 @@ public class AboutTabFragment extends Fragment {
             ultraPrivacyStringBuilder.setSpan(blueColorSpan, ultraPrivacyLabel.length(), ultraPrivacyStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
             // Display the strings in the text boxes.
-            versionNumberTextView.setText(version);
-            versionBrandTextView.setText(brandStringBuilder);
-            versionManufacturerTextView.setText(manufacturerStringBuilder);
-            versionModelTextView.setText(modelStringBuilder);
-            versionDeviceTextView.setText(deviceStringBuilder);
-            versionBootloaderTextView.setText(bootloaderStringBuilder);
-            versionAndroidTextView.setText(androidStringBuilder);
-            versionBuildTextView.setText(buildStringBuilder);
-            versionChromeTextView.setText(chromeStringBuilder);
-            versionEasyListTextView.setText(easyListStringBuilder);
-            versionEasyPrivacyTextView.setText(easyPrivacyStringBuilder);
-            versionFanboyAnnoyanceTextView.setText(fanboyAnnoyanceStringBuilder);
-            versionFanboySocialTextView.setText(fanboySocialStringBuilder);
-            versionUltraPrivacyTextView.setText(ultraPrivacyStringBuilder);
+            versionTextView.setText(version);
+            brandTextView.setText(brandStringBuilder);
+            manufacturerTextView.setText(manufacturerStringBuilder);
+            modelTextView.setText(modelStringBuilder);
+            deviceTextView.setText(deviceStringBuilder);
+            bootloaderTextView.setText(bootloaderStringBuilder);
+            androidTextView.setText(androidStringBuilder);
+            buildTextView.setText(buildStringBuilder);
+            webViewTextView.setText(webViewStringBuilder);
+            easyListTextView.setText(easyListStringBuilder);
+            easyPrivacyTextView.setText(easyPrivacyStringBuilder);
+            fanboyAnnoyanceTextView.setText(fanboyAnnoyanceStringBuilder);
+            fanboySocialTextView.setText(fanboySocialStringBuilder);
+            ultraPrivacyTextView.setText(ultraPrivacyStringBuilder);
 
             // Build.VERSION.SECURITY_PATCH is only available for SDK_INT >= 23.
             if (Build.VERSION.SDK_INT >= 23) {
@@ -231,29 +244,39 @@ public class AboutTabFragment extends Fragment {
                 String securityPatch = Build.VERSION.SECURITY_PATCH;
                 SpannableStringBuilder securityPatchStringBuilder = new SpannableStringBuilder(securityPatchLabel + securityPatch);
                 securityPatchStringBuilder.setSpan(blueColorSpan, securityPatchLabel.length(), securityPatchStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                versionSecurityPatchTextView.setText(securityPatchStringBuilder);
-            } else {  // SDK_INT < 23, so `versionSecurityPatchTextView` should be hidden.
-                versionSecurityPatchTextView.setVisibility(View.GONE);
+                securityPatchTextView.setText(securityPatchStringBuilder);
+            } else {  // SDK_INT < 23.
+                securityPatchTextView.setVisibility(View.GONE);
             }
 
-            // Only populate `versionRadioTextView` if there is a radio in the device.
-            if (!radio.equals("")) {
+            // Only populate the radio TextView if there is a radio in the device.
+            if (!radio.isEmpty()) {
                 String radioLabel = getString(R.string.radio) + "  ";
                 SpannableStringBuilder radioStringBuilder = new SpannableStringBuilder(radioLabel + radio);
                 radioStringBuilder.setSpan(blueColorSpan, radioLabel.length(), radioStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                versionRadioTextView.setText(radioStringBuilder);
-            } else {  // This device does not have a radio, so `versionRadioTextView` should be hidden.
-                versionRadioTextView.setVisibility(View.GONE);
+                radioTextView.setText(radioStringBuilder);
+            } else {  // This device does not have a radio.
+                radioTextView.setVisibility(View.GONE);
             }
 
-            // Only populate `versionOrbotTextView` if Orbot is installed.
-            if (!orbot.equals("")) {
+            // Only populate the Orbot TextView if it is installed.
+            if (!orbot.isEmpty()) {
                 String orbotLabel = getString(R.string.orbot) + "  ";
                 SpannableStringBuilder orbotStringBuilder = new SpannableStringBuilder(orbotLabel + orbot);
                 orbotStringBuilder.setSpan(blueColorSpan, orbotLabel.length(), orbotStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                versionOrbotTextView.setText(orbotStringBuilder);
-            } else {  // Orbot is not installed, so the `versionOrbotTextView` should be hidden.
-                versionOrbotTextView.setVisibility(View.GONE);
+                orbotTextView.setText(orbotStringBuilder);
+            } else {  // Orbot is not installed.
+                orbotTextView.setVisibility(View.GONE);
+            }
+
+            // Only populate the EasyKeychain TextView if it is installed.
+            if (!openKeychain.isEmpty()) {
+                String openKeychainlabel = getString(R.string.open_keychain) + "  ";
+                SpannableStringBuilder openKeychainStringBuilder = new SpannableStringBuilder(openKeychainlabel + openKeychain);
+                openKeychainStringBuilder.setSpan(blueColorSpan, openKeychainlabel.length(), openKeychainStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                openKeychainTextView.setText(openKeychainStringBuilder);
+            } else {  //OpenKeychain is not installed.
+                openKeychainTextView.setVisibility(View.GONE);
             }
 
             // Display the package signature.

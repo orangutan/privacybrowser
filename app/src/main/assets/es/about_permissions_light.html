@@ -1,7 +1,7 @@
 <!--
   Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2017-2018 Jose A. León Becerra.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017-2018 Jose A. León.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -17,6 +17,7 @@
 
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
 <html>
     <head>
         <meta charset="UTF-8">
@@ -33,9 +34,14 @@
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#INSTALL_SHORTCUT">com.android.launcher.permission.INSTALL_SHORTCUT</a></p>
         <p>Requerido para añadir accesos directos de páginas web en el escritorio.</p>
 
+        <h3>Almacenamiento de lectura</h3>
+        <p><a href="https://developer.android.com/reference/android/Manifest.permission#READ_EXTERNAL_STORAGE">android.permission.READ_EXTERNAL_STORAGE</a></p>
+        <p>Requerido para importar la configuración de las carpetas públicas.
+            En Android Marshmallow (API 23) y posteriores, si se niega este permiso, Privacy Browser puede en cambio importar la configuración desde las carpetas de la aplicación.</p>
+
         <h3>Almacenamiento de escritura</h3>
-        <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WRITE_EXTERNAL_STORAGE"> android.permission.WRITE_EXTERNAL_STORAGE</a></p>
-        <p>Requerido para descargar archivos a la carpeta de descarga pública.
-            En Android Marshmallow (API 23) y posteriores, si se niega este permiso, Navegador Privado almacenará las descargas en la carpeta de descargas de la aplicación.</p>
+        <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WRITE_EXTERNAL_STORAGE">android.permission.WRITE_EXTERNAL_STORAGE</a></p>
+        <p>Requerido para exportar la configuración y descargar archivos a las carpetas públicas.
+            En Android Marshmallow (API 23) y posteriores, si se niega este permiso, Privacy Browser puede en cambio exportar la configuración y almacenar las descargas en las carpetas de la aplicación.</p>
     </body>
 </html>

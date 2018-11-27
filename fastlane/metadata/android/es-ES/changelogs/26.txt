@@ -2,5 +2,5 @@
 • Actualizar el renderizado del tema oscuro de las secciones Acerca de y Guía.
 • Añadir soporte para autenticación HTTP.
 • Colorear el Nombre Común en el cuadro de diálogo Ver certificado SSL.
-• Actualizada la traducción al español proporcionada por Jose A. León Becerra.
+• Actualizada la traducción al español proporcionada por Jose A. León.
 • Actualizada la traducción al italiano proporcionada por Francesco Buratti.

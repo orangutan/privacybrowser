@@ -1,0 +1,12 @@
+• Add importing and exporting of bookmarks and settings (includes the read storage permission).
+• Switch default loading of URLs from HTTP to HTTPS.
+• Display how many items are blocked by each blocklist with live updates.
+• Add a stop loading button.
+• Add user agent and night mode controls to the options menu.
+• Fix a bug with disappearing system bars after watching a full screen video.
+• Fix the Clear Data menu item status on Oreo (Android 8.0) and newer.
+• Fix the size of the Waiting for Orbot message.
+• Bump target API to 28 (Android 9 Pie).
+• Aktualisierte italienische Übersetzung von Francesco Buratti.
+• Aktualisierte russische Übersetzung.
+• Aktualisierte spanische Übersetzung von Jose A. León.

@@ -8,4 +8,4 @@
 • Correzione di due problemi nella modalità video a schermo intero.
 • Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
 • Aggiornamento della traduzione Russo.
-• Aggiornamento della traduzione Spagnola fornita da Jose A. León Becerra.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León.

@@ -1,7 +1,7 @@
 <!--
   Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2017 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017-2018 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -30,64 +30,66 @@
 
         <p>I cookies proprietari sono definiti dal sito web nella barra della URL all'inizio della pagina.</p>
 
-        <p>Fin dagli albori di internet divenne ovvio che sarebbe stato molto utile per i siti web essere in grado di salvare
-            informazioni sui computer per eventuali accessi successivi. Ad esempio, un sito web che fornisca informazioni meteo
-            potrebbe chiedere all'utente la sua posizione geografica e salvarla in un cookie. Nel caso di un accesso successivo al sito web
-            da parte dell'utente, le informazioni meteo sarebbero quindi caricate in automatico per quella posizione geografica,
-			senza che si renda necessario per l'utente indicarla nuovamente, oppure senza dover creare un account sul sito web
-            (sarebbe esagerato per una necessità così semplice).</p>
+        <p>Fin dagli albori di internet divenne ovvio che sarebbe stato molto utile per i siti web essere in grado di salvare informazioni sui computer per eventuali accessi successivi.
+            Ad esempio, un sito web che fornisca informazioni meteo potrebbe chiedere all'utente la sua posizione geografica e salvarla in un cookie.
+            Nel caso di un accesso successivo al sito web da parte dell'utente, le informazioni meteo sarebbero quindi caricate in automatico per quella posizione geografica,
+            senza che si renda necessario per l'utente indicarla nuovamente.</p>
 
-        <p>Come per quasi ogni cosa sul web, persone intelligenti hanno ideato moltissimi modi per abusare dei cookies e usarli per finalità
-            che gli utenti non approverebbero, se solo sapessero cosa sta succedendo. Ad esempio, un sito web può salvare su un dispositivo un cookie
-			con un numero seriale univoco. In questo modo, ogni volta che l'utente visiterà il sito da quel dispositivo, sarà collegato ad un profilo unico
-            mantenuto sul server per quel particolare numero seriale, anche se il dispositivo si connette con indirizzo IP diverso, come spesso accade con i telefoni.</p>
+        <p>Come per quasi ogni cosa sul web, persone intelligenti hanno ideato moltissimi modi per abusare dei cookies e usarli per finalità che gli utenti non approverebbero,
+            se solo sapessero cosa sta succedendo. Ad esempio, un sito web può salvare su un dispositivo un cookie con un numero seriale univoco.
+            In questo modo, ogni volta che l'utente visiterà il sito da quel dispositivo, sarà collegato ad un profilo unico mantenuto sul server per quel particolare numero seriale,
+            anche se il dispositivo si connette con indirizzo IP diverso.</p>
 
-        <p>Molti siti web che richiedono login hanno bisogno che i cookies proprietari siano abilitati per permettere ad un utente di rimanere loggato.
-			I cookies però non sono l'unico modo per un sito web per mantenere connesso un utente durante la navigazione delle diverse pagine del sito,
-			ma se la modalità di accesso è stata implementata in quel modo, l'unico modo per restare connesso è quello di abilitare i cookies proprietari.</p>
+        <p>Quasi tutti i che richiedono login hanno bisogno che i cookies proprietari siano abilitati per permettere ad un utente di accedere.
+            Questo è il modo in cui essi sono sicuri che l'utente sia sempre lui nella navigazione da una pagina all'altra del sito, ed è, a nostro parere, uno dei pochi utilizzi legittimi dei cookies.</p>
 
-        <p>Se sono stati abilitati i cookies proprietari ma è stato disabilitato JavaScript, l'icona della privacy sarà gialla <img class="inline" src="../shared_images/warning.png">
-            con lo scopo di avvertire l'utente.</p>
+        <p>Se sono stati abilitati i cookies proprietari ma è stato disabilitato JavaScript,
+            l'icona della privacy sarà gialla <img class="inline" src="../shared_images/warning.png"> con lo scopo di avvertire l'utente.</p>
 
 
         <h3><img class="title" src="../shared_images/cookie_blue_light.png"> Cookies di terze parti</h3>
 
         <p>I cookies di terze parti sono impostati da alcune porzioni dei siti web che sono caricate da server differenti rispetto alla URL all'inizio della pagina.
-            Ad esempio, molti siti web con annunci pubblicitari caricano gli annunci da ad-broker distinti, come ad esempio Google 
-            <a href="https://www.google.com/adsense/start/#?modal_active=none">Ad Sense</a>. Ogni volta che il sito viene caricato richiede all'ad-broker 
-			di mostrare un annuncio pubblicitario. A questo punto l'ad-broker analizza tutte le informazioni possedute relative all'utente, compara le tariffe
-            che saranno pagate dalle agenzie per i diversi annunci, e quindi seleziona quello da mostrare. La sezione di un sito web dedicata alla visualizzazione
-            degli annunci pubblicitari viene caricata dal server del broker invece che da quello principale.</p>
+            Ad esempio, molti siti web con annunci pubblicitari caricano gli annunci da ad-broker distinti, come ad esempio Google <a href="https://www.google.com/adsense/start/">Ad Sense</a>.
+            Ogni volta che il sito viene caricato richiede all'ad-broker di mostrare un annuncio pubblicitario.
+            A questo punto l'ad-broker analizza tutte le informazioni possedute relative all'utente, compara le tariffe che saranno pagate dalle agenzie per i diversi annunci,
+            e quindi seleziona quello da mostrare. La sezione di un sito web dedicata alla visualizzazione degli annunci pubblicitari viene caricata dal server del broker invece che da quello principale.</p>
 
-        <p>Dal momento che la maggior parte della pubblicità su internet è gestita da pochi broker, non c'è voluto molto tempo perchè si rendessero conto
-            di poter posizionare un cookie tracciante sui dispositivi per conoscere i luoghi in cui si trovano gli utenti. Ogni volta che si carica un annuncio
-            la primissima cosa che il broker fa è quella di verificare se il dispositivo ha già il suo numero seriale univoco in un cookie. A questo punto cerca
-            il profilo relativo a quel numero seriale e memorizza il nuovo sito. Questo è il motivo per cui un utente può effettuare una ricerca su un sito
-            per un prodotto che solitamente non cerca, ad esempio le noci, e da quel momento improvvisamente inizia a vedere annunci di noci su ogni sito web visitato.</p>
+        <p>Dal momento che la maggior parte della pubblicità su internet è gestita da pochi broker,
+            non c'è voluto molto tempo perchè si rendessero conto di poter posizionare un cookie tracciante sui dispositivi per conoscere i luoghi in cui si trovano gli utenti.
+            Ogni volta che si carica un annuncio la primissima cosa che il broker fa è quella di verificare se il dispositivo ha già il suo numero seriale univoco in un cookie.
+            A questo punto cerca il profilo relativo a quel numero seriale e memorizza il nuovo sito.
+            Questo è il motivo per cui un utente può effettuare una ricerca su un sito per un prodotto che solitamente non cerca, ad esempio le noci,
+            e da quel momento improvvisamente inizia a vedere annunci di noci su ogni sito web visitato.</p>
 
-        <p>Oltre agli ad-broker, anche i social media hanno scoperto come entrare in azione. Alcuni anni fa i principali siti social come
-            Facebook e Twitter hanno convinto un gran numero di siti web che sarebbe stato loro molto utile inserire alcune piccole icone dei social media
-            sulle loro pagine. Queste però non sono semplici immagini. Esse contengono del <a href="https://developers.facebook.com/docs/plugins/like-button/">codice incorporato</a> che
-            collega al sito del social media ma non solo, oltre ad altre cose, carica un cookie di terze parti sul dispositivo. Questi cookie sono caricati anche se l'utente
-            non possiede nemmeno un account su quel particolare social media. Nel corso del tempo le aziende come Facebook (che gestisce anche una rete di annunci) hanno costruito un numero enorme
-            di profili dettagliati di persone che <a href="http://www.theverge.com/2016/5/27/11795248/facebook-ad-network-non-users-cookies-plug-ins">non hanno nemmeno
-            mai creato un account sul loro sito</a>.</p>
+        <p>Oltre agli ad-broker, anche i social media hanno scoperto come entrare in azione.
+            Alcuni anni fa i principali siti social come Facebook e Twitter hanno convinto un gran numero di siti web che
+            sarebbe stato loro molto utile inserire alcune piccole icone dei social media sulle loro pagine. Queste però non sono semplici immagini.
+            Esse contengono del <a href="https://developers.facebook.com/docs/plugins/like-button/">codice incorporato</a> che collega al sito del social media ma non solo, oltre ad altre cose,
+            carica un cookie di terze parti sul dispositivo. Questi cookie sono caricati anche se l'utente non possiede nemmeno un account su quel particolare social media.
+            Nel corso del tempo le aziende come Facebook (che gestisce anche una rete di annunci) hanno costruito un numero enorme di profili dettagliati di persone che
+            <a href="http://www.theverge.com/2016/5/27/11795248/facebook-ad-network-non-users-cookies-plug-ins">non hanno nemmeno mai creato un account sul loro sito</a>.</p>
 
-        <p>Non c'è quindi quasi nessuna buona ragione di abilitare i cookie di terze parti. Su dispositivi con Android KitKat o precedente (versione <= 4.4.4 o API <= 20), WebView
-            non <a href="https://developer.android.com/reference/android/webkit/CookieManager.html#setAcceptThirdPartyCookies(android.webkit.WebView, boolean)">fa distinzione
-            tra cookie proprietari e cookie di terze parti</a>. Per questo motivo l'abilitazione dei primi permette anche la creazione dei secondi.</p>
+        <p>Non esiste nessuna buona ragione di abilitare i cookie di terze parti. Su dispositivi con Android KitKat o precedente (versione <= 4.4.4 o API <= 20), WebView non
+            <a href="https://developer.android.com/reference/android/webkit/CookieManager.html#setAcceptThirdPartyCookies(android.webkit.WebView, boolean)">fa distinzione
+            tra cookie proprietari e cookie di terze parti.</a>. Per questo motivo l'abilitazione dei primi permette anche la creazione dei secondi.</p>
 
 
         <h3><img class="title" src="../shared_images/web_blue_light.png"> DOM Storage</h3>
 
-        <p>Il Document Object Model storage, conosciuto anche come web storage, è come l'utilizzo di cookie potenziati. Mentre per tutti i cookie di una singola URL il
-			massimo spazio di memoria occupata è di circa 4 kilobyte, il DOM storage può occupare alcuni <a href="https://en.wikipedia.org/wiki/Web_storage#Storage_size">megabyte per sito</a>.
-            Siccome il DOM storage utilizza JavaScript per leggere e scrivere dati, la sua abilitazione è inutile se non è stato abilitato anche JavaScript.</p>
+        <p>Il Document Object Model storage, conosciuto anche come web storage, è come l'utilizzo di cookie potenziati.
+            Mentre per tutti i cookie di una singola URL il massimo spazio di memoria occupata è di circa 4 kilobyte,
+            il DOM storage può occupare alcuni <a href="https://en.wikipedia.org/wiki/Web_storage#Storage_size">megabyte per sito</a>.
+            Siccome il DOM storage utilizza JavaScript per leggere e scrivere dati, non può essere abilitato se non viene abilitato anche JavaScript.</p>
 
 
         <h3><img class="title" src="../shared_images/subtitles_blue_light.png"> Dati dei moduli</h3>
 
-        <p>I dati dei moduli contengono le informazioni che vengono digitate nei web form, come user name, indirizzi, numeri di telefono, ecc. per poterli elencare in menù a tendina in caso di visite successive.
-            A differenza delle altre modalità di memorizzazione locale delle informazioni, i dati dei moduli non vengono inviati ai web server senza una interazione con l'utente.</p>
+        <p>I dati dei moduli contengono le informazioni che vengono digitate nei web form, come user name, indirizzi, numeri di telefono, ecc.
+            per poterli elencare in menù a tendina in caso di visite successive.
+            A differenza delle altre modalità di memorizzazione locale delle informazioni, i dati dei moduli non vengono inviati ai web server senza una interazione con l'utente.
+            A partire da Android Oreo (8.0), i dati dei moduli di WebView’s sono stati sostituiti dal
+            <a href="https://medium.com/@bherbst/getting-androids-autofill-to-work-for-you-21435debea1">Servizio di Riempimento Automatico</a>.
+            Per questo motivo i controlli per i dati dei moduli non sono più disponibili nei dispositivi Android più recenti.</p>
     </body>
 </html>

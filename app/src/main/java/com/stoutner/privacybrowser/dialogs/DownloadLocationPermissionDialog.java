@@ -31,10 +31,11 @@ import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
 public class DownloadLocationPermissionDialog extends DialogFragment {
+    // The constants are used to differentiate between the two download types.
     public static final int DOWNLOAD_FILE = 1;
     public static final int DOWNLOAD_IMAGE = 2;
 
-    // `downloadLocationPermissionDialogListener` is used in `onAttach()` and `onCreateDialog()`.
+    // The listener is used in `onAttach()` and `onCreateDialog()`.
     private DownloadLocationPermissionDialogListener downloadLocationPermissionDialogListener;
 
     // The public interface is used to send information back to the parent activity.
@@ -47,7 +48,7 @@ public class DownloadLocationPermissionDialog extends DialogFragment {
         // Run the default commands.
         super.onAttach(context);
 
-        // Get a handle for `DownloadLocationPermissionDialogListener` from the launching context.
+        // Get a handle for the listener from the launching context.
         downloadLocationPermissionDialogListener = (DownloadLocationPermissionDialogListener) context;
     }
 
@@ -56,9 +57,9 @@ public class DownloadLocationPermissionDialog extends DialogFragment {
         Bundle argumentsBundle = new Bundle();
 
         // Store the download type in the bundle.
-        argumentsBundle.putInt("Download_Type", type);
+        argumentsBundle.putInt("download_type", type);
 
-        // Add the arguments bundle to this instance of `DownloadLocationPermissionDialog`.
+        // Add the arguments bundle to this instance of the dialog.
         DownloadLocationPermissionDialog thisDownloadLocationPermissionDialog = new DownloadLocationPermissionDialog();
         thisDownloadLocationPermissionDialog.setArguments(argumentsBundle);
         return thisDownloadLocationPermissionDialog;
@@ -66,8 +67,8 @@ public class DownloadLocationPermissionDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Store the download type in the local class variable.
-        int downloadType = getArguments().getInt("Download_Type");
+        // Store the download type in a local variable.
+        int downloadType = getArguments().getInt("download_type");
 
         // Use a builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
@@ -81,19 +82,19 @@ public class DownloadLocationPermissionDialog extends DialogFragment {
             dialogBuilder.setIcon(R.drawable.downloads_light);
         }
 
-        // Set an `onClick` listener on the negative button.  Using `null` as the listener closes the dialog without doing anything else.
-        dialogBuilder.setNegativeButton(R.string.ok, (DialogInterface dialog, int which) -> {
-            // Inform the parent activity that the dialog was closed.
-            downloadLocationPermissionDialogListener.onCloseDownloadLocationPermissionDialog(downloadType);
-        });
-
         // Set the title.
         dialogBuilder.setTitle(R.string.download_location);
 
         // Set the text.
         dialogBuilder.setMessage(R.string.download_location_message);
 
-        // Create an alert dialog from the alert dialog builder.
+        // Set an `onClick` listener on the negative button.
+        dialogBuilder.setNegativeButton(R.string.ok, (DialogInterface dialog, int which) -> {
+            // Inform the parent activity that the dialog was closed.
+            downloadLocationPermissionDialogListener.onCloseDownloadLocationPermissionDialog(downloadType);
+        });
+
+        // Create an alert dialog from the builder.
         final AlertDialog alertDialog = dialogBuilder.create();
 
         // Disable screenshots if not allowed.
@@ -105,7 +106,7 @@ public class DownloadLocationPermissionDialog extends DialogFragment {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
-        // `onCreateDialog` requires the return of an `AlertDialog`.
+        // `onCreateDialog()` requires the return of an `AlertDialog`.
         return alertDialog;
     }
 }

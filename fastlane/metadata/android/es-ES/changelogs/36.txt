@@ -1,0 +1,12 @@
+• Añadir la importación y exportación de favoritos y ajustes (incluye el permiso de almacenamiento de lectura).
+• Cambiar la carga predeterminada de URLs de HTTP a HTTPS.
+• Mostrar cuántos elementos son bloqueados por cada lista de bloqueo con actualizaciones en tiempo real.
+• Añadir un botón para parar la carga.
+• Añadir controles de agente de usuario y de modo nocturno al menú de opciones.
+• Arreglar un problema con la desaparición de las barras del sistema tras ver un vídeo a pantalla completa.
+• Arreglar el estado del elemento del menú Borrar Datos en Oreo (Android 8.0) y posteriores.
+• Arreglar el tamaño del mensaje Esperando a Orbot.
+• Incrementar la API dirigido hacia la 28 (Android 9 Pie).
+• Actualizada la traducción al español proporcionada por Jose A. León.
+• Actualizada la traducción al italiano proporcionada por Francesco Buratti.
+• Actualizada la traducción al ruso.
