@@ -51,6 +51,7 @@
     <string name="close_navigation_drawer">Close Navigation Drawer</string>
     <string name="no_title">No title</string>
     <string name="unrecognized_url">Unrecognized URL:</string>
+    <string name="open_with">Open with</string>
 
     <!-- Save As. -->
     <string name="save_as">Save As</string>
@@ -349,6 +350,52 @@
     <string name="ssl_certificates">SSL Certificates</string>
     <string name="tracking_ids">Tracking IDs</string>
 
+    <!-- Download Location -->
+    <string name="download_location">Download Location</string>
+    <string name="download_location_message">Privacy Browser needs the storage permission to use the public download directory. If it is denied, the app’s download directory will be used instead.</string>
+    <string name="ok">OK</string>
+
+    <!-- Orbot. -->
+    <string name="orbot_proxy_not_installed">Orbot proxy will not work unless Orbot is installed.</string>
+    <string name="waiting_for_orbot">Waiting for Orbot to connect...</string>
+
+    <!-- About Activity. -->
+    <string name="about_privacy_browser">About Privacy Browser</string>
+    <string name="version">Version</string>
+    <string name="version_code">version code</string>
+    <string name="hardware">Hardware</string>
+    <string name="brand">Brand:</string>
+    <string name="manufacturer">Manufacturer:</string>
+    <string name="model">Model:</string>
+    <string name="device">Device:</string>
+    <string name="bootloader">Bootloader:</string>
+    <string name="radio">Radio:</string>
+    <string name="software">Software</string>
+    <string name="android">Android:</string>
+    <string name="api">API</string>
+    <string name="build">Build:</string>
+    <string name="security_patch">Security Patch:</string>
+    <string name="webview">WebView:</string>
+    <string name="orbot">Orbot:</string>
+    <string name="openkeychain">OpenKeychain:</string>
+    <string name="easylist_label">EasyList:</string>
+    <string name="easyprivacy_label">EasyPrivacy:</string>
+    <string name="fanboy_annoyance_label">Fanboy’s Annoyance List:</string>
+    <string name="fanboy_social_label">Fanboy’s Social Blocking List:</string>
+    <string name="ultraprivacy_label">UltraPrivacy:</string>
+    <string name="package_signature">Package Signature</string>
+    <string name="issuer_dn">Issuer DN:</string>
+    <string name="subject_dn">Subject DN:</string>
+    <string name="certificate_version">Certificate Version:</string>
+    <string name="serial_number">Serial Number:</string>
+    <string name="signature_algorithm">Signature Algorithm:</string>
+    <string name="permissions">Permissions</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="changelog">Changelog</string>
+    <string name="licenses">Licenses</string>
+    <string name="contributors">Contributors</string>
+    <string name="links">Links</string>
+
     <!-- Preferences. -->
     <string name="privacy">Privacy</string>
         <string name="javascript_preference">Enable JavaScript by default</string>
@@ -555,8 +602,10 @@
                 <item>175</item>
                 <item>200</item>
             </string-array>
-        <string name="swipe_to_refresh_preference">Swipe to refresh</string>
+        <string name="swipe_to_refresh">Swipe to refresh</string>
         <string name="swipe_to_refresh_summary">Some websites don’t work well if swipe to refresh is enabled.</string>
+        <string name="download_with_external_app">Download with external app</string>
+        <string name="download_with_external_app_summary">Android’s download manager doesn’t work well on some devices.</string>
         <string name="display_additional_app_bar_icons">Display additional app bar icons</string>
         <string name="display_additional_app_bar_icons_summary">Display icons in the app bar for refreshing the WebView and, if there is room, for toggling cookies and DOM storage.</string>
         <string name="dark_theme">Dark theme</string>
@@ -566,51 +615,16 @@
         <string name="display_webpage_images">Display webpage images</string>
         <string name="display_webpage_images_summary">Disable to conserve bandwidth.</string>
 
-    <!-- Download Location -->
-    <string name="download_location">Download Location</string>
-    <string name="download_location_message">Privacy Browser needs the storage permission to use the public download directory. If it is denied, the app’s download directory will be used instead.</string>
-    <string name="ok">OK</string>
-
-    <!-- Orbot. -->
-    <string name="orbot_proxy_not_installed">Orbot proxy will not work unless Orbot is installed.</string>
-    <string name="waiting_for_orbot">Waiting for Orbot to connect...</string>
-
-    <!-- About Activity. -->
-    <string name="about_privacy_browser">About Privacy Browser</string>
-    <string name="version">Version</string>
-        <string name="version_code">version code</string>
-        <string name="hardware">Hardware</string>
-            <string name="brand">Brand:</string>
-            <string name="manufacturer">Manufacturer:</string>
-            <string name="model">Model:</string>
-            <string name="device">Device:</string>
-            <string name="bootloader">Bootloader:</string>
-            <string name="radio">Radio:</string>
-        <string name="software">Software</string>
-            <string name="android">Android:</string>
-                <string name="api">API</string>
-            <string name="build">Build:</string>
-            <string name="security_patch">Security Patch:</string>
-            <string name="webview">WebView:</string>
-            <string name="orbot">Orbot:</string>
-            <string name="open_keychain">OpenKeychain:</string>
-            <string name="easylist_label">EasyList:</string>
-            <string name="easyprivacy_label">EasyPrivacy:</string>
-            <string name="fanboy_annoyance_label">Fanboy’s Annoyance List:</string>
-            <string name="fanboy_social_label">Fanboy’s Social Blocking List:</string>
-            <string name="ultraprivacy_label">UltraPrivacy:</string>
-        <string name="package_signature">Package Signature</string>
-            <string name="issuer_dn">Issuer DN:</string>
-            <string name="subject_dn">Subject DN:</string>
-            <string name="certificate_version">Certificate Version:</string>
-            <string name="serial_number">Serial Number:</string>
-            <string name="signature_algorithm">Signature Algorithm:</string>
-    <string name="permissions">Permissions</string>
-    <string name="privacy_policy">Privacy Policy</string>
-    <string name="changelog">Changelog</string>
-    <string name="licenses">Licenses</string>
-    <string name="contributors">Contributors</string>
-    <string name="links">Links</string>
+    <!-- Non-translatable preference items. -->
+    <string name="user_agent_default_value" translatable="false">Privacy Browser</string>
+    <string name="custom_user_agent_default_value" translatable="false">PrivacyBrowser/1.0</string>
+    <string name="tor_homepage_default_value" translatable="false">http://ulrn6sryqaifefld.onion/</string>
+    <string name="tor_search_default_value" translatable="false">http://ulrn6sryqaifefld.onion/?q=</string>
+    <string name="tor_search_custom_url_default_value" translatable="false" />
+    <string name="search_default_value" translatable="false">https://searx.me/?q=</string>
+    <string name="search_custom_url_default_value" translatable="false" />
+    <string name="homepage_default_value" translatable="false">https://searx.me/</string>
+    <string name="font_size_default_value" translatable="false">100</string>
 
     <!-- Ad Control. There are no ads in the standard flavor, but these strings must exist because they are referenced in the code. -->
     <string name="google_app_id" translatable="false">Null</string>

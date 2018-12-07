@@ -27,7 +27,7 @@ import android.database.Cursor;
 import android.net.http.SslCertificate;
 import android.os.Build;
 import android.os.Bundle;
-// We have to use `android.support.v4.app.Fragment` until minimum API >= 23.  Otherwise we cannot call `getContext()`.
+// `android.support.v4.app.Fragment` must be used until minimum API >= 23.  Otherwise `getContext()` does not work.
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -95,9 +95,9 @@ public class DomainSettingsFragment extends Fragment {
         final String defaultUserAgentName = sharedPreferences.getString("user_agent", "Privacy Browser");
         final String defaultCustomUserAgentString = sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0");
         String defaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
-        boolean defaultSwipeToRefreshBoolean = sharedPreferences.getBoolean("swipe_to_refresh", true);
-        final boolean defaultNightModeBoolean = sharedPreferences.getBoolean("night_mode", false);
-        final boolean defaultDisplayWebpageImagesBoolean = sharedPreferences.getBoolean("display_website_images", true);
+        boolean defaultSwipeToRefresh = sharedPreferences.getBoolean("swipe_to_refresh", true);
+        final boolean defaultNightMode = sharedPreferences.getBoolean("night_mode", false);
+        final boolean defaultDisplayWebpageImages = sharedPreferences.getBoolean("display_webpage_images", true);
 
         // Get handles for the views in the fragment.
         final EditText domainNameEditText = domainSettingsView.findViewById(R.id.domain_settings_name_edittext);
@@ -341,7 +341,7 @@ public class DomainSettingsFragment extends Fragment {
         });
 
         // Create a `boolean` to track if night mode is enabled.
-        boolean nightModeEnabled = (nightModeInt == DomainsDatabaseHelper.NIGHT_MODE_ENABLED) || ((nightModeInt == DomainsDatabaseHelper.NIGHT_MODE_SYSTEM_DEFAULT) && defaultNightModeBoolean);
+        boolean nightModeEnabled = (nightModeInt == DomainsDatabaseHelper.NIGHT_MODE_ENABLED) || ((nightModeInt == DomainsDatabaseHelper.NIGHT_MODE_SYSTEM_DEFAULT) && defaultNightMode);
 
         // Disable the JavaScript switch if night mode is enabled.
         if (nightModeEnabled) {
@@ -744,7 +744,7 @@ public class DomainSettingsFragment extends Fragment {
         swipeToRefreshSpinner.setSelection(swipeToRefreshInt);
 
         // Set the swipe to refresh text.
-        if (defaultSwipeToRefreshBoolean) {
+        if (defaultSwipeToRefresh) {
             swipeToRefreshTextView.setText(swipeToRefreshArrayAdapter.getItem(DomainsDatabaseHelper.SWIPE_TO_REFRESH_ENABLED));
         } else {
             swipeToRefreshTextView.setText(swipeToRefreshArrayAdapter.getItem(DomainsDatabaseHelper.SWIPE_TO_REFRESH_DISABLED));
@@ -753,7 +753,7 @@ public class DomainSettingsFragment extends Fragment {
         // Set the swipe to refresh icon and TextView settings.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
         switch (swipeToRefreshInt) {
             case DomainsDatabaseHelper.SWIPE_TO_REFRESH_SYSTEM_DEFAULT:
-                if (defaultSwipeToRefreshBoolean) {  // Swipe to refresh is enabled by default.
+                if (defaultSwipeToRefresh) {  // Swipe to refresh is enabled by default.
                     // Set the icon according to the theme.
                     if (MainWebViewActivity.darkTheme) {
                         swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_enabled_dark));
@@ -807,7 +807,7 @@ public class DomainSettingsFragment extends Fragment {
         nightModeSpinner.setSelection(nightModeInt);
 
         // Set the default night mode text.
-        if (defaultNightModeBoolean) {
+        if (defaultNightMode) {
             nightModeTextView.setText(nightModeArrayAdapter.getItem(DomainsDatabaseHelper.NIGHT_MODE_ENABLED));
         } else {
             nightModeTextView.setText(nightModeArrayAdapter.getItem(DomainsDatabaseHelper.NIGHT_MODE_DISABLED));
@@ -816,7 +816,7 @@ public class DomainSettingsFragment extends Fragment {
         // Set the night mode icon and TextView settings.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
         switch (nightModeInt) {
             case DomainsDatabaseHelper.NIGHT_MODE_SYSTEM_DEFAULT:
-                if (defaultNightModeBoolean) {  // Night mode enabled by default.
+                if (defaultNightMode) {  // Night mode enabled by default.
                     // Set the icon according to the theme.
                     if (MainWebViewActivity.darkTheme) {
                         nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_dark));
@@ -871,7 +871,7 @@ public class DomainSettingsFragment extends Fragment {
         displayWebpageImagesSpinner.setSelection(displayImagesInt);
 
         // Set the default display images text.
-        if (defaultDisplayWebpageImagesBoolean) {
+        if (defaultDisplayWebpageImages) {
             displayImagesTextView.setText(displayImagesArrayAdapter.getItem(DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_ENABLED));
         } else {
             displayImagesTextView.setText(displayImagesArrayAdapter.getItem(DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_DISABLED));
@@ -880,7 +880,7 @@ public class DomainSettingsFragment extends Fragment {
         // Set the display website images icon and TextView settings.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
         switch (displayImagesInt) {
             case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT:
-                if (defaultDisplayWebpageImagesBoolean) {  // Display webpage images enabled by default.
+                if (defaultDisplayWebpageImages) {  // Display webpage images enabled by default.
                     // Set the icon according to the theme.
                     if (MainWebViewActivity.darkTheme) {
                         displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_enabled_dark));
@@ -1480,7 +1480,7 @@ public class DomainSettingsFragment extends Fragment {
                 // Update the icon and the visibility of `nightModeTextView`.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
                 switch (position) {
                     case DomainsDatabaseHelper.SWIPE_TO_REFRESH_SYSTEM_DEFAULT:
-                        if (defaultSwipeToRefreshBoolean) {  // Swipe to refresh enabled by default.
+                        if (defaultSwipeToRefresh) {  // Swipe to refresh enabled by default.
                             // Set the icon according to the theme.
                             if (MainWebViewActivity.darkTheme) {
                                 swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_enabled_dark));
@@ -1538,7 +1538,7 @@ public class DomainSettingsFragment extends Fragment {
                 // Update the icon and the visibility of `nightModeTextView`.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
                 switch (position) {
                     case DomainsDatabaseHelper.NIGHT_MODE_SYSTEM_DEFAULT:
-                        if (defaultNightModeBoolean) {  // Night mode enabled by default.
+                        if (defaultNightMode) {  // Night mode enabled by default.
                             // Set the icon according to the theme.
                             if (MainWebViewActivity.darkTheme) {
                                 nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_dark));
@@ -1584,7 +1584,7 @@ public class DomainSettingsFragment extends Fragment {
                 }
 
                 // Create a `boolean` to store the current night mode setting.
-                boolean currentNightModeEnabled = (position == DomainsDatabaseHelper.NIGHT_MODE_ENABLED) || ((position == DomainsDatabaseHelper.NIGHT_MODE_SYSTEM_DEFAULT) && defaultNightModeBoolean);
+                boolean currentNightModeEnabled = (position == DomainsDatabaseHelper.NIGHT_MODE_ENABLED) || ((position == DomainsDatabaseHelper.NIGHT_MODE_SYSTEM_DEFAULT) && defaultNightMode);
 
                 // Disable the JavaScript `Switch` if night mode is enabled.
                 if (currentNightModeEnabled) {
@@ -1653,7 +1653,7 @@ public class DomainSettingsFragment extends Fragment {
                 // Update the icon and the visibility of `displayImagesTextView`.
                 switch (position) {
                     case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT:
-                        if (defaultDisplayWebpageImagesBoolean) {
+                        if (defaultDisplayWebpageImages) {
                             // Set the icon according to the theme.
                             if (MainWebViewActivity.darkTheme) {
                                 displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_enabled_dark));

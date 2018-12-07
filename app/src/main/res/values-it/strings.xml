@@ -313,9 +313,20 @@
     <string name="load_an_encrypted_website">Carica un sito Web criptato prima di aprire le impostazioni dei domini per popolare il certificato SSL del sito attuale.</string>
 
     <!-- Import/Export. -->
+    <string name="encryption">Cifratura</string>
+    <string-array name="encryption_type">
+        <item>Nessuna</item>
+        <item>Password</item>
+        <item>OpenPGP</item>
+    </string-array>
+    <string name="kitkat_password_encryption_message">La cifratura delle Password non funziona su Android KitKat.</string>
+    <string name="openkeychain_required">La cifratura OpenPGP richiede l\'installazione di OpenKeychain.</string>
+    <string name="openkeychain_import_instructions">Il file non cifrato deve essere importato in un secondo momento dopo che è stato decriptato.</string>
+    <string name="file_location">Posizione del File</string>
     <string name="browse">Sfoglia</string>
     <string name="export">Esporta</string>
     <string name="import_button">Importa</string>  <!-- `import` is a reserved word and cannot be used as the name -->
+    <string name="decrypt">Decripta</string>
     <string name="export_successful">Esportazione riuscita</string>
     <string name="export_failed">Esportazione fallita:</string>
     <string name="import_failed">Importazione fallita:</string>
@@ -334,6 +345,53 @@
     <string name="local_storage">Archiviazione Locale</string>
     <string name="ssl_certificates">Certificati SSL</string>
     <string name="tracking_ids">Tracciamento utenti</string>
+
+    <!-- Download Location -->
+    <string name="download_location">Cartella di Download</string>
+    <string name="download_location_message">Privacy Browser necessita del permesso di accesso alla memoria di storage per utilizzare la cartella pubblica di download.
+        Nel caso in cui il permesso sia negato sarà utilizzata la cartella di download dell\'applicazione.</string>
+    <string name="ok">OK</string>
+
+    <!-- Orbot. -->
+    <string name="orbot_proxy_not_installed">Il Proxy con Orbot funziona solo se è installato Orbot.</string>
+    <string name="waiting_for_orbot">In attesa della connessione di Orbot...</string>
+
+    <!-- About Activity. -->
+    <string name="about_privacy_browser">Informazioni su Privacy Browser</string>
+    <string name="version">Versione</string>
+    <string name="version_code">codice versione</string>
+    <string name="hardware">Hardware</string>
+    <string name="brand">Brand:</string>
+    <string name="manufacturer">Costruttore:</string>
+    <string name="model">Modello:</string>
+    <string name="device">Dispositivo:</string>
+    <string name="bootloader">Bootloader:</string>
+    <string name="radio">Radio:</string>
+    <string name="software">Software</string>
+    <string name="android">Android:</string>
+    <string name="api">API</string>
+    <string name="build">Build:</string>
+    <string name="security_patch">Patch si sicurezza:</string>
+    <string name="webview">WebView:</string>
+    <string name="orbot">Orbot:</string>
+    <string name="openkeychain">OpenKeychain:</string>
+    <string name="easylist_label">EasyList:</string>
+    <string name="easyprivacy_label">EasyPrivacy:</string>
+    <string name="fanboy_annoyance_label">Fanboy’s Annoyance List:</string>
+    <string name="fanboy_social_label">Fanboy’s Social Blocking List:</string>
+    <string name="ultraprivacy_label">UltraPrivacy:</string>
+    <string name="package_signature">Firma del Pacchetto</string>
+    <string name="issuer_dn">Emittente:</string>
+    <string name="subject_dn">Soggetto:</string>
+    <string name="certificate_version">Versione del Certificato:</string>
+    <string name="serial_number">Numero di Serie:</string>
+    <string name="signature_algorithm">Algoritmo di firma:</string>
+    <string name="permissions">Autorizzazioni</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="changelog">Changelog</string>
+    <string name="licenses">Licenze</string>
+    <string name="contributors">Collaboratori</string>
+    <string name="links">Links</string>
 
     <!-- Preferences. -->
     <string name="privacy">Privacy</string>
@@ -470,7 +528,7 @@
                 <item>175%</item>
                 <item>200%</item>
             </string-array>
-        <string name="swipe_to_refresh_preference">Swipe per aggiornare</string>
+        <string name="swipe_to_refresh">Swipe per aggiornare</string>
         <string name="swipe_to_refresh_summary">Alcuni siti non funzionano correttamente se questa opzione è abilitata.</string>
         <string name="display_additional_app_bar_icons">Mostra icone addizionali nella barra dell\'applicazione</string>
         <string name="display_additional_app_bar_icons_summary">Mostra nella barra dell\'applicazione le icone per l\'aggiornamento di WebView e, se lo spazio è sufficiente,
@@ -481,52 +539,6 @@
         <string name="night_mode_summary">L\'abilitazione della modalità notte attiva anche JavaScript per tutte le pagine web.</string>
         <string name="display_webpage_images">Mostra immagini delle pagine web</string>
         <string name="display_webpage_images_summary">Disabilita per ridurre il consumo di dati.</string>
-
-    <!-- Download Location -->
-    <string name="download_location">Cartella di Download</string>
-    <string name="download_location_message">Privacy Browser necessita del permesso di accesso alla memoria di storage per utilizzare la cartella pubblica di download.
-        Nel caso in cui il permesso sia negato sarà utilizzata la cartella di download dell\'applicazione.</string>
-    <string name="ok">OK</string>
-
-    <!-- Orbot. -->
-    <string name="orbot_proxy_not_installed">Il Proxy con Orbot funziona solo se è installato Orbot.</string>
-    <string name="waiting_for_orbot">In attesa della connessione di Orbot...</string>
-
-    <!-- About Activity. -->
-    <string name="about_privacy_browser">Informazioni su Privacy Browser</string>
-    <string name="version">Versione</string>
-        <string name="version_code">codice versione</string>
-        <string name="hardware">Hardware</string>
-            <string name="brand">Brand:</string>
-            <string name="manufacturer">Costruttore:</string>
-            <string name="model">Modello:</string>
-            <string name="device">Dispositivo:</string>
-            <string name="bootloader">Bootloader:</string>
-            <string name="radio">Radio:</string>
-        <string name="software">Software</string>
-            <string name="android">Android:</string>
-                <string name="api">API</string>
-            <string name="build">Build:</string>
-            <string name="security_patch">Patch si sicurezza:</string>
-            <string name="webview">WebView:</string>
-            <string name="orbot">Orbot:</string>
-            <string name="easylist_label">EasyList:</string>
-            <string name="easyprivacy_label">EasyPrivacy:</string>
-            <string name="fanboy_annoyance_label">Fanboy’s Annoyance List:</string>
-            <string name="fanboy_social_label">Fanboy’s Social Blocking List:</string>
-            <string name="ultraprivacy_label">UltraPrivacy:</string>
-        <string name="package_signature">Firma del Pacchetto</string>
-            <string name="issuer_dn">Emittente:</string>
-            <string name="subject_dn">Soggetto:</string>
-            <string name="certificate_version">Versione del Certificato:</string>
-            <string name="serial_number">Numero di Serie:</string>
-            <string name="signature_algorithm">Algoritmo di firma:</string>
-    <string name="permissions">Autorizzazioni</string>
-    <string name="privacy_policy">Privacy Policy</string>
-    <string name="changelog">Changelog</string>
-    <string name="licenses">Licenze</string>
-    <string name="contributors">Collaboratori</string>
-    <string name="links">Links</string>
 
     <!-- Ad Control. There are no ads in the standard flavor, but this string must exist because it is  referenced in the code. -->
     <string name="ad_consent">Consenso agli annunci</string>

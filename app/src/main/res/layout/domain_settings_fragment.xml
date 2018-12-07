@@ -488,7 +488,7 @@
                     android:layout_marginTop="1dp"
                     android:layout_marginEnd="10dp"
                     android:layout_gravity="center_vertical"
-                    android:contentDescription="@string/swipe_to_refresh_preference" />
+                    android:contentDescription="@string/swipe_to_refresh" />
 
                 <Spinner
                     android:id="@+id/domain_settings_swipe_to_refresh_spinner"

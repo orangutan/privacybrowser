@@ -104,7 +104,7 @@
         <item
             android:id="@+id/clearAndExit"
             android:title="@string/clear_and_exit"
-            android:icon="@drawable/clear_and_exit"
+            android:icon="@drawable/open_with_external_app_enabled_light"
             android:orderInCategory="120" />
     </group>
 </menu>

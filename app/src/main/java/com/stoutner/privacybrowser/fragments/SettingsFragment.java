@@ -88,6 +88,7 @@ public class SettingsFragment extends PreferenceFragment {
         final Preference homepagePreference = findPreference("homepage");
         final Preference defaultFontSizePreference = findPreference("default_font_size");
         final Preference swipeToRefreshPreference = findPreference("swipe_to_refresh");
+        final Preference downloadWithExternalAppPreference = findPreference("download_with_external_app");
         final Preference displayAdditionalAppBarIconsPreference = findPreference("display_additional_app_bar_icons");
         final Preference darkThemePreference = findPreference("dark_theme");
         final Preference nightModePreference = findPreference("night_mode");
@@ -99,8 +100,8 @@ public class SettingsFragment extends PreferenceFragment {
         hideSystemBarsPreference.setDependency("full_screen_browsing_mode");
 
         // Get Strings from the preferences.
-        String torSearchString = savedPreferences.getString("tor_search", "http://ulrn6sryqaifefld.onion/?q=");
-        String searchString = savedPreferences.getString("search", "https://searx.me/?q=");
+        String torSearchString = savedPreferences.getString("tor_search", getString(R.string.tor_search_default_value));
+        String searchString = savedPreferences.getString("search", getString(R.string.search_default_value));
 
         // Get booleans that are used in multiple places from the preferences.
         final boolean javaScriptEnabled = savedPreferences.getBoolean("javascript_enabled", false);
@@ -146,7 +147,7 @@ public class SettingsFragment extends PreferenceFragment {
         String[] userAgentDataArray = getResources().getStringArray(R.array.user_agent_data);
 
         // Get the current user agent name from the preference.
-        String userAgentName = savedPreferences.getString("user_agent", "Privacy Browser");
+        String userAgentName = savedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
 
         // Get the array position of the user agent name.
         int userAgentArrayPosition = userAgentNamesArray.getPosition(userAgentName);
@@ -174,12 +175,12 @@ public class SettingsFragment extends PreferenceFragment {
         }
 
         // Set the summary text for the custom user agent preference and enable it if user agent preference is set to custom.
-        customUserAgentPreference.setSummary(savedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0"));
+        customUserAgentPreference.setSummary(savedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value)));
         customUserAgentPreference.setEnabled(userAgentPreference.getSummary().equals(getString(R.string.custom_user_agent)));
 
 
         // Set the Tor homepage URL as the summary text for the `tor_homepage` preference when the preference screen is loaded.  The default is Searx: `http://ulrn6sryqaifefld.onion/`.
-        torHomepagePreference.setSummary(savedPreferences.getString("tor_homepage", "http://ulrn6sryqaifefld.onion/"));
+        torHomepagePreference.setSummary(savedPreferences.getString("tor_homepage", getString(R.string.tor_homepage_default_value)));
 
 
         // Set the Tor search URL as the summary text for the Tor preference when the preference screen is loaded.
@@ -192,7 +193,7 @@ public class SettingsFragment extends PreferenceFragment {
         }
 
         // Set the summary text for `tor_search_custom_url`.  The default is `""`.
-        torSearchCustomURLPreference.setSummary(savedPreferences.getString("tor_search_custom_url", ""));
+        torSearchCustomURLPreference.setSummary(savedPreferences.getString("tor_search_custom_url", getString(R.string.tor_search_custom_url_default_value)));
 
         // Enable the Tor custom URL search options only if proxying through Orbot and the search is set to `Custom URL`.
         torSearchCustomURLPreference.setEnabled(proxyThroughOrbot && torSearchString.equals("Custom URL"));
@@ -208,7 +209,7 @@ public class SettingsFragment extends PreferenceFragment {
         }
 
         // Set the summary text for `search_custom_url` (the default is `""`) and enable it if `search` is set to `Custom URL`.
-        searchCustomURLPreference.setSummary(savedPreferences.getString("search_custom_url", ""));
+        searchCustomURLPreference.setSummary(savedPreferences.getString("search_custom_url", getString(R.string.search_custom_url_default_value)));
         searchCustomURLPreference.setEnabled(searchString.equals("Custom URL"));
 
 
@@ -222,10 +223,10 @@ public class SettingsFragment extends PreferenceFragment {
         clearCachePreference.setEnabled(!clearEverything);
 
         // Set the homepage URL as the summary text for the homepage preference.
-        homepagePreference.setSummary(savedPreferences.getString("homepage", "https://searx.me/"));
+        homepagePreference.setSummary(savedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
 
         // Set the default font size as the summary text for the preference.
-        defaultFontSizePreference.setSummary(savedPreferences.getString("default_font_size", "100") + "%%");
+        defaultFontSizePreference.setSummary(savedPreferences.getString("default_font_size", getString(R.string.font_size_default_value)) + "%%");
 
         // Disable the JavaScript preference if Night Mode is enabled.  JavaScript will be enabled for all web pages.
         javaScriptPreference.setEnabled(!nightMode);
@@ -639,6 +640,21 @@ public class SettingsFragment extends PreferenceFragment {
             }
         }
 
+        // Set the download with external app preference icon.
+        if (savedPreferences.getBoolean("download_with_external_app", false)) {
+            if (MainWebViewActivity.darkTheme) {
+                downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_dark);
+            } else {
+                downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_light);
+            }
+        } else {
+            if (MainWebViewActivity.darkTheme) {
+                downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_dark);
+            } else {
+                downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_light);
+            }
+        }
+
         // Set the display additional app bar icons preference icon.
         if (savedPreferences.getBoolean("display_additional_app_bar_icons", false)) {
             if (MainWebViewActivity.darkTheme) {
@@ -815,7 +831,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                 case "user_agent":
                     // Get the new user agent name.
-                    String newUserAgentName = sharedPreferences.getString("user_agent", "Privacy Browser");
+                    String newUserAgentName = sharedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
 
                     // Get the array position for the new user agent name.
                     int newUserAgentArrayPosition = userAgentNamesArray.getPosition(newUserAgentName);
@@ -873,7 +889,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                 case "custom_user_agent":
                     // Set the new custom user agent as the summary text for the preference.
-                    customUserAgentPreference.setSummary(sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0"));
+                    customUserAgentPreference.setSummary(sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value)));
                     break;
 
                 case "incognito_mode":
@@ -1075,7 +1091,7 @@ public class SettingsFragment extends PreferenceFragment {
                 case "proxy_through_orbot":
                     // Get current settings.
                     boolean currentProxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
-                    String currentTorSearchString = sharedPreferences.getString("tor_search", "http://ulrn6sryqaifefld.onion/?q=");
+                    String currentTorSearchString = sharedPreferences.getString("tor_search", getString(R.string.tor_search_default_value));
 
                     // Enable the Tor custom URL search option only if `currentProxyThroughOrbot` is true and the search is set to `Custom URL`.
                     torSearchCustomURLPreference.setEnabled(currentProxyThroughOrbot && currentTorSearchString.equals("Custom URL"));
@@ -1123,12 +1139,12 @@ public class SettingsFragment extends PreferenceFragment {
 
                 case "tor_homepage":
                     // Set the new tor homepage URL as the summary text for the `tor_homepage` preference.  The default is Searx:  `http://ulrn6sryqaifefld.onion/`.
-                    torHomepagePreference.setSummary(sharedPreferences.getString("tor_homepage", "http://ulrn6sryqaifefld.onion/"));
+                    torHomepagePreference.setSummary(sharedPreferences.getString("tor_homepage", getString(R.string.tor_homepage_default_value)));
                     break;
 
                 case "tor_search":
                     // Get the present search string.
-                    String presentTorSearchString = sharedPreferences.getString("tor_search", "http://ulrn6sryqaifefld.onion/?q=");
+                    String presentTorSearchString = sharedPreferences.getString("tor_search", getString(R.string.tor_search_default_value));
 
                     // Update the preferences.
                     if (presentTorSearchString.equals("Custom URL")) {
@@ -1162,12 +1178,12 @@ public class SettingsFragment extends PreferenceFragment {
 
                 case "tor_search_custom_url":
                     // Set the summary text for `tor_search_custom_url`.
-                    torSearchCustomURLPreference.setSummary(sharedPreferences.getString("tor_search_custom_url", ""));
+                    torSearchCustomURLPreference.setSummary(sharedPreferences.getString("tor_search_custom_url", getString(R.string.tor_search_custom_url_default_value)));
                     break;
 
                 case "search":
                     // Store the new search string.
-                    String newSearchString = sharedPreferences.getString("search", "https://searx.me/?q=");
+                    String newSearchString = sharedPreferences.getString("search", getString(R.string.search_default_value));
 
                     // Update `searchPreference` and `searchCustomURLPreference`.
                     if (newSearchString.equals("Custom URL")) {  // `Custom URL` is selected.
@@ -1201,7 +1217,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                 case "search_custom_url":
                     // Set the new custom search URL as the summary text for `search_custom_url`.  The default is `""`.
-                    searchCustomURLPreference.setSummary(sharedPreferences.getString("search_custom_url", ""));
+                    searchCustomURLPreference.setSummary(sharedPreferences.getString("search_custom_url", getString(R.string.search_custom_url_default_value)));
                     break;
 
                 case "full_screen_browsing_mode":
@@ -1451,12 +1467,12 @@ public class SettingsFragment extends PreferenceFragment {
 
                 case "homepage":
                     // Set the new homepage URL as the summary text for the Homepage preference.
-                    homepagePreference.setSummary(sharedPreferences.getString("homepage", "https://searx.me/"));
+                    homepagePreference.setSummary(sharedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
                     break;
 
                 case "default_font_size":
                     // Update the summary text of `default_font_size`.
-                    defaultFontSizePreference.setSummary(sharedPreferences.getString("default_font_size", "100") + "%%");
+                    defaultFontSizePreference.setSummary(sharedPreferences.getString("default_font_size", getString(R.string.font_size_default_value)) + "%%");
                     break;
 
                 case "swipe_to_refresh":
@@ -1472,6 +1488,23 @@ public class SettingsFragment extends PreferenceFragment {
                             swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled_dark);
                         } else {
                             swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled_light);
+                        }
+                    }
+                    break;
+
+                case "download_with_external_app":
+                    // Update the icon.
+                    if (sharedPreferences.getBoolean("download_with_external_app", false)) {
+                        if (MainWebViewActivity.darkTheme) {
+                            downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_dark);
+                        } else {
+                            downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_light);
+                        }
+                    } else {
+                        if (MainWebViewActivity.darkTheme) {
+                            downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_dark);
+                        } else {
+                            downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_light);
                         }
                     }
                     break;

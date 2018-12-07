@@ -274,6 +274,50 @@
     <string name="ssl_certificates">SSL-Zertifikate</string>
     <string name="tracking_ids">Verolgungs-IDs</string>
 
+    <!-- Download Location -->
+    <string name="download_location">Download-Zielordner</string>
+    <string name="download_location_message">Privacy Browser benötigt die Berechtigung zur Speicherung im öffentlichen Download-Ordner. Anderenfalls wird der Download-Ordner der App verwendet.</string>
+    <string name="ok">OK</string>
+
+    <!-- Orbot. -->
+    <string name="orbot_proxy_not_installed">Orbot-Proxy wird nicht funktionieren, solange Orbot nicht installiert ist.</string>
+    <string name="waiting_for_orbot">Warte, bis sich Orbot verbindet...</string>
+
+    <!-- About Activity. -->
+    <string name="about_privacy_browser">Über Privacy Browser</string>
+    <string name="version">Version</string>
+    <string name="version_code">Versions-Code</string>
+    <string name="hardware">Hardware</string>
+    <string name="brand">Marke:</string>
+    <string name="manufacturer">Hersteller:</string>
+    <string name="model">Modell:</string>
+    <string name="device">Gerät:</string>
+    <string name="bootloader">Bootloader:</string>
+    <string name="radio">Radio:</string>
+    <string name="software">Software</string>
+    <string name="android">Android:</string>
+    <string name="api">API</string>
+    <string name="build">Build:</string>
+    <string name="security_patch">Sicherheits-Patch:</string>
+    <string name="webview">WebView:</string>
+    <string name="orbot">Orbot:</string>
+    <string name="easylist_label">EasyList:</string>
+    <string name="easyprivacy_label">EasyPrivacy:</string>
+    <string name="fanboy_annoyance_label">Fanboy’s Annoyance List:</string>
+    <string name="fanboy_social_label">Fanboy’s Social Blocking List:</string>
+    <string name="package_signature">Paket-Signatur</string>
+    <string name="issuer_dn">Aussteller-DN:</string>
+    <string name="subject_dn">Subject DN:</string>
+    <string name="certificate_version">Zertifikat-Version:</string>
+    <string name="serial_number">Seriennummer:</string>
+    <string name="signature_algorithm">Signaturalgorithmus:</string>
+    <string name="permissions">Berechtigungen</string>
+    <string name="privacy_policy">Datenschutzrichtlinie</string>
+    <string name="changelog">Changelog</string>
+    <string name="licenses">Lizenzen</string>
+    <string name="contributors">Mitwirkende</string>
+    <string name="links">Links</string>
+
     <!-- Preferences. -->
     <string name="privacy">Privatsphäre</string>
         <string name="javascript_preference">JavaScript standardmäßig aktivieren</string>
@@ -362,53 +406,9 @@
             <item>175%</item>
             <item>200%</item>
         </string-array>
-        <string name="swipe_to_refresh_preference">Herunterziehen zum Aktualisieren</string>
+        <string name="swipe_to_refresh">Herunterziehen zum Aktualisieren</string>
         <string name="swipe_to_refresh_summary">Einige Websites funktionieren nicht, wenn "Herunterziehen zum Aktualisieren" eingeschaltet ist.</string>
         <string name="display_additional_app_bar_icons">Weitere Icons in der Titelleiste</string>
-
-    <!-- Download Location -->
-    <string name="download_location">Download-Zielordner</string>
-    <string name="download_location_message">Privacy Browser benötigt die Berechtigung zur Speicherung im öffentlichen Download-Ordner. Anderenfalls wird der Download-Ordner der App verwendet.</string>
-    <string name="ok">OK</string>
-
-    <!-- Orbot. -->
-    <string name="orbot_proxy_not_installed">Orbot-Proxy wird nicht funktionieren, solange Orbot nicht installiert ist.</string>
-    <string name="waiting_for_orbot">Warte, bis sich Orbot verbindet...</string>
-
-    <!-- About Activity. -->
-    <string name="about_privacy_browser">Über Privacy Browser</string>
-    <string name="version">Version</string>
-        <string name="version_code">Versions-Code</string>
-        <string name="hardware">Hardware</string>
-            <string name="brand">Marke:</string>
-            <string name="manufacturer">Hersteller:</string>
-            <string name="model">Modell:</string>
-            <string name="device">Gerät:</string>
-            <string name="bootloader">Bootloader:</string>
-            <string name="radio">Radio:</string>
-        <string name="software">Software</string>
-            <string name="android">Android:</string>
-                <string name="api">API</string>
-            <string name="build">Build:</string>
-            <string name="security_patch">Sicherheits-Patch:</string>
-            <string name="webview">WebView:</string>
-            <string name="orbot">Orbot:</string>
-            <string name="easylist_label">EasyList:</string>
-            <string name="easyprivacy_label">EasyPrivacy:</string>
-            <string name="fanboy_annoyance_label">Fanboy’s Annoyance List:</string>
-            <string name="fanboy_social_label">Fanboy’s Social Blocking List:</string>
-        <string name="package_signature">Paket-Signatur</string>
-            <string name="issuer_dn">Aussteller-DN:</string>
-            <string name="subject_dn">Subject DN:</string>
-            <string name="certificate_version">Zertifikat-Version:</string>
-            <string name="serial_number">Seriennummer:</string>
-            <string name="signature_algorithm">Signaturalgorithmus:</string>
-    <string name="permissions">Berechtigungen</string>
-    <string name="privacy_policy">Datenschutzrichtlinie</string>
-    <string name="changelog">Changelog</string>
-    <string name="licenses">Lizenzen</string>
-    <string name="contributors">Mitwirkende</string>
-    <string name="links">Links</string>
 
     <!-- Ad Control. There are no ads in the standard flavor, but this string must exist because it is referenced in the code. -->
     <string name="ad_consent">Zustimmung zur Werbung</string>

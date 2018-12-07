@@ -26,13 +26,19 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 
+import com.stoutner.privacybrowser.R;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class ImportExportDatabaseHelper {
     public static final String EXPORT_SUCCESSFUL = "Export Successful";
     public static final String IMPORT_SUCCESSFUL = "Import Successful";
 
-    private static final int SCHEMA_VERSION = 1;
+    private static final int SCHEMA_VERSION = 2;
     private static final String PREFERENCES_TABLE = "preferences";
 
     // The preferences constants.
@@ -70,21 +76,22 @@ public class ImportExportDatabaseHelper {
     private static final String HOMEPAGE = "homepage";
     private static final String DEFAULT_FONT_SIZE = "default_font_size";
     private static final String SWIPE_TO_REFRESH = "swipe_to_refresh";
+    private static final String DOWNLOAD_WITH_EXTERNAL_APP = "download_with_external_app";
     private static final String DISPLAY_ADDITIONAL_APP_BAR_ICONS = "display_additional_app_bar_icons";
     private static final String DARK_THEME = "dark_theme";
     private static final String NIGHT_MODE = "night_mode";
     private static final String DISPLAY_WEBPAGE_IMAGES = "display_webpage_images";
 
-    public String exportUnencrypted(File databaseFile, Context context) {
+    public String exportUnencrypted(File exportFile, Context context) {
         try {
             // Delete the current file if it exists.
-            if (databaseFile.exists()) {
+            if (exportFile.exists()) {
                 //noinspection ResultOfMethodCallIgnored
-                databaseFile.delete();
+                exportFile.delete();
             }
 
             // Create the export database.
-            SQLiteDatabase exportDatabase = SQLiteDatabase.openOrCreateDatabase(databaseFile, null);
+            SQLiteDatabase exportDatabase = SQLiteDatabase.openOrCreateDatabase(exportFile, null);
 
             // Set the export database version number.
             exportDatabase.setVersion(SCHEMA_VERSION);
@@ -215,6 +222,7 @@ public class ImportExportDatabaseHelper {
                     HOMEPAGE + " TEXT, " +
                     DEFAULT_FONT_SIZE + " TEXT, " +
                     SWIPE_TO_REFRESH + " BOOLEAN, " +
+                    DOWNLOAD_WITH_EXTERNAL_APP + " BOOLEAN, " +
                     DISPLAY_ADDITIONAL_APP_BAR_ICONS + " BOOLEAN, " +
                     DARK_THEME + " BOOLEAN, " +
                     NIGHT_MODE + " BOOLEAN, " +
@@ -233,38 +241,39 @@ public class ImportExportDatabaseHelper {
             preferencesContentValues.put(THIRD_PARTY_COOKIES, sharedPreferences.getBoolean("third_party_cookies_enabled", false));
             preferencesContentValues.put(DOM_STORAGE, sharedPreferences.getBoolean("dom_storage_enabled", false));
             preferencesContentValues.put(SAVE_FORM_DATA, sharedPreferences.getBoolean("save_form_data_enabled", false));  // Save form data can be removed once the minimum API >= 26.
-            preferencesContentValues.put(USER_AGENT, sharedPreferences.getString("user_agent", "Privacy Browser"));
-            preferencesContentValues.put(CUSTOM_USER_AGENT, sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0"));
-            preferencesContentValues.put(INCOGNITO_MODE, sharedPreferences.getBoolean("incognito_mode", false));
-            preferencesContentValues.put(DO_NOT_TRACK, sharedPreferences.getBoolean("do_not_track", false));
-            preferencesContentValues.put(ALLOW_SCREENSHOTS, sharedPreferences.getBoolean("allow_screenshots", false));
-            preferencesContentValues.put(EASYLIST, sharedPreferences.getBoolean("easylist", true));
-            preferencesContentValues.put(EASYPRIVACY, sharedPreferences.getBoolean("easyprivacy", true));
+            preferencesContentValues.put(USER_AGENT, sharedPreferences.getString(USER_AGENT, context.getString(R.string.user_agent_default_value)));
+            preferencesContentValues.put(CUSTOM_USER_AGENT, sharedPreferences.getString(CUSTOM_USER_AGENT, context.getString(R.string.custom_user_agent_default_value)));
+            preferencesContentValues.put(INCOGNITO_MODE, sharedPreferences.getBoolean(INCOGNITO_MODE, false));
+            preferencesContentValues.put(DO_NOT_TRACK, sharedPreferences.getBoolean(DO_NOT_TRACK, false));
+            preferencesContentValues.put(ALLOW_SCREENSHOTS, sharedPreferences.getBoolean(ALLOW_SCREENSHOTS, false));
+            preferencesContentValues.put(EASYLIST, sharedPreferences.getBoolean(EASYLIST, true));
+            preferencesContentValues.put(EASYPRIVACY, sharedPreferences.getBoolean(EASYPRIVACY, true));
             preferencesContentValues.put(FANBOYS_ANNOYANCE_LIST, sharedPreferences.getBoolean("fanboy_annoyance_list", true));
             preferencesContentValues.put(FANBOYS_SOCIAL_BLOCKING_LIST, sharedPreferences.getBoolean("fanboy_social_blocking_list", true));
-            preferencesContentValues.put(ULTRAPRIVACY, sharedPreferences.getBoolean("ultraprivacy", true));
-            preferencesContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, sharedPreferences.getBoolean("block_all_third_party_requests", false));
-            preferencesContentValues.put(PROXY_THROUGH_ORBOT, sharedPreferences.getBoolean("proxy_through_orbot", false));
-            preferencesContentValues.put(TOR_HOMEPAGE, sharedPreferences.getString("tor_homepage", "http://ulrn6sryqaifefld.onion/"));
-            preferencesContentValues.put(TOR_SEARCH, sharedPreferences.getString("tor_search", "http://ulrn6sryqaifefld.onion/?q="));
-            preferencesContentValues.put(TOR_SEARCH_CUSTOM_URL, sharedPreferences.getString("tor_search_custom_url", ""));
-            preferencesContentValues.put(SEARCH, sharedPreferences.getString("search", "https://searx.me/?q="));
-            preferencesContentValues.put(SEARCH_CUSTOM_URL, sharedPreferences.getString("search_custom_url", ""));
-            preferencesContentValues.put(FULL_SCREEN_BROWSING_MODE, sharedPreferences.getBoolean("full_screen_browsing_mode", false));
-            preferencesContentValues.put(HIDE_SYSTEM_BARS, sharedPreferences.getBoolean("hide_system_bars", false));
-            preferencesContentValues.put(TRANSLUCENT_NAVIGATION_BAR, sharedPreferences.getBoolean("translucent_navigation_bar", true));
-            preferencesContentValues.put(CLEAR_EVERYTHING, sharedPreferences.getBoolean("clear_everything", true));
-            preferencesContentValues.put(CLEAR_COOKIES, sharedPreferences.getBoolean("clear_cookies", true));
-            preferencesContentValues.put(CLEAR_DOM_STORAGE, sharedPreferences.getBoolean("clear_dom_storage", true));
-            preferencesContentValues.put(CLEAR_FORM_DATA, sharedPreferences.getBoolean("clear_form_data", true));  // Clear form data can be removed once the minimum API >= 26.
-            preferencesContentValues.put(CLEAR_CACHE, sharedPreferences.getBoolean("clear_cache", true));
-            preferencesContentValues.put(HOMEPAGE, sharedPreferences.getString("homepage", "https://searx.me"));
-            preferencesContentValues.put(DEFAULT_FONT_SIZE, sharedPreferences.getString("default_font_size", "100"));
-            preferencesContentValues.put(SWIPE_TO_REFRESH, sharedPreferences.getBoolean("swipe_to_refresh", true));
-            preferencesContentValues.put(DISPLAY_ADDITIONAL_APP_BAR_ICONS, sharedPreferences.getBoolean("display_additional_app_bar_icons", false));
-            preferencesContentValues.put(DARK_THEME, sharedPreferences.getBoolean("dark_theme", false));
-            preferencesContentValues.put(NIGHT_MODE, sharedPreferences.getBoolean("night_mode", false));
-            preferencesContentValues.put(DISPLAY_WEBPAGE_IMAGES, sharedPreferences.getBoolean("display_webpage_images", true));
+            preferencesContentValues.put(ULTRAPRIVACY, sharedPreferences.getBoolean(ULTRAPRIVACY, true));
+            preferencesContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, sharedPreferences.getBoolean(BLOCK_ALL_THIRD_PARTY_REQUESTS, false));
+            preferencesContentValues.put(PROXY_THROUGH_ORBOT, sharedPreferences.getBoolean(PROXY_THROUGH_ORBOT, false));
+            preferencesContentValues.put(TOR_HOMEPAGE, sharedPreferences.getString(TOR_HOMEPAGE, context.getString(R.string.tor_homepage_default_value)));
+            preferencesContentValues.put(TOR_SEARCH, sharedPreferences.getString(TOR_SEARCH, context.getString(R.string.tor_search_default_value)));
+            preferencesContentValues.put(TOR_SEARCH_CUSTOM_URL, sharedPreferences.getString(TOR_SEARCH_CUSTOM_URL, context.getString(R.string.tor_search_custom_url_default_value)));
+            preferencesContentValues.put(SEARCH, sharedPreferences.getString(SEARCH, context.getString(R.string.search_default_value)));
+            preferencesContentValues.put(SEARCH_CUSTOM_URL, sharedPreferences.getString(SEARCH_CUSTOM_URL, context.getString(R.string.search_custom_url_default_value)));
+            preferencesContentValues.put(FULL_SCREEN_BROWSING_MODE, sharedPreferences.getBoolean(FULL_SCREEN_BROWSING_MODE, false));
+            preferencesContentValues.put(HIDE_SYSTEM_BARS, sharedPreferences.getBoolean(HIDE_SYSTEM_BARS, false));
+            preferencesContentValues.put(TRANSLUCENT_NAVIGATION_BAR, sharedPreferences.getBoolean(TRANSLUCENT_NAVIGATION_BAR, true));
+            preferencesContentValues.put(CLEAR_EVERYTHING, sharedPreferences.getBoolean(CLEAR_EVERYTHING, true));
+            preferencesContentValues.put(CLEAR_COOKIES, sharedPreferences.getBoolean(CLEAR_COOKIES, true));
+            preferencesContentValues.put(CLEAR_DOM_STORAGE, sharedPreferences.getBoolean(CLEAR_DOM_STORAGE, true));
+            preferencesContentValues.put(CLEAR_FORM_DATA, sharedPreferences.getBoolean(CLEAR_FORM_DATA, true));  // Clear form data can be removed once the minimum API >= 26.
+            preferencesContentValues.put(CLEAR_CACHE, sharedPreferences.getBoolean(CLEAR_CACHE, true));
+            preferencesContentValues.put(HOMEPAGE, sharedPreferences.getString(HOMEPAGE, context.getString(R.string.homepage_default_value)));
+            preferencesContentValues.put(DEFAULT_FONT_SIZE, sharedPreferences.getString(DEFAULT_FONT_SIZE, context.getString(R.string.font_size_default_value)));
+            preferencesContentValues.put(SWIPE_TO_REFRESH, sharedPreferences.getBoolean(SWIPE_TO_REFRESH, true));
+            preferencesContentValues.put(DOWNLOAD_WITH_EXTERNAL_APP, sharedPreferences.getBoolean(DOWNLOAD_WITH_EXTERNAL_APP, false));
+            preferencesContentValues.put(DISPLAY_ADDITIONAL_APP_BAR_ICONS, sharedPreferences.getBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, false));
+            preferencesContentValues.put(DARK_THEME, sharedPreferences.getBoolean(DARK_THEME, false));
+            preferencesContentValues.put(NIGHT_MODE, sharedPreferences.getBoolean(NIGHT_MODE, false));
+            preferencesContentValues.put(DISPLAY_WEBPAGE_IMAGES, sharedPreferences.getBoolean(DISPLAY_WEBPAGE_IMAGES, true));
 
             // Insert the preferences into the export database.
             exportDatabase.insert(PREFERENCES_TABLE, null, preferencesContentValues);
@@ -273,10 +282,10 @@ public class ImportExportDatabaseHelper {
             exportDatabase.close();
 
             // Convert the database file to a string.
-            String databaseString = databaseFile.toString();
+            String exportFileString = exportFile.toString();
 
             // Create strings for the temporary database files.
-            String journalFileString = databaseString + "-journal";
+            String journalFileString = exportFileString + "-journal";
 
             // Get `Files` for the temporary database files.
             File journalFile = new File(journalFileString);
@@ -295,13 +304,68 @@ public class ImportExportDatabaseHelper {
         }
     }
 
-    public String importUnencrypted(File databaseFile, Context context){
+    public String importUnencrypted(File importFile, Context context){
         try {
-            // Convert the database file to a string.  Once API >= 27 the file can be opened directly.
-            String databaseString = databaseFile.toString();
+            // Create a temporary import file string.
+            String temporaryImportFileString = context.getCacheDir() + "/" + "temporary_import_file";
 
-            // Open the import database.
-            SQLiteDatabase importDatabase = SQLiteDatabase.openDatabase(databaseString, null, SQLiteDatabase.OPEN_READONLY);
+            // Get a handle for a temporary import file.
+            File temporaryImportFile = new File(temporaryImportFileString);
+
+            // Delete the temporary import file if it already exists.
+            if (temporaryImportFile.exists()) {
+                //noinspection ResultOfMethodCallIgnored
+                temporaryImportFile.delete();
+            }
+
+            // Create input and output streams.
+            InputStream importFileInputStream = new FileInputStream(importFile);
+            OutputStream temporaryImportFileOutputStream = new FileOutputStream(temporaryImportFile);
+
+            // Create a byte array.
+            byte[] transferByteArray = new byte[1024];
+
+            // Create an integer to track the number of bytes read.
+            int bytesRead;
+
+            // Copy the import file to the temporary import file.  Once API >= 26 `Files.copy` can be used instead.
+            while ((bytesRead = importFileInputStream.read(transferByteArray)) > 0) {
+                temporaryImportFileOutputStream.write(transferByteArray, 0, bytesRead);
+            }
+
+            // Close the file streams.
+            importFileInputStream.close();
+            temporaryImportFileOutputStream.close();
+
+
+            // Get a handle for the shared preference.
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+            // Open the import database.  Once API >= 27 the file can be opened directly without using the string.
+            SQLiteDatabase importDatabase = SQLiteDatabase.openDatabase(temporaryImportFileString, null, SQLiteDatabase.OPEN_READWRITE);
+
+            // Get the database version.
+            int importDatabaseVersion = importDatabase.getVersion();
+
+            // Upgrade the database if needed.
+            if (importDatabaseVersion < SCHEMA_VERSION) {
+                switch (importDatabaseVersion){
+                    // Upgrade from schema version 1.
+                    case 1:
+                        // Add the download with external app preference.
+                        importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + DOWNLOAD_WITH_EXTERNAL_APP + " BOOLEAN");
+
+                        // Get the current setting for downloading with an external app.
+                        boolean downloadWithExternalApp = sharedPreferences.getBoolean("download_with_external_app", false);
+
+                        // Set the download with external app preference to the current default.
+                        if (downloadWithExternalApp) {
+                            importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + DOWNLOAD_WITH_EXTERNAL_APP + " = " + 1);
+                        } else {
+                            importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + DOWNLOAD_WITH_EXTERNAL_APP + " = " + 0);
+                        }
+                }
+            }
 
             // Get a cursor for the domains table.
             Cursor importDomainsCursor = importDatabase.rawQuery("SELECT * FROM " + DomainsDatabaseHelper.DOMAINS_TABLE + " ORDER BY " + DomainsDatabaseHelper.DOMAIN_NAME + " ASC", null);
@@ -402,9 +466,6 @@ public class ImportExportDatabaseHelper {
             bookmarksDatabaseHelper.close();
 
 
-            // Get a handle for the shared preference.
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
             // Get a cursor for the bookmarks table.
             Cursor importPreferencesCursor = importDatabase.rawQuery("SELECT * FROM " + PREFERENCES_TABLE, null);
 
@@ -419,39 +480,41 @@ public class ImportExportDatabaseHelper {
                     .putBoolean("dom_storage_enabled", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DOM_STORAGE)) == 1)
                     // Save form data can be removed once the minimum API >= 26.
                     .putBoolean("save_form_data_enabled", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(SAVE_FORM_DATA)) == 1)
-                    .putString("user_agent", importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(USER_AGENT)))
-                    .putString("custom_user_agent", importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(CUSTOM_USER_AGENT)))
-                    .putBoolean("incognito_mode", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(INCOGNITO_MODE)) == 1)
-                    .putBoolean("do_not_track", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DO_NOT_TRACK)) == 1)
-                    .putBoolean("allow_screenshots", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(ALLOW_SCREENSHOTS)) == 1)
-                    .putBoolean("easylist", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(EASYLIST)) == 1)
-                    .putBoolean("easyprivacy", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(EASYPRIVACY)) == 1)
+                    .putString(USER_AGENT, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(USER_AGENT)))
+                    .putString(CUSTOM_USER_AGENT, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(CUSTOM_USER_AGENT)))
+                    .putBoolean(INCOGNITO_MODE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(INCOGNITO_MODE)) == 1)
+                    .putBoolean(DO_NOT_TRACK, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DO_NOT_TRACK)) == 1)
+                    .putBoolean(ALLOW_SCREENSHOTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(ALLOW_SCREENSHOTS)) == 1)
+                    .putBoolean(EASYLIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(EASYLIST)) == 1)
+                    .putBoolean(EASYPRIVACY, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(EASYPRIVACY)) == 1)
                     .putBoolean("fanboy_annoyance_list", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(FANBOYS_ANNOYANCE_LIST)) == 1)
                     .putBoolean("fanboy_social_blocking_list", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(FANBOYS_SOCIAL_BLOCKING_LIST)) == 1)
-                    .putBoolean("ultraprivacy", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(ULTRAPRIVACY)) == 1)
-                    .putBoolean("block_all_third_party_requests", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(BLOCK_ALL_THIRD_PARTY_REQUESTS)) == 1)
-                    .putBoolean("proxy_through_orbot", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(PROXY_THROUGH_ORBOT)) == 1)
-                    .putString("tor_homepage", importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(TOR_HOMEPAGE)))
-                    .putString("tor_search", importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(TOR_SEARCH)))
-                    .putString("tor_search_custom_url", importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(TOR_SEARCH_CUSTOM_URL)))
-                    .putString("search", importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(SEARCH)))
-                    .putString("search_custom_url", importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(SEARCH_CUSTOM_URL)))
-                    .putBoolean("full_screen_browsing_mode", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(FULL_SCREEN_BROWSING_MODE)) == 1)
-                    .putBoolean("hide_system_bars", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(HIDE_SYSTEM_BARS)) == 1)
-                    .putBoolean("translucent_navigation_bar", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(TRANSLUCENT_NAVIGATION_BAR)) == 1)
-                    .putBoolean("clear_everything", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_EVERYTHING)) == 1)
-                    .putBoolean("clear_cookies", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_COOKIES)) == 1)
-                    .putBoolean("clear_dom_storage", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_DOM_STORAGE)) == 1)
+                    .putBoolean(ULTRAPRIVACY, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(ULTRAPRIVACY)) == 1)
+                    .putBoolean(BLOCK_ALL_THIRD_PARTY_REQUESTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(BLOCK_ALL_THIRD_PARTY_REQUESTS)) == 1)
+                    .putBoolean(PROXY_THROUGH_ORBOT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(PROXY_THROUGH_ORBOT)) == 1)
+                    .putString(TOR_HOMEPAGE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(TOR_HOMEPAGE)))
+                    .putString(TOR_SEARCH, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(TOR_SEARCH)))
+                    .putString(TOR_SEARCH_CUSTOM_URL, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(TOR_SEARCH_CUSTOM_URL)))
+                    .putString(SEARCH, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(SEARCH)))
+                    .putString(SEARCH_CUSTOM_URL, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(SEARCH_CUSTOM_URL)))
+                    .putBoolean(FULL_SCREEN_BROWSING_MODE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(FULL_SCREEN_BROWSING_MODE)) == 1)
+                    .putBoolean(HIDE_SYSTEM_BARS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(HIDE_SYSTEM_BARS)) == 1)
+                    .putBoolean(TRANSLUCENT_NAVIGATION_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(TRANSLUCENT_NAVIGATION_BAR)) == 1)
+                    .putBoolean(CLEAR_EVERYTHING, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_EVERYTHING)) == 1)
+                    .putBoolean(CLEAR_COOKIES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_COOKIES)) == 1)
+                    .putBoolean(CLEAR_DOM_STORAGE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_DOM_STORAGE)) == 1)
                     // Clear form data can be removed once the minimum API >= 26.
-                    .putBoolean("clear_form_data", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_FORM_DATA)) == 1)
-                    .putBoolean("clear_cache", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_CACHE)) == 1)
-                    .putString("homepage", importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(HOMEPAGE)))
-                    .putString("default_font_size", importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(DEFAULT_FONT_SIZE)))
-                    .putBoolean("swipe_to_refresh", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(SWIPE_TO_REFRESH)) == 1)
-                    .putBoolean("display_additional_app_bar_icons", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DISPLAY_ADDITIONAL_APP_BAR_ICONS)) == 1)
-                    .putBoolean("dark_theme", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DARK_THEME)) == 1)
-                    .putBoolean("night_mode", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(NIGHT_MODE)) == 1)
-                    .putBoolean("display_webpage_images", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DISPLAY_WEBPAGE_IMAGES)) == 1).apply();
+                    .putBoolean(CLEAR_FORM_DATA, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_FORM_DATA)) == 1)
+                    .putBoolean(CLEAR_CACHE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_CACHE)) == 1)
+                    .putString(HOMEPAGE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(HOMEPAGE)))
+                    .putString(DEFAULT_FONT_SIZE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(DEFAULT_FONT_SIZE)))
+                    .putBoolean(SWIPE_TO_REFRESH, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(SWIPE_TO_REFRESH)) == 1)
+                    .putBoolean(DOWNLOAD_WITH_EXTERNAL_APP, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DOWNLOAD_WITH_EXTERNAL_APP)) == 1)
+                    .putBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DISPLAY_ADDITIONAL_APP_BAR_ICONS)) == 1)
+                    .putBoolean(DARK_THEME, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DARK_THEME)) == 1)
+                    .putBoolean(NIGHT_MODE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(NIGHT_MODE)) == 1)
+                    .putBoolean(DISPLAY_WEBPAGE_IMAGES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DISPLAY_WEBPAGE_IMAGES)) == 1)
+                    .apply();
 
             // Close the preferences cursor.
             importPreferencesCursor.close();
@@ -461,9 +524,9 @@ public class ImportExportDatabaseHelper {
             importDatabase.close();
 
             // Create strings for the temporary database files.
-            String shmFileString = databaseString + "-shm";
-            String walFileString = databaseString + "-wal";
-            String journalFileString = databaseString + "-journal";
+            String shmFileString = temporaryImportFileString + "-shm";
+            String walFileString = temporaryImportFileString + "-wal";
+            String journalFileString = temporaryImportFileString + "-journal";
 
             // Get `Files` for the temporary database files.
             File shmFile = new File(shmFileString);
@@ -487,6 +550,10 @@ public class ImportExportDatabaseHelper {
                 //noinspection ResultOfMethodCallIgnored
                 journalFile.delete();
             }
+
+            // Delete the temporary import file.
+            //noinspection ResultOfMethodCallIgnored
+            temporaryImportFile.delete();
 
             // Import successful.
             return IMPORT_SUCCESSFUL;

@@ -292,7 +292,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private CoordinatorLayout rootCoordinatorLayout;
 
     // `mainWebView` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`,
-    // `findNextOnPage()`, `closeFindOnPage()`, `loadUrlFromTextBox()`, `onSslMismatchBack()`, `setDisplayWebpageImages()`, and `applyProxyThroughOrbot()`.
+    // `findNextOnPage()`, `closeFindOnPage()`, `loadUrlFromTextBox()`, `onSslMismatchBack()`, and `applyProxyThroughOrbot()`.
     private WebView mainWebView;
 
     // `fullScreenVideoFrameLayout` is used in `onCreate()` and `onConfigurationChanged()`.
@@ -330,9 +330,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // `nightMode` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and  `applyDomainSettings()`.
     private boolean nightMode;
-
-    // `displayWebpageImagesBoolean` is used in `applyAppSettings()` and `applyDomainSettings()`.
-    private boolean displayWebpageImagesBoolean;
 
     // 'homepage' is used in `onCreate()`, `onNavigationItemSelected()`, and `applyProxyThroughOrbot()`.
     private String homepage;
@@ -398,6 +395,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `displayingFullScreenVideo` is used in `onCreate()` and `onResume()`.
     private boolean displayingFullScreenVideo;
 
+    // `downloadWithExternalApp` is used in `onCreate()`, `onCreateContextMenu()`, and `applyDomainSettings()`.
+    private boolean downloadWithExternalApp;
+
     // `currentDomainName` is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onAddDomain()`, and `applyDomainSettings()`.
     private String currentDomainName;
 
@@ -410,17 +410,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `waitingForOrbot` is used in `onCreate()`, `onResume()`, and `applyProxyThroughOrbot()`.
     private boolean waitingForOrbot;
 
-    // `domainSettingsApplied` is used in `prepareOptionsMenu()`, `applyDomainSettings()`, and `setDisplayWebpageImages()`.
+    // `domainSettingsApplied` is used in `prepareOptionsMenu()` and `applyDomainSettings()`.
     private boolean domainSettingsApplied;
 
     // `domainSettingsJavaScriptEnabled` is used in `onOptionsItemSelected()` and `applyDomainSettings()`.
     private Boolean domainSettingsJavaScriptEnabled;
-
-    // `displayWebpageImagesInt` is used in `applyDomainSettings()` and `setDisplayWebpageImages()`.
-    private int displayWebpageImagesInt;
-
-    // `onTheFlyDisplayImagesSet` is used in `applyDomainSettings()` and `setDisplayWebpageImages()`.
-    private boolean onTheFlyDisplayImagesSet;
 
     // `waitingForOrbotHtmlString` is used in `onCreate()` and `applyProxyThroughOrbot()`.
     private String waitingForOrbotHtmlString;
@@ -1147,32 +1141,37 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Allow the downloading of files.
         mainWebView.setDownloadListener((String url, String userAgent, String contentDisposition, String mimetype, long contentLength) -> {
-            // Check to see if the WRITE_EXTERNAL_STORAGE permission has already been granted.
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                // The WRITE_EXTERNAL_STORAGE permission needs to be requested.
+            // Check if the download should be processed by an external app.
+            if (downloadWithExternalApp) {  // Download with an external app.
+                openUrlWithExternalApp(url);
+            } else {  // Download with Android's download manager.
+                // Check to see if the WRITE_EXTERNAL_STORAGE permission has already been granted.
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {  // The storage permission has not been granted.
+                    // The WRITE_EXTERNAL_STORAGE permission needs to be requested.
 
-                // Store the variables for future use by `onRequestPermissionsResult()`.
-                downloadUrl = url;
-                downloadContentDisposition = contentDisposition;
-                downloadContentLength = contentLength;
+                    // Store the variables for future use by `onRequestPermissionsResult()`.
+                    downloadUrl = url;
+                    downloadContentDisposition = contentDisposition;
+                    downloadContentLength = contentLength;
 
-                // Show a dialog if the user has previously denied the permission.
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
-                    // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_FILE.
-                    DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_FILE);
+                    // Show a dialog if the user has previously denied the permission.
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
+                        // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_FILE.
+                        DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_FILE);
 
-                    // Show the download location permission alert dialog.  The permission will be requested when the the dialog is closed.
-                    downloadLocationPermissionDialogFragment.show(getFragmentManager(), getString(R.string.download_location));
-                } else {  // Show the permission request directly.
-                    // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
-                    ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_FILE_REQUEST_CODE);
+                        // Show the download location permission alert dialog.  The permission will be requested when the the dialog is closed.
+                        downloadLocationPermissionDialogFragment.show(getFragmentManager(), getString(R.string.download_location));
+                    } else {  // Show the permission request directly.
+                        // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
+                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_FILE_REQUEST_CODE);
+                    }
+                } else {  // The storage permission has already been granted.
+                    // Get a handle for the download file alert dialog.
+                    AppCompatDialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(url, contentDisposition, contentLength);
+
+                    // Show the download file alert dialog.
+                    downloadFileDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
                 }
-            } else {  // The storage permission has already been granted.
-                // Get a handle for the download file alert dialog.
-                AppCompatDialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(url, contentDisposition, contentLength);
-
-                // Show the download file alert dialog.
-                downloadFileDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
             }
         });
 
@@ -2725,9 +2724,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 } else {  // Images are not currently loaded automatically.
                     mainWebView.getSettings().setLoadsImagesAutomatically(true);
                 }
-
-                // Set `onTheFlyDisplayImagesSet`.
-                onTheFlyDisplayImagesSet = true;
                 return true;
 
             case R.id.night_mode:
@@ -2792,8 +2788,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 String shareString = webViewTitle + " – " + urlTextBox.getText().toString();
 
                 // Create the share intent.
-                Intent shareIntent = new Intent();
-                shareIntent.setAction(Intent.ACTION_SEND);
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.putExtra(Intent.EXTRA_TEXT, shareString);
                 shareIntent.setType("text/plain");
 
@@ -3145,32 +3140,35 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Add a Download URL entry.
                 menu.add(R.string.download_url).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Check to see if the WRITE_EXTERNAL_STORAGE permission has already been granted.
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                        // The WRITE_EXTERNAL_STORAGE permission needs to be requested.
+                    // Check if the download should be processed by an external app.
+                    if (downloadWithExternalApp) {  // Download with an external app.
+                        openUrlWithExternalApp(linkUrl);
+                    } else {  // Download with Android's download manager.
+                        // Check to see if the storage permission has already been granted.
+                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {  // The storage permission needs to be requested.
+                            // Store the variables for future use by `onRequestPermissionsResult()`.
+                            downloadUrl = linkUrl;
+                            downloadContentDisposition = "none";
+                            downloadContentLength = -1;
 
-                        // Store the variables for future use by `onRequestPermissionsResult()`.
-                        downloadUrl = linkUrl;
-                        downloadContentDisposition = "none";
-                        downloadContentLength = -1;
+                            // Show a dialog if the user has previously denied the permission.
+                            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
+                                // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_FILE.
+                                DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_FILE);
 
-                        // Show a dialog if the user has previously denied the permission.
-                        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
-                            // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_FILE.
-                            DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_FILE);
+                                // Show the download location permission alert dialog.  The permission will be requested when the the dialog is closed.
+                                downloadLocationPermissionDialogFragment.show(getFragmentManager(), getString(R.string.download_location));
+                            } else {  // Show the permission request directly.
+                                // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
+                                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_FILE_REQUEST_CODE);
+                            }
+                        } else {  // The storage permission has already been granted.
+                            // Get a handle for the download file alert dialog.
+                            AppCompatDialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(linkUrl, "none", -1);
 
-                            // Show the download location permission alert dialog.  The permission will be requested when the the dialog is closed.
-                            downloadLocationPermissionDialogFragment.show(getFragmentManager(), getString(R.string.download_location));
-                        } else {  // Show the permission request directly.
-                            // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
-                            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_FILE_REQUEST_CODE);
+                            // Show the download file alert dialog.
+                            downloadFileDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
                         }
-                    } else {  // The WRITE_EXTERNAL_STORAGE permission has already been granted.
-                        // Get a handle for the download file alert dialog.
-                        AppCompatDialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(linkUrl, "none", -1);
-
-                        // Show the download file alert dialog.
-                        downloadFileDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
                     }
                     return false;
                 });
@@ -3188,7 +3186,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Add a `Write Email` entry.
                 menu.add(R.string.write_email).setOnMenuItemClickListener(item -> {
-                    // We use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
+                    // Use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
 
                     // Parse the url and set it as the data for the `Intent`.
@@ -3232,30 +3230,33 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Add a `Download Image` entry.
                 menu.add(R.string.download_image).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Check to see if the WRITE_EXTERNAL_STORAGE permission has already been granted.
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                        // The WRITE_EXTERNAL_STORAGE permission needs to be requested.
+                    // Check if the download should be processed by an external app.
+                    if (downloadWithExternalApp) {  // Download with an external app.
+                        openUrlWithExternalApp(imageUrl);
+                    } else {  // Download with Android's download manager.
+                        // Check to see if the storage permission has already been granted.
+                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {  // The storage permission needs to be requested.
+                            // Store the image URL for use by `onRequestPermissionResult()`.
+                            downloadImageUrl = imageUrl;
 
-                        // Store the image URL for use by `onRequestPermissionResult()`.
-                        downloadImageUrl = imageUrl;
+                            // Show a dialog if the user has previously denied the permission.
+                            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
+                                // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_IMAGE.
+                                DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_IMAGE);
 
-                        // Show a dialog if the user has previously denied the permission.
-                        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
-                            // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_IMAGE.
-                            DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_IMAGE);
+                                // Show the download location permission alert dialog.  The permission will be requested when the dialog is closed.
+                                downloadLocationPermissionDialogFragment.show(getFragmentManager(), getString(R.string.download_location));
+                            } else {  // Show the permission request directly.
+                                // Request the permission.  The download dialog will be launched by `onRequestPermissionResult().
+                                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_IMAGE_REQUEST_CODE);
+                            }
+                        } else {  // The storage permission has already been granted.
+                            // Get a handle for the download image alert dialog.
+                            AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
 
-                            // Show the download location permission alert dialog.  The permission will be requested when the dialog is closed.
-                            downloadLocationPermissionDialogFragment.show(getFragmentManager(), getString(R.string.download_location));
-                        } else {  // Show the permission request directly.
-                            // Request the permission.  The download dialog will be launched by `onRequestPermissionResult().
-                            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_IMAGE_REQUEST_CODE);
+                            // Show the download image alert dialog.
+                            downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
                         }
-                    } else {  // The WRITE_EXTERNAL_STORAGE permission has already been granted.
-                        // Get a handle for the download image alert dialog.
-                        AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
-
-                        // Show the download image alert dialog.
-                        downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
                     }
                     return false;
                 });
@@ -3291,30 +3292,33 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Add a `Download Image` entry.
                 menu.add(R.string.download_image).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Check to see if the WRITE_EXTERNAL_STORAGE permission has already been granted.
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                        // The WRITE_EXTERNAL_STORAGE permission needs to be requested.
+                    // Check if the download should be processed by an external app.
+                    if (downloadWithExternalApp) {  // Download with an external app.
+                        openUrlWithExternalApp(imageUrl);
+                    } else {  // Download with Android's download manager.
+                        // Check to see if the storage permission has already been granted.
+                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {  // The storage permission needs to be requested.
+                            // Store the image URL for use by `onRequestPermissionResult()`.
+                            downloadImageUrl = imageUrl;
 
-                        // Store the image URL for use by `onRequestPermissionResult()`.
-                        downloadImageUrl = imageUrl;
+                            // Show a dialog if the user has previously denied the permission.
+                            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
+                                // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_IMAGE.
+                                DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_IMAGE);
 
-                        // Show a dialog if the user has previously denied the permission.
-                        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
-                            // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_IMAGE.
-                            DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_IMAGE);
+                                // Show the download location permission alert dialog.  The permission will be requested when the dialog is closed.
+                                downloadLocationPermissionDialogFragment.show(getFragmentManager(), getString(R.string.download_location));
+                            } else {  // Show the permission request directly.
+                                // Request the permission.  The download dialog will be launched by `onRequestPermissionResult().
+                                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_IMAGE_REQUEST_CODE);
+                            }
+                        } else {  // The storage permission has already been granted.
+                            // Get a handle for the download image alert dialog.
+                            AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
 
-                            // Show the download location permission alert dialog.  The permission will be requested when the dialog is closed.
-                            downloadLocationPermissionDialogFragment.show(getFragmentManager(), getString(R.string.download_location));
-                        } else {  // Show the permission request directly.
-                            // Request the permission.  The download dialog will be launched by `onRequestPermissionResult().
-                            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_IMAGE_REQUEST_CODE);
+                            // Show the download image alert dialog.
+                            downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
                         }
-                    } else {  // The WRITE_EXTERNAL_STORAGE permission has already been granted.
-                        // Get a handle for the download image alert dialog.
-                        AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
-
-                        // Show the download image alert dialog.
-                        downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
                     }
                     return false;
                 });
@@ -3421,8 +3425,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         IconCompat favoriteIcon = IconCompat.createWithBitmap(favoriteIconBitmap);
 
         // Setup the shortcut intent.
-        Intent shortcutIntent = new Intent();
-        shortcutIntent.setAction(Intent.ACTION_VIEW);
+        Intent shortcutIntent = new Intent(Intent.ACTION_VIEW);
         shortcutIntent.setData(Uri.parse(formattedUrlString));
 
         // Create a shortcut info builder.  The shortcut name becomes the shortcut ID.
@@ -3906,7 +3909,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("full_screen_browsing_mode", false);
         hideSystemBarsOnFullscreen = sharedPreferences.getBoolean("hide_system_bars", false);
         translucentNavigationBarOnFullscreen = sharedPreferences.getBoolean("translucent_navigation_bar", true);
-        displayWebpageImagesBoolean = sharedPreferences.getBoolean("display_webpage_images", true);
+        downloadWithExternalApp = sharedPreferences.getBoolean("download_with_external_app", false);
 
         // Apply the proxy through Orbot settings.
         applyProxyThroughOrbot(false);
@@ -4073,13 +4076,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
             // Store the general preference information.
-            String defaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
-            String defaultUserAgentName = sharedPreferences.getString("user_agent", "Privacy Browser");
-            defaultCustomUserAgentString = sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0");
+            String defaultFontSizeString = sharedPreferences.getString("default_font_size", getString(R.string.font_size_default_value));
+            String defaultUserAgentName = sharedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
+            defaultCustomUserAgentString = sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value));
             boolean defaultSwipeToRefresh = sharedPreferences.getBoolean("swipe_to_refresh", true);
             nightMode = sharedPreferences.getBoolean("night_mode", false);
+            boolean displayWebpageImages = sharedPreferences.getBoolean("display_webpage_images", true);
 
-            if (domainSettingsApplied) {  // The url we are loading has custom domain settings.
+            if (domainSettingsApplied) {  // The url has custom domain settings.
                 // Get a cursor for the current host and move it to the first position.
                 Cursor currentHostDomainSettingsCursor = domainsDatabaseHelper.getCursorForDomainName(domainNameInDatabase);
                 currentHostDomainSettingsCursor.moveToFirst();
@@ -4102,7 +4106,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 int fontSize = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
                 int swipeToRefreshInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SWIPE_TO_REFRESH));
                 int nightModeInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.NIGHT_MODE));
-                displayWebpageImagesInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
+                int displayWebpageImagesInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
                 pinnedDomainSslCertificate = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE)) == 1);
                 pinnedDomainSslIssuedToCNameString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME));
                 pinnedDomainSslIssuedToONameString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION));
@@ -4239,6 +4243,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     appliedUserAgentString = mainWebView.getSettings().getUserAgentString();
                 }
 
+                // Set the loading of webpage images.
+                switch (displayWebpageImagesInt) {
+                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT:
+                        mainWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImages);
+                        break;
+
+                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_ENABLED:
+                        mainWebView.getSettings().setLoadsImagesAutomatically(true);
+                        break;
+
+                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_DISABLED:
+                        mainWebView.getSettings().setLoadsImagesAutomatically(false);
+                        break;
+                }
+
                 // Set a green background on `urlTextBox` to indicate that custom domain settings are being used.  We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
                 if (darkTheme) {
                     urlAppBarRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_dark_blue));
@@ -4325,16 +4344,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     appliedUserAgentString = mainWebView.getSettings().getUserAgentString();
                 }
 
+                // Set the loading of webpage images.
+                mainWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImages);
+
                 // Set a transparent background on `urlTextBox`.  We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
                 urlAppBarRelativeLayout.setBackgroundDrawable(getResources().getDrawable(R.color.transparent));
             }
 
             // Close the domains database helper.
             domainsDatabaseHelper.close();
-
-            // Remove the `onTheFlyDisplayImagesSet` flag and set the display webpage images mode.  `true` indicates that custom domain settings are applied.
-            onTheFlyDisplayImagesSet = false;
-            setDisplayWebpageImages();
 
             // Update the privacy icons, but only if `mainMenu` has already been populated.
             if (mainMenu != null) {
@@ -4353,12 +4371,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Get the search preferences.
-        String homepageString = sharedPreferences.getString("homepage", "https://searx.me/");
-        String torHomepageString = sharedPreferences.getString("tor_homepage", "http://ulrn6sryqaifefld.onion/");
-        String torSearchString = sharedPreferences.getString("tor_search", "http://ulrn6sryqaifefld.onion/?q=");
-        String torSearchCustomUrlString = sharedPreferences.getString("tor_search_custom_url", "");
-        String searchString = sharedPreferences.getString("search", "https://searx.me/?q=");
-        String searchCustomUrlString = sharedPreferences.getString("search_custom_url", "");
+        String homepageString = sharedPreferences.getString("homepage", getString(R.string.homepage_default_value));
+        String torHomepageString = sharedPreferences.getString("tor_homepage", getString(R.string.tor_homepage_default_value));
+        String torSearchString = sharedPreferences.getString("tor_search", getString(R.string.tor_search_default_value));
+        String torSearchCustomUrlString = sharedPreferences.getString("tor_search_custom_url", getString(R.string.tor_search_custom_url_default_value));
+        String searchString = sharedPreferences.getString("search", getString(R.string.search_default_value));
+        String searchCustomUrlString = sharedPreferences.getString("search_custom_url", getString(R.string.search_custom_url_default_value));
 
         // Set the homepage, search, and proxy options.
         if (proxyThroughOrbot) {  // Set the Tor options.
@@ -4437,28 +4455,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
     }
 
-    private void setDisplayWebpageImages() {
-        if (!onTheFlyDisplayImagesSet) {
-            if (domainSettingsApplied) {  // Custom domain settings are applied.
-                switch (displayWebpageImagesInt) {
-                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT:
-                        mainWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImagesBoolean);
-                        break;
-
-                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_ENABLED:
-                        mainWebView.getSettings().setLoadsImagesAutomatically(true);
-                        break;
-
-                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_DISABLED:
-                        mainWebView.getSettings().setLoadsImagesAutomatically(false);
-                        break;
-                }
-            } else {  // Default settings are applied.
-                mainWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImagesBoolean);
-            }
-        }
-    }
-
     private void updatePrivacyIcons(boolean runInvalidateOptionsMenu) {
         // Get handles for the menu items.
         MenuItem privacyMenuItem = mainMenu.findItem(R.id.toggle_javascript);
@@ -4514,6 +4510,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         if (runInvalidateOptionsMenu) {
             invalidateOptionsMenu();
         }
+    }
+
+    private void openUrlWithExternalApp(String url) {
+        // Create a download intent.  Not specifying the action type will display the maximum number of options.
+        Intent downloadIntent = new Intent();
+
+        // Set the URI and the mime type.  `"*/*"` will display the maximum number of options.
+        downloadIntent.setDataAndType(Uri.parse(url), "text/html");
+
+        // Flag the intent to open in a new task.
+        downloadIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        // Show the chooser.
+        startActivity(Intent.createChooser(downloadIntent, getString(R.string.open_with)));
     }
 
     private void highlightUrlText() {

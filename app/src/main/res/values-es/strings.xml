@@ -314,9 +314,20 @@
     <string name="load_an_encrypted_website">Cargar una página web cifrada antes de abrir la configuración de dominio para rellenar el certificado SSL de la página web actual.</string>
 
     <!-- Import/Export. -->
+    <string name="encryption">Cifrado</string>
+    <string-array name="encryption_type">
+        <item>Ninguno</item>
+        <item>Contraseña</item>
+        <item>OpenPGP</item>
+    </string-array>
+    <string name="kitkat_password_encryption_message">El cifrado de contraseñas no funciona en Android KitKat.</string>
+    <string name="openkeychain_required">El cifrado OpenPGP requiere que esté instalado OpenKeychain.</string>
+    <string name="openkeychain_import_instructions">El archivo sin cifrar tendrá que ser importado en un paso separado después de ser descifrado.</string>
+    <string name="file_location">Ubicación del archivo</string>
     <string name="browse">Navegar</string>
     <string name="export">Exportar</string>
     <string name="import_button">Importar</string>  <!-- `import` is a reserved word and cannot be used as the name -->
+    <string name="decrypt">Descifrar</string>
     <string name="export_successful">Exportación exitosa.</string>
     <string name="export_failed">Exportación fallida:</string>
     <string name="import_failed">Importación fallida:</string>
@@ -335,6 +346,53 @@
     <string name="local_storage">Almacenamiento local</string>
     <string name="ssl_certificates">Certificados SSL</string>
     <string name="tracking_ids">Rastreo de IDs</string>
+
+    <!-- Download Location -->
+    <string name="download_location">Lugar de descarga</string>
+    <string name="download_location_message">Navegador Privado necesita el permiso de almacenamiento para utilizar el directorio de descarga público.
+        Si se deniega, se utilizará el directorio de descarga de la aplicación.</string>
+    <string name="ok">OK</string>
+
+    <!-- Orbot. -->
+    <string name="orbot_proxy_not_installed">Enviar a través de Orbot no funcionará a menos que se instale Orbot.</string>
+    <string name="waiting_for_orbot">Esperando a Orbot para conectar...</string>
+
+    <!-- About Activity. -->
+    <string name="about_privacy_browser">Acerca de Navegador Privado</string>
+    <string name="version">Versión</string>
+    <string name="version_code">código de versión</string>
+    <string name="hardware">Hardware</string>
+    <string name="brand">Marca:</string>
+    <string name="manufacturer">Fabricante:</string>
+    <string name="model">Modelo:</string>
+    <string name="device">Dispositivo:</string>
+    <string name="bootloader">Cargador de arranque:</string>
+    <string name="radio">Radio:</string>
+    <string name="software">Software</string>
+    <string name="android">Android:</string>
+    <string name="api">API</string>
+    <string name="build">Versión de compilación:</string>
+    <string name="security_patch">Parche de seguridad:</string>
+    <string name="webview">WebView:</string>
+    <string name="orbot">Orbot:</string>
+    <string name="openkeychain">OpenKeychain:</string>
+    <string name="easylist_label">EasyList:</string>
+    <string name="easyprivacy_label">EasyPrivacy:</string>
+    <string name="fanboy_annoyance_label">Lista molesta de Fanboy:</string>
+    <string name="fanboy_social_label">Lista de bloqueo social de Fanboy:</string>
+    <string name="ultraprivacy_label">Ultra Privacidad:</string>
+    <string name="package_signature">Firma del paquete</string>
+    <string name="issuer_dn">DN del emisor:</string>
+    <string name="subject_dn">DN del sujeto:</string>
+    <string name="certificate_version">Versión del certificado:</string>
+    <string name="serial_number">Número de serie:</string>
+    <string name="signature_algorithm">Algoritmo de firma:</string>
+    <string name="permissions">Permisos</string>
+    <string name="privacy_policy">Política de privacidad</string>
+    <string name="changelog">Historial de cambios</string>
+    <string name="licenses">Licencias</string>
+    <string name="contributors">Colaboradores</string>
+    <string name="links">Enlaces</string>
 
     <!-- Preferences. -->
     <string name="privacy">Privacidad</string>
@@ -472,7 +530,7 @@
                 <item>175%</item>
                 <item>200%</item>
             </string-array>
-        <string name="swipe_to_refresh_preference">Deslizar para actualizar</string>
+        <string name="swipe_to_refresh">Deslizar para actualizar</string>
         <string name="swipe_to_refresh_summary">Algunas webs no funcionan bien si la opción deslizar para actualizar está habilitada.</string>
         <string name="display_additional_app_bar_icons">Mostrar iconos adicionales en la barra de aplicación</string>
         <string name="display_additional_app_bar_icons_summary">Mostrar iconos en la barra de aplicaciones para refrescar el WebView y, si hay espacio, para alternar entre cookies y almacenamiento DOM.</string>
@@ -482,52 +540,6 @@
         <string name="night_mode_summary">Activar el modo noche también activará javascript para todas las páginas web.</string>
         <string name="display_webpage_images">Mostrar imágenes de la página web</string>
         <string name="display_webpage_images_summary">Deshabilitar para conservar ancho de banda.</string>
-
-    <!-- Download Location -->
-    <string name="download_location">Lugar de descarga</string>
-    <string name="download_location_message">Navegador Privado necesita el permiso de almacenamiento para utilizar el directorio de descarga público.
-        Si se deniega, se utilizará el directorio de descarga de la aplicación.</string>
-    <string name="ok">OK</string>
-
-    <!-- Orbot. -->
-    <string name="orbot_proxy_not_installed">Enviar a través de Orbot no funcionará a menos que se instale Orbot.</string>
-    <string name="waiting_for_orbot">Esperando a Orbot para conectar...</string>
-
-    <!-- About Activity. -->
-    <string name="about_privacy_browser">Acerca de Navegador Privado</string>
-    <string name="version">Versión</string>
-        <string name="version_code">código de versión</string>
-        <string name="hardware">Hardware</string>
-            <string name="brand">Marca:</string>
-            <string name="manufacturer">Fabricante:</string>
-            <string name="model">Modelo:</string>
-            <string name="device">Dispositivo:</string>
-            <string name="bootloader">Cargador de arranque:</string>
-            <string name="radio">Radio:</string>
-        <string name="software">Software</string>
-            <string name="android">Android:</string>
-                <string name="api">API</string>
-            <string name="build">Versión de compilación:</string>
-            <string name="security_patch">Parche de seguridad:</string>
-            <string name="webview">WebView:</string>
-            <string name="orbot">Orbot:</string>
-            <string name="easylist_label">EasyList:</string>
-            <string name="easyprivacy_label">EasyPrivacy:</string>
-            <string name="fanboy_annoyance_label">Lista molesta de Fanboy:</string>
-            <string name="fanboy_social_label">Lista de bloqueo social de Fanboy:</string>
-            <string name="ultraprivacy_label">Ultra Privacidad:</string>
-        <string name="package_signature">Firma del paquete</string>
-            <string name="issuer_dn">DN del emisor:</string>
-            <string name="subject_dn">DN del sujeto:</string>
-            <string name="certificate_version">Versión del certificado:</string>
-            <string name="serial_number">Número de serie:</string>
-            <string name="signature_algorithm">Algoritmo de firma:</string>
-    <string name="permissions">Permisos</string>
-    <string name="privacy_policy">Política de privacidad</string>
-    <string name="changelog">Historial de cambios</string>
-    <string name="licenses">Licencias</string>
-    <string name="contributors">Colaboradores</string>
-    <string name="links">Enlaces</string>
 
     <!-- Ad Control. There are no ads in the standard flavor, but this string must exist because it is referenced in the code. -->
     <string name="ad_consent">Autorización publicitaria</string>
