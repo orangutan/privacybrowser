@@ -46,6 +46,7 @@
     <string name="close_navigation_drawer">Cerrar la caja de navegación</string>
     <string name="no_title">Sin título</string>
     <string name="unrecognized_url">URL no reconocida:</string>
+    <string name="open_with">Abrir con</string>
 
     <!-- Save As. -->
     <string name="save_as">Guardar como</string>
@@ -532,6 +533,8 @@
             </string-array>
         <string name="swipe_to_refresh">Deslizar para actualizar</string>
         <string name="swipe_to_refresh_summary">Algunas webs no funcionan bien si la opción deslizar para actualizar está habilitada.</string>
+        <string name="download_with_external_app">Descargar con app externa</string>
+        <string name="download_with_external_app_summary">El gestor de descargas de Android no funciona bien en algunos dispositivos.</string>
         <string name="display_additional_app_bar_icons">Mostrar iconos adicionales en la barra de aplicación</string>
         <string name="display_additional_app_bar_icons_summary">Mostrar iconos en la barra de aplicaciones para refrescar el WebView y, si hay espacio, para alternar entre cookies y almacenamiento DOM.</string>
         <string name="dark_theme">Tema oscuro</string>

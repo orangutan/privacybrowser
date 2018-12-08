@@ -46,6 +46,7 @@
     <string name="close_navigation_drawer">Chiudi il menu di navigazione</string>
     <string name="no_title">Nessun titolo</string>
     <string name="unrecognized_url">URL non riconosciuta:</string>
+    <string name="open_with">Apri con</string>
 
     <!-- Save As. -->
     <string name="save_as">Salva come</string>
@@ -530,6 +531,8 @@
             </string-array>
         <string name="swipe_to_refresh">Swipe per aggiornare</string>
         <string name="swipe_to_refresh_summary">Alcuni siti non funzionano correttamente se questa opzione è abilitata.</string>
+        <string name="download_with_external_app">Scarica con un\'applicazione esterna</string>
+        <string name="download_with_external_app_summary">Il download manager di Android potrebbe non funzionare correttamente su alcuni dispositivi.</string>
         <string name="display_additional_app_bar_icons">Mostra icone addizionali nella barra dell\'applicazione</string>
         <string name="display_additional_app_bar_icons_summary">Mostra nella barra dell\'applicazione le icone per l\'aggiornamento di WebView e, se lo spazio è sufficiente,
             per l\'attivazione dei cookie e del DOM storage.</string>
