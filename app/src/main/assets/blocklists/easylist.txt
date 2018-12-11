@@ -31411,7 +31411,6 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad"]
 ||geovisite.com^$third-party
 ||germarked.info^$third-party
 ||gestionpub.com^$third-party
-||get.com^$third-party
 ||getfuneta.info^$third-party
 ||getgamers.eu^$third-party
 ||getgscfree.com^$third-party
@@ -32451,7 +32450,6 @@ coingamez.com,mangaumaru.com,milfzr.com,pencurimovie.cc#@#div[id^="div-gpt-ad"]
 ||nsstatic.net^$third-party
 ||nster.net^$third-party,domain=~nster.com
 ||nsvfl7p9.com^$third-party
-||ntent.com^$third-party
 ||ntv.io^$third-party
 ||ntvk1.ru^$third-party
 ||nuclersoncanthinger.info^$third-party

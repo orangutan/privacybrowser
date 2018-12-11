@@ -922,8 +922,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Hide the keyboard (if displayed).
                     inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
 
-                    // Clear the focus from from the URL text box.
+                    // Clear the focus from from the URL text box and the WebView.  This removes any text selection markers and context menues, which otherwise draw above the open drawers.
                     urlTextBox.clearFocus();
+                    mainWebView.clearFocus();
                 }
             }
         });
