@@ -507,8 +507,8 @@
         <string name="clear_cache_summary">Cancella solo la cache di WebView.</string>
     <string name="general">Generale</string>
         <string name="homepage">Homepage</string>
-        <string name="default_font_size">Dimensione standard carattere</string>
-        <string-array name="default_font_size_entries">
+        <string name="font_size_preference">Dimensione font</string>
+        <string-array name="font_size_entries">
             <item>25%</item>
             <item>50%</item>
             <item>75%</item>

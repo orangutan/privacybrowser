@@ -38,7 +38,7 @@ public class ImportExportDatabaseHelper {
     public static final String EXPORT_SUCCESSFUL = "Export Successful";
     public static final String IMPORT_SUCCESSFUL = "Import Successful";
 
-    private static final int SCHEMA_VERSION = 2;
+    private static final int SCHEMA_VERSION = 3;
     private static final String PREFERENCES_TABLE = "preferences";
 
     // The preferences constants.
@@ -74,7 +74,7 @@ public class ImportExportDatabaseHelper {
     private static final String CLEAR_FORM_DATA = "clear_form_data";
     private static final String CLEAR_CACHE = "clear_cache";
     private static final String HOMEPAGE = "homepage";
-    private static final String DEFAULT_FONT_SIZE = "default_font_size";
+    private static final String FONT_SIZE = "font_size";
     private static final String SWIPE_TO_REFRESH = "swipe_to_refresh";
     private static final String DOWNLOAD_WITH_EXTERNAL_APP = "download_with_external_app";
     private static final String DISPLAY_ADDITIONAL_APP_BAR_ICONS = "display_additional_app_bar_icons";
@@ -220,7 +220,7 @@ public class ImportExportDatabaseHelper {
                     CLEAR_FORM_DATA + " BOOLEAN, " +
                     CLEAR_CACHE + " BOOLEAN, " +
                     HOMEPAGE + " TEXT, " +
-                    DEFAULT_FONT_SIZE + " TEXT, " +
+                    FONT_SIZE + " TEXT, " +
                     SWIPE_TO_REFRESH + " BOOLEAN, " +
                     DOWNLOAD_WITH_EXTERNAL_APP + " BOOLEAN, " +
                     DISPLAY_ADDITIONAL_APP_BAR_ICONS + " BOOLEAN, " +
@@ -267,7 +267,7 @@ public class ImportExportDatabaseHelper {
             preferencesContentValues.put(CLEAR_FORM_DATA, sharedPreferences.getBoolean(CLEAR_FORM_DATA, true));  // Clear form data can be removed once the minimum API >= 26.
             preferencesContentValues.put(CLEAR_CACHE, sharedPreferences.getBoolean(CLEAR_CACHE, true));
             preferencesContentValues.put(HOMEPAGE, sharedPreferences.getString(HOMEPAGE, context.getString(R.string.homepage_default_value)));
-            preferencesContentValues.put(DEFAULT_FONT_SIZE, sharedPreferences.getString(DEFAULT_FONT_SIZE, context.getString(R.string.font_size_default_value)));
+            preferencesContentValues.put(FONT_SIZE, sharedPreferences.getString(FONT_SIZE, context.getString(R.string.font_size_default_value)));
             preferencesContentValues.put(SWIPE_TO_REFRESH, sharedPreferences.getBoolean(SWIPE_TO_REFRESH, true));
             preferencesContentValues.put(DOWNLOAD_WITH_EXTERNAL_APP, sharedPreferences.getBoolean(DOWNLOAD_WITH_EXTERNAL_APP, false));
             preferencesContentValues.put(DISPLAY_ADDITIONAL_APP_BAR_ICONS, sharedPreferences.getBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, false));
@@ -364,6 +364,30 @@ public class ImportExportDatabaseHelper {
                         } else {
                             importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + DOWNLOAD_WITH_EXTERNAL_APP + " = " + 0);
                         }
+
+                    // Upgrade from schema version 2.
+                    case 2:
+                        // Once the SQLite version is >= 3.25.0 `ALTER TABLE RENAME` can be used.  https://www.sqlite.org/lang_altertable.html  https://www.sqlite.org/changes.html
+                        // https://developer.android.com/reference/android/database/sqlite/package-summary
+                        // In the meantime, we can create a new column with the new name.  There is no need to delete the old column on the temporary import database.
+
+                        // Get a cursor with the current `default_font_size` value.
+                        Cursor importDatabasePreferenceCursor = importDatabase.rawQuery("SELECT default_font_size FROM " + PREFERENCES_TABLE, null);
+
+                        // Move to the beginning fo the cursor.
+                        importDatabasePreferenceCursor.moveToFirst();
+
+                        // Get the current value in `default_font_size`.
+                        String fontSize = importDatabasePreferenceCursor.getString(importDatabasePreferenceCursor.getColumnIndex("default_font_size"));
+
+                        // Close the cursor.
+                        importDatabasePreferenceCursor.close();
+
+                        // Create a new column named `font_size`.
+                        importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + FONT_SIZE + " TEXT");
+
+                        // Place the font size string in the new column.
+                        importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + FONT_SIZE + " = " + fontSize);
                 }
             }
 
@@ -507,7 +531,7 @@ public class ImportExportDatabaseHelper {
                     .putBoolean(CLEAR_FORM_DATA, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_FORM_DATA)) == 1)
                     .putBoolean(CLEAR_CACHE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_CACHE)) == 1)
                     .putString(HOMEPAGE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(HOMEPAGE)))
-                    .putString(DEFAULT_FONT_SIZE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(DEFAULT_FONT_SIZE)))
+                    .putString(FONT_SIZE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(FONT_SIZE)))
                     .putBoolean(SWIPE_TO_REFRESH, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(SWIPE_TO_REFRESH)) == 1)
                     .putBoolean(DOWNLOAD_WITH_EXTERNAL_APP, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DOWNLOAD_WITH_EXTERNAL_APP)) == 1)
                     .putBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DISPLAY_ADDITIONAL_APP_BAR_ICONS)) == 1)

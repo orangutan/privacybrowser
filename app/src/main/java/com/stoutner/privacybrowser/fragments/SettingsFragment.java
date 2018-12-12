@@ -86,7 +86,7 @@ public class SettingsFragment extends PreferenceFragment {
         final Preference clearFormDataPreference = findPreference("clear_form_data");  // The clear form data preference can be removed once the minimum API >= 26.
         final Preference clearCachePreference = findPreference("clear_cache");
         final Preference homepagePreference = findPreference("homepage");
-        final Preference defaultFontSizePreference = findPreference("default_font_size");
+        final Preference fontSizePreference = findPreference("font_size");
         final Preference swipeToRefreshPreference = findPreference("swipe_to_refresh");
         final Preference downloadWithExternalAppPreference = findPreference("download_with_external_app");
         final Preference displayAdditionalAppBarIconsPreference = findPreference("display_additional_app_bar_icons");
@@ -225,8 +225,8 @@ public class SettingsFragment extends PreferenceFragment {
         // Set the homepage URL as the summary text for the homepage preference.
         homepagePreference.setSummary(savedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
 
-        // Set the default font size as the summary text for the preference.
-        defaultFontSizePreference.setSummary(savedPreferences.getString("default_font_size", getString(R.string.font_size_default_value)) + "%%");
+        // Set the font size as the summary text for the preference.
+        fontSizePreference.setSummary(savedPreferences.getString("font_size", getString(R.string.font_size_default_value)) + "%%");
 
         // Disable the JavaScript preference if Night Mode is enabled.  JavaScript will be enabled for all web pages.
         javaScriptPreference.setEnabled(!nightMode);
@@ -1470,9 +1470,9 @@ public class SettingsFragment extends PreferenceFragment {
                     homepagePreference.setSummary(sharedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
                     break;
 
-                case "default_font_size":
-                    // Update the summary text of `default_font_size`.
-                    defaultFontSizePreference.setSummary(sharedPreferences.getString("default_font_size", getString(R.string.font_size_default_value)) + "%%");
+                case "font_size":
+                    // Update the font size summary text.
+                    fontSizePreference.setSummary(sharedPreferences.getString("font_size", getString(R.string.font_size_default_value)) + "%%");
                     break;
 
                 case "swipe_to_refresh":

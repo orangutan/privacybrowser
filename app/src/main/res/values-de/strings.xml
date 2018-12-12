@@ -395,8 +395,8 @@
         <string name="custom_url">Eigene URL</string>
     <string name="general">Allgemein</string>
         <string name="homepage">Startseite</string>
-        <string name="default_font_size">Standard-Schriftgröße</string>
-        <string-array name="default_font_size_entries">
+        <string name="font_size_preference">Schriftgröße</string>
+        <string-array name="font_size_entries">
             <item>25%</item>
             <item>50%</item>
             <item>75%</item>

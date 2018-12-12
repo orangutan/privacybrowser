@@ -92,9 +92,9 @@ public class DomainSettingsFragment extends Fragment {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         // Store the default settings.
-        final String defaultUserAgentName = sharedPreferences.getString("user_agent", "Privacy Browser");
-        final String defaultCustomUserAgentString = sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0");
-        String defaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
+        final String defaultUserAgentName = sharedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
+        final String defaultCustomUserAgentString = sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value));
+        String defaultFontSizeString = sharedPreferences.getString("font_size", getString(R.string.font_size_default_value));
         boolean defaultSwipeToRefresh = sharedPreferences.getBoolean("swipe_to_refresh", true);
         final boolean defaultNightMode = sharedPreferences.getBoolean("night_mode", false);
         final boolean defaultDisplayWebpageImages = sharedPreferences.getBoolean("display_webpage_images", true);

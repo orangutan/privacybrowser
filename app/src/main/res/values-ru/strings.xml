@@ -504,8 +504,8 @@
         <string name="clear_cache_summary">Очищает кэш WebView.</string>
     <string name="general">Общее</string>
         <string name="homepage">Домашняя страница</string>
-        <string name="default_font_size">Размер шрифта по умолчанию</string>
-        <string-array name="default_font_size_entries">
+        <string name="font_size_preference">Размер шрифта</string>
+        <string-array name="font_size_entries">
             <item>25%</item>
             <item>50%</item>
             <item>75%</item>

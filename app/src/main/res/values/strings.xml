@@ -559,8 +559,8 @@
         <string name="clear_cache_summary">Clears WebView’s cache.</string>
     <string name="general">General</string>
         <string name="homepage">Homepage</string>
-        <string name="default_font_size">Default font size</string>
-        <string-array name="default_font_size_entries">
+        <string name="font_size_preference">Font size</string>
+        <string-array name="font_size_entries">
             <item>25%</item>
             <item>50%</item>
             <item>75%</item>
@@ -570,7 +570,7 @@
             <item>175%</item>
             <item>200%</item>
         </string-array>
-        <string-array name="default_font_size_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
+        <string-array name="font_size_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
             <item>25</item>
             <item>50</item>
             <item>75</item>

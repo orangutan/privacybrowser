@@ -509,8 +509,8 @@
         <string name="clear_cache_summary">Borra la caché de WebView.</string>
     <string name="general">General</string>
         <string name="homepage">Página de inicio</string>
-        <string name="default_font_size">Tamaño de fuente por defecto</string>
-        <string-array name="default_font_size_entries">
+        <string name="font_size_preference">Tamaño de fuente</string>
+        <string-array name="font_size_entries">
             <item>25%</item>
             <item>50%</item>
             <item>75%</item>

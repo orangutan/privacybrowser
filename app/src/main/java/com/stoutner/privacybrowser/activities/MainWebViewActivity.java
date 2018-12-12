@@ -4077,7 +4077,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
             // Store the general preference information.
-            String defaultFontSizeString = sharedPreferences.getString("default_font_size", getString(R.string.font_size_default_value));
+            String defaultFontSizeString = sharedPreferences.getString("font_size", getString(R.string.font_size_default_value));
             String defaultUserAgentName = sharedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
             defaultCustomUserAgentString = sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value));
             boolean defaultSwipeToRefresh = sharedPreferences.getBoolean("swipe_to_refresh", true);
