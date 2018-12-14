@@ -55,11 +55,11 @@ public class SettingsFragment extends PreferenceFragment {
         savedPreferences = getPreferenceScreen().getSharedPreferences();
 
         // Get handles for the preferences.
-        final Preference javaScriptPreference = findPreference("javascript_enabled");
-        final Preference firstPartyCookiesPreference = findPreference("first_party_cookies_enabled");
-        final Preference thirdPartyCookiesPreference = findPreference("third_party_cookies_enabled");
-        final Preference domStoragePreference = findPreference("dom_storage_enabled");
-        final Preference saveFormDataPreference = findPreference("save_form_data_enabled");  // The form data preference can be removed once the minimum API >= 26.
+        final Preference javaScriptPreference = findPreference("javascript");
+        final Preference firstPartyCookiesPreference = findPreference("first_party_cookies");
+        final Preference thirdPartyCookiesPreference = findPreference("third_party_cookies");
+        final Preference domStoragePreference = findPreference("dom_storage");
+        final Preference saveFormDataPreference = findPreference("save_form_data");  // The form data preference can be removed once the minimum API >= 26.
         final Preference userAgentPreference = findPreference("user_agent");
         final Preference customUserAgentPreference = findPreference("custom_user_agent");
         final Preference incognitoModePreference = findPreference("incognito_mode");
@@ -67,8 +67,8 @@ public class SettingsFragment extends PreferenceFragment {
         final Preference allowScreenshotsPreference = findPreference("allow_screenshots");
         final Preference easyListPreference = findPreference("easylist");
         final Preference easyPrivacyPreference = findPreference("easyprivacy");
-        final Preference fanboyAnnoyanceListPreference = findPreference("fanboy_annoyance_list");
-        final Preference fanboySocialBlockingListPreference = findPreference("fanboy_social_blocking_list");
+        final Preference fanboyAnnoyanceListPreference = findPreference("fanboys_annoyance_list");
+        final Preference fanboySocialBlockingListPreference = findPreference("fanboys_social_blocking_list");
         final Preference ultraPrivacyPreference = findPreference("ultraprivacy");
         final Preference blockAllThirdPartyRequestsPreference = findPreference("block_all_third_party_requests");
         final Preference proxyThroughOrbotPreference = findPreference("proxy_through_orbot");
@@ -104,11 +104,11 @@ public class SettingsFragment extends PreferenceFragment {
         String searchString = savedPreferences.getString("search", getString(R.string.search_default_value));
 
         // Get booleans that are used in multiple places from the preferences.
-        final boolean javaScriptEnabled = savedPreferences.getBoolean("javascript_enabled", false);
-        boolean firstPartyCookiesEnabled = savedPreferences.getBoolean("first_party_cookies_enabled", false);
-        boolean thirdPartyCookiesEnabled = savedPreferences.getBoolean("third_party_cookies_enabled", false);
-        boolean fanboyAnnoyanceListEnabled = savedPreferences.getBoolean("fanboy_annoyance_list", true);
-        boolean fanboySocialBlockingEnabled = savedPreferences.getBoolean("fanboy_social_blocking_list", true);
+        final boolean javaScriptEnabled = savedPreferences.getBoolean("javascript", false);
+        boolean firstPartyCookiesEnabled = savedPreferences.getBoolean("first_party_cookies", false);
+        boolean thirdPartyCookiesEnabled = savedPreferences.getBoolean("third_party_cookies", false);
+        boolean fanboyAnnoyanceListEnabled = savedPreferences.getBoolean("fanboys_annoyance_list", true);
+        boolean fanboySocialBlockingEnabled = savedPreferences.getBoolean("fanboys_social_blocking_list", true);
         boolean proxyThroughOrbot = savedPreferences.getBoolean("proxy_through_orbot", false);
         boolean fullScreenBrowsingMode = savedPreferences.getBoolean("full_screen_browsing_mode", false);
         boolean hideSystemBars = savedPreferences.getBoolean("hide_system_bars", false);
@@ -270,7 +270,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the DOM storage icon.
         if (javaScriptEnabled || nightMode) {  // The preference is enabled.
-            if (savedPreferences.getBoolean("dom_storage_enabled", false)) {  // DOM storage is enabled.
+            if (savedPreferences.getBoolean("dom_storage", false)) {  // DOM storage is enabled.
                 domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
             } else {  // DOM storage is disabled.
                 if (MainWebViewActivity.darkTheme) {
@@ -289,7 +289,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the save form data icon if API < 26.  Save form data has no effect on API >= 26.
         if (Build.VERSION.SDK_INT < 26) {
-            if (savedPreferences.getBoolean("save_form_data_enabled", false)) {
+            if (savedPreferences.getBoolean("save_form_data", false)) {
                 saveFormDataPreference.setIcon(R.drawable.form_data_enabled);
             } else {
                 if (MainWebViewActivity.darkTheme) {
@@ -711,9 +711,9 @@ public class SettingsFragment extends PreferenceFragment {
         // Listen for preference changes.
         preferencesListener = (SharedPreferences sharedPreferences, String key) -> {
             switch (key) {
-                case "javascript_enabled":
+                case "javascript":
                     // Update the icons and the DOM storage preference status.
-                    if (sharedPreferences.getBoolean("javascript_enabled", false)) {  // The JavaScript preference is enabled.
+                    if (sharedPreferences.getBoolean("javascript", false)) {  // The JavaScript preference is enabled.
                         // Update the icon for the JavaScript preference.
                         javaScriptPreference.setIcon(R.drawable.javascript_enabled);
 
@@ -721,7 +721,7 @@ public class SettingsFragment extends PreferenceFragment {
                         domStoragePreference.setEnabled(true);
 
                         // Update the icon for the DOM storage preference.
-                        if (sharedPreferences.getBoolean("dom_storage_enabled", false)) {
+                        if (sharedPreferences.getBoolean("dom_storage", false)) {
                             domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
                         } else {
                             if (MainWebViewActivity.darkTheme) {
@@ -746,15 +746,15 @@ public class SettingsFragment extends PreferenceFragment {
                     }
                     break;
 
-                case "first_party_cookies_enabled":
-                    // Update the icons for `first_party_cookies_enabled` and `third_party_cookies_enabled`.
-                    if (sharedPreferences.getBoolean("first_party_cookies_enabled", false)) {
-                        // Set the icon for `first_party_cookies_enabled`.
+                case "first_party_cookies":
+                    // Update the icons for `first_party_cookies` and `third_party_cookies`.
+                    if (sharedPreferences.getBoolean("first_party_cookies", false)) {
+                        // Set the icon for `first_party_cookies`.
                         firstPartyCookiesPreference.setIcon(R.drawable.cookies_enabled);
 
-                        // Update the icon for `third_party_cookies_enabled`.
+                        // Update the icon for `third_party_cookies`.
                         if (Build.VERSION.SDK_INT >= 21) {
-                            if (sharedPreferences.getBoolean("third_party_cookies_enabled", false)) {
+                            if (sharedPreferences.getBoolean("third_party_cookies", false)) {
                                 thirdPartyCookiesPreference.setIcon(R.drawable.cookies_warning);
                             } else {
                                 if (MainWebViewActivity.darkTheme) {
@@ -770,15 +770,15 @@ public class SettingsFragment extends PreferenceFragment {
                                 thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_light);
                             }
                         }
-                    } else {  // `first_party_cookies_enabled` is `false`.
-                        // Update the icon for `first_party_cookies_enabled`.
+                    } else {  // `first_party_cookies` is `false`.
+                        // Update the icon for `first_party_cookies`.
                         if (MainWebViewActivity.darkTheme) {
                             firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_dark);
                         } else {
                             firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_light);
                         }
 
-                        // Set the icon for `third_party_cookies_enabled` to be ghosted.
+                        // Set the icon for `third_party_cookies` to be ghosted.
                         if (MainWebViewActivity.darkTheme) {
                             thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_dark);
                         } else {
@@ -786,13 +786,13 @@ public class SettingsFragment extends PreferenceFragment {
                         }
                     }
 
-                    // Enable `third_party_cookies_enabled` if `first_party_cookies_enabled` is `true` and API >= 21.
-                    thirdPartyCookiesPreference.setEnabled(sharedPreferences.getBoolean("first_party_cookies_enabled", false) && (Build.VERSION.SDK_INT >= 21));
+                    // Enable `third_party_cookies` if `first_party_cookies` is `true` and API >= 21.
+                    thirdPartyCookiesPreference.setEnabled(sharedPreferences.getBoolean("first_party_cookies", false) && (Build.VERSION.SDK_INT >= 21));
                     break;
 
-                case "third_party_cookies_enabled":
+                case "third_party_cookies":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("third_party_cookies_enabled", false)) {
+                    if (sharedPreferences.getBoolean("third_party_cookies", false)) {
                         thirdPartyCookiesPreference.setIcon(R.drawable.cookies_warning);
                     } else {
                         if (MainWebViewActivity.darkTheme) {
@@ -803,9 +803,9 @@ public class SettingsFragment extends PreferenceFragment {
                     }
                     break;
 
-                case "dom_storage_enabled":
+                case "dom_storage":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("dom_storage_enabled", false)) {
+                    if (sharedPreferences.getBoolean("dom_storage", false)) {
                         domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
                     } else {
                         if (MainWebViewActivity.darkTheme) {
@@ -817,9 +817,9 @@ public class SettingsFragment extends PreferenceFragment {
                     break;
 
                 // Save form data can be removed once the minimum API >= 26.
-                case "save_form_data_enabled":
+                case "save_form_data":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("save_form_data_enabled", false)) {
+                    if (sharedPreferences.getBoolean("save_form_data", false)) {
                         saveFormDataPreference.setIcon(R.drawable.form_data_enabled);
                     } else {
                         if (MainWebViewActivity.darkTheme) {
@@ -990,9 +990,9 @@ public class SettingsFragment extends PreferenceFragment {
                     }
                     break;
 
-                case "fanboy_annoyance_list":
-                    boolean currentFanboyAnnoyanceList = sharedPreferences.getBoolean("fanboy_annoyance_list", true);
-                    boolean currentFanboySocialBlockingList = sharedPreferences.getBoolean("fanboy_social_blocking_list", true);
+                case "fanboys_annoyance_list":
+                    boolean currentFanboyAnnoyanceList = sharedPreferences.getBoolean("fanboys_annoyance_list", true);
+                    boolean currentFanboySocialBlockingList = sharedPreferences.getBoolean("fanboys_social_blocking_list", true);
 
                     // Update the Fanboy icons.
                     if (currentFanboyAnnoyanceList) {  // Fanboy's annoyance list is enabled.
@@ -1037,9 +1037,9 @@ public class SettingsFragment extends PreferenceFragment {
                     fanboySocialBlockingListPreference.setEnabled(!currentFanboyAnnoyanceList);
                     break;
 
-                case "fanboy_social_blocking_list":
+                case "fanboys_social_blocking_list":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("fanboy_social_blocking_list", true)) {
+                    if (sharedPreferences.getBoolean("fanboys_social_blocking_list", true)) {
                         if (MainWebViewActivity.darkTheme) {
                             fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_enabled_dark);
                         } else {
@@ -1553,7 +1553,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                     // Store the current night mode status.
                     boolean currentNightModeBoolean = sharedPreferences.getBoolean("night_mode", false);
-                    boolean currentJavaScriptBoolean = sharedPreferences.getBoolean("javascript_enabled", false);
+                    boolean currentJavaScriptBoolean = sharedPreferences.getBoolean("javascript", false);
 
                     // Update the icon.
                     if (currentNightModeBoolean) {
@@ -1581,9 +1581,9 @@ public class SettingsFragment extends PreferenceFragment {
                         javaScriptPreference.setIcon(R.drawable.privacy_mode);
                     }
 
-                    // Update the `domStoragePreference` icon.
+                    // Update the DOM storage preference icon.
                     if (currentNightModeBoolean || currentJavaScriptBoolean) {  // The preference is enabled.
-                        if (sharedPreferences.getBoolean("dom_storage_enabled", false)) {  // DOM storage is enabled.
+                        if (sharedPreferences.getBoolean("dom_storage", false)) {  // DOM storage is enabled.
                             domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
                         } else {  // DOM storage is disabled.
                             if (MainWebViewActivity.darkTheme) {

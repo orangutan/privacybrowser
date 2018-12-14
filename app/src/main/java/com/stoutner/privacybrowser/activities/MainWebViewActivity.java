@@ -2743,7 +2743,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
                     // Get the JavaScript preference.
-                    javaScriptEnabled = sharedPreferences.getBoolean("javascript_enabled", false);
+                    javaScriptEnabled = sharedPreferences.getBoolean("javascript", false);
                 }
 
                 // Apply the JavaScript setting to the WebView.
@@ -4267,15 +4267,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
             } else {  // The new URL does not have custom domain settings.  Load the defaults.
                 // Store the values from `sharedPreferences` in variables.
-                javaScriptEnabled = sharedPreferences.getBoolean("javascript_enabled", false);
-                firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies_enabled", false);
-                thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies_enabled", false);
-                domStorageEnabled = sharedPreferences.getBoolean("dom_storage_enabled", false);
-                saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data_enabled", false);  // Form data can be removed once the minimum API >= 26.
+                javaScriptEnabled = sharedPreferences.getBoolean("javascript", false);
+                firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies", false);
+                thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies", false);
+                domStorageEnabled = sharedPreferences.getBoolean("dom_storage", false);
+                saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data", false);  // Form data can be removed once the minimum API >= 26.
                 easyListEnabled = sharedPreferences.getBoolean("easylist", true);
                 easyPrivacyEnabled = sharedPreferences.getBoolean("easyprivacy", true);
-                fanboysAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboy_annoyance_list", true);
-                fanboysSocialBlockingListEnabled = sharedPreferences.getBoolean("fanboy_social_blocking_list", true);
+                fanboysAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboys_annoyance_list", true);
+                fanboysSocialBlockingListEnabled = sharedPreferences.getBoolean("fanboys_social_blocking_list", true);
                 ultraPrivacyEnabled = sharedPreferences.getBoolean("ultraprivacy", true);
                 blockAllThirdPartyRequests = sharedPreferences.getBoolean("block_all_third_party_requests", false);
 

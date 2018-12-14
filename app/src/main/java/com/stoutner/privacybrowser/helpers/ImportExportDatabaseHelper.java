@@ -236,11 +236,11 @@ public class ImportExportDatabaseHelper {
 
             // Create a ContentValues with the preferences information.
             ContentValues preferencesContentValues = new ContentValues();
-            preferencesContentValues.put(JAVASCRIPT, sharedPreferences.getBoolean("javascript_enabled", false));
-            preferencesContentValues.put(FIRST_PARTY_COOKIES, sharedPreferences.getBoolean("first_party_cookies_enabled", false));
-            preferencesContentValues.put(THIRD_PARTY_COOKIES, sharedPreferences.getBoolean("third_party_cookies_enabled", false));
-            preferencesContentValues.put(DOM_STORAGE, sharedPreferences.getBoolean("dom_storage_enabled", false));
-            preferencesContentValues.put(SAVE_FORM_DATA, sharedPreferences.getBoolean("save_form_data_enabled", false));  // Save form data can be removed once the minimum API >= 26.
+            preferencesContentValues.put(JAVASCRIPT, sharedPreferences.getBoolean(JAVASCRIPT, false));
+            preferencesContentValues.put(FIRST_PARTY_COOKIES, sharedPreferences.getBoolean(FIRST_PARTY_COOKIES, false));
+            preferencesContentValues.put(THIRD_PARTY_COOKIES, sharedPreferences.getBoolean(THIRD_PARTY_COOKIES, false));
+            preferencesContentValues.put(DOM_STORAGE, sharedPreferences.getBoolean(DOM_STORAGE, false));
+            preferencesContentValues.put(SAVE_FORM_DATA, sharedPreferences.getBoolean(SAVE_FORM_DATA, false));  // Save form data can be removed once the minimum API >= 26.
             preferencesContentValues.put(USER_AGENT, sharedPreferences.getString(USER_AGENT, context.getString(R.string.user_agent_default_value)));
             preferencesContentValues.put(CUSTOM_USER_AGENT, sharedPreferences.getString(CUSTOM_USER_AGENT, context.getString(R.string.custom_user_agent_default_value)));
             preferencesContentValues.put(INCOGNITO_MODE, sharedPreferences.getBoolean(INCOGNITO_MODE, false));
@@ -248,8 +248,8 @@ public class ImportExportDatabaseHelper {
             preferencesContentValues.put(ALLOW_SCREENSHOTS, sharedPreferences.getBoolean(ALLOW_SCREENSHOTS, false));
             preferencesContentValues.put(EASYLIST, sharedPreferences.getBoolean(EASYLIST, true));
             preferencesContentValues.put(EASYPRIVACY, sharedPreferences.getBoolean(EASYPRIVACY, true));
-            preferencesContentValues.put(FANBOYS_ANNOYANCE_LIST, sharedPreferences.getBoolean("fanboy_annoyance_list", true));
-            preferencesContentValues.put(FANBOYS_SOCIAL_BLOCKING_LIST, sharedPreferences.getBoolean("fanboy_social_blocking_list", true));
+            preferencesContentValues.put(FANBOYS_ANNOYANCE_LIST, sharedPreferences.getBoolean(FANBOYS_ANNOYANCE_LIST, true));
+            preferencesContentValues.put(FANBOYS_SOCIAL_BLOCKING_LIST, sharedPreferences.getBoolean(FANBOYS_SOCIAL_BLOCKING_LIST, true));
             preferencesContentValues.put(ULTRAPRIVACY, sharedPreferences.getBoolean(ULTRAPRIVACY, true));
             preferencesContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, sharedPreferences.getBoolean(BLOCK_ALL_THIRD_PARTY_REQUESTS, false));
             preferencesContentValues.put(PROXY_THROUGH_ORBOT, sharedPreferences.getBoolean(PROXY_THROUGH_ORBOT, false));
@@ -367,7 +367,7 @@ public class ImportExportDatabaseHelper {
 
                     // Upgrade from schema version 2.
                     case 2:
-                        // Once the SQLite version is >= 3.25.0 `ALTER TABLE RENAME` can be used.  https://www.sqlite.org/lang_altertable.html  https://www.sqlite.org/changes.html
+                        // Once the SQLite version is >= 3.25.0 `ALTER TABLE RENAME COLUMN` can be used.  https://www.sqlite.org/lang_altertable.html  https://www.sqlite.org/changes.html
                         // https://developer.android.com/reference/android/database/sqlite/package-summary
                         // In the meantime, we can create a new column with the new name.  There is no need to delete the old column on the temporary import database.
 
@@ -498,12 +498,12 @@ public class ImportExportDatabaseHelper {
 
             // Import the preference data.
             sharedPreferences.edit()
-                    .putBoolean("javascript_enabled", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(JAVASCRIPT)) == 1)
-                    .putBoolean("first_party_cookies_enabled", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(FIRST_PARTY_COOKIES)) == 1)
-                    .putBoolean("third_party_cookies_enabled", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(THIRD_PARTY_COOKIES)) == 1)
-                    .putBoolean("dom_storage_enabled", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DOM_STORAGE)) == 1)
+                    .putBoolean(JAVASCRIPT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(JAVASCRIPT)) == 1)
+                    .putBoolean(FIRST_PARTY_COOKIES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(FIRST_PARTY_COOKIES)) == 1)
+                    .putBoolean(THIRD_PARTY_COOKIES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(THIRD_PARTY_COOKIES)) == 1)
+                    .putBoolean(DOM_STORAGE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DOM_STORAGE)) == 1)
                     // Save form data can be removed once the minimum API >= 26.
-                    .putBoolean("save_form_data_enabled", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(SAVE_FORM_DATA)) == 1)
+                    .putBoolean(SAVE_FORM_DATA, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(SAVE_FORM_DATA)) == 1)
                     .putString(USER_AGENT, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(USER_AGENT)))
                     .putString(CUSTOM_USER_AGENT, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(CUSTOM_USER_AGENT)))
                     .putBoolean(INCOGNITO_MODE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(INCOGNITO_MODE)) == 1)
@@ -511,8 +511,8 @@ public class ImportExportDatabaseHelper {
                     .putBoolean(ALLOW_SCREENSHOTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(ALLOW_SCREENSHOTS)) == 1)
                     .putBoolean(EASYLIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(EASYLIST)) == 1)
                     .putBoolean(EASYPRIVACY, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(EASYPRIVACY)) == 1)
-                    .putBoolean("fanboy_annoyance_list", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(FANBOYS_ANNOYANCE_LIST)) == 1)
-                    .putBoolean("fanboy_social_blocking_list", importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(FANBOYS_SOCIAL_BLOCKING_LIST)) == 1)
+                    .putBoolean(FANBOYS_ANNOYANCE_LIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(FANBOYS_ANNOYANCE_LIST)) == 1)
+                    .putBoolean(FANBOYS_SOCIAL_BLOCKING_LIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(FANBOYS_SOCIAL_BLOCKING_LIST)) == 1)
                     .putBoolean(ULTRAPRIVACY, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(ULTRAPRIVACY)) == 1)
                     .putBoolean(BLOCK_ALL_THIRD_PARTY_REQUESTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(BLOCK_ALL_THIRD_PARTY_REQUESTS)) == 1)
                     .putBoolean(PROXY_THROUGH_ORBOT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(PROXY_THROUGH_ORBOT)) == 1)

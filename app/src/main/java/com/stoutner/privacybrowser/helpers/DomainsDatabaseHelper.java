@@ -161,8 +161,8 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
                 // Get the default block list settings.
                 boolean easyListEnabled = sharedPreferences.getBoolean("easylist", true);
                 boolean easyPrivacyEnabled = sharedPreferences.getBoolean("easyprivacy", true);
-                boolean fanboyAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboy_annoyance_list", true);
-                boolean fanboySocialBlockingListEnabled = sharedPreferences.getBoolean("fanboy_social_blocking_list", true);
+                boolean fanboyAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboys_annoyance_list", true);
+                boolean fanboySocialBlockingListEnabled = sharedPreferences.getBoolean("fanboys_social_blocking_list", true);
 
                 // Set EasyList for existing rows according to the current system-wide default.
                 if (easyListEnabled) {
@@ -276,15 +276,15 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(appContext);
 
         // Get the default settings.
-        boolean javaScriptEnabled = sharedPreferences.getBoolean("javascript_enabled", false);
-        boolean firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies_enabled", false);
-        boolean thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies_enabled", false);
-        boolean domStorageEnabled = sharedPreferences.getBoolean("dom_storage_enabled", false);
-        boolean saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data_enabled", false);  // Form data can be removed once the minimum API >= 26.
+        boolean javaScriptEnabled = sharedPreferences.getBoolean("javascript", false);
+        boolean firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies", false);
+        boolean thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies", false);
+        boolean domStorageEnabled = sharedPreferences.getBoolean("dom_storage", false);
+        boolean saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data", false);  // Form data can be removed once the minimum API >= 26.
         boolean easyListEnabled = sharedPreferences.getBoolean("easylist", true);
         boolean easyPrivacyEnabled = sharedPreferences.getBoolean("easyprivacy", true);
-        boolean fanboyAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboy_annoyance_list", true);
-        boolean fanboySocialBlockingListEnabled = sharedPreferences.getBoolean("fanboy_social_blocking_list", true);
+        boolean fanboyAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboys_annoyance_list", true);
+        boolean fanboySocialBlockingListEnabled = sharedPreferences.getBoolean("fanboys_social_blocking_list", true);
         boolean ultraPrivacyEnabled = sharedPreferences.getBoolean("ultraprivacy", true);
         boolean blockAllThirdPartyRequests = sharedPreferences.getBoolean("block_all_third_party_requests", false);
 

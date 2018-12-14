@@ -24,32 +24,32 @@
         android:title="@string/privacy" >
 
         <SwitchPreference
-            android:key="javascript_enabled"
+            android:key="javascript"
             android:title="@string/javascript_preference"
             android:summary="@string/javascript_preference_summary"
             android:defaultValue="false" />
 
         <SwitchPreference
-            android:key="first_party_cookies_enabled"
+            android:key="first_party_cookies"
             android:title="@string/first_party_cookies_preference"
             android:summary="@string/first_party_cookies_preference_summary"
             android:defaultValue="false" />
 
         <SwitchPreference
-            android:key="third_party_cookies_enabled"
+            android:key="third_party_cookies"
             android:title="@string/third_party_cookies_preference"
             android:summary="@string/third_party_cookies_summary"
             android:defaultValue="false" />
 
         <SwitchPreference
-            android:key="dom_storage_enabled"
+            android:key="dom_storage"
             android:title="@string/dom_storage_preference"
             android:summary="@string/dom_storage_preference_summary"
             android:defaultValue="false" />
 
         <!-- Save form data can be removed once the minimum API >= 26. -->
         <SwitchPreference
-            android:key="save_form_data_enabled"
+            android:key="save_form_data"
             android:title="@string/save_form_data_preference"
             android:summary="@string/save_form_data_preference_summary"
             android:defaultValue="false" />
@@ -105,13 +105,13 @@
             android:defaultValue="true" />
 
         <SwitchPreference
-            android:key="fanboy_annoyance_list"
+            android:key="fanboys_annoyance_list"
             android:title="@string/fanboys_annoyance_list"
             android:summary="@string/fanboys_annoyance_list_summary"
             android:defaultValue="true" />
 
         <SwitchPreference
-            android:key="fanboy_social_blocking_list"
+            android:key="fanboys_social_blocking_list"
             android:title="@string/fanboys_social_blocking_list"
             android:summary="@string/fanboys_social_blocking_list_summary"
             android:defaultValue="true" />
