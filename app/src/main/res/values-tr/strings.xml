@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  Copyright © 2015-2018 Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<!-- `tools:ignore="MissingTranslation"` allows release APKs to be built if translation strings are missing.  The missing strings will fall back to English. -->
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation" >
+
+    <!-- Activities. -->
+    <string name="privacy_browser">Privacy Browser</string>
+    <string name="privacy_browser_settings">Privacy Browser Ayarları</string>
+    <!-- For translations, `android_asset_path` should be the localization abbreviation.  For example, Spanish is `es`.  This should not be translated unless the Guide and About sections are localized. -->
+    <string name="android_asset_path">en</string>
+
+    <!-- MainWebView. -->
+    <string name="privacy_mode">Gizlilik Modu</string>
+    <string name="javascript_enabled">JavaScript etkin</string>
+    <string name="javascript_disabled">JavaScript devre dışı</string>
+    <string name="first_party_cookies_enabled">Birinci Taraf Çerezler etkin</string>
+    <string name="first_party_cookies_disabled">Birinci Taraf Çerezler devre dışı</string>
+    <string name="third_party_cookies_enabled">Üçüncü Taraf Çerezler etkin</string>
+    <string name="third_party_cookies_disabled">Üçüncü Taraf Çerezler devre dışı</string>
+    <string name="dom_storage_enabled">DOM Depolama Alanı etkin</string>
+    <string name="dom_storage_disabled">DOM Depolama Alanı devre dışı</string>
+    <string name="form_data_enabled">Form Verisi etkin</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
+    <string name="form_data_disabled">Form Verisi devre dışı</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
+    <string name="cookies_deleted">Çerezler silindi</string>
+    <string name="dom_storage_deleted">DOM Depolama Alanı silindi</string>
+    <string name="form_data_deleted">Form Verisi silindi</string>
+    <string name="open_navigation_drawer">Açılır Menüyü Aç</string>
+    <string name="close_navigation_drawer">Açılır Menüyü Aç</string>
+    <string name="no_title">Başlıksız</string>
+    <string name="unrecognized_url">Onaylanmayan URL:</string>
+    <string name="open_with">Bununla aç</string>
+
+    <!-- Save As. -->
+    <string name="save_as">Farklı Kaydet</string>
+    <string name="save_image_as">Resmi Farklı Kaydet</string>
+    <string name="file_name">Dosya Adı</string>
+    <string name="image_name">Resim Adı</string>
+    <string name="unknown_size">Bilinmeyen Boyut</string>
+    <string name="download">İndir</string>
+    <string name="cannot_download_file">HTTP veya HTTPS kaynak tanımlayıcısı içermediği için bu dosya indirilemez.</string>
+    <string name="cannot_download_image">HTTP veya HTTPS kaynak tanımlayıcısı içermediği için bu resim indirilemez.</string>
+
+    <!-- Custom App Bar. -->
+    <string name="favorite_icon">Favori ikonu</string>
+    <string name="url_or_search_terms">URL veya Arama terimleri</string>
+
+    <!-- View SSL Certificate. -->
+    <string name="view_ssl_certificate">SSL Sertifikasını Görüntüle</string>
+    <string name="unencrypted_website">Şifrelenmemiş Web sitesi</string>
+    <string name="no_ssl_certificate">Bu web sitesiyle bağlantınız şifrelenmemiştir. Bu, üçüncü kişilere bilgilerinizi ele geçirme, bağlantınızı izleme ve zararlı yazılımları yükleme fırsatını verir.</string>
+    <string name="ssl_certificate">SSL Sertifikası</string>
+    <string name="close">Kapat</string>
+    <string name="domain">Alan Adı</string>
+    <string name="domain_label">Alan Adı:</string>
+    <string name="issued_to">Verilen</string>
+    <string name="issued_by">Veren</string>
+    <string name="common_name">Ortak Ad (CN):</string>
+    <string name="organization">Organizasyon (O):</string>
+    <string name="organizational_unit">Organizasyon Birimi (OU):</string>
+    <string name="valid_dates">Geçerli Tarihler</string>
+    <string name="start_date">Başlangıç Tarihi:</string>
+    <string name="end_date">Bitiş Tarihi:</string>
+
+    <!-- SSL Certificate Error. -->
+    <string name="ssl_certificate_error">SSL Sertifikası Hatası</string>
+    <string name="future_certificate">Bu sertifika henüz geçerli değil</string>
+    <string name="expired_certificate">Bu sertifikanın süresi doldu</string>
+    <string name="cn_mismatch">Ortak ad ana makina adıyla eşleşmiyor</string>
+    <string name="untrusted">Bu sertifikanın sağlayıcısı güvenli değil</string>
+    <string name="invalid_date">Bu sertifikanın tarihi geçerli değil</string>
+    <string name="invalid_certificate">Bu sertifika geçerli değil</string>
+    <string name="url">URL</string>
+    <string name="url_label">URL:</string>
+
+    <!-- Pinned SSL Certificate Mismatch. -->
+
+    <!-- HTTP Authentication. -->
+    <string name="username">Kullanıcı Adı</string>
+    <string name="password">Şifre</string>
+
+    <!-- MainWebViewActivity Navigation Drawer. -->
+    <string name="navigation_drawer">Açılır Menü</string>
+    <string name="home">Anasayfa</string>
+    <string name="back">Geri</string>
+    <string name="forward">İleri</string>
+    <string name="history">Geçmiş</string>
+        <string name="clear_history">Geçmişi Temizle</string>
+    <string name="bookmarks">Sık Kullanılanlar</string>
+    <string name="downloads">İndirilenler</string>
+    <string name="settings">Ayarlar</string>
+    <string name="import_export">İçeri Aktar/Dışarı Aktar</string>
+    <string name="guide">Rehber</string>
+    <string name="about">Hakkında</string>
+    <string name="clear_and_exit">Temizle ve Çık</string>
+
+    <!-- MainWebViewActivity Options Menu. -->
+    <string name="javascript">JavaScript</string>
+    <string name="add_domain_settings">Alan Adı Ekleme Ayarları</string>
+    <string name="edit_domain_settings">Alan Adı Düzenleme Ayarları</string>
+    <string name="first_party_cookies">Birinci Taraf Çerezler</string>
+    <string name="third_party_cookies">Üçüncü Taraf Çerezler</string>
+    <string name="dom_storage">DOM Depolama Alanı</string>
+        <string name="clear_cookies">Çerezleri Temizle</string>
+        <string name="clear_dom_storage">DOM Depolama Alanını Temizle</string>
+        <string name="clear_form_data">Form Verisini Temizle</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
+    <string name="options_fanboys_annoyance_list">Fanboy’s Annoyance List</string>
+    <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking List</string>
+    <string name="options_block_all_third_party_requests">Tüm Üçüncü Taraf İstekleri Engelle</string>
+    <string name="layout">Düzen</string>
+            <string name="twenty_five_percent">%25</string>
+            <string name="fifty_percent">%50</string>
+            <string name="seventy_five_percent">%75</string>
+            <string name="one_hundred_percent">%100</string>
+            <string name="one_hundred_twenty_five_percent">%125</string>
+            <string name="one_hundred_fifty_percent">%150</string>
+            <string name="one_hundred_seventy_five_percent">%175</string>
+            <string name="two_hundred_percent">%200</string>
+
+    <!-- Context Menus. -->
+
+    <!-- Find on Page. -->
+
+    <!-- View Source. -->
+
+    <!-- Create Home Screen Shortcut Alert Dialog. -->
+
+    <!-- Bookmarks. -->
+
+    <!-- Bookmarks Contextual App Bar. -->
+    <string name="selected_russian_ends_in_1">выбрана</string>
+    <string name="selected_russian_ends_in_2">выбраны</string>
+    <string name="selected_russian_everything_else">выбрано</string>
+    <string name="bookmarks_deleted_russian_ends_in_1">закладка удалена</string>
+    <string name="bookmarks_deleted_russian_ends_in_2">закладки удалены</string>
+    <string name="bookmarks_deleted_russian_everything_else">акладок удалено</string>
+
+    <!-- Bookmarks Database View. -->
+
+    <!-- Requests. -->
+
+    <!-- Domains. -->
+
+    <!-- Import/Export. -->
+
+    <!-- Guide. -->
+
+    <!-- Download Location -->
+
+    <!-- Orbot. -->
+
+    <!-- About Activity. -->
+
+    <!-- Preferences. -->
+
+    <!-- Ad Control. There are no ads in the standard flavor, but these strings must exist because they are referenced in the code. -->
+    <string name="ad_consent">Ad Consent</string>
+</resources>

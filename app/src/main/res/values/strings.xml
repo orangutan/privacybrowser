@@ -132,10 +132,10 @@
     <string name="third_party_cookies">Third-Party Cookies</string>
     <string name="dom_storage">DOM Storage</string>
     <string name="form_data">Form Data</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-    <string name="clear_data">Clear Data</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
+    <string name="clear_data">Clear Data</string>
         <string name="clear_cookies">Clear Cookies</string>
         <string name="clear_dom_storage">Clear DOM Storage</string>
-        <string name="clear_form_data">Clear Form Data</string>
+        <string name="clear_form_data">Clear Form Data</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
     <string name="options_fanboys_annoyance_list">Fanboy’s Annoyance List</string>
     <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking List</string>
     <string name="options_block_all_third_party_requests">Block All Third-Party Requests</string>
