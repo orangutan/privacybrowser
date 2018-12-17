@@ -369,7 +369,7 @@ public class ImportExportDatabaseHelper {
                     case 2:
                         // Once the SQLite version is >= 3.25.0 `ALTER TABLE RENAME COLUMN` can be used.  https://www.sqlite.org/lang_altertable.html  https://www.sqlite.org/changes.html
                         // https://developer.android.com/reference/android/database/sqlite/package-summary
-                        // In the meantime, we can create a new column with the new name.  There is no need to delete the old column on the temporary import database.
+                        // In the meantime, a new column must be created with the new name.  There is no need to delete the old column on the temporary import database.
 
                         // Get a cursor with the current `default_font_size` value.
                         Cursor importDatabasePreferenceCursor = importDatabase.rawQuery("SELECT default_font_size FROM " + PREFERENCES_TABLE, null);

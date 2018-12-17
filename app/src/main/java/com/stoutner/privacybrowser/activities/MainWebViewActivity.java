@@ -1287,10 +1287,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     formattedUrlString = "";
 
                     // Apply the domain settings for the new URL.  `applyDomainSettings` doesn't do anything if the domain has not changed.
-                    applyDomainSettings(url, true, false);
+                    boolean userAgentChanged = applyDomainSettings(url, true, false);
 
-                    // Returning false causes the current WebView to handle the URL and prevents it from adding redirects to the history list.
-                    return false;
+                    // Check if the user agent has changed.
+                    if (userAgentChanged) {
+                        // Manually load the URL.  The changing of the user agent will cause WebView to reload the previous URL.
+                        mainWebView.loadUrl(url, customHeaders);
+
+                        // Returning true indicates that Privacy Browser is manually handling the loading of the URL.
+                        return true;
+                    } else {
+                        // Returning false causes the current WebView to handle the URL and prevents it from adding redirects to the history list.
+                        return false;
+                    }
                 } else if (url.startsWith("mailto:")) {  // Load the email address in an external email program.
                     // Use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
@@ -1585,11 +1594,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Apply any custom domain settings if the URL was loaded by navigating history.
                     if (navigatingHistory) {
+                        // Apply the domain settings.
+                        boolean userAgentChanged = applyDomainSettings(url, true, false);
+
                         // Reset `navigatingHistory`.
                         navigatingHistory = false;
 
-                        // Apply the domain settings.
-                        applyDomainSettings(url, true, false);
+                        // Manually load the URL if the user agent has changed, which will have caused the previous URL to be reloaded.
+                        if (userAgentChanged) {
+                            loadUrl(formattedUrlString);
+                        }
                     }
 
                     // Set `urlIsLoading` to `true`, so that redirects while loading do not trigger changes in the user agent, which forces another reload of the existing page.
@@ -1699,7 +1713,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     sslCertificate = mainWebView.getCertificate();
 
                     // Check the current website SSL certificate against the pinned SSL certificate if there is a pinned SSL certificate the user has not chosen to ignore it for this session.
-                    if (pinnedDomainSslCertificate && !ignorePinnedSslCertificate) {
+                    // Also ignore if changes in the user agent causes an error while navigating history.
+                    if (pinnedDomainSslCertificate && !ignorePinnedSslCertificate && navigatingHistory) {
                         // Initialize the current SSL certificate variables.
                         String currentWebsiteIssuedToCName = "";
                         String currentWebsiteIssuedToOName = "";
@@ -3986,7 +4001,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `reloadWebsite` is used if returning from the Domains activity.  Otherwise JavaScript might not function correctly if it is newly enabled.
     // The deprecated `.getDrawable()` must be used until the minimum API >= 21.
     @SuppressWarnings("deprecation")
-    private void applyDomainSettings(String url, boolean resetFavoriteIcon, boolean reloadWebsite) {
+    private boolean applyDomainSettings(String url, boolean resetFavoriteIcon, boolean reloadWebsite) {
+        // Get the current user agent.
+        String initialUserAgent = mainWebView.getSettings().getUserAgentString();
+
+        // Initialize a variable to track if the user agent changes.
+        boolean userAgentChanged = false;
+
         // Parse the URL into a URI.
         Uri uri = Uri.parse(url);
 
@@ -4223,25 +4244,28 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         }
                     }
 
-                    // Set swipe to refresh.
-                    switch (swipeToRefreshInt) {
-                        case DomainsDatabaseHelper.SWIPE_TO_REFRESH_SYSTEM_DEFAULT:
-                            // Set swipe to refresh according to the default.
-                            swipeRefreshLayout.setEnabled(defaultSwipeToRefresh);
-                            break;
-
-                        case DomainsDatabaseHelper.SWIPE_TO_REFRESH_ENABLED:
-                            // Enable swipe to refresh.
-                            swipeRefreshLayout.setEnabled(true);
-                            break;
-
-                        case DomainsDatabaseHelper.SWIPE_TO_REFRESH_DISABLED:
-                            // Disable swipe to refresh.
-                            swipeRefreshLayout.setEnabled(false);
-                    }
-
                     // Store the applied user agent string, which is used in the View Source activity.
                     appliedUserAgentString = mainWebView.getSettings().getUserAgentString();
+
+                    // Update the user agent change tracker.
+                    userAgentChanged = !appliedUserAgentString.equals(initialUserAgent);
+                }
+
+                // Set swipe to refresh.
+                switch (swipeToRefreshInt) {
+                    case DomainsDatabaseHelper.SWIPE_TO_REFRESH_SYSTEM_DEFAULT:
+                        // Set swipe to refresh according to the default.
+                        swipeRefreshLayout.setEnabled(defaultSwipeToRefresh);
+                        break;
+
+                    case DomainsDatabaseHelper.SWIPE_TO_REFRESH_ENABLED:
+                        // Enable swipe to refresh.
+                        swipeRefreshLayout.setEnabled(true);
+                        break;
+
+                    case DomainsDatabaseHelper.SWIPE_TO_REFRESH_DISABLED:
+                        // Disable swipe to refresh.
+                        swipeRefreshLayout.setEnabled(false);
                 }
 
                 // Set the loading of webpage images.
@@ -4343,6 +4367,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Store the applied user agent string, which is used in the View Source activity.
                     appliedUserAgentString = mainWebView.getSettings().getUserAgentString();
+
+                    // Update the user agent change tracker.
+                    userAgentChanged = !appliedUserAgentString.equals(initialUserAgent);
                 }
 
                 // Set the loading of webpage images.
@@ -4365,6 +4392,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         if (reloadWebsite) {
             mainWebView.reload();
         }
+
+        // Return the user agent changed status.
+        return userAgentChanged;
     }
 
     private void applyProxyThroughOrbot(boolean reloadWebsite) {
