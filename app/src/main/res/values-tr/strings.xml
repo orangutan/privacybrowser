@@ -45,7 +45,7 @@
     <string name="dom_storage_deleted">DOM Depolama Alanı silindi</string>
     <string name="form_data_deleted">Form Verisi silindi</string>
     <string name="open_navigation_drawer">Açılır Menüyü Aç</string>
-    <string name="close_navigation_drawer">Açılır Menüyü Aç</string>
+    <string name="close_navigation_drawer">Açılır menüyü kapat</string>
     <string name="no_title">Başlıksız</string>
     <string name="unrecognized_url">Onaylanmayan URL:</string>
     <string name="open_with">Bununla aç</string>
@@ -85,7 +85,7 @@
     <string name="ssl_certificate_error">SSL Sertifikası Hatası</string>
     <string name="future_certificate">Bu sertifika henüz geçerli değil</string>
     <string name="expired_certificate">Bu sertifikanın süresi doldu</string>
-    <string name="cn_mismatch">Ortak ad ana makina adıyla eşleşmiyor</string>
+    <string name="cn_mismatch">Ortak ad ana makine adıyla eşleşmiyor</string>
     <string name="untrusted">Bu sertifikanın sağlayıcısı güvenli değil</string>
     <string name="invalid_date">Bu sertifikanın tarihi geçerli değil</string>
     <string name="invalid_certificate">Bu sertifika geçerli değil</string>
@@ -173,5 +173,4 @@
     <!-- Preferences. -->
 
     <!-- Ad Control. There are no ads in the standard flavor, but these strings must exist because they are referenced in the code. -->
-    <string name="ad_consent">Ad Consent</string>
 </resources>
