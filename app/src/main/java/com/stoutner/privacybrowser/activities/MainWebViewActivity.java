@@ -816,7 +816,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         });
 
         // Implement swipe to refresh.
-        swipeRefreshLayout = findViewById(R.id.swipe_refreshlayout);
+        swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
         swipeRefreshLayout.setOnRefreshListener(() -> mainWebView.reload());
 
         // Set the swipe to refresh color according to the theme.
@@ -929,7 +929,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Hide the keyboard (if displayed).
                     inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
 
-                    // Clear the focus from from the URL text box and the WebView.  This removes any text selection markers and context menues, which otherwise draw above the open drawers.
+                    // Clear the focus from from the URL text box and the WebView.  This removes any text selection markers and context menus, which otherwise draw above the open drawers.
                     urlTextBox.clearFocus();
                     mainWebView.clearFocus();
                 }

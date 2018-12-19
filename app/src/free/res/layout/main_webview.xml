@@ -43,7 +43,7 @@
     </com.google.android.gms.ads.AdView>
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refreshlayout"
+        android:id="@+id/swiperefreshlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/adview" >

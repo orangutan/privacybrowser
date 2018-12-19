@@ -19,7 +19,6 @@
 
 package com.stoutner.privacybrowser.activities;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
@@ -31,6 +30,7 @@ import android.os.Bundle;
 import android.os.LocaleList;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -56,6 +56,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Locale;
@@ -126,7 +127,7 @@ public class ViewSourceActivity extends AppCompatActivity {
         // Get a handle for the input method manager, which is used to hide the keyboard.
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        // Let Android Studio know that we aren't worried about the input method manager being null.
+        // Remove the lint warning that the input method manager might be null.
         assert inputMethodManager != null;
 
         // Remove the formatting from the URL when the user is editing the text.
@@ -158,7 +159,7 @@ public class ViewSourceActivity extends AppCompatActivity {
                 urlEditText.clearFocus();
 
                 // Get new source data for the current URL.
-                new GetSource().execute(urlEditText.getText().toString());
+                new GetSource(this).execute(urlEditText.getText().toString());
 
                 // Consume the key press.
                 return true;
@@ -168,8 +169,20 @@ public class ViewSourceActivity extends AppCompatActivity {
             }
         });
 
-        // Get the source as an `AsyncTask`.
-        new GetSource().execute(formattedUrlString);
+        // Implement swipe to refresh.
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.view_source_swiperefreshlayout);
+        swipeRefreshLayout.setOnRefreshListener(() -> new GetSource(this).execute(urlEditText.getText().toString()));
+
+        // Set the swipe to refresh color according to the theme.
+        if (MainWebViewActivity.darkTheme) {
+            swipeRefreshLayout.setColorSchemeResources(R.color.blue_600);
+            swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.gray_800);
+        } else {
+            swipeRefreshLayout.setColorSchemeResources(R.color.blue_700);
+        }
+
+        // Get the source using an AsyncTask.
+        new GetSource(this).execute(formattedUrlString);
     }
 
     @Override
@@ -202,18 +215,47 @@ public class ViewSourceActivity extends AppCompatActivity {
         // Get a handle for the URL EditText.
         EditText urlEditText = findViewById(R.id.url_edittext);
 
-        // Get the URL.
+        // Get the URL string.
         String urlString = urlEditText.getText().toString();
-
-        // Highlight the beginning of the URL.
-        if (urlString.startsWith("http://")) {  // Highlight the protocol of connections that are not encrypted.
-            urlEditText.getText().setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        } else if (urlString.startsWith("https://")) {  // De-emphasize the protocol of connections that are encrypted.
-            urlEditText.getText().setSpan(initialGrayColorSpan, 0, 8, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        }
 
         // Get the index of the `/` immediately after the domain name.
         int endOfDomainName = urlString.indexOf("/", (urlString.indexOf("//") + 2));
+
+        // Create a base URL string.
+        String baseUrl;
+
+        // Get the base URL.
+        if (endOfDomainName > 0) {  // There is at least one character after the base URL.
+            // Get the base URL.
+            baseUrl = urlString.substring(0, endOfDomainName);
+        } else {  // There are no characters after the base URL.
+            // Set the base URL to be the entire URL string.
+            baseUrl = urlString;
+        }
+
+        // Get the index of the last `.` in the domain.
+        int lastDotIndex = baseUrl.lastIndexOf(".");
+
+        // Get the index of the penultimate `.` in the domain.
+        int penultimateDotIndex = baseUrl.lastIndexOf(".", lastDotIndex - 1);
+
+        // Markup the beginning of the URL.
+        if (urlString.startsWith("http://")) {  // Highlight the protocol of connections that are not encrypted.
+            urlEditText.getText().setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+            // De-emphasize subdomains.
+            if (penultimateDotIndex > 0)  {  // There is more than one subdomain in the domain name.
+                urlEditText.getText().setSpan(initialGrayColorSpan, 7, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            }
+        } else if (urlString.startsWith("https://")) {  // De-emphasize the protocol of connections that are encrypted.
+            if (penultimateDotIndex > 0) {  // There is more than one subdomain in the domain name.
+                // De-emphasize the protocol and the additional subdomains.
+                urlEditText.getText().setSpan(initialGrayColorSpan, 0, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            } else {  // There is only one subdomain in the domain name.
+                // De-emphasize only the protocol.
+                urlEditText.getText().setSpan(initialGrayColorSpan, 0, 8, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            }
+        }
 
         // De-emphasize the text after the domain name.
         if (endOfDomainName > 0) {
@@ -221,20 +263,29 @@ public class ViewSourceActivity extends AppCompatActivity {
         }
     }
 
-    // The first `String` declares the parameters.  The `Void` does not declare progress units.  The last `String` contains the results.
-    // `StaticFieldLeaks` are suppressed so that Android Studio doesn't complain about running an AsyncTask in a non-static context.
-    @SuppressLint("StaticFieldLeak")
-    private class GetSource extends AsyncTask<String, Void, String> {
-        // The class variables pass information from `doInBackground()` to `onPostExecute()`.
-        SpannableStringBuilder responseMessageBuilder;
-        SpannableStringBuilder requestHeadersBuilder;
-        SpannableStringBuilder responseHeadersBuilder;
+    // `String` declares the parameters.  `Void` does not declare progress units.  `String[]` contains the results.
+    private static class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]> {
+        // Create a weak reference to the calling activity.
+        private WeakReference<Activity> activityWeakReference;
+
+        // Populate the weak reference to the calling activity.
+        GetSource(Activity activity) {
+            activityWeakReference = new WeakReference<>(activity);
+        }
 
         // `onPreExecute()` operates on the UI thread.
         @Override
         protected void onPreExecute() {
+            // Get a handle for the activity.
+            Activity viewSourceActivity = activityWeakReference.get();
+
+            // Abort if the activity is gone.
+            if ((viewSourceActivity == null) || (viewSourceActivity.isFinishing())) {
+                return;
+            }
+
             // Get a handle for the progress bar.
-            ProgressBar progressBar = findViewById(R.id.progress_bar);
+            ProgressBar progressBar = viewSourceActivity.findViewById(R.id.progress_bar);
 
             // Make the progress bar visible.
             progressBar.setVisibility(View.VISIBLE);
@@ -244,9 +295,20 @@ public class ViewSourceActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(String... formattedUrlString) {
-            // Initialize the response body `String`.
-            String responseBodyString = "";
+        protected SpannableStringBuilder[] doInBackground(String... formattedUrlString) {
+            // Initialize the response body String.
+            SpannableStringBuilder requestHeadersBuilder = new SpannableStringBuilder();
+            SpannableStringBuilder responseMessageBuilder = new SpannableStringBuilder();
+            SpannableStringBuilder responseHeadersBuilder = new SpannableStringBuilder();
+            SpannableStringBuilder responseBodyBuilder = new SpannableStringBuilder();
+
+            // Get a handle for the activity.
+            Activity activity = activityWeakReference.get();
+
+            // Abort if the activity is gone.
+            if ((activity == null) || (activity.isFinishing())) {
+                return new SpannableStringBuilder[] {requestHeadersBuilder, responseMessageBuilder, responseHeadersBuilder, responseBodyBuilder};
+            }
 
             // Because everything relating to requesting data from a webserver can throw errors, the entire section must catch `IOExceptions`.
             try {
@@ -347,7 +409,7 @@ public class ViewSourceActivity extends AppCompatActivity {
 
 
                 // Get a handle for the shared preferences.
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
 
                 // Only populate `Do Not Track` if it is enabled.
                 if (sharedPreferences.getBoolean("do_not_track", false)) {
@@ -391,7 +453,7 @@ public class ViewSourceActivity extends AppCompatActivity {
                 // Populate the locale string.
                 if (Build.VERSION.SDK_INT >= 24) {  // SDK >= 24 has a list of locales.
                     // Get the list of locales.
-                    LocaleList localeList = getResources().getConfiguration().getLocales();
+                    LocaleList localeList = activity.getResources().getConfiguration().getLocales();
 
                     // Initialize a string builder to extract the locales from the list.
                     StringBuilder localesStringBuilder = new StringBuilder();
@@ -557,7 +619,7 @@ public class ViewSourceActivity extends AppCompatActivity {
                     inputStream.close();
 
                     // Populate the response body string with the contents of the byte array output stream.
-                    responseBodyString = byteArrayOutputStream.toString();
+                    responseBodyBuilder.append(byteArrayOutputStream.toString());
                 } finally {
                     // Disconnect `httpUrlConnection`.
                     httpUrlConnection.disconnect();
@@ -567,28 +629,40 @@ public class ViewSourceActivity extends AppCompatActivity {
             }
 
             // Return the response body string as the result.
-            return responseBodyString;
+            return new SpannableStringBuilder[] {requestHeadersBuilder, responseMessageBuilder, responseHeadersBuilder, responseBodyBuilder};
         }
 
         // `onPostExecute()` operates on the UI thread.
         @Override
-        protected void onPostExecute(String responseBodyString){
+        protected void onPostExecute(SpannableStringBuilder[] viewSourceStringArray){
+            // Get a handle the activity.
+            Activity activity = activityWeakReference.get();
+
+            // Abort if the activity is gone.
+            if ((activity == null) || (activity.isFinishing())) {
+                return;
+            }
+
             // Get handles for the text views.
-            TextView requestHeadersTextView = findViewById(R.id.request_headers);
-            TextView responseMessageTextView = findViewById(R.id.response_message);
-            TextView responseHeadersTextView = findViewById(R.id.response_headers);
-            TextView responseBodyTextView = findViewById(R.id.response_body);
-            ProgressBar progressBar = findViewById(R.id.progress_bar);
+            TextView requestHeadersTextView = activity.findViewById(R.id.request_headers);
+            TextView responseMessageTextView = activity.findViewById(R.id.response_message);
+            TextView responseHeadersTextView = activity.findViewById(R.id.response_headers);
+            TextView responseBodyTextView = activity.findViewById(R.id.response_body);
+            ProgressBar progressBar = activity.findViewById(R.id.progress_bar);
+            SwipeRefreshLayout swipeRefreshLayout = activity.findViewById(R.id.view_source_swiperefreshlayout);
 
             // Populate the text views.
-            requestHeadersTextView.setText(requestHeadersBuilder);
-            responseMessageTextView.setText(responseMessageBuilder);
-            responseHeadersTextView.setText(responseHeadersBuilder);
-            responseBodyTextView.setText(responseBodyString);
+            requestHeadersTextView.setText(viewSourceStringArray[0]);
+            responseMessageTextView.setText(viewSourceStringArray[1]);
+            responseHeadersTextView.setText(viewSourceStringArray[2]);
+            responseBodyTextView.setText(viewSourceStringArray[3]);
 
             // Hide the progress bar.
             progressBar.setIndeterminate(false);
             progressBar.setVisibility(View.GONE);
+
+            //Stop the swipe to refresh indicator if it is running
+            swipeRefreshLayout.setRefreshing(false);
         }
     }
 }
