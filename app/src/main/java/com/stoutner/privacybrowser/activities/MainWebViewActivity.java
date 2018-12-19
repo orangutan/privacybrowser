@@ -815,10 +815,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
         });
 
-        // Implement swipe to refresh
+        // Implement swipe to refresh.
         swipeRefreshLayout = findViewById(R.id.swipe_refreshlayout);
-        swipeRefreshLayout.setColorSchemeResources(R.color.blue_700);
         swipeRefreshLayout.setOnRefreshListener(() -> mainWebView.reload());
+
+        // Set the swipe to refresh color according to the theme.
+        if (darkTheme) {
+            swipeRefreshLayout.setColorSchemeResources(R.color.blue_600);
+            swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.gray_850);
+        } else {
+            swipeRefreshLayout.setColorSchemeResources(R.color.blue_700);
+        }
 
         // `DrawerTitle` identifies the `DrawerLayouts` in accessibility mode.
         drawerLayout.setDrawerTitle(GravityCompat.START, getString(R.string.navigation_drawer));
