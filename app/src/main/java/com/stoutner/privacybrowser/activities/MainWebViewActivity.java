@@ -37,6 +37,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -76,7 +77,6 @@ import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.ContextMenu;
 import android.view.GestureDetector;
@@ -507,7 +507,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // Remove Android Studio's warning about the dangers of using SetJavaScriptEnabled.  The whole premise of Privacy Browser is built around an understanding of these dangers.
     // Also, remove the warning about needing to override `performClick()` when using an `OnTouchListener` with `WebView`.
     @SuppressLint({"SetJavaScriptEnabled", "ClickableViewAccessibility"})
-    // Remove Android Studio's warning about deprecations.  We have to use the deprecated `getColor()` until API >= 23.
+    // Remove Android Studio's warning about deprecations.  The deprecated `getColor()` must be used until API >= 23.
     @SuppressWarnings("deprecation")
     protected void onCreate(Bundle savedInstanceState) {
         // Get a handle for the shared preferences.
@@ -535,6 +535,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Set the content view.
         setContentView(R.layout.main_drawerlayout);
 
+        // Get a handle for the resources.
+        Resources resources = getResources();
+
         // Get a handle for `inputMethodManager`.
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -551,9 +554,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         appBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 
         // Initialize the foreground color spans for highlighting the URLs.  We have to use the deprecated `getColor()` until API >= 23.
-        redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
-        initialGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
-        finalGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
+        redColorSpan = new ForegroundColorSpan(resources.getColor(R.color.red_a700));
+        initialGrayColorSpan = new ForegroundColorSpan(resources.getColor(R.color.gray_500));
+        finalGrayColorSpan = new ForegroundColorSpan(resources.getColor(R.color.gray_500));
 
         // Get a handle for `urlTextBox`.
         urlTextBox = findViewById(R.id.url_edittext);
@@ -636,15 +639,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Set the bookmarks drawer resources according to the theme.  This can't be done in the layout due to compatibility issues with the `DrawerLayout` support widget.
         if (darkTheme) {
-            launchBookmarksActivityFab.setImageDrawable(getResources().getDrawable(R.drawable.bookmarks_dark));
-            createBookmarkFolderFab.setImageDrawable(getResources().getDrawable(R.drawable.create_folder_dark));
-            createBookmarkFab.setImageDrawable(getResources().getDrawable(R.drawable.create_bookmark_dark));
-            bookmarksListView.setBackgroundColor(getResources().getColor(R.color.gray_850));
+            launchBookmarksActivityFab.setImageDrawable(resources.getDrawable(R.drawable.bookmarks_dark));
+            createBookmarkFolderFab.setImageDrawable(resources.getDrawable(R.drawable.create_folder_dark));
+            createBookmarkFab.setImageDrawable(resources.getDrawable(R.drawable.create_bookmark_dark));
+            bookmarksListView.setBackgroundColor(resources.getColor(R.color.gray_850));
         } else {
-            launchBookmarksActivityFab.setImageDrawable(getResources().getDrawable(R.drawable.bookmarks_light));
-            createBookmarkFolderFab.setImageDrawable(getResources().getDrawable(R.drawable.create_folder_light));
-            createBookmarkFab.setImageDrawable(getResources().getDrawable(R.drawable.create_bookmark_light));
-            bookmarksListView.setBackgroundColor(getResources().getColor(R.color.white));
+            launchBookmarksActivityFab.setImageDrawable(resources.getDrawable(R.drawable.bookmarks_light));
+            createBookmarkFolderFab.setImageDrawable(resources.getDrawable(R.drawable.create_folder_light));
+            createBookmarkFab.setImageDrawable(resources.getDrawable(R.drawable.create_bookmark_light));
+            bookmarksListView.setBackgroundColor(resources.getColor(R.color.white));
         }
 
         // Set the launch bookmarks activity FAB to launch the bookmarks activity.
@@ -663,14 +666,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         createBookmarkFolderFab.setOnClickListener(v -> {
             // Show the `CreateBookmarkFolderDialog` `AlertDialog` and name the instance `@string/create_folder`.
             AppCompatDialogFragment createBookmarkFolderDialog = new CreateBookmarkFolderDialog();
-            createBookmarkFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_folder));
+            createBookmarkFolderDialog.show(getSupportFragmentManager(), resources.getString(R.string.create_folder));
         });
 
         // Set the create new bookmark FAB to display an alert dialog.
         createBookmarkFab.setOnClickListener(view -> {
             // Show the `CreateBookmarkDialog` `AlertDialog` and name the instance `@string/create_bookmark`.
             AppCompatDialogFragment createBookmarkDialog = new CreateBookmarkDialog();
-            createBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_bookmark));
+            createBookmarkDialog.show(getSupportFragmentManager(), resources.getString(R.string.create_bookmark));
         });
 
         // Create a double-tap listener to toggle full-screen mode.
@@ -891,16 +894,28 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Show the edit bookmark folder `AlertDialog` and name the instance `@string/edit_folder`.
                 AppCompatDialogFragment editFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId);
-                editFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_folder));
+                editFolderDialog.show(getSupportFragmentManager(), resources.getString(R.string.edit_folder));
             } else {
                 // Show the edit bookmark `AlertDialog` and name the instance `@string/edit_bookmark`.
                 AppCompatDialogFragment editBookmarkDialog = EditBookmarkDialog.bookmarkDatabaseId(databaseId);
-                editBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_bookmark));
+                editBookmarkDialog.show(getSupportFragmentManager(), resources.getString(R.string.edit_bookmark));
             }
 
             // Consume the event.
             return true;
         });
+
+        // Get the status bar pixel size.
+        int statusBarResourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
+        int statusBarPixelSize = resources.getDimensionPixelSize(statusBarResourceId);
+
+        // Get the resource density.
+        float screenDensity = resources.getDisplayMetrics().density;
+
+        // Calculate the drawer header padding.  This is used to move the text in the drawer headers below any cutouts.
+        int drawerHeaderPaddingLeftAndRight = (int) (15 * screenDensity);
+        int drawerHeaderPaddingTop = statusBarPixelSize + (int) (4 * screenDensity);
+        int drawerHeaderPaddingBottom = (int) (8 * screenDensity);
 
         // The drawer listener is used to update the navigation menu.
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
@@ -919,6 +934,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @Override
             public void onDrawerStateChanged(int newState) {
                 if ((newState == DrawerLayout.STATE_SETTLING) || (newState == DrawerLayout.STATE_DRAGGING)) {  // A drawer is opening or closing.
+                    // Get handles for the drawer headers.
+                    TextView navigationHeaderTextView = findViewById(R.id.navigationText);
+                    TextView bookmarksHeaderTextView = findViewById(R.id.bookmarks_title_textview);
+
+                    // Apply the calculated drawer paddings.  This moves the text in the header below any cutouts.
+                    navigationHeaderTextView.setPadding(drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingTop, drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingBottom);
+                    bookmarksHeaderTextView.setPadding(drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingTop, drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingBottom);
+
                     // Update the back, forward, history, and requests menu items.
                     navigationBackMenuItem.setEnabled(mainWebView.canGoBack());
                     navigationForwardMenuItem.setEnabled(mainWebView.canGoForward());
@@ -1243,7 +1266,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Initialize the user agent array adapter and string array.
         userAgentNamesArray = ArrayAdapter.createFromResource(this, R.array.user_agent_names, R.layout.spinner_item);
-        userAgentDataArray = getResources().getStringArray(R.array.user_agent_data);
+        userAgentDataArray = resources.getStringArray(R.array.user_agent_data);
 
         // Apply the app settings from the shared preferences.
         applyAppSettings();
@@ -1818,8 +1841,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Create an encoded URL string.
             String encodedUrlString;
 
-            Log.i("Intent", launchingIntent.getStringExtra(SearchManager.QUERY));
-
             // Sanitize the search input and convert it to a search.
             try {
                 encodedUrlString = URLEncoder.encode(launchingIntent.getStringExtra(SearchManager.QUERY), "UTF-8");
@@ -1844,8 +1865,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     protected void onNewIntent(Intent intent) {
         // Sets the new intent as the activity intent, so that any future `getIntent()`s pick up this one instead of creating a new activity.
         setIntent(intent);
-
-        Log.i("Intent", intent.getAction());
 
         // Get the information from the intent.
         String intentAction = intent.getAction();
