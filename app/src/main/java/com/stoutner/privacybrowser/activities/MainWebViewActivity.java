@@ -26,6 +26,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.DownloadManager;
+import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
@@ -75,6 +76,7 @@ import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.ContextMenu;
 import android.view.GestureDetector;
@@ -577,11 +579,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // If the event is a key-down event on the `enter` button, load the URL.
             if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                 // Load the URL into the mainWebView and consume the event.
-                try {
-                    loadUrlFromTextBox();
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+                loadUrlFromTextBox();
+
                 // If the enter key was pressed, consume the event.
                 return true;
             } else {
@@ -1207,17 +1206,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Initialize the default preference values the first time the program is run.  `false` keeps this command from resetting any current preferences back to default.
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
-        // Get the intent that started the app.
-        final Intent launchingIntent = getIntent();
-
-        // Extract the launching intent data as `launchingIntentUriData`.
-        final Uri launchingIntentUriData = launchingIntent.getData();
-
-        // Convert the launching intent URI data (if it exists) to a string and store it in `formattedUrlString`.
-        if (launchingIntentUriData != null) {
-            formattedUrlString = launchingIntentUriData.toString();
-        }
-
         // Get a handle for the `Runtime`.
         privacyBrowserRuntime = Runtime.getRuntime();
 
@@ -1818,6 +1806,34 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
         });
 
+        // Get the intent that started the app.
+        Intent launchingIntent = getIntent();
+
+        // Get the information from the intent.
+        String launchingIntentAction = launchingIntent.getAction();
+        Uri launchingIntentUriData = launchingIntent.getData();
+
+        // If the intent action is a web search, perform the search.
+        if ((launchingIntentAction != null) && launchingIntentAction.equals(Intent.ACTION_WEB_SEARCH)) {
+            // Create an encoded URL string.
+            String encodedUrlString;
+
+            Log.i("Intent", launchingIntent.getStringExtra(SearchManager.QUERY));
+
+            // Sanitize the search input and convert it to a search.
+            try {
+                encodedUrlString = URLEncoder.encode(launchingIntent.getStringExtra(SearchManager.QUERY), "UTF-8");
+            } catch (UnsupportedEncodingException exception) {
+                encodedUrlString = "";
+            }
+
+            // Add the base search URL.
+            formattedUrlString = searchURL + encodedUrlString;
+        } else if (launchingIntentUriData != null){  // Check to see if the intent contains a new URL.
+            // Set the formatted URL string.
+            formattedUrlString = launchingIntentUriData.toString();
+        }
+
         // Load the website if not waiting for Orbot to connect.
         if (!waitingForOrbot) {
             loadUrl(formattedUrlString);
@@ -1829,27 +1845,46 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Sets the new intent as the activity intent, so that any future `getIntent()`s pick up this one instead of creating a new activity.
         setIntent(intent);
 
-        // Check to see if the intent contains a new URL.
-        if (intent.getData() != null) {
-            // Get the intent data.
-            final Uri intentUriData = intent.getData();
+        Log.i("Intent", intent.getAction());
 
-            // Load the website.
-            loadUrl(intentUriData.toString());
+        // Get the information from the intent.
+        String intentAction = intent.getAction();
+        Uri intentUriData = intent.getData();
 
-            // Close the navigation drawer if it is open.
-            if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
-                drawerLayout.closeDrawer(GravityCompat.START);
+        // If the intent action is a web search, perform the search.
+        if ((intentAction != null) && intentAction.equals(Intent.ACTION_WEB_SEARCH)) {
+            // Create an encoded URL string.
+            String encodedUrlString;
+
+            // Sanitize the search input and convert it to a search.
+            try {
+                encodedUrlString = URLEncoder.encode(intent.getStringExtra(SearchManager.QUERY), "UTF-8");
+            } catch (UnsupportedEncodingException exception) {
+                encodedUrlString = "";
             }
 
-            // Close the bookmarks drawer if it is open.
-            if (drawerLayout.isDrawerVisible(GravityCompat.END)) {
-                drawerLayout.closeDrawer(GravityCompat.END);
-            }
-
-            // Clear the keyboard if displayed and remove the focus on the urlTextBar if it has it.
-            mainWebView.requestFocus();
+            // Add the base search URL.
+            formattedUrlString = searchURL + encodedUrlString;
+        } else if (intentUriData != null){  // Check to see if the intent contains a new URL.
+            // Set the formatted URL string.
+            formattedUrlString = intentUriData.toString();
         }
+
+        // Load the URL.
+        loadUrl(formattedUrlString);
+
+        // Close the navigation drawer if it is open.
+        if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+
+        // Close the bookmarks drawer if it is open.
+        if (drawerLayout.isDrawerVisible(GravityCompat.END)) {
+            drawerLayout.closeDrawer(GravityCompat.END);
+        }
+
+        // Clear the keyboard if displayed and remove the focus on the urlTextBar if it has it.
+        mainWebView.requestFocus();
     }
 
     @Override
@@ -3828,7 +3863,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
     }
 
-    private void loadUrlFromTextBox() throws UnsupportedEncodingException {
+    private void loadUrlFromTextBox() {
         // Get the text from urlTextBox and convert it to a string.  trim() removes white spaces from the beginning and end of the string.
         String unformattedUrlString = urlTextBox.getText().toString().trim();
 
@@ -3850,24 +3885,36 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
 
             // The ternary operator (? :) makes sure that a null pointer exception is not thrown, which would happen if `.get` was called on a `null` value.
-            final String scheme = unformattedUrl != null ? unformattedUrl.getProtocol() : null;
-            final String authority = unformattedUrl != null ? unformattedUrl.getAuthority() : null;
-            final String path = unformattedUrl != null ? unformattedUrl.getPath() : null;
-            final String query = unformattedUrl != null ? unformattedUrl.getQuery() : null;
-            final String fragment = unformattedUrl != null ? unformattedUrl.getRef() : null;
+            String scheme = unformattedUrl != null ? unformattedUrl.getProtocol() : null;
+            String authority = unformattedUrl != null ? unformattedUrl.getAuthority() : null;
+            String path = unformattedUrl != null ? unformattedUrl.getPath() : null;
+            String query = unformattedUrl != null ? unformattedUrl.getQuery() : null;
+            String fragment = unformattedUrl != null ? unformattedUrl.getRef() : null;
 
             // Build the URI.
             Uri.Builder formattedUri = new Uri.Builder();
             formattedUri.scheme(scheme).authority(authority).path(path).query(query).fragment(fragment);
 
             // Decode `formattedUri` as a `String` in `UTF-8`.
-            formattedUrlString = URLDecoder.decode(formattedUri.build().toString(), "UTF-8");
+            try {
+                formattedUrlString = URLDecoder.decode(formattedUri.build().toString(), "UTF-8");
+            } catch (UnsupportedEncodingException exception) {
+                // Load a blank string.
+                formattedUrlString = "";
+            }
         } else if (unformattedUrlString.isEmpty()){  // Load a blank web site.
             // Load a blank string.
             formattedUrlString = "";
         } else {  // Search for the contents of the URL box.
-            // Sanitize the search input and convert it to a search.
-            final String encodedUrlString = URLEncoder.encode(unformattedUrlString, "UTF-8");
+            // Create an encoded URL String.
+            String encodedUrlString;
+
+            // Sanitize the search input.
+            try {
+                encodedUrlString = URLEncoder.encode(unformattedUrlString, "UTF-8");
+            } catch (UnsupportedEncodingException exception) {
+                encodedUrlString = "";
+            }
 
             // Add the base search URL.
             formattedUrlString = searchURL + encodedUrlString;

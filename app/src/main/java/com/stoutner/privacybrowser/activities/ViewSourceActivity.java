@@ -651,7 +651,7 @@ public class ViewSourceActivity extends AppCompatActivity {
             ProgressBar progressBar = activity.findViewById(R.id.progress_bar);
             SwipeRefreshLayout swipeRefreshLayout = activity.findViewById(R.id.view_source_swiperefreshlayout);
 
-            // Populate the text views.
+            // Populate the text views.  This can take a long time, and freeze the user interface, if the response body is particularly large.
             requestHeadersTextView.setText(viewSourceStringArray[0]);
             responseMessageTextView.setText(viewSourceStringArray[1]);
             responseHeadersTextView.setText(viewSourceStringArray[2]);
