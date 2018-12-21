@@ -141,10 +141,11 @@ public class ViewSourceActivity extends AppCompatActivity {
                 // Hide the soft keyboard.
                 inputMethodManager.hideSoftInputFromWindow(urlEditText.getWindowToken(), 0);
 
+                // Move to the beginning of the string.
+                urlEditText.setSelection(0);
+
                 // Reapply the highlighting.
                 highlightUrlText();
-
-
             }
         });
 
@@ -158,8 +159,13 @@ public class ViewSourceActivity extends AppCompatActivity {
                 // Remove the focus from the URL box.
                 urlEditText.clearFocus();
 
-                // Get new source data for the current URL.
-                new GetSource(this).execute(urlEditText.getText().toString());
+                // Get the URL.
+                String url = urlEditText.getText().toString();
+
+                // Get new source data for the current URL if it beings with `http`.
+                if (url.startsWith("http")) {
+                    new GetSource(this).execute(url);
+                }
 
                 // Consume the key press.
                 return true;
@@ -171,7 +177,18 @@ public class ViewSourceActivity extends AppCompatActivity {
 
         // Implement swipe to refresh.
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.view_source_swiperefreshlayout);
-        swipeRefreshLayout.setOnRefreshListener(() -> new GetSource(this).execute(urlEditText.getText().toString()));
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            // Get the URL.
+            String url = urlEditText.getText().toString();
+
+            // Get new source data for the URL if it begins with `http`/
+            if (url.startsWith("http")) {
+                new GetSource(this).execute(url);
+            } else {
+                // Stop the refresh animation.
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
         // Set the swipe to refresh color according to the theme.
         if (MainWebViewActivity.darkTheme) {
@@ -181,8 +198,10 @@ public class ViewSourceActivity extends AppCompatActivity {
             swipeRefreshLayout.setColorSchemeResources(R.color.blue_700);
         }
 
-        // Get the source using an AsyncTask.
-        new GetSource(this).execute(formattedUrlString);
+        // Get the source using an AsyncTask if the URL begins with `http`.
+        if (formattedUrlString.startsWith("http")) {
+            new GetSource(this).execute(formattedUrlString);
+        }
     }
 
     @Override
@@ -218,48 +237,57 @@ public class ViewSourceActivity extends AppCompatActivity {
         // Get the URL string.
         String urlString = urlEditText.getText().toString();
 
-        // Get the index of the `/` immediately after the domain name.
-        int endOfDomainName = urlString.indexOf("/", (urlString.indexOf("//") + 2));
+        // Highlight the URL according to the protocol.
+        if (urlString.startsWith("file://")) {  // This is a file URL.
+            // De-emphasize only the protocol.
+            urlEditText.getText().setSpan(initialGrayColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        } else if (urlString.startsWith("content://")) {
+            // De-emphasize only the protocol.
+            urlEditText.getText().setSpan(initialGrayColorSpan, 0, 10, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        } else {  // This is a web URL.
+            // Get the index of the `/` immediately after the domain name.
+            int endOfDomainName = urlString.indexOf("/", (urlString.indexOf("//") + 2));
 
-        // Create a base URL string.
-        String baseUrl;
+            // Create a base URL string.
+            String baseUrl;
 
-        // Get the base URL.
-        if (endOfDomainName > 0) {  // There is at least one character after the base URL.
             // Get the base URL.
-            baseUrl = urlString.substring(0, endOfDomainName);
-        } else {  // There are no characters after the base URL.
-            // Set the base URL to be the entire URL string.
-            baseUrl = urlString;
-        }
-
-        // Get the index of the last `.` in the domain.
-        int lastDotIndex = baseUrl.lastIndexOf(".");
-
-        // Get the index of the penultimate `.` in the domain.
-        int penultimateDotIndex = baseUrl.lastIndexOf(".", lastDotIndex - 1);
-
-        // Markup the beginning of the URL.
-        if (urlString.startsWith("http://")) {  // Highlight the protocol of connections that are not encrypted.
-            urlEditText.getText().setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-
-            // De-emphasize subdomains.
-            if (penultimateDotIndex > 0)  {  // There is more than one subdomain in the domain name.
-                urlEditText.getText().setSpan(initialGrayColorSpan, 7, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            if (endOfDomainName > 0) {  // There is at least one character after the base URL.
+                // Get the base URL.
+                baseUrl = urlString.substring(0, endOfDomainName);
+            } else {  // There are no characters after the base URL.
+                // Set the base URL to be the entire URL string.
+                baseUrl = urlString;
             }
-        } else if (urlString.startsWith("https://")) {  // De-emphasize the protocol of connections that are encrypted.
-            if (penultimateDotIndex > 0) {  // There is more than one subdomain in the domain name.
-                // De-emphasize the protocol and the additional subdomains.
-                urlEditText.getText().setSpan(initialGrayColorSpan, 0, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            } else {  // There is only one subdomain in the domain name.
-                // De-emphasize only the protocol.
-                urlEditText.getText().setSpan(initialGrayColorSpan, 0, 8, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            }
-        }
 
-        // De-emphasize the text after the domain name.
-        if (endOfDomainName > 0) {
-            urlEditText.getText().setSpan(finalGrayColorSpan, endOfDomainName, urlString.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            // Get the index of the last `.` in the domain.
+            int lastDotIndex = baseUrl.lastIndexOf(".");
+
+            // Get the index of the penultimate `.` in the domain.
+            int penultimateDotIndex = baseUrl.lastIndexOf(".", lastDotIndex - 1);
+
+            // Markup the beginning of the URL.
+            if (urlString.startsWith("http://")) {  // Highlight the protocol of connections that are not encrypted.
+                urlEditText.getText().setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                // De-emphasize subdomains.
+                if (penultimateDotIndex > 0) {  // There is more than one subdomain in the domain name.
+                    urlEditText.getText().setSpan(initialGrayColorSpan, 7, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                }
+            } else if (urlString.startsWith("https://")) {  // De-emphasize the protocol of connections that are encrypted.
+                if (penultimateDotIndex > 0) {  // There is more than one subdomain in the domain name.
+                    // De-emphasize the protocol and the additional subdomains.
+                    urlEditText.getText().setSpan(initialGrayColorSpan, 0, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                } else {  // There is only one subdomain in the domain name.
+                    // De-emphasize only the protocol.
+                    urlEditText.getText().setSpan(initialGrayColorSpan, 0, 8, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                }
+            }
+
+            // De-emphasize the text after the domain name.
+            if (endOfDomainName > 0) {
+                urlEditText.getText().setSpan(finalGrayColorSpan, endOfDomainName, urlString.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            }
         }
     }
 

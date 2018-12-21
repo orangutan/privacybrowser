@@ -109,6 +109,17 @@
                 <data android:scheme="https" />
             </intent-filter>
 
+            <!-- Process content intents for text files. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="content" />
+                <data android:mimeType="text/*" />
+            </intent-filter>
+
             <!-- Process web search intents. -->
             <intent-filter>
                 <action android:name="android.intent.action.WEB_SEARCH" />

@@ -1649,7 +1649,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             public void onPageFinished(WebView view, String url) {
                 // Reset the wide view port if it has been turned off by the waiting for Orbot message.
                 if (!waitingForOrbot) {
-                    mainWebView.getSettings().setUseWideViewPort(true);
+                    // Only use a wide view port if the URL starts with `http`, not for `file://` and `content://`.
+                    mainWebView.getSettings().setUseWideViewPort(url.startsWith("http"));
                 }
 
                 // Flush any cookies to persistent storage.  `CookieManager` has become very lazy about flushing cookies in recent versions.
@@ -3887,9 +3888,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         String unformattedUrlString = urlTextBox.getText().toString().trim();
 
         // Check to see if `unformattedUrlString` is a valid URL.  Otherwise, convert it into a search.
-        if ((Patterns.WEB_URL.matcher(unformattedUrlString).matches()) || (unformattedUrlString.startsWith("http://")) || (unformattedUrlString.startsWith("https://"))) {
-            // Add `https://` at the beginning if it is missing.  Otherwise the app will segfault.
-            if (!unformattedUrlString.startsWith("http")) {
+        if (unformattedUrlString.startsWith("content://")) {
+            // Load the entire content URL.
+            formattedUrlString = unformattedUrlString;
+        } else if (Patterns.WEB_URL.matcher(unformattedUrlString).matches() || unformattedUrlString.startsWith("http://") || unformattedUrlString.startsWith("https://")
+                || unformattedUrlString.startsWith("file://")) {
+            // Add `https://` at the beginning if there is no protocol.  Otherwise the app will segfault.
+            if (!unformattedUrlString.startsWith("http") && !unformattedUrlString.startsWith("file://") && !unformattedUrlString.startsWith("content://")) {
                 unformattedUrlString = "https://" + unformattedUrlString;
             }
 
@@ -4634,48 +4639,57 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get the URL string.
         String urlString = urlTextBox.getText().toString();
 
-        // Get the index of the `/` immediately after the domain name.
-        int endOfDomainName = urlString.indexOf("/", (urlString.indexOf("//") + 2));
+        // Highlight the URL according to the protocol.
+        if (urlString.startsWith("file://")) {  // This is a file URL.
+            // De-emphasize only the protocol.
+            urlTextBox.getText().setSpan(initialGrayColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        } else if (urlString.startsWith("content://")) {
+            // De-emphasize only the protocol.
+            urlTextBox.getText().setSpan(initialGrayColorSpan, 0, 10, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        } else {  // This is a web URL.
+            // Get the index of the `/` immediately after the domain name.
+            int endOfDomainName = urlString.indexOf("/", (urlString.indexOf("//") + 2));
 
-        // Create a base URL string.
-        String baseUrl;
+            // Create a base URL string.
+            String baseUrl;
 
-        // Get the base URL.
-        if (endOfDomainName > 0) {  // There is at least one character after the base URL.
             // Get the base URL.
-            baseUrl = urlString.substring(0, endOfDomainName);
-        } else {  // There are no characters after the base URL.
-            // Set the base URL to be the entire URL string.
-            baseUrl = urlString;
-        }
-
-        // Get the index of the last `.` in the domain.
-        int lastDotIndex = baseUrl.lastIndexOf(".");
-
-        // Get the index of the penultimate `.` in the domain.
-        int penultimateDotIndex = baseUrl.lastIndexOf(".", lastDotIndex - 1);
-
-        // Markup the beginning of the URL.
-        if (urlString.startsWith("http://")) {  // Highlight the protocol of connections that are not encrypted.
-            urlTextBox.getText().setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-
-            // De-emphasize subdomains.
-            if (penultimateDotIndex > 0)  {  // There is more than one subdomain in the domain name.
-                urlTextBox.getText().setSpan(initialGrayColorSpan, 7, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            if (endOfDomainName > 0) {  // There is at least one character after the base URL.
+                // Get the base URL.
+                baseUrl = urlString.substring(0, endOfDomainName);
+            } else {  // There are no characters after the base URL.
+                // Set the base URL to be the entire URL string.
+                baseUrl = urlString;
             }
-        } else if (urlString.startsWith("https://")) {  // De-emphasize the protocol of connections that are encrypted.
-            if (penultimateDotIndex > 0) {  // There is more than one subdomain in the domain name.
-                // De-emphasize the protocol and the additional subdomains.
-                urlTextBox.getText().setSpan(initialGrayColorSpan, 0, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            } else {  // There is only one subdomain in the domain name.
-                // De-emphasize only the protocol.
-                urlTextBox.getText().setSpan(initialGrayColorSpan, 0, 8, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            }
-        }
 
-        // De-emphasize the text after the domain name.
-        if (endOfDomainName > 0) {
-            urlTextBox.getText().setSpan(finalGrayColorSpan, endOfDomainName, urlString.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            // Get the index of the last `.` in the domain.
+            int lastDotIndex = baseUrl.lastIndexOf(".");
+
+            // Get the index of the penultimate `.` in the domain.
+            int penultimateDotIndex = baseUrl.lastIndexOf(".", lastDotIndex - 1);
+
+            // Markup the beginning of the URL.
+            if (urlString.startsWith("http://")) {  // Highlight the protocol of connections that are not encrypted.
+                urlTextBox.getText().setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                // De-emphasize subdomains.
+                if (penultimateDotIndex > 0) {  // There is more than one subdomain in the domain name.
+                    urlTextBox.getText().setSpan(initialGrayColorSpan, 7, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                }
+            } else if (urlString.startsWith("https://")) {  // De-emphasize the protocol of connections that are encrypted.
+                if (penultimateDotIndex > 0) {  // There is more than one subdomain in the domain name.
+                    // De-emphasize the protocol and the additional subdomains.
+                    urlTextBox.getText().setSpan(initialGrayColorSpan, 0, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                } else {  // There is only one subdomain in the domain name.
+                    // De-emphasize only the protocol.
+                    urlTextBox.getText().setSpan(initialGrayColorSpan, 0, 8, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                }
+            }
+
+            // De-emphasize the text after the domain name.
+            if (endOfDomainName > 0) {
+                urlTextBox.getText().setSpan(finalGrayColorSpan, endOfDomainName, urlString.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            }
         }
     }
 
