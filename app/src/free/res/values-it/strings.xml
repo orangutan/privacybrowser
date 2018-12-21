@@ -26,7 +26,7 @@
 
     <!-- Ad Consent. -->
     <string name="ad_consent_text">Privacy Browser Free mostra un banner pubblicitario nella parte inferiore dello schermo.
-        Questi annunci provengono dai provider normalmente utilizzati da Google e sono configurati in modo da non essere personalizzati e da non tracciare l\'utente.
+        Questi annunci provengono dai provider normalmente utilizzati da Google e sono configurati in modo da non essere personalizzati.
         \n\nLa versione standard di Privacy Browser non contiene annunci.</string>
     <string name="close_browser">Chiudi il Browser</string>
     <string name="accept_ads">Accetta gli Annunci</string>

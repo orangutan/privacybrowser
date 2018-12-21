@@ -18,7 +18,11 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<resources>
+<!-- `tools:ignore="MissingTranslation"` allows release APKs to be built if translation strings are missing.  The missing strings will fall back to English. -->
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation" >
+
     <!-- Providers. -->
     <string name="file_provider" translatable="false">com.stoutner.privacybrowser.fileprovider.free</string>
 
@@ -35,7 +39,7 @@
 
     <!-- Ad Consent. -->
     <string name="ad_consent_text">Privacy Browser Free displays a banner ad on the bottom of the screen.
-        These ads come from Google’s set of commonly used providers and are configured to be non-personalized and non-tracking.
+        These ads come from Google’s set of commonly used providers and are configured to be non-personalized.
         \n\nThe standard version of Privacy Browser does not contain ads.</string>
     <string name="close_browser">Close Browser</string>
     <string name="accept_ads">Accept Ads</string>

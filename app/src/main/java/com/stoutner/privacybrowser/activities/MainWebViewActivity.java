@@ -844,8 +844,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         final MenuItem navigationHistoryMenuItem = navigationMenu.getItem(3);
         final MenuItem navigationRequestsMenuItem = navigationMenu.getItem(4);
 
-        // Initialize the bookmarks database helper.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
-        // The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
+        // Initialize the bookmarks database helper.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
         bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this, null, null, 0);
 
         // Initialize `currentBookmarksFolder`.  `""` is the home folder in the database.

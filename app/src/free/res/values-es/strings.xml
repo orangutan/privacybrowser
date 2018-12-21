@@ -26,7 +26,7 @@
 
     <!-- Ad Consent. -->
     <string name="ad_consent_text">Navegador Privado Gratuíto muestra un anuncio de banner en la parte inferior de la pantalla.
-        Estos anuncios proceden del conjunto de proveedores habituales de Google y están configurados para que no sean personalizados ni de seguimiento.
+        Estos anuncios proceden del conjunto de proveedores habituales de Google y están configurados para que no sean personalizados.
         \n\nLa versión estándar de Navegador Privado no contiene anuncios.</string>
     <string name="close_browser">Cerrar el navegador</string>
     <string name="accept_ads">Aceptar anuncios</string>

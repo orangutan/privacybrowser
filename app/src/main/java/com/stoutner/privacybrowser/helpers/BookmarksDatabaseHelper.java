@@ -125,8 +125,8 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         // Get a readable database handle.
         SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
 
-        // Prepare the SQL statement to get the `Cursor` for `databaseId`
-        final String GET_ONE_BOOKMARK = "SELECT * FROM " + BOOKMARKS_TABLE +
+        // Prepare the SQL statement to get the cursor for the database ID.
+        String GET_ONE_BOOKMARK = "SELECT * FROM " + BOOKMARKS_TABLE +
                 " WHERE " + _ID + " = " + databaseId;
 
         // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.  We can't close the `Cursor` because we need to use it in the parent activity.
@@ -138,14 +138,14 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         // Get a readable database handle.
         SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
 
-        // Prepare the SQL statement to get the `Cursor` for the folder.
-        final String GET_FOLDER = "SELECT * FROM " + BOOKMARKS_TABLE +
+        // Prepare the SQL statement to get the cursor for the folder.
+        String GET_FOLDER = "SELECT * FROM " + BOOKMARKS_TABLE +
                 " WHERE " + _ID + " = " + databaseId;
 
-        // Get `folderCursor`.  The second argument is `null` because there are no `selectionArgs`.
+        // Get a folder cursor.
         Cursor folderCursor = bookmarksDatabase.rawQuery(GET_FOLDER, null);
 
-        // Get `folderName`.
+        // Get the folder name.
         folderCursor.moveToFirst();
         String folderName = folderCursor.getString(folderCursor.getColumnIndex(BOOKMARK_NAME));
 
@@ -250,7 +250,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
                 " WHERE " + IS_FOLDER + " = " + 1 +
                 " AND " + BOOKMARK_NAME + " = " + currentFolder;
 
-        // The second argument is `null` because there are no `selectionArgs`.
+        // Get the bookmark cursor and move to the first entry.
         Cursor bookmarkCursor = bookmarksDatabase.rawQuery(GET_PARENT_FOLDER, null);
         bookmarkCursor.moveToFirst();
 

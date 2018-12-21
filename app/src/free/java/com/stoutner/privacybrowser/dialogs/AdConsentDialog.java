@@ -26,10 +26,9 @@ import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.google.ads.consent.ConsentInformation;
-import com.google.ads.consent.ConsentStatus;
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
+import com.stoutner.privacybrowser.helpers.AdConsentDatabaseHelper;
 import com.stoutner.privacybrowser.helpers.AdHelper;
 
 public class AdConsentDialog extends DialogFragment {
@@ -47,19 +46,20 @@ public class AdConsentDialog extends DialogFragment {
             dialogBuilder.setIcon(R.drawable.block_ads_enabled_light);
         }
 
+        // Initialize the bookmarks database helper.  The `0` specifies a database version, but that is ignored and set instead using a constant in `AdConsentDatabaseHelper`.
+        // `getContext()` can be used instead of `getActivity.getApplicationContext()` on the minimum API >= 23.
+        AdConsentDatabaseHelper adConsentDatabaseHelper = new AdConsentDatabaseHelper(getActivity().getApplicationContext(), null, null, 0);
+
         // Set the title.
         dialogBuilder.setTitle(R.string.ad_consent);
 
         // Set the text.
         dialogBuilder.setMessage(R.string.ad_consent_text);
 
-        // Get a handle for the consent information.
-        ConsentInformation consentInformation = ConsentInformation.getInstance(getActivity().getApplicationContext());
-
         // Configure the close button.
         dialogBuilder.setNegativeButton(R.string.close_browser, (DialogInterface dialog, int which) -> {
-            // Set the consent status to Unknown.
-            consentInformation.setConsentStatus(ConsentStatus.UNKNOWN);
+            // Update the ad consent database.
+            adConsentDatabaseHelper.updateAdConsent(false);
 
             // Close the browser.  `finishAndRemoveTask` also removes Privacy Browser from the recent app list.
             if (Build.VERSION.SDK_INT >= 21) {
@@ -74,13 +74,10 @@ public class AdConsentDialog extends DialogFragment {
 
         // Configure the accept button.
         dialogBuilder.setPositiveButton(R.string.accept_ads, (DialogInterface dialog, int which) -> {
-            // Set the consent status to Non-Personalized.
-            consentInformation.setConsentStatus(ConsentStatus.NON_PERSONALIZED);
+            // Update the ad consent database.
+            adConsentDatabaseHelper.updateAdConsent(true);
 
-            // Indicate the user is under age, which disables personalized advertising and remarketing.  https://developers.google.com/admob/android/eu-consent
-            consentInformation.setTagForUnderAgeOfConsent(true);
-
-            // Load an ad.
+            // Load an ad.  `getContext()` can be used instead of `getActivity.getApplicationContext()` on the minimum API >= 23.
             AdHelper.loadAd(getActivity().findViewById(R.id.adview), getActivity().getApplicationContext(), getString(R.string.ad_unit_id));
         });
 
@@ -91,8 +88,12 @@ public class AdConsentDialog extends DialogFragment {
     // Close Privacy Browser Free if the dialog is cancelled without selecting a button (by tapping on the background).
     @Override
     public void onCancel(DialogInterface dialogInterface) {
-        // Set the consent status to Unknown.
-        ConsentInformation.getInstance(getActivity().getApplicationContext()).setConsentStatus(ConsentStatus.UNKNOWN);
+        // Initialize the bookmarks database helper.  The `0` specifies a database version, but that is ignored and set instead using a constant in `AdConsentDatabaseHelper`.
+        // `getContext()` can be used instead of `getActivity.getApplicationContext()` on the minimum API >= 23.
+        AdConsentDatabaseHelper adConsentDatabaseHelper = new AdConsentDatabaseHelper(getActivity().getApplicationContext(), null, null, 0);
+
+        // Update the ad consent database.
+        adConsentDatabaseHelper.updateAdConsent(false);
 
         // Close the browser.  `finishAndRemoveTask` also removes Privacy Browser from the recent app list.
         if (Build.VERSION.SDK_INT >= 21) {
