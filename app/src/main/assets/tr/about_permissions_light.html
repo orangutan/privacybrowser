@@ -1,0 +1,44 @@
+<!--
+  Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+
+        <link rel="stylesheet" href="../css/light_theme.css">
+    </head>
+
+    <body>
+        <h3>Have full network access</h3>
+        <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#INTERNET">android.permission.INTERNET</a></p>
+        <p>Required for the WebView to access the internet. Without this permission, Privacy Browser would be “No Browser: Protecting Your Privacy by Staying Completely Off the Internet”.</p>
+
+        <h3>Install shortcuts</h3>
+        <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#INSTALL_SHORTCUT">com.android.launcher.permission.INSTALL_SHORTCUT</a></p>
+        <p>Required to add shortcuts for websites to the launcher desktop.</p>
+
+        <h3>Read storage</h3>
+        <p><a href="https://developer.android.com/reference/android/Manifest.permission#READ_EXTERNAL_STORAGE">android.permission.READ_EXTERNAL_STORAGE</a></p>
+        <p>Required to import settings from public folders. On Android Marshmallow (API 23) and newer, if this permission is denied Privacy Browser can import settings from the app’s folders instead.</p>
+
+        <h3>Write storage</h3>
+        <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WRITE_EXTERNAL_STORAGE">android.permission.WRITE_EXTERNAL_STORAGE</a></p>
+        <p>Required to export settings and download files to the public folders.
+            On Android Marshmallow (API 23) and newer, if this permission is denied Privacy Browser can export settings and store downloads in the app’s folders instead.</p>
+    </body>
+</html>

@@ -1,0 +1,16 @@
+• Corregir un error al cambiar el agente de usuario con la configuración de dominio.
+• Arreglar los diseños de cajones en teléfonos que vienen con notch.
+• Hacer que el resaltado de la sintaxis de la URL llame al dominio principal.
+• Corregir un error al abrir un cajón mientras el texto está seleccionado.
+• Corregir dos errores con EasyList.
+• Añadir soporte para file:// y content:// URLs.
+• Actualizar varios nombres preferentes.
+• Registrar Navegador Privado como un proveedor de búsquedas web.
+• Añadir instrucciones para descargar archivos a Guía > Tor.
+• Crear un tema oscuro para que el deslizamiento refresque la animación.
+• Añadir deslizamiento para refrescar la actividad Ver fuente.
+• Eliminar la librería Ad Consent de Google en el sabor grátis.
+• Actualizada la traducción al español proporcionada por Jose A. León.
+• Actualizada la traducción al italiano proporcionada por Francesco Buratti.
+• Actualizada la traducción al ruso.
+• Traducción parcial al turco.

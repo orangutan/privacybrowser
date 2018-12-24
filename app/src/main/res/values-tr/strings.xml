@@ -27,7 +27,7 @@
     <string name="privacy_browser">Privacy Browser</string>
     <string name="privacy_browser_settings">Privacy Browser Ayarları</string>
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  For example, Spanish is `es`.  This should not be translated unless the Guide and About sections are localized. -->
-    <string name="android_asset_path">en</string>
+    <string name="android_asset_path">tr</string>
 
     <!-- MainWebView. -->
     <string name="privacy_mode">Gizlilik Modu</string>
@@ -83,6 +83,7 @@
 
     <!-- SSL Certificate Error. -->
     <string name="ssl_certificate_error">SSL Sertifikası Hatası</string>
+    <string name="proceed">İlerle</string>
     <string name="future_certificate">Bu sertifika henüz geçerli değil</string>
     <string name="expired_certificate">Bu sertifikanın süresi doldu</string>
     <string name="cn_mismatch">Ortak ad ana makine adıyla eşleşmiyor</string>
@@ -93,13 +94,20 @@
     <string name="url_label">URL:</string>
 
     <!-- Pinned SSL Certificate Mismatch. -->
+    <string name="update_ssl">SSL güncelle</string>
+    <string name="ssl_certificate_mismatch">SSL Sertifikası Uyumsuzluğu</string>
+    <string name="current_ssl">Geçerli SSL</string>
+    <string name="pinned_ssl">İğneli SSL</string>
 
     <!-- HTTP Authentication. -->
+    <string name="http_authentication">HTTP Kimlik Doğrulama</string>
+    <string name="host">Ana makine:</string>
     <string name="username">Kullanıcı Adı</string>
     <string name="password">Şifre</string>
 
     <!-- MainWebViewActivity Navigation Drawer. -->
     <string name="navigation_drawer">Açılır Menü</string>
+    <string name="navigation">Gezinim</string>
     <string name="home">Anasayfa</string>
     <string name="back">Geri</string>
     <string name="forward">İleri</string>
@@ -120,13 +128,28 @@
     <string name="first_party_cookies">Birinci Taraf Çerezler</string>
     <string name="third_party_cookies">Üçüncü Taraf Çerezler</string>
     <string name="dom_storage">DOM Depolama Alanı</string>
+    <string name="form_data">Form Verisi</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
+    <string name="clear_data">Veriyi Temizle</string>
         <string name="clear_cookies">Çerezleri Temizle</string>
         <string name="clear_dom_storage">DOM Depolama Alanını Temizle</string>
         <string name="clear_form_data">Form Verisini Temizle</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-    <string name="options_fanboys_annoyance_list">Fanboy’s Annoyance List</string>
-    <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking List</string>
+    <string name="options_fanboys_annoyance_list">Fanboy’s Annoyance Listesi</string>
+    <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking Listesi</string>
     <string name="options_block_all_third_party_requests">Tüm Üçüncü Taraf İstekleri Engelle</string>
     <string name="layout">Düzen</string>
+        <string name="user_agent_webview_default">WebView Default</string>
+        <string name="user_agent_firefox_on_android">Android\'te Firefox</string>
+        <string name="user_agent_chrome_on_android">Android\'te Chrome</string>
+        <string name="user_agent_safari_on_ios">iOS\'ta Safari</string>
+        <string name="user_agent_firefox_on_linux">Linux\'ta Firefox</string>
+        <string name="user_agent_chromium_on_linux">Linux\'ta Chromium</string>
+        <string name="user_agent_firefox_on_windows">Windows\'ta Firefox</string>
+        <string name="user_agent_chrome_on_windows">Windows\'ta Chrome</string>
+        <string name="user_agent_edge_on_windows">Windows\'ta Edge</string>
+        <string name="user_agent_internet_explorer_on_windows">Windows\'ta Internet Explorer</string>
+        <string name="user_agent_safari_on_macos">macOS\'ta Safari</string>
+        <string name="user_agent_custom">Özel</string>
+        <string name="font_size">Yazı Tipi Boyutu</string>
             <string name="twenty_five_percent">%25</string>
             <string name="fifty_percent">%50</string>
             <string name="seventy_five_percent">%75</string>
@@ -135,42 +158,252 @@
             <string name="one_hundred_fifty_percent">%150</string>
             <string name="one_hundred_seventy_five_percent">%175</string>
             <string name="two_hundred_percent">%200</string>
+        <string name="swipe_to_refresh_options_menu">Yenilemek için kaydır</string>
+        <string name="display_images">Resimleri Göster</string>
+        <string name="view_source">Kaynağı Görüntüle</string>
+    <string name="share">Paylaş</string>
+    <string name="find_on_page">Sayfada Bul</string>
+    <string name="print">Yazdır</string>
+        <string name="privacy_browser_web_page">Privacy Browser Web Sayfası</string>
+    <string name="add_to_home_screen">Ana Sayfaya Ekle</string>
+    <string name="refresh">Yenile</string>
+    <string name="stop">Dur</string>
 
     <!-- Context Menus. -->
+    <string name="load_url">URL Yükle</string>
+    <string name="copy_url">URL Kopyala</string>
+    <string name="download_url">URL İndir</string>
+    <string name="email_address">Eposta Adresi</string>
+    <string name="copy_email_address">Eposta Adresini Kopyala</string>
+    <string name="write_email">Eposta Yaz</string>
+    <string name="view_image">Resmi Görüntüle</string>
+    <string name="download_image">Resmi İndir</string>
 
     <!-- Find on Page. -->
+    <string name="previous">Önceki</string>
+    <string name="next">Sonraki</string>
 
     <!-- View Source. -->
+    <string name="request_headers">İstek Başlıkları</string>
+    <string name="response_message">Yanıt Mesajı</string>
+    <string name="response_headers">Yanıt Başlıkları</string>
+    <string name="response_body">Yanıt Mesaj Gövdesi</string>
+    <string name="error_body">Hatalı Mesaj Gövdesi</string>
+    <string name="about_view_source">Kaynağı Görüntüle Hakkında</string>
+    <string name="about_view_source_message">Android Web Görünümü, kaynak bilgisini gösteremediğinden, etkinlikte gösterilen bilgiyi toplamak için sistem araçları kullanılarak ayrı bir istek yapıldı.
+        Elde edilen veri ile ana etkinlikteki Web Görünümünün sağladığı veri arasında farklılıklar olabilir. Bu sorun, 4.x serisinde Privacy Web Görünümü sürümüyle ortadan kalkacak.</string>
 
     <!-- Create Home Screen Shortcut Alert Dialog. -->
+    <string name="create_shortcut">Kısayol Oluştur</string>
+    <string name="shortcut_name">Kısayol Adı</string>
+    <string name="cancel">Vazgeç</string>
+    <string name="create">Oluştur</string>
 
     <!-- Bookmarks. -->
+    <string name="database_view">Veritabanı Görünümü</string>
+    <string name="create_bookmark">Yer İmi Oluştur</string>
+    <string name="create_folder">Klasör Oluştur</string>
+    <string name="current_bookmark_icon">Geçerli yer imi simgesi</string>
+    <string name="current_folder_icon">Geçerli klasör simgesi</string>
+    <string name="default_folder_icon">Varsayılan klasör simgesi</string>
+    <string name="web_page_favorite_icon">Web sayfası simgesi</string>
+    <string name="bookmark_name">Yer imi adı</string>
+    <string name="folder_name">Dosya adı</string>
+    <string name="bookmark_url">Yer imi URL\'si</string>
+    <string name="folder_names_must_be_unique">Dosya adları özgün olmalı</string>
+    <string name="edit_bookmark">Yer imi düzenle</string>
+    <string name="edit_folder">Dosyayı düzenle</string>
+    <string name="move_to_folder">Dosyaya taşı</string>
+    <string name="move">Taşı</string>
+    <string name="save">Kaydet</string>
 
     <!-- Bookmarks Contextual App Bar. -->
+    <string name="one_selected">1 seçili</string>
+    <string name="selected">Seçili</string>  <!--This is a plural adjective.-->
     <string name="selected_russian_ends_in_1">выбрана</string>
     <string name="selected_russian_ends_in_2">выбраны</string>
     <string name="selected_russian_everything_else">выбрано</string>
+    <string name="move_up">Yukarı Taşı</string>
+    <string name="move_down">Aşağı Taşı</string>
+    <string name="edit">Düzenle</string>
+    <string name="delete">Sil</string>
+    <string name="select_all">Hepsini Seç</string>
+    <string name="one_bookmark_deleted">1 Yer İmi Silindi</string>
+    <string name="bookmarks_deleted">Yer İmleri Silindi</string>
     <string name="bookmarks_deleted_russian_ends_in_1">закладка удалена</string>
     <string name="bookmarks_deleted_russian_ends_in_2">закладки удалены</string>
     <string name="bookmarks_deleted_russian_everything_else">акладок удалено</string>
+    <string name="undo">Geri Al</string>
 
     <!-- Bookmarks Database View. -->
+    <string name="bookmarks_database_view">Yer İmleri Veritabanı Görünümü</string>
+    <string name="all_folders">Tüm Klasörler</string>
+    <string name="home_folder">Ana klasör</string>
+    <string name="database_id">Veritabanı Kimliği:</string>
+    <string name="folder">Klasör:</string>
+    <string name="parent_folder">Üst Klasör:</string>
+    <string name="display_order">Display order:</string>
 
     <!-- Requests. -->
 
     <!-- Domains. -->
+    <string name="domains">Etki Alanları</string>
+    <string name="domain_settings">Etki Alanı Ayarları</string>
+    <string name="add_domain">Etki Alanı Ekle</string>
+    <string name="domain_name_already_exists">Etki Alanı adı önceden alınmış</string>
+    <string name="add">Ekle</string>
+    <string name="domain_name">Etki Alanı adı</string>
+    <string name="domain_deleted">Etki Alanı silinmiş</string>
+    <string-array name="swipe_to_refresh_array">
+        <item>Sistem varsayılanı</item>
+        <item>Yenilemek için kaydır etkin</item>
+        <item>Yenilemek için kaydır devredışı</item>
+    </string-array>
+    <string-array name="night_mode_array">
+        <item>Sistem varsayılanı</item>
+        <item>Gece modu etkin</item>
+        <item>Gece modu devredışı</item>
+    </string-array>
+    <string-array name="display_webpage_images_array">
+        <item>Sistem varsayılanı</item>
+        <item>Görüntüler etkin</item>
+        <item>Görüntüler devredışı</item>
+    </string-array>
+    <string name="pinned_ssl_certificate">İğneli SSL sertifikası</string>
+    <string name="saved_ssl_certificate">Kayıtlı SSL sertifikası</string>
+    <string name="current_website_ssl_certificate">Geçerli web site SSL sertifikası</string>
 
     <!-- Import/Export. -->
 
     <!-- Guide. -->
+    <string name="privacy_browser_guide">Privacy Browser Rehberi</string>
+    <string name="local_storage">Yerel Depolama</string>
+    <string name="ssl_certificates">SSL Sertifikaları</string>
 
     <!-- Download Location -->
+    <string name="download_location">İndirme Konumu</string>
+    <string name="ok">OK</string>
 
     <!-- Orbot. -->
 
     <!-- About Activity. -->
+    <string name="version">Sürüm</string>
+    <string name="version_code">Sürüm kodu</string>
+    <string name="hardware">Donanım</string>
+    <string name="brand">Marka:</string>
+    <string name="manufacturer">Üretici:</string>
+    <string name="model">Model:</string>
+    <string name="device">Cihaz:</string>
+    <string name="bootloader">Bootloader:</string>
+    <string name="radio">Radio:</string>
+    <string name="software">Yazılım</string>
+    <string name="android">Android:</string>
+    <string name="api">API</string>
+    <string name="build">Build:</string>
+    <string name="security_patch">Güvenlik Yaması:</string>
+    <string name="webview">Web Görünümü:</string>
+    <string name="orbot">Orbot:</string>
+    <string name="openkeychain">OpenKeychain:</string>
+    <string name="easylist_label">EasyList:</string>
+    <string name="easyprivacy_label">EasyPrivacy:</string>
+    <string name="fanboy_annoyance_label">Fanboy’s Annoyance Listesi:</string>
+    <string name="fanboy_social_label">Fanboy’s Social Blocking Listesi:</string>
+    <string name="ultraprivacy_label">UltraPrivacy:</string>
+    <string name="package_signature">Package Signature</string>
+    <string name="issuer_dn">Issuer DN:</string>
+    <string name="subject_dn">Subject DN:</string>
+    <string name="certificate_version">Sertifika Sürümü:</string>
+    <string name="serial_number">Serial Number:</string>
+    <string name="signature_algorithm">İmza Algoritması:</string>
+    <string name="permissions">İzinler</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="changelog">Değişiklik Günlüğü</string>
+    <string name="licenses">Lisanslar</string>
+    <string name="contributors">Katkıda Bulunanlar</string>
+    <string name="links">Linkler</string>
 
     <!-- Preferences. -->
+        <string name="user_agent">Kullanıcı aracısı</string>
+        <string-array name="translated_user_agent_names">
+            <item>Privacy Browser</item>
+            <item>Varsayılan Web Görünümü</item>
+            <item>Android\'te kurulu Firefox</item>
+            <item>Android\'te kurulu Chrome</item>
+            <item>iOS\'ta kurulu Safari</item>
+            <item>Linux\'ta kurulu Firefox</item>
+            <item>Linux\'ta kurulu Chromium</item>
+            <item>Windows\'ta kurulu Firefox</item>
+            <item>Windows\'ta kurulu Chrome</item>
+            <item>Windows\'ta kurulu Edge</item>
+            <item>Windows\'ta kurulu Internet Explorer</item>
+            <item>macOS\'ta kurulu Safari</item>
+            <item>Özel</item>
+        </string-array>
+        <string-array name="translated_domain_settings_user_agent_names">  <!-- The translated names of the user agents with a System Default option for the domains spinner. -->
+            <item>Sistem varsayılanı</item>
+            <item>Privacy Browser</item>
+            <item>Varsayılan Web Görünümü</item>
+            <item>Android\'te kurulu Firefox</item>
+            <item>Android\'te kurulu Chrome</item>
+            <item>iOS\'ta kurulu Safari</item>
+            <item>Linux\'ta kurulu Firefox</item>
+            <item>Linux\'ta kurulu Chromium</item>
+            <item>Windows\'ta kurulu Firefox</item>
+            <item>Windows\'ta kurulu Chrome</item>
+            <item>Windows\'ta kurulu Edge</item>
+            <item>Windows\'ta kurulu Internet Explorer</item>
+            <item>macOS\'ta kurulu Safari</item>
+            <item>Özel</item>
+        </string-array>
+        <string name="custom_user_agent">Özel kullanıcı aracısı</string>
+        <string-array name="tor_search_entries">
+            <item>Searx</item>
+            <item>DuckDuckGo - JavaScript devre dışı</item>
+            <item>DuckDuckGo - JavaScript etkin</item>
+            <item>Custom</item>
+        </string-array>
+    <string name="search">Arama</string>
+        <string-array name="search_entries">
+            <item>Searx</item>
+            <item>StartPage</item>
+            <item>DuckDuckGo - JavaScript devre dışı</item>
+            <item>DuckDuckGo - JavaScript etkin</item>
+            <item>Qwant - JavaScript devre dışı</item>
+            <item>Qwant - JavaScript etkin</item>
+            <item>Google</item>
+            <item>Bing</item>
+            <item>Yahoo - JavaScript devre dışı</item>
+            <item>Yahoo - JavaScript etkin</item>
+            <item>Özel</item>
+        </string-array>
+    <string name="general">Genel</string>
+        <string name="homepage">Ana Sayfa</string>
+        <string name="font_size_preference">Yazı tipi boyutu</string>
+        <string-array name="font_size_entries">
+            <item>%25</item>
+            <item>%50</item>
+            <item>%75</item>
+            <item>%100</item>
+            <item>%125</item>
+            <item>%150</item>
+            <item>%175</item>
+            <item>%200</item>
+        </string-array>
+            <string-array name="domain_settings_font_size_entries">
+                <item>System default</item>
+                <item>%25</item>
+                <item>%50</item>
+                <item>%75</item>
+                <item>%100</item>
+                <item>%125</item>
+                <item>%150</item>
+                <item>%175</item>
+                <item>%200</item>
+            </string-array>
+        <string name="swipe_to_refresh">Yenilemek için kaydır</string>
+        <string name="dark_theme">Koyu tema</string>
+        <string name="night_mode">Gece mody</string>
 
     <!-- Ad Control. There are no ads in the standard flavor, but these strings must exist because they are referenced in the code. -->
+    <string name="ad_consent">Reklam Onayı</string>
 </resources>

@@ -1,0 +1,16 @@
+• Fix a bug when changing the user agent with domain settings.
+• Fix the drawer layouts on phones with notches.
+• Make the URL syntax highlighting call out the principal domain.
+• Fix a bug when opening a drawer while text is selected.
+• Fix two bugs with EasyList.
+• Add support for file:// and content:// URLs.
+• Update several preference names.
+• Register Privacy Browser as a web search provider.
+• Add instructions for downloading files to Guide > Tor.
+• Create a dark theme for the swipe to refresh animation.
+• Add swipe to refresh to the View Source activity.
+• Remove Google’s Ad Consent library on the free flavor.
+• Updated Italian translation provided by Francesco Buratti.
+• Updated Russian translation.
+• Updated Spanish translation provided by Jose A. León.
+• Partial Turkish translation.
