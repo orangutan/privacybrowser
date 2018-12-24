@@ -45,7 +45,7 @@
     <string name="dom_storage_deleted">DOM Depolama Alanı silindi</string>
     <string name="form_data_deleted">Form Verisi silindi</string>
     <string name="open_navigation_drawer">Açılır Menüyü Aç</string>
-    <string name="close_navigation_drawer">Açılır menüyü kapat</string>
+    <string name="close_navigation_drawer">Açılır Menüyü Kapa</string>
     <string name="no_title">Başlıksız</string>
     <string name="unrecognized_url">Onaylanmayan URL:</string>
     <string name="open_with">Bununla aç</string>
@@ -61,7 +61,7 @@
     <string name="cannot_download_image">HTTP veya HTTPS kaynak tanımlayıcısı içermediği için bu resim indirilemez.</string>
 
     <!-- Custom App Bar. -->
-    <string name="favorite_icon">Favori ikonu</string>
+    <string name="favorite_icon">Site Simgesi</string>
     <string name="url_or_search_terms">URL veya Arama terimleri</string>
 
     <!-- View SSL Certificate. -->
@@ -70,8 +70,8 @@
     <string name="no_ssl_certificate">Bu web sitesiyle bağlantınız şifrelenmemiştir. Bu, üçüncü kişilere bilgilerinizi ele geçirme, bağlantınızı izleme ve zararlı yazılımları yükleme fırsatını verir.</string>
     <string name="ssl_certificate">SSL Sertifikası</string>
     <string name="close">Kapat</string>
-    <string name="domain">Alan Adı</string>
-    <string name="domain_label">Alan Adı:</string>
+    <string name="domain">Etki Alanı</string>
+    <string name="domain_label">Etki Alanı:</string>
     <string name="issued_to">Verilen</string>
     <string name="issued_by">Veren</string>
     <string name="common_name">Ortak Ad (CN):</string>
@@ -113,7 +113,7 @@
     <string name="forward">İleri</string>
     <string name="history">Geçmiş</string>
         <string name="clear_history">Geçmişi Temizle</string>
-    <string name="bookmarks">Sık Kullanılanlar</string>
+    <string name="bookmarks">Yer İmleri</string>
     <string name="downloads">İndirilenler</string>
     <string name="settings">Ayarlar</string>
     <string name="import_export">İçeri Aktar/Dışarı Aktar</string>
@@ -123,8 +123,8 @@
 
     <!-- MainWebViewActivity Options Menu. -->
     <string name="javascript">JavaScript</string>
-    <string name="add_domain_settings">Alan Adı Ekleme Ayarları</string>
-    <string name="edit_domain_settings">Alan Adı Düzenleme Ayarları</string>
+    <string name="add_domain_settings">Domain Ekleme Ayarları</string>
+    <string name="edit_domain_settings">Domain Düzenleme Ayarları</string>
     <string name="first_party_cookies">Birinci Taraf Çerezler</string>
     <string name="third_party_cookies">Üçüncü Taraf Çerezler</string>
     <string name="dom_storage">DOM Depolama Alanı</string>
@@ -137,17 +137,17 @@
     <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking Listesi</string>
     <string name="options_block_all_third_party_requests">Tüm Üçüncü Taraf İstekleri Engelle</string>
     <string name="layout">Düzen</string>
-        <string name="user_agent_webview_default">WebView Default</string>
-        <string name="user_agent_firefox_on_android">Android\'te Firefox</string>
-        <string name="user_agent_chrome_on_android">Android\'te Chrome</string>
-        <string name="user_agent_safari_on_ios">iOS\'ta Safari</string>
-        <string name="user_agent_firefox_on_linux">Linux\'ta Firefox</string>
-        <string name="user_agent_chromium_on_linux">Linux\'ta Chromium</string>
-        <string name="user_agent_firefox_on_windows">Windows\'ta Firefox</string>
-        <string name="user_agent_chrome_on_windows">Windows\'ta Chrome</string>
-        <string name="user_agent_edge_on_windows">Windows\'ta Edge</string>
-        <string name="user_agent_internet_explorer_on_windows">Windows\'ta Internet Explorer</string>
-        <string name="user_agent_safari_on_macos">macOS\'ta Safari</string>
+        <string name="user_agent_webview_default">Varsayılan Web Görünümü</string>
+        <string name="user_agent_firefox_on_android">Android\'te kurulu Firefox</string>
+        <string name="user_agent_chrome_on_android">Android\'te kurulu Chrome</string>
+        <string name="user_agent_safari_on_ios">iOS\'ta kurulu Safari</string>
+        <string name="user_agent_firefox_on_linux">Linux\'ta kurulu Firefox</string>
+        <string name="user_agent_chromium_on_linux">Linux\'ta kurulu Chromium</string>
+        <string name="user_agent_firefox_on_windows">Windows\'ta kurulu Firefox</string>
+        <string name="user_agent_chrome_on_windows">Windows\'ta kurulu Chrome</string>
+        <string name="user_agent_edge_on_windows">Windows\'ta kurulu Edge</string>
+        <string name="user_agent_internet_explorer_on_windows">Windows\'ta kurulu Internet Explorer</string>
+        <string name="user_agent_safari_on_macos">macOS\'ta kurulu Safari</string>
         <string name="user_agent_custom">Özel</string>
         <string name="font_size">Yazı Tipi Boyutu</string>
             <string name="twenty_five_percent">%25</string>
@@ -165,7 +165,7 @@
     <string name="find_on_page">Sayfada Bul</string>
     <string name="print">Yazdır</string>
         <string name="privacy_browser_web_page">Privacy Browser Web Sayfası</string>
-    <string name="add_to_home_screen">Ana Sayfaya Ekle</string>
+    <string name="add_to_home_screen">Ana Ekrana Ekle</string>
     <string name="refresh">Yenile</string>
     <string name="stop">Dur</string>
 
@@ -208,12 +208,12 @@
     <string name="default_folder_icon">Varsayılan klasör simgesi</string>
     <string name="web_page_favorite_icon">Web sayfası simgesi</string>
     <string name="bookmark_name">Yer imi adı</string>
-    <string name="folder_name">Dosya adı</string>
+    <string name="folder_name">Klasör adı</string>
     <string name="bookmark_url">Yer imi URL\'si</string>
-    <string name="folder_names_must_be_unique">Dosya adları özgün olmalı</string>
+    <string name="folder_names_must_be_unique">Klasör adları özgün olmalı</string>
     <string name="edit_bookmark">Yer imi düzenle</string>
-    <string name="edit_folder">Dosyayı düzenle</string>
-    <string name="move_to_folder">Dosyaya taşı</string>
+    <string name="edit_folder">Klasörü düzenle</string>
+    <string name="move_to_folder">Klasöre taşı</string>
     <string name="move">Taşı</string>
     <string name="save">Kaydet</string>
 
@@ -247,13 +247,13 @@
     <!-- Requests. -->
 
     <!-- Domains. -->
-    <string name="domains">Etki Alanları</string>
-    <string name="domain_settings">Etki Alanı Ayarları</string>
-    <string name="add_domain">Etki Alanı Ekle</string>
-    <string name="domain_name_already_exists">Etki Alanı adı önceden alınmış</string>
+    <string name="domains">Domainler</string>
+    <string name="domain_settings">Domain Ayarları</string>
+    <string name="add_domain">Domain Ekle</string>
+    <string name="domain_name_already_exists">Domain adı önceden alınmış</string>
     <string name="add">Ekle</string>
-    <string name="domain_name">Etki Alanı adı</string>
-    <string name="domain_deleted">Etki Alanı silinmiş</string>
+    <string name="domain_name">Domain adı</string>
+    <string name="domain_deleted">Domain silinmiş</string>
     <string-array name="swipe_to_refresh_array">
         <item>Sistem varsayılanı</item>
         <item>Yenilemek için kaydır etkin</item>
@@ -292,14 +292,12 @@
     <string name="hardware">Donanım</string>
     <string name="brand">Marka:</string>
     <string name="manufacturer">Üretici:</string>
-    <string name="model">Model:</string>
     <string name="device">Cihaz:</string>
     <string name="bootloader">Bootloader:</string>
     <string name="radio">Radio:</string>
     <string name="software">Yazılım</string>
     <string name="android">Android:</string>
     <string name="api">API</string>
-    <string name="build">Build:</string>
     <string name="security_patch">Güvenlik Yaması:</string>
     <string name="webview">Web Görünümü:</string>
     <string name="orbot">Orbot:</string>
@@ -309,14 +307,10 @@
     <string name="fanboy_annoyance_label">Fanboy’s Annoyance Listesi:</string>
     <string name="fanboy_social_label">Fanboy’s Social Blocking Listesi:</string>
     <string name="ultraprivacy_label">UltraPrivacy:</string>
-    <string name="package_signature">Package Signature</string>
-    <string name="issuer_dn">Issuer DN:</string>
-    <string name="subject_dn">Subject DN:</string>
     <string name="certificate_version">Sertifika Sürümü:</string>
     <string name="serial_number">Serial Number:</string>
     <string name="signature_algorithm">İmza Algoritması:</string>
     <string name="permissions">İzinler</string>
-    <string name="privacy_policy">Privacy Policy</string>
     <string name="changelog">Değişiklik Günlüğü</string>
     <string name="licenses">Lisanslar</string>
     <string name="contributors">Katkıda Bulunanlar</string>
