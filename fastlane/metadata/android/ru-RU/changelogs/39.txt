@@ -1,0 +1,1 @@
+• Fix a bug that caused some devices to crash when opening a secondary activity.

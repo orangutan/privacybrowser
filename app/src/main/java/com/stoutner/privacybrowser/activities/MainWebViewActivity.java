@@ -447,6 +447,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private ForegroundColorSpan initialGrayColorSpan;
     private ForegroundColorSpan finalGrayColorSpan;
 
+    // The drawer header padding variables are used in `onCreate()` and `onConfigurationChanged()`.
+    private int drawerHeaderPaddingLeftAndRight;
+    private int drawerHeaderPaddingTop;
+    private int drawerHeaderPaddingBottom;
+
     // `sslErrorHandler` is used in `onCreate()`, `onSslErrorCancel()`, and `onSslErrorProceed`.
     private SslErrorHandler sslErrorHandler;
 
@@ -912,11 +917,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         float screenDensity = resources.getDisplayMetrics().density;
 
         // Calculate the drawer header padding.  This is used to move the text in the drawer headers below any cutouts.
-        int drawerHeaderPaddingLeftAndRight = (int) (15 * screenDensity);
-        int drawerHeaderPaddingTop = statusBarPixelSize + (int) (4 * screenDensity);
-        int drawerHeaderPaddingBottom = (int) (8 * screenDensity);
+        drawerHeaderPaddingLeftAndRight = (int) (15 * screenDensity);
+        drawerHeaderPaddingTop = statusBarPixelSize + (int) (4 * screenDensity);
+        drawerHeaderPaddingBottom = (int) (8 * screenDensity);
 
-        // The drawer listener is used to update the navigation menu.
+        // The drawer listener is used to update the navigation menu.`
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
@@ -3170,7 +3175,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        // Reload the ad for the free flavor if we not in full screen mode.
+        // Get the status bar pixel size.
+        int statusBarResourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        int statusBarPixelSize = getResources().getDimensionPixelSize(statusBarResourceId);
+
+        // Get the resource density.
+        float screenDensity = getResources().getDisplayMetrics().density;
+
+        // Recalculate the drawer header padding.
+        drawerHeaderPaddingLeftAndRight = (int) (15 * screenDensity);
+        drawerHeaderPaddingTop = statusBarPixelSize + (int) (4 * screenDensity);
+        drawerHeaderPaddingBottom = (int) (8 * screenDensity);
+
+        // Reload the ad for the free flavor if not in full screen mode.
         if (BuildConfig.FLAVOR.contentEquals("free") && !inFullScreenBrowsingMode) {
             // Reload the ad.  The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
             AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_unit_id));
