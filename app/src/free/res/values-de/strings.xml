@@ -25,8 +25,6 @@
     <string name="privacy_browser">Privacy Browser Free</string>
 
     <!-- Ad Consent. -->
-    <string name="ad_consent_text">Privacy Browser Free blendet einen Werbebanner unten am Bildschirm ein.
-        Diese Werbungen kommen von Googles üblich genutzten Anbietern und sind anonymisiert. \n\nDie Standardversion von Privacy Browser beinhaltet keine Werbung.</string>
     <string name="close_browser">Browser schließen</string>
     <string name="accept_ads">Werbung zustimmen</string>
 </resources>

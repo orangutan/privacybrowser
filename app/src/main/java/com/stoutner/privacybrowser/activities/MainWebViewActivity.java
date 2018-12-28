@@ -937,9 +937,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     TextView navigationHeaderTextView = findViewById(R.id.navigationText);
                     TextView bookmarksHeaderTextView = findViewById(R.id.bookmarks_title_textview);
 
-                    // Apply the calculated drawer paddings.  This moves the text in the header below any cutouts.
-                    navigationHeaderTextView.setPadding(drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingTop, drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingBottom);
-                    bookmarksHeaderTextView.setPadding(drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingTop, drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingBottom);
+                    // Apply the navigation header paddings if the view is not null (sometimes it is null if another activity has already started).  This moves the text in the header below any cutouts.
+                    if (navigationHeaderTextView != null) {
+                        navigationHeaderTextView.setPadding(drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingTop, drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingBottom);
+                    }
+
+                    // Apply the bookmarks header paddings if the view is not null (sometimes it is null if another activity has already started).  This moves the text in the header below any cutouts.
+                    if (bookmarksHeaderTextView != null) {
+                        bookmarksHeaderTextView.setPadding(drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingTop, drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingBottom);
+                    }
 
                     // Update the back, forward, history, and requests menu items.
                     navigationBackMenuItem.setEnabled(mainWebView.canGoBack());
