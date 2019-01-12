@@ -1,1 +1,1 @@
-• Fix a bug that caused some devices to crash when opening a secondary activity.
+• Corregir un error que provocaba que algunos dispositivos se bloquearan al abrir una actividad secundaria.

@@ -1,1 +1,1 @@
-• Fix a bug that caused some devices to crash when opening a secondary activity.
+• Исправлена ошибка, приводившая к сбою приложения на некоторых устройствах при открытии дополнительной активности.

@@ -24,8 +24,8 @@
 
     <!-- Ad Consent. -->
     <string name="ad_consent_text">Privacy Browser Free отображает рекламный баннер в нижней части экрана.
-        Реклама поступает от широко используемых Google поставщиков и настроена так, чтобы исключить персонализацию.
-        \n\nСтандартная версия Privacy Browser не содержит рекламы.</string>
+        Эта реклама поступает от Google и настроена так, чтобы исключить персонализацию.
+        \n\nСтандартная версия Privacy Browser не содержит рекламы приложений.</string>
     <string name="close_browser">Закрыть браузер</string>
     <string name="accept_ads">Разрешить рекламу</string>
 </resources>

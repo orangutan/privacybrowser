@@ -165,6 +165,7 @@
         <string name="display_images">Display Images</string>
         <string name="view_source">View Source</string>
     <string name="share">Share</string>
+        <string name="share_url">Share URL</string>
     <string name="find_on_page">Find on Page</string>
     <string name="print">Print</string>
         <string name="privacy_browser_web_page">Privacy Browser Web Page</string>

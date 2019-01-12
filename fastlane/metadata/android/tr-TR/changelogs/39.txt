@@ -1,1 +1,1 @@
-• Fix a bug that caused some devices to crash when opening a secondary activity.
+• İkinci bir işlem yaparken bazı cihazların çökmesine yol açan problem düzeltildi.

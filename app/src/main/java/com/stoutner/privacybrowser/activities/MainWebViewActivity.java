@@ -992,7 +992,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                                 // Setup a runnable to display `mainWebView` after a delay to allow the CSS to be applied.
                                 Runnable displayWebViewRunnable = () -> {
-                                    // Only display `mainWebView` if the progress bar is one.  This prevents the display of the `WebView` while it is still loading.
+                                    // Only display `mainWebView` if the progress bar is gone.  This prevents the display of the `WebView` while it is still loading.
                                     if (progressBar.getVisibility() == View.GONE) {
                                         mainWebView.setVisibility(View.VISIBLE);
                                     }
@@ -1611,7 +1611,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Check to see if Privacy Browser is waiting on Orbot.
                 if (!waitingForOrbot) {  // We are not waiting on Orbot, so we need to process the URL.
-                    // We need to update `formattedUrlString` at the beginning of the load, so that if the user toggles JavaScript during the load the new website is reloaded.
+                    // The formatted URL string must be updated at the beginning of the load, so that if the user toggles JavaScript during the load the new website is reloaded.
                     formattedUrlString = url;
 
                     // Display the formatted URL text.
@@ -1725,10 +1725,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Apply the domain settings.  This clears any settings from the previous domain.
                         applyDomainSettings(formattedUrlString, true, false);
                     } else {  // `WebView` has loaded a webpage.
-                        // Set `formattedUrlString`.
-                        formattedUrlString = url;
+                        // Set the formatted URL string.  Getting the URL from the WebView instead of using the one provided by `onPageFinished` makes websites like YouTube function correctly.
+                        formattedUrlString = mainWebView.getUrl();
 
-                        // Only update `urlTextBox` if the user is not typing in it.
+                        // Only update the URL text box if the user is not typing in it.
                         if (!urlTextBox.hasFocus()) {
                             // Display the formatted URL text.
                             urlTextBox.setText(formattedUrlString);
@@ -2881,7 +2881,33 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 shareIntent.setType("text/plain");
 
                 // Make it so.
-                startActivity(Intent.createChooser(shareIntent, "Share URL"));
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_url)));
+                return true;
+
+            case R.id.open_with:
+                // Convert the URL to an URI.
+                Uri shareUri = Uri.parse(formattedUrlString);
+
+                // Get the host.
+                String shareHost = shareUri.getHost();
+
+                // Create the open with intent with `ACTION_VIEW`.
+                Intent openWithIntent = new Intent(Intent.ACTION_VIEW);
+
+                // Set the data based on the host.
+                if ((shareHost != null) && (shareHost.endsWith("youtube.com") || shareHost.equals("play.google.com") || shareHost.equals("f-droid.org"))) {  // Handle App URLs.
+                    // Set the URI but not the MIME type.  This should open all available apps.
+                    openWithIntent.setData(shareUri);
+                } else {  // Handle a generic URL.
+                    // Set the URI and the MIME type.  `"text/html"` should load browser options.
+                    openWithIntent.setDataAndType(shareUri, "text/html");
+                }
+
+                // Flag the intent to open in a new task.
+                openWithIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                // Show the chooser.
+                startActivity(Intent.createChooser(openWithIntent, getString(R.string.open_with)));
                 return true;
 
             case R.id.find_on_page:
@@ -4647,7 +4673,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Create a download intent.  Not specifying the action type will display the maximum number of options.
         Intent downloadIntent = new Intent();
 
-        // Set the URI and the mime type.  `"*/*"` will display the maximum number of options.
+        // Set the URI and the MIME type.  Specifying `text/html` displays a good number of options.
         downloadIntent.setDataAndType(Uri.parse(url), "text/html");
 
         // Flag the intent to open in a new task.

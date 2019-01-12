@@ -346,26 +346,32 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/open_with"
+        android:title="@string/open_with"
+        android:orderInCategory="1200"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/find_on_page"
         android:title="@string/find_on_page"
-        android:orderInCategory="1200"
+        android:orderInCategory="1300"
         app:showAsAction="never|collapseActionView" />
 
     <item
         android:id="@+id/add_to_homescreen"
         android:title="@string/add_to_home_screen"
-        android:orderInCategory="1300"
+        android:orderInCategory="1400"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/refresh"
         android:title="@string/refresh"
-        android:orderInCategory="1400"
+        android:orderInCategory="1500"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/ad_consent"
         android:title="@string/ad_consent"
-        android:orderInCategory="1500"
+        android:orderInCategory="1600"
         app:showAsAction="never" />
 </menu>
