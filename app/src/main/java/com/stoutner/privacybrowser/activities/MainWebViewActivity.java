@@ -2857,59 +2857,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 printManager.print(getString(R.string.privacy_browser_web_page), printDocumentAdapter, null);
                 return true;
 
-            case R.id.view_source:
-                // Launch the View Source activity.
-                Intent viewSourceIntent = new Intent(this, ViewSourceActivity.class);
-                startActivity(viewSourceIntent);
-                return true;
-
-            case R.id.proxy_through_orbot:
-                // Toggle the proxy through Orbot variable.
-                proxyThroughOrbot = !proxyThroughOrbot;
-
-                // Apply the proxy through Orbot settings.
-                applyProxyThroughOrbot(true);
-                return true;
-
-            case R.id.share:
-                // Setup the share string.
-                String shareString = webViewTitle + " – " + urlTextBox.getText().toString();
-
-                // Create the share intent.
-                Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                shareIntent.putExtra(Intent.EXTRA_TEXT, shareString);
-                shareIntent.setType("text/plain");
-
-                // Make it so.
-                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_url)));
-                return true;
-
-            case R.id.open_with:
-                // Convert the URL to an URI.
-                Uri shareUri = Uri.parse(formattedUrlString);
-
-                // Get the host.
-                String shareHost = shareUri.getHost();
-
-                // Create the open with intent with `ACTION_VIEW`.
-                Intent openWithIntent = new Intent(Intent.ACTION_VIEW);
-
-                // Set the data based on the host.
-                if ((shareHost != null) && (shareHost.endsWith("youtube.com") || shareHost.equals("play.google.com") || shareHost.equals("f-droid.org"))) {  // Handle App URLs.
-                    // Set the URI but not the MIME type.  This should open all available apps.
-                    openWithIntent.setData(shareUri);
-                } else {  // Handle a generic URL.
-                    // Set the URI and the MIME type.  `"text/html"` should load browser options.
-                    openWithIntent.setDataAndType(shareUri, "text/html");
-                }
-
-                // Flag the intent to open in a new task.
-                openWithIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                // Show the chooser.
-                startActivity(Intent.createChooser(openWithIntent, getString(R.string.open_with)));
-                return true;
-
             case R.id.find_on_page:
                 // Hide the URL app bar.
                 supportAppBar.setVisibility(View.GONE);
@@ -2929,11 +2876,66 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 return true;
 
             case R.id.add_to_homescreen:
-                // Show the `CreateHomeScreenShortcutDialog` `AlertDialog` and name this instance `R.string.create_shortcut`.
+                // Show the alert dialog.
                 AppCompatDialogFragment createHomeScreenShortcutDialogFragment = new CreateHomeScreenShortcutDialog();
                 createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getString(R.string.create_shortcut));
 
-                //Everything else will be handled by `CreateHomeScreenShortcutDialog` and the associated listener below.
+                //Everything else will be handled by the alert dialog and the associated listener below.
+                return true;
+
+            case R.id.view_source:
+                // Launch the View Source activity.
+                Intent viewSourceIntent = new Intent(this, ViewSourceActivity.class);
+                startActivity(viewSourceIntent);
+                return true;
+
+            case R.id.share_url:
+                // Setup the share string.
+                String shareString = webViewTitle + " – " + urlTextBox.getText().toString();
+
+                // Create the share intent.
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareString);
+                shareIntent.setType("text/plain");
+
+                // Make it so.
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_url)));
+                return true;
+
+            case R.id.open_with_app:
+                // Create the open with intent with `ACTION_VIEW`.
+                Intent openWithAppIntent = new Intent(Intent.ACTION_VIEW);
+
+                // Set the URI but not the MIME type.  This should open all available apps.
+                openWithAppIntent.setData(Uri.parse(formattedUrlString));
+
+                // Flag the intent to open in a new task.
+                openWithAppIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                // Show the chooser.
+                startActivity(Intent.createChooser(openWithAppIntent, getString(R.string.open_with)));
+                return true;
+
+            case R.id.open_with_browser:
+                // Create the open with intent with `ACTION_VIEW`.
+                Intent openWithBrowserIntent = new Intent(Intent.ACTION_VIEW);
+
+                // Set the URI and the MIME type.  `"text/html"` should load browser options.
+                openWithBrowserIntent.setDataAndType(Uri.parse(formattedUrlString), "text/html");
+
+                // Flag the intent to open in a new task.
+                openWithBrowserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                // Show the chooser.
+                startActivity(Intent.createChooser(openWithBrowserIntent, getString(R.string.open_with)));
+                return true;
+
+            case R.id.proxy_through_orbot:
+                // Toggle the proxy through Orbot variable.
+                proxyThroughOrbot = !proxyThroughOrbot;
+
+                // Apply the proxy through Orbot settings.
+                applyProxyThroughOrbot(true);
                 return true;
 
             case R.id.refresh:
