@@ -218,21 +218,13 @@
     <string name="save">Сохранить</string>
 
     <!-- Bookmarks Contextual App Bar. -->
-    <string name="one_selected">1 выбрана</string>
-    <string name="selected">выбраны</string>  <!--This is a plural adjective.-->
-    <string name="selected_russian_ends_in_1">выбрана</string>
-    <string name="selected_russian_ends_in_2">выбраны</string>
-    <string name="selected_russian_everything_else">выбрано</string>
+    <string name="selected">выбраны:</string>  <!--This is a plural adjective.-->
     <string name="move_up">Вверх</string>
     <string name="move_down">Вниз</string>
     <string name="edit">Изменить</string>
     <string name="delete">Удалить</string>
     <string name="select_all">Выбрать все</string>
-    <string name="one_bookmark_deleted">1 закладка удалена</string>
-    <string name="bookmarks_deleted">закладок удалены</string>
-    <string name="bookmarks_deleted_russian_ends_in_1">закладка удалена</string>
-    <string name="bookmarks_deleted_russian_ends_in_2">закладки удалены</string>
-    <string name="bookmarks_deleted_russian_everything_else">акладок удалено</string>
+    <string name="bookmarks_deleted">Закладок удалены:</string>
     <string name="undo">Вернуть</string>
 
     <!-- Bookmarks Database View. -->

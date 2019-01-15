@@ -221,27 +221,22 @@
     <string name="save">Salva</string>
 
     <!-- Bookmarks Contextual App Bar. -->
-    <string name="one_selected">1 Selezionato</string>
-    <string name="selected">Selezionato</string>  <!--This is a plural adjective.-->
-    <string name="selected_russian_ends_in_1">выбрана</string>
-    <string name="selected_russian_ends_in_2">выбраны</string>
-    <string name="selected_russian_everything_else">выбрано</string>
+    <string name="selected">Selezionato:</string>  <!--This is a plural adjective.-->
     <string name="move_up">Sposta sopra</string>
     <string name="move_down">Sposta sotto</string>
     <string name="edit">Modifica</string>
     <string name="delete">Elimina</string>
     <string name="select_all">Seleziona tutto</string>
-    <string name="one_bookmark_deleted">1 Segnalibro eliminato</string>
-    <string name="bookmarks_deleted">Segnalibri eliminati</string>
-    <string name="bookmarks_deleted_russian_ends_in_1">закладка удалена</string>
-    <string name="bookmarks_deleted_russian_ends_in_2">закладки удалены</string>
-    <string name="bookmarks_deleted_russian_everything_else">акладок удалено</string>
+    <string name="bookmarks_deleted">Segnalibri eliminati:</string>
     <string name="undo">Annulla</string>
 
     <!-- Bookmarks Database View. -->
     <string name="bookmarks_database_view">Database dei Segnalibri</string>
     <string name="all_folders">Tutte le cartelle</string>
     <string name="home_folder">Cartella principale</string>
+    <string name="sort">Ordina</string>
+        <string name="sorted_by_database_id">Ordina per database ID.</string>
+        <string name="sorted_by_display_order">Ordina come visualizzato.</string>
     <string name="database_id">ID Database:</string>
     <string name="folder">Cartella:</string>
     <string name="parent_folder">Cartella superiore:</string>

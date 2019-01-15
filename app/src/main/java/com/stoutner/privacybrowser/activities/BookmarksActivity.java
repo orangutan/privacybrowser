@@ -272,7 +272,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                     mode.finish();
                 } else if (numberOfSelectedBookmarks == 1) {  // One bookmark is selected.
                     // List the number of selected bookmarks in the subtitle.
-                    mode.setSubtitle(getString(R.string.one_selected));
+                    mode.setSubtitle(getString(R.string.selected) + "  1");
 
                     // Show the `Move Up`, `Move Down`, and  `Edit` options.
                     moveBookmarkUpMenuItem.setVisible(true);
@@ -282,24 +282,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                     // Update the enabled status of the move icons.
                     updateMoveIcons();
                 } else {  // More than one bookmark is selected.
-                    // List the number of selected bookmarks according to the language.
-                    if (getString(R.string.android_asset_path).equals("ru")) {  // The Russian translation is used.
-                        // Convert the number of selected bookmarks to a string.
-                        String numberOfSelectedBookmarksString = String.valueOf(numberOfSelectedBookmarks);
-
-                        // Russian follows rule #7 at <https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_and_Plurals>.
-                        if (numberOfSelectedBookmarksString.endsWith("1") && !numberOfSelectedBookmarksString.equals("11")) {  //  Ends in 1.
-                            mode.setSubtitle(numberOfSelectedBookmarks + " " + getString(R.string.selected_russian_ends_in_1));
-                        } else if ((numberOfSelectedBookmarksString.endsWith("2") || numberOfSelectedBookmarksString.endsWith("3") || numberOfSelectedBookmarksString.endsWith("4")) &&
-                                !numberOfSelectedBookmarksString.equals("12") && !numberOfSelectedBookmarksString.equals("13") && !numberOfSelectedBookmarksString.equals("14")) {  // Ends in 2-4.
-                            mode.setSubtitle(numberOfSelectedBookmarks + " " + getString(R.string.selected_russian_ends_in_2));
-                        } else {  // Everything else.
-                            mode.setSubtitle(numberOfSelectedBookmarks + " " + getString(R.string.selected_russian_everything_else));
-                        }
-                    } else {  // Another language is used.
-                        // List the number of selected bookmarks in the subtitle.
-                        mode.setSubtitle(numberOfSelectedBookmarks + " " + getString(R.string.selected));
-                    }
+                    // List the number of selected bookmarks in the subtitle.
+                    mode.setSubtitle(getString(R.string.selected) + "  " + numberOfSelectedBookmarks);
 
                     // Hide non-applicable `MenuItems`.
                     moveBookmarkUpMenuItem.setVisible(false);
@@ -472,35 +456,9 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                         // Update the `ListView`.
                         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
 
-                        // Instantiate `snackbarMessage`.
-                        String snackbarMessage;
-
-                        // Determine how many items are in the array and prepare an appropriate snackbar message.
-                        if (selectedBookmarksIdsLongArray.length == 1) {
-                            snackbarMessage = getString(R.string.one_bookmark_deleted);
-                        } else {
-                            // Prepare a snackbar according to the language.
-                            if (getString(R.string.android_asset_path).equals("ru")) {  // The Russian translation is used.
-                                // Convert the number of selected bookmarks to a string.
-                                String numberOfBookmarksString = String.valueOf(selectedBookmarksIdsLongArray.length);
-
-                                // Russian follows rule #7 at <https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_and_Plurals>.
-                                if (numberOfBookmarksString.endsWith("1") && !numberOfBookmarksString.equals("11")) {  //  Ends in 1.
-                                    snackbarMessage = numberOfBookmarksString + " " + getString(R.string.bookmarks_deleted_russian_ends_in_1);
-                                } else if ((numberOfBookmarksString.endsWith("2") || numberOfBookmarksString.endsWith("3") || numberOfBookmarksString.endsWith("4")) &&
-                                        !numberOfBookmarksString.equals("12") && !numberOfBookmarksString.equals("13") && !numberOfBookmarksString.equals("14")) {  // Ends in 2-4.
-                                    snackbarMessage = numberOfBookmarksString + " " + getString(R.string.bookmarks_deleted_russian_ends_in_2);
-                                } else {  // Everything else.
-                                    snackbarMessage = numberOfBookmarksString + " " + getString(R.string.bookmarks_deleted_russian_everything_else);
-                                }
-                            } else {  // Another language is used.
-                                snackbarMessage = selectedBookmarksIdsLongArray.length + " " + getString(R.string.bookmarks_deleted);
-                            }
-                        }
-
-                        // Show a SnackBar.
-                        bookmarksDeletedSnackbar = Snackbar.make(findViewById(R.id.bookmarks_coordinatorlayout), snackbarMessage, Snackbar.LENGTH_LONG)
-                                .setAction(R.string.undo, view -> {
+                        // Show a Snackbar with the number of deleted bookmarks.
+                        bookmarksDeletedSnackbar = Snackbar.make(findViewById(R.id.bookmarks_coordinatorlayout), getString(R.string.bookmarks_deleted) + "  " + selectedBookmarksIdsLongArray.length,
+                                Snackbar.LENGTH_LONG).setAction(R.string.undo, view -> {
                                     // Do nothing because everything will be handled by `onDismissed()` below.
                                 })
                                 .addCallback(new Snackbar.Callback() {

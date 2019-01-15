@@ -226,21 +226,13 @@
     <string name="save">Save</string>
 
     <!-- Bookmarks Contextual App Bar. -->
-    <string name="one_selected">1 Selected</string>
-    <string name="selected">Selected</string>  <!--This is a plural adjective.-->
-    <string name="selected_russian_ends_in_1">выбрана</string>
-    <string name="selected_russian_ends_in_2">выбраны</string>
-    <string name="selected_russian_everything_else">выбрано</string>
+    <string name="selected">Selected:</string>  <!--This is a plural adjective.-->
     <string name="move_up">Move Up</string>
     <string name="move_down">Move Down</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="select_all">Select All</string>
-    <string name="one_bookmark_deleted">1 Bookmark Deleted</string>
-    <string name="bookmarks_deleted">Bookmarks Deleted</string>
-    <string name="bookmarks_deleted_russian_ends_in_1">закладка удалена</string>
-    <string name="bookmarks_deleted_russian_ends_in_2">закладки удалены</string>
-    <string name="bookmarks_deleted_russian_everything_else">акладок удалено</string>
+    <string name="bookmarks_deleted">Bookmarks Deleted:</string>
     <string name="undo">Undo</string>
 
     <!-- Bookmarks Database View. -->
@@ -496,7 +488,7 @@
         <string name="ultraprivacy">UltraPrivacy</string>
         <string name="ultraprivacy_summary">UltraPrivacy blocks trackers that EasyPrivacy doesn’t because doing so can break websites.</string>
         <string name="block_all_third_party_requests">Block all third-party requests</string>
-        <string name="block_all_third_party_requests_summary">Blocking all third-party requests increases privacy, but it breaks many websites.</string>
+        <string name="block_all_third_party_requests_summary" translatable="false">Blocking all third-party requests increases privacy, but it breaks many websites.</string>
     <string name="tor">Tor</string>
         <string name="proxy_through_orbot">Proxy through Orbot</string>
         <string name="proxy_through_orbot_summary">Proxy all web traffic through Orbot on localhost:8118.</string>

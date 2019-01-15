@@ -217,21 +217,13 @@
     <string name="save">Kaydet</string>
 
     <!-- Bookmarks Contextual App Bar. -->
-    <string name="one_selected">1 seçili</string>
-    <string name="selected">Seçili</string>  <!--This is a plural adjective.-->
-    <string name="selected_russian_ends_in_1">выбрана</string>
-    <string name="selected_russian_ends_in_2">выбраны</string>
-    <string name="selected_russian_everything_else">выбрано</string>
+    <string name="selected">Seçili:</string>  <!--This is a plural adjective.-->
     <string name="move_up">Yukarı Taşı</string>
     <string name="move_down">Aşağı Taşı</string>
     <string name="edit">Düzenle</string>
     <string name="delete">Sil</string>
     <string name="select_all">Hepsini Seç</string>
-    <string name="one_bookmark_deleted">1 Yer İmi Silindi</string>
-    <string name="bookmarks_deleted">Yer İmleri Silindi</string>
-    <string name="bookmarks_deleted_russian_ends_in_1">закладка удалена</string>
-    <string name="bookmarks_deleted_russian_ends_in_2">закладки удалены</string>
-    <string name="bookmarks_deleted_russian_everything_else">акладок удалено</string>
+    <string name="bookmarks_deleted">Yer İmleri Silindi:</string>
     <string name="undo">Geri Al</string>
 
     <!-- Bookmarks Database View. -->
