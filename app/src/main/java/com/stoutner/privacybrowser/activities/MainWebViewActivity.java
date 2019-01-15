@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * Download cookie code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
  *

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -29,6 +29,8 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.ResourceCursorAdapter;
@@ -37,6 +39,8 @@ import android.support.v7.app.AppCompatActivity;
 // `AppCompatDialogFragment` is required instead of `DialogFragment` or an error is produced on API <=22.
 import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -66,17 +70,20 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
     // `bookmarksCursor` is used in `onCreate()`, `updateBookmarksListView()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, and `onDestroy()`.
     private Cursor bookmarksCursor;
 
-    // `bookmarksCursorAdapter` is used in `onCreate()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`.
+    // `bookmarksCursorAdapter` is used in `onCreate()` and `updateBookmarksListView()`.
     private CursorAdapter bookmarksCursorAdapter;
 
     // `oldFolderNameString` is used in `onCreate()` and `onSaveBookmarkFolder()`.
     private String oldFolderNameString;
 
-    // `currentFolderDatabaseId` is used in `onCreate()`, `onSaveBookmark()`, and `onSaveBookmarkFolder()`.
+    // `currentFolderDatabaseId` is used in `onCreate()`, `updateBookmarksListView()`, `onSaveBookmark()`, and `onSaveBookmarkFolder()`.
     private int currentFolderDatabaseId;
 
     // `currentFolder` is used in `onCreate()`, `onSaveBookmark()`, and `onSaveBookmarkFolder()`.
     private String currentFolderName;
+
+    // `sortByDisplayOrder` is used in `onCreate()`, `onOptionsItemSelected()`, and `updateBookmarksListView()`.
+    private boolean sortByDisplayOrder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,11 +106,11 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         setContentView(R.layout.bookmarks_databaseview_coordinatorlayout);
 
         // The `SupportActionBar` from `android.support.v7.app.ActionBar` must be used until the minimum API is >= 21.
-        final Toolbar bookmarksDatabaseViewAppBar = findViewById(R.id.bookmarks_databaseview_toolbar);
+        Toolbar bookmarksDatabaseViewAppBar = findViewById(R.id.bookmarks_databaseview_toolbar);
         setSupportActionBar(bookmarksDatabaseViewAppBar);
 
         // Get a handle for the `AppBar`.
-        final ActionBar appBar = getSupportActionBar();
+        ActionBar appBar = getSupportActionBar();
 
         // Remove the incorrect warning in Android Studio that `appBar` might be null.
         assert appBar != null;
@@ -150,41 +157,17 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         folderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // Convert the database ID to an `int`.
-                int databaseId = (int) id;
-
                 // Store the current folder database ID.
-                currentFolderDatabaseId = databaseId;
+                currentFolderDatabaseId = (int) id;
 
-                // Populate the bookmarks list view based on the spinner selection.
-                switch (databaseId) {
-                    // Get a cursor with all the folders.
-                    case ALL_FOLDERS_DATABASE_ID:
-                        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursor();
-                        break;
+                // Get a handle for the selected view.
+                TextView selectedFolderTextView = findViewById(R.id.spinner_item_textview);
 
-                    // Get a cursor for the home folder.
-                    case HOME_FOLDER_DATABASE_ID:
-                        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursor("");
-                        break;
-
-                    // Display the selected folder.
-                    default:
-                        // Get a handle for the selected view.
-                        TextView selectedFolderTextView = view.findViewById(R.id.spinner_item_textview);
-
-                        // Extract the name of the selected folder.
-                        String folderName = selectedFolderTextView.getText().toString();
-
-                        // Get a cursor for the selected folder.
-                        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursor(folderName);
-
-                        // Store the current folder name.
-                        currentFolderName = folderName;
-                }
+                // Store the current folder name.
+                currentFolderName = selectedFolderTextView.getText().toString();
 
                 // Update the list view.
-                bookmarksCursorAdapter.changeCursor(bookmarksCursor);
+                updateBookmarksListView();
             }
 
             @Override
@@ -306,6 +289,98 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu.
+        getMenuInflater().inflate(R.menu.bookmarks_databaseview_options_menu, menu);
+
+        // Success.
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        // Get the ID of the menu item that was selected.
+        int menuItemId = menuItem.getItemId();
+
+        switch (menuItemId) {
+            case android.R.id.home:  // The home arrow is identified as `android.R.id.home`, not just `R.id.home`.
+                // Return to `MainWebViewActivity`.
+                NavUtils.navigateUpFromSameTask(this);
+                break;
+
+            case R.id.options_menu_sort:
+                // Update the sort by display order tracker.
+                sortByDisplayOrder = !sortByDisplayOrder;
+
+                // Get a handle for the bookmarks `ListView`.
+                ListView bookmarksListView = findViewById(R.id.bookmarks_databaseview_listview);
+
+                // Update the icon and display a snackbar.
+                if (sortByDisplayOrder) {  // Sort by display order.
+                    // Update the icon according to the theme.
+                    if (MainWebViewActivity.darkTheme) {
+                        menuItem.setIcon(R.drawable.sort_selected_dark);
+                    } else {
+                        menuItem.setIcon(R.drawable.sort_selected_light);
+                    }
+
+                    // Display a Snackbar indicating the current sort type.
+                    Snackbar.make(bookmarksListView, R.string.sorted_by_display_order, Snackbar.LENGTH_SHORT).show();
+                } else {  // Sort by database id.
+                    // Update the icon according to the theme.
+                    if (MainWebViewActivity.darkTheme) {
+                        menuItem.setIcon(R.drawable.sort_dark);
+                    } else {
+                        menuItem.setIcon(R.drawable.sort_light);
+                    }
+
+                    // Display a Snackbar indicating the current sort type.
+                    Snackbar.make(bookmarksListView, R.string.sorted_by_database_id, Snackbar.LENGTH_SHORT).show();
+                }
+
+                // Update the list view.
+                updateBookmarksListView();
+                break;
+        }
+        return true;
+    }
+
+    private void updateBookmarksListView() {
+        // Populate the bookmarks list view based on the spinner selection.
+        switch (currentFolderDatabaseId) {
+            // Get a cursor with all the folders.
+            case ALL_FOLDERS_DATABASE_ID:
+                if (sortByDisplayOrder) {
+                    bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder();
+                } else {
+                    bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursor();
+                }
+                break;
+
+            // Get a cursor for the home folder.
+            case HOME_FOLDER_DATABASE_ID:
+                if (sortByDisplayOrder) {
+                    bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder("");
+                } else {
+                    bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursor("");
+                }
+                break;
+
+            // Display the selected folder.
+            default:
+                // Get a cursor for the selected folder.
+                if (sortByDisplayOrder) {
+                    bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentFolderName);
+                } else {
+                    bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursor(currentFolderName);
+                }
+        }
+
+        // Update the list view.
+        bookmarksCursorAdapter.changeCursor(bookmarksCursor);
+    }
+
+    @Override
     public void onSaveBookmark(AppCompatDialogFragment dialogFragment, int selectedBookmarkDatabaseId) {
         // Get handles for the views from dialog fragment.
         RadioButton currentBookmarkIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_current_icon_radiobutton);
@@ -343,25 +418,8 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
             bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString, parentFolderNameString, displayOrderInt, newFavoriteIconByteArray);
         }
 
-        // Update `bookmarksCursor` with the contents of the current folder.
-        switch (currentFolderDatabaseId) {
-            case ALL_FOLDERS_DATABASE_ID:
-                // Get a cursor with all the bookmarks.
-                bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursor();
-                break;
-
-            case HOME_FOLDER_DATABASE_ID:
-                // Get a cursor with all the bookmarks in the home folder.
-                bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursor("");
-                break;
-
-            default:
-                // Get a cursor with all the bookmarks in the current folder.
-                bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursor(currentFolderName);
-        }
-
-        // Update the `ListView`.
-        bookmarksCursorAdapter.changeCursor(bookmarksCursor);
+        // Update the list view.
+        updateBookmarksListView();
     }
 
     @Override
@@ -415,25 +473,8 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
             bookmarksDatabaseHelper.updateFolder(selectedBookmarkDatabaseId, oldFolderNameString, newFolderNameString, parentFolderNameString, displayOrderInt, newFolderIconByteArray);
         }
 
-        // Update `bookmarksCursor` with the contents of the current folder.
-        switch (currentFolderDatabaseId) {
-            case ALL_FOLDERS_DATABASE_ID:
-                // Get a cursor with all the bookmarks.
-                bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursor();
-                break;
-
-            case HOME_FOLDER_DATABASE_ID:
-                // Get a cursor with all the bookmarks in the home folder.
-                bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursor("");
-                break;
-
-            default:
-                // Get a cursor with all the bookmarks in the current folder.
-                bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursor(currentFolderName);
-        }
-
-        // Update the `ListView`.
-        bookmarksCursorAdapter.changeCursor(bookmarksCursor);
+        // Update the list view.
+        updateBookmarksListView();
     }
 
     @Override

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -247,6 +247,9 @@
     <string name="bookmarks_database_view">Bookmarks Database View</string>
     <string name="all_folders">All Folders</string>
     <string name="home_folder">Home Folder</string>
+    <string name="sort">Sort</string>
+        <string name="sorted_by_database_id">Sorted by database ID.</string>
+        <string name="sorted_by_display_order">Sorted by display order.</string>
     <string name="database_id">Database ID:</string>
     <string name="folder">Folder:</string>
     <string name="parent_folder">Parent folder:</string>

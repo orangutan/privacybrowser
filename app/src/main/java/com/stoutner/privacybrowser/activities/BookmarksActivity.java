@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -631,7 +631,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        // Get the ID of the `MenuItem` that was selected.
+        // Get the ID of the menu item that was selected.
         int menuItemId = menuItem.getItemId();
 
         switch (menuItemId) {

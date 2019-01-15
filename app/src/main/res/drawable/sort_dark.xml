@@ -1,0 +1,18 @@
+<!-- `sort_dark.xml` comes from the Android Material icon set, where it is called `sort`.  It is released under the Apache License 2.0. -->
+
+<!-- `tools:ignore="VectorRaster"` removes the lint warning about `android:autoMirrored="true"` not applying to API < 21. -->
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:autoMirrored="true"
+    android:height="24dp"
+    android:width="24dp"
+    android:viewportHeight="24.0"
+    android:viewportWidth="24.0"
+    tools:ignore="VectorRaster" >
+
+    <!-- A hard coded color must be used until API >= 21.  Then `@color` can be used. -->
+    <path
+        android:fillColor="#FFE0E0E0"
+        android:pathData="M3,18h6v-2L3,16v2zM3,6v2h18L21,6L3,6zM3,13h12v-2L3,11v2z" />
+</vector>

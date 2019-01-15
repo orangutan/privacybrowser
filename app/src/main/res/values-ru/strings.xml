@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -158,6 +158,9 @@
         <string name="display_images">Показывать изображения</string>
         <string name="view_source">Просмотр исходного кода</string>
     <string name="share">Поделиться</string>
+        <string name="share_url">Поделиться URL</string>
+        <string name="open_with_app">Открыть в приложении</string>
+        <string name="open_with_browser">Открыть в браузере</string>
     <string name="find_on_page">Найти на странице</string>
     <string name="print">Печать</string>
         <string name="privacy_browser_web_page">Privacy Browser веб-страница</string>

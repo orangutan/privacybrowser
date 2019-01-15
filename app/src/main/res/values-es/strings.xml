@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2017-2018 Jose A. León Becerra.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017-2019 Jose A. León Becerra.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -161,6 +161,9 @@
         <string name="display_images">Mostrar imágenes</string>
         <string name="view_source">Ver la fuente</string>
     <string name="share">Compartir</string>
+        <string name="share_url">Compartir URL</string>
+        <string name="open_with_app">Abrir con App</string>
+        <string name="open_with_browser">Abrir con Navegador</string>
     <string name="find_on_page">Buscar en página</string>
     <string name="print">Imprimir</string>
         <string name="privacy_browser_web_page">Página web de Navegador Privado</string>
