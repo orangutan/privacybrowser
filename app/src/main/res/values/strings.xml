@@ -246,6 +246,7 @@
     <string name="folder">Folder:</string>
     <string name="parent_folder">Parent folder:</string>
     <string name="display_order">Display order:</string>
+    <string name="cannot_deselect_bookmark">A bookmark cannot be deselected while the parent folder is selected.</string>
 
     <!-- Requests. -->
     <string name="requests">Requests</string>
@@ -488,7 +489,7 @@
         <string name="ultraprivacy">UltraPrivacy</string>
         <string name="ultraprivacy_summary">UltraPrivacy blocks trackers that EasyPrivacy doesn’t because doing so can break websites.</string>
         <string name="block_all_third_party_requests">Block all third-party requests</string>
-        <string name="block_all_third_party_requests_summary" translatable="false">Blocking all third-party requests increases privacy, but it breaks many websites.</string>
+        <string name="block_all_third_party_requests_summary">Blocking all third-party requests increases privacy, but it breaks many websites.</string>
     <string name="tor">Tor</string>
         <string name="proxy_through_orbot">Proxy through Orbot</string>
         <string name="proxy_through_orbot_summary">Proxy all web traffic through Orbot on localhost:8118.</string>

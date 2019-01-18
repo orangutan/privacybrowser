@@ -769,7 +769,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Update `findOnPageCountTextView`.
         mainWebView.setFindListener(new WebView.FindListener() {
             // Get a handle for `findOnPageCountTextView`.
-            final TextView findOnPageCountTextView = (TextView) findViewById(R.id.find_on_page_count_textview);
+            final TextView findOnPageCountTextView = findViewById(R.id.find_on_page_count_textview);
 
             @Override
             public void onFindResultReceived(int activeMatchOrdinal, int numberOfMatches, boolean isDoneCounting) {
@@ -863,7 +863,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             int databaseID = (int) id;
 
             // Get the bookmark cursor for this ID and move it to the first row.
-            Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmarkCursor(databaseID);
+            Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmark(databaseID);
             bookmarkCursor.moveToFirst();
 
             // Act upon the bookmark according to the type.
@@ -3488,8 +3488,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Create the bookmark.
         bookmarksDatabaseHelper.createBookmark(bookmarkNameString, bookmarkUrlString, currentBookmarksFolder, newBookmarkDisplayOrder, favoriteIconByteArray);
 
-        // Update `bookmarksCursor` with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentBookmarksFolder);
+        // Update the bookmarks cursor with the current contents of this folder.
+        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentBookmarksFolder);
 
         // Update the `ListView`.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
@@ -3533,8 +3533,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Create the folder, which will be placed at the top of the `ListView`.
         bookmarksDatabaseHelper.createFolder(folderNameString, currentBookmarksFolder, folderIconByteArray);
 
-        // Update `bookmarksCursor` with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentBookmarksFolder);
+        // Update the bookmarks cursor with the current contents of this folder.
+        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentBookmarksFolder);
 
         // Update the `ListView`.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
@@ -3748,8 +3748,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString, newFavoriteIconByteArray);
         }
 
-        // Update `bookmarksCursor` with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentBookmarksFolder);
+        // Update the bookmarks cursor with the current contents of this folder.
+        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentBookmarksFolder);
 
         // Update the `ListView`.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
@@ -3810,8 +3810,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, oldFolderNameString, newFolderNameString, folderIconByteArray);
         }
 
-        // Update `bookmarksCursor` with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentBookmarksFolder);
+        // Update the bookmarks cursor with the current contents of this folder.
+        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentBookmarksFolder);
 
         // Update the `ListView`.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
@@ -3902,7 +3902,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 drawerLayout.closeDrawer(GravityCompat.END);
             } else {  // A subfolder is displayed.
                 // Place the former parent folder in `currentFolder`.
-                currentBookmarksFolder = bookmarksDatabaseHelper.getParentFolder(currentBookmarksFolder);
+                currentBookmarksFolder = bookmarksDatabaseHelper.getParentFolderName(currentBookmarksFolder);
 
                 // Load the new folder.
                 loadBookmarksFolder();
@@ -4745,7 +4745,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     private void loadBookmarksFolder() {
         // Update the bookmarks cursor with the contents of the bookmarks database for the current folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentBookmarksFolder);
+        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentBookmarksFolder);
 
         // Populate the bookmarks cursor adapter.  `this` specifies the `Context`.  `false` disables `autoRequery`.
         bookmarksCursorAdapter = new CursorAdapter(this, bookmarksCursor, false) {

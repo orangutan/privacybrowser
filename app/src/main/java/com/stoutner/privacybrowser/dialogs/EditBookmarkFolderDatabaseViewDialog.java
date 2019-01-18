@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -114,7 +114,7 @@ public class EditBookmarkFolderDatabaseViewDialog extends AppCompatDialogFragmen
         bookmarksDatabaseHelper = new BookmarksDatabaseHelper(getContext(), null, null, 0);
 
         // Get a `Cursor` with the selected bookmark and move it to the first position.
-        Cursor folderCursor = bookmarksDatabaseHelper.getBookmarkCursor(folderDatabaseId);
+        Cursor folderCursor = bookmarksDatabaseHelper.getBookmark(folderDatabaseId);
         folderCursor.moveToFirst();
 
         // Use an alert dialog builder to create the alert dialog.
@@ -210,7 +210,7 @@ public class EditBookmarkFolderDatabaseViewDialog extends AppCompatDialogFragmen
         addSubfoldersToExceptFolders(currentFolderName);
 
         // Get a `Cursor` with the list of all the folders.
-        Cursor foldersCursor = bookmarksDatabaseHelper.getFoldersCursorExcept(exceptFolders.toString());
+        Cursor foldersCursor = bookmarksDatabaseHelper.getFoldersExcept(exceptFolders.toString());
 
         // Combine `matrixCursor` and `foldersCursor`.
         MergeCursor foldersMergeCursor = new MergeCursor(new Cursor[]{matrixCursor, foldersCursor});
@@ -373,7 +373,7 @@ public class EditBookmarkFolderDatabaseViewDialog extends AppCompatDialogFragmen
         String newDisplayOrder = displayOrderEditText.getText().toString();
 
         // Get a cursor for the new folder name if it exists.
-        Cursor folderExistsCursor = bookmarksDatabaseHelper.getFolderCursor(newFolderName);
+        Cursor folderExistsCursor = bookmarksDatabaseHelper.getFolder(newFolderName);
 
         // Is the new folder name empty?
         boolean folderNameNotEmpty = !newFolderName.isEmpty();
@@ -402,7 +402,7 @@ public class EditBookmarkFolderDatabaseViewDialog extends AppCompatDialogFragmen
 
     private void addSubfoldersToExceptFolders(String folderName) {
         // Get a `Cursor` will all the immediate subfolders.
-        Cursor subfoldersCursor = bookmarksDatabaseHelper.getSubfoldersCursor(folderName);
+        Cursor subfoldersCursor = bookmarksDatabaseHelper.getSubfolders(folderName);
 
         for (int i = 0; i < subfoldersCursor.getCount(); i++) {
             // Move `subfolderCursor` to the current item.

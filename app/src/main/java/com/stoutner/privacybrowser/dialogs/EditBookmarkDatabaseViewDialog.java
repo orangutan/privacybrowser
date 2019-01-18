@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -115,7 +115,7 @@ public class EditBookmarkDatabaseViewDialog extends AppCompatDialogFragment {
         BookmarksDatabaseHelper bookmarksDatabaseHelper = new BookmarksDatabaseHelper(getContext(), null, null, 0);
 
         // Get a cursor with the selected bookmark and move it to the first position.
-        Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmarkCursor(bookmarkDatabaseId);
+        Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmark(bookmarkDatabaseId);
         bookmarkCursor.moveToFirst();
 
         // Use an alert dialog builder to create the alert dialog.
@@ -207,7 +207,7 @@ public class EditBookmarkDatabaseViewDialog extends AppCompatDialogFragment {
         matrixCursor.addRow(new Object[]{HOME_FOLDER_DATABASE_ID, getString(R.string.home_folder)});
 
         // Get a `Cursor` with the list of all the folders.
-        Cursor foldersCursor = bookmarksDatabaseHelper.getAllFoldersCursor();
+        Cursor foldersCursor = bookmarksDatabaseHelper.getAllFolders();
 
         // Combine `matrixCursor` and `foldersCursor`.
         MergeCursor foldersMergeCursor = new MergeCursor(new Cursor[]{matrixCursor, foldersCursor});

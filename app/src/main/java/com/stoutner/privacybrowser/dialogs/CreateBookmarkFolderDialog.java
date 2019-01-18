@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -140,7 +140,7 @@ public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
                 String folderName = s.toString();
 
                 // Check if a folder with the name already exists.
-                Cursor folderExistsCursor = bookmarksDatabaseHelper.getFolderCursor(folderName);
+                Cursor folderExistsCursor = bookmarksDatabaseHelper.getFolder(folderName);
 
                 // Enable the create button if the new folder name is not empty and doesn't already exist.
                 createButton.setEnabled(!folderName.isEmpty() && (folderExistsCursor.getCount() == 0));

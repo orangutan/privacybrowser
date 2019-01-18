@@ -22,7 +22,7 @@
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser</string>
     <string name="privacy_browser_settings">Privacy Browser Ayarları</string>
-    <!-- For translations, `android_asset_path` should be the localization abbreviation.  For example, Spanish is `es`.  This should not be translated unless the Guide and About sections are localized. -->
+    <!-- For translations, `android_asset_path` should be the localization abbreviation.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">tr</string>
 
     <!-- MainWebView. -->
@@ -103,7 +103,7 @@
 
     <!-- MainWebViewActivity Navigation Drawer. -->
     <string name="navigation_drawer">Açılır Menü</string>
-    <string name="navigation">Gezinim</string>
+    <string name="navigation">Gezinti</string>
     <string name="home">Anasayfa</string>
     <string name="back">Geri</string>
     <string name="forward">İleri</string>
@@ -230,12 +230,46 @@
     <string name="bookmarks_database_view">Yer İmleri Veritabanı Görünümü</string>
     <string name="all_folders">Tüm Klasörler</string>
     <string name="home_folder">Ana klasör</string>
+    <string name="sort">Sırala</string>
+        <string name="sorted_by_database_id">Veritabanı kimliğine göre sıralandı.</string>
+        <string name="sorted_by_display_order">Görüntüleme düzenine göre sıralandı.</string>
     <string name="database_id">Veritabanı Kimliği:</string>
     <string name="folder">Klasör:</string>
     <string name="parent_folder">Üst Klasör:</string>
-    <string name="display_order">Display order:</string>
+    <string name="display_order">Görüntüleme düzeni:</string>
 
     <!-- Requests. -->
+    <string name="requests">İstekler</string>
+    <string name="request_details">İstek detayları</string>
+    <string name="disposition">İşlem</string>
+        <string name="all">Tüm</string>
+        <string name="default_label">Varsayılan</string>
+        <string name="default_allowed">Varsayılan - İzin verildi</string>
+        <string name="allowed">İzin verildi</string>
+        <string name="allowed_plural">İzin verildi</string>
+        <string name="third_party_plural">Üçüncü Taraflar</string>
+        <string name="third_party_blocked">Üçüncü Taraf - Engellendi</string>
+        <string name="blocked">Engellendi</string>
+        <string name="blocked_plural">Engellendi</string>
+    <string name="blocklist">Engellenenler</string>
+        <string name="main_whitelist">Ana beyaz liste</string>
+        <string name="final_whitelist">Final beyaz liste</string>
+        <string name="domain_whitelist">Domain beyaz listesi</string>
+        <string name="domain_initial_whitelist">Domain başlangıç beyaz listesi</string>
+        <string name="domain_final_whitelist">Domain final beyaz listesi</string>
+        <string name="third_party_whitelist">Üçüncü taraf beyaz listesi</string>
+        <string name="third_party_domain_whitelist">Üçüncü taraf domain beyaz listesi</string>
+        <string name="third_party_domain_initial_whitelist">Üçüncü taraf domain başlangıç beyaz listesi</string>
+        <string name="main_blacklist">Ana kara liste</string>
+        <string name="initial_blacklist">Başlangıç kara listesi</string>
+        <string name="final_blacklist">Final kara liste</string>
+        <string name="domain_blacklist">Domain kara listesi</string>
+        <string name="domain_initial_blacklist">Domain başlangıç kara listesi</string>
+        <string name="domain_final_blacklist">Domain final kara listesi</string>
+        <string name="third_party_blacklist">Üçüncü taraf kara listesi</string>
+        <string name="third_party_initial_blacklist">Üçüncü taraf başlangıç kara listesi</string>
+        <string name="third_party_domain_blacklist">Üçüncü taraf domain kara listesi</string>
+        <string name="third_party_domain_initial_blacklist">Üçüncü taraf domain başlangıç kara listesi</string>
 
     <!-- Domains. -->
     <string name="domains">Domainler</string>
@@ -248,17 +282,17 @@
     <string-array name="swipe_to_refresh_array">
         <item>Sistem varsayılanı</item>
         <item>Yenilemek için kaydır etkin</item>
-        <item>Yenilemek için kaydır devredışı</item>
+        <item>Yenilemek için kaydır devre dışı</item>
     </string-array>
     <string-array name="night_mode_array">
         <item>Sistem varsayılanı</item>
         <item>Gece modu etkin</item>
-        <item>Gece modu devredışı</item>
+        <item>Gece modu devre dışı</item>
     </string-array>
     <string-array name="display_webpage_images_array">
         <item>Sistem varsayılanı</item>
-        <item>Görüntüler etkin</item>
-        <item>Görüntüler devredışı</item>
+        <item>Resimler etkin</item>
+        <item>Resimler devre dışı</item>
     </string-array>
     <string name="pinned_ssl_certificate">İğneli SSL sertifikası</string>
     <string name="saved_ssl_certificate">Kayıtlı SSL sertifikası</string>
@@ -268,16 +302,22 @@
 
     <!-- Guide. -->
     <string name="privacy_browser_guide">Privacy Browser Rehberi</string>
-    <string name="local_storage">Yerel Depolama</string>
+    <string name="overview">Genel Bakış</string>
+    <string name="local_storage">Yerel Depolama Alanı</string>
     <string name="ssl_certificates">SSL Sertifikaları</string>
+    <string name="tracking_ids">İzleme Kimlikleri</string>
 
     <!-- Download Location -->
     <string name="download_location">İndirme Konumu</string>
-    <string name="ok">OK</string>
+    <string name="download_location_message">Privacy Browser\'ın genel indirme dizinini kullanması için depolama alanı izni gerekmektedir.
+        Eğer reddedilirse, onun yerine uygulamanın indirme dizini kullanılacaktır.</string>
 
     <!-- Orbot. -->
+    <string name="orbot_proxy_not_installed">Orbot yüklenmeden Orbot proxy çalışmayacaktır.</string>
+    <string name="waiting_for_orbot">Orbot\'un bağlanması bekleniyor...</string>
 
     <!-- About Activity. -->
+    <string name="about_privacy_browser">Privacy Browser Hakkında</string>
     <string name="version">Sürüm</string>
     <string name="version_code">Sürüm kodu</string>
     <string name="hardware">Donanım</string>
@@ -285,10 +325,11 @@
     <string name="manufacturer">Üretici:</string>
     <string name="device">Cihaz:</string>
     <string name="bootloader">Bootloader:</string>
-    <string name="radio">Radio:</string>
+    <string name="radio">Donanım Yazılımı:</string>
     <string name="software">Yazılım</string>
     <string name="android">Android:</string>
     <string name="api">API</string>
+    <string name="build">Derleme:</string>
     <string name="security_patch">Güvenlik Yaması:</string>
     <string name="webview">Web Görünümü:</string>
     <string name="orbot">Orbot:</string>
@@ -298,16 +339,32 @@
     <string name="fanboy_annoyance_label">Fanboy’s Annoyance Listesi:</string>
     <string name="fanboy_social_label">Fanboy’s Social Blocking Listesi:</string>
     <string name="ultraprivacy_label">UltraPrivacy:</string>
+    <string name="package_signature">Paket İmzası</string>
+    <string name="issuer_dn">Yayınlayan DA:</string>
+    <string name="subject_dn">Özne DA:</string>
     <string name="certificate_version">Sertifika Sürümü:</string>
-    <string name="serial_number">Serial Number:</string>
+    <string name="serial_number">Seri Numarası:</string>
     <string name="signature_algorithm">İmza Algoritması:</string>
     <string name="permissions">İzinler</string>
+    <string name="privacy_policy">Privacy Politikası</string>
     <string name="changelog">Değişiklik Günlüğü</string>
     <string name="licenses">Lisanslar</string>
     <string name="contributors">Katkıda Bulunanlar</string>
     <string name="links">Linkler</string>
 
     <!-- Preferences. -->
+    <string name="privacy">Gizlilik</string>
+        <string name="javascript_preference">JavaScript\'i varsayılan olarak etkinleştir</string>
+        <string name="javascript_preference_summary">JavaScript web sitelerin cihazdaki programları(scriptler) çalıştırmasına izin verir.</string>
+        <string name="first_party_cookies_preference">Birinci taraf çerezleri varsayılan olarak etkinleştir</string>
+        <string name="first_party_cookies_preference_summary">Bu ayar, Android Lollipop sürümünden(5.0) eski sürümlere sahip cihazlarda üçüncü taraf çerezleri de etkinleştirir.</string>
+        <string name="third_party_cookies_preference">Üçüncü taraf çerezleri varsayılan olarak etkinleştir</string>
+        <string name="third_party_cookies_summary">Bu ayarı etkinleştirmek için Android Lollipop sürümüne(5.0) ya da daha üst sürümlere sahip olmak gerekir.
+            Birinci taraf çerezler devre dışı olduğu takdirde etkisi yoktur.</string>
+        <string name="dom_storage_preference">DOM depolama alanını varsayılan olarak etkinleştir</string>
+        <string name="dom_storage_preference_summary">DOM depolama alanının çalışması için JavaScript\'in etkin olması gerekir.</string>
+        <string name="save_form_data_preference">Form verisini kaydetmeyi varsayılan olarak etkinleştir</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
+        <string name="save_form_data_preference_summary">Kaydedilen form verisi web sitelerdeki boşlukları otomatik dolduracaktır.</string>
         <string name="user_agent">Kullanıcı aracısı</string>
         <string-array name="translated_user_agent_names">
             <item>Privacy Browser</item>
@@ -341,11 +398,31 @@
             <item>Özel</item>
         </string-array>
         <string name="custom_user_agent">Özel kullanıcı aracısı</string>
+        <string name="incognito_mode">Gizli Mod</string>
+        <string name="incognito_mode_summary">Her web sayfasının yüklenmesi bittikten sonra geçmişi ve önbelleği temizler. İleri ve geri seçenekleri Gizli Mod aktifken çalışmaz.</string>
+        <string name="do_not_track">Takip Etme</string>
+        <string name="do_not_track_summary">Web Serverlarına, bu tarayıcıyı takip etmemesini nezaketle telkin etmek için Takip Etme Başlığı gönderir.</string>
+        <string name="allow_screenshots">Ekran görüntülerine izin ver</string>
+        <string name="allow_screenshots_summary">Ekran görüntülerine, video kaydına ve güvenli olmayan ekranlarda görüntülenmeye izin verir.
+            Bu ayarı değiştirmek Privacy Browser uygulamasını yeniden başlatır.</string>
+    <string name="blocklists">Engellenenler</string>
+        <string name="easylist">EasyList</string>
+        <string name="easylist_summary">Ana reklam engelleme listesi.</string>
+        <string name="easyprivacy">EasyPrivacy</string>
+        <string name="easyprivacy_summary">Ana takipçi engelleme listesi.</string>
+        <string name="fanboys_annoyance_list">Fanboy’s annoyance listesi</string>
+        <string name="fanboys_annoyance_list_summary">Rahatsız eden popupları ve linkleri engeller. Fanboy’s social blocking listesini de içerir.</string>
+        <string name="fanboys_social_blocking_list">Fanboy’s social blocking listesi</string>
+        <string name="fanboys_social_blocking_list_summary">Üçüncü taraf sosyal medya içeriklerini engeller.</string>
+        <string name="ultraprivacy">UltraPrivacy</string>
+        <string name="ultraprivacy_summary">UltraPrivacy, EasyPrivacy\'de olmayan takipçileri de engeller fakat bu seçenek bazı web sitelerinin çökmesine sebep olabilir.</string>
+        <string name="block_all_third_party_requests">Tüm üçüncü taraf istekleri engelle</string>
+        <string name="block_all_third_party_requests_summary">Tüm üçüncü taraf istekleri engellemek gizliliği arttırır, fakat çoğu web sitesinin çökmesine sebep olur.</string>
         <string-array name="tor_search_entries">
             <item>Searx</item>
             <item>DuckDuckGo - JavaScript devre dışı</item>
             <item>DuckDuckGo - JavaScript etkin</item>
-            <item>Custom</item>
+            <item>Özel</item>
         </string-array>
     <string name="search">Arama</string>
         <string-array name="search_entries">
@@ -361,6 +438,24 @@
             <item>Yahoo - JavaScript etkin</item>
             <item>Özel</item>
         </string-array>
+        <string name="search_custom_url">Özel URL Ara</string>
+        <string name="custom_url">Özel URL</string>
+    <string name="full_screen">Tam Ekran</string>
+        <string name="full_screen_browsing_mode">Tam ekran modu</string>
+        <string name="full_screen_browsing_mode_summary">Tam ekran moduna geçmek için çift dokun.</string>
+        <string name="hide_system_bars">Sistem çubuğunu gizle</string>
+        <string name="hide_system_bars_summary">Tam ekran modunda durum ve gezinti çubuğunu gizler. Tam ekran modundayken klavye açıldığında iyi çalışmayabilir.</string>
+        <string name="translucent_navigation_bar">Yarı saydam gezinti çubuğu</string>
+        <string name="translucent_navigation_bar_summary">Gezinti çubuğunu, tam ekran modunda yarı saydam yapar.</string>
+    <string name="clear_everything">Her şeyi temizle</string>
+        <string name="clear_cookies_preference">Çerezleri temizle</string>
+        <string name="clear_cookies_summary">Birinci ve Üçüncü taraf çerezleri temizler</string>
+        <string name="clear_dom_storage_preference">Dom Depolama Alanını temizle</string>
+        <string name="clear_dom_storage_summary">Dom Depolama Alanını temizler.</string>
+        <string name="clear_form_data_preference">Form verisini temizle</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
+        <string name="clear_form_data_summary">Form verisini temizler.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
+        <string name="clear_cache">Önbelleği temizle</string>
+        <string name="clear_cache_summary">Web Görünümü önbelleğini temizler.</string>
     <string name="general">Genel</string>
         <string name="homepage">Ana Sayfa</string>
         <string name="font_size_preference">Yazı tipi boyutu</string>
@@ -375,7 +470,7 @@
             <item>%200</item>
         </string-array>
             <string-array name="domain_settings_font_size_entries">
-                <item>System default</item>
+                <item>Sistem varsayılanı</item>
                 <item>%25</item>
                 <item>%50</item>
                 <item>%75</item>
@@ -386,8 +481,16 @@
                 <item>%200</item>
             </string-array>
         <string name="swipe_to_refresh">Yenilemek için kaydır</string>
+        <string name="swipe_to_refresh_summary">Bazı web siteleri, yenilemek için kaydır seçeneği etkin olduğunda iyi çalışmayabilir.</string>
+        <string name="download_with_external_app">Harici uygulamayla indir</string>
+        <string name="download_with_external_app_summary">Android indirme yönetecisi bazı cihazlarda iyi çalışmayabilir.</string>
+        <string name="display_additional_app_bar_icons">Ek uygulama çubuğu simgelerini göster</string>
         <string name="dark_theme">Koyu tema</string>
+        <string name="dark_theme_summary">Temayı değiştirmek Privacy Browser\'ı yeniden başlatacak.</string>
         <string name="night_mode">Gece mody</string>
+        <string name="night_mode_summary">Gece modunu etkinleştirmek aynı zamanda tüm sitelerde JavaScript\'i etkinleştirecek.</string>
+        <string name="display_webpage_images">Web sitesi resimlerini göster</string>
+        <string name="display_webpage_images_summary">Bant genişliği korumayı devre dışı bırak.</string>
 
     <!-- Ad Control. There are no ads in the standard flavor, but these strings must exist because they are referenced in the code. -->
     <string name="ad_consent">Reklam Onayı</string>

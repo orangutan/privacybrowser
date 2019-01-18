@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -94,7 +94,7 @@ public class EditBookmarkFolderDialog extends AppCompatDialogFragment {
         final BookmarksDatabaseHelper bookmarksDatabaseHelper = new BookmarksDatabaseHelper(getContext(), null, null, 0);
 
         // Get a `Cursor` with the selected folder and move it to the first position.
-        Cursor folderCursor = bookmarksDatabaseHelper.getBookmarkCursor(selectedFolderDatabaseId);
+        Cursor folderCursor = bookmarksDatabaseHelper.getBookmark(selectedFolderDatabaseId);
         folderCursor.moveToFirst();
 
         // Use an alert dialog builder to create the alert dialog.
@@ -189,7 +189,7 @@ public class EditBookmarkFolderDialog extends AppCompatDialogFragment {
                 String newFolderName = s.toString();
 
                 // Get a cursor for the new folder name if it exists.
-                Cursor folderExistsCursor = bookmarksDatabaseHelper.getFolderCursor(newFolderName);
+                Cursor folderExistsCursor = bookmarksDatabaseHelper.getFolder(newFolderName);
 
                 // Is the new folder name empty?
                 boolean folderNameNotEmpty = !newFolderName.isEmpty();
@@ -214,7 +214,7 @@ public class EditBookmarkFolderDialog extends AppCompatDialogFragment {
             String newFolderName = folderNameEditText.getText().toString();
 
             // Get a cursor for the new folder name if it exists.
-            Cursor folderExistsCursor = bookmarksDatabaseHelper.getFolderCursor(newFolderName);
+            Cursor folderExistsCursor = bookmarksDatabaseHelper.getFolder(newFolderName);
 
             // Is the new folder name empty?
             boolean folderNameEmpty = newFolderName.isEmpty();

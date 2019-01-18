@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -158,7 +158,7 @@ public class ImportExportDatabaseHelper {
             BookmarksDatabaseHelper bookmarksDatabaseHelper = new BookmarksDatabaseHelper(context, null, null, 0);
 
             // Get a full bookmarks cursor.
-            Cursor bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursor();
+            Cursor bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarks();
 
             // Move to the first bookmark.
             bookmarksCursor.moveToFirst();

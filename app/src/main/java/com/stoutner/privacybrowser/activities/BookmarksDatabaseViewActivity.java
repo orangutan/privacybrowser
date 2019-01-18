@@ -30,7 +30,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.ResourceCursorAdapter;
@@ -39,11 +38,14 @@ import android.support.v7.app.AppCompatActivity;
 // `AppCompatDialogFragment` is required instead of `DialogFragment` or an error is produced on API <=22.
 import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.Toolbar;
+import android.util.SparseBooleanArray;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -59,18 +61,19 @@ import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 
 import java.io.ByteArrayOutputStream;
 
-public class BookmarksDatabaseViewActivity extends AppCompatActivity implements EditBookmarkDatabaseViewDialog.EditBookmarkDatabaseViewListener, EditBookmarkFolderDatabaseViewDialog.EditBookmarkFolderDatabaseViewListener {
+public class BookmarksDatabaseViewActivity extends AppCompatActivity implements EditBookmarkDatabaseViewDialog.EditBookmarkDatabaseViewListener,
+        EditBookmarkFolderDatabaseViewDialog.EditBookmarkFolderDatabaseViewListener {
     // Instantiate the constants.
     private static final int ALL_FOLDERS_DATABASE_ID = -2;
     private static final int HOME_FOLDER_DATABASE_ID = -1;
 
-    // `bookmarksDatabaseHelper` is used in `onCreate()`, `updateBookmarksListView()`, and `onDestroy()`.
+    // `bookmarksDatabaseHelper` is used in `onCreate()`, `updateBookmarksListView()`, `selectAllBookmarksInFolder()`, and `onDestroy()`.
     private BookmarksDatabaseHelper bookmarksDatabaseHelper;
 
     // `bookmarksCursor` is used in `onCreate()`, `updateBookmarksListView()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, and `onDestroy()`.
     private Cursor bookmarksCursor;
 
-    // `bookmarksCursorAdapter` is used in `onCreate()` and `updateBookmarksListView()`.
+    // `bookmarksCursorAdapter` is used in `onCreate()`, `selectAllBookmarksInFolder()`, and `updateBookmarksListView()`.
     private CursorAdapter bookmarksCursorAdapter;
 
     // `oldFolderNameString` is used in `onCreate()` and `onSaveBookmarkFolder()`.
@@ -84,6 +87,12 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
 
     // `sortByDisplayOrder` is used in `onCreate()`, `onOptionsItemSelected()`, and `updateBookmarksListView()`.
     private boolean sortByDisplayOrder;
+
+    // `bookmarksDeletedSnackbar` is used in `onCreate()`, `onOptionsItemSelected()`, and `onBackPressed()`.
+    private Snackbar bookmarksDeletedSnackbar;
+
+    // `closeActivityAfterDismissingSnackbar` is used in `onCreate()`, `onOptionsItemSelected()`, and `onBackPressed()`.
+    private boolean closeActivityAfterDismissingSnackbar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -119,7 +128,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         appBar.setCustomView(R.layout.spinner);
         appBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_HOME_AS_UP);
 
-        // Initialize the database handler.  `this` specifies the context.  The two `null`s do not specify the database name or a `CursorFactory`.  The `0` is to specify a database version, but that is set instead using a constant in `BookmarksDatabaseHelper`.
+        // Initialize the database handler.  `this` specifies the context.  The `0` is to specify a database version, but that is set instead using a constant in `BookmarksDatabaseHelper`.
         bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this, null, null, 0);
 
         // Setup a matrix cursor for "All Folders" and "Home Folder".
@@ -128,8 +137,8 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         matrixCursor.addRow(new Object[]{ALL_FOLDERS_DATABASE_ID, getString(R.string.all_folders)});
         matrixCursor.addRow(new Object[]{HOME_FOLDER_DATABASE_ID, getString(R.string.home_folder)});
 
-        // Get a `Cursor` with the list of all the folders.
-        Cursor foldersCursor = bookmarksDatabaseHelper.getAllFoldersCursor();
+        // Get a cursor with the list of all the folders.
+        Cursor foldersCursor = bookmarksDatabaseHelper.getAllFolders();
 
         // Combine `matrixCursor` and `foldersCursor`.
         MergeCursor foldersMergeCursor = new MergeCursor(new Cursor[]{matrixCursor, foldersCursor});
@@ -153,7 +162,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         Spinner folderSpinner = findViewById(R.id.spinner);
         folderSpinner.setAdapter(foldersCursorAdapter);
 
-        // Handle clicks on the spinner dropdown.
+        // Handle taps on the spinner dropdown.
         folderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -180,7 +189,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         ListView bookmarksListView = findViewById(R.id.bookmarks_databaseview_listview);
 
         // Get a `Cursor` with the current contents of the bookmarks database.
-        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursor();
+        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarks();
 
         // Setup a `CursorAdapter` with `this` context.  `false` disables autoRequery.
         bookmarksCursorAdapter = new CursorAdapter(this, bookmarksCursor, false) {
@@ -269,7 +278,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
 
         // Set a listener to edit a bookmark when it is tapped.
         bookmarksListView.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
-            // Convert the database ID to an `int`.
+            // Convert the database ID to an int.
             int databaseId = (int) id;
 
             // Show the edit bookmark or edit bookmark folder dialog.
@@ -284,6 +293,218 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                 // Show the edit bookmark dialog.
                 AppCompatDialogFragment editBookmarkDatabaseViewDialog = EditBookmarkDatabaseViewDialog.bookmarkDatabaseId(databaseId);
                 editBookmarkDatabaseViewDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_bookmark));
+            }
+        });
+
+        // Handle long presses on the list view.
+        bookmarksListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            // Instantiate the common variables.
+            MenuItem selectAllMenuItem;
+            MenuItem deleteMenuItem;
+            boolean deletingBookmarks;
+
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                // Inflate the menu for the contextual app bar.
+                getMenuInflater().inflate(R.menu.bookmarks_databaseview_context_menu, menu);
+
+                // Set the title.
+                mode.setTitle(R.string.bookmarks);
+
+                // Get handles for the menu items.
+                selectAllMenuItem = menu.findItem(R.id.select_all);
+                deleteMenuItem = menu.findItem(R.id.delete);
+
+                // Disable the delete menu item if a delete is pending.
+                deleteMenuItem.setEnabled(!deletingBookmarks);
+
+                // Make it so.
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                // Do nothing.
+                return false;
+            }
+
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+                // Calculate the number of selected bookmarks.
+                int numberOfSelectedBookmarks = bookmarksListView.getCheckedItemCount();
+
+                // Adjust the ActionMode according to the number of selected bookmarks.
+                mode.setSubtitle(getString(R.string.selected) + "  " + numberOfSelectedBookmarks);
+
+                // Do not show the select all menu item if all the bookmarks are already checked.
+                if (bookmarksListView.getCheckedItemCount() == bookmarksListView.getCount()) {
+                    selectAllMenuItem.setVisible(false);
+                } else {
+                    selectAllMenuItem.setVisible(true);
+                }
+
+                // Convert the database ID to an int.
+                int databaseId = (int) id;
+
+                // If a folder was selected, also select all the contents.
+                if (checked && bookmarksDatabaseHelper.isFolder(databaseId)) {
+                    selectAllBookmarksInFolder(databaseId);
+                }
+
+                // Do not allow a bookmark to be deselected if the folder is selected.
+                if (!checked) {
+                    // Get the folder name.
+                    String folderName = bookmarksDatabaseHelper.getParentFolderName((int) id);
+
+                    // If the bookmark is not in the root folder, check to see if the folder is selected.
+                    if (!folderName.isEmpty()) {
+                        // Get the database ID of the folder.
+                        int folderDatabaseId = bookmarksDatabaseHelper.getFolderDatabaseId(folderName);
+
+                        // Move the bookmarks cursor to the first position.
+                        bookmarksCursor.moveToFirst();
+
+                        // Initialize the folder position variable.
+                        int folderPosition = -1;
+
+                        // Get the position of the folder in the bookmarks cursor.
+                        while ((folderPosition < 0) && (bookmarksCursor.getPosition() < bookmarksCursor.getCount())) {
+                            // Check if the folder database ID matches the bookmark database ID.
+                            if (folderDatabaseId == bookmarksCursor.getInt((bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper._ID)))) {
+                                // Get the folder position.
+                                folderPosition = bookmarksCursor.getPosition();
+
+                                // Check if the folder is selected.
+                                if (bookmarksListView.isItemChecked(folderPosition)) {
+                                    // Reselect the bookmark.
+                                    bookmarksListView.setItemChecked(position, true);
+
+                                    // Display a snackbar explaining why the bookmark cannot be deselected.
+                                    Snackbar.make(bookmarksListView, R.string.cannot_deselect_bookmark, Snackbar.LENGTH_LONG).show();
+                                }
+                            }
+
+                            // Increment the bookmarks cursor.
+                            bookmarksCursor.moveToNext();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.select_all:
+                        // Get the total number of bookmarks.
+                        int numberOfBookmarks = bookmarksListView.getCount();
+
+                        // Select them all.
+                        for (int i = 0; i < numberOfBookmarks; i++) {
+                            bookmarksListView.setItemChecked(i, true);
+                        }
+                        break;
+
+                    case R.id.delete:
+                        // Set the deleting bookmarks flag, which prevents the delete menu item from being enabled until the current process finishes.
+                        deletingBookmarks = true;
+
+                        // Get an array of the selected row IDs.
+                        long[] selectedBookmarksIdsLongArray = bookmarksListView.getCheckedItemIds();
+
+                        // Get an array of checked bookmarks.  `.clone()` makes a copy that won't change if the list view is reloaded, which is needed for re-selecting the bookmarks on undelete.
+                        SparseBooleanArray selectedBookmarksPositionsSparseBooleanArray = bookmarksListView.getCheckedItemPositions().clone();
+
+                        // Update the bookmarks cursor with the current contents of the bookmarks database except for the specified database IDs.
+                        switch (currentFolderDatabaseId) {
+                            // Get a cursor with all the folders.
+                            case ALL_FOLDERS_DATABASE_ID:
+                                if (sortByDisplayOrder) {
+                                    bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksByDisplayOrderExcept(selectedBookmarksIdsLongArray);
+                                } else {
+                                    bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksExcept(selectedBookmarksIdsLongArray);
+                                }
+                                break;
+
+                            // Get a cursor for the home folder.
+                            case HOME_FOLDER_DATABASE_ID:
+                                if (sortByDisplayOrder) {
+                                    bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrderExcept(selectedBookmarksIdsLongArray, "");
+                                } else {
+                                    bookmarksCursor = bookmarksDatabaseHelper.getBookmarksExcept(selectedBookmarksIdsLongArray, "");
+                                }
+                                break;
+
+                            // Display the selected folder.
+                            default:
+                                // Get a cursor for the selected folder.
+                                if (sortByDisplayOrder) {
+                                    bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrderExcept(selectedBookmarksIdsLongArray, currentFolderName);
+                                } else {
+                                    bookmarksCursor = bookmarksDatabaseHelper.getBookmarksExcept(selectedBookmarksIdsLongArray, currentFolderName);
+                                }
+                        }
+
+                        // Update the list view.
+                        bookmarksCursorAdapter.changeCursor(bookmarksCursor);
+
+                        // Show a Snackbar with the number of deleted bookmarks.
+                        bookmarksDeletedSnackbar = Snackbar.make(findViewById(R.id.bookmarks_databaseview_coordinatorlayout),
+                                getString(R.string.bookmarks_deleted) + "  " + selectedBookmarksIdsLongArray.length, Snackbar.LENGTH_LONG)
+                                .setAction(R.string.undo, view -> {
+                                    // Do nothing because everything will be handled by `onDismissed()` below.
+                                })
+                                .addCallback(new Snackbar.Callback() {
+                                    @Override
+                                    public void onDismissed(Snackbar snackbar, int event) {
+                                        switch (event) {
+                                            // The user pushed the `Undo` button.
+                                            case Snackbar.Callback.DISMISS_EVENT_ACTION:
+                                                // Update the bookmarks list view with the current contents of the bookmarks database, including the "deleted bookmarks.
+                                                updateBookmarksListView();
+
+                                                // Re-select the previously selected bookmarks.
+                                                for (int i = 0; i < selectedBookmarksPositionsSparseBooleanArray.size(); i++) {
+                                                    bookmarksListView.setItemChecked(selectedBookmarksPositionsSparseBooleanArray.keyAt(i), true);
+                                                }
+                                                break;
+
+                                                // The Snackbar was dismissed without the `Undo` button being pushed.
+                                            default:
+                                                // Delete each selected bookmark.
+                                                for (long databaseIdLong : selectedBookmarksIdsLongArray) {
+                                                    // Convert `databaseIdLong` to an int.
+                                                    int databaseIdInt = (int) databaseIdLong;
+
+                                                    // Delete the selected bookmark.
+                                                    bookmarksDatabaseHelper.deleteBookmark(databaseIdInt);
+                                                }
+                                        }
+
+                                        // Reset the deleting bookmarks flag.
+                                        deletingBookmarks = false;
+
+                                        // Enable the delete menu item.
+                                        deleteMenuItem.setEnabled(true);
+
+                                        // Close the activity if back has been pressed.
+                                        if (closeActivityAfterDismissingSnackbar) {
+                                            onBackPressed();
+                                        }
+                                    }
+                                });
+
+                        // Show the Snackbar.
+                        bookmarksDeletedSnackbar.show();
+                        break;
+                }
+
+                // Consume the click.
+                return false;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+                // Do nothing.
             }
         });
     }
@@ -304,8 +525,8 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
 
         switch (menuItemId) {
             case android.R.id.home:  // The home arrow is identified as `android.R.id.home`, not just `R.id.home`.
-                // Return to `MainWebViewActivity`.
-                NavUtils.navigateUpFromSameTask(this);
+                // Exit the activity.
+                onBackPressed();
                 break;
 
             case R.id.options_menu_sort:
@@ -345,24 +566,59 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        // Check to see if a snackbar is currently displayed.  If so, it must be closed before existing so that a pending delete is completed before reloading the list view in the bookmarks activity.
+        if ((bookmarksDeletedSnackbar != null) && bookmarksDeletedSnackbar.isShown()) { // Close the bookmarks deleted snackbar before going home.
+            // Set the close flag.
+            closeActivityAfterDismissingSnackbar = true;
+
+            // Dismiss the snackbar.
+            bookmarksDeletedSnackbar.dismiss();
+        } else {  // Go home immediately.
+            // Update the current folder in the bookmarks activity.
+            switch (currentFolderDatabaseId) {
+                case ALL_FOLDERS_DATABASE_ID:
+                    // Load the home folder.
+                    BookmarksActivity.currentFolder = "";
+                    break;
+
+                case HOME_FOLDER_DATABASE_ID:
+                    // Load the home folder.
+                    BookmarksActivity.currentFolder = "";
+                    break;
+
+                default:
+                    // Load the current folder.
+                    BookmarksActivity.currentFolder = currentFolderName;
+            }
+
+            // Reload the bookmarks list view when returning to the bookmarks activity.
+            BookmarksActivity.restartFromBookmarksDatabaseViewActivity = true;
+
+            // Exit the bookmarks database view activity.
+            super.onBackPressed();
+        }
+    }
+
     private void updateBookmarksListView() {
         // Populate the bookmarks list view based on the spinner selection.
         switch (currentFolderDatabaseId) {
             // Get a cursor with all the folders.
             case ALL_FOLDERS_DATABASE_ID:
                 if (sortByDisplayOrder) {
-                    bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder();
+                    bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksByDisplayOrder();
                 } else {
-                    bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursor();
+                    bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarks();
                 }
                 break;
 
             // Get a cursor for the home folder.
             case HOME_FOLDER_DATABASE_ID:
                 if (sortByDisplayOrder) {
-                    bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder("");
+                    bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder("");
                 } else {
-                    bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursor("");
+                    bookmarksCursor = bookmarksDatabaseHelper.getBookmarks("");
                 }
                 break;
 
@@ -370,14 +626,62 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
             default:
                 // Get a cursor for the selected folder.
                 if (sortByDisplayOrder) {
-                    bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentFolderName);
+                    bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolderName);
                 } else {
-                    bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursor(currentFolderName);
+                    bookmarksCursor = bookmarksDatabaseHelper.getBookmarks(currentFolderName);
                 }
         }
 
         // Update the list view.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
+    }
+
+    private void selectAllBookmarksInFolder(int folderId) {
+        // Get a handle for the bookmarks list view.
+        ListView bookmarksListView = findViewById(R.id.bookmarks_databaseview_listview);
+
+        // Get the folder name.
+        String folderName = bookmarksDatabaseHelper.getFolderName(folderId);
+
+        // Get a cursor with the contents of the folder.
+        Cursor folderCursor = bookmarksDatabaseHelper.getBookmarks(folderName);
+
+        // Move to the beginning of the cursor.
+        folderCursor.moveToFirst();
+
+        while (folderCursor.getPosition() < folderCursor.getCount()) {
+            // Get the bookmark database ID.
+            int bookmarkId = folderCursor.getInt(folderCursor.getColumnIndex(BookmarksDatabaseHelper._ID));
+
+            // Move the bookmarks cursor to the first position.
+            bookmarksCursor.moveToFirst();
+
+            // Initialize the bookmark position variable.
+            int bookmarkPosition = -1;
+
+            // Get the position of this bookmark in the bookmarks cursor.
+            while ((bookmarkPosition < 0) && (bookmarksCursor.getPosition() < bookmarksCursor.getCount())) {
+                // Check if the bookmark IDs match.
+                if (bookmarkId == bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper._ID))) {
+                    // Get the bookmark position.
+                    bookmarkPosition = bookmarksCursor.getPosition();
+
+                    // If this bookmark is a folder, select all the bookmarks inside it.
+                    if (bookmarksDatabaseHelper.isFolder(bookmarkId)) {
+                        selectAllBookmarksInFolder(bookmarkId);
+                    }
+
+                    // Select the bookmark.
+                    bookmarksListView.setItemChecked(bookmarkPosition, true);
+                }
+
+                // Increment the bookmarks cursor position.
+                bookmarksCursor.moveToNext();
+            }
+
+            // Move to the next position.
+            folderCursor.moveToNext();
+        }
     }
 
     @Override

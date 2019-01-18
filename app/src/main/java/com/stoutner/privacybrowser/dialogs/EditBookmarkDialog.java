@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -100,7 +100,7 @@ public class EditBookmarkDialog extends AppCompatDialogFragment {
         BookmarksDatabaseHelper bookmarksDatabaseHelper = new BookmarksDatabaseHelper(getContext(), null, null, 0);
 
         // Get a `Cursor` with the selected bookmark and move it to the first position.
-        Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmarkCursor(selectedBookmarkDatabaseId);
+        Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmark(selectedBookmarkDatabaseId);
         bookmarkCursor.moveToFirst();
 
         // Use an alert dialog builder to create the alert dialog.

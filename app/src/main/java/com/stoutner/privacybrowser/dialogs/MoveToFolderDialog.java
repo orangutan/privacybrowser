@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -166,12 +166,15 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
             }
 
             // Get a `Cursor` containing the folders to display.
-            foldersCursor = bookmarksDatabaseHelper.getFoldersCursorExcept(exceptFolders.toString());
+            foldersCursor = bookmarksDatabaseHelper.getFoldersExcept(exceptFolders.toString());
 
             // Setup `foldersCursorAdaptor` with `this` context.  `false` disables autoRequery.
             foldersCursorAdapter = new CursorAdapter(alertDialog.getContext(), foldersCursor, false) {
                 @Override
                 public View newView(Context context, Cursor cursor, ViewGroup parent) {
+                    // Remove the incorrect lint warning that `.getLayoutInflator()` might be false.
+                    assert getActivity() != null;
+
                     // Inflate the individual item layout.  `false` does not attach it to the root.
                     return getActivity().getLayoutInflater().inflate(R.layout.move_to_folder_item_linearlayout, parent, false);
                 }
@@ -233,7 +236,7 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
             }
 
             // Get a `Cursor` containing the folders to display.
-            foldersCursor = bookmarksDatabaseHelper.getFoldersCursorExcept(exceptFolders.toString());
+            foldersCursor = bookmarksDatabaseHelper.getFoldersExcept(exceptFolders.toString());
 
             // Combine `homeFolderMatrixCursor` and `foldersCursor`.
             MergeCursor foldersMergeCursor = new MergeCursor(new Cursor[]{homeFolderMatrixCursor, foldersCursor});
@@ -242,6 +245,9 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
             foldersCursorAdapter = new CursorAdapter(alertDialog.getContext(), foldersMergeCursor, false) {
                 @Override
                 public View newView(Context context, Cursor cursor, ViewGroup parent) {
+                    // Remove the incorrect lint warning that `.getLayoutInflator()` might be false.
+                    assert getActivity() != null;
+
                     // Inflate the individual item layout.  `false` does not attach it to the root.
                     return getActivity().getLayoutInflater().inflate(R.layout.move_to_folder_item_linearlayout, parent, false);
                 }
@@ -280,7 +286,7 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
 
     private void addSubfoldersToExceptFolders(String folderName) {
         // Get a `Cursor` will all the immediate subfolders.
-        Cursor subfoldersCursor = bookmarksDatabaseHelper.getSubfoldersCursor(folderName);
+        Cursor subfoldersCursor = bookmarksDatabaseHelper.getSubfolders(folderName);
 
         for (int i = 0; i < subfoldersCursor.getCount(); i++) {
             // Move `subfolderCursor` to the current item.

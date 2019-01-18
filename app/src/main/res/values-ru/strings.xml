@@ -231,6 +231,9 @@
     <string name="bookmarks_database_view">Просмотр базы данных закладок</string>
     <string name="all_folders">Все папки</string>
     <string name="home_folder">Домашняя папка</string>
+    <string name="sort">Сортировка</string>
+        <string name="sorted_by_database_id">Сортировать по ID базы данных.</string>
+        <string name="sorted_by_display_order">Сортировать по порядку отображения.</string>
     <string name="database_id">ID базы данных:</string>
     <string name="folder">Папка:</string>
     <string name="parent_folder">Родительская папка:</string>
