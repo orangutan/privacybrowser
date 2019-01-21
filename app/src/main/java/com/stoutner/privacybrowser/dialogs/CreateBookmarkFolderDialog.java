@@ -94,7 +94,7 @@ public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
         });
 
 
-        // Create an `AlertDialog` from the `AlertDialog.Builder`.
+        // Create an alert dialog from the `AlertDialog.Builder`.
         final AlertDialog alertDialog = dialogBuilder.create();
 
         // Remove the warning below that `getWindow()` might be null.
@@ -108,7 +108,7 @@ public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
         // Show the keyboard when the `Dialog` is displayed on the screen.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
-        // The `AlertDialog` must be shown before items in the alert dialog can be modified.
+        // The alert dialog must be shown before items in the alert dialog can be modified.
         alertDialog.show();
 
         // Get handles for the views in the dialog.
@@ -147,7 +147,7 @@ public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
             }
         });
 
-        // Allow the `enter` key on the keyboard to create the folder from `create_folder_name_edittext`.
+        // Allow the enter key on the keyboard to create the folder from `create_folder_name_edittext`.
         folderNameEditText.setOnKeyListener((View v, int keyCode, KeyEvent event) -> {
             // If the event is a key-down on the `enter` key, select the `PositiveButton` `Create`.
             if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER) && createButton.isEnabled()) {  // The enter key was pressed and the create button is enabled.

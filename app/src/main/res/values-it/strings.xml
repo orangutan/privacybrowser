@@ -241,6 +241,7 @@
     <string name="folder">Cartella:</string>
     <string name="parent_folder">Cartella superiore:</string>
     <string name="display_order">Ordine di visualizzazione:</string>
+    <string name="cannot_deselect_bookmark">Non è possibile deselezionare un segnalibro mentre la cartella di appartenenza è selezionate.</string>
 
     <!-- Requests. -->
     <string name="requests">Richieste</string>

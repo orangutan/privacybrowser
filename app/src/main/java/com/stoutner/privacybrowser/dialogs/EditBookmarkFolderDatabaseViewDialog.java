@@ -32,6 +32,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.ResourceCursorAdapter;
 // `AppCompatDialogFragment` is required instead of `DialogFragment` or an error is produced on API <=22.
 import android.support.v7.app.AppCompatDialogFragment;
@@ -189,49 +190,65 @@ public class EditBookmarkFolderDatabaseViewDialog extends AppCompatDialogFragmen
         // Convert the byte array to a `Bitmap` beginning at the first byte and ending at the last.
         Bitmap currentIconBitmap = BitmapFactory.decodeByteArray(currentIconByteArray, 0, currentIconByteArray.length);
 
-        // Display `currentIconBitmap` in `edit_bookmark_current_icon`.
+        // Display the current icon bitmap in `edit_bookmark_current_icon`.
         currentIconImageView.setImageBitmap(currentIconBitmap);
 
-        // Get a `Bitmap` of the favorite icon from `MainWebViewActivity` and display it in `edit_bookmark_web_page_favorite_icon`.
+        // Get a bitmap of the favorite icon from `MainWebViewActivity` and display it in `edit_bookmark_web_page_favorite_icon`.
         newFavoriteIconImageView.setImageBitmap(MainWebViewActivity.favoriteIconBitmap);
 
-        // Populate the folder name `EditText`.
+        // Populate the folder name edit text.
         nameEditText.setText(currentFolderName);
 
-        // Setup a `MatrixCursor` "Home Folder".
+        // Setup a matrix cursor for "Home Folder".
         String[] matrixCursorColumnNames = {BookmarksDatabaseHelper._ID, BookmarksDatabaseHelper.BOOKMARK_NAME};
         MatrixCursor matrixCursor = new MatrixCursor(matrixCursorColumnNames);
         matrixCursor.addRow(new Object[]{HOME_FOLDER_DATABASE_ID, getString(R.string.home_folder)});
 
-        // Initialize a `StringBuilder` to track the folders not to display in the `Spinner` and populate it with the current folder.
+        // Initialize a string builder to track the folders not to display in the spinner and populate it with the current folder.
         exceptFolders = new StringBuilder(DatabaseUtils.sqlEscapeString(currentFolderName));
 
         // Add all subfolders of the current folder to the list of folders not to display.
         addSubfoldersToExceptFolders(currentFolderName);
 
-        // Get a `Cursor` with the list of all the folders.
+        // Get a cursor with the list of all the folders.
         Cursor foldersCursor = bookmarksDatabaseHelper.getFoldersExcept(exceptFolders.toString());
 
-        // Combine `matrixCursor` and `foldersCursor`.
+        // Combine the matrix cursor and the folders cursor.
         MergeCursor foldersMergeCursor = new MergeCursor(new Cursor[]{matrixCursor, foldersCursor});
 
         // Remove the incorrect lint warning that `getContext()` might be null.
         assert getContext() != null;
 
-        // Create a `ResourceCursorAdapter` for the `Spinner`.  `0` specifies no flags.;
-        ResourceCursorAdapter foldersCursorAdapter = new ResourceCursorAdapter(getContext(), R.layout.spinner_item, foldersMergeCursor, 0) {
+        // Create a resource cursor adapter for the spinner.
+        ResourceCursorAdapter foldersCursorAdapter = new ResourceCursorAdapter(getContext(), R.layout.databaseview_spinner_item, foldersMergeCursor, 0) {
             @Override
             public void bindView(View view, Context context, Cursor cursor) {
-                // Get a handle for the `Spinner` item `TextView`.
+                // Get handles for the spinner views.
+                ImageView spinnerItemImageView = view.findViewById(R.id.spinner_item_imageview);
                 TextView spinnerItemTextView = view.findViewById(R.id.spinner_item_textview);
 
-                // Set the `TextView` to display the folder name.
+                // Set the folder icon according to the type.
+                if (foldersMergeCursor.getPosition() == 0) {  // Set the `Home Folder` icon.
+                    // Set the gray folder image.  `ContextCompat` must be used until the minimum API >= 21.
+                    spinnerItemImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.folder_gray));
+                } else {  // Set a user folder icon.
+                    // Get the folder icon byte array.
+                    byte[] folderIconByteArray = cursor.getBlob(cursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON));
+
+                    // Convert the byte array to a bitmap beginning at the first byte and ending at the last.
+                    Bitmap folderIconBitmap = BitmapFactory.decodeByteArray(folderIconByteArray, 0, folderIconByteArray.length);
+
+                    // Set the folder icon.
+                    spinnerItemImageView.setImageBitmap(folderIconBitmap);
+                }
+
+                // Set the text view to display the folder name.
                 spinnerItemTextView.setText(cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME)));
             }
         };
 
         // Set the `ResourceCursorAdapter` drop drown view resource.
-        foldersCursorAdapter.setDropDownViewResource(R.layout.spinner_dropdown_items);
+        foldersCursorAdapter.setDropDownViewResource(R.layout.databaseview_spinner_dropdown_items);
 
         // Set the adapter for the folder `Spinner`.
         folderSpinner.setAdapter(foldersCursorAdapter);

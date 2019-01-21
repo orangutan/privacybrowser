@@ -203,9 +203,6 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             bookmarkCursor.close();
         });
 
-        // Get a handle for the activity.
-        Activity activity = this;
-
         // Handle long presses on the list view.
         bookmarksListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             // Instantiate the common variables.
@@ -680,10 +677,10 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Get new folder name string.
         String folderNameString = createFolderNameEditText.getText().toString();
 
-        // Get the new folder icon `Bitmap`.
+        // Get the new folder icon bitmap.
         Bitmap folderIconBitmap;
         if (defaultFolderIconRadioButton.isChecked()) {  // Use the default folder icon.
-            // Get the default folder icon and convert it to a `Bitmap`.
+            // Get the default folder icon and convert it to a bitmap.
             Drawable folderIconDrawable = folderIconImageView.getDrawable();
             BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
             folderIconBitmap = folderIconBitmapDrawable.getBitmap();

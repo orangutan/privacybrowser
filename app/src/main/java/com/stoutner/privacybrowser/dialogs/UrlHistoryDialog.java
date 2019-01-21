@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -57,37 +57,37 @@ public class UrlHistoryDialog extends AppCompatDialogFragment{
     private int currentPageId;
 
     public static UrlHistoryDialog loadBackForwardList(Context context, WebBackForwardList webBackForwardList) {
-        // Create `argumentsBundle`.
+        // Create an arguments bundle.
         Bundle argumentsBundle = new Bundle();
 
-        // Store `currentPageIndex`.
+        // Store the current page index.
         int currentPageIndex = webBackForwardList.getCurrentIndex();
 
-        // Setup `urlArrayList` and `iconArrayList`.
+        // Setup the URL array list and the icon array list.
         ArrayList<String> urlArrayList = new ArrayList<>();
         ArrayList<String> iconBase64StringArrayList = new ArrayList<>();
 
-        // Get the default favorite icon `Drawable`.
+        // Get the default favorite icon drawable.  `ContextCompat` must be used until the minimum API >= 21.
         Drawable defaultFavoriteIconDrawable = ContextCompat.getDrawable(context, R.drawable.world);
 
-        // Convert `defaultFavoriteIconDrawable` to a `BitmapDrawable`.
+        // Convert the default favorite icon drawable to a `BitmapDrawable`.
         BitmapDrawable defaultFavoriteIconBitmapDrawable = (BitmapDrawable) defaultFavoriteIconDrawable;
 
         // Remove the incorrect lint error that `getBitmap()` might be null.
         assert defaultFavoriteIconBitmapDrawable != null;
 
-        // Extract a `Bitmap` from `defaultFavoriteIconBitmapDrawable`.
+        // Extract a `Bitmap` from the default favorite icon `BitmapDrawable`.
         Bitmap defaultFavoriteIcon = defaultFavoriteIconBitmapDrawable.getBitmap();
 
-        // Populate `urlArrayList` and `iconArrayList` from `webBackForwardList`.
+        // Populate the URL array list and the icon array list from `webBackForwardList`.
         for (int i=0; i < webBackForwardList.getSize(); i++) {
             // Store the URL.
             urlArrayList.add(webBackForwardList.getItemAtIndex(i).getUrl());
 
-            // Create a variable to store the icon `Bitmap`.
+            // Create a variable to store the icon bitmap.
             Bitmap iconBitmap;
 
-            // Store the icon `Bitmap`.
+            // Store the icon bitmap.
             if (webBackForwardList.getItemAtIndex(i).getFavicon() == null) {
                 // If `webBackForwardList` does not have a favorite icon, use Privacy Browser's default world icon.
                 iconBitmap = defaultFavoriteIcon;
@@ -119,7 +119,7 @@ public class UrlHistoryDialog extends AppCompatDialogFragment{
         argumentsBundle.putStringArrayList("URL_History", urlArrayList);
         argumentsBundle.putStringArrayList("Favorite_Icons", iconBase64StringArrayList);
 
-        // Add `argumentsBundle` to this instance of `UrlHistoryDialog`.
+        // Add the arguments bundle to this instance of `UrlHistoryDialog`.
         UrlHistoryDialog thisUrlHistoryDialog = new UrlHistoryDialog();
         thisUrlHistoryDialog.setArguments(argumentsBundle);
         return thisUrlHistoryDialog;

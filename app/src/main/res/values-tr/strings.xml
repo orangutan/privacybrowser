@@ -237,6 +237,7 @@
     <string name="folder">Klasör:</string>
     <string name="parent_folder">Üst Klasör:</string>
     <string name="display_order">Görüntüleme düzeni:</string>
+    <string name="cannot_deselect_bookmark">Üst klasör seçiliyken bir yer iminin seçimi kaldırılamaz.</string>
 
     <!-- Requests. -->
     <string name="requests">İstekler</string>

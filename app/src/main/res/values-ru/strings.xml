@@ -238,6 +238,7 @@
     <string name="folder">Папка:</string>
     <string name="parent_folder">Родительская папка:</string>
     <string name="display_order">Порядок отображения:</string>
+    <string name="cannot_deselect_bookmark">Невозможно отменить выбор закладки пока выбрана родительская папка.</string>
 
     <!-- Requests. -->
     <string name="requests">Запросы</string>

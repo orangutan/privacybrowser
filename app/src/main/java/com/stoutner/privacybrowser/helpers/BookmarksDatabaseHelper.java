@@ -295,8 +295,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
                 " WHERE " + IS_FOLDER + " = " + 1 +
                 " ORDER BY " + BOOKMARK_NAME + " ASC";
 
-        // Return the results as a `Cursor`.  The second argument is `null` because there are no `selectionArgs`.
-        // We can't close the `Cursor` because we need to use it in the parent activity.
+        // Return the results as a cursor.  The cursor cannot be closed because it is used in the parent activity.
         return bookmarksDatabase.rawQuery(GET_ALL_FOLDERS, null);
     }
 

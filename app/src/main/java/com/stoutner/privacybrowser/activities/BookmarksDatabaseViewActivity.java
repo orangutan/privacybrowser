@@ -60,6 +60,7 @@ import com.stoutner.privacybrowser.dialogs.EditBookmarkFolderDatabaseViewDialog;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 
 public class BookmarksDatabaseViewActivity extends AppCompatActivity implements EditBookmarkDatabaseViewDialog.EditBookmarkDatabaseViewListener,
         EditBookmarkFolderDatabaseViewDialog.EditBookmarkFolderDatabaseViewListener {
@@ -128,7 +129,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         appBar.setCustomView(R.layout.spinner);
         appBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_HOME_AS_UP);
 
-        // Initialize the database handler.  `this` specifies the context.  The `0` is to specify a database version, but that is set instead using a constant in `BookmarksDatabaseHelper`.
+        // Initialize the database handler.  The `0` is to specify a database version, but that is set instead using a constant in `BookmarksDatabaseHelper`.
         bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this, null, null, 0);
 
         // Setup a matrix cursor for "All Folders" and "Home Folder".
@@ -143,12 +144,59 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         // Combine `matrixCursor` and `foldersCursor`.
         MergeCursor foldersMergeCursor = new MergeCursor(new Cursor[]{matrixCursor, foldersCursor});
 
+
+        // Get the default folder bitmap.  `ContextCompat` must be used until the minimum API >= 21.
+        Drawable defaultFolderDrawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.folder_blue_bitmap);
+
+        // Cast the default folder drawable to a `BitmapDrawable`.
+        BitmapDrawable defaultFolderBitmapDrawable = (BitmapDrawable) defaultFolderDrawable;
+
+        // Remove the incorrect lint warning that `.getBitmap()` might be null.
+        assert defaultFolderBitmapDrawable != null;
+
+        // Convert the default folder `BitmapDrawable` to a bitmap.
+        Bitmap defaultFolderBitmap = defaultFolderBitmapDrawable.getBitmap();
+
+
         // Create a resource cursor adapter for the spinner.
         ResourceCursorAdapter foldersCursorAdapter = new ResourceCursorAdapter(this, R.layout.appbar_spinner_item, foldersMergeCursor, 0) {
             @Override
             public void bindView(View view, Context context, Cursor cursor) {
-                // Get a handle for the spinner item text view.
+                // Get handles for the spinner views.
+                ImageView spinnerItemImageView = view.findViewById(R.id.spinner_item_imageview);
                 TextView spinnerItemTextView = view.findViewById(R.id.spinner_item_textview);
+
+                // Set the folder icon according to the type.
+                if (foldersMergeCursor.getPosition() > 1) {  // Set a user folder icon.
+                    // Initialize a default folder icon byte array output stream.
+                    ByteArrayOutputStream defaultFolderIconByteArrayOutputStream = new ByteArrayOutputStream();
+
+                    // Covert the default folder bitmap to a PNG and store it in the output stream.  `0` is for lossless compression (the only option for a PNG).
+                    defaultFolderBitmap.compress(Bitmap.CompressFormat.PNG, 0, defaultFolderIconByteArrayOutputStream);
+
+                    // Convert the default folder icon output stream to a byte array.
+                    byte[] defaultFolderIconByteArray = defaultFolderIconByteArrayOutputStream.toByteArray();
+
+
+                    // Get the folder icon byte array from the cursor.
+                    byte[] folderIconByteArray = cursor.getBlob(cursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON));
+
+                    // Convert the byte array to a bitmap beginning at the first byte and ending at the last.
+                    Bitmap folderIconBitmap = BitmapFactory.decodeByteArray(folderIconByteArray, 0, folderIconByteArray.length);
+
+
+                    // Set the icon according to the type.
+                    if (Arrays.equals(folderIconByteArray, defaultFolderIconByteArray)) {  // The default folder icon is used.
+                        // Set a smaller and darker folder icon, which works well with the spinner.
+                        spinnerItemImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.folder_dark_blue));
+                    } else {  // A custom folder icon is uses.
+                        // Set the folder image stored in the cursor.
+                        spinnerItemImageView.setImageBitmap(folderIconBitmap);
+                    }
+                } else {  // Set the `All Folders` or `Home Folder` icon.
+                    // Set the gray folder image.  `ContextCompat` must be used until the minimum API >= 21.
+                    spinnerItemImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.folder_gray));
+                }
 
                 // Set the text view to display the folder name.
                 spinnerItemTextView.setText(cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME)));

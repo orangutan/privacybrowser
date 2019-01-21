@@ -242,6 +242,7 @@
     <string name="folder">Carpeta:</string>
     <string name="parent_folder">Carpeta superior:</string>
     <string name="display_order">Mostrar orden:</string>
+    <string name="cannot_deselect_bookmark">No se puede deseleccionar un favorito mientras la carpeta superior está seleccionada.</string>
 
     <!-- Requests. -->
     <string name="requests">Peticiones</string>
