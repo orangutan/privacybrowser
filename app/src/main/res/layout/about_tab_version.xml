@@ -65,6 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:textColor="?attr/aboutText"
+                android:textIsSelectable="true"
                 android:layout_below="@id/privacy_browser_textview"
                 android:layout_toEndOf="@id/icon" />
         </RelativeLayout>
@@ -91,32 +92,38 @@
             <TextView
                 android:id="@+id/brand"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
 
             <TextView
                 android:id="@+id/manufacturer"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
 
             <TextView
                 android:id="@+id/model"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
 
             <TextView
                 android:id="@+id/device"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
 
             <TextView
                 android:id="@+id/bootloader"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
 
             <TextView
                 android:id="@+id/radio"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
 
             <!-- Software. -->
             <TextView
@@ -131,32 +138,38 @@
             <TextView
                 android:id="@+id/android"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
 
             <TextView
                 android:id="@+id/security_patch"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
 
             <TextView
                 android:id="@+id/build"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
 
             <TextView
                 android:id="@+id/webview"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
 
             <TextView
                 android:id="@+id/orbot"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
 
             <TextView
                 android:id="@+id/open_keychain"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"/>
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
 
             <!-- Block Lists. -->
             <TextView
@@ -171,27 +184,32 @@
             <TextView
                 android:id="@+id/easylist"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
 
             <TextView
                 android:id="@+id/easyprivacy"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
 
             <TextView
                 android:id="@+id/fanboy_annoyance"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
 
             <TextView
                 android:id="@+id/fanboy_social"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
 
             <TextView
                 android:id="@+id/ultraprivacy"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
 
             <!-- Package Signature. -->
             <TextView
@@ -206,37 +224,44 @@
             <TextView
                 android:id="@+id/certificate_issuer_dn"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
 
             <TextView
                 android:id="@+id/certificate_subject_dn"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
 
             <TextView
                 android:id="@+id/certificate_start_date"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
 
             <TextView
                 android:id="@+id/certificate_end_date"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
 
             <TextView
                 android:id="@+id/certificate_version"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
 
             <TextView
                 android:id="@+id/certificate_serial_number"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
 
             <TextView
                 android:id="@+id/certificate_signature_algorithm"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

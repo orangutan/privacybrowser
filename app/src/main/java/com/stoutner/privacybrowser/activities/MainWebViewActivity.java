@@ -95,6 +95,7 @@ import android.webkit.ValueCallback;
 import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceResponse;
+import android.webkit.WebSettings;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -982,11 +983,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 if (nightMode) {
                     // `background-color: #212121` sets the background to be dark gray.  `color: #BDBDBD` sets the text color to be light gray.  `box-shadow: none` removes a lower underline on links
                     // used by WordPress.  `text-decoration: none` removes all text underlines.  `text-shadow: none` removes text shadows, which usually have a hard coded color.
-                    // `border: none` removes all borders, which can also be used to underline text.
-                    // `a {color: #1565C0}` sets links to be a dark blue.  `!important` takes precedent over any existing sub-settings.
+                    // `border: none` removes all borders, which can also be used to underline text.  `a {color: #1565C0}` sets links to be a dark blue.
+                    // `::selection {background: #0D47A1}' sets the text selection highlight color to be a dark blue. `!important` takes precedent over any existing sub-settings.
                     mainWebView.evaluateJavascript("(function() {var parent = document.getElementsByTagName('head').item(0); var style = document.createElement('style'); style.type = 'text/css'; " +
                             "style.innerHTML = '* {background-color: #212121 !important; color: #BDBDBD !important; box-shadow: none !important; text-decoration: none !important;" +
-                            "text-shadow: none !important; border: none !important;} a {color: #1565C0 !important;}'; parent.appendChild(style)})()", value -> {
+                            "text-shadow: none !important; border: none !important;} a {color: #1565C0 !important;} ::selection {background: #0D47A1 !important;}'; parent.appendChild(style)})()", value -> {
                                 // Initialize a handler to display `mainWebView`.
                                 Handler displayWebViewHandler = new Handler();
 
@@ -1221,10 +1222,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Hide zoom controls.
         mainWebView.getSettings().setDisplayZoomControls(false);
 
-        // Set `mainWebView` to use a wide viewport.  Otherwise, some web pages will be scrunched and some content will render outside the screen.
+        // Don't allow mixed content (HTTP and HTTPS) on the same website.
+        if (Build.VERSION.SDK_INT >= 21) {
+            mainWebView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+        }
+
+        // Set the WebView to use a wide viewport.  Otherwise, some web pages will be scrunched and some content will render outside the screen.
         mainWebView.getSettings().setUseWideViewPort(true);
 
-        // Set `mainWebView` to load in overview mode (zoomed out to the maximum width).
+        // Set the WebView to load in overview mode (zoomed out to the maximum width).
         mainWebView.getSettings().setLoadWithOverviewMode(true);
 
         // Explicitly disable geolocation.

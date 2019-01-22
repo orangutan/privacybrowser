@@ -29,6 +29,11 @@ a {
     text-decoration: none;
 }
 
+/* Blue 900 */
+::selection {
+    background: #0D47A1;
+}
+
 /* Blue 600 */
 h3 {
     color: #1E88E5;
