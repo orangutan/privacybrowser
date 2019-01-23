@@ -66,8 +66,8 @@
     <string name="no_ssl_certificate">Bu web sitesiyle bağlantınız şifrelenmemiştir. Bu, üçüncü kişilere bilgilerinizi ele geçirme, bağlantınızı izleme ve zararlı yazılımları yükleme fırsatını verir.</string>
     <string name="ssl_certificate">SSL Sertifikası</string>
     <string name="close">Kapat</string>
-    <string name="domain">Etki Alanı</string>
-    <string name="domain_label">Etki Alanı:</string>
+    <string name="domain">Domain</string>
+    <string name="domain_label">Domain:</string>
     <string name="issued_to">Verilen</string>
     <string name="issued_by">Veren</string>
     <string name="common_name">Ortak Ad (CN):</string>
@@ -129,8 +129,8 @@
         <string name="clear_cookies">Çerezleri Temizle</string>
         <string name="clear_dom_storage">DOM Depolama Alanını Temizle</string>
         <string name="clear_form_data">Form Verisini Temizle</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-    <string name="options_fanboys_annoyance_list">Fanboy’s Annoyance Listesi</string>
-    <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking Listesi</string>
+    <string name="options_fanboys_annoyance_list">Fanboy Rahatsızlık Listesi</string>
+    <string name="options_fanboys_social_blocking_list">Fanboy Sosyal Engelleme Listesi</string>
     <string name="options_block_all_third_party_requests">Tüm Üçüncü Taraf İstekleri Engelle</string>
     <string name="layout">Düzen</string>
         <string name="user_agent_webview_default">Varsayılan Web Görünümü</string>
@@ -252,25 +252,32 @@
         <string name="third_party_blocked">Üçüncü Taraf - Engellendi</string>
         <string name="blocked">Engellendi</string>
         <string name="blocked_plural">Engellendi</string>
-    <string name="blocklist">Engellenenler</string>
-        <string name="main_whitelist">Ana beyaz liste</string>
-        <string name="final_whitelist">Final beyaz liste</string>
+    <string name="blocklist">Engel listesi</string>
+    <string name="sublist">Alt liste</string>
+        <string name="main_whitelist">Ana beyaz listesi</string>
+        <string name="final_whitelist">Son beyaz listesi</string>
         <string name="domain_whitelist">Domain beyaz listesi</string>
         <string name="domain_initial_whitelist">Domain başlangıç beyaz listesi</string>
-        <string name="domain_final_whitelist">Domain final beyaz listesi</string>
+        <string name="domain_final_whitelist">Domain son beyaz listesi</string>
         <string name="third_party_whitelist">Üçüncü taraf beyaz listesi</string>
         <string name="third_party_domain_whitelist">Üçüncü taraf domain beyaz listesi</string>
         <string name="third_party_domain_initial_whitelist">Üçüncü taraf domain başlangıç beyaz listesi</string>
-        <string name="main_blacklist">Ana kara liste</string>
+        <string name="main_blacklist">Ana kara listesi</string>
         <string name="initial_blacklist">Başlangıç kara listesi</string>
-        <string name="final_blacklist">Final kara liste</string>
+        <string name="final_blacklist">Son kara listesi</string>
         <string name="domain_blacklist">Domain kara listesi</string>
         <string name="domain_initial_blacklist">Domain başlangıç kara listesi</string>
-        <string name="domain_final_blacklist">Domain final kara listesi</string>
+        <string name="domain_final_blacklist">Domain son kara listesi</string>
+        <string name="domain_regular_expression_blacklist">Domain düzenli ifade kara listesi</string>
         <string name="third_party_blacklist">Üçüncü taraf kara listesi</string>
         <string name="third_party_initial_blacklist">Üçüncü taraf başlangıç kara listesi</string>
         <string name="third_party_domain_blacklist">Üçüncü taraf domain kara listesi</string>
         <string name="third_party_domain_initial_blacklist">Üçüncü taraf domain başlangıç kara listesi</string>
+        <string name="third_party_regular_expression_blacklist">Üçüncü taraf düzenli ifade kara listesi</string>
+        <string name="third_party_domain_regular_expression_blacklist">Üçüncü taraf domain düzenli ifade kara listesi</string>
+        <string name="regular_expression_blacklist">Düzenli ifade kara listesi</string>
+    <string name="blocklist_entries">Engel listesi girdileri</string>
+    <string name="blocklist_original_entry">Engel listesi orijinal girdisi</string>
 
     <!-- Domains. -->
     <string name="domains">Domainler</string>
@@ -280,6 +287,7 @@
     <string name="add">Ekle</string>
     <string name="domain_name">Domain adı</string>
     <string name="domain_deleted">Domain silinmiş</string>
+    <string name="domain_name_instructions">*. tüm altdomainleri içeren bir domain başına getirilebilir (örn. *.stoutner.com)</string>
     <string-array name="swipe_to_refresh_array">
         <item>Sistem varsayılanı</item>
         <item>Yenilemek için kaydır etkin</item>
@@ -297,9 +305,33 @@
     </string-array>
     <string name="pinned_ssl_certificate">İğneli SSL sertifikası</string>
     <string name="saved_ssl_certificate">Kayıtlı SSL sertifikası</string>
-    <string name="current_website_ssl_certificate">Geçerli web site SSL sertifikası</string>
+    <string name="current_website_ssl_certificate">Geçerli web sitesi SSL sertifikası</string>
+    <string name="load_an_encrypted_website">Geçerli web sitesinin SSL sertifikasını doldurmak için Domain Ayarlarını açmadan önce şifrelenmiş bir web sitesi yükleyin.</string>
 
     <!-- Import/Export. -->
+    <string name="encryption">Şifreleme</string>
+    <string-array name="encryption_type">
+        <item>Hiçbiri</item>
+        <item>Parola</item>
+        <item>OpenPGP</item>
+    </string-array>
+    <string name="kitkat_password_encryption_message">Android KitKat sürümünde parola şifrelemesi çalışmaz.</string>
+    <string name="openkeychain_required">OpenPGP şifrelemesinin çalışması için OpenKeychain yüklü olmalıdır.</string>
+    <string name="openkeychain_import_instructions">Şifresi çözüldükten sonra, şifrelenmemiş dosya ayrı bir adımda içeri aktarılmak zorundadır.</string>
+    <string name="file_location">Dosya Konumu</string>
+    <string name="browse">Gözat</string>
+    <string name="export">Dışarı aktar</string>
+    <string name="import_button">İçeri aktar</string>  <!-- `import` is a reserved word and cannot be used as the name -->
+    <string name="decrypt">Şifre Çözmek</string>
+    <string name="export_successful">Dışa aktarım başarılı.</string>
+    <string name="export_failed">Dışa aktarım başarısız oldu:</string>
+    <string name="import_failed">İçe aktarım başarısız oldu:</string>
+    <string name="cannot_export">Ayarlar, depolama alanı izni onaylanmadığından bu konuma aktarılamıyor.</string>
+    <string name="cannot_import">Ayarlar, depolama alanı izni onaylanmadığından bu konumdan aktarılamıyor.</string>
+    <string name="invalid_location">geçerli bir konum değildir.</string>
+    <string name="storage_permission">Depolama Alanı İzni</string>
+    <string name="storage_permission_message">Privacy Browser, genel dizinlere erişmek için depolama alanı iznine ihtiyaç duymaktadır. Reddedildiği takdirde, uygulamanın dizinleri hala kullanılabilir.</string>
+    <string name="storage_permission_explanation">Genel dizinlerdeki dosyalara erişim icin depolama alanı izni gerekmektedir. Aksi takdirde, sadece uygulamanın dizinleri çalışacaktır.</string>
 
     <!-- Guide. -->
     <string name="privacy_browser_guide">Privacy Browser Rehberi</string>
@@ -312,9 +344,10 @@
     <string name="download_location">İndirme Konumu</string>
     <string name="download_location_message">Privacy Browser\'ın genel indirme dizinini kullanması için depolama alanı izni gerekmektedir.
         Eğer reddedilirse, onun yerine uygulamanın indirme dizini kullanılacaktır.</string>
+    <string name="ok">OK</string>
 
     <!-- Orbot. -->
-    <string name="orbot_proxy_not_installed">Orbot yüklenmeden Orbot proxy çalışmayacaktır.</string>
+    <string name="orbot_proxy_not_installed">Orbot yüklenmeden Orbot vekil sunucusu çalışmayacaktır.</string>
     <string name="waiting_for_orbot">Orbot\'un bağlanması bekleniyor...</string>
 
     <!-- About Activity. -->
@@ -324,6 +357,7 @@
     <string name="hardware">Donanım</string>
     <string name="brand">Marka:</string>
     <string name="manufacturer">Üretici:</string>
+    <string name="model">Model:</string>
     <string name="device">Cihaz:</string>
     <string name="bootloader">Bootloader:</string>
     <string name="radio">Donanım Yazılımı:</string>
@@ -337,8 +371,8 @@
     <string name="openkeychain">OpenKeychain:</string>
     <string name="easylist_label">EasyList:</string>
     <string name="easyprivacy_label">EasyPrivacy:</string>
-    <string name="fanboy_annoyance_label">Fanboy’s Annoyance Listesi:</string>
-    <string name="fanboy_social_label">Fanboy’s Social Blocking Listesi:</string>
+    <string name="fanboy_annoyance_label">Fanboy Rahatsızlık Listesi:</string>
+    <string name="fanboy_social_label">Fanboy Sosyal Engelleme Listesi:</string>
     <string name="ultraprivacy_label">UltraPrivacy:</string>
     <string name="package_signature">Paket İmzası</string>
     <string name="issuer_dn">Yayınlayan DA:</string>
@@ -411,20 +445,26 @@
         <string name="easylist_summary">Ana reklam engelleme listesi.</string>
         <string name="easyprivacy">EasyPrivacy</string>
         <string name="easyprivacy_summary">Ana takipçi engelleme listesi.</string>
-        <string name="fanboys_annoyance_list">Fanboy’s annoyance listesi</string>
+        <string name="fanboys_annoyance_list">Fanboy Rahatsızlık Listesi</string>
         <string name="fanboys_annoyance_list_summary">Rahatsız eden popupları ve linkleri engeller. Fanboy’s social blocking listesini de içerir.</string>
-        <string name="fanboys_social_blocking_list">Fanboy’s social blocking listesi</string>
+        <string name="fanboys_social_blocking_list">Fanboy Sosyal Engelleme Listesi</string>
         <string name="fanboys_social_blocking_list_summary">Üçüncü taraf sosyal medya içeriklerini engeller.</string>
         <string name="ultraprivacy">UltraPrivacy</string>
         <string name="ultraprivacy_summary">UltraPrivacy, EasyPrivacy\'de olmayan takipçileri de engeller fakat bu seçenek bazı web sitelerinin çökmesine sebep olabilir.</string>
         <string name="block_all_third_party_requests">Tüm üçüncü taraf istekleri engelle</string>
         <string name="block_all_third_party_requests_summary">Tüm üçüncü taraf istekleri engellemek gizliliği arttırır, fakat çoğu web sitesinin çökmesine sebep olur.</string>
+    <string name="tor">Tor</string>
+        <string name="proxy_through_orbot">Orbot vasıtasıyla vekil sunucusu</string>
+        <string name="proxy_through_orbot_summary">localhost:8118 üzerinden Orbot vasıtasıyla tüm web trafiği vekil sunucusu.</string>
+        <string name="tor_homepage">Tor anasayfa</string>
+        <string name="tor_search">Tor arama</string>
         <string-array name="tor_search_entries">
             <item>Searx</item>
             <item>DuckDuckGo - JavaScript devre dışı</item>
             <item>DuckDuckGo - JavaScript etkin</item>
             <item>Özel</item>
         </string-array>
+        <string name="tor_search_custom_url">Tor özel URL arama</string>
     <string name="search">Arama</string>
         <string-array name="search_entries">
             <item>Searx</item>
@@ -449,6 +489,8 @@
         <string name="translucent_navigation_bar">Yarı saydam gezinti çubuğu</string>
         <string name="translucent_navigation_bar_summary">Gezinti çubuğunu, tam ekran modunda yarı saydam yapar.</string>
     <string name="clear_everything">Her şeyi temizle</string>
+        <string name="clear_everything_summary">Çerezleri, DOM depolama alanını, form verisini ve Web Görünümü ön belleğini temizler.
+            Sonrasında, manuel olarak bütün “app_webview” ve “cache” dizinlerini siler.</string>
         <string name="clear_cookies_preference">Çerezleri temizle</string>
         <string name="clear_cookies_summary">Birinci ve Üçüncü taraf çerezleri temizler</string>
         <string name="clear_dom_storage_preference">Dom Depolama Alanını temizle</string>
@@ -486,9 +528,10 @@
         <string name="download_with_external_app">Harici uygulamayla indir</string>
         <string name="download_with_external_app_summary">Android indirme yönetecisi bazı cihazlarda iyi çalışmayabilir.</string>
         <string name="display_additional_app_bar_icons">Ek uygulama çubuğu simgelerini göster</string>
+        <string name="display_additional_app_bar_icons_summary">Web Görünümünü yenilemek ve yer varsa çerezler ve DOM depolama alanını değiştirmek için uygulama çubuğunda simgeler gösterir.</string>
         <string name="dark_theme">Koyu tema</string>
         <string name="dark_theme_summary">Temayı değiştirmek Privacy Browser\'ı yeniden başlatacak.</string>
-        <string name="night_mode">Gece mody</string>
+        <string name="night_mode">Gece modu</string>
         <string name="night_mode_summary">Gece modunu etkinleştirmek aynı zamanda tüm sitelerde JavaScript\'i etkinleştirecek.</string>
         <string name="display_webpage_images">Web sitesi resimlerini göster</string>
         <string name="display_webpage_images_summary">Bant genişliği korumayı devre dışı bırak.</string>

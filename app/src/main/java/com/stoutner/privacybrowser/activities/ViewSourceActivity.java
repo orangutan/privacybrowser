@@ -181,7 +181,7 @@ public class ViewSourceActivity extends AppCompatActivity {
             // Get the URL.
             String url = urlEditText.getText().toString();
 
-            // Get new source data for the URL if it begins with `http`/
+            // Get new source data for the URL if it begins with `http`.
             if (url.startsWith("http")) {
                 new GetSource(this).execute(url);
             } else {

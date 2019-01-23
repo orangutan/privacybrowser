@@ -75,6 +75,7 @@
     <string name="close">Close</string>
     <string name="domain">Domain</string>
     <string name="domain_label">Domain:</string>
+    <string name="ip_addresses">IP Addresses:</string>
     <string name="issued_to">Issued To</string>
     <string name="issued_by">Issued By</string>
     <string name="common_name">Common Name (CN):</string>

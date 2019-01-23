@@ -165,7 +165,7 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
                 }
             }
 
-            // Get a `Cursor` containing the folders to display.
+            // Get a cursor containing the folders to display.
             foldersCursor = bookmarksDatabaseHelper.getFoldersExcept(exceptFolders.toString());
 
             // Setup `foldersCursorAdaptor` with `this` context.  `false` disables autoRequery.
