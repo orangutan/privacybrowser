@@ -71,6 +71,7 @@
     <string name="close">Cerrar</string>
     <string name="domain">Dominio</string>
     <string name="domain_label">Dominio:</string>
+    <string name="ip_addresses">Direcciones IP:</string>
     <string name="issued_to">Emitido a</string>
     <string name="issued_by">Emitido por</string>
     <string name="common_name">Nombre Común (CN):</string>

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -27,10 +27,11 @@ import android.database.Cursor;
 import android.net.http.SslCertificate;
 import android.os.Build;
 import android.os.Bundle;
-// `android.support.v4.app.Fragment` must be used until minimum API >= 23.  Otherwise `getContext()` does not work.
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+// `android.support.v4.app.Fragment` must be used until minimum API >= 23.  Otherwise `getContext()` does not work.
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -140,7 +141,8 @@ public class DomainSettingsFragment extends Fragment {
         final TextView displayImagesTextView = domainSettingsView.findViewById(R.id.domain_settings_display_webpage_images_textview);
         final ImageView pinnedSslCertificateImageView = domainSettingsView.findViewById(R.id.domain_settings_pinned_ssl_certificate_imageview);
         Switch pinnedSslCertificateSwitch = domainSettingsView.findViewById(R.id.domain_settings_pinned_ssl_certificate_switch);
-        final LinearLayout savedSslCertificateLinearLayout = domainSettingsView.findViewById(R.id.saved_ssl_certificate_linearlayout);
+        final CardView savedSslCertificateCardView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_cardview);
+        LinearLayout savedSslCertificateLinearLayout = domainSettingsView.findViewById(R.id.saved_ssl_certificate_linearlayout);
         final RadioButton savedSslCertificateRadioButton = domainSettingsView.findViewById(R.id.saved_ssl_certificate_radiobutton);
         final TextView savedSslCertificateIssuedToCNameTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_to_cname);
         TextView savedSslCertificateIssuedToONameTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_to_oname);
@@ -150,7 +152,8 @@ public class DomainSettingsFragment extends Fragment {
         TextView savedSslCertificateIssuedByUNameTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_by_uname);
         TextView savedSslCertificateStartDateTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_start_date);
         TextView savedSslCertificateEndDateTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_end_date);
-        final LinearLayout currentWebsiteCertificateLinearLayout = domainSettingsView.findViewById(R.id.current_website_certificate_linearlayout);
+        final CardView currentWebsiteCertificateCardView = domainSettingsView.findViewById(R.id.current_website_certificate_cardview);
+        LinearLayout currentWebsiteCertificateLinearLayout = domainSettingsView.findViewById(R.id.current_website_certificate_linearlayout);
         final RadioButton currentWebsiteCertificateRadioButton = domainSettingsView.findViewById(R.id.current_website_certificate_radiobutton);
         final TextView currentWebsiteCertificateIssuedToCNameTextView = domainSettingsView.findViewById(R.id.current_website_certificate_issued_to_cname);
         TextView currentWebsiteCertificateIssuedToONameTextView = domainSettingsView.findViewById(R.id.current_website_certificate_issued_to_oname);
@@ -1068,41 +1071,62 @@ public class DomainSettingsFragment extends Fragment {
         if (pinnedSslCertificateSwitch.isChecked()) {
             // Set the visibility of the saved SSL certificate.
             if (savedSslCertificateIssuedToCNameString == null) {
-                savedSslCertificateLinearLayout.setVisibility(View.GONE);
+                savedSslCertificateCardView.setVisibility(View.GONE);
             } else {
-                savedSslCertificateLinearLayout.setVisibility(View.VISIBLE);
+                savedSslCertificateCardView.setVisibility(View.VISIBLE);
             }
 
             // Set the visibility of the current website SSL certificate.
             if (currentWebsiteSslCertificate == null) {
                 // Hide the SSL certificate.
-                currentWebsiteCertificateLinearLayout.setVisibility(View.GONE);
+                currentWebsiteCertificateCardView.setVisibility(View.GONE);
 
                 // Show the instruction.
                 noCurrentWebsiteCertificateTextView.setVisibility(View.VISIBLE);
             } else {
                 // Show the SSL certificate.
-                currentWebsiteCertificateLinearLayout.setVisibility(View.VISIBLE);
+                currentWebsiteCertificateCardView.setVisibility(View.VISIBLE);
 
                 // Hide the instruction.
                 noCurrentWebsiteCertificateTextView.setVisibility(View.GONE);
             }
 
             // Set the status of the radio buttons.
-            if (savedSslCertificateLinearLayout.getVisibility() == View.VISIBLE) {  // The saved SSL certificate is displayed.
+            if (savedSslCertificateCardView.getVisibility() == View.VISIBLE) {  // The saved SSL certificate is displayed.
+                // Check the saved SSL certificate radio button.
                 savedSslCertificateRadioButton.setChecked(true);
+
+                // Uncheck the current website SSL certificate radio button.
                 currentWebsiteCertificateRadioButton.setChecked(false);
-            } else if (currentWebsiteCertificateLinearLayout.getVisibility() == View.VISIBLE) {  // The saved SSL certificate is hidden but the current website SSL certificate is visible.
+
+                // Darken the background of the current website SSL certificate linear layout according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_33);
+                } else {
+                    currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_11);
+                }
+            } else if (currentWebsiteCertificateCardView.getVisibility() == View.VISIBLE) {  // The saved SSL certificate is hidden but the current website SSL certificate is visible.
+                // Check the current website SSL certificate radio button.
                 currentWebsiteCertificateRadioButton.setChecked(true);
+
+                // Uncheck the saved SSL certificate radio button.
                 savedSslCertificateRadioButton.setChecked(false);
+
+                // Darken the background of the saved SSL certificate linear layout according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    savedSslCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_33);
+                } else {
+                    savedSslCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_11);
+                }
             } else {  // Neither SSL certificate is visible.
+                // Uncheck both radio buttons.
                 savedSslCertificateRadioButton.setChecked(false);
                 currentWebsiteCertificateRadioButton.setChecked(false);
             }
         } else {  // `pinnedSslCertificateSwitch` is not checked.
             // Hide the SSl certificates and instructions.
-            savedSslCertificateLinearLayout.setVisibility(View.GONE);
-            currentWebsiteCertificateLinearLayout.setVisibility(View.GONE);
+            savedSslCertificateCardView.setVisibility(View.GONE);
+            currentWebsiteCertificateCardView.setVisibility(View.GONE);
             noCurrentWebsiteCertificateTextView.setVisibility(View.GONE);
 
             // Uncheck the radio buttons.
@@ -1718,34 +1742,61 @@ public class DomainSettingsFragment extends Fragment {
 
                 // Update the visibility of the saved SSL certificate.
                 if (savedSslCertificateIssuedToCNameString == null) {
-                    savedSslCertificateLinearLayout.setVisibility(View.GONE);
+                    savedSslCertificateCardView.setVisibility(View.GONE);
                 } else {
-                    savedSslCertificateLinearLayout.setVisibility(View.VISIBLE);
+                    savedSslCertificateCardView.setVisibility(View.VISIBLE);
                 }
 
                 // Update the visibility of the current website SSL certificate.
                 if (currentWebsiteSslCertificate == null) {
                     // Hide the SSL certificate.
-                    currentWebsiteCertificateLinearLayout.setVisibility(View.GONE);
+                    currentWebsiteCertificateCardView.setVisibility(View.GONE);
 
                     // Show the instruction.
                     noCurrentWebsiteCertificateTextView.setVisibility(View.VISIBLE);
                 } else {
                     // Show the SSL certificate.
-                    currentWebsiteCertificateLinearLayout.setVisibility(View.VISIBLE);
+                    currentWebsiteCertificateCardView.setVisibility(View.VISIBLE);
 
                     // Hide the instruction.
                     noCurrentWebsiteCertificateTextView.setVisibility(View.GONE);
                 }
 
                 // Set the status of the radio buttons.
-                if (savedSslCertificateLinearLayout.getVisibility() == View.VISIBLE) {  // The saved SSL certificate is displayed.
+                if (savedSslCertificateCardView.getVisibility() == View.VISIBLE) {  // The saved SSL certificate is displayed.
+                    // Check the saved SSL certificate radio button.
                     savedSslCertificateRadioButton.setChecked(true);
+
+                    // Uncheck the current website SSL certificate radio button.
                     currentWebsiteCertificateRadioButton.setChecked(false);
-                } else if (currentWebsiteCertificateLinearLayout.getVisibility() == View.VISIBLE) {  // The saved SSL certificate is hidden but the current website SSL certificate is visible.
+
+                    // Set the background of the saved SSL certificate linear layout to be transparent.
+                    savedSslCertificateLinearLayout.setBackgroundResource(R.color.transparent);
+
+                    // Darken the background of the current website SSL certificate linear layout according to the theme.
+                    if (MainWebViewActivity.darkTheme) {
+                        currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_33);
+                    } else {
+                        currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_11);
+                    }
+                } else if (currentWebsiteCertificateCardView.getVisibility() == View.VISIBLE) {  // The saved SSL certificate is hidden but the current website SSL certificate is visible.
+                    // Check the current website SSL certificate radio button.
                     currentWebsiteCertificateRadioButton.setChecked(true);
+
+                    // Uncheck the saved SSL certificate radio button.
                     savedSslCertificateRadioButton.setChecked(false);
+
+                    // Set the background of the current website SSL certificate linear layout to be transparent.
+                    currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.transparent);
+
+                    // Darken the background of the saved SSL certificate linear layout according to the theme.
+                    if (MainWebViewActivity.darkTheme) {
+                        savedSslCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_33);
+                    } else {
+                        savedSslCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_11);
+                    }
                 } else {  // Neither SSL certificate is visible.
+                    // Uncheck both radio buttons.
                     savedSslCertificateRadioButton.setChecked(false);
                     currentWebsiteCertificateRadioButton.setChecked(false);
                 }
@@ -1758,8 +1809,8 @@ public class DomainSettingsFragment extends Fragment {
                 }
 
                 // Hide the SSl certificates and instructions.
-                savedSslCertificateLinearLayout.setVisibility(View.GONE);
-                currentWebsiteCertificateLinearLayout.setVisibility(View.GONE);
+                savedSslCertificateCardView.setVisibility(View.GONE);
+                currentWebsiteCertificateCardView.setVisibility(View.GONE);
                 noCurrentWebsiteCertificateTextView.setVisibility(View.GONE);
 
                 // Uncheck the radio buttons.
@@ -1768,24 +1819,76 @@ public class DomainSettingsFragment extends Fragment {
             }
         });
 
-        savedSslCertificateLinearLayout.setOnClickListener((View v) -> {
+        savedSslCertificateCardView.setOnClickListener((View v) -> {
+            // Check the saved SSL certificate radio button.
             savedSslCertificateRadioButton.setChecked(true);
+
+            // Uncheck the current website SSL certificate radio button.
             currentWebsiteCertificateRadioButton.setChecked(false);
+
+            // Set the background of the saved SSL certificate linear layout to be transparent.
+            savedSslCertificateLinearLayout.setBackgroundResource(R.color.transparent);
+
+            // Darken the background of the current website SSL certificate linear layout according to the theme.
+            if (MainWebViewActivity.darkTheme) {
+                currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_33);
+            } else {
+                currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_11);
+            }
         });
 
         savedSslCertificateRadioButton.setOnClickListener((View v) -> {
+            // Check the saved SSL certificate radio button.
             savedSslCertificateRadioButton.setChecked(true);
+
+            // Uncheck the current website SSL certificate radio button.
             currentWebsiteCertificateRadioButton.setChecked(false);
+
+            // Set the background of the saved SSL certificate linear layout to be transparent.
+            savedSslCertificateLinearLayout.setBackgroundResource(R.color.transparent);
+
+            // Darken the background of the current website SSL certificate linear layout according to the theme.
+            if (MainWebViewActivity.darkTheme) {
+                currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_33);
+            } else {
+                currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_11);
+            }
         });
 
-        currentWebsiteCertificateLinearLayout.setOnClickListener((View v) -> {
+        currentWebsiteCertificateCardView.setOnClickListener((View v) -> {
+            // Check the current website SSL certificate radio button.
             currentWebsiteCertificateRadioButton.setChecked(true);
+
+            // Uncheck the saved SSL certificate radio button.
             savedSslCertificateRadioButton.setChecked(false);
+
+            // Set the background of the current website SSL certificate linear layout to be transparent.
+            currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.transparent);
+
+            // Darken the background of the saved SSL certificate linear layout according to the theme.
+            if (MainWebViewActivity.darkTheme) {
+                savedSslCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_33);
+            } else {
+                savedSslCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_11);
+            }
         });
 
         currentWebsiteCertificateRadioButton.setOnClickListener((View v) -> {
+            // Check the current website SSL certificate radio button.
             currentWebsiteCertificateRadioButton.setChecked(true);
+
+            // Uncheck the saved SSL certificate radio button.
             savedSslCertificateRadioButton.setChecked(false);
+
+            // Set the background of the current website SSL certificate linear layout to be transparent.
+            currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.transparent);
+
+            // Darken the background of the saved SSL certificate linear layout according to the theme.
+            if (MainWebViewActivity.darkTheme) {
+                savedSslCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_33);
+            } else {
+                savedSslCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_11);
+            }
         });
 
         return domainSettingsView;

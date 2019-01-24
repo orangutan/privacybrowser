@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -613,198 +613,214 @@
             </LinearLayout>
 
             <!-- Saved Certificate -->
-            <LinearLayout
-                android:id="@+id/saved_ssl_certificate_linearlayout"
+            <android.support.v7.widget.CardView
+                android:id="@+id/saved_ssl_certificate_cardview"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp" >
 
-                <RadioButton
-                    android:id="@+id/saved_ssl_certificate_radiobutton"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:text="@string/saved_ssl_certificate"
-                    android:textSize="17sp"
-                    android:textAllCaps="true"
-                    android:textStyle="bold" />
-
                 <LinearLayout
+                    android:id="@+id/saved_ssl_certificate_linearlayout"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
-                    android:layout_marginStart="32dp"
-                    android:orientation="vertical" >
+                    android:orientation="vertical"
+                    android:padding="10dp" >
 
-                    <!-- Saved Certificate Issued To. -->
-                    <TextView
+                    <RadioButton
+                        android:id="@+id/saved_ssl_certificate_radiobutton"
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
-                        android:text="@string/issued_to"
+                        android:text="@string/saved_ssl_certificate"
+                        android:textSize="17sp"
                         android:textAllCaps="true"
                         android:textStyle="bold"
-                        android:textColor="?attr/sslTitle" />
+                        android:textColor="?android:textColorPrimary" />
 
-                    <TextView
-                        android:id="@+id/saved_ssl_certificate_issued_to_cname"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
-
-                    <TextView
-                        android:id="@+id/saved_ssl_certificate_issued_to_oname"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
-
-                    <TextView
-                        android:id="@+id/saved_ssl_certificate_issued_to_uname"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"/>
-
-                    <!-- Saved Certificate Issued By. -->
-                    <TextView
+                    <LinearLayout
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
-                        android:layout_marginTop="15dp"
-                        android:text="@string/issued_by"
-                        android:textAllCaps="true"
-                        android:textStyle="bold"
-                        android:textColor="?attr/sslTitle"/>
+                        android:layout_marginStart="32dp"
+                        android:orientation="vertical" >
 
-                    <TextView
-                        android:id="@+id/saved_ssl_certificate_issued_by_cname"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
+                        <!-- Saved Certificate Issued To. -->
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:text="@string/issued_to"
+                            android:textAllCaps="true"
+                            android:textStyle="bold"
+                            android:textColor="?attr/sslTitle" />
 
-                    <TextView
-                        android:id="@+id/saved_ssl_certificate_issued_by_oname"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
+                        <TextView
+                            android:id="@+id/saved_ssl_certificate_issued_to_cname"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
 
-                    <TextView
-                        android:id="@+id/saved_ssl_certificate_issued_by_uname"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
+                        <TextView
+                            android:id="@+id/saved_ssl_certificate_issued_to_oname"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
 
-                    <!-- Saved Certificate Valid Dates. -->
-                    <TextView
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:layout_marginTop="15dp"
-                        android:text="@string/valid_dates"
-                        android:textAllCaps="true"
-                        android:textStyle="bold"
-                        android:textColor="?attr/sslTitle"/>
+                        <TextView
+                            android:id="@+id/saved_ssl_certificate_issued_to_uname"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"/>
 
-                    <TextView
-                        android:id="@+id/saved_ssl_certificate_start_date"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
+                        <!-- Saved Certificate Issued By. -->
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_marginTop="15dp"
+                            android:text="@string/issued_by"
+                            android:textAllCaps="true"
+                            android:textStyle="bold"
+                            android:textColor="?attr/sslTitle"/>
 
-                    <TextView
-                        android:id="@+id/saved_ssl_certificate_end_date"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
+                        <TextView
+                            android:id="@+id/saved_ssl_certificate_issued_by_cname"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
+
+                        <TextView
+                            android:id="@+id/saved_ssl_certificate_issued_by_oname"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
+
+                        <TextView
+                            android:id="@+id/saved_ssl_certificate_issued_by_uname"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
+
+                        <!-- Saved Certificate Valid Dates. -->
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_marginTop="15dp"
+                            android:text="@string/valid_dates"
+                            android:textAllCaps="true"
+                            android:textStyle="bold"
+                            android:textColor="?attr/sslTitle"/>
+
+                        <TextView
+                            android:id="@+id/saved_ssl_certificate_start_date"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
+
+                        <TextView
+                            android:id="@+id/saved_ssl_certificate_end_date"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
+            </android.support.v7.widget.CardView>
 
             <!-- Current Website Certificate -->
-            <LinearLayout
-                android:id="@+id/current_website_certificate_linearlayout"
+            <android.support.v7.widget.CardView
+                android:id="@+id/current_website_certificate_cardview"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="10dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp" >
 
-                <RadioButton
-                    android:id="@+id/current_website_certificate_radiobutton"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:text="@string/current_website_ssl_certificate"
-                    android:textSize="17sp"
-                    android:textAllCaps="true"
-                    android:textStyle="bold" />
-
                 <LinearLayout
+                    android:id="@+id/current_website_certificate_linearlayout"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
-                    android:layout_marginStart="32dp"
-                    android:orientation="vertical" >
+                    android:orientation="vertical"
+                    android:padding="10dp" >
 
-                    <!-- Current Website Certificate Issued To. -->
-                    <TextView
+                    <RadioButton
+                        android:id="@+id/current_website_certificate_radiobutton"
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
-                        android:text="@string/issued_to"
+                        android:text="@string/current_website_ssl_certificate"
+                        android:textSize="17sp"
                         android:textAllCaps="true"
                         android:textStyle="bold"
-                        android:textColor="?attr/sslTitle" />
+                        android:textColor="?android:textColorPrimary" />
 
-                    <TextView
-                        android:id="@+id/current_website_certificate_issued_to_cname"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
-
-                    <TextView
-                        android:id="@+id/current_website_certificate_issued_to_oname"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
-
-                    <TextView
-                        android:id="@+id/current_website_certificate_issued_to_uname"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
-
-                    <!-- Current Website Certificate Issued By. -->
-                    <TextView
+                    <LinearLayout
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
-                        android:layout_marginTop="15dp"
-                        android:text="@string/issued_by"
-                        android:textAllCaps="true"
-                        android:textStyle="bold"
-                        android:textColor="?attr/sslTitle" />
+                        android:layout_marginStart="32dp"
+                        android:orientation="vertical" >
 
-                    <TextView
-                        android:id="@+id/current_website_certificate_issued_by_cname"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
+                        <!-- Current Website Certificate Issued To. -->
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:text="@string/issued_to"
+                            android:textAllCaps="true"
+                            android:textStyle="bold"
+                            android:textColor="?attr/sslTitle" />
 
-                    <TextView
-                        android:id="@+id/current_website_certificate_issued_by_oname"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
+                        <TextView
+                            android:id="@+id/current_website_certificate_issued_to_cname"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
 
-                    <TextView
-                        android:id="@+id/current_website_certificate_issued_by_uname"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
+                        <TextView
+                            android:id="@+id/current_website_certificate_issued_to_oname"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
 
-                    <!-- Current Website Certificate Valid Dates. -->
-                    <TextView
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:layout_marginTop="15dp"
-                        android:text="@string/valid_dates"
-                        android:textAllCaps="true"
-                        android:textStyle="bold"
-                        android:textColor="?attr/sslTitle" />
+                        <TextView
+                            android:id="@+id/current_website_certificate_issued_to_uname"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
 
-                    <TextView
-                        android:id="@+id/current_website_certificate_start_date"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
+                        <!-- Current Website Certificate Issued By. -->
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_marginTop="15dp"
+                            android:text="@string/issued_by"
+                            android:textAllCaps="true"
+                            android:textStyle="bold"
+                            android:textColor="?attr/sslTitle" />
 
-                    <TextView
-                        android:id="@+id/current_website_certificate_end_date"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
+                        <TextView
+                            android:id="@+id/current_website_certificate_issued_by_cname"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
+
+                        <TextView
+                            android:id="@+id/current_website_certificate_issued_by_oname"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
+
+                        <TextView
+                            android:id="@+id/current_website_certificate_issued_by_uname"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
+
+                        <!-- Current Website Certificate Valid Dates. -->
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_marginTop="15dp"
+                            android:text="@string/valid_dates"
+                            android:textAllCaps="true"
+                            android:textStyle="bold"
+                            android:textColor="?attr/sslTitle" />
+
+                        <TextView
+                            android:id="@+id/current_website_certificate_start_date"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
+
+                        <TextView
+                            android:id="@+id/current_website_certificate_end_date"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
+            </android.support.v7.widget.CardView>
 
             <!-- Load An Encrypted Website Instructions. -->
             <TextView

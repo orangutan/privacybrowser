@@ -68,6 +68,7 @@
     <string name="close">Закрыть</string>
     <string name="domain">Домен</string>
     <string name="domain_label">Домен:</string>
+    <string name="ip_addresses">IP-адреса:</string>
     <string name="issued_to">Кому выдан</string>
     <string name="issued_by">Кем выдан</string>
     <string name="common_name">Общепринятое имя (CN):</string>

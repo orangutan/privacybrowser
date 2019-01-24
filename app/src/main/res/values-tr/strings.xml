@@ -68,6 +68,7 @@
     <string name="close">Kapat</string>
     <string name="domain">Domain</string>
     <string name="domain_label">Domain:</string>
+    <string name="ip_addresses">IP Adresleri:</string>
     <string name="issued_to">Verilen</string>
     <string name="issued_by">Veren</string>
     <string name="common_name">Ortak Ad (CN):</string>
