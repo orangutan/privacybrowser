@@ -91,10 +91,9 @@
     <string name="url_label">URL:</string>
 
     <!-- Pinned SSL Certificate Mismatch. -->
-    <string name="update_ssl">Обновление SSL</string>
-    <string name="ssl_certificate_mismatch">Несоответствие сертификата SSL</string>
-    <string name="current_ssl">Текущий SSL</string>
-    <string name="pinned_ssl">Закрепленный SSL</string>
+    <string name="update">Обновление</string>
+    <string name="current">Текущий</string>
+    <string name="pinned">Закрепленный</string>
 
     <!-- HTTP Authentication. -->
     <string name="http_authentication">Аутентификация HTTP</string>
@@ -306,9 +305,9 @@
         <item>Изображения выключены</item>
     </string-array>
     <string name="pinned_ssl_certificate">Закрепленный сертификат SSL</string>
-    <string name="saved_ssl_certificate">Сохраненный сертификат SSL</string>
-    <string name="current_website_ssl_certificate">Текущий сертификат SSL сайта</string>
-    <string name="load_an_encrypted_website">Откройте зашифрованный сайт перед настройкой домена, чтобы заполнить текущий сертификат SSL веб-сайта.</string>
+        <string name="saved_ssl_certificate">Сохраненный сертификат SSL</string>
+        <string name="current_website_ssl_certificate">Текущий сертификат SSL сайта</string>
+        <string name="load_an_encrypted_website">Откройте зашифрованный сайт перед настройкой домена, чтобы заполнить текущий сертификат SSL веб-сайта.</string>
 
     <!-- Import/Export. -->
     <string name="encryption">Шифрование</string>

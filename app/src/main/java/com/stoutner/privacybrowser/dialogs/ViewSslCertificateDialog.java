@@ -20,7 +20,6 @@
 package com.stoutner.privacybrowser.dialogs;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -28,7 +27,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.http.SslCertificate;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -39,10 +37,6 @@ import android.widget.TextView;
 
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.R;
-
-import java.lang.ref.WeakReference;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -52,10 +46,7 @@ import java.util.Date;
 public class ViewSslCertificateDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Get the activity's layout inflater.
-        LayoutInflater layoutInflater   = getActivity().getLayoutInflater();
-
-        // Create a drawable version of the favorite icon.
-        Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), MainWebViewActivity.favoriteIconBitmap);
+        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
 
         // Use a builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
@@ -66,6 +57,9 @@ public class ViewSslCertificateDialog extends DialogFragment {
         } else {
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
         }
+
+        // Create a drawable version of the favorite icon.
+        Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), MainWebViewActivity.favoriteIconBitmap);
 
         // Set the icon.
         dialogBuilder.setIcon(favoriteIconDrawable);
@@ -132,6 +126,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
 
             // Setup the labels.
             String domainLabel = getString(R.string.domain_label) + "  ";
+            String ipAddressesLabel = getString(R.string.ip_addresses) + "  ";
             String cNameLabel = getString(R.string.common_name) + "  ";
             String oNameLabel = getString(R.string.organization) + "  ";
             String uNameLabel = getString(R.string.organizational_unit) + "  ";
@@ -143,9 +138,6 @@ public class ViewSslCertificateDialog extends DialogFragment {
 
             // Extract the domain name from the URI.
             String domainString = uri.getHost();
-
-            // Get the IP addresses.
-            new GetIpAddresses(getActivity(), alertDialog).execute(domainString);
 
             // Get the SSL certificate.
             SslCertificate sslCertificate = MainWebViewActivity.sslCertificate;
@@ -162,6 +154,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
 
             // Create spannable string builders for each text view that needs multiple colors of text.
             SpannableStringBuilder domainStringBuilder = new SpannableStringBuilder(domainLabel + domainString);
+            SpannableStringBuilder ipAddressesStringBuilder = new SpannableStringBuilder(ipAddressesLabel + MainWebViewActivity.currentHostIpAddresses);
             SpannableStringBuilder issuedToCNameStringBuilder = new SpannableStringBuilder(cNameLabel + issuedToCName);
             SpannableStringBuilder issuedToONameStringBuilder = new SpannableStringBuilder(oNameLabel + issuedToOName);
             SpannableStringBuilder issuedToUNameStringBuilder = new SpannableStringBuilder(uNameLabel + issuedToUName);
@@ -189,7 +182,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
             // Remove the incorrect lint error that `.equals` might produce a NullPointerException.
             assert domainString != null;
 
-            // Formet the `domainString` and `issuedToCName` colors.
+            // Formet the domain string and issued to CName colors.
             if (domainString.equals(issuedToCName)) {  // `domainString` and `issuedToCName` match.
                 // Set the strings to be blue.
                 domainStringBuilder.setSpan(blueColorSpan, domainLabel.length(), domainStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
@@ -231,13 +224,15 @@ public class ViewSslCertificateDialog extends DialogFragment {
                 issuedToCNameStringBuilder.setSpan(redColorSpan, cNameLabel.length(), issuedToCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             }
 
-            // Set the issued to and issued by spans to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
+            // Set the IP addresses, issued to, and issued by spans to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
+            ipAddressesStringBuilder.setSpan(blueColorSpan, ipAddressesLabel.length(), ipAddressesStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             issuedToONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length(), issuedToONameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             issuedToUNameStringBuilder.setSpan(blueColorSpan, uNameLabel.length(), issuedToUNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             issuedByCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), issuedByCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             issuedByONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length(), issuedByONameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             issuedByUNameStringBuilder.setSpan(blueColorSpan, uNameLabel.length(), issuedByUNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
+            // Get the current date.
             Date currentDate = Calendar.getInstance().getTime();
 
             //  Format the start date color.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
@@ -256,7 +251,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
 
             // Display the strings.
             domainTextView.setText(domainStringBuilder);
-            ipAddressesTextView.setText(getString(R.string.ip_addresses));
+            ipAddressesTextView.setText(ipAddressesStringBuilder);
             issuedToCNameTextView.setText(issuedToCNameStringBuilder);
             issuedToONameTextView.setText(issuedToONameStringBuilder);
             issuedToUNameTextView.setText(issuedToUNameStringBuilder);
@@ -266,101 +261,8 @@ public class ViewSslCertificateDialog extends DialogFragment {
             startDateTextView.setText(startDateStringBuilder);
             endDateTextView.setText(endDateStringBuilder);
 
-            // `onCreateDialog` requires the return of an `AlertDialog`.
+            // `onCreateDialog` requires the return of an alert dialog.
             return alertDialog;
-        }
-    }
-
-    // This must run asynchronously because it involves a network request.  `String` declares the parameters.  `Void` does not declare progress units.  `String` contains the results.
-    private static class GetIpAddresses extends AsyncTask<String, Void, SpannableStringBuilder> {
-        // The weak references are used to determine if the activity or the alert dialog have disappeared while the AsyncTask is running.
-        private WeakReference<Activity> activityWeakReference;
-        private WeakReference<AlertDialog> alertDialogWeakReference;
-
-        GetIpAddresses(Activity activity, AlertDialog alertDialog) {
-            // Populate the weak references.
-            activityWeakReference = new WeakReference<>(activity);
-            alertDialogWeakReference = new WeakReference<>(alertDialog);
-        }
-
-        @Override
-        protected SpannableStringBuilder doInBackground(String... domainName) {
-            // Get handles for the activity and the alert dialog.
-            Activity activity = activityWeakReference.get();
-            AlertDialog alertDialog = alertDialogWeakReference.get();
-
-            // Abort if the activity or the dialog is gone.
-            if ((activity == null) || (activity.isFinishing()) || (alertDialog == null)) {
-                return new SpannableStringBuilder();
-            }
-
-            // Initialize an IP address string builder.
-            StringBuilder ipAddresses = new StringBuilder();
-
-            // Get an array with the IP addresses for the host.
-            try {
-                // Get an array with all the IP addresses for the domain.
-                InetAddress[] inetAddressesArray = InetAddress.getAllByName(domainName[0]);
-
-                // Add each IP address to the string builder.
-                for (InetAddress inetAddress : inetAddressesArray) {
-                    if (ipAddresses.length() == 0) {  // This is the first IP address.
-                        // Add the IP Address to the string builder.
-                        ipAddresses.append(inetAddress.getHostAddress());
-                    } else {  // This is not the first IP address.
-                        // Add a line break to the string builder first.
-                        ipAddresses.append("\n");
-
-                        // Add the IP address to the string builder.
-                        ipAddresses.append(inetAddress.getHostAddress());
-                    }
-                }
-            } catch (UnknownHostException exception) {
-                // Do nothing.
-            }
-
-            // Set the label.
-            String ipAddressesLabel = activity.getString(R.string.ip_addresses) + "  ";
-
-            // Create a spannable string builder.
-            SpannableStringBuilder ipAddressesStringBuilder = new SpannableStringBuilder(ipAddressesLabel + ipAddresses);
-
-            // Create a blue foreground color span.
-            ForegroundColorSpan blueColorSpan;
-
-            // Set the blue color span according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
-            if (MainWebViewActivity.darkTheme) {
-                //noinspection deprecation
-                blueColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.blue_400));
-            } else {
-                //noinspection deprecation
-                blueColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.blue_700));
-            }
-
-            // Set the string builder to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
-            ipAddressesStringBuilder.setSpan(blueColorSpan, ipAddressesLabel.length(), ipAddressesStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-
-            // Return the formatted string.
-            return ipAddressesStringBuilder;
-        }
-
-        // `onPostExecute()` operates on the UI thread.
-        @Override
-        protected void onPostExecute(SpannableStringBuilder ipAddresses) {
-            // Get handles for the activity and the alert dialog.
-            Activity activity = activityWeakReference.get();
-            AlertDialog alertDialog = alertDialogWeakReference.get();
-
-            // Abort if the activity or the alert dialog is gone.
-            if ((activity == null) || (activity.isFinishing()) || (alertDialog == null)) {
-                return;
-            }
-
-            // Get a handle for the IP addresses text view.
-            TextView ipAddressesTextView = alertDialog.findViewById(R.id.ip_addresses);
-
-            // Populate the IP addresses text view.
-            ipAddressesTextView.setText(ipAddresses);
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -66,13 +66,14 @@ public class DownloadFileDialog extends AppCompatDialogFragment {
         // Create a variable for the file name string.
         String fileNameString;
 
-        // Parse `filename` from `contentDisposition`.
+        // Parse the filename from `contentDisposition`.
         if (contentDisposition.contains("filename=\"")) {  // The file name is contained in a string surrounded by `""`.
             fileNameString = contentDisposition.substring(contentDisposition.indexOf("filename=\"") + 10, contentDisposition.indexOf("\"", contentDisposition.indexOf("filename=\"") + 10));
-        } else if (contentDisposition.contains("filename=") && ((contentDisposition.indexOf(";", contentDisposition.indexOf("filename=") + 9)) > 0 )) {  // The file name is contained in a string beginning with `filename=` and ending with `;`.
+        } else if (contentDisposition.contains("filename=") && ((contentDisposition.indexOf(";", contentDisposition.indexOf("filename=") + 9)) > 0 )) {
+            // The file name is contained in a string beginning with `filename=` and ending with `;`.
             fileNameString = contentDisposition.substring(contentDisposition.indexOf("filename=") + 9, contentDisposition.indexOf(";", contentDisposition.indexOf("filename=") + 9));
         } else if (contentDisposition.contains("filename=")) {  // The file name is contained in a string beginning with `filename=` and proceeding to the end of `contentDisposition`.
-            fileNameString = contentDisposition.substring(contentDisposition.indexOf("filename=") + 9, contentDisposition.length());
+            fileNameString = contentDisposition.substring(contentDisposition.indexOf("filename=") + 9);
         } else {  // `contentDisposition` does not contain the filename, so use the last path segment of the URL.
             Uri downloadUri = Uri.parse(urlString);
             fileNameString = downloadUri.getLastPathSegment();

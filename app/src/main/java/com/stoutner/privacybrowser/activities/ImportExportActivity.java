@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -59,6 +59,7 @@ import com.stoutner.privacybrowser.helpers.ImportExportDatabaseHelper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -674,7 +675,7 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
                     secureRandom.nextBytes(saltByteArray);
 
                     // Convert the encryption password to a byte array.
-                    byte[] encryptionPasswordByteArray = encryptionPasswordString.getBytes("UTF-8");
+                    byte[] encryptionPasswordByteArray = encryptionPasswordString.getBytes(StandardCharsets.UTF_8);
 
                     // Append the salt to the encryption password byte array.  This protects against rainbow table attacks.
                     byte[] encryptionPasswordWithSaltByteArray = new byte[encryptionPasswordByteArray.length + saltByteArray.length];
@@ -832,7 +833,7 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
                     encryptedImportFileInputStream.read(initializationVector);
 
                     // Convert the encryption password to a byte array.
-                    byte[] encryptionPasswordByteArray = encryptionPasswordString.getBytes("UTF-8");
+                    byte[] encryptionPasswordByteArray = encryptionPasswordString.getBytes(StandardCharsets.UTF_8);
 
                     // Append the salt to the encryption password byte array.  This protects against rainbow table attacks.
                     byte[] encryptionPasswordWithSaltByteArray = new byte[encryptionPasswordByteArray.length + saltByteArray.length];

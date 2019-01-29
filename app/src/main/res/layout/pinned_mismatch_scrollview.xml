@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -25,10 +25,32 @@
     android:padding="10dp"
     android:orientation="vertical" >
 
+    <!-- Domain. -->
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/domain"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        android:textColor="?attr/sslTitle" />
+
+    <TextView
+        android:id="@+id/domain_name"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content" />
+
+    <TextView
+        android:id="@+id/ip_addresses"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"/>
+
+
     <!-- Issued To. -->
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:layout_marginTop="15dp"
         android:text="@string/issued_to"
         android:textAllCaps="true"
         android:textStyle="bold"

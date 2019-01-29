@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -308,7 +308,7 @@ public class ViewSourceActivity extends AppCompatActivity {
             Activity viewSourceActivity = activityWeakReference.get();
 
             // Abort if the activity is gone.
-            if ((viewSourceActivity == null) || (viewSourceActivity.isFinishing())) {
+            if ((viewSourceActivity == null) || viewSourceActivity.isFinishing()) {
                 return;
             }
 
@@ -334,7 +334,7 @@ public class ViewSourceActivity extends AppCompatActivity {
             Activity activity = activityWeakReference.get();
 
             // Abort if the activity is gone.
-            if ((activity == null) || (activity.isFinishing())) {
+            if ((activity == null) || activity.isFinishing()) {
                 return new SpannableStringBuilder[] {requestHeadersBuilder, responseMessageBuilder, responseHeadersBuilder, responseBodyBuilder};
             }
 
@@ -667,7 +667,7 @@ public class ViewSourceActivity extends AppCompatActivity {
             Activity activity = activityWeakReference.get();
 
             // Abort if the activity is gone.
-            if ((activity == null) || (activity.isFinishing())) {
+            if ((activity == null) || activity.isFinishing()) {
                 return;
             }
 

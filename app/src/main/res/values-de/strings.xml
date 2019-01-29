@@ -92,11 +92,9 @@
     <string name="url">URL</string>
     <string name="url_label">URL:</string>
 
-    <!-- Pinned SSL Certificate Mismatch. -->
-    <string name="update_ssl">SSL aktualisieren</string>
-    <string name="ssl_certificate_mismatch">SSL-Zertifikat Mismatch</string>
-    <string name="current_ssl">Aktuelles SSL</string>
-    <string name="pinned_ssl">Pinned SSL</string>
+    <!-- Pinned Mismatch. -->
+    <string name="update">Aktualisieren</string>
+    <string name="current">Aktuelles</string>
 
     <!-- HTTP Authentication. -->
     <string name="http_authentication">HTTP-Authentifizierung</string>
@@ -255,9 +253,9 @@
         <item>Grafiken deaktiviert</item>
     </string-array>
     <string name="pinned_ssl_certificate">SSL-Zertifikat verankern</string>
-    <string name="saved_ssl_certificate">Gespeicherte SSL-Zertifikate</string>
-    <string name="current_website_ssl_certificate">SSL-Zertifikat der aktuellen Webseite</string>
-    <string name="load_an_encrypted_website">Zuerst verschlüsselte Webseite laden...</string>
+        <string name="saved_ssl_certificate">Gespeicherte SSL-Zertifikate</string>
+        <string name="current_website_ssl_certificate">SSL-Zertifikat der aktuellen Webseite</string>
+        <string name="load_an_encrypted_website">Zuerst verschlüsselte Webseite laden...</string>
 
     <!-- Guide. -->
     <string name="privacy_browser_guide">Privacy Browser Handbuch</string>

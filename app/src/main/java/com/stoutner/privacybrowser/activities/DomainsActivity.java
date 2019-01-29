@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -224,7 +224,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                 deleteMenuItem.setVisible(true);
 
                 // Hide `add_domain_fab`.
-                addDomainFAB.setVisibility(View.GONE);
+                addDomainFAB.hide();
 
                 // Display `domainSettingsFragment`.
                 supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
@@ -255,7 +255,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                     deleteMenuItem.setVisible(true);
 
                     // Hide `add_domain_fab`.
-                    addDomainFAB.setVisibility(View.GONE);
+                    addDomainFAB.hide();
 
                     // Display `domainSettingsFragment`.
                     supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
@@ -317,8 +317,8 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                     // Populate the list of domains.  `-1` highlights the first domain if in two-paned mode.  It has no effect in single-paned mode.
                     populateDomainsListView(-1);
 
-                    // Display the add domain FAB.
-                    addDomainFAB.setVisibility(View.VISIBLE);
+                    // Show the add domain FAB.
+                    addDomainFAB.show();
 
                     // Hide the delete menu item.
                     deleteMenuItem.setVisible(false);
@@ -361,8 +361,8 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                     supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainsListFragment).commit();
                     supportFragmentManager.executePendingTransactions();
 
-                    // Display `addDomainFAB`.
-                    addDomainFAB.setVisibility(View.VISIBLE);
+                    // Show the add domain FAB.
+                    addDomainFAB.show();
 
                     // Hide `deleteMenuItem`.
                     deleteMenuItem.setVisible(false);
@@ -453,9 +453,8 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                                             // Display `domainSettingsFragment`.
                                             supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
 
-                                            // Hide `add_domain_fab`.
-                                            FloatingActionButton addDomainFAB = findViewById(R.id.add_domain_fab);
-                                            addDomainFAB.setVisibility(View.GONE);
+                                            // Hide the add domain FAB.
+                                            addDomainFAB.hide();
 
                                             // Show and enable `deleteMenuItem`.
                                             deleteMenuItem.setVisible(true);
@@ -575,8 +574,8 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             // Populate the list of domains.  `-1` highlights the first domain if in two-paned mode.  It has no effect in single-paned mode.
             populateDomainsListView(-1);
 
-            // Display the add domain FAB.
-            addDomainFAB.setVisibility(View.VISIBLE);
+            // Show the add domain FAB.
+            addDomainFAB.show();
 
             // Hide the delete menu item.
             deleteMenuItem.setVisible(false);
@@ -613,8 +612,8 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         if (twoPanedMode) {  // The device in in two-paned mode.
             populateDomainsListView(currentDomainDatabaseId);
         } else {  // The device is in single-paned mode.
-            // Hide `add_domain_fab`.
-            addDomainFAB.setVisibility(View.GONE);
+            // Hide the add domain FAB.
+            addDomainFAB.hide();
 
             // Show and enable `deleteMenuItem`.
             DomainsActivity.deleteMenuItem.setVisible(true);
@@ -635,26 +634,28 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
     public void saveDomainSettings(View view, Resources resources) {
         // Get handles for the domain settings.
         EditText domainNameEditText = view.findViewById(R.id.domain_settings_name_edittext);
-        Switch javaScriptSwitch = view.findViewById(R.id.domain_settings_javascript_switch);
-        Switch firstPartyCookiesSwitch = view.findViewById(R.id.domain_settings_first_party_cookies_switch);
-        Switch thirdPartyCookiesSwitch = view.findViewById(R.id.domain_settings_third_party_cookies_switch);
-        Switch domStorageSwitch = view.findViewById(R.id.domain_settings_dom_storage_switch);
-        Switch formDataSwitch = view.findViewById(R.id.domain_settings_form_data_switch);  // Form data can be removed once the minimum API >= 26.
-        Switch easyListSwitch = view.findViewById(R.id.domain_settings_easylist_switch);
-        Switch easyPrivacySwitch = view.findViewById(R.id.domain_settings_easyprivacy_switch);
-        Switch fanboysAnnoyanceSwitch = view.findViewById(R.id.domain_settings_fanboys_annoyance_list_switch);
-        Switch fanboysSocialBlockingSwitch = view.findViewById(R.id.domain_settings_fanboys_social_blocking_list_switch);
-        Switch ultraPrivacySwitch = view.findViewById(R.id.domain_settings_ultraprivacy_switch);
-        Switch blockAllThirdPartyRequestsSwitch = view.findViewById(R.id.domain_settings_block_all_third_party_requests_switch);
-        Spinner userAgentSpinner = view.findViewById(R.id.domain_settings_user_agent_spinner);
-        EditText customUserAgentEditText = view.findViewById(R.id.domain_settings_custom_user_agent_edittext);
-        Spinner fontSizeSpinner = view.findViewById(R.id.domain_settings_font_size_spinner);
-        Spinner swipeToRefreshSpinner = view.findViewById(R.id.domain_settings_swipe_to_refresh_spinner);
-        Spinner displayWebpageImagesSpinner = view.findViewById(R.id.domain_settings_display_webpage_images_spinner);
-        Spinner nightModeSpinner = view.findViewById(R.id.domain_settings_night_mode_spinner);
-        Switch pinnedSslCertificateSwitch = view.findViewById(R.id.domain_settings_pinned_ssl_certificate_switch);
-        RadioButton savedSslCertificateRadioButton = view.findViewById(R.id.saved_ssl_certificate_radiobutton);
+        Switch javaScriptSwitch = view.findViewById(R.id.javascript_switch);
+        Switch firstPartyCookiesSwitch = view.findViewById(R.id.first_party_cookies_switch);
+        Switch thirdPartyCookiesSwitch = view.findViewById(R.id.third_party_cookies_switch);
+        Switch domStorageSwitch = view.findViewById(R.id.dom_storage_switch);
+        Switch formDataSwitch = view.findViewById(R.id.form_data_switch);  // Form data can be removed once the minimum API >= 26.
+        Switch easyListSwitch = view.findViewById(R.id.easylist_switch);
+        Switch easyPrivacySwitch = view.findViewById(R.id.easyprivacy_switch);
+        Switch fanboysAnnoyanceSwitch = view.findViewById(R.id.fanboys_annoyance_list_switch);
+        Switch fanboysSocialBlockingSwitch = view.findViewById(R.id.fanboys_social_blocking_list_switch);
+        Switch ultraPrivacySwitch = view.findViewById(R.id.ultraprivacy_switch);
+        Switch blockAllThirdPartyRequestsSwitch = view.findViewById(R.id.block_all_third_party_requests_switch);
+        Spinner userAgentSpinner = view.findViewById(R.id.user_agent_spinner);
+        EditText customUserAgentEditText = view.findViewById(R.id.custom_user_agent_edittext);
+        Spinner fontSizeSpinner = view.findViewById(R.id.font_size_spinner);
+        Spinner swipeToRefreshSpinner = view.findViewById(R.id.swipe_to_refresh_spinner);
+        Spinner displayWebpageImagesSpinner = view.findViewById(R.id.display_webpage_images_spinner);
+        Spinner nightModeSpinner = view.findViewById(R.id.night_mode_spinner);
+        Switch pinnedSslCertificateSwitch = view.findViewById(R.id.pinned_ssl_certificate_switch);
         RadioButton currentWebsiteCertificateRadioButton = view.findViewById(R.id.current_website_certificate_radiobutton);
+        Switch pinnedIpAddressesSwitch = view.findViewById(R.id.pinned_ip_addresses_switch);
+        RadioButton currentIpAddressesRadioButton = view.findViewById(R.id.current_ip_addresses_radiobutton);
+        TextView currentIpAddressesTextView = view.findViewById(R.id.current_ip_addresses_textview);
 
         // Extract the data for the domain settings.
         String domainNameString = domainNameEditText.getText().toString();
@@ -675,6 +676,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         int displayWebpageImagesInt = displayWebpageImagesSpinner.getSelectedItemPosition();
         int nightModeInt = nightModeSpinner.getSelectedItemPosition();
         boolean pinnedSslCertificate = pinnedSslCertificateSwitch.isChecked();
+        boolean pinnedIpAddress = pinnedIpAddressesSwitch.isChecked();
 
         // Initialize the user agent name string.
         String userAgentName;
@@ -703,12 +705,12 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         int fontSizeInt = Integer.parseInt(resources.getStringArray(R.array.domain_settings_font_size_entry_values)[fontSizePosition]);
 
         // Save the domain settings.
-        if (savedSslCertificateRadioButton.isChecked()) {  // The current certificate is being used.
-            // Update the database except for the certificate.
-            domainsDatabaseHelper.updateDomainExceptCertificate(DomainsActivity.currentDomainDatabaseId, domainNameString, javaScriptEnabled, firstPartyCookiesEnabled, thirdPartyCookiesEnabled,
+        domainsDatabaseHelper.updateDomain(DomainsActivity.currentDomainDatabaseId, domainNameString, javaScriptEnabled, firstPartyCookiesEnabled, thirdPartyCookiesEnabled,
                     domStorageEnabled, formDataEnabled, easyListEnabled, easyPrivacyEnabled, fanboysAnnoyanceEnabled, fanboysSocialBlockingEnabled, ultraPrivacyEnabled, blockAllThirdPartyRequests,
-                    userAgentName, fontSizeInt, swipeToRefreshInt, nightModeInt, displayWebpageImagesInt, pinnedSslCertificate);
-        } else if (currentWebsiteCertificateRadioButton.isChecked()) {  // The certificate is being updated with the current website certificate.
+                    userAgentName, fontSizeInt, swipeToRefreshInt, nightModeInt, displayWebpageImagesInt, pinnedSslCertificate, pinnedIpAddress);
+
+        // Update the pinned SSL certificate if a new one is checked.
+        if (currentWebsiteCertificateRadioButton.isChecked()) {
             // Get the current website SSL certificate.
             SslCertificate currentWebsiteSslCertificate = MainWebViewActivity.sslCertificate;
 
@@ -723,16 +725,17 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             long endDateLong = currentWebsiteSslCertificate.getValidNotAfterDate().getTime();
 
             // Update the database.
-            domainsDatabaseHelper.updateDomainWithCertificate(currentDomainDatabaseId, domainNameString, javaScriptEnabled, firstPartyCookiesEnabled, thirdPartyCookiesEnabled, domStorageEnabled,
-                    formDataEnabled, easyListEnabled, easyPrivacyEnabled, fanboysAnnoyanceEnabled, fanboysSocialBlockingEnabled, ultraPrivacyEnabled, blockAllThirdPartyRequests, userAgentName, fontSizeInt,
-                    swipeToRefreshInt, nightModeInt, displayWebpageImagesInt, pinnedSslCertificate, issuedToCommonName, issuedToOrganization, issuedToOrganizationalUnit, issuedByCommonName,
-                    issuedByOrganization, issuedByOrganizationalUnit, startDateLong, endDateLong);
+            domainsDatabaseHelper.updatePinnedSslCertificate(currentDomainDatabaseId, issuedToCommonName, issuedToOrganization, issuedToOrganizationalUnit, issuedByCommonName, issuedByOrganization,
+                    issuedByOrganizationalUnit, startDateLong, endDateLong);
+        }
 
-        } else {  // No certificate is selected.
-            // Update the database, with PINNED_SSL_CERTIFICATE set to false.
-            domainsDatabaseHelper.updateDomainExceptCertificate(currentDomainDatabaseId, domainNameString, javaScriptEnabled, firstPartyCookiesEnabled, thirdPartyCookiesEnabled, domStorageEnabled,
-                    formDataEnabled, easyListEnabled, easyPrivacyEnabled, fanboysAnnoyanceEnabled, fanboysSocialBlockingEnabled, ultraPrivacyEnabled, blockAllThirdPartyRequests, userAgentName, fontSizeInt,
-                    swipeToRefreshInt, nightModeInt, displayWebpageImagesInt,false);
+        // Update the pinned IP addresses if new ones are checked.
+        if (currentIpAddressesRadioButton.isChecked()) {
+            // Get the current IP addresses.
+            String currentIpAddresses = currentIpAddressesTextView.getText().toString();
+
+            // Update the database.
+            domainsDatabaseHelper.updatePinnedIpAddresses(currentDomainDatabaseId, currentIpAddresses);
         }
     }
 

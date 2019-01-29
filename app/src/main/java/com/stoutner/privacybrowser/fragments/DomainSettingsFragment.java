@@ -79,13 +79,12 @@ public class DomainSettingsFragment extends Fragment {
     }
 
     // The deprecated `getDrawable()` must be used until the minimum API >= 21.
-    @SuppressWarnings("deprecation")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate `domain_settings_fragment`.  `false` does not attach it to the root `container`.
         View domainSettingsView = inflater.inflate(R.layout.domain_settings_fragment, container, false);
 
-        // Get a handle for the `Context` and the `Resources`.
+        // Get a handle for the context and the resources.
         Context context = getContext();
         final Resources resources = getResources();
 
@@ -102,45 +101,45 @@ public class DomainSettingsFragment extends Fragment {
 
         // Get handles for the views in the fragment.
         final EditText domainNameEditText = domainSettingsView.findViewById(R.id.domain_settings_name_edittext);
-        final Switch javaScriptEnabledSwitch = domainSettingsView.findViewById(R.id.domain_settings_javascript_switch);
-        final ImageView javaScriptImageView = domainSettingsView.findViewById(R.id.domain_settings_javascript_imageview);
-        Switch firstPartyCookiesEnabledSwitch = domainSettingsView.findViewById(R.id.domain_settings_first_party_cookies_switch);
-        final ImageView firstPartyCookiesImageView = domainSettingsView.findViewById(R.id.domain_settings_first_party_cookies_imageview);
-        LinearLayout thirdPartyCookiesLinearLayout = domainSettingsView.findViewById(R.id.domain_settings_third_party_cookies_linearlayout);
-        final Switch thirdPartyCookiesEnabledSwitch = domainSettingsView.findViewById(R.id.domain_settings_third_party_cookies_switch);
-        final ImageView thirdPartyCookiesImageView = domainSettingsView.findViewById(R.id.domain_settings_third_party_cookies_imageview);
-        final Switch domStorageEnabledSwitch = domainSettingsView.findViewById(R.id.domain_settings_dom_storage_switch);
-        final ImageView domStorageImageView = domainSettingsView.findViewById(R.id.domain_settings_dom_storage_imageview);
-        Switch formDataEnabledSwitch = domainSettingsView.findViewById(R.id.domain_settings_form_data_switch);  // The form data views can be remove once the minimum API >= 26.
-        final ImageView formDataImageView = domainSettingsView.findViewById(R.id.domain_settings_form_data_imageview);  // The form data views can be remove once the minimum API >= 26.
-        Switch easyListSwitch = domainSettingsView.findViewById(R.id.domain_settings_easylist_switch);
-        ImageView easyListImageView = domainSettingsView.findViewById(R.id.domain_settings_easylist_imageview);
-        Switch easyPrivacySwitch = domainSettingsView.findViewById(R.id.domain_settings_easyprivacy_switch);
-        ImageView easyPrivacyImageView = domainSettingsView.findViewById(R.id.domain_settings_easyprivacy_imageview);
-        Switch fanboysAnnoyanceListSwitch = domainSettingsView.findViewById(R.id.domain_settings_fanboys_annoyance_list_switch);
-        ImageView fanboysAnnoyanceListImageView = domainSettingsView.findViewById(R.id.domain_settings_fanboys_annoyance_list_imageview);
-        Switch fanboysSocialBlockingListSwitch = domainSettingsView.findViewById(R.id.domain_settings_fanboys_social_blocking_list_switch);
-        ImageView fanboysSocialBlockingListImageView = domainSettingsView.findViewById(R.id.domain_settings_fanboys_social_blocking_list_imageview);
-        Switch ultraPrivacySwitch = domainSettingsView.findViewById(R.id.domain_settings_ultraprivacy_switch);
-        ImageView ultraPrivacyImageView = domainSettingsView.findViewById(R.id.domain_settings_ultraprivacy_imageview);
-        Switch blockAllThirdPartyRequestsSwitch = domainSettingsView.findViewById(R.id.domain_settings_block_all_third_party_requests_switch);
-        ImageView blockAllThirdPartyRequestsImageView = domainSettingsView.findViewById(R.id.domain_settings_block_all_third_party_requests_imageview);
-        final Spinner userAgentSpinner = domainSettingsView.findViewById(R.id.domain_settings_user_agent_spinner);
-        final TextView userAgentTextView = domainSettingsView.findViewById(R.id.domain_settings_user_agent_textview);
-        final EditText customUserAgentEditText = domainSettingsView.findViewById(R.id.domain_settings_custom_user_agent_edittext);
-        final Spinner fontSizeSpinner = domainSettingsView.findViewById(R.id.domain_settings_font_size_spinner);
-        final TextView fontSizeTextView = domainSettingsView.findViewById(R.id.domain_settings_font_size_textview);
-        final ImageView swipeToRefreshImageView = domainSettingsView.findViewById(R.id.domain_settings_swipe_to_refresh_imageview);
-        final Spinner swipeToRefreshSpinner = domainSettingsView.findViewById(R.id.domain_settings_swipe_to_refresh_spinner);
-        final TextView swipeToRefreshTextView = domainSettingsView.findViewById(R.id.domain_settings_swipe_to_refresh_textview);
-        final ImageView nightModeImageView = domainSettingsView.findViewById(R.id.domain_settings_night_mode_imageview);
-        final Spinner nightModeSpinner = domainSettingsView.findViewById(R.id.domain_settings_night_mode_spinner);
-        final TextView nightModeTextView = domainSettingsView.findViewById(R.id.domain_settings_night_mode_textview);
-        final ImageView displayWebpageImagesImageView = domainSettingsView.findViewById(R.id.domain_settings_display_webpage_images_imageview);
-        final Spinner displayWebpageImagesSpinner = domainSettingsView.findViewById(R.id.domain_settings_display_webpage_images_spinner);
-        final TextView displayImagesTextView = domainSettingsView.findViewById(R.id.domain_settings_display_webpage_images_textview);
-        final ImageView pinnedSslCertificateImageView = domainSettingsView.findViewById(R.id.domain_settings_pinned_ssl_certificate_imageview);
-        Switch pinnedSslCertificateSwitch = domainSettingsView.findViewById(R.id.domain_settings_pinned_ssl_certificate_switch);
+        final Switch javaScriptEnabledSwitch = domainSettingsView.findViewById(R.id.javascript_switch);
+        final ImageView javaScriptImageView = domainSettingsView.findViewById(R.id.javascript_imageview);
+        Switch firstPartyCookiesEnabledSwitch = domainSettingsView.findViewById(R.id.first_party_cookies_switch);
+        final ImageView firstPartyCookiesImageView = domainSettingsView.findViewById(R.id.first_party_cookies_imageview);
+        LinearLayout thirdPartyCookiesLinearLayout = domainSettingsView.findViewById(R.id.third_party_cookies_linearlayout);
+        final Switch thirdPartyCookiesEnabledSwitch = domainSettingsView.findViewById(R.id.third_party_cookies_switch);
+        final ImageView thirdPartyCookiesImageView = domainSettingsView.findViewById(R.id.third_party_cookies_imageview);
+        final Switch domStorageEnabledSwitch = domainSettingsView.findViewById(R.id.dom_storage_switch);
+        final ImageView domStorageImageView = domainSettingsView.findViewById(R.id.dom_storage_imageview);
+        Switch formDataEnabledSwitch = domainSettingsView.findViewById(R.id.form_data_switch);  // The form data views can be remove once the minimum API >= 26.
+        final ImageView formDataImageView = domainSettingsView.findViewById(R.id.form_data_imageview);  // The form data views can be remove once the minimum API >= 26.
+        Switch easyListSwitch = domainSettingsView.findViewById(R.id.easylist_switch);
+        ImageView easyListImageView = domainSettingsView.findViewById(R.id.easylist_imageview);
+        Switch easyPrivacySwitch = domainSettingsView.findViewById(R.id.easyprivacy_switch);
+        ImageView easyPrivacyImageView = domainSettingsView.findViewById(R.id.easyprivacy_imageview);
+        Switch fanboysAnnoyanceListSwitch = domainSettingsView.findViewById(R.id.fanboys_annoyance_list_switch);
+        ImageView fanboysAnnoyanceListImageView = domainSettingsView.findViewById(R.id.fanboys_annoyance_list_imageview);
+        Switch fanboysSocialBlockingListSwitch = domainSettingsView.findViewById(R.id.fanboys_social_blocking_list_switch);
+        ImageView fanboysSocialBlockingListImageView = domainSettingsView.findViewById(R.id.fanboys_social_blocking_list_imageview);
+        Switch ultraPrivacySwitch = domainSettingsView.findViewById(R.id.ultraprivacy_switch);
+        ImageView ultraPrivacyImageView = domainSettingsView.findViewById(R.id.ultraprivacy_imageview);
+        Switch blockAllThirdPartyRequestsSwitch = domainSettingsView.findViewById(R.id.block_all_third_party_requests_switch);
+        ImageView blockAllThirdPartyRequestsImageView = domainSettingsView.findViewById(R.id.block_all_third_party_requests_imageview);
+        final Spinner userAgentSpinner = domainSettingsView.findViewById(R.id.user_agent_spinner);
+        final TextView userAgentTextView = domainSettingsView.findViewById(R.id.user_agent_textview);
+        final EditText customUserAgentEditText = domainSettingsView.findViewById(R.id.custom_user_agent_edittext);
+        final Spinner fontSizeSpinner = domainSettingsView.findViewById(R.id.font_size_spinner);
+        final TextView fontSizeTextView = domainSettingsView.findViewById(R.id.font_size_textview);
+        final ImageView swipeToRefreshImageView = domainSettingsView.findViewById(R.id.swipe_to_refresh_imageview);
+        final Spinner swipeToRefreshSpinner = domainSettingsView.findViewById(R.id.swipe_to_refresh_spinner);
+        final TextView swipeToRefreshTextView = domainSettingsView.findViewById(R.id.swipe_to_refresh_textview);
+        final ImageView nightModeImageView = domainSettingsView.findViewById(R.id.night_mode_imageview);
+        final Spinner nightModeSpinner = domainSettingsView.findViewById(R.id.night_mode_spinner);
+        final TextView nightModeTextView = domainSettingsView.findViewById(R.id.night_mode_textview);
+        final ImageView displayWebpageImagesImageView = domainSettingsView.findViewById(R.id.display_webpage_images_imageview);
+        final Spinner displayWebpageImagesSpinner = domainSettingsView.findViewById(R.id.display_webpage_images_spinner);
+        final TextView displayImagesTextView = domainSettingsView.findViewById(R.id.display_webpage_images_textview);
+        final ImageView pinnedSslCertificateImageView = domainSettingsView.findViewById(R.id.pinned_ssl_certificate_imageview);
+        Switch pinnedSslCertificateSwitch = domainSettingsView.findViewById(R.id.pinned_ssl_certificate_switch);
         final CardView savedSslCertificateCardView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_cardview);
         LinearLayout savedSslCertificateLinearLayout = domainSettingsView.findViewById(R.id.saved_ssl_certificate_linearlayout);
         final RadioButton savedSslCertificateRadioButton = domainSettingsView.findViewById(R.id.saved_ssl_certificate_radiobutton);
@@ -164,9 +163,19 @@ public class DomainSettingsFragment extends Fragment {
         TextView currentWebsiteCertificateStartDateTextView = domainSettingsView.findViewById(R.id.current_website_certificate_start_date);
         TextView currentWebsiteCertificateEndDateTextView = domainSettingsView.findViewById(R.id.current_website_certificate_end_date);
         final TextView noCurrentWebsiteCertificateTextView = domainSettingsView.findViewById(R.id.no_current_website_certificate);
+        ImageView pinnedIpAddressesImageView = domainSettingsView.findViewById(R.id.pinned_ip_addresses_imageview);
+        Switch pinnedIpAddressesSwitch = domainSettingsView.findViewById(R.id.pinned_ip_addresses_switch);
+        CardView savedIpAddressesCardView = domainSettingsView.findViewById(R.id.saved_ip_addresses_cardview);
+        LinearLayout savedIpAddressesLinearLayout = domainSettingsView.findViewById(R.id.saved_ip_addresses_linearlayout);
+        RadioButton savedIpAddressesRadioButton = domainSettingsView.findViewById(R.id.saved_ip_addresses_radiobutton);
+        TextView savedIpAddressesTextView = domainSettingsView.findViewById(R.id.saved_ip_addresses_textview);
+        CardView currentIpAddressesCardView = domainSettingsView.findViewById(R.id.current_ip_addresses_cardview);
+        LinearLayout currentIpAddressesLinearLayout = domainSettingsView.findViewById(R.id.current_ip_addresses_linearlayout);
+        RadioButton currentIpAddressesRadioButton = domainSettingsView.findViewById(R.id.current_ip_addresses_radiobutton);
+        TextView currentIpAddressesTextView = domainSettingsView.findViewById(R.id.current_ip_addresses_textview);
 
-        // Setup the SSL certificate labels.
-        final String cNameLabel = getString(R.string.common_name) + "  ";
+        // Setup the pinned labels.
+        String cNameLabel = getString(R.string.common_name) + "  ";
         String oNameLabel = getString(R.string.organization) + "  ";
         String uNameLabel = getString(R.string.organizational_unit) + "  ";
         String startDateLabel = getString(R.string.start_date) + "  ";
@@ -178,11 +187,11 @@ public class DomainSettingsFragment extends Fragment {
         // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
         DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(context, null, null, 0);
 
-        // Get the database `Cursor` for this ID and move it to the first row.
+        // Get the database cursor for this ID and move it to the first row.
         Cursor domainCursor = domainsDatabaseHelper.getCursorForId(databaseId);
         domainCursor.moveToFirst();
 
-        // Save the `Cursor` entries as variables.
+        // Save the cursor entries as variables.
         String domainNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME));
         final int javaScriptEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT));
         int firstPartyCookiesEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES));
@@ -201,12 +210,14 @@ public class DomainSettingsFragment extends Fragment {
         int nightModeInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.NIGHT_MODE));
         int displayImagesInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
         int pinnedSslCertificateInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE));
-        final String savedSslCertificateIssuedToCNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME));
+        String savedSslCertificateIssuedToCNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME));
         String savedSslCertificateIssuedToONameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION));
         String savedSslCertificateIssuedToUNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT));
         String savedSslCertificateIssuedByCNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME));
         String savedSslCertificateIssuedByONameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION));
         String savedSslCertificateIssuedByUNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT));
+        int pinnedIpAddressesInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_IP_ADDRESSES));
+        String savedIpAddresses = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.IP_ADDRESSES));
 
         // Initialize the saved SSL certificate date variables.
         Date savedSslCertificateStartDate = null;
@@ -251,7 +262,7 @@ public class DomainSettingsFragment extends Fragment {
         SpannableStringBuilder savedSslCertificateIssuedByONameStringBuilder = new SpannableStringBuilder(oNameLabel + savedSslCertificateIssuedByONameString);
         SpannableStringBuilder savedSslCertificateIssuedByUNameStringBuilder = new SpannableStringBuilder(uNameLabel + savedSslCertificateIssuedByUNameString);
 
-        // Initialize the `SpannableStringBuilders` for the SSL certificate dates.
+        // Initialize the spannable string builders for the SSL certificate dates.
         SpannableStringBuilder savedSslCertificateStartDateStringBuilder;
         SpannableStringBuilder savedSslCertificateEndDateStringBuilder;
 
@@ -268,19 +279,19 @@ public class DomainSettingsFragment extends Fragment {
             savedSslCertificateEndDateStringBuilder = new SpannableStringBuilder(endDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(savedSslCertificateEndDate));
         }
 
-        // Create a red `ForegroundColorSpan`.  We have to use the deprecated `getColor` until API >= 23.
-        final ForegroundColorSpan redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
+        // Create a red foreground color span.  The deprecated `resources.getColor` must be used until the minimum API >= 23.
+        final ForegroundColorSpan redColorSpan = new ForegroundColorSpan(resources.getColor(R.color.red_a700));
 
-        // Create a blue `ForegroundColorSpan`.
+        // Create a blue foreground color span.
         final ForegroundColorSpan blueColorSpan;
 
-        // Set `blueColorSpan` according to the theme.  We have to use the deprecated `getColor()` until API >= 23.
+        // Set the blue color span according to the theme.  The deprecated `resources.getColor` must be used until the minimum API >= 23.
         if (MainWebViewActivity.darkTheme) {
             //noinspection deprecation
-            blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
+            blueColorSpan = new ForegroundColorSpan(resources.getColor(R.color.blue_400));
         } else {
             //noinspection deprecation
-            blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
+            blueColorSpan = new ForegroundColorSpan(resources.getColor(R.color.blue_700));
         }
 
         // Set the domain name from the the database cursor.
@@ -343,7 +354,7 @@ public class DomainSettingsFragment extends Fragment {
             }
         });
 
-        // Create a `boolean` to track if night mode is enabled.
+        // Create a boolean to track if night mode is enabled.
         boolean nightModeEnabled = (nightModeInt == DomainsDatabaseHelper.NIGHT_MODE_ENABLED) || ((nightModeInt == DomainsDatabaseHelper.NIGHT_MODE_SYSTEM_DEFAULT) && defaultNightMode);
 
         // Disable the JavaScript switch if night mode is enabled.
@@ -960,17 +971,17 @@ public class DomainSettingsFragment extends Fragment {
         // Store the current date.
         Date currentDate = Calendar.getInstance().getTime();
 
-        // Setup the `StringBuilders` to display the general certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
+        // Setup the string builders to display the general certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
         savedSslCertificateIssuedToONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length(), savedSslCertificateIssuedToONameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         savedSslCertificateIssuedToUNameStringBuilder.setSpan(blueColorSpan, uNameLabel.length(), savedSslCertificateIssuedToUNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         savedSslCertificateIssuedByCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), savedSslCertificateIssuedByCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         savedSslCertificateIssuedByONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length(), savedSslCertificateIssuedByONameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         savedSslCertificateIssuedByUNameStringBuilder.setSpan(blueColorSpan, uNameLabel.length(), savedSslCertificateIssuedByUNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
-        // Check the certificate `Common Name` against the domain name.
+        // Check the certificate Common Name against the domain name.
         boolean savedSSlCertificateCommonNameMatchesDomainName = checkDomainNameAgainstCertificate(domainNameString, savedSslCertificateIssuedToCNameString);
 
-        // Format the `issuedToCommonName` color.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
+        // Format the issued to Common Name color.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
         if (savedSSlCertificateCommonNameMatchesDomainName) {
             savedSslCertificateIssuedToCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), savedSslCertificateIssuedToCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         } else {
@@ -991,7 +1002,7 @@ public class DomainSettingsFragment extends Fragment {
             savedSslCertificateEndDateStringBuilder.setSpan(blueColorSpan, endDateLabel.length(), savedSslCertificateEndDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         }
 
-        // Display the current website SSL certificate strings.
+        // Display the saved website SSL certificate strings.
         savedSslCertificateIssuedToCNameTextView.setText(savedSslCertificateIssuedToCNameStringBuilder);
         savedSslCertificateIssuedToONameTextView.setText(savedSslCertificateIssuedToONameStringBuilder);
         savedSslCertificateIssuedToUNameTextView.setText(savedSslCertificateIssuedToUNameStringBuilder);
@@ -1013,7 +1024,7 @@ public class DomainSettingsFragment extends Fragment {
             Date currentWebsiteCertificateStartDate = currentWebsiteSslCertificate.getValidNotBeforeDate();
             Date currentWebsiteCertificateEndDate = currentWebsiteSslCertificate.getValidNotAfterDate();
 
-            // Create a `SpannableStringBuilder` for each `TextView` that needs multiple colors of text.
+            // Create a spannable string builder for each text view that needs multiple colors of text.
             SpannableStringBuilder currentWebsiteCertificateIssuedToCNameStringBuilder = new SpannableStringBuilder(cNameLabel + currentWebsiteCertificateIssuedToCNameString);
             SpannableStringBuilder currentWebsiteCertificateIssuedToONameStringBuilder = new SpannableStringBuilder(oNameLabel + currentWebsiteCertificateIssuedToONameString);
             SpannableStringBuilder currentWebsiteCertificateIssuedToUNameStringBuilder = new SpannableStringBuilder(uNameLabel + currentWebsiteCertificateIssuedToUNameString);
@@ -1025,17 +1036,17 @@ public class DomainSettingsFragment extends Fragment {
             SpannableStringBuilder currentWebsiteCertificateEndDateStringBuilder = new SpannableStringBuilder(endDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG)
                     .format(currentWebsiteCertificateEndDate));
 
-            // Setup the `StringBuilders` to display the general certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
+            // Setup the string builders to display the general certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
             currentWebsiteCertificateIssuedToONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length(), currentWebsiteCertificateIssuedToONameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             currentWebsiteCertificateIssuedToUNameStringBuilder.setSpan(blueColorSpan, uNameLabel.length(), currentWebsiteCertificateIssuedToUNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             currentWebsiteCertificateIssuedByCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), currentWebsiteCertificateIssuedByCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             currentWebsiteCertificateIssuedByONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length(), currentWebsiteCertificateIssuedByONameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             currentWebsiteCertificateIssuedByUNameStringBuilder.setSpan(blueColorSpan, uNameLabel.length(), currentWebsiteCertificateIssuedByUNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
-            // Check the certificate `Common Name` against the domain name.
+            // Check the certificate Common Name against the domain name.
             boolean currentWebsiteCertificateCommonNameMatchesDomainName = checkDomainNameAgainstCertificate(domainNameString, currentWebsiteCertificateIssuedToCNameString);
 
-            // Format the `issuedToCommonName` color.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
+            // Format the issued to Common Name color.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
             if (currentWebsiteCertificateCommonNameMatchesDomainName) {
                 currentWebsiteCertificateIssuedToCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), currentWebsiteCertificateIssuedToCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             } else {
@@ -1067,8 +1078,8 @@ public class DomainSettingsFragment extends Fragment {
             currentWebsiteCertificateEndDateTextView.setText(currentWebsiteCertificateEndDateStringBuilder);
         }
 
-        // Set the initial display status for the SSL certificates.
-        if (pinnedSslCertificateSwitch.isChecked()) {
+        // Set the initial display status of the SSL certificates card views.
+        if (pinnedSslCertificateSwitch.isChecked()) {  // An SSL certificate is pinned.
             // Set the visibility of the saved SSL certificate.
             if (savedSslCertificateIssuedToCNameString == null) {
                 savedSslCertificateCardView.setVisibility(View.GONE);
@@ -1077,13 +1088,13 @@ public class DomainSettingsFragment extends Fragment {
             }
 
             // Set the visibility of the current website SSL certificate.
-            if (currentWebsiteSslCertificate == null) {
+            if (currentWebsiteSslCertificate == null) {  // There is no current SSL certificate.
                 // Hide the SSL certificate.
                 currentWebsiteCertificateCardView.setVisibility(View.GONE);
 
                 // Show the instruction.
                 noCurrentWebsiteCertificateTextView.setVisibility(View.VISIBLE);
-            } else {
+            } else {  // There is a current SSL certificate.
                 // Show the SSL certificate.
                 currentWebsiteCertificateCardView.setVisibility(View.VISIBLE);
 
@@ -1091,7 +1102,7 @@ public class DomainSettingsFragment extends Fragment {
                 noCurrentWebsiteCertificateTextView.setVisibility(View.GONE);
             }
 
-            // Set the status of the radio buttons.
+            // Set the status of the radio buttons and the card view backgrounds.
             if (savedSslCertificateCardView.getVisibility() == View.VISIBLE) {  // The saved SSL certificate is displayed.
                 // Check the saved SSL certificate radio button.
                 savedSslCertificateRadioButton.setChecked(true);
@@ -1111,19 +1122,12 @@ public class DomainSettingsFragment extends Fragment {
 
                 // Uncheck the saved SSL certificate radio button.
                 savedSslCertificateRadioButton.setChecked(false);
-
-                // Darken the background of the saved SSL certificate linear layout according to the theme.
-                if (MainWebViewActivity.darkTheme) {
-                    savedSslCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_33);
-                } else {
-                    savedSslCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_11);
-                }
             } else {  // Neither SSL certificate is visible.
                 // Uncheck both radio buttons.
                 savedSslCertificateRadioButton.setChecked(false);
                 currentWebsiteCertificateRadioButton.setChecked(false);
             }
-        } else {  // `pinnedSslCertificateSwitch` is not checked.
+        } else {  // An SSL certificate is not pinned.
             // Hide the SSl certificates and instructions.
             savedSslCertificateCardView.setVisibility(View.GONE);
             currentWebsiteCertificateCardView.setVisibility(View.GONE);
@@ -1132,6 +1136,76 @@ public class DomainSettingsFragment extends Fragment {
             // Uncheck the radio buttons.
             savedSslCertificateRadioButton.setChecked(false);
             currentWebsiteCertificateRadioButton.setChecked(false);
+        }
+
+        // Set the pinned IP addresses icon.
+        if (pinnedIpAddressesInt == 1) {  // Pinned IP addresses is enabled.  Once the minimum API >= 21 a selector can be sued as the tint mode instead of specifying different icons.
+            // Check the switch.
+            pinnedIpAddressesSwitch.setChecked(true);
+
+            // Set the icon according to the theme.
+            if (MainWebViewActivity.darkTheme) {
+                pinnedIpAddressesImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_enabled_dark));
+            } else {
+                pinnedIpAddressesImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_enabled_light));
+            }
+        } else {  // Pinned IP Addresses is disabled.
+            // Uncheck the switch.
+            pinnedIpAddressesSwitch.setChecked(false);
+
+            // Set the icon according to the theme.
+            if (MainWebViewActivity.darkTheme) {
+                pinnedIpAddressesImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_disabled_dark));
+            } else {
+                pinnedIpAddressesImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_disabled_light));
+            }
+        }
+
+        // Populate the saved and current IP addresses.
+        savedIpAddressesTextView.setText(savedIpAddresses);
+        currentIpAddressesTextView.setText(MainWebViewActivity.currentHostIpAddresses);
+
+        // Set the initial display status of the IP addresses card views.
+        if (pinnedIpAddressesSwitch.isChecked()) {  // IP addresses are pinned.
+            // Set the visibility of the saved IP addresses.
+            if (savedIpAddresses == null) {  // There are no saved IP addresses.
+                savedIpAddressesCardView.setVisibility(View.GONE);
+            } else {  // There are saved IP addresses.
+                savedIpAddressesCardView.setVisibility(View.VISIBLE);
+            }
+
+            // Set the visibility of the current IP addresses.
+            currentIpAddressesCardView.setVisibility(View.VISIBLE);
+
+            // Set the status of the radio buttons and the card view backgrounds.
+            if (savedIpAddressesCardView.getVisibility() == View.VISIBLE) {  // The saved IP addresses are displayed.
+                // Check the saved IP addresses radio button.
+                savedIpAddressesRadioButton.setChecked(true);
+
+                // Uncheck the current IP addresses radio button.
+                currentIpAddressesRadioButton.setChecked(false);
+
+                // Darken the background of the current IP addresses linear layout according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    currentIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_33);
+                } else {
+                    currentIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_11);
+                }
+            } else {  // The saved IP addresses are hidden.
+                // Check the current IP addresses radio button.
+                currentIpAddressesRadioButton.setChecked(true);
+
+                // Uncheck the saved IP addresses radio button.
+                savedIpAddressesRadioButton.setChecked(false);
+            }
+        } else {  // IP addresses are not pinned.
+            // Hide the IP addresses card views.
+            savedIpAddressesCardView.setVisibility(View.GONE);
+            currentIpAddressesCardView.setVisibility(View.GONE);
+
+            // Uncheck the radio buttons.
+            savedIpAddressesRadioButton.setChecked(false);
+            currentIpAddressesRadioButton.setChecked(false);
         }
 
 
@@ -1731,8 +1805,8 @@ public class DomainSettingsFragment extends Fragment {
         
         // Set the pinned SSL certificate switch listener.
         pinnedSslCertificateSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            // Update the icon
-            if (isChecked) {  // Pinned SSL certificate is enabled.
+            // Update the icon.
+            if (isChecked) {  // SSL certificate pinning is enabled.
                 // Set the icon according to the theme.
                 if (MainWebViewActivity.darkTheme) {
                     pinnedSslCertificateImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_enabled_dark));
@@ -1779,6 +1853,9 @@ public class DomainSettingsFragment extends Fragment {
                     } else {
                         currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_11);
                     }
+
+                    // Scroll to the current website SSL certificate card.
+                    savedSslCertificateCardView.getParent().requestChildFocus(savedSslCertificateCardView, savedSslCertificateCardView);
                 } else if (currentWebsiteCertificateCardView.getVisibility() == View.VISIBLE) {  // The saved SSL certificate is hidden but the current website SSL certificate is visible.
                     // Check the current website SSL certificate radio button.
                     currentWebsiteCertificateRadioButton.setChecked(true);
@@ -1795,12 +1872,18 @@ public class DomainSettingsFragment extends Fragment {
                     } else {
                         savedSslCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_11);
                     }
+
+                    // Scroll to the current website SSL certificate card.
+                    currentWebsiteCertificateCardView.getParent().requestChildFocus(currentWebsiteCertificateCardView, currentWebsiteCertificateCardView);
                 } else {  // Neither SSL certificate is visible.
                     // Uncheck both radio buttons.
                     savedSslCertificateRadioButton.setChecked(false);
                     currentWebsiteCertificateRadioButton.setChecked(false);
+
+                    // Scroll to the current website SSL certificate card.
+                    noCurrentWebsiteCertificateTextView.getParent().requestChildFocus(noCurrentWebsiteCertificateTextView, noCurrentWebsiteCertificateTextView);
                 }
-            } else {  // Pinned SSL certificate is disabled.
+            } else {  // SSL certificate pinning is disabled.
                 // Set the icon according to the theme.
                 if (MainWebViewActivity.darkTheme) {
                     pinnedSslCertificateImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_disabled_dark));
@@ -1819,7 +1902,7 @@ public class DomainSettingsFragment extends Fragment {
             }
         });
 
-        savedSslCertificateCardView.setOnClickListener((View v) -> {
+        savedSslCertificateCardView.setOnClickListener((View view) -> {
             // Check the saved SSL certificate radio button.
             savedSslCertificateRadioButton.setChecked(true);
 
@@ -1837,7 +1920,7 @@ public class DomainSettingsFragment extends Fragment {
             }
         });
 
-        savedSslCertificateRadioButton.setOnClickListener((View v) -> {
+        savedSslCertificateRadioButton.setOnClickListener((View view) -> {
             // Check the saved SSL certificate radio button.
             savedSslCertificateRadioButton.setChecked(true);
 
@@ -1855,7 +1938,7 @@ public class DomainSettingsFragment extends Fragment {
             }
         });
 
-        currentWebsiteCertificateCardView.setOnClickListener((View v) -> {
+        currentWebsiteCertificateCardView.setOnClickListener((View view) -> {
             // Check the current website SSL certificate radio button.
             currentWebsiteCertificateRadioButton.setChecked(true);
 
@@ -1873,7 +1956,7 @@ public class DomainSettingsFragment extends Fragment {
             }
         });
 
-        currentWebsiteCertificateRadioButton.setOnClickListener((View v) -> {
+        currentWebsiteCertificateRadioButton.setOnClickListener((View view) -> {
             // Check the current website SSL certificate radio button.
             currentWebsiteCertificateRadioButton.setChecked(true);
 
@@ -1888,6 +1971,154 @@ public class DomainSettingsFragment extends Fragment {
                 savedSslCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_33);
             } else {
                 savedSslCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_11);
+            }
+        });
+
+        // Set the pinned IP addresses switch listener.
+        pinnedIpAddressesSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            // Update the icon.
+            if (isChecked) {  // IP addresses pinning is enabled.
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    pinnedIpAddressesImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_enabled_dark));
+                } else {
+                    pinnedIpAddressesImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_enabled_light));
+                }
+
+                // Update the visibility of the saved IP addresses card view.
+                if (savedIpAddresses == null) {  // There are no saved IP addresses.
+                    savedIpAddressesCardView.setVisibility(View.GONE);
+                } else {  // There are saved IP addresses.
+                    savedIpAddressesCardView.setVisibility(View.VISIBLE);
+                }
+
+                // Show the current IP addresses card view.
+                currentIpAddressesCardView.setVisibility(View.VISIBLE);
+
+                // Set the status of the radio buttons.
+                if (savedIpAddressesCardView.getVisibility() == View.VISIBLE) {  // The saved IP addresses are visible.
+                    // Check the saved IP addresses radio button.
+                    savedIpAddressesRadioButton.setChecked(true);
+
+                    // Uncheck the current IP addresses radio button.
+                    currentIpAddressesRadioButton.setChecked(false);
+
+                    // Set the background of the saved IP addresses linear layout to be transparent.
+                    savedSslCertificateLinearLayout.setBackgroundResource(R.color.transparent);
+
+                    // Darken the background of the current IP addresses linear layout according to the theme.
+                    if (MainWebViewActivity.darkTheme) {
+                        currentIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_33);
+                    } else {
+                        currentIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_11);
+                    }
+                } else {  // The saved IP addresses are not visible.
+                    // Check the current IP addresses radio button.
+                    currentIpAddressesRadioButton.setChecked(true);
+
+                    // Uncheck the saved IP addresses radio button.
+                    savedIpAddressesRadioButton.setChecked(false);
+
+                    // Set the background of the current IP addresses linear layout to be transparent.
+                    currentIpAddressesLinearLayout.setBackgroundResource(R.color.transparent);
+
+                    // Darken the background of the saved IP addresses linear layout according to the theme.
+                    if (MainWebViewActivity.darkTheme) {
+                        savedIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_33);
+                    } else {
+                        savedIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_11);
+                    }
+                }
+
+                // Scroll to the bottom of the card views.
+                currentIpAddressesCardView.getParent().requestChildFocus(currentIpAddressesCardView, currentIpAddressesCardView);
+            } else {  // IP addresses pinning is disabled.
+                // Set the icon according to the theme.
+                if (MainWebViewActivity.darkTheme) {
+                    pinnedIpAddressesImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_disabled_dark));
+                } else {
+                    pinnedIpAddressesImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_disabled_light));
+                }
+
+                // Hide the IP addresses card views.
+                savedIpAddressesCardView.setVisibility(View.GONE);
+                currentIpAddressesCardView.setVisibility(View.GONE);
+
+                // Uncheck the radio buttons.
+                savedIpAddressesRadioButton.setChecked(false);
+                currentIpAddressesRadioButton.setChecked(false);
+            }
+        });
+
+        savedIpAddressesCardView.setOnClickListener((View view) -> {
+            // Check the saved IP addresses radio button.
+            savedIpAddressesRadioButton.setChecked(true);
+
+            // Uncheck the current website IP addresses radio button.
+            currentIpAddressesRadioButton.setChecked(false);
+
+            // Set the background of the saved IP addresses linear layout to be transparent.
+            savedIpAddressesLinearLayout.setBackgroundResource(R.color.transparent);
+
+            // Darken the background of the current IP addresses linear layout according to the theme.
+            if (MainWebViewActivity.darkTheme) {
+                currentIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_33);
+            } else {
+                currentIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_11);
+            }
+        });
+
+        savedIpAddressesRadioButton.setOnClickListener((View view) -> {
+            // Check the saved IP addresses radio button.
+            savedIpAddressesRadioButton.setChecked(true);
+
+            // Uncheck the current website IP addresses radio button.
+            currentIpAddressesRadioButton.setChecked(false);
+
+            // Set the background of the saved IP addresses linear layout to be transparent.
+            savedIpAddressesLinearLayout.setBackgroundResource(R.color.transparent);
+
+            // Darken the background of the current IP addresses linear layout according to the theme.
+            if (MainWebViewActivity.darkTheme) {
+                currentIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_33);
+            } else {
+                currentIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_11);
+            }
+        });
+
+        currentIpAddressesCardView.setOnClickListener((View view) -> {
+            // Check the current IP addresses radio button.
+            currentIpAddressesRadioButton.setChecked(true);
+
+            // Uncheck the saved IP addresses radio button.
+            savedIpAddressesRadioButton.setChecked(false);
+
+            // Set the background of the current IP addresses linear layout to be transparent.
+            currentIpAddressesLinearLayout.setBackgroundResource(R.color.transparent);
+
+            // Darken the background of the saved IP addresses linear layout according to the theme.
+            if (MainWebViewActivity.darkTheme) {
+                savedIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_33);
+            } else {
+                savedIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_11);
+            }
+        });
+
+        currentIpAddressesRadioButton.setOnClickListener((View view) -> {
+            // Check the current IP addresses radio button.
+            currentIpAddressesRadioButton.setChecked(true);
+
+            // Uncheck the saved IP addresses radio button.
+            savedIpAddressesRadioButton.setChecked(false);
+
+            // Set the background of the current IP addresses linear layout to be transparent.
+            currentIpAddressesLinearLayout.setBackgroundResource(R.color.transparent);
+
+            // Darken the background of the saved IP addresses linear layout according to the theme.
+            if (MainWebViewActivity.darkTheme) {
+                savedIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_33);
+            } else {
+                savedIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_11);
             }
         });
 

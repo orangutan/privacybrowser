@@ -38,7 +38,7 @@ public class ImportExportDatabaseHelper {
     public static final String EXPORT_SUCCESSFUL = "Export Successful";
     public static final String IMPORT_SUCCESSFUL = "Import Successful";
 
-    private static final int SCHEMA_VERSION = 3;
+    private static final int SCHEMA_VERSION = 4;
     private static final String PREFERENCES_TABLE = "preferences";
 
     // The preferences constants.
@@ -138,6 +138,8 @@ public class ImportExportDatabaseHelper {
                 domainsContentValues.put(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT)));
                 domainsContentValues.put(DomainsDatabaseHelper.SSL_START_DATE, domainsCursor.getLong(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)));
                 domainsContentValues.put(DomainsDatabaseHelper.SSL_END_DATE, domainsCursor.getLong(domainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)));
+                domainsContentValues.put(DomainsDatabaseHelper.PINNED_IP_ADDRESSES, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_IP_ADDRESSES)));
+                domainsContentValues.put(DomainsDatabaseHelper.IP_ADDRESSES, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.IP_ADDRESSES)));
 
                 // Insert the record into the export database.
                 exportDatabase.insert(DomainsDatabaseHelper.DOMAINS_TABLE, null, domainsContentValues);
@@ -328,7 +330,7 @@ public class ImportExportDatabaseHelper {
             // Create an integer to track the number of bytes read.
             int bytesRead;
 
-            // Copy the import file to the temporary import file.  Once API >= 26 `Files.copy` can be used instead.
+            // Copy the import file to the temporary import file.  Once the minimum API >= 26 `Files.copy` can be used instead.
             while ((bytesRead = importFileInputStream.read(transferByteArray)) > 0) {
                 temporaryImportFileOutputStream.write(transferByteArray, 0, bytesRead);
             }
@@ -341,7 +343,7 @@ public class ImportExportDatabaseHelper {
             // Get a handle for the shared preference.
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-            // Open the import database.  Once API >= 27 the file can be opened directly without using the string.
+            // Open the import database.  Once the minimum API >= 27 the file can be opened directly without using the string.
             SQLiteDatabase importDatabase = SQLiteDatabase.openDatabase(temporaryImportFileString, null, SQLiteDatabase.OPEN_READWRITE);
 
             // Get the database version.
@@ -388,6 +390,11 @@ public class ImportExportDatabaseHelper {
 
                         // Place the font size string in the new column.
                         importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + FONT_SIZE + " = " + fontSize);
+
+                    case 3:
+                        // Add the Pinned IP Addresses columns.
+                        importDatabase.execSQL("ALTER TABLE " + DomainsDatabaseHelper.DOMAINS_TABLE + " ADD COLUMN " + DomainsDatabaseHelper.PINNED_IP_ADDRESSES + " BOOLEAN");
+                        importDatabase.execSQL("ALTER TABLE " + DomainsDatabaseHelper.DOMAINS_TABLE + " ADD COLUMN " + DomainsDatabaseHelper.IP_ADDRESSES + " TEXT");
                 }
             }
 
@@ -438,6 +445,8 @@ public class ImportExportDatabaseHelper {
                         importDomainsCursor.getString(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT)));
                 domainsContentValues.put(DomainsDatabaseHelper.SSL_START_DATE, importDomainsCursor.getLong(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)));
                 domainsContentValues.put(DomainsDatabaseHelper.SSL_END_DATE, importDomainsCursor.getLong(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)));
+                domainsContentValues.put(DomainsDatabaseHelper.PINNED_IP_ADDRESSES, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_IP_ADDRESSES)));
+                domainsContentValues.put(DomainsDatabaseHelper.IP_ADDRESSES, importDomainsCursor.getString(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.IP_ADDRESSES)));
 
                 // Insert the record into the export database.
                 domainsDatabaseHelper.addDomain(domainsContentValues);
