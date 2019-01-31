@@ -94,6 +94,7 @@
     <string name="url_label">URL:</string>
 
     <!-- Pinned Mismatch. -->
+    <string name="pinned_mismatch">Discrepanza certificato</string>
     <string name="update">Aggiorna</string>
     <string name="current">Attuale</string>
     <string name="pinned">Appuntato</string>
@@ -112,7 +113,6 @@
     <string name="forward">Avanti</string>
     <string name="history">Cronologia</string>
         <string name="clear_history">Elimina cronologia</string>
-    <string name="bookmarks">Segnalibri</string>
     <string name="downloads">Download</string>
     <string name="settings">Impostazioni</string>
     <string name="import_export">Importa/Esporta</string>
@@ -203,6 +203,7 @@
     <string name="create">Crea</string>
 
     <!-- Bookmarks. -->
+    <string name="bookmarks">Segnalibri</string>
     <string name="database_view">Vista Database</string>
     <string name="create_bookmark">Crea Segnalibro</string>
     <string name="create_folder">Crea Cartella</string>

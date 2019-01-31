@@ -1,0 +1,9 @@
+• 2.15 versiyonunda ortaya çıkan, çoğu durumda SSL sertifika iğnelenmesinin yoksayılmasına neden olan hata düzeltildi.
+• Domain ayarlarına iğnelenen IP adresi eklendi.
+• Uygulamalar ve diğer tarayıcılar yoluyla açmak için menü seçenekleri oluşturuldu.
+• Karanlık modda metin seçim rengi iyileştirildi.
+• Yer imleri veritabanı görünümü etkinliğinde çeşitli iyileştirmeler yapıldı.
+• Kısmi Türkçe çevirisi yapıldı.
+• İtalyan çevirisi güncellendi. (Çevirmen Francesco Buratti.)
+• Rusça çevirisi güncellendi.
+• İspanyol çevirisi güncellendi. (Çevirmen Jose A. León.)

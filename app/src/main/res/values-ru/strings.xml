@@ -90,8 +90,9 @@
     <string name="url">URL</string>
     <string name="url_label">URL:</string>
 
-    <!-- Pinned SSL Certificate Mismatch. -->
-    <string name="update">Обновление</string>
+    <!-- Pinned Mismatch. -->
+    <string name="pinned_mismatch">Несоответствие закрепленных</string>
+    <string name="update">Обновить</string>
     <string name="current">Текущий</string>
     <string name="pinned">Закрепленный</string>
 
@@ -109,7 +110,6 @@
     <string name="forward">Вперед</string>
     <string name="history">История</string>
         <string name="clear_history">Очистить историю</string>
-    <string name="bookmarks">Закладки</string>
     <string name="downloads">Загрузки</string>
     <string name="settings">Настройки</string>
     <string name="import_export">Импорт/Экспорт</string>
@@ -200,6 +200,7 @@
     <string name="create">Создать</string>
 
     <!-- Bookmarks. -->
+    <string name="bookmarks">Закладки</string>
     <string name="database_view">Просмотр базы данных</string>
     <string name="create_bookmark">Создание закладки</string>
     <string name="create_folder">Создание папки</string>

@@ -94,6 +94,7 @@
     <string name="url_label">URL:</string>
 
     <!-- Pinned Mismatch. -->
+    <string name="pinned_mismatch">Desajuste fijado</string>
     <string name="update">Actualizar</string>
     <string name="current">Actual</string>
     <string name="pinned">Fijado</string>
@@ -112,7 +113,6 @@
     <string name="forward">Adelante</string>
     <string name="history">Historial</string>
         <string name="clear_history">Borrar historial</string>
-    <string name="bookmarks">Favoritos</string>
     <string name="downloads">Descargas</string>
     <string name="settings">Configuración</string>
     <string name="import_export">Importar/Exportar</string>
@@ -204,6 +204,7 @@
     <string name="create">Crear</string>
 
     <!-- Bookmarks. -->
+    <string name="bookmarks">Favoritos</string>
     <string name="database_view">Vista de base de datos</string>
     <string name="create_bookmark">Crear favorito</string>
     <string name="create_folder">Crear carpeta</string>

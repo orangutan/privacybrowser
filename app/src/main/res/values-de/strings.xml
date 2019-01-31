@@ -110,7 +110,6 @@
     <string name="forward">Vorwärts</string>
     <string name="history">Verlauf</string>
         <string name="clear_history">Verlauf löschen</string>
-    <string name="bookmarks">Lesezeichen</string>
     <string name="downloads">Downloads</string>
     <string name="settings">Einstellungen</string>
     <string name="guide">Handbuch</string>
@@ -192,6 +191,7 @@
     <string name="create">Erstellen</string>
 
     <!-- Bookmarks. -->
+    <string name="bookmarks">Lesezeichen</string>
     <string name="database_view">Lesezeichen-Übersicht</string>
     <string name="create_bookmark">Lesezeichen erstellen</string>
     <string name="create_folder">Ordner erstellen</string>

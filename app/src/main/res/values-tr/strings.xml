@@ -91,6 +91,7 @@
     <string name="url_label">URL:</string>
 
     <!-- Pinned Mismatch. -->
+    <string name="pinned_mismatch">İğneli Uyumsuzluğu</string>
     <string name="update">Güncelle</string>
     <string name="current">Geçerli</string>
     <string name="pinned">İğneli</string>
@@ -109,7 +110,6 @@
     <string name="forward">İleri</string>
     <string name="history">Geçmiş</string>
         <string name="clear_history">Geçmişi Temizle</string>
-    <string name="bookmarks">Yer İmleri</string>
     <string name="downloads">İndirilenler</string>
     <string name="settings">Ayarlar</string>
     <string name="import_export">İçeri Aktar/Dışarı Aktar</string>
@@ -199,6 +199,7 @@
     <string name="create">Oluştur</string>
 
     <!-- Bookmarks. -->
+    <string name="bookmarks">Yer İmleri</string>
     <string name="database_view">Veritabanı Görünümü</string>
     <string name="create_bookmark">Yer İmi Oluştur</string>
     <string name="create_folder">Klasör Oluştur</string>
