@@ -2924,31 +2924,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 return true;
 
             case R.id.open_with_app:
-                // Create the open with intent with `ACTION_VIEW`.
-                Intent openWithAppIntent = new Intent(Intent.ACTION_VIEW);
-
-                // Set the URI but not the MIME type.  This should open all available apps.
-                openWithAppIntent.setData(Uri.parse(formattedUrlString));
-
-                // Flag the intent to open in a new task.
-                openWithAppIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                // Show the chooser.
-                startActivity(openWithAppIntent);
+                openWithApp(formattedUrlString);
                 return true;
 
             case R.id.open_with_browser:
-                // Create the open with intent with `ACTION_VIEW`.
-                Intent openWithBrowserIntent = new Intent(Intent.ACTION_VIEW);
-
-                // Set the URI and the MIME type.  `"text/html"` should load browser options.
-                openWithBrowserIntent.setDataAndType(Uri.parse(formattedUrlString), "text/html");
-
-                // Flag the intent to open in a new task.
-                openWithBrowserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                // Show the chooser.
-                startActivity(openWithBrowserIntent);
+                openWithBrowser(formattedUrlString);
                 return true;
 
             case R.id.add_to_homescreen:
@@ -3330,7 +3310,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     return false;
                 });
 
-                // Add a `Cancel` entry, which by default closes the `ContextMenu`.
+                // Add an Open with App entry.
+                menu.add(R.string.open_with_app).setOnMenuItemClickListener((MenuItem item) -> {
+                    openWithApp(linkUrl);
+                    return false;
+                });
+
+                // Add an Open with Browser entry.
+                menu.add(R.string.open_with_browser).setOnMenuItemClickListener((MenuItem item) -> {
+                    openWithBrowser(linkUrl);
+                    return false;
+                });
+
+                // Add a Cancel entry, which by default closes the context menu.
                 menu.add(R.string.cancel);
                 break;
 
@@ -3341,7 +3333,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Set the target URL as the title of the `ContextMenu`.
                 menu.setHeaderTitle(linkUrl);
 
-                // Add a `Write Email` entry.
+                // Add a Write Email entry.
                 menu.add(R.string.write_email).setOnMenuItemClickListener(item -> {
                     // Use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
@@ -3357,7 +3349,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     return false;
                 });
 
-                // Add a `Copy Email Address` entry.
+                // Add a Copy Email Address entry.
                 menu.add(R.string.copy_email_address).setOnMenuItemClickListener(item -> {
                     // Save the email address in a `ClipData`.
                     ClipData srcEmailTypeClipData = ClipData.newPlainText(getString(R.string.email_address), linkUrl);
@@ -3379,13 +3371,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Set the image URL as the title of the `ContextMenu`.
                 menu.setHeaderTitle(imageUrl);
 
-                // Add a `View Image` entry.
+                // Add a View Image entry.
                 menu.add(R.string.view_image).setOnMenuItemClickListener(item -> {
                     loadUrl(imageUrl);
                     return false;
                 });
 
-                // Add a `Download Image` entry.
+                // Add a Download Image entry.
                 menu.add(R.string.download_image).setOnMenuItemClickListener((MenuItem item) -> {
                     // Check if the download should be processed by an external app.
                     if (downloadWithExternalApp) {  // Download with an external app.
@@ -3418,13 +3410,25 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     return false;
                 });
 
-                // Add a `Copy URL` entry.
+                // Add a Copy URL entry.
                 menu.add(R.string.copy_url).setOnMenuItemClickListener(item -> {
                     // Save the image URL in a `ClipData`.
                     ClipData srcImageTypeClipData = ClipData.newPlainText(getString(R.string.url), imageUrl);
 
                     // Set the `ClipData` as the clipboard's primary clip.
                     clipboardManager.setPrimaryClip(srcImageTypeClipData);
+                    return false;
+                });
+
+                // Add an Open with App entry.
+                menu.add(R.string.open_with_app).setOnMenuItemClickListener((MenuItem item) -> {
+                    openWithApp(imageUrl);
+                    return false;
+                });
+
+                // Add an Open with Browser entry.
+                menu.add(R.string.open_with_browser).setOnMenuItemClickListener((MenuItem item) -> {
+                    openWithBrowser(imageUrl);
                     return false;
                 });
 
@@ -3487,6 +3491,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Set the `ClipData` as the clipboard's primary clip.
                     clipboardManager.setPrimaryClip(srcImageAnchorTypeClipData);
+                    return false;
+                });
+
+                // Add an Open with App entry.
+                menu.add(R.string.open_with_app).setOnMenuItemClickListener((MenuItem item) -> {
+                    openWithApp(imageUrl);
+                    return false;
+                });
+
+                // Add an Open with Browser entry.
+                menu.add(R.string.open_with_browser).setOnMenuItemClickListener((MenuItem item) -> {
+                    openWithBrowser(imageUrl);
                     return false;
                 });
 
@@ -4828,6 +4844,34 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         } else {
             bookmarksTitleTextView.setText(currentBookmarksFolder);
         }
+    }
+
+    private void openWithApp(String url) {
+        // Create the open with intent with `ACTION_VIEW`.
+        Intent openWithAppIntent = new Intent(Intent.ACTION_VIEW);
+
+        // Set the URI but not the MIME type.  This should open all available apps.
+        openWithAppIntent.setData(Uri.parse(url));
+
+        // Flag the intent to open in a new task.
+        openWithAppIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        // Show the chooser.
+        startActivity(openWithAppIntent);
+    }
+
+    private void openWithBrowser(String url) {
+        // Create the open with intent with `ACTION_VIEW`.
+        Intent openWithBrowserIntent = new Intent(Intent.ACTION_VIEW);
+
+        // Set the URI and the MIME type.  `"text/html"` should load browser options.
+        openWithBrowserIntent.setDataAndType(Uri.parse(url), "text/html");
+
+        // Flag the intent to open in a new task.
+        openWithBrowserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        // Show the chooser.
+        startActivity(openWithBrowserIntent);
     }
 
     // This must run asynchronously because it involves a network request.  `String` declares the parameters.  `Void` does not declare progress units.  `String` contains the results.
