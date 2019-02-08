@@ -2934,7 +2934,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 openWithAppIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 // Show the chooser.
-                startActivity(Intent.createChooser(openWithAppIntent, getString(R.string.open_with)));
+                startActivity(openWithAppIntent);
                 return true;
 
             case R.id.open_with_browser:
@@ -2948,7 +2948,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 openWithBrowserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 // Show the chooser.
-                startActivity(Intent.createChooser(openWithBrowserIntent, getString(R.string.open_with)));
+                startActivity(openWithBrowserIntent);
                 return true;
 
             case R.id.add_to_homescreen:
