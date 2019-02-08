@@ -61,6 +61,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 // `ShortcutInfoCompat`, `ShortcutManagerCompat`, and `IconCompat` can be switched to the non-compat version once API >= 26.
 import android.support.v4.content.pm.ShortcutInfoCompat;
@@ -181,7 +182,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public static String formattedUrlString;
 
     // `sslCertificate` is public static so it can be accessed from `DomainsActivity`, `DomainsListFragment`, `DomainSettingsFragment`, `PinnedMismatchDialog`, and `ViewSslCertificateDialog`.
-    // It is also used in `onCreate()`.
+    // It is also used in `onCreate()` and `checkPinnedMismatch()`.
     public static SslCertificate sslCertificate;
 
     // `currentHostIpAddresses` is public static so it can be accessed from `DomainSettingsFragment` and `ViewSslCertificateDialog`.
@@ -271,7 +272,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `domainSettingsDatabaseId` is public static so it can be accessed from `PinnedMismatchDialog`.  It is also used in `onCreate()`, `onOptionsItemSelected()`, and `applyDomainSettings()`.
     public static int domainSettingsDatabaseId;
 
-    // The pinned variables are public static so they can be accessed from `PinnedMismatchDialog`.  They are also used in `onCreate()` and `applyDomainSettings()`.
+    // The pinned variables are public static so they can be accessed from `PinnedMismatchDialog`.  They are also used in `onCreate()`, `applyDomainSettings()`, and `checkPinnedMismatch()`.
     public static String pinnedSslIssuedToCName;
     public static String pinnedSslIssuedToOName;
     public static String pinnedSslIssuedToUName;
@@ -289,6 +290,27 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public final static int DOMAINS_SYSTEM_DEFAULT_USER_AGENT = 0;
     public final static int DOMAINS_WEBVIEW_DEFAULT_USER_AGENT = 2;
     public final static int DOMAINS_CUSTOM_USER_AGENT = 13;
+
+
+
+    // `urlIsLoading` is used in `onCreate()`, `onCreateOptionsMenu()`, `loadUrl()`, `applyDomainSettings()`, and `GetHostIpAddresses`.
+    private static boolean urlIsLoading;
+
+    // `gettingIpAddresses` is used in `onCreate() and `GetHostIpAddresses`.
+    private static boolean gettingIpAddresses;
+
+    // `pinnedDomainSslCertificate` is used in `onCreate()`, `applyDomainSettings()`, and `checkPinnedMismatch()`.
+    private static boolean pinnedSslCertificate;
+
+    // `pinnedIpAddress` is used in `applyDomainSettings()` and `checkPinnedMismatch()`.
+    private static boolean pinnedIpAddresses;
+
+    // `ignorePinnedDomainInformation` is used in `onSslMismatchProceed()`, `applyDomainSettings()`, and `checkPinnedMismatch()`.
+    private static boolean ignorePinnedDomainInformation;
+
+    // `supportFragmentManager` is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onCreateContextMenu()`, `onRequestPermissionResult()`, `viewSslCertificate()`,
+    // `applyAppSettings()`, and `checkPinnedMismatch()`.
+    private static FragmentManager supportFragmentManager;
 
 
     // `appBar` is used in `onCreate()`, `onOptionsItemSelected()`, `closeFindOnPage()`, `applyAppSettings()`, and `applyProxyThroughOrbot()`.
@@ -413,15 +435,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `currentDomainName` is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onAddDomain()`, and `applyDomainSettings()`.
     private String currentDomainName;
 
-    // `pinnedDomainSslCertificate` is used in `onCreate()` and `applyDomainSettings()`.
-    private boolean pinnedSslCertificate;
-
-    // `pinnedIpAddress` is used in `onCreate()` and `applyDomainSettings()`.
-    private boolean pinnedIpAddresses;
-
-    // `ignorePinnedDomainInformation` is used in `onCreate()`, `onSslMismatchProceed()`, and `applyDomainSettings()`.
-    private boolean ignorePinnedDomainInformation;
-
     // `orbotStatusBroadcastReceiver` is used in `onCreate()` and `onDestroy()`.
     private BroadcastReceiver orbotStatusBroadcastReceiver;
 
@@ -479,9 +492,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // `mainWebViewRelativeLayout` is used in `onCreate()` and `onNavigationItemSelected()`.
     private RelativeLayout mainWebViewRelativeLayout;
-
-    // `urlIsLoading` is used in `onCreate()`, `onCreateOptionsMenu()`, `loadUrl()`, and `applyDomainSettings()`.
-    private boolean urlIsLoading;
 
     // `bookmarksDatabaseHelper` is used in `onCreate()`, `onDestroy`, `onOptionsItemSelected()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`,
     // and `loadBookmarksFolder()`.
@@ -553,8 +563,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Set the content view.
         setContentView(R.layout.main_drawerlayout);
 
-        // Get a handle for the resources.
+        // Get a handle for the resources and the support fragment manager.
         Resources resources = getResources();
+        supportFragmentManager = getSupportFragmentManager();
 
         // Get a handle for `inputMethodManager`.
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -684,14 +695,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         createBookmarkFolderFab.setOnClickListener(v -> {
             // Show the `CreateBookmarkFolderDialog` `AlertDialog` and name the instance `@string/create_folder`.
             AppCompatDialogFragment createBookmarkFolderDialog = new CreateBookmarkFolderDialog();
-            createBookmarkFolderDialog.show(getSupportFragmentManager(), resources.getString(R.string.create_folder));
+            createBookmarkFolderDialog.show(supportFragmentManager, resources.getString(R.string.create_folder));
         });
 
         // Set the create new bookmark FAB to display an alert dialog.
         createBookmarkFab.setOnClickListener(view -> {
             // Show the `CreateBookmarkDialog` `AlertDialog` and name the instance `@string/create_bookmark`.
             AppCompatDialogFragment createBookmarkDialog = new CreateBookmarkDialog();
-            createBookmarkDialog.show(getSupportFragmentManager(), resources.getString(R.string.create_bookmark));
+            createBookmarkDialog.show(supportFragmentManager, resources.getString(R.string.create_bookmark));
         });
 
         // Create a double-tap listener to toggle full-screen mode.
@@ -911,11 +922,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Show the edit bookmark folder `AlertDialog` and name the instance `@string/edit_folder`.
                 AppCompatDialogFragment editFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId);
-                editFolderDialog.show(getSupportFragmentManager(), resources.getString(R.string.edit_folder));
+                editFolderDialog.show(supportFragmentManager, resources.getString(R.string.edit_folder));
             } else {
                 // Show the edit bookmark `AlertDialog` and name the instance `@string/edit_bookmark`.
                 AppCompatDialogFragment editBookmarkDialog = EditBookmarkDialog.bookmarkDatabaseId(databaseId);
-                editBookmarkDialog.show(getSupportFragmentManager(), resources.getString(R.string.edit_bookmark));
+                editBookmarkDialog.show(supportFragmentManager, resources.getString(R.string.edit_bookmark));
             }
 
             // Consume the event.
@@ -1223,7 +1234,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     AppCompatDialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(url, contentDisposition, contentLength);
 
                     // Show the download file alert dialog.
-                    downloadFileDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
+                    downloadFileDialogFragment.show(supportFragmentManager, getString(R.string.download));
                 }
             }
         });
@@ -1601,12 +1612,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Display the HTTP authentication dialog.
                 AppCompatDialogFragment httpAuthenticationDialogFragment = HttpAuthenticationDialog.displayDialog(host, realm);
-                httpAuthenticationDialogFragment.show(getSupportFragmentManager(), getString(R.string.http_authentication));
+                httpAuthenticationDialogFragment.show(supportFragmentManager, getString(R.string.http_authentication));
             }
 
             // Update the URL in urlTextBox when the page starts to load.
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                // Set `urlIsLoading` to `true`, so that redirects while loading do not trigger changes in the user agent, which forces another reload of the existing page.
+                // This is also used to determine when to check for pinned mismatches.
+                urlIsLoading = true;
+
                 // Reset the list of host IP addresses.
                 currentHostIpAddresses = "";
 
@@ -1631,7 +1646,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
 
                 // Check to see if Privacy Browser is waiting on Orbot.
-                if (!waitingForOrbot) {  // We are not waiting on Orbot, so we need to process the URL.
+                if (!waitingForOrbot) {  // Process the URL.
                     // The formatted URL string must be updated at the beginning of the load, so that if the user toggles JavaScript during the load the new website is reloaded.
                     formattedUrlString = url;
 
@@ -1660,9 +1675,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             loadUrl(formattedUrlString);
                         }
                     }
-
-                    // Set `urlIsLoading` to `true`, so that redirects while loading do not trigger changes in the user agent, which forces another reload of the existing page.
-                    urlIsLoading = true;
 
                     // Replace Refresh with Stop if the menu item has been created.  (The WebView typically begins loading before the menu items are instantiated.)
                     if (refreshMenuItem != null) {
@@ -1710,8 +1722,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     }
                 }
 
-                // Reset `urlIsLoading`, which is used to prevent reloads on redirect if the user agent changes.
-                urlIsLoading = false;
+
 
                 // Clear the cache and history if Incognito Mode is enabled.
                 if (incognitoModeEnabled) {
@@ -1768,69 +1779,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Store the SSL certificate so it can be accessed from `ViewSslCertificateDialog` and `PinnedMismatchDialog`.
                     sslCertificate = mainWebView.getCertificate();
 
-                    // Check the current website information against any pinned domain information.
-                    if ((pinnedSslCertificate || pinnedIpAddresses) && !ignorePinnedDomainInformation) {
-                        // Initialize the current SSL certificate variables.
-                        String currentWebsiteIssuedToCName = "";
-                        String currentWebsiteIssuedToOName = "";
-                        String currentWebsiteIssuedToUName = "";
-                        String currentWebsiteIssuedByCName = "";
-                        String currentWebsiteIssuedByOName = "";
-                        String currentWebsiteIssuedByUName = "";
-                        Date currentWebsiteSslStartDate = null;
-                        Date currentWebsiteSslEndDate = null;
-
-
-                        // Extract the individual pieces of information from the current website SSL certificate if it is not null.
-                        if (sslCertificate != null) {
-                            currentWebsiteIssuedToCName = sslCertificate.getIssuedTo().getCName();
-                            currentWebsiteIssuedToOName = sslCertificate.getIssuedTo().getOName();
-                            currentWebsiteIssuedToUName = sslCertificate.getIssuedTo().getUName();
-                            currentWebsiteIssuedByCName = sslCertificate.getIssuedBy().getCName();
-                            currentWebsiteIssuedByOName = sslCertificate.getIssuedBy().getOName();
-                            currentWebsiteIssuedByUName = sslCertificate.getIssuedBy().getUName();
-                            currentWebsiteSslStartDate = sslCertificate.getValidNotBeforeDate();
-                            currentWebsiteSslEndDate = sslCertificate.getValidNotAfterDate();
-                        }
-
-                        // Initialize string variables to store the SSL certificate dates.  Strings are needed to compare the values below, which doesn't work with `Dates` if they are `null`.
-                        String currentWebsiteSslStartDateString = "";
-                        String currentWebsiteSslEndDateString = "";
-                        String pinnedSslStartDateString = "";
-                        String pinnedSslEndDateString = "";
-
-                        // Convert the `Dates` to `Strings` if they are not `null`.
-                        if (currentWebsiteSslStartDate != null) {
-                            currentWebsiteSslStartDateString = currentWebsiteSslStartDate.toString();
-                        }
-
-                        if (currentWebsiteSslEndDate != null) {
-                            currentWebsiteSslEndDateString = currentWebsiteSslEndDate.toString();
-                        }
-
-                        if (pinnedSslStartDate != null) {
-                            pinnedSslStartDateString = pinnedSslStartDate.toString();
-                        }
-
-                        if (pinnedSslEndDate != null) {
-                            pinnedSslEndDateString = pinnedSslEndDate.toString();
-                        }
-
-                        // Check to see if the pinned information matches the current information.
-                        if ((pinnedIpAddresses && !currentHostIpAddresses.equals(pinnedHostIpAddresses)) || (pinnedSslCertificate && (!currentWebsiteIssuedToCName.equals(pinnedSslIssuedToCName) ||
-                                !currentWebsiteIssuedToOName.equals(pinnedSslIssuedToOName) || !currentWebsiteIssuedToUName.equals(pinnedSslIssuedToUName) ||
-                                !currentWebsiteIssuedByCName.equals(pinnedSslIssuedByCName) || !currentWebsiteIssuedByOName.equals(pinnedSslIssuedByOName) ||
-                                !currentWebsiteIssuedByUName.equals(pinnedSslIssuedByUName) || !currentWebsiteSslStartDateString.equals(pinnedSslStartDateString) ||
-                                !currentWebsiteSslEndDateString.equals(pinnedSslEndDateString)))) {
-
-                            // Get a handle for the pinned mismatch alert dialog.
-                            AppCompatDialogFragment pinnedMismatchDialogFragment = PinnedMismatchDialog.displayDialog(pinnedSslCertificate, pinnedIpAddresses);
-
-                            // Show the pinned mismatch alert dialog.
-                            pinnedMismatchDialogFragment.show(getSupportFragmentManager(), getString(R.string.pinned_mismatch));
-                        }
+                    // Check the current website information against any pinned domain information if the current IP addresses have been loaded.
+                    if (!gettingIpAddresses) {
+                        checkPinnedMismatch();
                     }
                 }
+
+                // Reset `urlIsLoading`, which is used to prevent reloads on redirect if the user agent changes.  It is also used to determine when to check for pinned mismatches.
+                urlIsLoading = false;
             }
 
             // Handle SSL Certificate errors.
@@ -1864,7 +1820,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Display the SSL error `AlertDialog`.
                     AppCompatDialogFragment sslCertificateErrorDialogFragment = SslCertificateErrorDialog.displayDialog(error);
-                    sslCertificateErrorDialogFragment.show(getSupportFragmentManager(), getString(R.string.ssl_certificate_error));
+                    sslCertificateErrorDialogFragment.show(supportFragmentManager, getString(R.string.ssl_certificate_error));
                 }
             }
         });
@@ -2934,7 +2890,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             case R.id.add_to_homescreen:
                 // Show the alert dialog.
                 AppCompatDialogFragment createHomeScreenShortcutDialogFragment = new CreateHomeScreenShortcutDialog();
-                createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getString(R.string.create_shortcut));
+                createHomeScreenShortcutDialogFragment.show(supportFragmentManager, getString(R.string.create_shortcut));
 
                 //Everything else will be handled by the alert dialog and the associated listener below.
                 return true;
@@ -3012,7 +2968,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Show the `UrlHistoryDialog` `AlertDialog` and name this instance `R.string.history`.  `this` is the `Context`.
                 AppCompatDialogFragment urlHistoryDialogFragment = UrlHistoryDialog.loadBackForwardList(this, webBackForwardList);
-                urlHistoryDialogFragment.show(getSupportFragmentManager(), getString(R.string.history));
+                urlHistoryDialogFragment.show(supportFragmentManager, getString(R.string.history));
                 break;
 
             case R.id.requests:
@@ -3304,7 +3260,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             AppCompatDialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(linkUrl, "none", -1);
 
                             // Show the download file alert dialog.
-                            downloadFileDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
+                            downloadFileDialogFragment.show(supportFragmentManager, getString(R.string.download));
                         }
                     }
                     return false;
@@ -3404,7 +3360,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
 
                             // Show the download image alert dialog.
-                            downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
+                            downloadImageDialogFragment.show(supportFragmentManager, getString(R.string.download));
                         }
                     }
                     return false;
@@ -3478,7 +3434,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
 
                             // Show the download image alert dialog.
-                            downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
+                            downloadImageDialogFragment.show(supportFragmentManager, getString(R.string.download));
                         }
                     }
                     return false;
@@ -3637,9 +3593,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // On API 23, displaying the fragment must be delayed or the app will crash.
                 if (Build.VERSION.SDK_INT == 23) {
-                    new Handler().postDelayed(() -> downloadFileDialogFragment.show(getSupportFragmentManager(), getString(R.string.download)), 500);
+                    new Handler().postDelayed(() -> downloadFileDialogFragment.show(supportFragmentManager, getString(R.string.download)), 500);
                 } else {
-                    downloadFileDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
+                    downloadFileDialogFragment.show(supportFragmentManager, getString(R.string.download));
                 }
 
                 // Reset the download variables.
@@ -3654,9 +3610,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // On API 23, displaying the fragment must be delayed or the app will crash.
                 if (Build.VERSION.SDK_INT == 23) {
-                    new Handler().postDelayed(() -> downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download)), 500);
+                    new Handler().postDelayed(() -> downloadImageDialogFragment.show(supportFragmentManager, getString(R.string.download)), 500);
                 } else {
-                    downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
+                    downloadImageDialogFragment.show(supportFragmentManager, getString(R.string.download));
                 }
 
                 // Reset the image URL variable.
@@ -4874,6 +4830,70 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         startActivity(openWithBrowserIntent);
     }
 
+    private static void checkPinnedMismatch() {
+        if ((pinnedSslCertificate || pinnedIpAddresses) && !ignorePinnedDomainInformation) {
+            // Initialize the current SSL certificate variables.
+            String currentWebsiteIssuedToCName = "";
+            String currentWebsiteIssuedToOName = "";
+            String currentWebsiteIssuedToUName = "";
+            String currentWebsiteIssuedByCName = "";
+            String currentWebsiteIssuedByOName = "";
+            String currentWebsiteIssuedByUName = "";
+            Date currentWebsiteSslStartDate = null;
+            Date currentWebsiteSslEndDate = null;
+
+
+            // Extract the individual pieces of information from the current website SSL certificate if it is not null.
+            if (sslCertificate != null) {
+                currentWebsiteIssuedToCName = sslCertificate.getIssuedTo().getCName();
+                currentWebsiteIssuedToOName = sslCertificate.getIssuedTo().getOName();
+                currentWebsiteIssuedToUName = sslCertificate.getIssuedTo().getUName();
+                currentWebsiteIssuedByCName = sslCertificate.getIssuedBy().getCName();
+                currentWebsiteIssuedByOName = sslCertificate.getIssuedBy().getOName();
+                currentWebsiteIssuedByUName = sslCertificate.getIssuedBy().getUName();
+                currentWebsiteSslStartDate = sslCertificate.getValidNotBeforeDate();
+                currentWebsiteSslEndDate = sslCertificate.getValidNotAfterDate();
+            }
+
+            // Initialize string variables to store the SSL certificate dates.  Strings are needed to compare the values below, which doesn't work with `Dates` if they are `null`.
+            String currentWebsiteSslStartDateString = "";
+            String currentWebsiteSslEndDateString = "";
+            String pinnedSslStartDateString = "";
+            String pinnedSslEndDateString = "";
+
+            // Convert the `Dates` to `Strings` if they are not `null`.
+            if (currentWebsiteSslStartDate != null) {
+                currentWebsiteSslStartDateString = currentWebsiteSslStartDate.toString();
+            }
+
+            if (currentWebsiteSslEndDate != null) {
+                currentWebsiteSslEndDateString = currentWebsiteSslEndDate.toString();
+            }
+
+            if (pinnedSslStartDate != null) {
+                pinnedSslStartDateString = pinnedSslStartDate.toString();
+            }
+
+            if (pinnedSslEndDate != null) {
+                pinnedSslEndDateString = pinnedSslEndDate.toString();
+            }
+
+            // Check to see if the pinned information matches the current information.
+            if ((pinnedIpAddresses && !currentHostIpAddresses.equals(pinnedHostIpAddresses)) || (pinnedSslCertificate && (!currentWebsiteIssuedToCName.equals(pinnedSslIssuedToCName) ||
+                    !currentWebsiteIssuedToOName.equals(pinnedSslIssuedToOName) || !currentWebsiteIssuedToUName.equals(pinnedSslIssuedToUName) ||
+                    !currentWebsiteIssuedByCName.equals(pinnedSslIssuedByCName) || !currentWebsiteIssuedByOName.equals(pinnedSslIssuedByOName) ||
+                    !currentWebsiteIssuedByUName.equals(pinnedSslIssuedByUName) || !currentWebsiteSslStartDateString.equals(pinnedSslStartDateString) ||
+                    !currentWebsiteSslEndDateString.equals(pinnedSslEndDateString)))) {
+
+                // Get a handle for the pinned mismatch alert dialog.
+                AppCompatDialogFragment pinnedMismatchDialogFragment = PinnedMismatchDialog.displayDialog(pinnedSslCertificate, pinnedIpAddresses);
+
+                // Show the pinned mismatch alert dialog.
+                pinnedMismatchDialogFragment.show(supportFragmentManager, "Pinned Mismatch");
+            }
+        }
+    }
+
     // This must run asynchronously because it involves a network request.  `String` declares the parameters.  `Void` does not declare progress units.  `String` contains the results.
     private static class GetHostIpAddresses extends AsyncTask<String, Void, String> {
         // The weak references are used to determine if the activity have disappeared while the AsyncTask is running.
@@ -4884,12 +4904,28 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             activityWeakReference = new WeakReference<>(activity);
         }
 
+        // `onPreExecute()` operates on the UI thread.
         @Override
-        protected String doInBackground(String... domainName) {
-            // Get handles for the activity and the alert dialog.
+        protected void onPreExecute() {
+            // Get a handle for the activity.
             Activity activity = activityWeakReference.get();
 
-            // Abort if the activity or the dialog is gone.
+            // Abort if the activity is gone.
+            if ((activity == null) || activity.isFinishing()) {
+                return;
+            }
+
+            // Set the getting IP addresses tracker.
+            gettingIpAddresses = true;
+        }
+
+
+        @Override
+        protected String doInBackground(String... domainName) {
+            // Get a handle for the activity.
+            Activity activity = activityWeakReference.get();
+
+            // Abort if the activity is gone.
             if ((activity == null) || activity.isFinishing()) {
                 // Return an empty spannable string builder.
                 return "";
@@ -4927,16 +4963,23 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // `onPostExecute()` operates on the UI thread.
         @Override
         protected void onPostExecute(String ipAddresses) {
-            // Get handles for the activity and the alert dialog.
+            // Get a handle for the activity.
             Activity activity = activityWeakReference.get();
 
-            // Abort if the activity or the alert dialog is gone.
+            // Abort if the activity is gone.
             if ((activity == null) || activity.isFinishing()) {
                 return;
             }
 
             // Store the IP addresses.
             currentHostIpAddresses = ipAddresses;
+
+            if (!urlIsLoading) {
+                checkPinnedMismatch();
+            }
+
+            // Reset the getting IP addresses tracker.
+            gettingIpAddresses = false;
         }
     }
 }
