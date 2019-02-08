@@ -308,6 +308,9 @@
         <string name="saved_ssl_certificate">Kayıtlı SSL sertifikası</string>
         <string name="current_website_ssl_certificate">Geçerli web sitesi SSL sertifikası</string>
         <string name="load_an_encrypted_website">Geçerli web sitesinin SSL sertifikasını doldurmak için Domain Ayarlarını açmadan önce şifrelenmiş bir web sitesi yükleyin.</string>
+    <string name="pinned_ip_addresses">Sabit IP adresleri</string>
+        <string name="saved_ip_addresses">Kaydedilen IP adresleri</string>
+        <string name="current_ip_addresses">Güncel IP adresleri</string>
 
     <!-- Import/Export. -->
     <string name="encryption">Şifreleme</string>

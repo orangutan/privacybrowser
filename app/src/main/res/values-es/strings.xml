@@ -313,6 +313,9 @@
         <string name="saved_ssl_certificate">Certificado SSL guardado</string>
         <string name="current_website_ssl_certificate">Certificado SSL actual de la web</string>
         <string name="load_an_encrypted_website">Cargar una página web cifrada antes de abrir la configuración de dominio para rellenar el certificado SSL de la página web actual.</string>
+    <string name="pinned_ip_addresses">Direcciones IP fijadas</string>
+        <string name="saved_ip_addresses">Direcciones IP guardadas</string>
+        <string name="current_ip_addresses">Direcciones IP actuales</string>
 
     <!-- Import/Export. -->
     <string name="encryption">Cifrado</string>

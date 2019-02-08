@@ -309,6 +309,9 @@
         <string name="saved_ssl_certificate">Сохраненный сертификат SSL</string>
         <string name="current_website_ssl_certificate">Текущий сертификат SSL сайта</string>
         <string name="load_an_encrypted_website">Откройте зашифрованный сайт перед настройкой домена, чтобы заполнить текущий сертификат SSL веб-сайта.</string>
+    <string name="pinned_ip_addresses">Закрепленные IP-адреса</string>
+        <string name="saved_ip_addresses">Сохраненные IP-адреса</string>
+        <string name="current_ip_addresses">Текущие IP-адреса</string>
 
     <!-- Import/Export. -->
     <string name="encryption">Шифрование</string>

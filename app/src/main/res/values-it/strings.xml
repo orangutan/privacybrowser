@@ -312,6 +312,9 @@
         <string name="saved_ssl_certificate">Certificato SSL salvato</string>
         <string name="current_website_ssl_certificate">Certificato SSL di questo sito</string>
         <string name="load_an_encrypted_website">Carica un sito Web criptato prima di aprire le impostazioni dei domini per popolare il certificato SSL del sito attuale.</string>
+    <string name="pinned_ip_addresses">Indirizzi IP appuntati</string>
+        <string name="saved_ip_addresses">Indirizzi IP salvati</string>
+        <string name="current_ip_addresses">Indirizzi IP attuali</string>
 
     <!-- Import/Export. -->
     <string name="encryption">Cifratura</string>

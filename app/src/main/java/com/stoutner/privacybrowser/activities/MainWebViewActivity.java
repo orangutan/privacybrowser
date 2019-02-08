@@ -4536,7 +4536,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Set the loading of webpage images.
                 mainWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImages);
 
-                // Set a transparent background on `urlTextBox`.  We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
+                // Set a transparent background on `urlTextBox`.  The deprecated `.getDrawable()` must be used until the minimum API >= 21.
                 urlAppBarRelativeLayout.setBackgroundDrawable(getResources().getDrawable(R.color.transparent));
             }
 
@@ -4719,59 +4719,62 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void highlightUrlText() {
-        // Get the URL string.
-        String urlString = urlTextBox.getText().toString();
+        // Only highlight the URL text if the box is not currently selected.
+        if (!urlTextBox.hasFocus()) {
+            // Get the URL string.
+            String urlString = urlTextBox.getText().toString();
 
-        // Highlight the URL according to the protocol.
-        if (urlString.startsWith("file://")) {  // This is a file URL.
-            // De-emphasize only the protocol.
-            urlTextBox.getText().setSpan(initialGrayColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        } else if (urlString.startsWith("content://")) {
-            // De-emphasize only the protocol.
-            urlTextBox.getText().setSpan(initialGrayColorSpan, 0, 10, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        } else {  // This is a web URL.
-            // Get the index of the `/` immediately after the domain name.
-            int endOfDomainName = urlString.indexOf("/", (urlString.indexOf("//") + 2));
+            // Highlight the URL according to the protocol.
+            if (urlString.startsWith("file://")) {  // This is a file URL.
+                // De-emphasize only the protocol.
+                urlTextBox.getText().setSpan(initialGrayColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            } else if (urlString.startsWith("content://")) {
+                // De-emphasize only the protocol.
+                urlTextBox.getText().setSpan(initialGrayColorSpan, 0, 10, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            } else {  // This is a web URL.
+                // Get the index of the `/` immediately after the domain name.
+                int endOfDomainName = urlString.indexOf("/", (urlString.indexOf("//") + 2));
 
-            // Create a base URL string.
-            String baseUrl;
+                // Create a base URL string.
+                String baseUrl;
 
-            // Get the base URL.
-            if (endOfDomainName > 0) {  // There is at least one character after the base URL.
                 // Get the base URL.
-                baseUrl = urlString.substring(0, endOfDomainName);
-            } else {  // There are no characters after the base URL.
-                // Set the base URL to be the entire URL string.
-                baseUrl = urlString;
-            }
-
-            // Get the index of the last `.` in the domain.
-            int lastDotIndex = baseUrl.lastIndexOf(".");
-
-            // Get the index of the penultimate `.` in the domain.
-            int penultimateDotIndex = baseUrl.lastIndexOf(".", lastDotIndex - 1);
-
-            // Markup the beginning of the URL.
-            if (urlString.startsWith("http://")) {  // Highlight the protocol of connections that are not encrypted.
-                urlTextBox.getText().setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-
-                // De-emphasize subdomains.
-                if (penultimateDotIndex > 0) {  // There is more than one subdomain in the domain name.
-                    urlTextBox.getText().setSpan(initialGrayColorSpan, 7, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                if (endOfDomainName > 0) {  // There is at least one character after the base URL.
+                    // Get the base URL.
+                    baseUrl = urlString.substring(0, endOfDomainName);
+                } else {  // There are no characters after the base URL.
+                    // Set the base URL to be the entire URL string.
+                    baseUrl = urlString;
                 }
-            } else if (urlString.startsWith("https://")) {  // De-emphasize the protocol of connections that are encrypted.
-                if (penultimateDotIndex > 0) {  // There is more than one subdomain in the domain name.
-                    // De-emphasize the protocol and the additional subdomains.
-                    urlTextBox.getText().setSpan(initialGrayColorSpan, 0, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                } else {  // There is only one subdomain in the domain name.
-                    // De-emphasize only the protocol.
-                    urlTextBox.getText().setSpan(initialGrayColorSpan, 0, 8, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                }
-            }
 
-            // De-emphasize the text after the domain name.
-            if (endOfDomainName > 0) {
-                urlTextBox.getText().setSpan(finalGrayColorSpan, endOfDomainName, urlString.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                // Get the index of the last `.` in the domain.
+                int lastDotIndex = baseUrl.lastIndexOf(".");
+
+                // Get the index of the penultimate `.` in the domain.
+                int penultimateDotIndex = baseUrl.lastIndexOf(".", lastDotIndex - 1);
+
+                // Markup the beginning of the URL.
+                if (urlString.startsWith("http://")) {  // Highlight the protocol of connections that are not encrypted.
+                    urlTextBox.getText().setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                    // De-emphasize subdomains.
+                    if (penultimateDotIndex > 0) {  // There is more than one subdomain in the domain name.
+                        urlTextBox.getText().setSpan(initialGrayColorSpan, 7, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    }
+                } else if (urlString.startsWith("https://")) {  // De-emphasize the protocol of connections that are encrypted.
+                    if (penultimateDotIndex > 0) {  // There is more than one subdomain in the domain name.
+                        // De-emphasize the protocol and the additional subdomains.
+                        urlTextBox.getText().setSpan(initialGrayColorSpan, 0, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    } else {  // There is only one subdomain in the domain name.
+                        // De-emphasize only the protocol.
+                        urlTextBox.getText().setSpan(initialGrayColorSpan, 0, 8, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    }
+                }
+
+                // De-emphasize the text after the domain name.
+                if (endOfDomainName > 0) {
+                    urlTextBox.getText().setSpan(finalGrayColorSpan, endOfDomainName, urlString.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                }
             }
         }
     }
