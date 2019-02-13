@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -183,7 +183,7 @@
              `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
             android:name=".activities.SettingsActivity"
-            android:label="@string/privacy_browser_settings"
+            android:label="@string/settings"
             android:parentActivityName=".activities.MainWebViewActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullUser"
@@ -206,8 +206,20 @@
              `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
              `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
+            android:name=".activities.LogcatActivity"
+            android:label="@string/logcat"
+            android:parentActivityName=".activities.MainWebViewActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="fullUser"
+            android:persistableMode="persistNever"
+            tools:ignore="UnusedAttribute" />
+
+        <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
+             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
+             `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
+        <activity
             android:name=".activities.GuideActivity"
-            android:label="@string/privacy_browser_guide"
+            android:label="@string/guide"
             android:parentActivityName=".activities.MainWebViewActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="fullUser"

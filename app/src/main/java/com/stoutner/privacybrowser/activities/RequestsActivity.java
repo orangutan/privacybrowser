@@ -137,7 +137,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
         spinnerCursor.addRow(new Object[]{4, getString(R.string.blocked_plural) + " - " + blockedResourceRequests.size()});
 
         // Create a resource cursor adapter for the spinner.
-        ResourceCursorAdapter spinnerCursorAdapter = new ResourceCursorAdapter(this, R.layout.appbar_spinner_item, spinnerCursor, 0) {
+        ResourceCursorAdapter spinnerCursorAdapter = new ResourceCursorAdapter(this, R.layout.requests_appbar_spinner_item, spinnerCursor, 0) {
             @Override
             public void bindView(View view, Context context, Cursor cursor) {
                 // Get a handle for the spinner item text view.
@@ -149,7 +149,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
         };
 
         // Set the resource cursor adapter drop down view resource.
-        spinnerCursorAdapter.setDropDownViewResource(R.layout.appbar_spinner_dropdown_item);
+        spinnerCursorAdapter.setDropDownViewResource(R.layout.requests_appbar_spinner_dropdown_item);
 
         // Get a handle for the app bar spinner and set the adapter.
         Spinner appBarSpinner = findViewById(R.id.spinner);

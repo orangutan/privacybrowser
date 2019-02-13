@@ -21,7 +21,6 @@
 <resources>
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser</string>
-    <string name="privacy_browser_settings">Настройки Privacy Browser</string>
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">ru</string> -->
 
@@ -323,6 +322,7 @@
     <string name="kitkat_password_encryption_message">Шифрование паролем не работает на Android KitKat.</string>
     <string name="openkeychain_required">Для использования шифрования OpenPGP необходимо приложение OpenKeychain.</string>
     <string name="openkeychain_import_instructions">Незашифрованный файл должен быть импортирован на отдельном шаге после его дешифрования.</string>
+    <string name="privacy_browser_settings_pbs">Настройки Privacy Browser.pbs</string>
     <string name="file_location">Расположение файла</string>
     <string name="browse">Обзор</string>
     <string name="export">Экспорт</string>
@@ -331,15 +331,12 @@
     <string name="export_successful">Экспорт выполнен.</string>
     <string name="export_failed">Сбой при экспорте:</string>
     <string name="import_failed">Сбой при импорте:</string>
-    <string name="cannot_export">Настройки не могут быть экспортированы в это расположение, так как не было предоставлено разрешение на доступ к хранилищу.</string>
-    <string name="cannot_import">Настройки не могут быть импортированы из этого расположения, так как не было предоставлено разрешение на доступ к хранилищу.</string>
     <string name="invalid_location">- недопустимое расположение.</string>
     <string name="storage_permission">Доступ к хранилищу</string>
     <string name="storage_permission_message">Privacy Browser необходимо разрешение на доступ к внешним папкам. Если доступ предоставлен не будет, можно использовать локальную папку приложения.</string>
     <string name="storage_permission_explanation">Для доступа к файлам во внешних папках требуется соответствующее разрешение. В противном случае будут работать только локальные папки.</string>
 
     <!-- Guide. -->
-    <string name="privacy_browser_guide">Руководство по Privacy Browser</string>
     <string name="overview">Обзор</string>
     <string name="local_storage">Локальное хранилище</string>
     <string name="ssl_certificates">Сертификаты SSL</string>

@@ -21,22 +21,24 @@ package com.stoutner.privacybrowser.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+// `AppCompatDialogFragment` must be used instead of `DialogFragment` or the browse button doesn't work correctly in the other dialog for saving logcats.
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatDialogFragment;
 import android.view.WindowManager;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
-public class ImportExportStoragePermissionDialog extends DialogFragment {
+public class StoragePermissionDialog extends AppCompatDialogFragment {
     // The listener is used in `onAttach()` and `onCreateDialog()`.
-    private ImportExportStoragePermissionDialogListener importExportStoragePermissionDialogListener;
+    private StoragePermissionDialogListener storagePermissionDialogListener;
 
     // The public interface is used to send information back to the parent activity.
-    public interface ImportExportStoragePermissionDialogListener {
-        void onCloseImportExportStoragePermissionDialog();
+    public interface StoragePermissionDialogListener {
+        void onCloseStoragePermissionDialog();
     }
 
     @Override
@@ -45,9 +47,10 @@ public class ImportExportStoragePermissionDialog extends DialogFragment {
         super.onAttach(context);
 
         // Get a handle for the listener from the launching context.
-        importExportStoragePermissionDialogListener = (ImportExportStoragePermissionDialogListener) context;
+        storagePermissionDialogListener = (StoragePermissionDialogListener) context;
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use a builder to create the alert dialog.
@@ -71,7 +74,7 @@ public class ImportExportStoragePermissionDialog extends DialogFragment {
         // Set an `onClick` listener on the negative button.
         dialogBuilder.setNegativeButton(R.string.ok, (DialogInterface dialog, int which) -> {
             // Inform the parent activity that the dialog was closed.
-            importExportStoragePermissionDialogListener.onCloseImportExportStoragePermissionDialog();
+            storagePermissionDialogListener.onCloseStoragePermissionDialog();
         });
 
         // Create an alert dialog from the builder.

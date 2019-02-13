@@ -116,27 +116,27 @@ public class EditBookmarkDialog extends AppCompatDialogFragment {
         // Set the title.
         dialogBuilder.setTitle(R.string.edit_bookmark);
 
-        // Remove the incorrect lint warning that `getActivity()` might be null.
+        // Remove the incorrect lint warning that `getActivity().getLayoutInflater()` might be null.
         assert getActivity() != null;
 
         // Set the view.  The parent view is null because it will be assigned by the alert dialog.
         dialogBuilder.setView(getActivity().getLayoutInflater().inflate(R.layout.edit_bookmark_dialog, null));
 
-        // Set the listener for the negative button.
+        // Set the cancel button listener.
         dialogBuilder.setNegativeButton(R.string.cancel, (DialogInterface dialog, int which) -> {
-            // Do nothing.  The `AlertDialog` will close automatically.
+            // Do nothing.  The alert dialog will close automatically.
         });
 
-        // Set the listener fo the positive button.
+        // Set the save button listener.
         dialogBuilder.setPositiveButton(R.string.save, (DialogInterface dialog, int which) -> {
-            // Return the `DialogFragment` to the parent activity on save.
+            // Return the dialog fragment to the parent activity.
             editBookmarkListener.onSaveBookmark(EditBookmarkDialog.this, selectedBookmarkDatabaseId);
         });
 
-        // Create an alert dialog from the alert dialog builder.
+        // Create an alert dialog from the builder.
         final AlertDialog alertDialog = dialogBuilder.create();
 
-        // Remove the warning below that `getWindow()` might be null.
+        // remove the incorrect lint warning below that `getWindow().addFlags()` might be null.
         assert alertDialog.getWindow() != null;
 
         // Disable screenshots if not allowed.
@@ -175,7 +175,7 @@ public class EditBookmarkDialog extends AppCompatDialogFragment {
         currentName = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
         currentUrl = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL));
 
-        // Populate the `EditTexts`.
+        // Populate the edit texts.
         nameEditText.setText(currentName);
         urlEditText.setText(currentUrl);
 
@@ -226,7 +226,7 @@ public class EditBookmarkDialog extends AppCompatDialogFragment {
             }
         });
 
-        // Allow the `enter` key on the keyboard to save the bookmark from the bookmark name `EditText`.
+        // Allow the enter key on the keyboard to save the bookmark from the bookmark name edit text.
         nameEditText.setOnKeyListener((View v, int keyCode, KeyEvent event) -> {
             // Save the bookmark if the event is a key-down on the "enter" button.
             if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER) && editButton.isEnabled()) {  // The enter key was pressed and the edit button is enabled.
@@ -243,14 +243,14 @@ public class EditBookmarkDialog extends AppCompatDialogFragment {
             }
         });
 
-        // Allow the "enter" key on the keyboard to save the bookmark from the URL `EditText`.
+        // Allow the enter key on the keyboard to save the bookmark from the URL edit text.
         urlEditText.setOnKeyListener((View v, int keyCode, KeyEvent event) -> {
             // Save the bookmark if the event is a key-down on the "enter" button.
             if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER) && editButton.isEnabled()) {  // The enter key was pressed and the edit button is enabled.
                 // Trigger the `Listener` and return the DialogFragment to the parent activity.
                 editBookmarkListener.onSaveBookmark(EditBookmarkDialog.this, selectedBookmarkDatabaseId);
 
-                // Manually dismiss the `AlertDialog`.
+                // Manually dismiss the alert dialog.
                 alertDialog.dismiss();
 
                 // Consume the event.
@@ -260,7 +260,7 @@ public class EditBookmarkDialog extends AppCompatDialogFragment {
             }
         });
 
-        // `onCreateDialog` requires the return of an `AlertDialog`.
+        // Return the alert dialog.
         return alertDialog;
     }
 

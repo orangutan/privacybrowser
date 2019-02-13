@@ -206,7 +206,7 @@ public class ViewSourceActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflate the menu.  This adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.view_source_options_menu, menu);
 
         // Display the menu.
@@ -291,7 +291,7 @@ public class ViewSourceActivity extends AppCompatActivity {
         }
     }
 
-    // `String` declares the parameters.  `Void` does not declare progress units.  `String[]` contains the results.
+    // `String` declares the parameters.  `Void` does not declare progress units.  `SpannableStringBuilder[]` contains the results.
     private static class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]> {
         // Create a weak reference to the calling activity.
         private WeakReference<Activity> activityWeakReference;
@@ -663,7 +663,7 @@ public class ViewSourceActivity extends AppCompatActivity {
         // `onPostExecute()` operates on the UI thread.
         @Override
         protected void onPostExecute(SpannableStringBuilder[] viewSourceStringArray){
-            // Get a handle the activity.
+            // Get a handle for the activity.
             Activity activity = activityWeakReference.get();
 
             // Abort if the activity is gone.

@@ -23,7 +23,6 @@
 <resources>
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser</string>
-    <string name="privacy_browser_settings">Impostazioni</string>
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">it</string>
 
@@ -334,8 +333,6 @@
     <string name="export_successful">Esportazione riuscita</string>
     <string name="export_failed">Esportazione fallita:</string>
     <string name="import_failed">Importazione fallita:</string>
-    <string name="cannot_export">Le impostazioni non possono essere esportate in questa cartella perché non si è in possesso dei permessi di accesso alla memoria.</string>
-    <string name="cannot_import">Le impostazioni non possono essere importate in questa cartella perché non si è in possesso dei permessi di accesso alla memoria.</string>
     <string name="invalid_location">non è una cartella valida.</string>
     <string name="storage_permission">Permesso di accesso alla memoria</string>
     <string name="storage_permission_message">Privacy Browser necessita del permesso di accesso alla memoria per poter accedere alle cartelle pubbliche.
@@ -344,7 +341,6 @@
         altrimenti saranno accessibili solo le cartelle dell\'applicazione.</string>
 
     <!-- Guide. -->
-    <string name="privacy_browser_guide">Guida di Privacy Browser</string>
     <string name="overview">Descrizione</string>
     <string name="local_storage">Archiviazione Locale</string>
     <string name="ssl_certificates">Certificati SSL</string>

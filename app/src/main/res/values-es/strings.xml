@@ -23,7 +23,6 @@
 <resources>
     <!-- Activities. -->
     <string name="privacy_browser">Navegador Privado</string>
-    <string name="privacy_browser_settings">Configuración de Navegador Privado</string>
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">es</string>
 
@@ -327,6 +326,7 @@
     <string name="kitkat_password_encryption_message">El cifrado de contraseñas no funciona en Android KitKat.</string>
     <string name="openkeychain_required">El cifrado OpenPGP requiere que esté instalado OpenKeychain.</string>
     <string name="openkeychain_import_instructions">El archivo sin cifrar tendrá que ser importado en un paso separado después de ser descifrado.</string>
+    <string name="privacy_browser_settings_pbs">Configuración de Navegador Privado.pbs</string>
     <string name="file_location">Ubicación del archivo</string>
     <string name="browse">Navegar</string>
     <string name="export">Exportar</string>
@@ -335,8 +335,6 @@
     <string name="export_successful">Exportación exitosa.</string>
     <string name="export_failed">Exportación fallida:</string>
     <string name="import_failed">Importación fallida:</string>
-    <string name="cannot_export">Los ajustes no pueden exportarse a esta ubicación porque no se ha concedido el permiso de almacenamiento.</string>
-    <string name="cannot_import">Los ajustes no pueden importarse desde esta ubicación porque no se ha concedido el permiso de almacenamiento.</string>
     <string name="invalid_location">no es una ubicación válida.</string>
     <string name="storage_permission">Permiso de almacenamiento</string>
     <string name="storage_permission_message">Navegador Privado necesita el permiso de almacenamiento para acceder a los directorios públicos.
@@ -345,7 +343,6 @@
         De lo contrario, sólo funcionarán los directorios de aplicaciones.</string>
 
     <!-- Guide. -->
-    <string name="privacy_browser_guide">Guía de Navegador Privado</string>
     <string name="overview">Visión general</string>
     <string name="local_storage">Almacenamiento local</string>
     <string name="ssl_certificates">Certificados SSL</string>

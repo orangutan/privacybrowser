@@ -126,14 +126,15 @@ public class PinnedMismatchDialog extends AppCompatDialogFragment {
         pinnedSslCertificate = getArguments().getBoolean("Pinned_SSL_Certificate");
         pinnedIpAddresses = getArguments().getBoolean("Pinned_IP_Addresses");
 
-        if (MainWebViewActivity.favoriteIconBitmap.equals(MainWebViewActivity.favoriteIconDefaultBitmap)) {
+        // Set the favorite icon as the dialog icon if it exists.
+        if (MainWebViewActivity.favoriteIconBitmap.equals(MainWebViewActivity.favoriteIconDefaultBitmap)) {  // There is no favorite icon.
             // Set the icon according to the theme.
             if (MainWebViewActivity.darkTheme) {
                 dialogBuilder.setIcon(R.drawable.ssl_certificate_enabled_dark);
             } else {
                 dialogBuilder.setIcon(R.drawable.ssl_certificate_enabled_light);
             }
-        } else {
+        } else {  // There is a favorite icon.
             // Create a drawable version of the favorite icon.
             Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), MainWebViewActivity.favoriteIconBitmap);
 

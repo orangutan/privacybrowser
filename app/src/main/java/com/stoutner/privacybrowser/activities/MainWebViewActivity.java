@@ -2046,7 +2046,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflate the menu.  This adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.webview_options_menu, menu);
 
         // Set mainMenu so it can be used by `onOptionsItemSelected()` and `updatePrivacyIcons`.
@@ -2312,7 +2312,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get the selected menu item ID.
         int menuItemId = menuItem.getItemId();
 
-        // Set the commands that relate to the menu entries.
+        // Run the commands that correlate to the selected menu item.
         switch (menuItemId) {
             case R.id.toggle_javascript:
                 // Switch the status of javaScriptEnabled.
@@ -2532,15 +2532,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                         // Setup a runnable to manually delete the DOM storage files and directories.
                                         Runnable deleteDomStorageRunnable = () -> {
                                             try {
-                                                // A `String[]` must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
-                                                privacyBrowserRuntime.exec(new String[]{"rm", "-rf", privateDataDirectoryString + "/app_webview/Local Storage/"});
+                                                // A string array must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
+                                                Process deleteLocalStorageProcess = privacyBrowserRuntime.exec(new String[]{"rm", "-rf", privateDataDirectoryString + "/app_webview/Local Storage/"});
 
                                                 // Multiple commands must be used because `Runtime.exec()` does not like `*`.
-                                                privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/IndexedDB");
-                                                privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager");
-                                                privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager-journal");
-                                                privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/databases");
-                                            } catch (IOException e) {
+                                                Process deleteIndexProcess = privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/IndexedDB");
+                                                Process deleteQuotaManagerProcess = privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager");
+                                                Process deleteQuotaManagerJournalProcess = privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager-journal");
+                                                Process deleteDatabasesProcess = privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/databases");
+
+                                                // Wait for the processes to finish.
+                                                deleteLocalStorageProcess.waitFor();
+                                                deleteIndexProcess.waitFor();
+                                                deleteQuotaManagerProcess.waitFor();
+                                                deleteQuotaManagerJournalProcess.waitFor();
+                                                deleteDatabasesProcess.waitFor();
+                                            } catch (Exception exception) {
                                                 // Do nothing if an error is thrown.
                                             }
                                         };
@@ -3016,6 +3023,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 startActivity(importExportIntent);
                 break;
 
+            case R.id.logcat:
+                // Launch the logcat activity.
+                Intent logcatIntent = new Intent(this, LogcatActivity.class);
+                startActivity(logcatIntent);
+                break;
+
             case R.id.guide:
                 // Launch `GuideActivity`.
                 Intent guideIntent = new Intent(this, GuideActivity.class);
@@ -3028,14 +3041,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 startActivity(aboutIntent);
                 break;
 
-            case R.id.clearAndExit:
+            case R.id.clear_and_exit:
                 // Close the bookmarks cursor and database.
                 bookmarksCursor.close();
                 bookmarksDatabaseHelper.close();
 
-                // Get a handle for `sharedPreferences`.  `this` references the current context.
+                // Get a handle for the shared preferences.
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
+                // Get the status of the clear everything preference.
                 boolean clearEverything = sharedPreferences.getBoolean("clear_everything", true);
 
                 // Clear cookies.
@@ -3049,10 +3063,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Manually delete the cookies database, as `CookieManager` sometimes will not flush its changes to disk before `System.exit(0)` is run.
                     try {
-                        // We have to use two commands because `Runtime.exec()` does not like `*`.
-                        privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/Cookies");
-                        privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/Cookies-journal");
-                    } catch (IOException e) {
+                        // Two commands must be used because `Runtime.exec()` does not like `*`.
+                        Process deleteCookiesProcess = privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/Cookies");
+                        Process deleteCookiesJournalProcess = privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/Cookies-journal");
+
+                        // Wait until the processes have finished.
+                        deleteCookiesProcess.waitFor();
+                        deleteCookiesJournalProcess.waitFor();
+                    } catch (Exception exception) {
                         // Do nothing if an error is thrown.
                     }
                 }
@@ -3066,14 +3084,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Manually delete the DOM storage files and directories, as `WebStorage` sometimes will not flush its changes to disk before `System.exit(0)` is run.
                     try {
                         // A `String[]` must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
-                        privacyBrowserRuntime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Local Storage/"});
+                        Process deleteLocalStorageProcess = privacyBrowserRuntime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Local Storage/"});
 
                         // Multiple commands must be used because `Runtime.exec()` does not like `*`.
-                        privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/IndexedDB");
-                        privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager");
-                        privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager-journal");
-                        privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/databases");
-                    } catch (IOException e) {
+                        Process deleteIndexProcess = privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/IndexedDB");
+                        Process deleteQuotaManagerProcess = privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager");
+                        Process deleteQuotaManagerJournalProcess = privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager-journal");
+                        Process deleteDatabaseProcess = privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/databases");
+
+                        // Wait until the processes have finished.
+                        deleteLocalStorageProcess.waitFor();
+                        deleteIndexProcess.waitFor();
+                        deleteQuotaManagerProcess.waitFor();
+                        deleteQuotaManagerJournalProcess.waitFor();
+                        deleteDatabaseProcess.waitFor();
+                    } catch (Exception exception) {
                         // Do nothing if an error is thrown.
                     }
                 }
@@ -3085,10 +3110,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Manually delete the form data database, as `WebViewDatabase` sometimes will not flush its changes to disk before `System.exit(0)` is run.
                     try {
-                        // We have to use a `String[]` because the database contains a space and `Runtime.exec` will not escape the string correctly otherwise.
-                        privacyBrowserRuntime.exec(new String[] {"rm", "-f", privateDataDirectoryString + "/app_webview/Web Data"});
-                        privacyBrowserRuntime.exec(new String[] {"rm", "-f", privateDataDirectoryString + "/app_webview/Web Data-journal"});
-                    } catch (IOException e) {
+                        // A string array must be used because the database contains a space and `Runtime.exec` will not otherwise escape the string correctly.
+                        Process deleteWebDataProcess = privacyBrowserRuntime.exec(new String[] {"rm", "-f", privateDataDirectoryString + "/app_webview/Web Data"});
+                        Process deleteWebDataJournalProcess = privacyBrowserRuntime.exec(new String[] {"rm", "-f", privateDataDirectoryString + "/app_webview/Web Data-journal"});
+
+                        // Wait until the processes have finished.
+                        deleteWebDataProcess.waitFor();
+                        deleteWebDataJournalProcess.waitFor();
+                    } catch (Exception exception) {
                         // Do nothing if an error is thrown.
                     }
                 }
@@ -3101,12 +3130,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Manually delete the cache directories.
                     try {
                         // Delete the main cache directory.
-                        privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/cache");
+                        Process deleteCacheProcess = privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/cache");
 
                         // Delete the secondary `Service Worker` cache directory.
-                        // A `String[]` must be used because the directory contains a space and `Runtime.exec` will not escape the string correctly otherwise.
-                        privacyBrowserRuntime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Service Worker/"});
-                    } catch (IOException e) {
+                        // A string array must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
+                        Process deleteServiceWorkerProcess = privacyBrowserRuntime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Service Worker/"});
+
+                        // Wait until the processes have finished.
+                        deleteCacheProcess.waitFor();
+                        deleteServiceWorkerProcess.waitFor();
+                    } catch (Exception exception) {
                         // Do nothing if an error is thrown.
                     }
                 }
@@ -3133,8 +3166,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // See `https://code.google.com/p/android/issues/detail?id=233826&thanks=233826&ts=1486670530`.
                 if (clearEverything) {
                     try {
-                        privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview");
-                    } catch (IOException e) {
+                        // Delete the folder.
+                        Process deleteAppWebviewProcess = privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview");
+
+                        // Wait until the process has finished.
+                        deleteAppWebviewProcess.waitFor();
+                    } catch (Exception exception) {
                         // Do nothing if an error is thrown.
                     }
                 }

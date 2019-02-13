@@ -21,7 +21,6 @@
 <resources>
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser</string>
-    <string name="privacy_browser_settings">Privacy Browser Ayarları</string>
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">tr</string>
 
@@ -322,6 +321,7 @@
     <string name="kitkat_password_encryption_message">Android KitKat sürümünde parola şifrelemesi çalışmaz.</string>
     <string name="openkeychain_required">OpenPGP şifrelemesinin çalışması için OpenKeychain yüklü olmalıdır.</string>
     <string name="openkeychain_import_instructions">Şifresi çözüldükten sonra, şifrelenmemiş dosya ayrı bir adımda içeri aktarılmak zorundadır.</string>
+    <string name="privacy_browser_settings_pbs">Privacy Browser Ayarları.pbs</string>
     <string name="file_location">Dosya Konumu</string>
     <string name="browse">Gözat</string>
     <string name="export">Dışarı aktar</string>
@@ -330,15 +330,12 @@
     <string name="export_successful">Dışa aktarım başarılı.</string>
     <string name="export_failed">Dışa aktarım başarısız oldu:</string>
     <string name="import_failed">İçe aktarım başarısız oldu:</string>
-    <string name="cannot_export">Ayarlar, depolama alanı izni onaylanmadığından bu konuma aktarılamıyor.</string>
-    <string name="cannot_import">Ayarlar, depolama alanı izni onaylanmadığından bu konumdan aktarılamıyor.</string>
     <string name="invalid_location">geçerli bir konum değildir.</string>
     <string name="storage_permission">Depolama Alanı İzni</string>
     <string name="storage_permission_message">Privacy Browser, genel dizinlere erişmek için depolama alanı iznine ihtiyaç duymaktadır. Reddedildiği takdirde, uygulamanın dizinleri hala kullanılabilir.</string>
     <string name="storage_permission_explanation">Genel dizinlerdeki dosyalara erişim icin depolama alanı izni gerekmektedir. Aksi takdirde, sadece uygulamanın dizinleri çalışacaktır.</string>
 
     <!-- Guide. -->
-    <string name="privacy_browser_guide">Privacy Browser Rehberi</string>
     <string name="overview">Genel Bakış</string>
     <string name="local_storage">Yerel Depolama Alanı</string>
     <string name="ssl_certificates">SSL Sertifikaları</string>

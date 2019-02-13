@@ -28,7 +28,6 @@
 
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser</string>
-    <string name="privacy_browser_settings">Privacy Browser Settings</string>
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  For example, Spanish is `es`.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">en</string>
 
@@ -120,6 +119,7 @@
     <string name="downloads">Downloads</string>
     <string name="settings">Settings</string>
     <string name="import_export">Import/Export</string>
+    <string name="logcat">Logcat</string>
     <string name="guide">Guide</string>
     <string name="about">About</string>
     <string name="clear_and_exit">Clear and Exit</string>
@@ -331,6 +331,7 @@
     <string name="kitkat_password_encryption_message">Password encryption does not work on Android KitKat.</string>
     <string name="openkeychain_required">OpenPGP encryption requires that OpenKeychain be installed.</string>
     <string name="openkeychain_import_instructions">The unencrypted file will have to be imported in a separate step after it is decrypted.</string>
+    <string name="privacy_browser_settings_pbs">Privacy Browser Settings.pbs</string>
     <string name="file_location">File Location</string>
     <string name="browse">Browse</string>
     <string name="export">Export</string>
@@ -339,15 +340,22 @@
     <string name="export_successful">Export successful.</string>
     <string name="export_failed">Export failed:</string>
     <string name="import_failed">Import failed:</string>
-    <string name="cannot_export">The settings cannot be exported to this location because the storage permission has not been granted.</string>
-    <string name="cannot_import">The settings cannot be imported from this location because the storage permission has not been granted.</string>
     <string name="invalid_location">is not a valid location.</string>
     <string name="storage_permission">Storage Permission</string>
     <string name="storage_permission_message">Privacy Browser needs the storage permission to access public directories. If it is denied, the app’s directories can still be used.</string>
     <string name="storage_permission_explanation">Accessing files in public directories requires the storage permission. Otherwise, only app directories will work.</string>
+    <string name="cannot_use_location">This location cannot be used because the storage permission has not been granted.</string>
+
+    <!-- Logcat. -->
+    <string name="copy">Copy</string>
+    <string name="logcat_copied">Logcat copied.</string>
+    <string name="clear">Clear</string>
+    <string name="save_logcat">Save logcat</string>
+    <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
+    <string name="file_saved_successfully">File saved successfully.</string>
+    <string name="save_failed">Save failed:</string>
 
     <!-- Guide. -->
-    <string name="privacy_browser_guide">Privacy Browser Guide</string>
     <string name="overview">Overview</string>
     <string name="local_storage">Local Storage</string>
     <string name="ssl_certificates">SSL Certificates</string>
@@ -463,14 +471,14 @@
             <item>WebView default user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
             <item>Mozilla/5.0 (Android 9; Mobile; rv:63.0) Gecko/63.0 Firefox/63.0</item>
             <item>Mozilla/5.0 (Linux; Android 9; Pixel 2 XL) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Mobile Safari/537.36</item>
-            <item>Mozilla/5.0 (iPhone; CPU iPhone OS 12_0_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1</item>
+            <item>Mozilla/5.0 (iPhone; CPU iPhone OS 12_1_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1</item>
             <item>Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/60.0</item>
             <item>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.67 Safari/537.36</item>
             <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.0</item>
             <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.80 Safari/537.36</item>
             <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134</item>
             <item>Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko</item>
-            <item>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.1 Safari/605.1.15</item>
+            <item>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15</item>
             <item>Custom user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
         </string-array>
         <string name="custom_user_agent">Custom user agent</string>
