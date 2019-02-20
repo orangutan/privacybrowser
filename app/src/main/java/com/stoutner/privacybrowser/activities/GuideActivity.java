@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -20,15 +20,17 @@
 package com.stoutner.privacybrowser.activities;
 
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.WindowManager;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;  // The AndroidX toolbar must be used until the minimum API is >= 21.
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
 
 import com.stoutner.privacybrowser.fragments.GuideTabFragment;
 import com.stoutner.privacybrowser.R;
@@ -54,14 +56,18 @@ public class GuideActivity extends AppCompatActivity {
         // Set the content view.
         setContentView(R.layout.guide_coordinatorlayout);
 
-        // We need to use `SupportActionBar` from `android.support.v7.app.ActionBar` until the minimum API is >= 21.
-        Toolbar guideAppBar = findViewById(R.id.guide_toolbar);
-        setSupportActionBar(guideAppBar);
+        // The AndroidX toolbar must be used until the minimum API is >= 21.
+        Toolbar toolbar = findViewById(R.id.guide_toolbar);
+        setSupportActionBar(toolbar);
 
-        // Display the home arrow on `ppBar`.
-        final ActionBar appBar = getSupportActionBar();
-        assert appBar != null;  // This assert removes the incorrect lint warning in Android Studio on the following line that `appBar` might be `null`.
-        appBar.setDisplayHomeAsUpEnabled(true);
+        // Get a handle for the action bar.
+        final ActionBar actionBar = getSupportActionBar();
+
+        // Remove the incorrect lint warning that the action bar might be null.
+        assert actionBar != null;
+
+        // Display the home arrow on the action bar.
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         //  Setup the ViewPager.
         ViewPager aboutViewPager = findViewById(R.id.guide_viewpager);
@@ -75,8 +81,9 @@ public class GuideActivity extends AppCompatActivity {
     }
 
     private class guidePagerAdapter extends FragmentPagerAdapter {
-        private guidePagerAdapter(FragmentManager fm) {
-            super(fm);
+        private guidePagerAdapter(FragmentManager fragmentManager) {
+            // Run the default commands.
+            super(fragmentManager);
         }
 
         @Override

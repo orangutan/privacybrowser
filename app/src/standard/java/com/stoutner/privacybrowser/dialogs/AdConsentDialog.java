@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -19,7 +19,8 @@
 
 package com.stoutner.privacybrowser.dialogs;
 
-import android.app.DialogFragment;
+// The AndroidX dialog fragment must be used or an error is produced on API <=22.
+import androidx.fragment.app.DialogFragment;
 
 public class AdConsentDialog extends DialogFragment {
     // Do nothing because this is the standard flavor.

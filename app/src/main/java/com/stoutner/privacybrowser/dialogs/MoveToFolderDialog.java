@@ -33,10 +33,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-// `AppCompatDialogFragment` must be used instead of `DialogFragment` or an error is produced on API <=22.
-import android.support.v7.app.AppCompatDialogFragment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -47,6 +43,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <= 22.
+
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.BookmarksActivity;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
@@ -54,7 +54,7 @@ import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 
 import java.io.ByteArrayOutputStream;
 
-public class MoveToFolderDialog extends AppCompatDialogFragment {
+public class MoveToFolderDialog extends DialogFragment {
     // Instantiate the class variables.
     private MoveToFolderListener moveToFolderListener;
     private BookmarksDatabaseHelper bookmarksDatabaseHelper;
@@ -62,7 +62,7 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
 
     // The public interface is used to send information back to the parent activity.
     public interface MoveToFolderListener {
-        void onMoveToFolder(AppCompatDialogFragment dialogFragment);
+        void onMoveToFolder(DialogFragment dialogFragment);
     }
 
     public void onAttach(Context context) {
@@ -78,7 +78,7 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Initialize the database helper.  The two `nulls` do not specify the database name or a `CursorFactory`.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
+        // Initialize the database helper.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
         bookmarksDatabaseHelper = new BookmarksDatabaseHelper(getContext(), null, null, 0);
 
         // Use an alert dialog builder to create the alert dialog.

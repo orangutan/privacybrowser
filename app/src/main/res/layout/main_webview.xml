@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2017,2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -21,14 +21,14 @@
 <!-- `android:layout_weight="1"` sets the `RelativeLayout` to fill the rest of the screen because it is encapsulated in a `LinearLayout` with `android:orientation="vertical"`. -->
 <!-- `android:background=@color/gray_900` sets the background color that is displayed when a website is loading in night mode. -->
 <RelativeLayout
-    android:id="@+id/main_webview_relativelayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="0dp"
     android:layout_width="match_parent"
     android:layout_weight="1"
     android:background="@color/gray_900"
-    tools:context="com.stoutner.privacybrowser.activities.MainWebViewActivity" >
+    tools:context="com.stoutner.privacybrowser.activities.MainWebViewActivity"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!-- This `TextView` has an id of `adView` so that the ad commands (which do nothing in the standard flavor) don't produce errors. -->
     <TextView
@@ -37,17 +37,18 @@
         android:layout_width="wrap_content"
         android:visibility="gone" />
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swiperefreshlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
         <!-- Google does not currently want to support hiding the AppBar on scroll for a WebView child with the Support Toolbar.  https://code.google.com/p/android/issues/detail?id=200394 -->
-        <WebView
+        <com.stoutner.privacybrowser.views.NestedScrollWebView
             android:id="@+id/main_webview"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:focusable="true"
-            android:focusableInTouchMode="true"/>
-    </android.support.v4.widget.SwipeRefreshLayout>
+            android:focusableInTouchMode="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </RelativeLayout>

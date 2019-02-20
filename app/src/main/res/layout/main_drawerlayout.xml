@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2017,2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>>.
 
@@ -18,73 +18,105 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<android.support.v4.widget.DrawerLayout
+<androidx.drawerlayout.widget.DrawerLayout
     android:id="@+id/drawerlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:layout_width="match_parent" >
 
-    <!-- `android:fitsSystemWindows="true"` moves `root_coordinatorlayout` below the system status bar. When it is specified, the theme should include `<item name="android:windowTranslucentStatus">true</item>`.
-         Setting the CoordinatorLayout to be `focusableInTouchMode` prevents the URL text box from stealing focus on launch and opening the keyboard.
-         `android:background` sets the background color of the status bar, which is then overlaid with a scrim. -->
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/root_coordinatorlayout"
+    <!-- `android:fitsSystemWindows="true"` moves the toolbar below the system status bar.  When it is specified, the theme should include `<item name="android:windowTranslucentStatus">true</item>`.
+        Setting the CoordinatorLayout to be `focusableInTouchMode` prevents the URL text box from stealing focus on launch and opening the keyboard. -->
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinatorlayout"
         xmlns:tools="http://schemas.android.com/tools"
         tools:context="com.stoutner.privacybrowser.activities.MainWebViewActivity"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:fitsSystemWindows="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:background="?attr/mainStatusBarBackground" >
+        android:fitsSystemWindows="true" >
 
-        <!-- The purpose of the `LinearLayout` is to place the included `main_webview` below `app_bar_layout`. -->
-        <LinearLayout
-            android:layout_height="match_parent"
+        <!-- The `AppBarLayout` theme has to be defined here because the activity uses a `NoActionBar` theme. -->
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="vertical" >
+            android:theme="@style/PrivacyBrowserAppBarLight" >
 
-            <!-- The `AppBarLayout` theme has to be defined here because the activity uses a `NoActionBar` theme. -->
-            <android.support.design.widget.AppBarLayout
-                android:id="@+id/app_bar_layout"
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:theme="@style/PrivacyBrowserAppBarLight" >
+                app:layout_scrollFlags="scroll|enterAlways|snap" />
 
-                <!-- The `FrameLayout` allows `appBar` and `find_on_page_app_bar` to occupy the same space. -->
-                <FrameLayout
+            <!-- The `FrameLayout` allows `appBar` and `find_on_page_app_bar` to occupy the same space. -->
+            <!-- <FrameLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent" >
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/app_bar"
                     android:layout_height="wrap_content"
-                    android:layout_width="match_parent" >
+                    android:layout_width="match_parent"
+                    app:layout_scrollFlags="scroll|enterAlways|snap" /> -->
 
-                    <android.support.v7.widget.Toolbar
-                        android:id="@+id/app_bar"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
+                <!-- `android:max` changes the maximum `ProgressBar` value from 10000 to 100 to match progress percentage.
+                    `android:layout_height="2dp"` works best for API >= 23, but `3dp` is required for visibility on API <= 22.
+                    `tools:ignore="UnusedAttribute"` removes the lint warning about `progressTint` and `progressBackgroundTint` not applying to API < 21. -->
+                <!-- <ProgressBar
+                    android:id="@+id/progress_bar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_height="3dp"
+                    android:layout_width="match_parent"
+                    android:layout_gravity="bottom"
+                    android:max="100"
+                    android:progressTint="?attr/progressTintColor"
+                    android:progressBackgroundTint="@color/transparent"
+                    android:visibility="gone"
+                    tools:ignore="UnusedAttribute" /> -->
 
-                    <!-- `android:max` changes the maximum `ProgressBar` value from 10000 to 100 to match progress percentage.
-                        `android:layout_height="2dp"` works best for API >= 23, but `3dp` is required for visibility on API <= 22.
-                        `tools:ignore="UnusedAttribute"` removes the lint warning about `progressTint` and `progressBackgroundTint` not applying to API < 21. -->
-                    <ProgressBar
-                        android:id="@+id/progress_bar"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_height="3dp"
-                        android:layout_width="match_parent"
-                        android:layout_gravity="bottom"
-                        android:max="100"
-                        android:progressTint="?attr/progressTintColor"
-                        android:progressBackgroundTint="@color/transparent"
-                        android:visibility="gone"
-                        tools:ignore="UnusedAttribute" />
+                <!-- Include the Find on Page search bar. -->
+                <!-- <include layout="@layout/find_on_page_app_bar" />
+            </FrameLayout> -->
+        </com.google.android.material.appbar.AppBarLayout>
 
-                    <!-- Include the Find on Page search bar. -->
-                    <include layout="@layout/find_on_page_app_bar" />
-                </FrameLayout>
-            </android.support.design.widget.AppBarLayout>
 
-            <!-- Include the main `WebView`. -->
-            <include layout="@layout/main_webview" />
-        </LinearLayout>
+        <com.stoutner.privacybrowser.views.NestedScrollWebView
+            android:id="@+id/main_webview"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <TextView
+            android:id="@+id/adview"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:visibility="gone" />
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swiperefreshlayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <ProgressBar
+                    android:id="@+id/progress_bar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_height="3dp"
+                    android:layout_width="match_parent"
+                    android:layout_gravity="bottom"
+                    android:max="100"
+                    android:progressTint="?attr/progressTintColor"
+                    android:progressBackgroundTint="@color/transparent"
+                    android:visibility="gone"
+                    tools:ignore="UnusedAttribute" />
+        <include layout="@layout/find_on_page_app_bar" />
+
+        <!-- Include the main `WebView`. -->
+        <!-- <include layout="@layout/main_webview" /> -->
 
         <!-- `full_screen_video_framelayout` is used to display full screen videos.  It is initially `android:visibility="gone"` to hide it from view. -->
         <FrameLayout
@@ -93,10 +125,10 @@
             android:layout_width="match_parent"
             android:visibility="gone"
             android:background="@color/black" />
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <!-- The navigation drawer. -->
-    <android.support.design.widget.NavigationView
+    <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationview"
         android:layout_height="match_parent"
         android:layout_width="wrap_content"
@@ -107,4 +139,4 @@
 
     <!-- Include the bookmarks drawer. -->
     <include layout="@layout/bookmarks_drawer" />
-</android.support.v4.widget.DrawerLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

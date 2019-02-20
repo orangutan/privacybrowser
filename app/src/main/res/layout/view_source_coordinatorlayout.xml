@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -20,7 +20,7 @@
 
 <!-- `android:fitsSystemWindows="true"` moves the AppBar below the status bar.  When it is specified the theme should include `<item name="android:windowTranslucentStatus">true</item>` to make the status bar a transparent, darkened overlay.
     Setting the layout root to be `focusableInTouchMode` prevents the URL toolbar from stealing focus on launch and opening the keyboard. -->
-<android.support.design.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     android:id="@+id/view_source_coordinatorlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -38,7 +38,7 @@
         android:orientation="vertical" >
 
         <!-- The `AppBarLayout` theme has to be defined here because the activity uses a `NoActionBar` theme. -->
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:theme="@style/PrivacyBrowserAppBarLight" >
@@ -48,13 +48,14 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent" >
 
-                <android.support.v7.widget.Toolbar
+                <androidx.appcompat.widget.Toolbar
                     android:id="@+id/view_source_toolbar"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent" />
 
-                <!-- Android automatically uses a different, skinnier drawable with padding for indeterminate horizontal progress bars in API >= 21.  They make this very difficult to override.  https://redmine.stoutner.com/issues/241
-                `tools:ignore="UnusedAttribute"` removes the lint warning about `progressTint` and `progressBackgroundTint` not applying to API < 21. -->
+                <!-- Android automatically uses a different, skinnier drawable with padding for indeterminate horizontal progress bars in API >= 21.
+                    They make this very difficult to override.  https://redmine.stoutner.com/issues/241
+                    `tools:ignore="UnusedAttribute"` removes the lint warning about `progressTint` and `progressBackgroundTint` not applying to API < 21. -->
                 <ProgressBar
                     android:id="@+id/progress_bar"
                     style="?android:attr/progressBarStyleHorizontal"
@@ -67,9 +68,9 @@
                     android:visibility="gone"
                     tools:ignore="UnusedAttribute" />
             </FrameLayout>
-        </android.support.design.widget.AppBarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
-        <android.support.v4.widget.SwipeRefreshLayout
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/view_source_swiperefreshlayout"
             android:layout_height="match_parent"
             android:layout_width="match_parent">
@@ -152,6 +153,6 @@
                         android:textIsSelectable="true" />
                 </LinearLayout>
             </ScrollView>
-        </android.support.v4.widget.SwipeRefreshLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </LinearLayout>
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

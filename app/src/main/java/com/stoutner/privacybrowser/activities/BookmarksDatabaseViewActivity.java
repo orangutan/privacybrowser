@@ -19,6 +19,7 @@
 
 package com.stoutner.privacybrowser.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
@@ -29,15 +30,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.CursorAdapter;
-import android.support.v4.widget.ResourceCursorAdapter;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-// `AppCompatDialogFragment` is required instead of `DialogFragment` or an error is produced on API <=22.
-import android.support.v7.app.AppCompatDialogFragment;
-import android.support.v7.widget.Toolbar;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -51,8 +43,18 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.ResourceCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;  // The AndroidX toolbar must be used until the minimum API is >= 21.
+import androidx.core.content.ContextCompat;
+import androidx.cursoradapter.widget.CursorAdapter;
+import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
+
+import com.google.android.material.snackbar.Snackbar;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkDatabaseViewDialog;
@@ -115,19 +117,19 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         // Set the content view.
         setContentView(R.layout.bookmarks_databaseview_coordinatorlayout);
 
-        // The `SupportActionBar` from `android.support.v7.app.ActionBar` must be used until the minimum API is >= 21.
-        Toolbar bookmarksDatabaseViewAppBar = findViewById(R.id.bookmarks_databaseview_toolbar);
-        setSupportActionBar(bookmarksDatabaseViewAppBar);
+        // The AndroidX toolbar must be used until the minimum API is >= 21.
+        Toolbar toolbar = findViewById(R.id.bookmarks_databaseview_toolbar);
+        setSupportActionBar(toolbar);
 
         // Get a handle for the `AppBar`.
-        ActionBar appBar = getSupportActionBar();
+        ActionBar actionBar = getSupportActionBar();
 
-        // Remove the incorrect warning in Android Studio that `appBar` might be null.
-        assert appBar != null;
+        // Remove the incorrect lint warning that the action bar might be null.
+        assert actionBar != null;
 
-        // Display the spinner and the back arrow in the app bar.
-        appBar.setCustomView(R.layout.spinner);
-        appBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_HOME_AS_UP);
+        // Display the spinner and the back arrow in the action bar.
+        actionBar.setCustomView(R.layout.spinner);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_HOME_AS_UP);
 
         // Initialize the database handler.  The `0` is to specify a database version, but that is set instead using a constant in `BookmarksDatabaseHelper`.
         bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this, null, null, 0);
@@ -335,11 +337,11 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                 oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
                 // Show the edit bookmark folder dialog.
-                AppCompatDialogFragment editBookmarkFolderDatabaseViewDialog = EditBookmarkFolderDatabaseViewDialog.folderDatabaseId(databaseId);
+                DialogFragment editBookmarkFolderDatabaseViewDialog = EditBookmarkFolderDatabaseViewDialog.folderDatabaseId(databaseId);
                 editBookmarkFolderDatabaseViewDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_folder));
             } else {
                 // Show the edit bookmark dialog.
-                AppCompatDialogFragment editBookmarkDatabaseViewDialog = EditBookmarkDatabaseViewDialog.bookmarkDatabaseId(databaseId);
+                DialogFragment editBookmarkDatabaseViewDialog = EditBookmarkDatabaseViewDialog.bookmarkDatabaseId(databaseId);
                 editBookmarkDatabaseViewDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_bookmark));
             }
         });
@@ -502,6 +504,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                                     // Do nothing because everything will be handled by `onDismissed()` below.
                                 })
                                 .addCallback(new Snackbar.Callback() {
+                                    @SuppressLint("SwitchIntDef")  // Ignore the lint warning about not handling the other possible events as they are covered by `default:`.
                                     @Override
                                     public void onDismissed(Snackbar snackbar, int event) {
                                         switch (event) {
@@ -733,7 +736,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
     }
 
     @Override
-    public void onSaveBookmark(AppCompatDialogFragment dialogFragment, int selectedBookmarkDatabaseId) {
+    public void onSaveBookmark(DialogFragment dialogFragment, int selectedBookmarkDatabaseId) {
         // Get handles for the views from dialog fragment.
         RadioButton currentBookmarkIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_current_icon_radiobutton);
         EditText editBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_name_edittext);
@@ -775,7 +778,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
     }
 
     @Override
-    public void onSaveBookmarkFolder(AppCompatDialogFragment dialogFragment, int selectedBookmarkDatabaseId) {
+    public void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedBookmarkDatabaseId) {
         // Get handles for the views from dialog fragment.
         RadioButton currentBookmarkIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_current_icon_radiobutton);
         RadioButton defaultFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_radiobutton);

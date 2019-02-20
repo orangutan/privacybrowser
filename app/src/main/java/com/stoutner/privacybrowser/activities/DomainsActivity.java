@@ -19,6 +19,7 @@
 
 package com.stoutner.privacybrowser.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -27,15 +28,6 @@ import android.database.Cursor;
 import android.net.http.SslCertificate;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-// `AppCompatDialogFragment` is required instead of `DialogFragment` or an error is produced on API <=22.
-import android.support.v7.app.AppCompatDialogFragment;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,6 +40,16 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;  // The AndroidX toolbar must be used until the minimum API is >= 21.
+import androidx.core.app.NavUtils;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.dialogs.AddDomainDialog;
@@ -78,9 +80,6 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
     // `context` is used in `onCreate()`, `onOptionsItemSelected()`, and `onAddDomain()`.
     private Context context;
-
-    // `supportFragmentManager` is used in `onCreate()` and `onCreateOptionsMenu()`.
-    private FragmentManager supportFragmentManager;
 
     // `domainsDatabaseHelper` is used in `onCreate()`, `saveDomainSettings()`, and `onDestroy()`.
     private static DomainsDatabaseHelper domainsDatabaseHelper;
@@ -155,16 +154,19 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         coordinatorLayout = findViewById(R.id.domains_coordinatorlayout);
         resources = getResources();
         context = this;
-        supportFragmentManager = getSupportFragmentManager();
 
         // `SupportActionBar` from `android.support.v7.app.ActionBar` must be used until the minimum API is >= 21.
-        final Toolbar domainsAppBar = findViewById(R.id.domains_toolbar);
-        setSupportActionBar(domainsAppBar);
+        final Toolbar toolbar = findViewById(R.id.domains_toolbar);
+        setSupportActionBar(toolbar);
 
-        // Display the home arrow on the support action bar.
-        ActionBar appBar = getSupportActionBar();
-        assert appBar != null;// This assert removes the incorrect warning in Android Studio on the following line that `appBar` might be null.
-        appBar.setDisplayHomeAsUpEnabled(true);
+        // Get a handle for the action bar.
+        ActionBar actionBar = getSupportActionBar();
+
+        // Remove the incorrect lint warning that the action bar might be null.
+        assert actionBar != null;
+
+        // Set the back arrow on the action bar.
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
         domainsDatabaseHelper = new DomainsDatabaseHelper(context, null, null, 0);
@@ -176,8 +178,8 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         addDomainFAB = findViewById(R.id.add_domain_fab);
         addDomainFAB.setOnClickListener((View view) -> {
             // Show the add domain `AlertDialog`.
-            AppCompatDialogFragment addDomainDialog = new AddDomainDialog();
-            addDomainDialog.show(supportFragmentManager, resources.getString(R.string.add_domain));
+            DialogFragment addDomainDialog = new AddDomainDialog();
+            addDomainDialog.show(getSupportFragmentManager(), resources.getString(R.string.add_domain));
         });
     }
 
@@ -192,6 +194,9 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         // Only display `deleteMenuItem` (initially) in two-paned mode.
         deleteMenuItem.setVisible(twoPanedMode);
 
+        // Get a handle for the fragment manager.
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
         // Display the fragments.  This must be done from `onCreateOptionsMenu()` instead of `onCreate()` because `populateDomainsListView()` needs `deleteMenuItem` to be inflated.
         if (restartAfterRotate && domainSettingsDisplayedBeforeRotate) {  // The device was rotated and domain settings were displayed previously.
             if (twoPanedMode) {  // The device is in two-paned mode.
@@ -200,8 +205,8 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
                 // Display `DomainsListFragment`.
                 DomainsListFragment domainsListFragment = new DomainsListFragment();
-                supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainsListFragment).commit();
-                supportFragmentManager.executePendingTransactions();
+                fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainsListFragment).commit();
+                fragmentManager.executePendingTransactions();
 
                 // Populate the list of domains.  `domainSettingsDatabaseId` highlights the domain that was highlighted before the rotation.
                 populateDomainsListView(domainSettingsDatabaseIdBeforeRotate);
@@ -227,7 +232,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                 addDomainFAB.hide();
 
                 // Display `domainSettingsFragment`.
-                supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
+                fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
             }
         } else {  // The device was not rotated or, if it was, domain settings were not displayed previously.
             if (goDirectlyToDatabaseId >=0) {  // Load the indicated domain settings.
@@ -237,8 +242,8 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                 if (twoPanedMode) {  // The device is in two-paned mode.
                     // Display `DomainsListFragment`.
                     DomainsListFragment domainsListFragment = new DomainsListFragment();
-                    supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainsListFragment).commit();
-                    supportFragmentManager.executePendingTransactions();
+                    fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainsListFragment).commit();
+                    fragmentManager.executePendingTransactions();
 
                     // Populate the list of domains.  `domainSettingsDatabaseId` highlights the domain that was highlighted before the rotation.
                     populateDomainsListView(goDirectlyToDatabaseId);
@@ -258,13 +263,13 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                     addDomainFAB.hide();
 
                     // Display `domainSettingsFragment`.
-                    supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
+                    fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
                 }
             } else {  // Highlight the first domain.
                 // Display `DomainsListFragment`.
                 DomainsListFragment domainsListFragment = new DomainsListFragment();
-                supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainsListFragment).commit();
-                supportFragmentManager.executePendingTransactions();
+                fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainsListFragment).commit();
+                fragmentManager.executePendingTransactions();
 
                 // Populate the list of domains.  `-1` highlights the first domain.
                 populateDomainsListView(-1);
@@ -277,8 +282,11 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        // Get the ID of the `MenuItem` that was selected.
+        // Get the ID of the menu item that was selected.
         int menuItemID = menuItem.getItemId();
+
+        // Get a handle for the fragment manager.
+        FragmentManager fragmentManager = getSupportFragmentManager();
 
         switch (menuItemID) {
             case android.R.id.home:  // The home arrow is identified as `android.R.id.home`, not just `R.id.home`.
@@ -311,8 +319,8 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
                     // Display the domains list fragment.
                     DomainsListFragment domainsListFragment = new DomainsListFragment();
-                    supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainsListFragment).commit();
-                    supportFragmentManager.executePendingTransactions();
+                    fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainsListFragment).commit();
+                    fragmentManager.executePendingTransactions();
 
                     // Populate the list of domains.  `-1` highlights the first domain if in two-paned mode.  It has no effect in single-paned mode.
                     populateDomainsListView(-1);
@@ -354,12 +362,12 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                     deleteMenuItem.setIcon(R.drawable.delete_blue);
 
                     // Remove the domain settings fragment.
-                    supportFragmentManager.beginTransaction().remove(Objects.requireNonNull(supportFragmentManager.findFragmentById(R.id.domain_settings_fragment_container))).commit();
+                    fragmentManager.beginTransaction().remove(Objects.requireNonNull(fragmentManager.findFragmentById(R.id.domain_settings_fragment_container))).commit();
                 } else {  // Single-paned mode.
                     // Display `DomainsListFragment`.
                     DomainsListFragment domainsListFragment = new DomainsListFragment();
-                    supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainsListFragment).commit();
-                    supportFragmentManager.executePendingTransactions();
+                    fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainsListFragment).commit();
+                    fragmentManager.executePendingTransactions();
 
                     // Show the add domain FAB.
                     addDomainFAB.show();
@@ -403,6 +411,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                             // Do nothing because everything will be handled by `onDismissed()` below.
                         })
                         .addCallback(new Snackbar.Callback() {
+                            @SuppressLint("SwitchIntDef")  // Ignore the lint warning about not handling the other possible events as they are covered by `default:`.
                             @Override
                             public void onDismissed(Snackbar snackbar, int event) {
                                 switch (event) {
@@ -444,14 +453,14 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                                             domainsListView.setItemChecked(deletedDomainPosition, true);
 
                                             // Display `domainSettingsFragment`.
-                                            supportFragmentManager.beginTransaction().replace(R.id.domain_settings_fragment_container, domainSettingsFragment).commit();
+                                            fragmentManager.beginTransaction().replace(R.id.domain_settings_fragment_container, domainSettingsFragment).commit();
 
                                             // Enable the options `MenuItems`.
                                             deleteMenuItem.setEnabled(true);
                                             deleteMenuItem.setIcon(R.drawable.delete_light);
                                         } else {  // The device in in one-paned mode.
                                             // Display `domainSettingsFragment`.
-                                            supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
+                                            fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
 
                                             // Hide the add domain FAB.
                                             addDomainFAB.hide();
@@ -460,7 +469,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                                             deleteMenuItem.setVisible(true);
 
                                             // Display `domainSettingsFragment`.
-                                            supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
+                                            fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
                                         }
                                         break;
 
@@ -539,6 +548,9 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
     // Control what the navigation bar back button does.
     @Override
     public void onBackPressed() {
+        // Get a handle for the fragment manager.
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
         if (twoPanedMode) {  // The device is in two-paned mode.
             // Save the current domain settings if the domain settings fragment is displayed.
             if (findViewById(R.id.domain_settings_scrollview) != null) {
@@ -568,8 +580,8 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
             // Display the domains list fragment.
             DomainsListFragment domainsListFragment = new DomainsListFragment();
-            supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainsListFragment).commit();
-            supportFragmentManager.executePendingTransactions();
+            fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainsListFragment).commit();
+            fragmentManager.executePendingTransactions();
 
             // Populate the list of domains.  `-1` highlights the first domain if in two-paned mode.  It has no effect in single-paned mode.
             populateDomainsListView(-1);
@@ -595,7 +607,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
     }
 
     @Override
-    public void onAddDomain(AppCompatDialogFragment dialogFragment) {
+    public void onAddDomain(DialogFragment dialogFragment) {
         // Dismiss the undo delete snackbar if it is currently displayed.
         if ((undoDeleteSnackbar != null) && undoDeleteSnackbar.isShown()) {
             undoDeleteSnackbar.dismiss();
@@ -618,16 +630,16 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             // Show and enable `deleteMenuItem`.
             DomainsActivity.deleteMenuItem.setVisible(true);
 
-            // Add `currentDomainDatabaseId` to `argumentsBundle`.
+            // Add the current domain database ID to the arguments bundle.
             Bundle argumentsBundle = new Bundle();
             argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, currentDomainDatabaseId);
 
-            // Add `argumentsBundle` to `domainSettingsFragment`.
+            // Add and arguments bundle to the domain setting fragment.
             DomainSettingsFragment domainSettingsFragment = new DomainSettingsFragment();
             domainSettingsFragment.setArguments(argumentsBundle);
 
-            // Display `domainSettingsFragment`.
-            supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
+            // Display the domain settings fragment.
+            getSupportFragmentManager().beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
         }
     }
 
@@ -788,22 +800,22 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             // Select the highlighted domain.
             domainsListView.setItemChecked(highlightedDomainPosition, true);
 
-            // Get the `databaseId` for the highlighted domain.
+            // Get the database ID for the highlighted domain.
             domainsCursor.moveToPosition(highlightedDomainPosition);
             currentDomainDatabaseId = domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper._ID));
 
-            // Store `databaseId` in `argumentsBundle`.
+            // Store the database ID in the arguments bundle.
             Bundle argumentsBundle = new Bundle();
             argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, currentDomainDatabaseId);
 
-            // Add `argumentsBundle` to `domainSettingsFragment`.
+            // Add and arguments bundle to the domain settings fragment.
             DomainSettingsFragment domainSettingsFragment = new DomainSettingsFragment();
             domainSettingsFragment.setArguments(argumentsBundle);
 
-            // Display `domainSettingsFragment`.
-            supportFragmentManager.beginTransaction().replace(R.id.domain_settings_fragment_container, domainSettingsFragment).commit();
+            // Display the domain settings fragment.
+            getSupportFragmentManager().beginTransaction().replace(R.id.domain_settings_fragment_container, domainSettingsFragment).commit();
 
-            // Enable the options `MenuItems`.
+            // Enable the delete options menu items.
             deleteMenuItem.setEnabled(true);
 
             // Set the delete icon according to the theme.

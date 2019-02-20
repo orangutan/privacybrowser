@@ -115,6 +115,7 @@
     <string name="downloads">Download</string>
     <string name="settings">Impostazioni</string>
     <string name="import_export">Importa/Esporta</string>
+    <string name="logcat">Logcat</string>
     <string name="guide">Guida</string>
     <string name="about">Informazioni</string>
     <string name="clear_and_exit">Elimina dati ed esci</string>
@@ -325,6 +326,7 @@
     <string name="kitkat_password_encryption_message">La cifratura delle Password non funziona su Android KitKat.</string>
     <string name="openkeychain_required">La cifratura OpenPGP richiede l\'installazione di OpenKeychain.</string>
     <string name="openkeychain_import_instructions">Il file non cifrato deve essere importato in un secondo momento dopo che è stato decriptato.</string>
+    <string name="settings_pbs">Impostazioni.pbs</string>
     <string name="file_location">Posizione del File</string>
     <string name="browse">Sfoglia</string>
     <string name="export">Esporta</string>
@@ -339,6 +341,16 @@
         Se questo permesso è negato possono comunque essere utilizzate le cartelle dell\'applicazione.</string>
     <string name="storage_permission_explanation">L\'accesso ai file posti in cartelle pubbliche richiede il permesso di accesso alla memoria,
         altrimenti saranno accessibili solo le cartelle dell\'applicazione.</string>
+    <string name="cannot_use_location">Questa posizione non può essere utilizzata perché non è stato concesso il permesso di scrittura in memoria.</string>
+
+    <!-- Logcat. -->
+    <string name="copy">Copia</string>
+    <string name="logcat_copied">Logcat copiato.</string>
+    <string name="clear">Cancella</string>
+    <string name="save_logcat">Salva il log</string>
+    <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
+    <string name="file_saved_successfully">File salvato.</string>
+    <string name="save_failed">Errore di salvataggio:</string>
 
     <!-- Guide. -->
     <string name="overview">Descrizione</string>

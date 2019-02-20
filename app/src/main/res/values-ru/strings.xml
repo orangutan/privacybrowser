@@ -112,6 +112,7 @@
     <string name="downloads">Загрузки</string>
     <string name="settings">Настройки</string>
     <string name="import_export">Импорт/Экспорт</string>
+    <string name="logcat">Logcat</string>
     <string name="guide">Руководство</string>
     <string name="about">О Privacy Browser</string>
     <string name="clear_and_exit">Очистить и выйти</string>
@@ -322,7 +323,7 @@
     <string name="kitkat_password_encryption_message">Шифрование паролем не работает на Android KitKat.</string>
     <string name="openkeychain_required">Для использования шифрования OpenPGP необходимо приложение OpenKeychain.</string>
     <string name="openkeychain_import_instructions">Незашифрованный файл должен быть импортирован на отдельном шаге после его дешифрования.</string>
-    <string name="privacy_browser_settings_pbs">Настройки Privacy Browser.pbs</string>
+    <string name="settings_pbs">Настройки.pbs</string>
     <string name="file_location">Расположение файла</string>
     <string name="browse">Обзор</string>
     <string name="export">Экспорт</string>
@@ -335,6 +336,16 @@
     <string name="storage_permission">Доступ к хранилищу</string>
     <string name="storage_permission_message">Privacy Browser необходимо разрешение на доступ к внешним папкам. Если доступ предоставлен не будет, можно использовать локальную папку приложения.</string>
     <string name="storage_permission_explanation">Для доступа к файлам во внешних папках требуется соответствующее разрешение. В противном случае будут работать только локальные папки.</string>
+    <string name="cannot_use_location">Это расположение использовано быть не может, поскольку разрешение на хранение предоставлено не было.</string>
+
+    <!-- Logcat. -->
+    <string name="copy">Копировать</string>
+    <string name="logcat_copied">Logcat скопирован.</string>
+    <string name="clear">Очистить</string>
+    <string name="save_logcat">Сохранить logcat</string>
+    <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
+    <string name="file_saved_successfully">Файл успешно сохранен.</string>
+    <string name="save_failed">Сохранить не удалось:</string>
 
     <!-- Guide. -->
     <string name="overview">Обзор</string>

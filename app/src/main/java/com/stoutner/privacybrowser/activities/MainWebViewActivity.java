@@ -24,7 +24,6 @@ package com.stoutner.privacybrowser.activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.app.DownloadManager;
 import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
@@ -55,26 +54,6 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
-// `ShortcutInfoCompat`, `ShortcutManagerCompat`, and `IconCompat` can be switched to the non-compat version once API >= 26.
-import android.support.v4.content.pm.ShortcutInfoCompat;
-import android.support.v4.content.pm.ShortcutManagerCompat;
-import android.support.v4.graphics.drawable.IconCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDialogFragment;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
@@ -113,6 +92,28 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+// `ShortcutInfoCompat`, `ShortcutManagerCompat`, and `IconCompat` can be switched to the non-compat versions once API >= 26.
+import androidx.core.content.pm.ShortcutInfoCompat;
+import androidx.core.content.pm.ShortcutManagerCompat;
+import androidx.core.graphics.drawable.IconCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 
 import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.R;
@@ -308,22 +309,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `ignorePinnedDomainInformation` is used in `onSslMismatchProceed()`, `applyDomainSettings()`, and `checkPinnedMismatch()`.
     private static boolean ignorePinnedDomainInformation;
 
-    // `supportFragmentManager` is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onCreateContextMenu()`, `onRequestPermissionResult()`, `viewSslCertificate()`,
-    // `applyAppSettings()`, and `checkPinnedMismatch()`.
-    private static FragmentManager supportFragmentManager;
+    // The fragment manager is initialized in `onCreate()` and accessed from the static `checkPinnedMismatch()`.
+    private static FragmentManager fragmentManager;
 
-
-    // `appBar` is used in `onCreate()`, `onOptionsItemSelected()`, `closeFindOnPage()`, `applyAppSettings()`, and `applyProxyThroughOrbot()`.
-    private ActionBar appBar;
 
     // `navigatingHistory` is used in `onCreate()`, `onNavigationItemSelected()`, `onSslMismatchBack()`, and `applyDomainSettings()`.
     private boolean navigatingHistory;
-
-    // `drawerLayout` is used in `onCreate()`, `onNewIntent()`, `onBackPressed()`, and `onRestart()`.
-    private DrawerLayout drawerLayout;
-
-    // `rootCoordinatorLayout` is used in `onCreate()` and `applyAppSettings()`.
-    private CoordinatorLayout rootCoordinatorLayout;
 
     // `mainWebView` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`,
     // `findNextOnPage()`, `closeFindOnPage()`, `loadUrlFromTextBox()`, `onSslMismatchBack()`, and `applyProxyThroughOrbot()`.
@@ -331,9 +322,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // `fullScreenVideoFrameLayout` is used in `onCreate()` and `onConfigurationChanged()`.
     private FrameLayout fullScreenVideoFrameLayout;
-
-    // `swipeRefreshLayout` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `onRestart()`.
-    private SwipeRefreshLayout swipeRefreshLayout;
 
     // `urlAppBarRelativeLayout` is used in `onCreate()` and `applyDomainSettings()`.
     private RelativeLayout urlAppBarRelativeLayout;
@@ -462,11 +450,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `displayAdditionalAppBarIcons` is used in `onCreate()` and `onCreateOptionsMenu()`.
     private boolean displayAdditionalAppBarIcons;
 
-    // `drawerToggle` is used in `onCreate()`, `onPostCreate()`, `onConfigurationChanged()`, `onNewIntent()`, and `onNavigationItemSelected()`.
-    private ActionBarDrawerToggle drawerToggle;
-
-    // `supportAppBar` is used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
-    private Toolbar supportAppBar;
+    // The action bar drawer toggle is initialized in `onCreate()` and used in `onPostCreate()`.
+    private ActionBarDrawerToggle actionBarDrawerToggle;
 
     // `urlTextBox` is used in `onCreate()`, `onOptionsItemSelected()`, `loadUrlFromTextBox()`, `loadUrl()`, and `highlightUrlText()`.
     private EditText urlTextBox;
@@ -489,9 +474,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // `inputMethodManager` is used in `onOptionsItemSelected()`, `loadUrlFromTextBox()`, and `closeFindOnPage()`.
     private InputMethodManager inputMethodManager;
-
-    // `mainWebViewRelativeLayout` is used in `onCreate()` and `onNavigationItemSelected()`.
-    private RelativeLayout mainWebViewRelativeLayout;
 
     // `bookmarksDatabaseHelper` is used in `onCreate()`, `onDestroy`, `onOptionsItemSelected()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`,
     // and `loadBookmarksFolder()`.
@@ -563,24 +545,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Set the content view.
         setContentView(R.layout.main_drawerlayout);
 
-        // Get a handle for the resources and the support fragment manager.
+        // Get handles for views, resources, and managers.
         Resources resources = getResources();
-        supportFragmentManager = getSupportFragmentManager();
-
-        // Get a handle for `inputMethodManager`.
+        fragmentManager = getSupportFragmentManager();
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
-        // `SupportActionBar` from `android.support.v7.app.ActionBar` must be used until the minimum API is >= 21.
-        supportAppBar = findViewById(R.id.app_bar);
-        setSupportActionBar(supportAppBar);
-        appBar = getSupportActionBar();
+        // Set the action bar.  `SupportActionBar` must be used until the minimum API is >= 21.
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
 
-        // This is needed to get rid of the Android Studio warning that `appBar` might be null.
-        assert appBar != null;
+        // This is needed to get rid of the Android Studio warning that the action bar might be null.
+        assert actionBar != null;
 
         // Add the custom `url_app_bar` layout, which shows the favorite icon and the URL text bar.
-        appBar.setCustomView(R.layout.url_app_bar);
-        appBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        actionBar.setCustomView(R.layout.url_app_bar);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 
         // Initialize the foreground color spans for highlighting the URLs.  We have to use the deprecated `getColor()` until API >= 23.
         redColorSpan = new ForegroundColorSpan(resources.getColor(R.color.red_a700));
@@ -650,15 +630,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Register `orbotStatusBroadcastReceiver` on `this` context.
         this.registerReceiver(orbotStatusBroadcastReceiver, new IntentFilter("org.torproject.android.intent.action.STATUS"));
 
-        // Get handles for views that need to be accessed.
-        drawerLayout = findViewById(R.id.drawerlayout);
-        rootCoordinatorLayout = findViewById(R.id.root_coordinatorlayout);
+        // Get handles for views that need to be modified.
+        DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
+        CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinatorlayout);
         bookmarksListView = findViewById(R.id.bookmarks_drawer_listview);
         bookmarksTitleTextView = findViewById(R.id.bookmarks_title_textview);
         FloatingActionButton launchBookmarksActivityFab = findViewById(R.id.launch_bookmarks_activity_fab);
         FloatingActionButton createBookmarkFolderFab = findViewById(R.id.create_bookmark_folder_fab);
         FloatingActionButton createBookmarkFab = findViewById(R.id.create_bookmark_fab);
-        mainWebViewRelativeLayout = findViewById(R.id.main_webview_relativelayout);
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
         mainWebView = findViewById(R.id.main_webview);
         findOnPageLinearLayout = findViewById(R.id.find_on_page_linearlayout);
         findOnPageEditText = findViewById(R.id.find_on_page_edittext);
@@ -693,16 +673,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Set the create new bookmark folder FAB to display an alert dialog.
         createBookmarkFolderFab.setOnClickListener(v -> {
-            // Show the `CreateBookmarkFolderDialog` `AlertDialog` and name the instance `@string/create_folder`.
-            AppCompatDialogFragment createBookmarkFolderDialog = new CreateBookmarkFolderDialog();
-            createBookmarkFolderDialog.show(supportFragmentManager, resources.getString(R.string.create_folder));
+            // Show the create bookmark folder dialog and name the instance `@string/create_folder`.
+            DialogFragment createBookmarkFolderDialog = new CreateBookmarkFolderDialog();
+            createBookmarkFolderDialog.show(fragmentManager, resources.getString(R.string.create_folder));
         });
 
         // Set the create new bookmark FAB to display an alert dialog.
         createBookmarkFab.setOnClickListener(view -> {
-            // Show the `CreateBookmarkDialog` `AlertDialog` and name the instance `@string/create_bookmark`.
-            AppCompatDialogFragment createBookmarkDialog = new CreateBookmarkDialog();
-            createBookmarkDialog.show(supportFragmentManager, resources.getString(R.string.create_bookmark));
+            // Show the create bookmark dialog and name the instance `@string/create_bookmark`.
+            DialogFragment createBookmarkDialog = new CreateBookmarkDialog();
+            createBookmarkDialog.show(fragmentManager, resources.getString(R.string.create_bookmark));
         });
 
         // Create a double-tap listener to toggle full-screen mode.
@@ -715,8 +695,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     inFullScreenBrowsingMode = !inFullScreenBrowsingMode;
 
                     if (inFullScreenBrowsingMode) {  // Switch to full screen mode.
-                        // Hide the `appBar`.
-                        appBar.hide();
+                        // Hide the action bar.
+                        actionBar.hide();
 
                         // Hide the banner ad in the free flavor.
                         if (BuildConfig.FLAVOR.contentEquals("free")) {
@@ -736,13 +716,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                              * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
                              * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
                              */
-                            rootCoordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                            coordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-                            // Set `rootCoordinatorLayout` to fill the whole screen.
-                            rootCoordinatorLayout.setFitsSystemWindows(false);
+                            // Set the coordinator layout to fill the entire screen.
+                            coordinatorLayout.setFitsSystemWindows(false);
                         } else {  // Hide everything except the status and navigation bars.
-                            // Set `rootCoordinatorLayout` to fit under the status and navigation bars.
-                            rootCoordinatorLayout.setFitsSystemWindows(false);
+                            // Set the coordinator layout to fill the entire screen.
+                            coordinatorLayout.setFitsSystemWindows(false);
 
                             // There is an Android Support Library bug that causes a scrim to print on the right side of the `Drawer Layout` when the navigation bar is displayed on the right of the screen.
                             if (translucentNavigationBarOnFullscreen) {
@@ -751,8 +731,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             }
                         }
                     } else {  // Switch to normal viewing mode.
-                        // Show the `appBar`.
-                        appBar.show();
+                        // Show the action bar.
+                        actionBar.show();
 
                         // Show the `BannerAd` in the free flavor.
                         if (BuildConfig.FLAVOR.contentEquals("free")) {
@@ -766,11 +746,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Add the translucent status flag if it is unset.  This also resets `drawerLayout's` `View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN`.
                         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-                        // Remove any `SYSTEM_UI` flags from `rootCoordinatorLayout`.
-                        rootCoordinatorLayout.setSystemUiVisibility(0);
+                        // Remove any `SYSTEM_UI` flags from the coordinator layout.
+                        coordinatorLayout.setSystemUiVisibility(0);
 
-                        // Constrain `rootCoordinatorLayout` inside the status and navigation bars.
-                        rootCoordinatorLayout.setFitsSystemWindows(true);
+                        // Constrain the coordinator layout inside the status and navigation bars.
+                        coordinatorLayout.setFitsSystemWindows(true);
                     }
 
                     // Consume the double-tap.
@@ -782,9 +762,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         });
 
         // Pass all touch events on `mainWebView` through `gestureDetector` to check for double-taps.
-        mainWebView.setOnTouchListener((View v, MotionEvent event) -> {
+        mainWebView.setOnTouchListener((View view, MotionEvent event) -> {
             // Call `performClick()` on the view, which is required for accessibility.
-            v.performClick();
+            view.performClick();
 
             // Send the `event` to `gestureDetector`.
             return gestureDetector.onTouchEvent(event);
@@ -847,7 +827,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         });
 
         // Implement swipe to refresh.
-        swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
         swipeRefreshLayout.setOnRefreshListener(() -> mainWebView.reload());
 
         // Set the swipe to refresh color according to the theme.
@@ -921,12 +900,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
                 // Show the edit bookmark folder `AlertDialog` and name the instance `@string/edit_folder`.
-                AppCompatDialogFragment editFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId);
-                editFolderDialog.show(supportFragmentManager, resources.getString(R.string.edit_folder));
+                DialogFragment editBookmarkFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId);
+                editBookmarkFolderDialog.show(fragmentManager, resources.getString(R.string.edit_folder));
             } else {
                 // Show the edit bookmark `AlertDialog` and name the instance `@string/edit_bookmark`.
-                AppCompatDialogFragment editBookmarkDialog = EditBookmarkDialog.bookmarkDatabaseId(databaseId);
-                editBookmarkDialog.show(supportFragmentManager, resources.getString(R.string.edit_bookmark));
+                DialogFragment editBookmarkDialog = EditBookmarkDialog.bookmarkDatabaseId(databaseId);
+                editBookmarkDialog.show(fragmentManager, resources.getString(R.string.edit_bookmark));
             }
 
             // Consume the event.
@@ -992,8 +971,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
         });
 
-        // drawerToggle creates the hamburger icon at the start of the AppBar.
-        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, supportAppBar, R.string.open_navigation_drawer, R.string.close_navigation_drawer);
+        // Create the hamburger icon at the start of the AppBar.
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_navigation_drawer, R.string.close_navigation_drawer);
 
         // Get a handle for the progress bar.
         final ProgressBar progressBar = findViewById(R.id.progress_bar);
@@ -1092,10 +1071,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                  * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
                  * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
                  */
-                rootCoordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                coordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-                // Set `rootCoordinatorLayout` to fill the entire screen.
-                rootCoordinatorLayout.setFitsSystemWindows(false);
+                // Set the coordinator layout to fill the entire screen.
+                coordinatorLayout.setFitsSystemWindows(false);
+
+                // Hide the action bar.
+                actionBar.hide();
 
                 // Disable the sliding drawers.
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -1134,10 +1116,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                          * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
                          * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
                          */
-                        rootCoordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                        coordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
                     } else {  // Hide everything except the status and navigation bars.
-                        // Remove any `SYSTEM_UI` flags from `rootCoordinatorLayout`.
-                        rootCoordinatorLayout.setSystemUiVisibility(0);
+                        // Remove any `SYSTEM_UI` flags from the coordinator layout.
+                        coordinatorLayout.setSystemUiVisibility(0);
 
                         // Add the translucent status flag if it is unset.
                         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -1151,19 +1133,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         }
                     }
                 } else {  // Switch to normal viewing mode.
-                    // Show the `appBar` if `findOnPageLinearLayout` is not visible.
+                    // Show the action bar if the find on page linear layout is not visible.
                     if (findOnPageLinearLayout.getVisibility() == View.GONE) {
-                        appBar.show();
+                        actionBar.show();
                     }
 
                     // Show the `BannerAd` in the free flavor.
                     if (BuildConfig.FLAVOR.contentEquals("free")) {
                         // Initialize the ad.  The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
-                        AdHelper.initializeAds(findViewById(R.id.adview), getApplicationContext(), getFragmentManager(), getString(R.string.google_app_id), getString(R.string.ad_unit_id));
+                        AdHelper.initializeAds(findViewById(R.id.adview), getApplicationContext(), fragmentManager, getString(R.string.google_app_id), getString(R.string.ad_unit_id));
                     }
 
-                    // Remove any `SYSTEM_UI` flags from `rootCoordinatorLayout`.
-                    rootCoordinatorLayout.setSystemUiVisibility(0);
+                    // Remove any `SYSTEM_UI` flags from the coordinator layout.
+                    coordinatorLayout.setSystemUiVisibility(0);
 
                     // Remove the translucent navigation bar flag if it is set.
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
@@ -1171,8 +1153,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Add the translucent status flag if it is unset.  This also resets `drawerLayout's` `View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN`.
                     getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-                    // Constrain `rootCoordinatorLayout` inside the status and navigation bars.
-                    rootCoordinatorLayout.setFitsSystemWindows(true);
+                    // Constrain the coordinator layout inside the status and navigation bars.
+                    coordinatorLayout.setFitsSystemWindows(true);
+
+                    // Show the action bar.
+                    actionBar.show();
                 }
 
                 // Show the ad if this is the free flavor.
@@ -1224,17 +1209,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_FILE);
 
                         // Show the download location permission alert dialog.  The permission will be requested when the the dialog is closed.
-                        downloadLocationPermissionDialogFragment.show(getFragmentManager(), getString(R.string.download_location));
+                        downloadLocationPermissionDialogFragment.show(fragmentManager, getString(R.string.download_location));
                     } else {  // Show the permission request directly.
                         // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
                         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_FILE_REQUEST_CODE);
                     }
                 } else {  // The storage permission has already been granted.
                     // Get a handle for the download file alert dialog.
-                    AppCompatDialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(url, contentDisposition, contentLength);
+                    DialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(url, contentDisposition, contentLength);
 
                     // Show the download file alert dialog.
-                    downloadFileDialogFragment.show(supportFragmentManager, getString(R.string.download));
+                    downloadFileDialogFragment.show(fragmentManager, getString(R.string.download));
                 }
             }
         });
@@ -1611,8 +1596,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 httpAuthHandler = handler;
 
                 // Display the HTTP authentication dialog.
-                AppCompatDialogFragment httpAuthenticationDialogFragment = HttpAuthenticationDialog.displayDialog(host, realm);
-                httpAuthenticationDialogFragment.show(supportFragmentManager, getString(R.string.http_authentication));
+                DialogFragment httpAuthenticationDialogFragment = HttpAuthenticationDialog.displayDialog(host, realm);
+                httpAuthenticationDialogFragment.show(fragmentManager, getString(R.string.http_authentication));
             }
 
             // Update the URL in urlTextBox when the page starts to load.
@@ -1819,8 +1804,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     sslErrorHandler = handler;
 
                     // Display the SSL error `AlertDialog`.
-                    AppCompatDialogFragment sslCertificateErrorDialogFragment = SslCertificateErrorDialog.displayDialog(error);
-                    sslCertificateErrorDialogFragment.show(supportFragmentManager, getString(R.string.ssl_certificate_error));
+                    DialogFragment sslCertificateErrorDialogFragment = SslCertificateErrorDialog.displayDialog(error);
+                    sslCertificateErrorDialogFragment.show(fragmentManager, getString(R.string.ssl_certificate_error));
                 }
             }
         });
@@ -1887,6 +1872,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Load the URL.
         loadUrl(formattedUrlString);
+
+        // Get a handle for the drawer layout.
+        DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
 
         // Close the navigation drawer if it is open.
         if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
@@ -1957,6 +1945,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Update the bookmarks drawer if returning from the Bookmarks activity.
         if (restartFromBookmarksActivity) {
+            // Get a handle for the drawer layout.
+            DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
+
             // Close the bookmarks drawer.
             drawerLayout.closeDrawer(GravityCompat.END);
 
@@ -1999,6 +1990,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
 
         if (displayingFullScreenVideo) {
+            // Get handles for the layouts that need to be modified.
+            DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
+            CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinatorlayout);
+
             // Remove the translucent overlays.
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
@@ -2009,7 +2004,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
              * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
              * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
              */
-            rootCoordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            coordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         }
     }
 
@@ -2118,6 +2113,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        // Get a handle for the swipe refresh layout.
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
+
         // Get handles for the menu items.
         MenuItem addOrEditDomain = menu.findItem(R.id.add_or_edit_domain);
         MenuItem toggleFirstPartyCookiesMenuItem = menu.findItem(R.id.toggle_first_party_cookies);
@@ -2483,21 +2481,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             // Do nothing because everything will be handled by `onDismissed()` below.
                         })
                         .addCallback(new Snackbar.Callback() {
+                            @SuppressLint("SwitchIntDef")  // Ignore the lint warning about not handling the other possible events as they are covered by `default:`.
                             @Override
                             public void onDismissed(Snackbar snackbar, int event) {
                                 switch (event) {
-                                    // The user pushed the `Undo` button.
+                                    // The user pushed the undo button.
                                     case Snackbar.Callback.DISMISS_EVENT_ACTION:
                                         // Do nothing.
                                         break;
 
-                                    // The `Snackbar` was dismissed without the `Undo` button being pushed.
+                                    // The snackbar was dismissed without the undo button being pushed.
                                     default:
                                         // `cookieManager.removeAllCookie()` varies by SDK.
                                         if (Build.VERSION.SDK_INT < 21) {
                                             cookieManager.removeAllCookie();
                                         } else {
-                                            // `null` indicates no callback.
                                             cookieManager.removeAllCookies(null);
                                         }
                                 }
@@ -2512,15 +2510,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             // Do nothing because everything will be handled by `onDismissed()` below.
                         })
                         .addCallback(new Snackbar.Callback() {
+                            @SuppressLint("SwitchIntDef")  // Ignore the lint warning about not handling the other possible events as they are covered by `default:`.
                             @Override
                             public void onDismissed(Snackbar snackbar, int event) {
                                 switch (event) {
-                                    // The user pushed the `Undo` button.
+                                    // The user pushed the undo button.
                                     case Snackbar.Callback.DISMISS_EVENT_ACTION:
                                         // Do nothing.
                                         break;
 
-                                    // The `Snackbar` was dismissed without the `Undo` button being pushed.
+                                    // The snackbar was dismissed without the undo button being pushed.
                                     default:
                                         // Delete the DOM Storage.
                                         WebStorage webStorage = WebStorage.getInstance();
@@ -2567,15 +2566,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             // Do nothing because everything will be handled by `onDismissed()` below.
                         })
                         .addCallback(new Snackbar.Callback() {
+                            @SuppressLint("SwitchIntDef")  // Ignore the lint warning about not handling the other possible events as they are covered by `default:`.
                             @Override
                             public void onDismissed(Snackbar snackbar, int event) {
                                 switch (event) {
-                                    // The user pushed the `Undo` button.
+                                    // The user pushed the undo button.
                                     case Snackbar.Callback.DISMISS_EVENT_ACTION:
                                         // Do nothing.
                                         break;
 
-                                    // The `Snackbar` was dismissed without the `Undo` button being pushed.
+                                    // The snackbar was dismissed without the `Undo` button being pushed.
                                     default:
                                         // Delete the form data.
                                         WebViewDatabase mainWebViewDatabase = WebViewDatabase.getInstance(getApplicationContext());
@@ -2793,6 +2793,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 return true;
 
             case R.id.swipe_to_refresh:
+                // Get a handle for the swipe refresh layout.
+                SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
+
                 // Toggle swipe to refresh.
                 swipeRefreshLayout.setEnabled(!swipeRefreshLayout.isEnabled());
                 return true;
@@ -2836,8 +2839,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 return true;
 
             case R.id.find_on_page:
+                // Get a handle for the toolbar.
+                Toolbar toolbar = findViewById(R.id.toolbar);
+
                 // Hide the URL app bar.
-                supportAppBar.setVisibility(View.GONE);
+                toolbar.setVisibility(View.GONE);
 
                 // Show the Find on Page `RelativeLayout`.
                 findOnPageLinearLayout.setVisibility(View.VISIBLE);
@@ -2896,8 +2902,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.add_to_homescreen:
                 // Show the alert dialog.
-                AppCompatDialogFragment createHomeScreenShortcutDialogFragment = new CreateHomeScreenShortcutDialog();
-                createHomeScreenShortcutDialogFragment.show(supportFragmentManager, getString(R.string.create_shortcut));
+                DialogFragment createHomeScreenShortcutDialogFragment = new CreateHomeScreenShortcutDialog();
+                createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getString(R.string.create_shortcut));
 
                 //Everything else will be handled by the alert dialog and the associated listener below.
                 return true;
@@ -2923,7 +2929,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             case R.id.ad_consent:
                 // Display the ad consent dialog.
                 DialogFragment adConsentDialogFragment = new AdConsentDialog();
-                adConsentDialogFragment.show(getFragmentManager(), getString(R.string.ad_consent));
+                adConsentDialogFragment.show(getSupportFragmentManager(), getString(R.string.ad_consent));
                 return true;
 
             default:
@@ -2973,9 +2979,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Get the `WebBackForwardList`.
                 WebBackForwardList webBackForwardList = mainWebView.copyBackForwardList();
 
-                // Show the `UrlHistoryDialog` `AlertDialog` and name this instance `R.string.history`.  `this` is the `Context`.
-                AppCompatDialogFragment urlHistoryDialogFragment = UrlHistoryDialog.loadBackForwardList(this, webBackForwardList);
-                urlHistoryDialogFragment.show(supportFragmentManager, getString(R.string.history));
+                // Show the URL history dialog and name this instance `R.string.history`.
+                DialogFragment urlHistoryDialogFragment = UrlHistoryDialog.loadBackForwardList(this, webBackForwardList);
+                urlHistoryDialogFragment.show(getSupportFragmentManager(), getString(R.string.history));
                 break;
 
             case R.id.requests:
@@ -3156,9 +3162,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Clear `customHeaders`.
                 customHeaders.clear();
 
-                // Detach all views from `mainWebViewRelativeLayout`.
-                mainWebViewRelativeLayout.removeAllViews();
-
                 // Destroy the internal state of `mainWebView`.
                 mainWebView.destroy();
 
@@ -3188,6 +3191,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 break;
         }
 
+        // Get a handle for the drawer layout.
+        DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
+
         // Close the navigation drawer.
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
@@ -3195,10 +3201,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void onPostCreate(Bundle savedInstanceState) {
+        // Run the default commands.
         super.onPostCreate(savedInstanceState);
 
         // Sync the state of the DrawerToggle after onRestoreInstanceState has finished.
-        drawerToggle.syncState();
+        actionBarDrawerToggle.syncState();
     }
 
     @Override
@@ -3237,8 +3244,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         final String imageUrl;
         final String linkUrl;
 
-        // Get a handle for the `ClipboardManager`.
+        // Get a handle for the the clipboard and fragment managers.
         final ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+        FragmentManager fragmentManager = getSupportFragmentManager();
 
         // Remove the lint errors below that `clipboardManager` might be `null`.
         assert clipboardManager != null;
@@ -3287,17 +3295,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_FILE);
 
                                 // Show the download location permission alert dialog.  The permission will be requested when the the dialog is closed.
-                                downloadLocationPermissionDialogFragment.show(getFragmentManager(), getString(R.string.download_location));
+                                downloadLocationPermissionDialogFragment.show(fragmentManager, getString(R.string.download_location));
                             } else {  // Show the permission request directly.
                                 // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
                                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_FILE_REQUEST_CODE);
                             }
                         } else {  // The storage permission has already been granted.
                             // Get a handle for the download file alert dialog.
-                            AppCompatDialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(linkUrl, "none", -1);
+                            DialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(linkUrl, "none", -1);
 
                             // Show the download file alert dialog.
-                            downloadFileDialogFragment.show(supportFragmentManager, getString(R.string.download));
+                            downloadFileDialogFragment.show(fragmentManager, getString(R.string.download));
                         }
                     }
                     return false;
@@ -3387,17 +3395,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_IMAGE);
 
                                 // Show the download location permission alert dialog.  The permission will be requested when the dialog is closed.
-                                downloadLocationPermissionDialogFragment.show(getFragmentManager(), getString(R.string.download_location));
+                                downloadLocationPermissionDialogFragment.show(fragmentManager, getString(R.string.download_location));
                             } else {  // Show the permission request directly.
                                 // Request the permission.  The download dialog will be launched by `onRequestPermissionResult().
                                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_IMAGE_REQUEST_CODE);
                             }
                         } else {  // The storage permission has already been granted.
                             // Get a handle for the download image alert dialog.
-                            AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
+                            DialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
 
                             // Show the download image alert dialog.
-                            downloadImageDialogFragment.show(supportFragmentManager, getString(R.string.download));
+                            downloadImageDialogFragment.show(fragmentManager, getString(R.string.download));
                         }
                     }
                     return false;
@@ -3461,17 +3469,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_IMAGE);
 
                                 // Show the download location permission alert dialog.  The permission will be requested when the dialog is closed.
-                                downloadLocationPermissionDialogFragment.show(getFragmentManager(), getString(R.string.download_location));
+                                downloadLocationPermissionDialogFragment.show(fragmentManager, getString(R.string.download_location));
                             } else {  // Show the permission request directly.
                                 // Request the permission.  The download dialog will be launched by `onRequestPermissionResult().
                                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_IMAGE_REQUEST_CODE);
                             }
                         } else {  // The storage permission has already been granted.
                             // Get a handle for the download image alert dialog.
-                            AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
+                            DialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
 
                             // Show the download image alert dialog.
-                            downloadImageDialogFragment.show(supportFragmentManager, getString(R.string.download));
+                            downloadImageDialogFragment.show(fragmentManager, getString(R.string.download));
                         }
                     }
                     return false;
@@ -3506,7 +3514,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onCreateBookmark(AppCompatDialogFragment dialogFragment) {
+    public void onCreateBookmark(DialogFragment dialogFragment) {
         // Get the `EditTexts` from the `dialogFragment`.
         EditText createBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.create_bookmark_name_edittext);
         EditText createBookmarkUrlEditText = dialogFragment.getDialog().findViewById(R.id.create_bookmark_url_edittext);
@@ -3537,7 +3545,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onCreateBookmarkFolder(AppCompatDialogFragment dialogFragment) {
+    public void onCreateBookmarkFolder(DialogFragment dialogFragment) {
         // Get handles for the views in `dialogFragment`.
         EditText createFolderNameEditText = dialogFragment.getDialog().findViewById(R.id.create_folder_name_edittext);
         RadioButton defaultFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon_radiobutton);
@@ -3582,7 +3590,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onCreateHomeScreenShortcut(AppCompatDialogFragment dialogFragment) {
+    public void onCreateHomeScreenShortcut(DialogFragment dialogFragment) {
         // Get the shortcut name.
         EditText shortcutNameEditText = dialogFragment.getDialog().findViewById(R.id.shortcut_name_edittext);
         String shortcutNameString = shortcutNameEditText.getText().toString();
@@ -3623,16 +3631,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        // Get a handle for the fragment manager.
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
         switch (requestCode) {
             case DOWNLOAD_FILE_REQUEST_CODE:
                 // Show the download file alert dialog.  When the dialog closes, the correct command will be used based on the permission status.
-                AppCompatDialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(downloadUrl, downloadContentDisposition, downloadContentLength);
+                DialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(downloadUrl, downloadContentDisposition, downloadContentLength);
 
                 // On API 23, displaying the fragment must be delayed or the app will crash.
                 if (Build.VERSION.SDK_INT == 23) {
-                    new Handler().postDelayed(() -> downloadFileDialogFragment.show(supportFragmentManager, getString(R.string.download)), 500);
+                    new Handler().postDelayed(() -> downloadFileDialogFragment.show(fragmentManager, getString(R.string.download)), 500);
                 } else {
-                    downloadFileDialogFragment.show(supportFragmentManager, getString(R.string.download));
+                    downloadFileDialogFragment.show(fragmentManager, getString(R.string.download));
                 }
 
                 // Reset the download variables.
@@ -3643,13 +3654,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case DOWNLOAD_IMAGE_REQUEST_CODE:
                 // Show the download image alert dialog.  When the dialog closes, the correct command will be used based on the permission status.
-                AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(downloadImageUrl);
+                DialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(downloadImageUrl);
 
                 // On API 23, displaying the fragment must be delayed or the app will crash.
                 if (Build.VERSION.SDK_INT == 23) {
-                    new Handler().postDelayed(() -> downloadImageDialogFragment.show(supportFragmentManager, getString(R.string.download)), 500);
+                    new Handler().postDelayed(() -> downloadImageDialogFragment.show(fragmentManager, getString(R.string.download)), 500);
                 } else {
-                    downloadImageDialogFragment.show(supportFragmentManager, getString(R.string.download));
+                    downloadImageDialogFragment.show(fragmentManager, getString(R.string.download));
                 }
 
                 // Reset the image URL variable.
@@ -3659,7 +3670,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onDownloadImage(AppCompatDialogFragment dialogFragment, String imageUrl) {
+    public void onDownloadImage(DialogFragment dialogFragment, String imageUrl) {
         // Download the image if it has an HTTP or HTTPS URI.
         if (imageUrl.startsWith("http")) {
             // Get a handle for the system `DOWNLOAD_SERVICE`.
@@ -3711,7 +3722,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onDownloadFile(AppCompatDialogFragment dialogFragment, String downloadUrl) {
+    public void onDownloadFile(DialogFragment dialogFragment, String downloadUrl) {
         // Download the file if it has an HTTP or HTTPS URI.
         if (downloadUrl.startsWith("http")) {
             // Get a handle for the system `DOWNLOAD_SERVICE`.
@@ -3763,7 +3774,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onSaveBookmark(AppCompatDialogFragment dialogFragment, int selectedBookmarkDatabaseId) {
+    public void onSaveBookmark(DialogFragment dialogFragment, int selectedBookmarkDatabaseId) {
         // Get handles for the views from `dialogFragment`.
         EditText editBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_name_edittext);
         EditText editBookmarkUrlEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_url_edittext);
@@ -3794,7 +3805,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onSaveBookmarkFolder(AppCompatDialogFragment dialogFragment, int selectedFolderDatabaseId) {
+    public void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedFolderDatabaseId) {
         // Get handles for the views from `dialogFragment`.
         EditText editFolderNameEditText = dialogFragment.getDialog().findViewById(R.id.edit_folder_name_edittext);
         RadioButton currentFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_current_icon_radiobutton);
@@ -3862,7 +3873,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onHttpAuthenticationProceed(AppCompatDialogFragment dialogFragment) {
+    public void onHttpAuthenticationProceed(DialogFragment dialogFragment) {
         // Get handles for the `EditTexts`.
         EditText usernameEditText = dialogFragment.getDialog().findViewById(R.id.http_authentication_username);
         EditText passwordEditText = dialogFragment.getDialog().findViewById(R.id.http_authentication_password);
@@ -3874,7 +3885,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public void viewSslCertificate(View view) {
         // Show the `ViewSslCertificateDialog` `AlertDialog` and name this instance `@string/view_ssl_certificate`.
         DialogFragment viewSslCertificateDialogFragment = new ViewSslCertificateDialog();
-        viewSslCertificateDialogFragment.show(getFragmentManager(), getString(R.string.view_ssl_certificate));
+        viewSslCertificateDialogFragment.show(getSupportFragmentManager(), getString(R.string.view_ssl_certificate));
     }
 
     @Override
@@ -3931,6 +3942,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // Override `onBackPressed` to handle the navigation drawer and `mainWebView`.
     @Override
     public void onBackPressed() {
+        // Get a handle for the drawer layout.
+        DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
+
         if (drawerLayout.isDrawerVisible(GravityCompat.START)) {  // The navigation drawer is open.
             // Close the navigation drawer.
             drawerLayout.closeDrawer(GravityCompat.START);
@@ -4073,8 +4087,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Hide the Find on Page `RelativeLayout`.
         findOnPageLinearLayout.setVisibility(View.GONE);
 
-        // Show the URL app bar.
-        supportAppBar.setVisibility(View.VISIBLE);
+        // Get a handle for the toolbar.
+        Toolbar toolbar = findViewById(R.id.toolbar);
+
+        // Show the toolbar.
+        toolbar.setVisibility(View.VISIBLE);
 
         // Hide the keyboard so we can see the webpage.  `0` indicates no additional flags.
         inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
@@ -4103,6 +4120,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             customHeaders.remove("DNT");
         }
 
+        // Get handles for the views that need to be modified.  `getSupportActionBar()` must be used until the minimum API >= 21.
+        DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
+        CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinatorlayout);
+        ActionBar actionBar = getSupportActionBar();
+
         // Apply the appropriate full screen mode the `SYSTEM_UI` flags.
         if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
             if (hideSystemBarsOnFullscreen) {  // Hide everything.
@@ -4119,10 +4141,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                  * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
                  * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
                  */
-                rootCoordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                coordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
             } else {  // Hide everything except the status and navigation bars.
-                // Remove any `SYSTEM_UI` flags from `rootCoordinatorLayout`.
-                rootCoordinatorLayout.setSystemUiVisibility(0);
+                // Remove any `SYSTEM_UI` flags from the coordinator layout.
+                coordinatorLayout.setSystemUiVisibility(0);
 
                 // Add the translucent status flag if it is unset.
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -4139,19 +4161,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Reset the full screen tracker, which could be true if Privacy Browser was in full screen mode before entering settings and full screen browsing was disabled.
             inFullScreenBrowsingMode = false;
 
-            // Show the `appBar` if `findOnPageLinearLayout` is not visible.
+            // Remove the incorrect lint warning below that the action bar might be null.
+            assert actionBar != null;
+
+            // Show the action bar if the find on page linear layout is not visible.
             if (findOnPageLinearLayout.getVisibility() == View.GONE) {
-                appBar.show();
+                actionBar.show();
             }
 
             // Show the `BannerAd` in the free flavor.
             if (BuildConfig.FLAVOR.contentEquals("free")) {
                 // Initialize the ad.  The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
-                AdHelper.initializeAds(findViewById(R.id.adview), getApplicationContext(), getFragmentManager(), getString(R.string.google_app_id), getString(R.string.ad_unit_id));
+                AdHelper.initializeAds(findViewById(R.id.adview), getApplicationContext(), fragmentManager, getString(R.string.google_app_id), getString(R.string.ad_unit_id));
             }
 
-            // Remove any `SYSTEM_UI` flags from `rootCoordinatorLayout`.
-            rootCoordinatorLayout.setSystemUiVisibility(0);
+            // Remove any `SYSTEM_UI` flags from the coordinator layout.
+            coordinatorLayout.setSystemUiVisibility(0);
 
             // Remove the translucent navigation bar flag if it is set.
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
@@ -4159,8 +4184,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Add the translucent status flag if it is unset.  This also resets `drawerLayout's` `View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN`.
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-            // Constrain `rootCoordinatorLayout` inside the status and navigation bars.
-            rootCoordinatorLayout.setFitsSystemWindows(true);
+            // Constrain the coordinator layout inside the status and navigation bars.
+            coordinatorLayout.setFitsSystemWindows(true);
         }
     }
 
@@ -4210,6 +4235,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 favoriteIconBitmap = favoriteIconDefaultBitmap;
                 favoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(favoriteIconBitmap, 64, 64, true));
             }
+
+            // Get a handle for the swipe refresh layout.
+            SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
 
             // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
             DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
@@ -4556,6 +4584,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             if (mainMenu != null) {
                 updatePrivacyIcons(true);
             }
+
+            // TODO.
+            swipeRefreshLayout.setEnabled(false);
         }
 
         // Reload the website if returning from the Domains activity.
@@ -4579,6 +4610,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         String searchString = sharedPreferences.getString("search", getString(R.string.search_default_value));
         String searchCustomUrlString = sharedPreferences.getString("search_custom_url", getString(R.string.search_custom_url_default_value));
 
+        // Get a handle for the action bar.  `getSupportActionBar()` must be used until the minimum API >= 21.
+        ActionBar actionBar = getSupportActionBar();
+
+        // Remove the incorrect lint warning later that the action bar might be null.
+        assert actionBar != null;
+
         // Set the homepage, search, and proxy options.
         if (proxyThroughOrbot) {  // Set the Tor options.
             // Set `torHomepageString` as `homepage`.
@@ -4601,9 +4638,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Set the `appBar` background to indicate proxying through Orbot is enabled.  `this` refers to the context.
             if (darkTheme) {
-                appBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.dark_blue_30));
+                actionBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.dark_blue_30));
             } else {
-                appBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.blue_50));
+                actionBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.blue_50));
             }
 
             // Check to see if Orbot is ready.
@@ -4641,9 +4678,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Set the default `appBar` background.  `this` refers to the context.
             if (darkTheme) {
-                appBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.gray_900));
+                actionBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.gray_900));
             } else {
-                appBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.gray_100));
+                actionBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.gray_100));
             }
 
             // Reset `waitingForOrbot.
@@ -4923,10 +4960,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     !currentWebsiteSslEndDateString.equals(pinnedSslEndDateString)))) {
 
                 // Get a handle for the pinned mismatch alert dialog.
-                AppCompatDialogFragment pinnedMismatchDialogFragment = PinnedMismatchDialog.displayDialog(pinnedSslCertificate, pinnedIpAddresses);
+                DialogFragment pinnedMismatchDialogFragment = PinnedMismatchDialog.displayDialog(pinnedSslCertificate, pinnedIpAddresses);
 
                 // Show the pinned mismatch alert dialog.
-                pinnedMismatchDialogFragment.show(supportFragmentManager, "Pinned Mismatch");
+                pinnedMismatchDialogFragment.show(fragmentManager, "Pinned Mismatch");
             }
         }
     }

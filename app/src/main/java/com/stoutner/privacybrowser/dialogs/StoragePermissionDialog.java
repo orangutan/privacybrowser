@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -24,15 +24,15 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-// `AppCompatDialogFragment` must be used instead of `DialogFragment` or the browse button doesn't work correctly in the other dialog for saving logcats.
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatDialogFragment;
 import android.view.WindowManager;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
-public class StoragePermissionDialog extends AppCompatDialogFragment {
+public class StoragePermissionDialog extends DialogFragment {
     // The listener is used in `onAttach()` and `onCreateDialog()`.
     private StoragePermissionDialogListener storagePermissionDialogListener;
 

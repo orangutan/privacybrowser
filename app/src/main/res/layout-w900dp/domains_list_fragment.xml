@@ -18,7 +18,7 @@
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
 <!-- `android:choiceMode="singleChoice"` allows a selected domain to be highlighted.-->
-<tools:ListView
+<ListView
     android:id="@+id/domains_listview"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"

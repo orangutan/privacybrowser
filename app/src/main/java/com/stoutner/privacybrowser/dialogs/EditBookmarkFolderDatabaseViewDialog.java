@@ -31,11 +31,6 @@ import android.database.MergeCursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.ResourceCursorAdapter;
-// `AppCompatDialogFragment` is required instead of `DialogFragment` or an error is produced on API <=22.
-import android.support.v7.app.AppCompatDialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -47,14 +42,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ResourceCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 
-public class EditBookmarkFolderDatabaseViewDialog extends AppCompatDialogFragment {
+public class EditBookmarkFolderDatabaseViewDialog extends DialogFragment {
     // Instantiate the constants.
     public static final int HOME_FOLDER_DATABASE_ID = -1;
 
@@ -73,7 +73,7 @@ public class EditBookmarkFolderDatabaseViewDialog extends AppCompatDialogFragmen
 
     // The public interface is used to send information back to the parent activity.
     public interface EditBookmarkFolderDatabaseViewListener {
-        void onSaveBookmarkFolder(AppCompatDialogFragment dialogFragment, int selectedFolderDatabaseId);
+        void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedFolderDatabaseId);
     }
 
     public void onAttach(Context context) {

@@ -29,17 +29,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -52,6 +41,19 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.DialogFragment;
+
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.dialogs.StoragePermissionDialog;
@@ -105,13 +107,17 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
         setContentView(R.layout.import_export_coordinatorlayout);
 
         // Use the `SupportActionBar` from `android.support.v7.app.ActionBar` until the minimum API is >= 21.
-        Toolbar importExportAppBar = findViewById(R.id.import_export_toolbar);
-        setSupportActionBar(importExportAppBar);
+        Toolbar toolbar = findViewById(R.id.import_export_toolbar);
+        setSupportActionBar(toolbar);
+
+        // Get a handle for the action bar.
+        ActionBar actionBar = getSupportActionBar();
+
+        // Remove the incorrect lint warning that the action bar might be null.
+        assert actionBar != null;
 
         // Display the home arrow on the support action bar.
-        ActionBar appBar = getSupportActionBar();
-        assert appBar != null;// This assert removes the incorrect warning in Android Studio on the following line that `appBar` might be null.
-        appBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         // Find out if we are running KitKat
         boolean runningKitKat = (Build.VERSION.SDK_INT == 19);
@@ -162,11 +168,11 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
         // Set the default file paths according to the storage permission status.
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
             // Set the default file paths to use the external public directory.
-            defaultFilePath = Environment.getExternalStorageDirectory() + "/" + getString(R.string.privacy_browser_settings_pbs);
+            defaultFilePath = Environment.getExternalStorageDirectory() + "/" + getString(R.string.settings_pbs);
             defaultPasswordEncryptionFilePath = defaultFilePath + ".aes";
         } else {  // The storage permission has not been granted.
             // Set the default file paths to use the external private directory.
-            defaultFilePath = getApplicationContext().getExternalFilesDir(null) + "/" + getString(R.string.privacy_browser_settings_pbs);
+            defaultFilePath = getApplicationContext().getExternalFilesDir(null) + "/" + getString(R.string.settings_pbs);
             defaultPasswordEncryptionFilePath = defaultFilePath + ".aes";
         }
 
@@ -438,7 +444,7 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
             exportBrowseIntent.setType("*/*");
 
             // Set the initial export file name.
-            exportBrowseIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.privacy_browser_settings_pbs));
+            exportBrowseIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.settings_pbs));
 
             // Set the initial directory if the minimum API >= 26.
             if (Build.VERSION.SDK_INT >= 26) {
@@ -599,7 +605,7 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
 
             case OPENPGP_EXPORT_RESULT_CODE:
                 // Get the temporary unencrypted export file.
-                File temporaryUnencryptedExportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.privacy_browser_settings_pbs));
+                File temporaryUnencryptedExportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.settings_pbs));
 
                 // Delete the temporary unencrypted export file if it exists.
                 if (temporaryUnencryptedExportFile.exists()) {
@@ -623,7 +629,7 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
 
         // Get the export and temporary unencrypted export files.
         File exportFile = new File(exportFileString);
-        File temporaryUnencryptedExportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.privacy_browser_settings_pbs));
+        File temporaryUnencryptedExportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.settings_pbs));
 
         // Create an export status string.
         String exportStatus;
@@ -802,7 +808,7 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
 
             case PASSWORD_ENCRYPTION:
                 // Use a private temporary import location.
-                File temporaryUnencryptedImportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.privacy_browser_settings_pbs));
+                File temporaryUnencryptedImportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.settings_pbs));
 
                 try {
                     // Create an encrypted import file input stream.

@@ -115,6 +115,7 @@
     <string name="downloads">Descargas</string>
     <string name="settings">Configuración</string>
     <string name="import_export">Importar/Exportar</string>
+    <string name="logcat">Logcat</string>
     <string name="guide">Guía</string>
     <string name="about">Acerca de</string>
     <string name="clear_and_exit">Borrar y salir</string>
@@ -326,7 +327,7 @@
     <string name="kitkat_password_encryption_message">El cifrado de contraseñas no funciona en Android KitKat.</string>
     <string name="openkeychain_required">El cifrado OpenPGP requiere que esté instalado OpenKeychain.</string>
     <string name="openkeychain_import_instructions">El archivo sin cifrar tendrá que ser importado en un paso separado después de ser descifrado.</string>
-    <string name="privacy_browser_settings_pbs">Configuración de Navegador Privado.pbs</string>
+    <string name="settings_pbs">Configuración.pbs</string>
     <string name="file_location">Ubicación del archivo</string>
     <string name="browse">Navegar</string>
     <string name="export">Exportar</string>
@@ -341,6 +342,16 @@
         Si se deniega, los directorios de la aplicación pueden seguir utilizándose.</string>
     <string name="storage_permission_explanation">El acceso a los archivos en directorios públicos requiere el permiso de almacenamiento.
         De lo contrario, sólo funcionarán los directorios de aplicaciones.</string>
+    <string name="cannot_use_location">Esta ubicación no se puede utilizar porque no se ha concedido el permiso de almacenamiento.</string>
+
+    <!-- Logcat. -->
+    <string name="copy">Copiar</string>
+    <string name="logcat_copied">Logcat copiado.</string>
+    <string name="clear">Borrar</string>
+    <string name="save_logcat">Guardar logcat</string>
+    <string name="privacy_browser_logcat_txt">Navegador Privado Logcat.txt</string>
+    <string name="file_saved_successfully">Archivo guardado con éxito.</string>
+    <string name="save_failed">Error al guardar:</string>
 
     <!-- Guide. -->
     <string name="overview">Visión general</string>

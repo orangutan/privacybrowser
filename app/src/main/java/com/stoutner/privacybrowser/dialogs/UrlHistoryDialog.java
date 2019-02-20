@@ -29,11 +29,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-// `AppCompatDialogFragment` must be used instead of `DialogFragment` or an error is produced on API <= 22.
-// `android.support.v7.app.AlertDialog` also uses more of the horizontal screen real estate versus `android.app.AlertDialog's` smaller width.
-import android.support.v7.app.AppCompatDialogFragment;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +36,10 @@ import android.view.WindowManager;
 import android.webkit.WebBackForwardList;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
@@ -50,7 +49,7 @@ import com.stoutner.privacybrowser.definitions.History;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
-public class UrlHistoryDialog extends AppCompatDialogFragment{
+public class UrlHistoryDialog extends DialogFragment{
 
     // `historyArrayList`  and `currentPageId` pass information from `onCreate()` to `onCreateDialog()`.
     private final ArrayList<History> historyArrayList = new ArrayList<>();

@@ -112,6 +112,7 @@
     <string name="downloads">İndirilenler</string>
     <string name="settings">Ayarlar</string>
     <string name="import_export">İçeri Aktar/Dışarı Aktar</string>
+    <string name="logcat">Logcat</string>
     <string name="guide">Rehber</string>
     <string name="about">Hakkında</string>
     <string name="clear_and_exit">Temizle ve Çık</string>
@@ -321,7 +322,7 @@
     <string name="kitkat_password_encryption_message">Android KitKat sürümünde parola şifrelemesi çalışmaz.</string>
     <string name="openkeychain_required">OpenPGP şifrelemesinin çalışması için OpenKeychain yüklü olmalıdır.</string>
     <string name="openkeychain_import_instructions">Şifresi çözüldükten sonra, şifrelenmemiş dosya ayrı bir adımda içeri aktarılmak zorundadır.</string>
-    <string name="privacy_browser_settings_pbs">Privacy Browser Ayarları.pbs</string>
+    <string name="settings_pbs">Ayarları.pbs</string>
     <string name="file_location">Dosya Konumu</string>
     <string name="browse">Gözat</string>
     <string name="export">Dışarı aktar</string>
@@ -334,6 +335,16 @@
     <string name="storage_permission">Depolama Alanı İzni</string>
     <string name="storage_permission_message">Privacy Browser, genel dizinlere erişmek için depolama alanı iznine ihtiyaç duymaktadır. Reddedildiği takdirde, uygulamanın dizinleri hala kullanılabilir.</string>
     <string name="storage_permission_explanation">Genel dizinlerdeki dosyalara erişim icin depolama alanı izni gerekmektedir. Aksi takdirde, sadece uygulamanın dizinleri çalışacaktır.</string>
+    <string name="cannot_use_location">Depolama izni verilmediğinden dolayı bu konum kullanılamaz.</string>
+
+    <!-- Logcat. -->
+    <string name="copy">Kopyala</string>
+    <string name="logcat_copied">Logcat kopyalandı.</string>
+    <string name="clear">Temizle</string>
+    <string name="save_logcat">Logcat\'i kaydet</string>
+    <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
+    <string name="file_saved_successfully">Dosya başarıyla kaydedildi.</string>
+    <string name="save_failed">Kayıt başarısız:</string>
 
     <!-- Guide. -->
     <string name="overview">Genel Bakış</string>

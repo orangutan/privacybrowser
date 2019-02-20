@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -21,10 +21,12 @@ package com.stoutner.privacybrowser.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
@@ -32,6 +34,7 @@ import com.stoutner.privacybrowser.helpers.AdConsentDatabaseHelper;
 import com.stoutner.privacybrowser.helpers.AdHelper;
 
 public class AdConsentDialog extends DialogFragment {
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use a builder to create the alert dialog.
@@ -46,8 +49,11 @@ public class AdConsentDialog extends DialogFragment {
             dialogBuilder.setIcon(R.drawable.block_ads_enabled_light);
         }
 
+        // Remove the incorrect lint warning below that `getApplicationContext()` might be null.
+        assert getActivity() != null;
+
         // Initialize the bookmarks database helper.  The `0` specifies a database version, but that is ignored and set instead using a constant in `AdConsentDatabaseHelper`.
-        // `getContext()` can be used instead of `getActivity.getApplicationContext()` on the minimum API >= 23.
+        // `getContext()` can be used instead of `getActivity.getApplicationContext()` when the minimum API >= 23.
         AdConsentDatabaseHelper adConsentDatabaseHelper = new AdConsentDatabaseHelper(getActivity().getApplicationContext(), null, null, 0);
 
         // Set the title.
@@ -88,8 +94,11 @@ public class AdConsentDialog extends DialogFragment {
     // Close Privacy Browser Free if the dialog is cancelled without selecting a button (by tapping on the background).
     @Override
     public void onCancel(DialogInterface dialogInterface) {
+        // Remove the incorrect lint warning below that `getApplicationContext()` might be null.
+        assert getActivity() != null;
+
         // Initialize the bookmarks database helper.  The `0` specifies a database version, but that is ignored and set instead using a constant in `AdConsentDatabaseHelper`.
-        // `getContext()` can be used instead of `getActivity.getApplicationContext()` on the minimum API >= 23.
+        // `getContext()` can be used instead of `getActivity.getApplicationContext()` when the minimum API >= 23.
         AdConsentDatabaseHelper adConsentDatabaseHelper = new AdConsentDatabaseHelper(getActivity().getApplicationContext(), null, null, 0);
 
         // Update the ad consent database.

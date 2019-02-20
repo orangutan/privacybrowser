@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -27,22 +27,22 @@ import android.content.DialogInterface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-// We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <=22.
-import android.support.v7.app.AppCompatDialogFragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
+
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.R;
 
-public class CreateHomeScreenShortcutDialog extends AppCompatDialogFragment {
+public class CreateHomeScreenShortcutDialog extends DialogFragment {
     // The public interface is used to send information back to the parent activity.
     public interface CreateHomeScreenShortcutListener {
-        void onCreateHomeScreenShortcut(AppCompatDialogFragment dialogFragment);
+        void onCreateHomeScreenShortcut(DialogFragment dialogFragment);
     }
 
     //`createHomeScreenShortcutListener` is used in `onAttach()` and `onCreateDialog()`.

@@ -28,9 +28,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-// `AppCompatDialogFragment` is required instead of `DialogFragment` or an error is produced on API <=22.
-import android.support.v7.app.AppCompatDialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -42,11 +39,14 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
+
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 
-public class EditBookmarkDialog extends AppCompatDialogFragment {
+public class EditBookmarkDialog extends DialogFragment {
     // Instantiate the class variables.
     private EditBookmarkListener editBookmarkListener;
     private EditText nameEditText;
@@ -58,7 +58,7 @@ public class EditBookmarkDialog extends AppCompatDialogFragment {
 
     // The public interface is used to send information back to the parent activity.
     public interface EditBookmarkListener {
-        void onSaveBookmark(AppCompatDialogFragment dialogFragment, int selectedBookmarkDatabaseId);
+        void onSaveBookmark(DialogFragment dialogFragment, int selectedBookmarkDatabaseId);
     }
 
     public void onAttach(Context context) {

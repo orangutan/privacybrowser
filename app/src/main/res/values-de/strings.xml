@@ -257,7 +257,7 @@
         <string name="load_an_encrypted_website">Zuerst verschlüsselte Webseite laden...</string>
 
     <!-- Import/Export. -->
-    <string name="privacy_browser_settings_pbs">Privacy Browser Einstellungen.pbs</string>
+    <string name="settings_pbs">Einstellungen.pbs</string>
 
     <!-- Guide. -->
     <string name="overview">Übersicht</string>

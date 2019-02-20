@@ -40,11 +40,12 @@
 package com.stoutner.privacybrowser.views;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Checkable;
 import android.widget.LinearLayout;
+
+import androidx.annotation.Nullable;
 
 public class CheckedLinearLayout extends LinearLayout implements Checkable {
     private boolean isCurrentlyChecked;

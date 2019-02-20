@@ -26,9 +26,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-// We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <=22.
-import android.support.v7.app.AppCompatDialogFragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,18 +33,21 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
+
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
 import java.util.Locale;
 
-public class DownloadFileDialog extends AppCompatDialogFragment {
+public class DownloadFileDialog extends DialogFragment {
     // `downloadFileListener` is used in `onAttach()` and `onCreateDialog()`.
     private DownloadFileListener downloadFileListener;
 
     // The public interface is used to send information back to the parent activity.
     public interface DownloadFileListener {
-        void onDownloadFile(AppCompatDialogFragment dialogFragment, String downloadUrl);
+        void onDownloadFile(DialogFragment dialogFragment, String downloadUrl);
     }
 
     @Override

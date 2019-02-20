@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -19,12 +19,13 @@
 
 package com.stoutner.privacybrowser.helpers;
 
-import android.app.DialogFragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
+
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdRequest;
@@ -37,7 +38,7 @@ import com.stoutner.privacybrowser.dialogs.AdConsentDialog;
 public class AdHelper {
     private static boolean initialized;
 
-    public static void initializeAds (View view, Context applicationContext, FragmentManager fragmentManager, String googleAppId, String adUnitId) {
+    public static void initializeAds(View view, Context applicationContext, FragmentManager fragmentManager, String googleAppId, String adUnitId) {
         if (!initialized) {  // This is the first run.
             // Initialize mobile ads.
             MobileAds.initialize(applicationContext, googleAppId);
@@ -66,7 +67,7 @@ public class AdHelper {
         }
     }
 
-    public static void loadAd (View view, Context applicationContext, String adUnitId) {
+    public static void loadAd(View view, Context applicationContext, String adUnitId) {
         // Cast the generic view to an AdView.
         AdView adView = (AdView) view;
 

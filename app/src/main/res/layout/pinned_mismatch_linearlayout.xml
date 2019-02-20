@@ -25,7 +25,7 @@
     android:layout_width="wrap_content"
     android:orientation="vertical">
 
-    <android.support.design.widget.TabLayout
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/pinned_ssl_certificate_mismatch_tablayout"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content" >
 
-        <com.stoutner.privacybrowser.definitions.WrapVerticalContentViewPager
+        <com.stoutner.privacybrowser.views.WrapVerticalContentViewPager
             android:id="@+id/pinned_ssl_certificate_mismatch_viewpager"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content" />

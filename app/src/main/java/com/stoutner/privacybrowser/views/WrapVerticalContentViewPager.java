@@ -1,7 +1,5 @@
-package com.stoutner.privacybrowser.definitions;
-
 /*
- * Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017,2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -19,10 +17,13 @@ package com.stoutner.privacybrowser.definitions;
  * along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+package com.stoutner.privacybrowser.views;
+
 import android.content.Context;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
+
+import androidx.viewpager.widget.ViewPager;
 
 public class WrapVerticalContentViewPager extends ViewPager {
     // Setup the default constructors.

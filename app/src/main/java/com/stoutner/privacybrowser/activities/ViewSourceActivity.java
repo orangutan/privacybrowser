@@ -29,11 +29,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.LocaleList;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NavUtils;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -48,6 +43,12 @@ import android.webkit.CookieManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;  // The AndroidX toolbar must be used until the minimum API is >= 21.
+import androidx.core.app.NavUtils;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.dialogs.AboutViewSourceDialog;
@@ -93,19 +94,19 @@ public class ViewSourceActivity extends AppCompatActivity {
         // Set the content view.
         setContentView(R.layout.view_source_coordinatorlayout);
 
-        // `SupportActionBar` from `android.support.v7.app.ActionBar` must be used until the minimum API is >= 21.
-        Toolbar viewSourceAppBar = findViewById(R.id.view_source_toolbar);
-        setSupportActionBar(viewSourceAppBar);
+        // The AndroidX toolbar must be used until the minimum API is >= 21.
+        Toolbar toolbar = findViewById(R.id.view_source_toolbar);
+        setSupportActionBar(toolbar);
 
-        // Setup the app bar.
-        final ActionBar appBar = getSupportActionBar();
+        // Get a handle for the action bar.
+        final ActionBar actionBar = getSupportActionBar();
 
-        // Remove the incorrect warning in Android Studio that appBar might be null.
-        assert appBar != null;
+        // Remove the incorrect lint warning that the action bar might be null.
+        assert actionBar != null;
 
-        // Add the custom layout to the app bar.
-        appBar.setCustomView(R.layout.view_source_app_bar);
-        appBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        // Add the custom layout to the action bar.
+        actionBar.setCustomView(R.layout.view_source_app_bar);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 
         // Get a handle for the url text box.
         EditText urlEditText = findViewById(R.id.url_edittext);

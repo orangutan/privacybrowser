@@ -29,11 +29,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.http.SslCertificate;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.PagerAdapter;
-// `AppCompatDialogFragment` is used instead of `DialogFragment` to avoid an error on API <=22.
-import android.support.v7.app.AppCompatDialogFragment;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -43,15 +38,21 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.google.android.material.tabs.TabLayout;
+
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
-import com.stoutner.privacybrowser.definitions.WrapVerticalContentViewPager;
+import com.stoutner.privacybrowser.views.WrapVerticalContentViewPager;
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 
 import java.text.DateFormat;
 import java.util.Date;
 
-public class PinnedMismatchDialog extends AppCompatDialogFragment {
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
+import androidx.viewpager.widget.PagerAdapter;
+
+public class PinnedMismatchDialog extends DialogFragment {
     // Instantiate the class variables.
     private PinnedMismatchListener pinnedMismatchListener;
     private LayoutInflater layoutInflater;

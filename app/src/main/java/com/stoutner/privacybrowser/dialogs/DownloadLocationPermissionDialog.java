@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -21,7 +21,6 @@ package com.stoutner.privacybrowser.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -29,6 +28,9 @@ import android.view.WindowManager;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
 
 public class DownloadLocationPermissionDialog extends DialogFragment {
     // The constants are used to differentiate between the two download types.
@@ -65,8 +67,12 @@ public class DownloadLocationPermissionDialog extends DialogFragment {
         return thisDownloadLocationPermissionDialog;
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Remove the incorrect lint warning below that `getArguments().getInt()` might be null.
+        assert getArguments() != null;
+
         // Store the download type in a local variable.
         int downloadType = getArguments().getInt("download_type");
 

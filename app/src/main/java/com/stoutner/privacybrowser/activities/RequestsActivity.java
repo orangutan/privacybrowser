@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -23,10 +23,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDialogFragment;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -35,6 +31,11 @@ import android.widget.ListView;
 import android.widget.ResourceCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;  // The AndroidX toolbar must be used until the minimum API >= 21.
+import androidx.fragment.app.DialogFragment;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.adapters.RequestsArrayAdapter;
@@ -67,9 +68,9 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
         // Set the content view.
         setContentView(R.layout.requests_coordinatorlayout);
 
-        // Use the `SupportActionBar` from `android.support.v7.app.ActionBar` until the minimum API is >= 21.
-        Toolbar requestsAppBar = findViewById(R.id.requests_toolbar);
-        setSupportActionBar(requestsAppBar);
+        // Use the AndroidX toolbar from until the minimum API is >= 21.
+        Toolbar toolbar = findViewById(R.id.requests_toolbar);
+        setSupportActionBar(toolbar);
 
         // Get a handle for the app bar and the list view.
         ActionBar appBar = getSupportActionBar();
@@ -244,7 +245,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
         assert selectedRequestStringArray != null;
 
         // Show the request detail dialog.
-        AppCompatDialogFragment viewRequestDialogFragment = ViewRequestDialog.request(id, isLastRequest, selectedRequestStringArray);
+        DialogFragment viewRequestDialogFragment = ViewRequestDialog.request(id, isLastRequest, selectedRequestStringArray);
         viewRequestDialogFragment.show(getSupportFragmentManager(), getString(R.string.request_details));
     }
 }

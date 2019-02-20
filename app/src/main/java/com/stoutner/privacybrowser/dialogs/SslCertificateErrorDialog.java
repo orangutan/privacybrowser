@@ -30,15 +30,15 @@ import android.net.http.SslCertificate;
 import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-// `AppCompatDialogFragment` is used instead of `DialogFragment` to avoid an error on API <=22.
-import android.support.v7.app.AppCompatDialogFragment;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.WindowManager;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
@@ -49,7 +49,7 @@ import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.util.Date;
 
-public class SslCertificateErrorDialog extends AppCompatDialogFragment {
+public class SslCertificateErrorDialog extends DialogFragment {
     // `sslCertificateErrorListener` is used in `onAttach` and `onCreateDialog`.
     private SslCertificateErrorListener sslCertificateErrorListener;
 

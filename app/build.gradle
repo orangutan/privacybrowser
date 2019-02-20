@@ -71,7 +71,19 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:design:28.0.0'
+
+    // Include the following AndroidX libraries.
+    implementation 'androidx.arch.core:core-common:2.0.0'
+    implementation 'androidx.arch.core:core-runtime:2.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.0.0'
+    implementation 'androidx.drawerlayout:drawerlayout:1.0.0'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+    implementation 'androidx.viewpager:viewpager:1.0.0'
+
+    // Include the Google material library.
+    implementation 'com.google.android.material:material:1.0.0'
 
     // Only compile Firebase ads for the free flavor.
     freeImplementation 'com.google.firebase:firebase-ads:17.1.3'

@@ -331,7 +331,7 @@
     <string name="kitkat_password_encryption_message">Password encryption does not work on Android KitKat.</string>
     <string name="openkeychain_required">OpenPGP encryption requires that OpenKeychain be installed.</string>
     <string name="openkeychain_import_instructions">The unencrypted file will have to be imported in a separate step after it is decrypted.</string>
-    <string name="privacy_browser_settings_pbs">Privacy Browser Settings.pbs</string>
+    <string name="settings_pbs">Settings.pbs</string>
     <string name="file_location">File Location</string>
     <string name="browse">Browse</string>
     <string name="export">Export</string>

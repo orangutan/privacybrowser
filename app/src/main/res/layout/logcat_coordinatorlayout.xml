@@ -20,7 +20,7 @@
 
 <!-- `android:fitsSystemWindows="true"` moves the AppBar below the status bar.
     When it is specified the theme should include `<item name="android:windowTranslucentStatus">true</item>` to make the status bar a transparent, darkened overlay. -->
-<android.support.design.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     android:id="@+id/logcat_coordinatorlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -34,21 +34,21 @@
         android:layout_width="match_parent"
         android:orientation="vertical" >
 
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/logcat_appbarlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent" >
 
-            <android.support.v7.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                 android:id="@+id/logcat_toolbar"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:background="?attr/colorPrimaryDark"
                 android:theme="?attr/appBarTextTheme"
                 app:popupTheme="?attr/popupsTheme" />
-        </android.support.design.widget.AppBarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
-        <android.support.v4.widget.SwipeRefreshLayout
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/logcat_swiperefreshlayout"
             android:layout_height="match_parent"
             android:layout_width="match_parent" >
@@ -64,6 +64,6 @@
                     android:layout_margin="10dp"
                     android:textIsSelectable="true" />
             </ScrollView>
-        </android.support.v4.widget.SwipeRefreshLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </LinearLayout>
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

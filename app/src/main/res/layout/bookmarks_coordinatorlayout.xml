@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -20,7 +20,7 @@
 
 <!-- `android:fitsSystemWindows="true"` moves the AppBar below the status bar.
     When it is specified the theme should include `<item name="android:windowTranslucentStatus">true</item>` to make the status bar a transparent, darkened overlay. -->
-<android.support.design.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     android:id="@+id/bookmarks_coordinatorlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -34,19 +34,19 @@
         android:layout_width="match_parent"
         android:orientation="vertical" >
 
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/bookmarks_appbarlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent" >
 
-            <android.support.v7.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                 android:id="@+id/bookmarks_toolbar"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:background="?attr/colorPrimaryDark"
                 android:theme="?attr/appBarTextTheme"
                 app:popupTheme="?attr/popupsTheme" />
-        </android.support.design.widget.AppBarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <!-- `android:choiceMode="multipleChoiceModal"` allows the contextual action menu to select more than one item at a time.
             `android:dividerHeight` must be at least `1dp` or the `ListView` is inconsistent in calculating how many bookmarks are displayed. -->
@@ -59,7 +59,7 @@
             android:dividerHeight="1dp" />
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/create_bookmark_folder_fab"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
@@ -68,11 +68,11 @@
         android:layout_marginBottom="85dp"
         android:src="?attr/addFolderIcon" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/create_bookmark_fab"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:src="?attr/addBookmarkIcon" />
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

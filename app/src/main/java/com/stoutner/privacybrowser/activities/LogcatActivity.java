@@ -31,22 +31,22 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDialogFragment;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;  // The AndroidX toolbar must be used until the minimum API is >= 21.
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.dialogs.StoragePermissionDialog;
 import com.stoutner.privacybrowser.dialogs.SaveLogcatDialog;
@@ -86,18 +86,18 @@ public class LogcatActivity extends AppCompatActivity implements SaveLogcatDialo
         // Set the content view.
         setContentView(R.layout.logcat_coordinatorlayout);
 
-        // Use the `SupportActionBar` from `android.support.v7.app.ActionBar` until the minimum API is >= 21.
-        Toolbar logcatAppBar = findViewById(R.id.logcat_toolbar);
-        setSupportActionBar(logcatAppBar);
+        // The AndroidX toolbar must be used until the minimum API is >= 21.
+        Toolbar toolbar = findViewById(R.id.logcat_toolbar);
+        setSupportActionBar(toolbar);
 
-        // Get a handle for the app bar.
-        ActionBar appBar = getSupportActionBar();
+        // Get a handle for the action bar.
+        ActionBar actionBar = getSupportActionBar();
 
-        // Remove the incorrect lint warning that `appBar` might be null.
-        assert appBar != null;
+        // Remove the incorrect lint warning that the action bar might be null.
+        assert actionBar != null;
 
-        // Display the the back arrow in the app bar.
-        appBar.setDisplayHomeAsUpEnabled(true);
+        // Display the the back arrow in the action bar.
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         // Implement swipe to refresh.
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.logcat_swiperefreshlayout);
@@ -190,7 +190,7 @@ public class LogcatActivity extends AppCompatActivity implements SaveLogcatDialo
     }
 
     @Override
-    public void onSaveLogcat(AppCompatDialogFragment dialogFragment) {
+    public void onSaveLogcat(DialogFragment dialogFragment) {
         // Get a handle for the file name edit text.
         EditText fileNameEditText = dialogFragment.getDialog().findViewById(R.id.file_name_edittext);
 
