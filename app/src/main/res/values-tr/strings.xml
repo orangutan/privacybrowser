@@ -496,10 +496,6 @@
     <string name="full_screen">Tam Ekran</string>
         <string name="full_screen_browsing_mode">Tam ekran modu</string>
         <string name="full_screen_browsing_mode_summary">Tam ekran moduna geçmek için çift dokun.</string>
-        <string name="hide_system_bars">Sistem çubuğunu gizle</string>
-        <string name="hide_system_bars_summary">Tam ekran modunda durum ve gezinti çubuğunu gizler. Tam ekran modundayken klavye açıldığında iyi çalışmayabilir.</string>
-        <string name="translucent_navigation_bar">Yarı saydam gezinti çubuğu</string>
-        <string name="translucent_navigation_bar_summary">Gezinti çubuğunu, tam ekran modunda yarı saydam yapar.</string>
     <string name="clear_everything">Her şeyi temizle</string>
         <string name="clear_everything_summary">Çerezleri, DOM depolama alanını, form verisini ve Web Görünümü ön belleğini temizler.
             Sonrasında, manuel olarak bütün “app_webview” ve “cache” dizinlerini siler.</string>
@@ -537,10 +533,10 @@
             </string-array>
         <string name="swipe_to_refresh">Yenilemek için kaydır</string>
         <string name="swipe_to_refresh_summary">Bazı web siteleri, yenilemek için kaydır seçeneği etkin olduğunda iyi çalışmayabilir.</string>
-        <string name="download_with_external_app">Harici uygulamayla indir</string>
-        <string name="download_with_external_app_summary">Android indirme yönetecisi bazı cihazlarda iyi çalışmayabilir.</string>
         <string name="display_additional_app_bar_icons">Ek uygulama çubuğu simgelerini göster</string>
         <string name="display_additional_app_bar_icons_summary">Web Görünümünü yenilemek ve yer varsa çerezler ve DOM depolama alanını değiştirmek için uygulama çubuğunda simgeler gösterir.</string>
+        <string name="download_with_external_app">Harici uygulamayla indir</string>
+        <string name="download_with_external_app_summary">Android indirme yönetecisi bazı cihazlarda iyi çalışmayabilir.</string>
         <string name="dark_theme">Koyu tema</string>
         <string name="dark_theme_summary">Temayı değiştirmek Privacy Browser\'ı yeniden başlatacak.</string>
         <string name="night_mode">Gece modu</string>

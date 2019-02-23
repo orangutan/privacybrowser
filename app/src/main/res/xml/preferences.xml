@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -189,15 +189,9 @@
             android:defaultValue="false" />
 
         <SwitchPreference
-            android:key="hide_system_bars"
-            android:title="@string/hide_system_bars"
-            android:summary="@string/hide_system_bars_summary"
-            android:defaultValue="false" />
-
-        <SwitchPreference
-            android:key="translucent_navigation_bar"
-            android:title="@string/translucent_navigation_bar"
-            android:summary="@string/translucent_navigation_bar_summary"
+            android:key="hide_app_bar"
+            android:title="@string/hide_app_bar"
+            android:summary="@string/hide_app_bar_summary"
             android:defaultValue="true" />
     </PreferenceCategory>
 
@@ -263,15 +257,21 @@
             android:defaultValue="true" />
 
         <SwitchPreference
-            android:key="download_with_external_app"
-            android:title="@string/download_with_external_app"
-            android:summary="@string/download_with_external_app_summary"
-            android:defaultValue="false" />
+            android:key="scroll_app_bar"
+            android:title="@string/scroll_app_bar"
+            android:summary="@string/scroll_app_bar_summary"
+            android:defaultValue="true" />
 
         <SwitchPreference
             android:key="display_additional_app_bar_icons"
             android:title="@string/display_additional_app_bar_icons"
             android:summary="@string/display_additional_app_bar_icons_summary"
+            android:defaultValue="false" />
+
+        <SwitchPreference
+            android:key="download_with_external_app"
+            android:title="@string/download_with_external_app"
+            android:summary="@string/download_with_external_app_summary"
             android:defaultValue="false" />
 
         <SwitchPreference

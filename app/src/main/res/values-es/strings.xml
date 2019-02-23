@@ -502,11 +502,6 @@
     <string name="full_screen">Pantalla completa</string>
         <string name="full_screen_browsing_mode">Navegación de pantalla completa</string>
         <string name="full_screen_browsing_mode_summary">Doble toque para alternar a modo de navegación de pantalla completa.</string>
-        <string name="hide_system_bars">Esconder barras del systema</string>
-        <string name="hide_system_bars_summary">Esconder las barras de estado y de navegación en el modo de navegación a pantalla completa.
-            Esto no funciona bien si el teclado es mostrado durante el modo de navegación a pantalla completa.</string>
-        <string name="translucent_navigation_bar">Barra de navegación translúcida</string>
-        <string name="translucent_navigation_bar_summary">Hacer la barra de navegación translúcida en el modo de navegación a pantalla completa.</string>
     <string name="clear_everything">Borrar todo</string>
         <string name="clear_everything_summary">Borra cookies, almacenamiento DOM, datos de formulario y la caché de  WebView.
             A continuación borra manualmente los directorios “app_webview” y “cache”.</string>
@@ -544,10 +539,10 @@
             </string-array>
         <string name="swipe_to_refresh">Deslizar para actualizar</string>
         <string name="swipe_to_refresh_summary">Algunas webs no funcionan bien si la opción deslizar para actualizar está habilitada.</string>
-        <string name="download_with_external_app">Descargar con app externa</string>
-        <string name="download_with_external_app_summary">El gestor de descargas de Android no funciona bien en algunos dispositivos.</string>
         <string name="display_additional_app_bar_icons">Mostrar iconos adicionales en la barra de aplicación</string>
         <string name="display_additional_app_bar_icons_summary">Mostrar iconos en la barra de aplicaciones para refrescar el WebView y, si hay espacio, para alternar entre cookies y almacenamiento DOM.</string>
+        <string name="download_with_external_app">Descargar con app externa</string>
+        <string name="download_with_external_app_summary">El gestor de descargas de Android no funciona bien en algunos dispositivos.</string>
         <string name="dark_theme">Tema oscuro</string>
         <string name="dark_theme_summary">Cambiar el tema reiniciará Navegador Privado.</string>
         <string name="night_mode">Modo noche</string>

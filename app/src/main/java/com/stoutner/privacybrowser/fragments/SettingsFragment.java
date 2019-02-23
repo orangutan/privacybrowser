@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -78,8 +78,7 @@ public class SettingsFragment extends PreferenceFragment {
         final Preference searchPreference = findPreference("search");
         final Preference searchCustomURLPreference = findPreference("search_custom_url");
         final Preference fullScreenBrowsingModePreference = findPreference("full_screen_browsing_mode");
-        final Preference hideSystemBarsPreference = findPreference("hide_system_bars");
-        final Preference translucentNavigationBarPreference = findPreference("translucent_navigation_bar");
+        final Preference hideAppBarPreference = findPreference("hide_app_bar");
         final Preference clearEverythingPreference = findPreference("clear_everything");
         final Preference clearCookiesPreference = findPreference("clear_cookies");
         final Preference clearDomStoragePreference = findPreference("clear_dom_storage");
@@ -88,8 +87,9 @@ public class SettingsFragment extends PreferenceFragment {
         final Preference homepagePreference = findPreference("homepage");
         final Preference fontSizePreference = findPreference("font_size");
         final Preference swipeToRefreshPreference = findPreference("swipe_to_refresh");
-        final Preference downloadWithExternalAppPreference = findPreference("download_with_external_app");
+        final Preference scrollAppBarPreference = findPreference("scroll_app_bar");
         final Preference displayAdditionalAppBarIconsPreference = findPreference("display_additional_app_bar_icons");
+        final Preference downloadWithExternalAppPreference = findPreference("download_with_external_app");
         final Preference darkThemePreference = findPreference("dark_theme");
         final Preference nightModePreference = findPreference("night_mode");
         final Preference displayWebpageImagesPreference = findPreference("display_webpage_images");
@@ -97,9 +97,9 @@ public class SettingsFragment extends PreferenceFragment {
         // Set dependencies.
         torHomepagePreference.setDependency("proxy_through_orbot");
         torSearchPreference.setDependency("proxy_through_orbot");
-        hideSystemBarsPreference.setDependency("full_screen_browsing_mode");
+        hideAppBarPreference.setDependency("full_screen_browsing_mode");
 
-        // Get Strings from the preferences.
+        // Get strings from the preferences.
         String torSearchString = savedPreferences.getString("tor_search", getString(R.string.tor_search_default_value));
         String searchString = savedPreferences.getString("search", getString(R.string.search_default_value));
 
@@ -111,7 +111,6 @@ public class SettingsFragment extends PreferenceFragment {
         boolean fanboySocialBlockingEnabled = savedPreferences.getBoolean("fanboys_social_blocking_list", true);
         boolean proxyThroughOrbot = savedPreferences.getBoolean("proxy_through_orbot", false);
         boolean fullScreenBrowsingMode = savedPreferences.getBoolean("full_screen_browsing_mode", false);
-        boolean hideSystemBars = savedPreferences.getBoolean("hide_system_bars", false);
         boolean clearEverything = savedPreferences.getBoolean("clear_everything", true);
         final boolean nightMode = savedPreferences.getBoolean("night_mode", false);
 
@@ -212,11 +211,7 @@ public class SettingsFragment extends PreferenceFragment {
         searchCustomURLPreference.setSummary(savedPreferences.getString("search_custom_url", getString(R.string.search_custom_url_default_value)));
         searchCustomURLPreference.setEnabled(searchString.equals("Custom URL"));
 
-
-        // Enable the translucent navigation bar preference only if full screen browsing mode is enabled and `hide_system_bars` is disabled.
-        translucentNavigationBarPreference.setEnabled(fullScreenBrowsingMode && !hideSystemBars);
-
-        // Set the status of the `Clear and Exit` preferences.
+        // Set the status of the Clear and Exit preferences.
         clearCookiesPreference.setEnabled(!clearEverything);
         clearDomStoragePreference.setEnabled(!clearEverything);
         clearFormDataPreference.setEnabled(!clearEverything);  // The form data line can be removed once the minimum API is >= 26.
@@ -522,49 +517,30 @@ public class SettingsFragment extends PreferenceFragment {
                 fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled_light);
             }
 
-            if (hideSystemBars) {  // `hideSystemBarsBoolean` is `true`.
-                // Set the icons according to the theme.
+            // Set the hide app bar icon.
+            if (savedPreferences.getBoolean("hide_app_bar", true)) {  // Hide app bar is enabled.
+                // Set the icon according to the theme.
                 if (MainWebViewActivity.darkTheme) {
-                    hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_enabled_dark);
-                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_dark);
+                    hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_dark);
                 } else {
-                    hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_enabled_light);
-                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_light);
+                    hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_light);
                 }
-            } else {  // `hideSystemBarsBoolean` is `false`.
-                // Set the `hideSystemBarsPreference` icon according to the theme.
+            } else {  // Hide app bar is disabled.
+                // Set the icon according to the theme.
                 if (MainWebViewActivity.darkTheme) {
-                    // Set the icon for `hideSystemBarsPreference`.
-                    hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_disabled_dark);
-
-                    // Set the icon for `translucentNavigationBarPreference`.
-                    if (savedPreferences.getBoolean("translucent_navigation_bar", true)) {
-                        translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled_dark);
-                    } else {
-                        translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled_dark);
-                    }
+                    hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_dark);
                 } else {
-                    // Set the icon for `hideSystemBarsPreference`.
-                    hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_disabled_light);
-
-                    // Set the icon for `translucentNavigationBarPreference`.
-                    if (savedPreferences.getBoolean("translucent_navigation_bar", true)) {
-                        translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled_light);
-                    } else {
-                        translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled_light);
-                    }
+                    hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_light);
                 }
             }
         } else {  // Full screen browsing mode is disabled.
             // Set the icons according to the theme.
             if (MainWebViewActivity.darkTheme) {
                 fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled_dark);
-                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_ghosted_dark);
-                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_dark);
+                hideAppBarPreference.setIcon(R.drawable.app_bar_ghosted_dark);
             } else {
                 fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled_light);
-                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_ghosted_light);
-                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_light);
+                hideAppBarPreference.setIcon(R.drawable.app_bar_ghosted_light);
             }
         }
 
@@ -640,18 +616,18 @@ public class SettingsFragment extends PreferenceFragment {
             }
         }
 
-        // Set the download with external app preference icon.
-        if (savedPreferences.getBoolean("download_with_external_app", false)) {
+        // Set the scroll app bar preference icon.
+        if (savedPreferences.getBoolean("scroll_app_bar", true)) {
             if (MainWebViewActivity.darkTheme) {
-                downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_dark);
+                scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_dark);
             } else {
-                downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_light);
+                scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_light);
             }
         } else {
             if (MainWebViewActivity.darkTheme) {
-                downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_dark);
+                scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_dark);
             } else {
-                downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_light);
+                scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_light);
             }
         }
 
@@ -667,6 +643,21 @@ public class SettingsFragment extends PreferenceFragment {
                 displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_dark);
             } else {
                 displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_light);
+            }
+        }
+
+        // Set the download with external app preference icon.
+        if (savedPreferences.getBoolean("download_with_external_app", false)) {
+            if (MainWebViewActivity.darkTheme) {
+                downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_dark);
+            } else {
+                downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_light);
+            }
+        } else {
+            if (MainWebViewActivity.darkTheme) {
+                downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_dark);
+            } else {
+                downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_light);
             }
         }
 
@@ -1221,125 +1212,57 @@ public class SettingsFragment extends PreferenceFragment {
                     break;
 
                 case "full_screen_browsing_mode":
-                    if (sharedPreferences.getBoolean("full_screen_browsing_mode", false)) {
-                        // Set the `fullScreenBrowsingModePreference` icon according to the theme.
+                    if (sharedPreferences.getBoolean("full_screen_browsing_mode", false)) {  // Full screen browsing is enabled.
+                        // Set the full screen browsing mode preference icon according to the theme.
                         if (MainWebViewActivity.darkTheme) {
                             fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled_dark);
                         } else {
                             fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled_light);
                         }
 
-                        if (sharedPreferences.getBoolean("hide_system_bars", false)) {  // `hide_system_bars` is `true`.
-                            // Disable `translucentNavigationBarPreference`.
-                            translucentNavigationBarPreference.setEnabled(false);
-
-                            // Set the icons according to the theme.
+                        // Set the hide app bar preference icon.
+                        if (sharedPreferences.getBoolean("hide_app_bar", true)) {  //  Hide app bar is enabled.
+                            // Set the icon according to the theme.
                             if (MainWebViewActivity.darkTheme) {
-                                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_enabled_dark);
-                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_dark);
+                                hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_dark);
                             } else {
-                                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_enabled_light);
-                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_light);
+                                hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_light);
                             }
-                        } else {  // `hide_system_bars` is `false`.
-                            // Enable `translucentNavigationBarPreference`.
-                            translucentNavigationBarPreference.setEnabled(true);
-
-                            // Set the icons according to the theme.
-                            if (MainWebViewActivity.darkTheme) {  // Use the dark theme.
-                                // Set the `hideSystemBarsPreference` icon.
-                                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_disabled_dark);
-
-                                // Set the `translucentNavigationBarPreference` icon.
-                                if (sharedPreferences.getBoolean("translucent_navigation_bar", true)) {
-                                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled_dark);
-                                } else {
-                                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled_dark);
-                                }
-                            } else {  // Use the light theme.
-                                // Set the `hideSystemBarsPreference` icon.
-                                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_disabled_light);
-
-                                // Set the `translucentNavigationBarPreference` icon.
-                                if (sharedPreferences.getBoolean("translucent_navigation_bar", true)) {
-                                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled_light);
-                                } else {
-                                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled_light);
-                                }
+                        } else {  // Hide app bar is disabled.
+                            // Set the icon according to the theme.
+                            if (MainWebViewActivity.darkTheme) {
+                                hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_dark);
+                            } else {
+                                hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_light);
                             }
                         }
-                    } else {  // `full_screen_browsing_mode` is false.
-                        // Disable `translucentNavigationBarPreference`.
-                        translucentNavigationBarPreference.setEnabled(false);
-
+                    } else {  // Full screen browsing is disabled.
                         // Update the icons according to the theme.
                         if (MainWebViewActivity.darkTheme) {
                             fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled_dark);
-                            hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_ghosted_dark);
-                            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_dark);
+                            hideAppBarPreference.setIcon(R.drawable.app_bar_ghosted_dark);
                         } else {
                             fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled_light);
-                            hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_ghosted_light);
-                            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_light);
+                            hideAppBarPreference.setIcon(R.drawable.app_bar_ghosted_light);
                         }
                     }
                     break;
 
-                case "hide_system_bars":
-                    if (sharedPreferences.getBoolean("hide_system_bars", false)) {
-                        // Disable `translucentNavigationBarPreference`.
-                        translucentNavigationBarPreference.setEnabled(false);
-
-                        // Set the icons according to the theme.
-                        if (MainWebViewActivity.darkTheme) {
-                            hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_enabled_dark);
-                            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_dark);
-                        } else {
-                            hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_enabled_light);
-                            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_light);
-                        }
-                    } else {  // `hide_system_bars` is false.
-                        // Enable `translucentNavigationBarPreference`.
-                        translucentNavigationBarPreference.setEnabled(true);
-
-                        // Set the icons according to the theme.
-                        if (MainWebViewActivity.darkTheme) {
-                            // Set the `hideSystemBarsPreference` icon.
-                            hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_disabled_dark);
-
-                            // Set the `translucentNavigationBarPreference` icon.
-                            if (sharedPreferences.getBoolean("translucent_navigation_bar", true)) {
-                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled_dark);
-                            } else {
-                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled_dark);
-                            }
-                        } else {
-                            // Set the `hideSystemBarsPreference` icon.
-                            hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_disabled_light);
-
-                            // Set the `translucentNavigationBarPreference` icon.
-                            if (sharedPreferences.getBoolean("translucent_navigation_bar", true)) {
-                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled_light);
-                            } else {
-                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled_light);
-                            }
-                        }
-                    }
-                    break;
-
-                case "translucent_navigation_bar":
+                case "hide_app_bar":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("translucent_navigation_bar", true)) {
+                    if (sharedPreferences.getBoolean("hide_app_bar", true)) {  // Hide app bar is enabled.
+                        // Set the icon according to the theme.
                         if (MainWebViewActivity.darkTheme) {
-                            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled_dark);
+                            hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_dark);
                         } else {
-                            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled_light);
+                            hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_light);
                         }
-                    } else {
+                    } else {  // Hide app bar is disabled.
+                        // Set the icon according to the theme.
                         if (MainWebViewActivity.darkTheme) {
-                            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled_dark);
+                            hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_dark);
                         } else {
-                            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled_light);
+                            hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_light);
                         }
                     }
                     break;
@@ -1492,19 +1415,19 @@ public class SettingsFragment extends PreferenceFragment {
                     }
                     break;
 
-                case "download_with_external_app":
+                case "scroll_app_bar":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("download_with_external_app", false)) {
+                    if (sharedPreferences.getBoolean("scroll_app_bar", true)) {
                         if (MainWebViewActivity.darkTheme) {
-                            downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_dark);
+                            scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_dark);
                         } else {
-                            downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_light);
+                            scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_light);
                         }
                     } else {
                         if (MainWebViewActivity.darkTheme) {
-                            downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_dark);
+                            scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_dark);
                         } else {
-                            downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_light);
+                            scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_light);
                         }
                     }
                     break;
@@ -1522,6 +1445,23 @@ public class SettingsFragment extends PreferenceFragment {
                             displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_dark);
                         } else {
                             displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_light);
+                        }
+                    }
+                    break;
+
+                case "download_with_external_app":
+                    // Update the icon.
+                    if (sharedPreferences.getBoolean("download_with_external_app", false)) {
+                        if (MainWebViewActivity.darkTheme) {
+                            downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_dark);
+                        } else {
+                            downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_light);
+                        }
+                    } else {
+                        if (MainWebViewActivity.darkTheme) {
+                            downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_dark);
+                        } else {
+                            downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_light);
                         }
                     }
                     break;
@@ -1631,8 +1571,7 @@ public class SettingsFragment extends PreferenceFragment {
         savedPreferences.registerOnSharedPreferenceChangeListener(preferencesListener);
     }
 
-    // It is necessary to re-register the listener on every resume or it will randomly stop working because apps can be paused and resumed at any time
-    // even while running in the foreground.
+    // It is necessary to re-register the listener on every resume or it will randomly stop working because apps can be paused and resumed at any time, even while running in the foreground.
     @Override
     public void onPause() {
         super.onPause();

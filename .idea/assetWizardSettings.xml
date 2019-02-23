@@ -68,7 +68,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/home/soren/Android/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/content/ic_save_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/home/soren/Android/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_payment_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -78,8 +78,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="autoMirrored" value="true" />
-                            <entry key="outputName" value="save_dark" />
+                            <entry key="outputName" value="app_bar" />
                             <entry key="sourceFile" value="$USER_HOME$/ownCloud/Android/Privacy Browser/Icons/Icons/file_copy_light.svg" />
                           </map>
                         </option>

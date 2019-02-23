@@ -36,7 +36,6 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     // The previous Y position needs to be tracked between motion events.
     private int previousYPosition;
 
-
     // Basic constructor.
     public NestedScrollWebView(Context context) {
         // Roll up to the next constructor.
@@ -61,7 +60,6 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
         nestedScrollingChildHelper.setNestedScrollingEnabled(true);
     }
 
-
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
         // Initialize a tracker to return if this motion event is handled.
@@ -82,19 +80,43 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
 
             case MotionEvent.ACTION_MOVE:
                 // Get the current Y position.
-                int currentYPosition = (int) motionEvent.getY();
+                int currentYMotionPosition = (int) motionEvent.getY();
 
-                // Calculate the delta Y.
-                int deltaY = previousYPosition - currentYPosition;
+                // Calculate the pre-scroll delta Y.
+                int preScrollDeltaY = previousYPosition - currentYMotionPosition;
 
-                // Store the current Y position for use in the next action move.
-                previousYPosition = currentYPosition;
+                // Initialize a variable to track how much of the scroll is consumed.
+                int[] consumedScroll = new int[2];
 
-                // Dispatch the nested pre-school.
-                dispatchNestedPreScroll(0, deltaY, null, null);
+                // Initialize a variable to track the offset in the window.
+                int[] offsetInWindow = new int[2];
 
-                // Dispatch the nested scroll.
-                dispatchNestedScroll(0, deltaY, 0, 0, null);
+                // Get the WebView Y position.
+                int webViewYPosition = getScrollY();
+
+                // Set the scroll delta Y to initially be the same as the pre-scroll delta Y.
+                int scrollDeltaY = preScrollDeltaY;
+
+                // Dispatch the nested pre-school.  This scrolls the app bar if it needs it.  `offsetInWindow` will be returned with an updated value.
+                if (dispatchNestedPreScroll(0, preScrollDeltaY, consumedScroll, offsetInWindow)) {
+                    // Update the scroll delta Y if some of it was consumed.
+                    scrollDeltaY = preScrollDeltaY - consumedScroll[1];
+                }
+
+                // Check to see if the WebView is at the top and and the scroll action is downward.
+                if ((webViewYPosition == 0) && (scrollDeltaY < 0)) {  // Swipe to refresh is being engaged.
+                    // Stop the nested scroll so that swipe to refresh has complete control.
+                    stopNestedScroll();
+                } else {  // Swipe to refresh is not being engaged.
+                    // Start the nested scroll so that the app bar can scroll off the screen.
+                    startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL);
+
+                    // Dispatch the nested scroll.  This scrolls the WebView.  The delta Y unconsumed normally controls the swipe refresh layout, but that is handled with the `if` statement above.
+                    dispatchNestedScroll(0, scrollDeltaY, 0, 0, offsetInWindow);
+
+                    // Store the current Y position for use in the next action move.
+                    previousYPosition = previousYPosition - scrollDeltaY;
+                }
 
                 // Run the default commands.
                 motionEventHandled = super.onTouchEvent(motionEvent);
@@ -109,8 +131,17 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
                 motionEventHandled = super.onTouchEvent(motionEvent);
         }
 
+        // Perform a click.  This is required by the Android accessibility guidelines.
+        performClick();
+
         // Return the status of the motion event.
         return motionEventHandled;
+    }
+
+    // The Android accessibility guidelines require overriding `performClick()` and calling it from `onTouchEvent()`.
+    @Override
+    public boolean performClick() {
+        return super.performClick();
     }
 
 

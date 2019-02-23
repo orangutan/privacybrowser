@@ -98,7 +98,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 // `ShortcutInfoCompat`, `ShortcutManagerCompat`, and `IconCompat` can be switched to the non-compat versions once API >= 26.
@@ -136,6 +135,7 @@ import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 import com.stoutner.privacybrowser.helpers.OrbotProxyHelper;
 import com.stoutner.privacybrowser.dialogs.DownloadFileDialog;
 import com.stoutner.privacybrowser.dialogs.SslCertificateErrorDialog;
+import com.stoutner.privacybrowser.views.NestedScrollWebView;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -318,7 +318,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // `mainWebView` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`,
     // `findNextOnPage()`, `closeFindOnPage()`, `loadUrlFromTextBox()`, `onSslMismatchBack()`, and `applyProxyThroughOrbot()`.
-    private WebView mainWebView;
+    private NestedScrollWebView mainWebView;
 
     // `fullScreenVideoFrameLayout` is used in `onCreate()` and `onConfigurationChanged()`.
     private FrameLayout fullScreenVideoFrameLayout;
@@ -402,11 +402,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `inFullScreenBrowsingMode` is used in `onCreate()`, `onConfigurationChanged()`, and `applyAppSettings()`.
     private boolean inFullScreenBrowsingMode;
 
-    // `hideSystemBarsOnFullscreen` is used in `onCreate()` and `applyAppSettings()`.
-    private boolean hideSystemBarsOnFullscreen;
-
-    // `translucentNavigationBarOnFullscreen` is used in `onCreate()` and `applyAppSettings()`.
-    private boolean translucentNavigationBarOnFullscreen;
+    // Hide app bar is used in `onCreate()` and `applyAppSettings()`.
+    private boolean hideAppBar;
 
     // `reapplyDomainSettingsOnRestart` is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, and `onAddDomain()`, .
     private boolean reapplyDomainSettingsOnRestart;
@@ -441,16 +438,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `privateDataDirectoryString` is used in `onCreate()`, `onOptionsItemSelected()`, and `onNavigationItemSelected()`.
     private String privateDataDirectoryString;
 
-    // `findOnPageLinearLayout` is used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
-    private LinearLayout findOnPageLinearLayout;
-
     // `findOnPageEditText` is used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
     private EditText findOnPageEditText;
 
     // `displayAdditionalAppBarIcons` is used in `onCreate()` and `onCreateOptionsMenu()`.
     private boolean displayAdditionalAppBarIcons;
 
-    // The action bar drawer toggle is initialized in `onCreate()` and used in `onPostCreate()`.
+    // The action bar drawer toggle is initialized in `onCreate()` and used in `onResume()`.
     private ActionBarDrawerToggle actionBarDrawerToggle;
 
     // `urlTextBox` is used in `onCreate()`, `onOptionsItemSelected()`, `loadUrlFromTextBox()`, `loadUrl()`, and `highlightUrlText()`.
@@ -543,7 +537,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         super.onCreate(savedInstanceState);
 
         // Set the content view.
-        setContentView(R.layout.main_drawerlayout);
+        setContentView(R.layout.main_framelayout);
 
         // Get handles for views, resources, and managers.
         Resources resources = getResources();
@@ -631,16 +625,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         this.registerReceiver(orbotStatusBroadcastReceiver, new IntentFilter("org.torproject.android.intent.action.STATUS"));
 
         // Get handles for views that need to be modified.
+        FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
         DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
-        CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinatorlayout);
+        RelativeLayout mainContentRelativeLayout = findViewById(R.id.main_content_relativelayout);
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
+        mainWebView = findViewById(R.id.main_webview);
         bookmarksListView = findViewById(R.id.bookmarks_drawer_listview);
         bookmarksTitleTextView = findViewById(R.id.bookmarks_title_textview);
         FloatingActionButton launchBookmarksActivityFab = findViewById(R.id.launch_bookmarks_activity_fab);
         FloatingActionButton createBookmarkFolderFab = findViewById(R.id.create_bookmark_folder_fab);
         FloatingActionButton createBookmarkFab = findViewById(R.id.create_bookmark_fab);
-        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
-        mainWebView = findViewById(R.id.main_webview);
-        findOnPageLinearLayout = findViewById(R.id.find_on_page_linearlayout);
         findOnPageEditText = findViewById(R.id.find_on_page_edittext);
         fullScreenVideoFrameLayout = findViewById(R.id.full_screen_video_framelayout);
         urlAppBarRelativeLayout = findViewById(R.id.url_app_bar_relativelayout);
@@ -691,66 +685,47 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @Override
             public boolean onDoubleTap(MotionEvent event) {
                 if (fullScreenBrowsingModeEnabled) {  // Only process the double-tap if full screen browsing mode is enabled.
-                    // Toggle `inFullScreenBrowsingMode`.
+                    // Toggle the full screen browsing mode tracker.
                     inFullScreenBrowsingMode = !inFullScreenBrowsingMode;
 
+                    // Toggle the full screen browsing mode.
                     if (inFullScreenBrowsingMode) {  // Switch to full screen mode.
-                        // Hide the action bar.
-                        actionBar.hide();
+                        // Hide the app bar if specified.
+                        if (hideAppBar) {
+                            actionBar.hide();
+                        }
 
                         // Hide the banner ad in the free flavor.
                         if (BuildConfig.FLAVOR.contentEquals("free")) {
-                            // The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
                             AdHelper.hideAd(findViewById(R.id.adview));
                         }
 
-                        // Modify the system bars.
-                        if (hideSystemBarsOnFullscreen) {  // Hide everything.
-                            // Remove the translucent overlays.
-                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                        // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-                            // Remove the translucent status bar overlay on the `Drawer Layout`, which is special and needs its own command.
-                            drawerLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-
-                            /* SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
-                             * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
-                             * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
-                             */
-                            coordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
-                            // Set the coordinator layout to fill the entire screen.
-                            coordinatorLayout.setFitsSystemWindows(false);
-                        } else {  // Hide everything except the status and navigation bars.
-                            // Set the coordinator layout to fill the entire screen.
-                            coordinatorLayout.setFitsSystemWindows(false);
-
-                            // There is an Android Support Library bug that causes a scrim to print on the right side of the `Drawer Layout` when the navigation bar is displayed on the right of the screen.
-                            if (translucentNavigationBarOnFullscreen) {
-                                // Set the navigation bar to be translucent.
-                                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-                            }
-                        }
+                        /* Hide the system bars.
+                         * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                         * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+                         * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                         * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+                         */
+                        rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
                     } else {  // Switch to normal viewing mode.
-                        // Show the action bar.
+                        // Show the app bar.
                         actionBar.show();
 
-                        // Show the `BannerAd` in the free flavor.
+                        // Show the banner ad in the free flavor.
                         if (BuildConfig.FLAVOR.contentEquals("free")) {
-                            // Reload the ad.  The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
+                            // Reload the ad.
                             AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_unit_id));
                         }
 
-                        // Remove the translucent navigation bar flag if it is set.
-                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+                        // Remove the `SYSTEM_UI` flags from the root frame layout.
+                        rootFrameLayout.setSystemUiVisibility(0);
 
-                        // Add the translucent status flag if it is unset.  This also resets `drawerLayout's` `View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN`.
+                        // Add the translucent status flag.
                         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-                        // Remove any `SYSTEM_UI` flags from the coordinator layout.
-                        coordinatorLayout.setSystemUiVisibility(0);
-
-                        // Constrain the coordinator layout inside the status and navigation bars.
-                        coordinatorLayout.setFitsSystemWindows(true);
                     }
 
                     // Consume the double-tap.
@@ -828,6 +803,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Implement swipe to refresh.
         swipeRefreshLayout.setOnRefreshListener(() -> mainWebView.reload());
+
+        // The swipe to refresh circle doesn't always hide itself completely unless it is moved up 10 pixels.
+        swipeRefreshLayout.setProgressViewOffset(false, swipeRefreshLayout.getProgressViewStartOffset() - 10, swipeRefreshLayout.getProgressViewEndOffset());
 
         // Set the swipe to refresh color according to the theme.
         if (darkTheme) {
@@ -1051,7 +1029,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Enter full screen video.
             @Override
-            public void onShowCustomView(View view, CustomViewCallback callback) {
+            public void onShowCustomView(View video, CustomViewCallback callback) {
                 // Set the full screen video flag.
                 displayingFullScreenVideo = true;
 
@@ -1061,29 +1039,34 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     AdHelper.pauseAd(findViewById(R.id.adview));
                 }
 
-                // Remove the translucent overlays.
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                // Hide the keyboard.
+                inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
+
+                // Hide the main content relative layout.
+                mainContentRelativeLayout.setVisibility(View.GONE);
 
                 // Remove the translucent status bar overlay on the `Drawer Layout`, which is special and needs its own command.
                 drawerLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
-                /* SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                /* Hide the system bars.
+                 * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                 * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
                  * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
                  * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
                  */
-                coordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
-                // Set the coordinator layout to fill the entire screen.
-                coordinatorLayout.setFitsSystemWindows(false);
-
-                // Hide the action bar.
-                actionBar.hide();
+                rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
                 // Disable the sliding drawers.
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
-                // Add `view` to `fullScreenVideoFrameLayout` and display it on the screen.
-                fullScreenVideoFrameLayout.addView(view);
+                // Add the video view to the full screen video frame layout.
+                fullScreenVideoFrameLayout.addView(video);
+
+                // Show the full screen video frame layout.
                 fullScreenVideoFrameLayout.setVisibility(View.VISIBLE);
             }
 
@@ -1093,76 +1076,52 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Unset the full screen video flag.
                 displayingFullScreenVideo = false;
 
-                // Hide `fullScreenVideoFrameLayout`.
+                // Remove all the views from the full screen video frame layout.
                 fullScreenVideoFrameLayout.removeAllViews();
+
+                // Hide the full screen video frame layout.
                 fullScreenVideoFrameLayout.setVisibility(View.GONE);
 
                 // Enable the sliding drawers.
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 
+                // Show the main content relative layout.
+                mainContentRelativeLayout.setVisibility(View.VISIBLE);
+
                 // Apply the appropriate full screen mode the `SYSTEM_UI` flags.
                 if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
-                    if (hideSystemBarsOnFullscreen) {  // Hide everything.
-                        // Remove the translucent navigation setting if it is currently flagged.
-                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-
-                        // Remove the translucent status bar overlay.
-                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-                        // Remove the translucent status bar overlay on the `Drawer Layout`, which is special and needs its own command.
-                        drawerLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-
-                        /* SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
-                         * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
-                         * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
-                         */
-                        coordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-                    } else {  // Hide everything except the status and navigation bars.
-                        // Remove any `SYSTEM_UI` flags from the coordinator layout.
-                        coordinatorLayout.setSystemUiVisibility(0);
-
-                        // Add the translucent status flag if it is unset.
-                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-                        if (translucentNavigationBarOnFullscreen) {
-                            // Set the navigation bar to be translucent.  This also resets `drawerLayout's` `View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN`.
-                            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-                        } else {
-                            // Set the navigation bar to be black.
-                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-                        }
-                    }
-                } else {  // Switch to normal viewing mode.
-                    // Show the action bar if the find on page linear layout is not visible.
-                    if (findOnPageLinearLayout.getVisibility() == View.GONE) {
-                        actionBar.show();
+                    // Hide the app bar if specified.
+                    if (hideAppBar) {
+                        actionBar.hide();
                     }
 
-                    // Show the `BannerAd` in the free flavor.
+                    // Hide the banner ad in the free flavor.
                     if (BuildConfig.FLAVOR.contentEquals("free")) {
-                        // Initialize the ad.  The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
-                        AdHelper.initializeAds(findViewById(R.id.adview), getApplicationContext(), fragmentManager, getString(R.string.google_app_id), getString(R.string.ad_unit_id));
+                        AdHelper.hideAd(findViewById(R.id.adview));
                     }
 
-                    // Remove any `SYSTEM_UI` flags from the coordinator layout.
-                    coordinatorLayout.setSystemUiVisibility(0);
+                    // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-                    // Remove the translucent navigation bar flag if it is set.
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+                    /* Hide the system bars.
+                     * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                     * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+                     * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                     * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+                     */
+                    rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                } else {  // Switch to normal viewing mode.
+                    // Remove the `SYSTEM_UI` flags from the root frame layout.
+                    rootFrameLayout.setSystemUiVisibility(0);
 
-                    // Add the translucent status flag if it is unset.  This also resets `drawerLayout's` `View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN`.
+                    // Add the translucent status flag.
                     getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-                    // Constrain the coordinator layout inside the status and navigation bars.
-                    coordinatorLayout.setFitsSystemWindows(true);
-
-                    // Show the action bar.
-                    actionBar.show();
                 }
 
-                // Show the ad if this is the free flavor.
-                if (BuildConfig.FLAVOR.contentEquals("free")) {
-                    // Reload the ad.  The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
+                // Reload the ad for the free flavor if not in full screen mode.
+                if (BuildConfig.FLAVOR.contentEquals("free") && !inFullScreenBrowsingMode) {
+                    // Reload the ad.
                     AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_unit_id));
                 }
             }
@@ -1627,7 +1586,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     mainWebView.setVisibility(View.INVISIBLE);
                 }
 
-                // Hide the keyboard.  `0` indicates no additional flags.
+                // Hide the keyboard.
                 inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
 
                 // Check to see if Privacy Browser is waiting on Orbot.
@@ -1974,12 +1933,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Resume `mainWebView`.
         mainWebView.onResume();
 
-        // Resume the adView for the free flavor.
-        if (BuildConfig.FLAVOR.contentEquals("free")) {
-            // Resume the ad.
-            AdHelper.resumeAd(findViewById(R.id.adview));
-        }
-
         // Display a message to the user if waiting for Orbot.
         if (waitingForOrbot && !orbotStatus.equals("ON")) {
             // Disable the wide view port so that the waiting for Orbot text is displayed correctly.
@@ -1989,22 +1942,24 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             mainWebView.loadData(waitingForOrbotHtmlString, "text/html", null);
         }
 
-        if (displayingFullScreenVideo) {
-            // Get handles for the layouts that need to be modified.
-            DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
-            CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinatorlayout);
+        if (displayingFullScreenVideo || inFullScreenBrowsingMode) {
+            // Get a handle for the root frame layouts.
+            FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
 
-            // Remove the translucent overlays.
+            // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-            // Remove the translucent status bar overlay on the `Drawer Layout`, which is special and needs its own command.
-            drawerLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-
-            /* SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+            /* Hide the system bars.
+             * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+             * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
              * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
              * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
              */
-            coordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+            rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        } else if (BuildConfig.FLAVOR.contentEquals("free")) {  // Resume the adView for the free flavor.
+            // Resume the ad.
+            AdHelper.resumeAd(findViewById(R.id.adview));
         }
     }
 
@@ -2307,6 +2262,23 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // removeAllCookies is deprecated, but it is required for API < 21.
     @SuppressWarnings("deprecation")
     public boolean onOptionsItemSelected(MenuItem menuItem) {
+        // Reenter full screen browsing mode if it was interrupted by the options menu.  <https://redmine.stoutner.com/issues/389>
+        if (inFullScreenBrowsingMode) {
+            // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+            FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
+
+            /* Hide the system bars.
+             * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+             * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+             * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+             * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+             */
+            rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+
         // Get the selected menu item ID.
         int menuItemId = menuItem.getItemId();
 
@@ -2839,16 +2811,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 return true;
 
             case R.id.find_on_page:
-                // Get a handle for the toolbar.
+                // Get a handle for the views.
                 Toolbar toolbar = findViewById(R.id.toolbar);
+                LinearLayout findOnPageLinearLayout = findViewById(R.id.find_on_page_linearlayout);
 
-                // Hide the URL app bar.
+                // Hide the toolbar.
                 toolbar.setVisibility(View.GONE);
 
-                // Show the Find on Page `RelativeLayout`.
+                // Show the find on page linear layout.
                 findOnPageLinearLayout.setVisibility(View.VISIBLE);
 
-                // Display the keyboard.  We have to wait 200 ms before running the command to work around a bug in Android.
+                // Display the keyboard.  The app must wait 200 ms before running the command to work around a bug in Android.
                 // http://stackoverflow.com/questions/5520085/android-show-softkeyboard-with-showsoftinput-is-not-working
                 findOnPageEditText.postDelayed(() -> {
                     // Set the focus on `findOnPageEditText`.
@@ -3204,12 +3177,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Run the default commands.
         super.onPostCreate(savedInstanceState);
 
-        // Sync the state of the DrawerToggle after onRestoreInstanceState has finished.
+        // Sync the state of the DrawerToggle after the default `onRestoreInstanceState()` has finished.  This creates the navigation drawer icon.
         actionBarDrawerToggle.syncState();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
+        // Run the default commands.
         super.onConfigurationChanged(newConfig);
 
         // Get the status bar pixel size.
@@ -4078,22 +4052,23 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     public void closeFindOnPage(View view) {
+        // Get a handle for the views.
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        LinearLayout findOnPageLinearLayout = findViewById(R.id.find_on_page_linearlayout);
+
         // Delete the contents of `find_on_page_edittext`.
         findOnPageEditText.setText(null);
 
         // Clear the highlighted phrases.
         mainWebView.clearMatches();
 
-        // Hide the Find on Page `RelativeLayout`.
+        // Hide the find on page linear layout.
         findOnPageLinearLayout.setVisibility(View.GONE);
-
-        // Get a handle for the toolbar.
-        Toolbar toolbar = findViewById(R.id.toolbar);
 
         // Show the toolbar.
         toolbar.setVisibility(View.VISIBLE);
 
-        // Hide the keyboard so we can see the webpage.  `0` indicates no additional flags.
+        // Hide the keyboard.
         inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
     }
 
@@ -4106,9 +4081,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         boolean doNotTrackEnabled = sharedPreferences.getBoolean("do_not_track", false);
         proxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
         fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("full_screen_browsing_mode", false);
-        hideSystemBarsOnFullscreen = sharedPreferences.getBoolean("hide_system_bars", false);
-        translucentNavigationBarOnFullscreen = sharedPreferences.getBoolean("translucent_navigation_bar", true);
+        hideAppBar = sharedPreferences.getBoolean("hide_app_bar", true);
         downloadWithExternalApp = sharedPreferences.getBoolean("download_with_external_app", false);
+
+        // Get handles for the views that need to be modified.  `getSupportActionBar()` must be used until the minimum API >= 21.
+        FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
+        ActionBar actionBar = getSupportActionBar();
+
+        // Remove the incorrect lint warnings below that the action bar might be null.
+        assert actionBar != null;
 
         // Apply the proxy through Orbot settings.
         applyProxyThroughOrbot(false);
@@ -4120,74 +4101,55 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             customHeaders.remove("DNT");
         }
 
-        // Get handles for the views that need to be modified.  `getSupportActionBar()` must be used until the minimum API >= 21.
-        DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
-        CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinatorlayout);
-        ActionBar actionBar = getSupportActionBar();
+        // Set the app bar scrolling.
+        mainWebView.setNestedScrollingEnabled(sharedPreferences.getBoolean("scroll_app_bar", true));
 
-        // Apply the appropriate full screen mode the `SYSTEM_UI` flags.
+        // Update the full screen browsing mode settings.
         if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
-            if (hideSystemBarsOnFullscreen) {  // Hide everything.
-                // Remove the translucent navigation setting if it is currently flagged.
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-
-                // Remove the translucent status bar overlay.
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-                // Remove the translucent status bar overlay on the `Drawer Layout`, which is special and needs its own command.
-                drawerLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-
-                /* SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
-                 * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
-                 * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
-                 */
-                coordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-            } else {  // Hide everything except the status and navigation bars.
-                // Remove any `SYSTEM_UI` flags from the coordinator layout.
-                coordinatorLayout.setSystemUiVisibility(0);
-
-                // Add the translucent status flag if it is unset.
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-                if (translucentNavigationBarOnFullscreen) {
-                    // Set the navigation bar to be translucent.
-                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-                } else {
-                    // Set the navigation bar to be black.
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-                }
+            // Update the visibility of the app bar, which might have changed in the settings.
+            if (hideAppBar) {
+                actionBar.hide();
+            } else {
+                actionBar.show();
             }
+
+            // Hide the banner ad in the free flavor.
+            if (BuildConfig.FLAVOR.contentEquals("free")) {
+                AdHelper.hideAd(findViewById(R.id.adview));
+            }
+
+            // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+            /* Hide the system bars.
+             * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+             * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+             * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+             * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+             */
+            rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         } else {  // Privacy Browser is not in full screen browsing mode.
             // Reset the full screen tracker, which could be true if Privacy Browser was in full screen mode before entering settings and full screen browsing was disabled.
             inFullScreenBrowsingMode = false;
 
-            // Remove the incorrect lint warning below that the action bar might be null.
-            assert actionBar != null;
+            // Show the app bar.
+            actionBar.show();
 
-            // Show the action bar if the find on page linear layout is not visible.
-            if (findOnPageLinearLayout.getVisibility() == View.GONE) {
-                actionBar.show();
-            }
-
-            // Show the `BannerAd` in the free flavor.
+            // Show the banner ad in the free flavor.
             if (BuildConfig.FLAVOR.contentEquals("free")) {
-                // Initialize the ad.  The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
+                // Initialize the ads.  If this isn't the first run, `loadAd()` will be automatically called instead.
                 AdHelper.initializeAds(findViewById(R.id.adview), getApplicationContext(), fragmentManager, getString(R.string.google_app_id), getString(R.string.ad_unit_id));
             }
 
-            // Remove any `SYSTEM_UI` flags from the coordinator layout.
-            coordinatorLayout.setSystemUiVisibility(0);
+            // Remove the `SYSTEM_UI` flags from the root frame layout.
+            rootFrameLayout.setSystemUiVisibility(0);
 
-            // Remove the translucent navigation bar flag if it is set.
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-
-            // Add the translucent status flag if it is unset.  This also resets `drawerLayout's` `View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN`.
+            // Add the translucent status flag.
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-            // Constrain the coordinator layout inside the status and navigation bars.
-            coordinatorLayout.setFitsSystemWindows(true);
         }
     }
+
 
     // `reloadWebsite` is used if returning from the Domains activity.  Otherwise JavaScript might not function correctly if it is newly enabled.
     // The deprecated `.getDrawable()` must be used until the minimum API >= 21.
@@ -4584,9 +4546,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             if (mainMenu != null) {
                 updatePrivacyIcons(true);
             }
-
-            // TODO.
-            swipeRefreshLayout.setEnabled(false);
         }
 
         // Reload the website if returning from the Domains activity.

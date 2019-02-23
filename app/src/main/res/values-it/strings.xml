@@ -501,11 +501,6 @@
     <string name="full_screen">Schermo intero</string>
         <string name="full_screen_browsing_mode">Navigazione a schermo intero</string>
         <string name="full_screen_browsing_mode_summary">Toccare due volte per avviare la navigazione a schermo intero.</string>
-        <string name="hide_system_bars">Nascondi le barre di sistema</string>
-        <string name="hide_system_bars_summary">Nasconde la barra di stato e la barra di navigazione durante la navigazione a schermo intero.
-            Questa opzione non funziona perfettamente se si visualizza la tastiera durante la navigazione a schermo intero.</string>
-        <string name="translucent_navigation_bar">Barra di navigazione trasparente</string>
-        <string name="translucent_navigation_bar_summary">Rende la barra di navigazione trasparente durante la navigazione a schermo intero.</string>
     <string name="clear_everything">Elimina tutto</string>
         <string name="clear_everything_summary">Cancella i cookies, il DOM storage, i dati dei moduli e la cache di WebView.  Cancella completamente le cartelle “app_webview” e “cache”.</string>
         <string name="clear_cookies_preference">Elimina i cookie</string>
@@ -542,11 +537,11 @@
             </string-array>
         <string name="swipe_to_refresh">Swipe per aggiornare</string>
         <string name="swipe_to_refresh_summary">Alcuni siti non funzionano correttamente se questa opzione è abilitata.</string>
-        <string name="download_with_external_app">Scarica con un\'applicazione esterna</string>
-        <string name="download_with_external_app_summary">Il download manager di Android potrebbe non funzionare correttamente su alcuni dispositivi.</string>
         <string name="display_additional_app_bar_icons">Mostra icone addizionali nella barra dell\'applicazione</string>
         <string name="display_additional_app_bar_icons_summary">Mostra nella barra dell\'applicazione le icone per l\'aggiornamento di WebView e, se lo spazio è sufficiente,
             per l\'attivazione dei cookie e del DOM storage.</string>
+        <string name="download_with_external_app">Scarica con un\'applicazione esterna</string>
+        <string name="download_with_external_app_summary">Il download manager di Android potrebbe non funzionare correttamente su alcuni dispositivi.</string>
         <string name="dark_theme">Tema Dark</string>
         <string name="dark_theme_summary">La modifica del tema provocherà il riavvio di Privacy Browser.</string>
         <string name="night_mode">Modalità Notte</string>

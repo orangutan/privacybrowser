@@ -38,7 +38,7 @@ public class ImportExportDatabaseHelper {
     public static final String EXPORT_SUCCESSFUL = "Export Successful";
     public static final String IMPORT_SUCCESSFUL = "Import Successful";
 
-    private static final int SCHEMA_VERSION = 4;
+    private static final int SCHEMA_VERSION = 5;
     private static final String PREFERENCES_TABLE = "preferences";
 
     // The preferences constants.
@@ -66,8 +66,7 @@ public class ImportExportDatabaseHelper {
     private static final String SEARCH = "search";
     private static final String SEARCH_CUSTOM_URL = "search_custom_url";
     private static final String FULL_SCREEN_BROWSING_MODE = "full_screen_browsing_mode";
-    private static final String HIDE_SYSTEM_BARS = "hide_system_bars";
-    private static final String TRANSLUCENT_NAVIGATION_BAR = "translucent_navigation_bar";
+    private static final String HIDE_APP_BAR = "hide_app_bar";
     private static final String CLEAR_EVERYTHING = "clear_everything";
     private static final String CLEAR_COOKIES = "clear_cookies";
     private static final String CLEAR_DOM_STORAGE = "clear_dom_storage";
@@ -76,8 +75,9 @@ public class ImportExportDatabaseHelper {
     private static final String HOMEPAGE = "homepage";
     private static final String FONT_SIZE = "font_size";
     private static final String SWIPE_TO_REFRESH = "swipe_to_refresh";
-    private static final String DOWNLOAD_WITH_EXTERNAL_APP = "download_with_external_app";
+    private static final String SCROLL_APP_BAR = "scroll_app_bar";
     private static final String DISPLAY_ADDITIONAL_APP_BAR_ICONS = "display_additional_app_bar_icons";
+    private static final String DOWNLOAD_WITH_EXTERNAL_APP = "download_with_external_app";
     private static final String DARK_THEME = "dark_theme";
     private static final String NIGHT_MODE = "night_mode";
     private static final String DISPLAY_WEBPAGE_IMAGES = "display_webpage_images";
@@ -214,8 +214,7 @@ public class ImportExportDatabaseHelper {
                     SEARCH + " TEXT, " +
                     SEARCH_CUSTOM_URL + " TEXT, " +
                     FULL_SCREEN_BROWSING_MODE + " BOOLEAN, " +
-                    HIDE_SYSTEM_BARS + " BOOLEAN, " +
-                    TRANSLUCENT_NAVIGATION_BAR + " BOOLEAN, " +
+                    HIDE_APP_BAR + " BOOLEAN, " +
                     CLEAR_EVERYTHING + " BOOLEAN, " +
                     CLEAR_COOKIES + " BOOLEAN, " +
                     CLEAR_DOM_STORAGE + " BOOLEAN, " +
@@ -224,8 +223,9 @@ public class ImportExportDatabaseHelper {
                     HOMEPAGE + " TEXT, " +
                     FONT_SIZE + " TEXT, " +
                     SWIPE_TO_REFRESH + " BOOLEAN, " +
-                    DOWNLOAD_WITH_EXTERNAL_APP + " BOOLEAN, " +
+                    SCROLL_APP_BAR + " BOOLEAN, " +
                     DISPLAY_ADDITIONAL_APP_BAR_ICONS + " BOOLEAN, " +
+                    DOWNLOAD_WITH_EXTERNAL_APP + " BOOLEAN, " +
                     DARK_THEME + " BOOLEAN, " +
                     NIGHT_MODE + " BOOLEAN, " +
                     DISPLAY_WEBPAGE_IMAGES + " BOOLEAN)";
@@ -261,8 +261,7 @@ public class ImportExportDatabaseHelper {
             preferencesContentValues.put(SEARCH, sharedPreferences.getString(SEARCH, context.getString(R.string.search_default_value)));
             preferencesContentValues.put(SEARCH_CUSTOM_URL, sharedPreferences.getString(SEARCH_CUSTOM_URL, context.getString(R.string.search_custom_url_default_value)));
             preferencesContentValues.put(FULL_SCREEN_BROWSING_MODE, sharedPreferences.getBoolean(FULL_SCREEN_BROWSING_MODE, false));
-            preferencesContentValues.put(HIDE_SYSTEM_BARS, sharedPreferences.getBoolean(HIDE_SYSTEM_BARS, false));
-            preferencesContentValues.put(TRANSLUCENT_NAVIGATION_BAR, sharedPreferences.getBoolean(TRANSLUCENT_NAVIGATION_BAR, true));
+            preferencesContentValues.put(HIDE_APP_BAR, sharedPreferences.getBoolean(HIDE_APP_BAR, true));
             preferencesContentValues.put(CLEAR_EVERYTHING, sharedPreferences.getBoolean(CLEAR_EVERYTHING, true));
             preferencesContentValues.put(CLEAR_COOKIES, sharedPreferences.getBoolean(CLEAR_COOKIES, true));
             preferencesContentValues.put(CLEAR_DOM_STORAGE, sharedPreferences.getBoolean(CLEAR_DOM_STORAGE, true));
@@ -271,8 +270,9 @@ public class ImportExportDatabaseHelper {
             preferencesContentValues.put(HOMEPAGE, sharedPreferences.getString(HOMEPAGE, context.getString(R.string.homepage_default_value)));
             preferencesContentValues.put(FONT_SIZE, sharedPreferences.getString(FONT_SIZE, context.getString(R.string.font_size_default_value)));
             preferencesContentValues.put(SWIPE_TO_REFRESH, sharedPreferences.getBoolean(SWIPE_TO_REFRESH, true));
-            preferencesContentValues.put(DOWNLOAD_WITH_EXTERNAL_APP, sharedPreferences.getBoolean(DOWNLOAD_WITH_EXTERNAL_APP, false));
+            preferencesContentValues.put(SCROLL_APP_BAR, sharedPreferences.getBoolean(SCROLL_APP_BAR, true));
             preferencesContentValues.put(DISPLAY_ADDITIONAL_APP_BAR_ICONS, sharedPreferences.getBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, false));
+            preferencesContentValues.put(DOWNLOAD_WITH_EXTERNAL_APP, sharedPreferences.getBoolean(DOWNLOAD_WITH_EXTERNAL_APP, false));
             preferencesContentValues.put(DARK_THEME, sharedPreferences.getBoolean(DARK_THEME, false));
             preferencesContentValues.put(NIGHT_MODE, sharedPreferences.getBoolean(NIGHT_MODE, false));
             preferencesContentValues.put(DISPLAY_WEBPAGE_IMAGES, sharedPreferences.getBoolean(DISPLAY_WEBPAGE_IMAGES, true));
@@ -360,7 +360,7 @@ public class ImportExportDatabaseHelper {
                         // Get the current setting for downloading with an external app.
                         boolean downloadWithExternalApp = sharedPreferences.getBoolean("download_with_external_app", false);
 
-                        // Set the download with external app preference to the current default.
+                        // Set the download with external app preference to the current value.
                         if (downloadWithExternalApp) {
                             importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + DOWNLOAD_WITH_EXTERNAL_APP + " = " + 1);
                         } else {
@@ -391,10 +391,34 @@ public class ImportExportDatabaseHelper {
                         // Place the font size string in the new column.
                         importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + FONT_SIZE + " = " + fontSize);
 
+                    // Upgrade from schema version 3.
                     case 3:
-                        // Add the Pinned IP Addresses columns.
+                        // Add the Pinned IP Addresses columns to the domains table.
                         importDatabase.execSQL("ALTER TABLE " + DomainsDatabaseHelper.DOMAINS_TABLE + " ADD COLUMN " + DomainsDatabaseHelper.PINNED_IP_ADDRESSES + " BOOLEAN");
                         importDatabase.execSQL("ALTER TABLE " + DomainsDatabaseHelper.DOMAINS_TABLE + " ADD COLUMN " + DomainsDatabaseHelper.IP_ADDRESSES + " TEXT");
+
+                    // Upgrade from schema version 4.
+                    case 4:
+                        // Add the hide and scroll app bar preferences.
+                        importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + HIDE_APP_BAR + " BOOLEAN");
+                        importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + SCROLL_APP_BAR + " BOOLEAN");
+
+                        // Get the current hide and scroll app bar settings.
+                        boolean hideAppBar = sharedPreferences.getBoolean("hide_app_bar", true);
+                        boolean scrollAppBar = sharedPreferences.getBoolean("scroll_app_bar", true);
+
+                        // Populate the database with the current values.
+                        if (hideAppBar) {
+                            importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + HIDE_APP_BAR + " = " + 1);
+                        } else {
+                            importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + HIDE_APP_BAR + " = " + 0);
+                        }
+
+                        if (scrollAppBar) {
+                            importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + SCROLL_APP_BAR + " = " + 1);
+                        } else {
+                            importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + SCROLL_APP_BAR + " = " + 0);
+                        }
                 }
             }
 
@@ -531,8 +555,7 @@ public class ImportExportDatabaseHelper {
                     .putString(SEARCH, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(SEARCH)))
                     .putString(SEARCH_CUSTOM_URL, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(SEARCH_CUSTOM_URL)))
                     .putBoolean(FULL_SCREEN_BROWSING_MODE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(FULL_SCREEN_BROWSING_MODE)) == 1)
-                    .putBoolean(HIDE_SYSTEM_BARS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(HIDE_SYSTEM_BARS)) == 1)
-                    .putBoolean(TRANSLUCENT_NAVIGATION_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(TRANSLUCENT_NAVIGATION_BAR)) == 1)
+                    .putBoolean(HIDE_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(HIDE_APP_BAR)) == 1)
                     .putBoolean(CLEAR_EVERYTHING, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_EVERYTHING)) == 1)
                     .putBoolean(CLEAR_COOKIES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_COOKIES)) == 1)
                     .putBoolean(CLEAR_DOM_STORAGE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_DOM_STORAGE)) == 1)
@@ -542,8 +565,9 @@ public class ImportExportDatabaseHelper {
                     .putString(HOMEPAGE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(HOMEPAGE)))
                     .putString(FONT_SIZE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(FONT_SIZE)))
                     .putBoolean(SWIPE_TO_REFRESH, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(SWIPE_TO_REFRESH)) == 1)
-                    .putBoolean(DOWNLOAD_WITH_EXTERNAL_APP, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DOWNLOAD_WITH_EXTERNAL_APP)) == 1)
+                    .putBoolean(SCROLL_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(SCROLL_APP_BAR)) == 1)
                     .putBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DISPLAY_ADDITIONAL_APP_BAR_ICONS)) == 1)
+                    .putBoolean(DOWNLOAD_WITH_EXTERNAL_APP, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DOWNLOAD_WITH_EXTERNAL_APP)) == 1)
                     .putBoolean(DARK_THEME, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DARK_THEME)) == 1)
                     .putBoolean(NIGHT_MODE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(NIGHT_MODE)) == 1)
                     .putBoolean(DISPLAY_WEBPAGE_IMAGES, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DISPLAY_WEBPAGE_IMAGES)) == 1)

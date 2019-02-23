@@ -552,11 +552,8 @@
     <string name="full_screen">Full Screen</string>
         <string name="full_screen_browsing_mode">Full screen browsing mode</string>
         <string name="full_screen_browsing_mode_summary">Double-tap to toggle full screen browsing mode.</string>
-        <string name="hide_system_bars">Hide system bars</string>
-        <string name="hide_system_bars_summary">Hide the status and navigation bars in full screen browsing mode.
-            This doesn’t work well if the keyboard is displayed during full screen browsing mode.</string>
-        <string name="translucent_navigation_bar">Translucent navigation bar</string>
-        <string name="translucent_navigation_bar_summary">Make the navigation bar translucent in full screen browsing mode.</string>
+        <string name="hide_app_bar">Hide the app bar</string>
+        <string name="hide_app_bar_summary">Hide the app bar that contains the URL.</string>
     <string name="clear_everything">Clear everything</string>
         <!-- The form data part of this string can be removed once the minimum API >= 26. -->
         <string name="clear_everything_summary">Clears cookies, DOM storage, form data, and WebView’s cache.  Then manually deletes the entire “app_webview” and “cache” directories.</string>
@@ -615,10 +612,12 @@
             </string-array>
         <string name="swipe_to_refresh">Swipe to refresh</string>
         <string name="swipe_to_refresh_summary">Some websites don’t work well if swipe to refresh is enabled.</string>
-        <string name="download_with_external_app">Download with external app</string>
-        <string name="download_with_external_app_summary">Android’s download manager doesn’t work well on some devices.</string>
+        <string name="scroll_app_bar">Scroll the app bar</string>
+        <string name="scroll_app_bar_summary">Scroll the app bar off the top of the screen when the WebView scrolls down.</string>
         <string name="display_additional_app_bar_icons">Display additional app bar icons</string>
         <string name="display_additional_app_bar_icons_summary">Display icons in the app bar for refreshing the WebView and, if there is room, for toggling cookies and DOM storage.</string>
+        <string name="download_with_external_app">Download with external app</string>
+        <string name="download_with_external_app_summary">Android’s download manager doesn’t work well on some devices.</string>
         <string name="dark_theme">Dark theme</string>
         <string name="dark_theme_summary">Changing the theme will restart Privacy Browser.</string>
         <string name="night_mode">Night mode</string>

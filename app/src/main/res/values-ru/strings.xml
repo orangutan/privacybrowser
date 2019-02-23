@@ -495,10 +495,6 @@
     <string name="full_screen">Во весь экран</string>
         <string name="full_screen_browsing_mode">Полноэкранный режим просмотра</string>
         <string name="full_screen_browsing_mode_summary">Двойное касание переключает режим просмотра.</string>
-        <string name="hide_system_bars">Скрыть системные панели</string>
-        <string name="hide_system_bars_summary">Скрыть панели статуса и навигации в полноэкранном режиме просмотра. Это не работает при отображении клавиатуры во время полноэкранного просмотра.</string>
-        <string name="translucent_navigation_bar">Полупрозрачная навигационная панель</string>
-        <string name="translucent_navigation_bar_summary">Панель навигации станет полупрозрачной в полноэкранном режиме просмотра.</string>
     <string name="clear_everything">Очистить все</string>
         <string name="clear_everything_summary">Очищает файлы cookie, DOM-хранилище, данные формы и кэш WebView. Затем вручную удаляются все каталоги "app_webview" и "cache".</string>
         <string name="clear_cookies_preference">Очистить файлы cookie</string>
@@ -535,10 +531,10 @@
             </string-array>
         <string name="swipe_to_refresh">Потянуть для обновления</string>
         <string name="swipe_to_refresh_summary">Некоторые веб-сайты могут работать некорректно при включении данной опции.</string>
-        <string name="download_with_external_app">Загрузка с помощью внешнего приложения</string>
-        <string name="download_with_external_app_summary">Менеджер загрузок Android не работает на некоторых устройствах.</string>
         <string name="display_additional_app_bar_icons">Отображать дополнительные значки на панели приложения</string>
         <string name="display_additional_app_bar_icons_summary">Отображать значки на панели приложения для обновления WebView и, при наличии места, для переключения файлов cookie и хранилища DOM</string>
+        <string name="download_with_external_app">Загрузка с помощью внешнего приложения</string>
+        <string name="download_with_external_app_summary">Менеджер загрузок Android не работает на некоторых устройствах.</string>
         <string name="dark_theme">Темная тема</string>
         <string name="dark_theme_summary">Изменение темы перезапускает Privacy Browser.</string>
         <string name="night_mode">Ночной режим</string>

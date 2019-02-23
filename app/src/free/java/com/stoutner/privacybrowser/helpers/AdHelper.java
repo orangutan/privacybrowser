@@ -71,7 +71,7 @@ public class AdHelper {
         // Cast the generic view to an AdView.
         AdView adView = (AdView) view;
 
-        // Save the layout parameters.  They are used when programatically recreating the add below.
+        // Save the layout parameters.  They are used when programatically recreating the ad below.
         RelativeLayout.LayoutParams adViewLayoutParameters = (RelativeLayout.LayoutParams) adView.getLayoutParams();
 
         // Remove the AdView.
