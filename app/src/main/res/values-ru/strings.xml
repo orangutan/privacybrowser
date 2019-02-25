@@ -495,6 +495,8 @@
     <string name="full_screen">Во весь экран</string>
         <string name="full_screen_browsing_mode">Полноэкранный режим просмотра</string>
         <string name="full_screen_browsing_mode_summary">Двойное касание переключает режим просмотра.</string>
+        <string name="hide_app_bar">Скрыть панель приложения</string>
+        <string name="hide_app_bar_summary">Скрывает панель приложения, которая содержит URL.</string>
     <string name="clear_everything">Очистить все</string>
         <string name="clear_everything_summary">Очищает файлы cookie, DOM-хранилище, данные формы и кэш WebView. Затем вручную удаляются все каталоги "app_webview" и "cache".</string>
         <string name="clear_cookies_preference">Очистить файлы cookie</string>
@@ -531,6 +533,8 @@
             </string-array>
         <string name="swipe_to_refresh">Потянуть для обновления</string>
         <string name="swipe_to_refresh_summary">Некоторые веб-сайты могут работать некорректно при включении данной опции.</string>
+        <string name="scroll_app_bar">Прокручивать панель приложения</string>
+        <string name="scroll_app_bar_summary">Прокручивает панель приложения вверху экрана при прокрутке WebView вниз.</string>
         <string name="display_additional_app_bar_icons">Отображать дополнительные значки на панели приложения</string>
         <string name="display_additional_app_bar_icons_summary">Отображать значки на панели приложения для обновления WebView и, при наличии места, для переключения файлов cookie и хранилища DOM</string>
         <string name="download_with_external_app">Загрузка с помощью внешнего приложения</string>

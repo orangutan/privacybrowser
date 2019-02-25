@@ -33,17 +33,36 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp" >
+            android:layout_marginBottom="5dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp" >
 
-            <!-- `android:imeOptions="actionGo"` sets the keyboard to have a `go` key instead of a `new line` key.
-                 `android:inputType="textUri"` disables spell check in the `EditText`. -->
+            <!-- `android:imeOptions="actionGo"` sets the keyboard to have a `go` key instead of a `new line` key.  `android:inputType="textUri"` disables spell check in the `EditText`. -->
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/shortcut_name_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/shortcut_name"
+                android:imeOptions="actionGo"
+                android:inputType="textUri"
+                android:selectAllOnFocus="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- The `TextInputLayout` makes the `android:hint` float above the `EditText`. -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp" >
+
+            <!-- `android:imeOptions="actionGo"` sets the keyboard to have a `go` key instead of a `new line` key.  `android:inputType="textUri"` disables spell check in the `EditText`. -->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/url_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/url"
                 android:imeOptions="actionGo"
                 android:inputType="textUri"
                 android:selectAllOnFocus="true" />

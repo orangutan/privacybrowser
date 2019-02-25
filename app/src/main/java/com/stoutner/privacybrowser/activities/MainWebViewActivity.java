@@ -100,10 +100,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-// `ShortcutInfoCompat`, `ShortcutManagerCompat`, and `IconCompat` can be switched to the non-compat versions once API >= 26.
-import androidx.core.content.pm.ShortcutInfoCompat;
-import androidx.core.content.pm.ShortcutManagerCompat;
-import androidx.core.graphics.drawable.IconCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
@@ -159,9 +155,8 @@ import java.util.Set;
 
 // AppCompatActivity from android.support.v7.app.AppCompatActivity must be used to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
-        CreateHomeScreenShortcutDialog.CreateHomeScreenShortcutListener, DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener,
-        DownloadLocationPermissionDialog.DownloadLocationPermissionDialogListener, EditBookmarkDialog.EditBookmarkListener, EditBookmarkFolderDialog.EditBookmarkFolderListener,
-        HttpAuthenticationDialog.HttpAuthenticationListener, NavigationView.OnNavigationItemSelectedListener, PinnedMismatchDialog.PinnedMismatchListener,
+        DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, DownloadLocationPermissionDialog.DownloadLocationPermissionDialogListener, EditBookmarkDialog.EditBookmarkListener,
+        EditBookmarkFolderDialog.EditBookmarkFolderListener, HttpAuthenticationDialog.HttpAuthenticationListener, NavigationView.OnNavigationItemSelectedListener, PinnedMismatchDialog.PinnedMismatchListener,
         SslCertificateErrorDialog.SslCertificateErrorListener, UrlHistoryDialog.UrlHistoryListener {
 
     // `darkTheme` is public static so it can be accessed from everywhere.
@@ -172,13 +167,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // `favoriteIconBitmap` is public static so it can be accessed from `CreateHomeScreenShortcutDialog`, `BookmarksActivity`, `BookmarksDatabaseViewActivity`, `CreateBookmarkDialog`,
     // `CreateBookmarkFolderDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`, `EditBookmarkDatabaseViewDialog`, and `ViewSslCertificateDialog`.  It is also used in `onCreate()`,
-    // `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onCreateHomeScreenShortcutCreate()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `applyDomainSettings()`.
+    // `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onCreateHomeScreenShortcut()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `applyDomainSettings()`.
     public static Bitmap favoriteIconBitmap;
 
     // `favoriteIconDefaultBitmap` public static so it can be accessed from `PinnedMismatchDialog`.  It is also used in `onCreate()` and `applyDomainSettings`.
     public static Bitmap favoriteIconDefaultBitmap;
 
-    // `formattedUrlString` is public static so it can be accessed from `AddDomainDialog`, `BookmarksActivity`, `DomainSettingsFragment`, `CreateBookmarkDialog`, and `PinnedMismatchDialog`.
+    // `formattedUrlString` is public static so it can be accessed from `AddDomainDialog`, `BookmarksActivity`, `DomainSettingsFragment`, `CreateBookmarkDialog`,
+    // and `PinnedMismatchDialog`.
     // It is also used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onCreateHomeScreenShortcutCreate()`, `loadUrlFromTextBox()`, and `applyProxyThroughOrbot()`.
     public static String formattedUrlString;
 
@@ -193,7 +189,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxyThroughOrbot()`.
     public static String orbotStatus;
 
-    // `webViewTitle` is public static so it can be accessed from `CreateBookmarkDialog` and `CreateHomeScreenShortcutDialog`.  It is also used in `onCreate()`.
+    // `webViewTitle` is public static so it can be accessed from `CreateBookmarkDialog`.  It is also used in `onCreate()`.
     public static String webViewTitle;
 
     // `appliedUserAgentString` is public static so it can be accessed from `ViewSourceActivity`.  It is also used in `applyDomainSettings()`.
@@ -2874,11 +2870,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 return true;
 
             case R.id.add_to_homescreen:
-                // Show the alert dialog.
-                DialogFragment createHomeScreenShortcutDialogFragment = new CreateHomeScreenShortcutDialog();
-                createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getString(R.string.create_shortcut));
+                // Instantiate the create home screen shortcut dialog.
+                DialogFragment createHomeScreenShortcutDialogFragment = CreateHomeScreenShortcutDialog.createDialog(mainWebView.getTitle(), formattedUrlString, favoriteIconBitmap);
 
-                //Everything else will be handled by the alert dialog and the associated listener below.
+                // Show the create home screen shortcut dialog.
+                createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getString(R.string.create_shortcut));
                 return true;
 
             case R.id.proxy_through_orbot:
@@ -3561,31 +3557,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Scroll to the new folder.
         bookmarksListView.setSelection(0);
-    }
-
-    @Override
-    public void onCreateHomeScreenShortcut(DialogFragment dialogFragment) {
-        // Get the shortcut name.
-        EditText shortcutNameEditText = dialogFragment.getDialog().findViewById(R.id.shortcut_name_edittext);
-        String shortcutNameString = shortcutNameEditText.getText().toString();
-
-        // Convert the favorite icon bitmap to an `Icon`.  `IconCompat` is required until API >= 26.
-        IconCompat favoriteIcon = IconCompat.createWithBitmap(favoriteIconBitmap);
-
-        // Setup the shortcut intent.
-        Intent shortcutIntent = new Intent(Intent.ACTION_VIEW);
-        shortcutIntent.setData(Uri.parse(formattedUrlString));
-
-        // Create a shortcut info builder.  The shortcut name becomes the shortcut ID.
-        ShortcutInfoCompat.Builder shortcutInfoBuilder = new ShortcutInfoCompat.Builder(this, shortcutNameString);
-
-        // Add the required fields to the shortcut info builder.
-        shortcutInfoBuilder.setIcon(favoriteIcon);
-        shortcutInfoBuilder.setIntent(shortcutIntent);
-        shortcutInfoBuilder.setShortLabel(shortcutNameString);
-
-        // Request the pin.  `ShortcutManagerCompat` can be switched to `ShortcutManager` once API >= 26.
-        ShortcutManagerCompat.requestPinShortcut(this, shortcutInfoBuilder.build(), null);
     }
 
     @Override
