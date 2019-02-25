@@ -204,6 +204,8 @@
     <!-- Create Home Screen Shortcut Alert Dialog. -->
     <string name="create_shortcut">Create Shortcut</string>
     <string name="shortcut_name">Shortcut name</string>
+    <string name="open_with_default_browser">Open with default browser.</string>
+    <string name="open_with_privacy_browser">Open with Privacy Browser.</string>
     <string name="cancel">Cancel</string>
     <string name="create">Create</string>
 
@@ -625,7 +627,7 @@
         <string name="display_webpage_images">Display webpage images</string>
         <string name="display_webpage_images_summary">Disable to conserve bandwidth.</string>
 
-    <!-- Non-translatable preference items. -->
+    <!-- Non-translatable preference default values. -->
     <string name="user_agent_default_value" translatable="false">Privacy Browser</string>
     <string name="custom_user_agent_default_value" translatable="false">PrivacyBrowser/1.0</string>
     <string name="tor_homepage_default_value" translatable="false">http://ulrn6sryqaifefld.onion/</string>

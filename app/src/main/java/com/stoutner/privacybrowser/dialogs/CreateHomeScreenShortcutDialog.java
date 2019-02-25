@@ -39,14 +39,16 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 
 import androidx.annotation.NonNull;
-// `ShortcutInfoCompat`, `ShortcutManagerCompat`, and `IconCompat` can be switched to the non-compat versions once API >= 26.
+// `ShortcutInfoCompat`, `ShortcutManagerCompat`, and `IconCompat` can be switched to the non-compat versions once the minimum API >= 26.
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
 import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
 
+import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.R;
 
@@ -59,6 +61,7 @@ public class CreateHomeScreenShortcutDialog extends DialogFragment {
     private Bitmap favoriteIconBitmap;
     private EditText shortcutNameEditText;
     private EditText urlEditText;
+    private RadioButton openWithPrivacyBrowserRadioButton;
     private Button createButton;
 
     public static CreateHomeScreenShortcutDialog createDialog(String shortcutName, String urlString, Bitmap favoriteIconBitmap) {
@@ -168,16 +171,15 @@ public class CreateHomeScreenShortcutDialog extends DialogFragment {
         // The alert dialog must be shown before the contents may be edited.
         alertDialog.show();
 
-        // Get a handle for the edit texts.
+        // Get handles for the views.
         shortcutNameEditText = alertDialog.findViewById(R.id.shortcut_name_edittext);
         urlEditText = alertDialog.findViewById(R.id.url_edittext);
+        openWithPrivacyBrowserRadioButton = alertDialog.findViewById(R.id.open_with_privacy_browser_radiobutton);
+        createButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
         // Populate the edit texts.
         shortcutNameEditText.setText(initialShortcutName);
         urlEditText.setText(initialUrlString);
-
-        // Get a handle for the create button.
-        createButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
         // Add a text change listener to the shortcut name edit text.
         shortcutNameEditText.addTextChangedListener(new TextWatcher() {
@@ -292,8 +294,16 @@ public class CreateHomeScreenShortcutDialog extends DialogFragment {
         // Convert the favorite icon bitmap to an icon.  `IconCompat` must be used until the minimum API >= 26.
         IconCompat favoriteIcon = IconCompat.createWithBitmap(favoriteIconBitmap);
 
-        // Setup the shortcut intent.
+        // Create a shortcut intent.
         Intent shortcutIntent = new Intent(Intent.ACTION_VIEW);
+
+        // Check to see if the shortcut should open up Privacy Browser explicitly.
+        if (openWithPrivacyBrowserRadioButton.isChecked()) {
+            // Set the current application ID as the target package.
+            shortcutIntent.setPackage(BuildConfig.APPLICATION_ID);
+        }
+
+        // Add the URL to the intent.
         shortcutIntent.setData(Uri.parse(urlString));
 
         // Create a shortcut info builder.  The shortcut name becomes the shortcut ID.
