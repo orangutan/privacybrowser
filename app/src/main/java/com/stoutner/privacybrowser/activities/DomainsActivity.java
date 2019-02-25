@@ -59,7 +59,7 @@ import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 
 import java.util.Objects;
 
-public class DomainsActivity extends AppCompatActivity implements AddDomainDialog.AddDomainListener {
+public class DomainsActivity extends AppCompatActivity implements AddDomainDialog.AddDomainListener, DomainsListFragment.DismissSnackbarInterface {
     // `twoPanedMode` is public static so it can be accessed from `DomainsListFragment`.  It is also used in `onCreate()`, `onCreateOptionsMenu()`, and `populateDomainsListView()`.
     public static boolean twoPanedMode;
 
@@ -69,17 +69,14 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
     // `deleteMenuItem` is public static so it can be accessed from `DomainsListFragment`.  It is also used in `onCreateOptionsMenu()`, `onOptionsItemSelected()`, and `onBackPressed()`.
     public static MenuItem deleteMenuItem;
 
-    // `undoDeleteSnackbar` is public static so it can be accessed from `DomainsListFragment`.  It is also used in `onOptionsItemSelected()` and `onBackPressed()`.
-    public static Snackbar undoDeleteSnackbar;
-
     // `dismissingSnackbar` is public static so it can be accessed from `DomainsListFragment`.  It is also used in `onOptionsItemSelected()`.
     public static boolean dismissingSnackbar;
 
     // `closeActivityAfterDismissingSnackbar` is used in `onOptionsItemSelected()`, and `onBackPressed()`.
     private boolean closeActivityAfterDismissingSnackbar;
 
-    // `context` is used in `onCreate()`, `onOptionsItemSelected()`, and `onAddDomain()`.
-    private Context context;
+    // The undelete snackbar is used in `onOptionsItemSelected()` and `onBackPressed()`.
+    private Snackbar undoDeleteSnackbar;
 
     // `domainsDatabaseHelper` is used in `onCreate()`, `saveDomainSettings()`, and `onDestroy()`.
     private static DomainsDatabaseHelper domainsDatabaseHelper;
@@ -153,7 +150,6 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         // Populate the class variables.
         coordinatorLayout = findViewById(R.id.domains_coordinatorlayout);
         resources = getResources();
-        context = this;
 
         // `SupportActionBar` from `android.support.v7.app.ActionBar` must be used until the minimum API is >= 21.
         final Toolbar toolbar = findViewById(R.id.domains_toolbar);
@@ -169,7 +165,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
-        domainsDatabaseHelper = new DomainsDatabaseHelper(context, null, null, 0);
+        domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
 
         // Determine if we are in two pane mode.  `domain_settings_fragment_container` does not exist on devices with a width less than 900dp.
         twoPanedMode = (findViewById(R.id.domain_settings_fragment_container) != null);
@@ -431,7 +427,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                                             Cursor undoDeleteDomainsCursor = domainsDatabaseHelper.getDomainNameCursorOrderedByDomain();
 
                                             // Setup `domainsCursorAdapter` with `this` context.  `false` disables `autoRequery`.
-                                            CursorAdapter undoDeleteDomainsCursorAdapter = new CursorAdapter(context, undoDeleteDomainsCursor, false) {
+                                            CursorAdapter undoDeleteDomainsCursorAdapter = new CursorAdapter(getApplicationContext(), undoDeleteDomainsCursor, false) {
                                                 @Override
                                                 public View newView(Context context, Cursor cursor, ViewGroup parent) {
                                                     // Inflate the individual item layout.  `false` does not attach it to the root.
@@ -759,7 +755,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         Cursor domainsCursor = domainsDatabaseHelper.getDomainNameCursorOrderedByDomain();
 
         // Setup `domainsCursorAdapter` with `this` context.  `false` disables `autoRequery`.
-        CursorAdapter domainsCursorAdapter = new CursorAdapter(context, domainsCursor, false) {
+        CursorAdapter domainsCursorAdapter = new CursorAdapter(getApplicationContext(), domainsCursor, false) {
             @Override
             public View newView(Context context, Cursor cursor, ViewGroup parent) {
                 // Inflate the individual item layout.  `false` does not attach it to the root.
@@ -828,6 +824,15 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             // Disable the options `MenuItems`.
             deleteMenuItem.setEnabled(false);
             deleteMenuItem.setIcon(R.drawable.delete_blue);
+        }
+    }
+
+    @Override
+    public void dismissSnackbar() {
+        // Dismiss the undo delete snackbar if it is shown.
+        if (undoDeleteSnackbar != null && undoDeleteSnackbar.isShown()) {
+            // Dismiss the snackbar.
+            undoDeleteSnackbar.dismiss();
         }
     }
 

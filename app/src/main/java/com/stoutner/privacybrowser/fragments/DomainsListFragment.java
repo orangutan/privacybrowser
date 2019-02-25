@@ -19,6 +19,7 @@
 
 package com.stoutner.privacybrowser.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,22 @@ import com.stoutner.privacybrowser.activities.DomainsActivity;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
 public class DomainsListFragment extends Fragment {
+    // Instantiate the dismiss snackbar interface handle.
+    private DismissSnackbarInterface dismissSnackbarInterface;
+
+    // Define the public dismiss snackbar interface.
+    public interface DismissSnackbarInterface {
+        void dismissSnackbar();
+    }
+
+    public void onAttach(Context context) {
+        // Run the default commands.
+        super.onAttach(context);
+
+        // Get a handle for the dismiss snackbar interface.
+        dismissSnackbarInterface = (DismissSnackbarInterface) context;
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate `domains_list_fragment`.  `false` does not attach it to the root `container`.
         View domainsListFragmentView = inflater.inflate(R.layout.domains_list_fragment, container, false);
@@ -47,16 +64,12 @@ public class DomainsListFragment extends Fragment {
         // Remove the incorrect lint error below that `.getSupportFragmentManager()` might be null.
         assert getActivity() != null;
 
-        // Get a handle for `supportFragmentManager`.
+        // Get a handle for the support fragment manager.
         final FragmentManager supportFragmentManager = getActivity().getSupportFragmentManager();
 
         domainsListView.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
-            // Dismiss `undoDeleteSnackbar` if it is currently displayed (because a domain has just been deleted).
-            if ((DomainsActivity.undoDeleteSnackbar != null) && (DomainsActivity.undoDeleteSnackbar.isShown())) {
-                DomainsActivity.dismissingSnackbar = true;
-
-                DomainsActivity.undoDeleteSnackbar.dismiss();
-            }
+            // Dismiss the snackbar if it is visible.
+            dismissSnackbarInterface.dismissSnackbar();
 
             // Save the current domain settings if operating in two-paned mode and a domain is currently selected.
             if (DomainsActivity.twoPanedMode && DomainsActivity.deleteMenuItem.isEnabled()) {
