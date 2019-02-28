@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
+
+  Translation 2019 Bernhard G. Keller.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   Translation 2018 Stefan Erhardt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -24,7 +26,12 @@
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser Free</string>
 
+    <!-- Create Home Screen Shortcut Alert Dialog. -->
+    <string name="open_with_privacy_browser">Mit Privacy Browser Free öffnen.</string>
+
     <!-- Ad Consent. -->
+    <string name="ad_consent_text">Privacy Browser Free zeigt Werbung im unteren Teil des Displays. Diese wird von Google aus einem Pool an häufig verwendeten Anbietern ausgewählt und ist nicht personalisiert.
+        \n\nDie Standard-Version von Privacy Browser enthält diese Werbebanner nicht.</string>
     <string name="close_browser">Browser schließen</string>
     <string name="accept_ads">Werbung zustimmen</string>
 </resources>

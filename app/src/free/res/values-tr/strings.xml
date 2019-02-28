@@ -22,6 +22,9 @@
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser Ücretsiz</string>
 
+    <!-- Create Home Screen Shortcut Alert Dialog. -->
+    <string name="open_with_privacy_browser">Privacy Browser Ücretsiz ile aç.</string>
+
     <!-- Ad Consent. -->
     <string name="ad_consent_text">Privacy Browser Ücretsiz ekranın altında bir banner reklam gösterir.
     Bu reklamlar, Google\'ın sık kullanılan sağlayıcılarından gelmektedir ve kişiselleştirilmeyecek şekilde yapılandırılmıştır.

@@ -1,0 +1,12 @@
+• Uygulama çubuğunu kaydırma kabiliyeti eklendi.
+• Bir Logcat Etkinliği oluşturuldu.
+• Kullanıcılara bir masaüstü kısayolu oluştururken hangi tarayıcının açılacağını ve URL'yi belirleme izni verildi.
+• Bağlantı ve resim içerik menülerine Birlikte Aç öğeleri eklendi.
+• Birlikte Aç seçicisinden varsayılan uygulamaların ayarlanmasına izin verildi.
+• URL'yi yazarken sözdizinin vurgulanmasına neden olan bir hata düzeltildi.
+• Uyumsuzluk olmadığında bazen ortaya çıkan sabit uyumsuzluk penceresi düzeltildi.
+• Kısmi Türkçe çevirisi yapıldı.
+• İtalyan çevirisi güncellendi. (Çevirmen Francesco Buratti.)
+• Rusça çevirisi güncellendi.
+• İspanyol çevirisi güncellendi. (Çevirmen Jose A. León.)
+• Kısmi Almanca çevirisi yapıldı. (Çevirmen Bernhard G. Keller.)

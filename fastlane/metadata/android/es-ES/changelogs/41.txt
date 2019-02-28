@@ -1,0 +1,12 @@
+• Añadir la posibilidad de desplazarse por la barra de aplicaciones.
+• Crear una actividad Logcat.
+• Permitir a los usuarios especificar la URL y el navegador que se desea abrir al crear un acceso directo de escritorio.
+• Añadir entradas de “Abrir con” a los menus contextuales de enlaces e imágenes.
+• Permitir la configuración de aplicaciones por defecto desde el selector “Abrir con”.
+• Corregir un error que permitía resaltar la sintaxis de las URL mientras se escribía.
+• Corregir el cuadro de diálogo de desajustes anclado que a veces aparece cuando no hay desajustes.
+• Actualizada la traducción al español proporcionada por Jose A. León.
+• Actualizada la traducción al italiano proporcionada por Francesco Buratti.
+• Actualizada la traducción al ruso.
+• Traducción parcial al alemán por Bernhard G. Keller.
+• Traducción parcial al turco.

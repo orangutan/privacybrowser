@@ -1,0 +1,12 @@
+• Aggiunta la possibilità di effettuare lo scrolling della barra della applicazione.
+• Creazione di una Scheda per il Logcat.
+• Aggiunta la possibilità per gli utenti di specificare la URL e quale browser utilizzare per aprirla quando viene creato un collegamento sul desktop.
+• Aggiunte le voci “Apri con” ai menu contestuali dei link e delle immagini.
+• Aggiunta la possibilità di impostare le applicazioni predefinite dal menu di scelta “Apri con”.
+• Correzione di un baco che permetteva l'evidenziarsi della sintassi per le URL durante la digitazione.
+• Correzione dell'apparizione della finestra di dialogo di discrepanza del certificato anche in caso di non discrepanza.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
+• Aggiornamento della traduzione in Russo.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León.
+• Traduzione parziale in Tedesco fornita da Bernhard G. Keller.
+• Traduzione parziale in Turco.

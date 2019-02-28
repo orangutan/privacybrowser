@@ -199,6 +199,8 @@
     <!-- Create Home Screen Shortcut Alert Dialog. -->
     <string name="create_shortcut">Crea Collegamento</string>
     <string name="shortcut_name">Nome collegamento</string>
+    <string name="open_with_default_browser">Apri con il Browser predefinito.</string>
+    <string name="open_with_privacy_browser">Apri con Privacy Browser.</string>
     <string name="cancel">Annulla</string>
     <string name="create">Crea</string>
 

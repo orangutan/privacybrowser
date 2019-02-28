@@ -1,0 +1,12 @@
+• Option hinzugefügt, um die App-Leiste zu scrollen.
+• Option hinzugefügt, Logcat Aktivitäten aufzuzeichnen.
+• Option hinzugefügt, die URL und den zu öffnenden Browser festzulegen, wenn ein Shortcut am Startbildschirm angelegt wird.
+• “Öffnen mit“-Einträge für Links und Bilder in Kontext-Menüs.
+• Option hinzugefügt, Standard-Apps für das „Öffnen mit“-Menü festzulegen.
+• Fix eines Bugs, der das Syntax-Highlighting beim Schreiben zuliess.
+• Fix eines Bugs, der manchmal einen Verankerungs-Fehler anzeigte, auch wenn kein Fehler vorlag.
+• Teilweise deutsche Übersetzung von Bernhard G. Keller.
+• Aktualisierte italienische Übersetzung von Francesco Buratti.
+• Aktualisierte russische Übersetzung.
+• Aktualisierte spanische Übersetzung von Jose A. León.
+• Teilweise türkische Übersetzung.
