@@ -438,7 +438,7 @@
             <item>Eigener</item>
         </string-array>
         <string-array name="translated_domain_settings_user_agent_names">  <!-- The translated names of the user agents with a System Default option for the domains spinner. -->
-            <item>System-Standard</item>
+            <item>Standardeinstellung</item>
             <item>Privacy Browser</item>
             <item>WebView-Standard</item>
             <item>Firefox auf Android</item>
@@ -531,7 +531,7 @@
             <item>200%</item>
         </string-array>
             <string-array name="domain_settings_font_size_entries">
-                <item>System-Standard</item>
+                <item>Standardeinstellung</item>
                 <item>25%</item>
                 <item>50%</item>
                 <item>75%</item>

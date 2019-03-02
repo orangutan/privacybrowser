@@ -18,9 +18,12 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.stoutner.privacybrowser" >
+<!-- Install location auto allows users to move Privacy Browser to an SD card if desired. -->
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.stoutner.privacybrowser"
+    android:installLocation="auto" >
 
     <!-- Required to load websites. -->
     <uses-permission android:name="android.permission.INTERNET" />
