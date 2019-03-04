@@ -93,7 +93,7 @@ public class EditBookmarkFolderDialog extends DialogFragment {
         // Initialize the database helper.  The two `nulls` do not specify the database name or a `CursorFactory`.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
         final BookmarksDatabaseHelper bookmarksDatabaseHelper = new BookmarksDatabaseHelper(getContext(), null, null, 0);
 
-        // Get a `Cursor` with the selected folder and move it to the first position.
+        // Get a cursor with the selected folder and move it to the first position.
         Cursor folderCursor = bookmarksDatabaseHelper.getBookmark(selectedFolderDatabaseId);
         folderCursor.moveToFirst();
 
@@ -138,37 +138,44 @@ public class EditBookmarkFolderDialog extends DialogFragment {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
-        // Show the keyboard when the dialog is displayed on the screen.
-        alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-
         // The alert dialog must be shown before items in the layout can be modified.
         alertDialog.show();
 
-        // Get handles for layout items in the `AlertDialog`.
-        final Button editButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        final RadioButton currentIconRadioButton = alertDialog.findViewById(R.id.edit_folder_current_icon_radiobutton);
+        // Get handles for the views in the alert dialog.
         RadioGroup iconRadioGroup = alertDialog.findViewById(R.id.edit_folder_icon_radio_group);
+        final RadioButton currentIconRadioButton = alertDialog.findViewById(R.id.edit_folder_current_icon_radiobutton);
+        ImageView currentIconImageView = alertDialog.findViewById(R.id.edit_folder_current_icon_imageview);
+        ImageView webPageFavoriteIconImageView = alertDialog.findViewById(R.id.edit_folder_web_page_favorite_icon_imageview);
+        final EditText folderNameEditText = alertDialog.findViewById(R.id.edit_folder_name_edittext);
+        final Button editButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
         // Initially disable the edit button.
         editButton.setEnabled(false);
 
-        // Get the current favorite icon byte array from the `Cursor`.
+        // Get the current favorite icon byte array from the Cursor.
         byte[] currentIconByteArray = folderCursor.getBlob(folderCursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON));
-        // Convert the byte array to a `Bitmap` beginning at the first byte and ending at the last.
+
+        // Convert the byte array to a bitmap beginning at the first byte and ending at the last.
         Bitmap currentIconBitmap = BitmapFactory.decodeByteArray(currentIconByteArray, 0, currentIconByteArray.length);
-        // Display `currentIconBitmap` in `edit_folder_current_icon`.
-        ImageView currentIconImageView = alertDialog.findViewById(R.id.edit_folder_current_icon_imageview);
+
+        // Display the current icon bitmap.
         currentIconImageView.setImageBitmap(currentIconBitmap);
 
-        // Get a `Bitmap` of the favorite icon from `MainWebViewActivity` and display it in `edit_folder_web_page_favorite_icon`.
-        ImageView webPageFavoriteIconImageView = alertDialog.findViewById(R.id.edit_folder_web_page_favorite_icon_imageview);
-        webPageFavoriteIconImageView.setImageBitmap(MainWebViewActivity.favoriteIconBitmap);
+        // Get a copy of the favorite icon bitmap.
+        Bitmap favoriteIconBitmap = MainWebViewActivity.favoriteIconBitmap;
+
+        // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+        if ((favoriteIconBitmap.getHeight() > 256) || (favoriteIconBitmap.getWidth() > 256)) {
+            favoriteIconBitmap = Bitmap.createScaledBitmap(favoriteIconBitmap, 256, 256, true);
+        }
+
+        // Set the new favorite icon bitmap.
+        webPageFavoriteIconImageView.setImageBitmap(favoriteIconBitmap);
 
         // Get the current folder name.
         final String currentFolderName = folderCursor.getString(folderCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
         // Display the current folder name in `edit_folder_name_edittext`.
-        final EditText folderNameEditText = alertDialog.findViewById(R.id.edit_folder_name_edittext);
         folderNameEditText.setText(currentFolderName);
 
         // Update the status of the edit button when the folder name is changed.

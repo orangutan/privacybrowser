@@ -25,6 +25,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -79,7 +80,7 @@ public class CreateBookmarkFolderDialog extends DialogFragment {
         // Remove the warning below that `getLayoutInflater()` might be null.
         assert getActivity() != null;
 
-        // Set the view.  The parent view is `null` because it will be assigned by the `AlertDialog`.
+        // Set the view.  The parent view is null because it will be assigned by the alert dialog.
         dialogBuilder.setView(getActivity().getLayoutInflater().inflate(R.layout.create_bookmark_folder_dialog, null));
 
         // Set an `onClick()` listener for the negative button.
@@ -104,9 +105,6 @@ public class CreateBookmarkFolderDialog extends DialogFragment {
         if (!MainWebViewActivity.allowScreenshots) {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
-
-        // Show the keyboard when the `Dialog` is displayed on the screen.
-        alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
         // The alert dialog must be shown before items in the alert dialog can be modified.
         alertDialog.show();
@@ -162,10 +160,18 @@ public class CreateBookmarkFolderDialog extends DialogFragment {
             }
         });
 
-        // Display the current favorite icon.
-        webPageIconImageView.setImageBitmap(MainWebViewActivity.favoriteIconBitmap);
+        // Get a copy of the favorite icon bitmap.
+        Bitmap favoriteIconBitmap = MainWebViewActivity.favoriteIconBitmap;
 
-        // `onCreateDialog()` requires the return of an `AlertDialog`.
+        // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+        if ((favoriteIconBitmap.getHeight() > 256) || (favoriteIconBitmap.getWidth() > 256)) {
+            favoriteIconBitmap = Bitmap.createScaledBitmap(favoriteIconBitmap, 256, 256, true);
+        }
+
+        // Display the current favorite icon.
+        webPageIconImageView.setImageBitmap(favoriteIconBitmap);
+
+        // Return the alert dialog.
         return alertDialog;
     }
 }

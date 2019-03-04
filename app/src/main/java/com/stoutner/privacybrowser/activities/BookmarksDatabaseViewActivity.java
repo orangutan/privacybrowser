@@ -764,9 +764,21 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         if (currentBookmarkIconRadioButton.isChecked()) {  // Update the bookmark without changing the favorite icon.
             bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString, parentFolderNameString, displayOrderInt);
         } else {  // Update the bookmark using the `WebView` favorite icon.
-            // Convert the favorite icon to a byte array.  `0` is for lossless compression (the only option for a PNG).
+            // Get a copy of the favorite icon bitmap.
+            Bitmap favoriteIconBitmap = MainWebViewActivity.favoriteIconBitmap;
+
+            // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+            if ((favoriteIconBitmap.getHeight() > 256) || (favoriteIconBitmap.getWidth() > 256)) {
+                favoriteIconBitmap = Bitmap.createScaledBitmap(favoriteIconBitmap, 256, 256, true);
+            }
+
+            // Create a favorite icon byte array output stream.
             ByteArrayOutputStream newFavoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
-            MainWebViewActivity.favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, newFavoriteIconByteArrayOutputStream);
+
+            // Convert the favorite icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
+            favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, newFavoriteIconByteArrayOutputStream);
+
+            // Convert the favorite icon byte array stream to a byte array.
             byte[] newFavoriteIconByteArray = newFavoriteIconByteArrayOutputStream.toByteArray();
 
             //  Update the bookmark and the favorite icon.
@@ -806,22 +818,36 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         if (currentBookmarkIconRadioButton.isChecked()) {  // Update the folder without changing the favorite icon.
             bookmarksDatabaseHelper.updateFolder(selectedBookmarkDatabaseId, oldFolderNameString, newFolderNameString, parentFolderNameString, displayOrderInt);
         } else {  // Update the folder and the icon.
-            // Instantiate the new folder icon `Bitmap`.
+            // Create the new folder icon Bitmap.
             Bitmap folderIconBitmap;
 
             // Populate the new folder icon bitmap.
             if (defaultFolderIconRadioButton.isChecked()) {
-                // Get the default folder icon and convert it to a `Bitmap`.
+                // Get the default folder icon drawable.
                 Drawable folderIconDrawable = defaultFolderIconImageView.getDrawable();
+
+                // Convert the folder icon drawable to a bitmap drawable.
                 BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
+
+                // Convert the folder icon bitmap drawable to a bitmap.
                 folderIconBitmap = folderIconBitmapDrawable.getBitmap();
             } else {  // Use the `WebView` favorite icon.
+                // Get a copy of the favorite icon bitmap.
                 folderIconBitmap = MainWebViewActivity.favoriteIconBitmap;
+
+                // Scale the folder icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+                if ((folderIconBitmap.getHeight() > 256) || (folderIconBitmap.getWidth() > 256)) {
+                    folderIconBitmap = Bitmap.createScaledBitmap(folderIconBitmap, 256, 256, true);
+                }
             }
 
-            // Convert the folder icon to a byte array.  `0` is for lossless compression (the only option for a PNG).
+            // Create a folder icon byte array output stream.
             ByteArrayOutputStream newFolderIconByteArrayOutputStream = new ByteArrayOutputStream();
+
+            // Convert the folder icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
             folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, newFolderIconByteArrayOutputStream);
+
+            // Convert the folder icon byte array stream to a byte array.
             byte[] newFolderIconByteArray = newFolderIconByteArrayOutputStream.toByteArray();
 
             //  Update the folder and the icon.

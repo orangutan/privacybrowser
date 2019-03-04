@@ -3485,17 +3485,29 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void onCreateBookmark(DialogFragment dialogFragment) {
-        // Get the `EditTexts` from the `dialogFragment`.
+        // Get the views from the dialog fragment.
         EditText createBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.create_bookmark_name_edittext);
         EditText createBookmarkUrlEditText = dialogFragment.getDialog().findViewById(R.id.create_bookmark_url_edittext);
 
-        // Extract the strings from the `EditTexts`.
+        // Extract the strings from the edit texts.
         String bookmarkNameString = createBookmarkNameEditText.getText().toString();
         String bookmarkUrlString = createBookmarkUrlEditText.getText().toString();
 
-        // Convert the favoriteIcon Bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
+        // Get a copy of the favorite icon bitmap.
+        Bitmap favoriteIcon = favoriteIconBitmap;
+
+        // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+        if ((favoriteIcon.getHeight() > 256) || (favoriteIcon.getWidth() > 256)) {
+            favoriteIcon = Bitmap.createScaledBitmap(favoriteIcon, 256, 256, true);
+        }
+
+        // Create a favorite icon byte array output stream.
         ByteArrayOutputStream favoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
-        favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
+
+        // Convert the favorite icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
+        favoriteIcon.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
+
+        // Convert the favorite icon byte array stream to a byte array.
         byte[] favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray();
 
         // Display the new bookmark below the current items in the (0 indexed) list.
@@ -3507,7 +3519,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Update the bookmarks cursor with the current contents of this folder.
         bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentBookmarksFolder);
 
-        // Update the `ListView`.
+        // Update the list view.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
 
         // Scroll to the new bookmark.
@@ -3516,7 +3528,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void onCreateBookmarkFolder(DialogFragment dialogFragment) {
-        // Get handles for the views in `dialogFragment`.
+        // Get handles for the views in the dialog fragment.
         EditText createFolderNameEditText = dialogFragment.getDialog().findViewById(R.id.create_folder_name_edittext);
         RadioButton defaultFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon_radiobutton);
         ImageView folderIconImageView = dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon);
@@ -3524,20 +3536,36 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get new folder name string.
         String folderNameString = createFolderNameEditText.getText().toString();
 
-        // Get the new folder icon `Bitmap`.
+        // Create a folder icon bitmap.
         Bitmap folderIconBitmap;
+
+        // Set the folder icon bitmap according to the dialog.
         if (defaultFolderIconRadioButton.isChecked()) {  // Use the default folder icon.
-            // Get the default folder icon and convert it to a `Bitmap`.
+            // Get the default folder icon drawable.
             Drawable folderIconDrawable = folderIconImageView.getDrawable();
+
+            // Convert the folder icon drawable to a bitmap drawable.
             BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
+
+            // Convert the folder icon bitmap drawable to a bitmap.
             folderIconBitmap = folderIconBitmapDrawable.getBitmap();
-        } else {  // Use the `WebView` favorite icon.
+        } else {  // Use the WebView favorite icon.
+            // Get a copy of the favorite icon bitmap.
             folderIconBitmap = favoriteIconBitmap;
+
+            // Scale the folder icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+            if ((folderIconBitmap.getHeight() > 256) || (folderIconBitmap.getWidth() > 256)) {
+                folderIconBitmap = Bitmap.createScaledBitmap(folderIconBitmap, 256, 256, true);
+            }
         }
 
-        // Convert `folderIconBitmap` to a byte array.  `0` is for lossless compression (the only option for a PNG).
+        // Create a folder icon byte array output stream.
         ByteArrayOutputStream folderIconByteArrayOutputStream = new ByteArrayOutputStream();
+
+        // Convert the folder icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
         folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, folderIconByteArrayOutputStream);
+
+        // Convert the folder icon byte array stream to a byte array.
         byte[] folderIconByteArray = folderIconByteArrayOutputStream.toByteArray();
 
         // Move all the bookmarks down one in the display order.
@@ -3557,6 +3585,141 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Scroll to the new folder.
         bookmarksListView.setSelection(0);
+    }
+
+    @Override
+    public void onSaveBookmark(DialogFragment dialogFragment, int selectedBookmarkDatabaseId) {
+        // Get handles for the views from `dialogFragment`.
+        EditText editBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_name_edittext);
+        EditText editBookmarkUrlEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_url_edittext);
+        RadioButton currentBookmarkIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_current_icon_radiobutton);
+
+        // Store the bookmark strings.
+        String bookmarkNameString = editBookmarkNameEditText.getText().toString();
+        String bookmarkUrlString = editBookmarkUrlEditText.getText().toString();
+
+        // Update the bookmark.
+        if (currentBookmarkIconRadioButton.isChecked()) {  // Update the bookmark without changing the favorite icon.
+            bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString);
+        } else {  // Update the bookmark using the `WebView` favorite icon.
+            // Get a copy of the favorite icon bitmap.
+            Bitmap favoriteIcon = favoriteIconBitmap;
+
+            // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+            if ((favoriteIcon.getHeight() > 256) || (favoriteIcon.getWidth() > 256)) {
+                favoriteIcon = Bitmap.createScaledBitmap(favoriteIcon, 256, 256, true);
+            }
+
+            // Create a favorite icon byte array output stream.
+            ByteArrayOutputStream newFavoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
+
+            // Convert the favorite icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
+            favoriteIcon.compress(Bitmap.CompressFormat.PNG, 0, newFavoriteIconByteArrayOutputStream);
+
+            // Convert the favorite icon byte array stream to a byte array.
+            byte[] newFavoriteIconByteArray = newFavoriteIconByteArrayOutputStream.toByteArray();
+
+            //  Update the bookmark and the favorite icon.
+            bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString, newFavoriteIconByteArray);
+        }
+
+        // Update the bookmarks cursor with the current contents of this folder.
+        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentBookmarksFolder);
+
+        // Update the list view.
+        bookmarksCursorAdapter.changeCursor(bookmarksCursor);
+    }
+
+    @Override
+    public void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedFolderDatabaseId) {
+        // Get handles for the views from `dialogFragment`.
+        EditText editFolderNameEditText = dialogFragment.getDialog().findViewById(R.id.edit_folder_name_edittext);
+        RadioButton currentFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_current_icon_radiobutton);
+        RadioButton defaultFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_radiobutton);
+        ImageView defaultFolderIconImageView = dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_imageview);
+
+        // Get the new folder name.
+        String newFolderNameString = editFolderNameEditText.getText().toString();
+
+        // Check if the favorite icon has changed.
+        if (currentFolderIconRadioButton.isChecked()) {  // Only the name has changed.
+            // Update the name in the database.
+            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, oldFolderNameString, newFolderNameString);
+        } else if (!currentFolderIconRadioButton.isChecked() && newFolderNameString.equals(oldFolderNameString)) {  // Only the icon has changed.
+            // Create the new folder icon Bitmap.
+            Bitmap folderIconBitmap;
+
+            // Populate the new folder icon bitmap.
+            if (defaultFolderIconRadioButton.isChecked()) {
+                // Get the default folder icon drawable.
+                Drawable folderIconDrawable = defaultFolderIconImageView.getDrawable();
+
+                // Convert the folder icon drawable to a bitmap drawable.
+                BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
+
+                // Convert the folder icon bitmap drawable to a bitmap.
+                folderIconBitmap = folderIconBitmapDrawable.getBitmap();
+            } else {  // Use the `WebView` favorite icon.
+                // Get a copy of the favorite icon bitmap.
+                folderIconBitmap = MainWebViewActivity.favoriteIconBitmap;
+
+                // Scale the folder icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+                if ((folderIconBitmap.getHeight() > 256) || (folderIconBitmap.getWidth() > 256)) {
+                    folderIconBitmap = Bitmap.createScaledBitmap(folderIconBitmap, 256, 256, true);
+                }
+            }
+
+            // Create a folder icon byte array output stream.
+            ByteArrayOutputStream newFolderIconByteArrayOutputStream = new ByteArrayOutputStream();
+
+            // Convert the folder icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
+            folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, newFolderIconByteArrayOutputStream);
+
+            // Convert the folder icon byte array stream to a byte array.
+            byte[] newFolderIconByteArray = newFolderIconByteArrayOutputStream.toByteArray();
+
+            // Update the folder icon in the database.
+            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, newFolderIconByteArray);
+        } else {  // The folder icon and the name have changed.
+            // Get the new folder icon `Bitmap`.
+            Bitmap folderIconBitmap;
+            if (defaultFolderIconRadioButton.isChecked()) {
+                // Get the default folder icon drawable.
+                Drawable folderIconDrawable = defaultFolderIconImageView.getDrawable();
+
+                // Convert the folder icon drawable to a bitmap drawable.
+                BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
+
+                // Convert the folder icon bitmap drawable to a bitmap.
+                folderIconBitmap = folderIconBitmapDrawable.getBitmap();
+            } else {  // Use the `WebView` favorite icon.
+                // Get a copy of the favorite icon bitmap.
+                folderIconBitmap = MainWebViewActivity.favoriteIconBitmap;
+
+                // Scale the folder icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+                if ((folderIconBitmap.getHeight() > 256) || (folderIconBitmap.getWidth() > 256)) {
+                    folderIconBitmap = Bitmap.createScaledBitmap(folderIconBitmap, 256, 256, true);
+                }
+            }
+
+            // Create a folder icon byte array output stream.
+            ByteArrayOutputStream newFolderIconByteArrayOutputStream = new ByteArrayOutputStream();
+
+            // Convert the folder icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
+            folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, newFolderIconByteArrayOutputStream);
+
+            // Convert the folder icon byte array stream to a byte array.
+            byte[] newFolderIconByteArray = newFolderIconByteArrayOutputStream.toByteArray();
+
+            // Update the folder name and icon in the database.
+            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, oldFolderNameString, newFolderNameString, newFolderIconByteArray);
+        }
+
+        // Update the bookmarks cursor with the current contents of this folder.
+        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentBookmarksFolder);
+
+        // Update the `ListView`.
+        bookmarksCursorAdapter.changeCursor(bookmarksCursor);
     }
 
     @Override
@@ -3716,99 +3879,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         } else {  // The download is not an HTTP or HTTPS URI.
             Snackbar.make(mainWebView, R.string.cannot_download_file, Snackbar.LENGTH_INDEFINITE).show();
         }
-    }
-
-    @Override
-    public void onSaveBookmark(DialogFragment dialogFragment, int selectedBookmarkDatabaseId) {
-        // Get handles for the views from `dialogFragment`.
-        EditText editBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_name_edittext);
-        EditText editBookmarkUrlEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_url_edittext);
-        RadioButton currentBookmarkIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_current_icon_radiobutton);
-
-        // Store the bookmark strings.
-        String bookmarkNameString = editBookmarkNameEditText.getText().toString();
-        String bookmarkUrlString = editBookmarkUrlEditText.getText().toString();
-
-        // Update the bookmark.
-        if (currentBookmarkIconRadioButton.isChecked()) {  // Update the bookmark without changing the favorite icon.
-            bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString);
-        } else {  // Update the bookmark using the `WebView` favorite icon.
-            // Convert the favorite icon to a byte array.  `0` is for lossless compression (the only option for a PNG).
-            ByteArrayOutputStream newFavoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
-            favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, newFavoriteIconByteArrayOutputStream);
-            byte[] newFavoriteIconByteArray = newFavoriteIconByteArrayOutputStream.toByteArray();
-
-            //  Update the bookmark and the favorite icon.
-            bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString, newFavoriteIconByteArray);
-        }
-
-        // Update the bookmarks cursor with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentBookmarksFolder);
-
-        // Update the `ListView`.
-        bookmarksCursorAdapter.changeCursor(bookmarksCursor);
-    }
-
-    @Override
-    public void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedFolderDatabaseId) {
-        // Get handles for the views from `dialogFragment`.
-        EditText editFolderNameEditText = dialogFragment.getDialog().findViewById(R.id.edit_folder_name_edittext);
-        RadioButton currentFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_current_icon_radiobutton);
-        RadioButton defaultFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_radiobutton);
-        ImageView folderIconImageView = dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_imageview);
-
-        // Get the new folder name.
-        String newFolderNameString = editFolderNameEditText.getText().toString();
-
-        // Check if the favorite icon has changed.
-        if (currentFolderIconRadioButton.isChecked()) {  // Only the name has changed.
-            // Update the name in the database.
-            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, oldFolderNameString, newFolderNameString);
-        } else if (!currentFolderIconRadioButton.isChecked() && newFolderNameString.equals(oldFolderNameString)) {  // Only the icon has changed.
-            // Get the new folder icon `Bitmap`.
-            Bitmap folderIconBitmap;
-            if (defaultFolderIconRadioButton.isChecked()) {
-                // Get the default folder icon and convert it to a `Bitmap`.
-                Drawable folderIconDrawable = folderIconImageView.getDrawable();
-                BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
-                folderIconBitmap = folderIconBitmapDrawable.getBitmap();
-            } else {  // Use the `WebView` favorite icon.
-                folderIconBitmap = favoriteIconBitmap;
-            }
-
-            // Convert the folder `Bitmap` to a byte array.  `0` is for lossless compression (the only option for a PNG).
-            ByteArrayOutputStream folderIconByteArrayOutputStream = new ByteArrayOutputStream();
-            folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, folderIconByteArrayOutputStream);
-            byte[] folderIconByteArray = folderIconByteArrayOutputStream.toByteArray();
-
-            // Update the folder icon in the database.
-            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, folderIconByteArray);
-        } else {  // The folder icon and the name have changed.
-            // Get the new folder icon `Bitmap`.
-            Bitmap folderIconBitmap;
-            if (defaultFolderIconRadioButton.isChecked()) {
-                // Get the default folder icon and convert it to a `Bitmap`.
-                Drawable folderIconDrawable = folderIconImageView.getDrawable();
-                BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
-                folderIconBitmap = folderIconBitmapDrawable.getBitmap();
-            } else {  // Use the `WebView` favorite icon.
-                folderIconBitmap = MainWebViewActivity.favoriteIconBitmap;
-            }
-
-            // Convert the folder `Bitmap` to a byte array.  `0` is for lossless compression (the only option for a PNG).
-            ByteArrayOutputStream folderIconByteArrayOutputStream = new ByteArrayOutputStream();
-            folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, folderIconByteArrayOutputStream);
-            byte[] folderIconByteArray = folderIconByteArrayOutputStream.toByteArray();
-
-            // Update the folder name and icon in the database.
-            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, oldFolderNameString, newFolderNameString, folderIconByteArray);
-        }
-
-        // Update the bookmarks cursor with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentBookmarksFolder);
-
-        // Update the `ListView`.
-        bookmarksCursorAdapter.changeCursor(bookmarksCursor);
     }
 
     @Override

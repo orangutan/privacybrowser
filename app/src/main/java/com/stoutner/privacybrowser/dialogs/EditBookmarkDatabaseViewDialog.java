@@ -80,8 +80,7 @@ public class EditBookmarkDatabaseViewDialog extends DialogFragment {
         // Run the default commands.
         super.onAttach(context);
 
-        // Get a handle for `EditBookmarkDatabaseViewListener` from the launching context.
-
+        // Get a handle for edit bookmark database view listener from the launching context.
         editBookmarkDatabaseViewListener = (EditBookmarkDatabaseViewListener) context;
     }
 
@@ -160,9 +159,6 @@ public class EditBookmarkDatabaseViewDialog extends DialogFragment {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
-        // Set the keyboard to be hidden when the `AlertDialog` is first shown.  If this is not set, the `AlertDialog` will not shrink when the keyboard is displayed.
-        alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
         // The alert dialog must be shown before items in the layout can be modified.
         alertDialog.show();
 
@@ -195,8 +191,16 @@ public class EditBookmarkDatabaseViewDialog extends DialogFragment {
         // Display `currentIconBitmap` in `edit_bookmark_current_icon`.
         currentIconImageView.setImageBitmap(currentIconBitmap);
 
-        // Get a bitmap of the favorite icon from `MainWebViewActivity` and display it in `edit_bookmark_web_page_favorite_icon`.
-        newFavoriteIconImageView.setImageBitmap(MainWebViewActivity.favoriteIconBitmap);
+        // Get a copy of the favorite icon bitmap.
+        Bitmap favoriteIconBitmap = MainWebViewActivity.favoriteIconBitmap;
+
+        // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+        if ((favoriteIconBitmap.getHeight() > 256) || (favoriteIconBitmap.getWidth() > 256)) {
+            favoriteIconBitmap = Bitmap.createScaledBitmap(favoriteIconBitmap, 256, 256, true);
+        }
+
+        // Set the new favorite icon bitmap.
+        newFavoriteIconImageView.setImageBitmap(favoriteIconBitmap);
 
         // Populate the bookmark name and URL `EditTexts`.
         nameEditText.setText(currentBookmarkName);

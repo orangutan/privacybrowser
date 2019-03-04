@@ -144,9 +144,6 @@ public class EditBookmarkDialog extends DialogFragment {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
-        // Show the keyboard when the alert dialog is displayed on the screen.
-        alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-
         // The alert dialog must be shown before items in the layout can be modified.
         alertDialog.show();
 
@@ -159,17 +156,25 @@ public class EditBookmarkDialog extends DialogFragment {
         urlEditText = alertDialog.findViewById(R.id.edit_bookmark_url_edittext);
         editButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
-        // Get the current favorite icon byte array from the `Cursor`.
+        // Get the current favorite icon byte array from the cursor.
         byte[] currentIconByteArray = bookmarkCursor.getBlob(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON));
 
-        // Convert the byte array to a `Bitmap` beginning at the first byte and ending at the last.
+        // Convert the byte array to a bitmap beginning at the first byte and ending at the last.
         Bitmap currentIconBitmap = BitmapFactory.decodeByteArray(currentIconByteArray, 0, currentIconByteArray.length);
 
-        // Display `currentIconBitmap` in `edit_bookmark_current_icon`.
+        // Display the current icon bitmap.
         currentIconImageView.setImageBitmap(currentIconBitmap);
 
-        // Get a `Bitmap` of the favorite icon from `MainWebViewActivity` and display it in `edit_bookmark_web_page_favorite_icon`.
-        newFavoriteIconImageView.setImageBitmap(MainWebViewActivity.favoriteIconBitmap);
+        // Get a copy of the favorite icon bitmap.
+        Bitmap favoriteIconBitmap = MainWebViewActivity.favoriteIconBitmap;
+
+        // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+        if ((favoriteIconBitmap.getHeight() > 256) || (favoriteIconBitmap.getWidth() > 256)) {
+            favoriteIconBitmap = Bitmap.createScaledBitmap(favoriteIconBitmap, 256, 256, true);
+        }
+
+        // Set the new favorite icon bitmap.
+        newFavoriteIconImageView.setImageBitmap(favoriteIconBitmap);
 
         // Store the current bookmark name and URL.
         currentName = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));

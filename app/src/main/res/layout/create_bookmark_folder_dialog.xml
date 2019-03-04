@@ -106,7 +106,9 @@
                 android:layout_width="match_parent"
                 android:hint="@string/folder_name"
                 android:imeOptions="actionGo"
-                android:inputType="textUri" />
+                android:inputType="textUri" >
+                <requestFocus />
+            </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
