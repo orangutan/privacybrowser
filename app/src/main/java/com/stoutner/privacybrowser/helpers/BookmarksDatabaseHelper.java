@@ -410,6 +410,22 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         return bookmarksDatabase.rawQuery(GET_BOOKMARKS, null);
     }
 
+    // Get a cursor with just database ID of bookmarks and folders in the specified folder.  This is useful for deleting folders with bookmarks that have favorite icons too large to fit in a cursor.
+    public Cursor getBookmarkIDs(String folderName) {
+        // Get a readable database handle.
+        SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
+
+        // SQL escape the folder name.
+        folderName = DatabaseUtils.sqlEscapeString(folderName);
+
+        // Get everything in the bookmarks table with `folderName` as the `PARENT_FOLDER`.
+        String GET_BOOKMARKS = "SELECT " + _ID + " FROM " + BOOKMARKS_TABLE +
+                " WHERE " + PARENT_FOLDER + " = " + folderName;
+
+        // Return the result as a cursor.  The cursor cannot be closed because it is used in the parent activity.
+        return bookmarksDatabase.rawQuery(GET_BOOKMARKS, null);
+    }
+
     // Get a cursor for bookmarks and folders in the specified folder except for ta specific list of IDs.
     public Cursor getBookmarksExcept(long[] exceptIdLongArray, String folderName) {
         // Get a readable database handle.
@@ -477,7 +493,7 @@ public class BookmarksDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase bookmarksDatabase = this.getReadableDatabase();
 
         // Prepare the SQL statement to determine if `databaseId` is a folder.
-        String CHECK_IF_FOLDER = "SELECT * FROM " + BOOKMARKS_TABLE +
+        String CHECK_IF_FOLDER = "SELECT " + IS_FOLDER + " FROM " + BOOKMARKS_TABLE +
                 " WHERE " + _ID + " = " + databaseId;
 
         // Populate the folder cursor.

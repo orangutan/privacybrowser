@@ -24,11 +24,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.CursorWindow;
+import android.database.sqlite.SQLiteCursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
@@ -90,7 +93,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
     // `bookmarksCursor` is used in `onCreate()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`, `deleteBookmarkFolderContents()`,
     // `loadFolder()`, and `onDestroy()`.
-    private Cursor bookmarksCursor;
+    // TODO This should be switched back to a `Cursor` after the release of 2.17.1.
+    private SQLiteCursor bookmarksCursor;
 
     // `bookmarksCursorAdapter` is used in `onCreate(), `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`, and `onLoadFolder()`.
     private CursorAdapter bookmarksCursorAdapter;
@@ -334,7 +338,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                         }
 
                         // Update the bookmarks cursor with the current contents of the bookmarks database.
-                        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
+                        // TODO Change this back to a `Cursor` after 2.17.1 is released.
+                        bookmarksCursor = (SQLiteCursor) bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
 
                         // Update the `ListView`.
                         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
@@ -380,7 +385,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                         }
 
                         // Update the bookmarks cursor with the current contents of the bookmarks database.
-                        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
+                        // TODO Change this back to a `Cursor` after 2.17.1 is released.
+                        bookmarksCursor = (SQLiteCursor) bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
 
                         // Update the `ListView`.
                         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
@@ -441,7 +447,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                         selectedBookmarksPositionsSparseBooleanArray = bookmarksListView.getCheckedItemPositions().clone();
 
                         // Update the bookmarks cursor with the current contents of the bookmarks database except for the specified database IDs.
-                        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrderExcept(selectedBookmarksIdsLongArray, currentFolder);
+                        // TODO Change this back to a `Cursor` after 2.17.1 is released.
+                        bookmarksCursor = (SQLiteCursor) bookmarksDatabaseHelper.getBookmarksByDisplayOrderExcept(selectedBookmarksIdsLongArray, currentFolder);
 
                         // Update the list view.
                         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
@@ -460,7 +467,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                                             // The user pushed the `Undo` button.
                                             case Snackbar.Callback.DISMISS_EVENT_ACTION:
                                                 // Update the bookmarks cursor with the current contents of the bookmarks database, including the "deleted" bookmarks.
-                                                bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
+                                                // TODO Change this back to a `Cursor` after 2.17.1 is released.
+                                                bookmarksCursor = (SQLiteCursor) bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
 
                                                 // Update the list view.
                                                 bookmarksCursorAdapter.changeCursor(bookmarksCursor);
@@ -673,7 +681,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         bookmarksDatabaseHelper.createBookmark(bookmarkNameString, bookmarkUrlString, currentFolder, newBookmarkDisplayOrder, favoriteIconByteArray);
 
         // Update the bookmarks cursor with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
+        // TODO Change this back to a `Cursor` after 2.17.1 is released.
+        bookmarksCursor = (SQLiteCursor) bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
 
         // Update the `ListView`.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
@@ -734,7 +743,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         bookmarksDatabaseHelper.createFolder(folderNameString, currentFolder, folderIconByteArray);
 
         // Update the bookmarks cursor with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
+        // TODO Change this back to a `Cursor` after 2.17.1 is released.
+        bookmarksCursor = (SQLiteCursor) bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
 
         // Update the `ListView`.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
@@ -783,7 +793,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         contextualActionMode.finish();
 
         // Update the bookmarks cursor with the contents of the current folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
+        // TODO Change this back to a `Cursor` after 2.17.1 is released.
+        bookmarksCursor = (SQLiteCursor) bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
 
         // Update the `ListView`.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
@@ -877,7 +888,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         }
 
         // Update the bookmarks cursor with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
+        // TODO Change this back to a `Cursor` after 2.17.1 is released.
+        bookmarksCursor = (SQLiteCursor) bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
 
         // Update the `ListView`.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
@@ -922,7 +934,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         }
 
         // Update the bookmarks cursor with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
+        // TODO Change this back to a `Cursor` after 2.17.1 is released.
+        bookmarksCursor = (SQLiteCursor) bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
 
         // Update the `ListView`.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
@@ -936,7 +949,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         String folderName = bookmarksDatabaseHelper.getFolderName(databaseId);
 
         // Get the contents of the folder.
-        Cursor folderCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(folderName);
+        Cursor folderCursor = bookmarksDatabaseHelper.getBookmarkIDs(folderName);
 
         // Delete each of the bookmarks in the folder.
         for (int i = 0; i < folderCursor.getCount(); i++) {
@@ -1026,7 +1039,16 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
     private void loadFolder() {
         // Update bookmarks cursor with the contents of the bookmarks database for the current folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
+        // TODO Change this back to a `Cursor` after 2.17.1 is released.
+        bookmarksCursor = (SQLiteCursor) bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
+
+        // TODO Remove after the release of 2.17.1.
+        if (Build.VERSION.SDK_INT >= 28) {
+            // Create a big cursor window.
+            CursorWindow bigCursorWindow = new CursorWindow("Big Cursor Window", 4194304);
+
+            bookmarksCursor.setWindow(bigCursorWindow);
+        }
 
         // Setup a `CursorAdapter`.  `this` specifies the `Context`.  `false` disables `autoRequery`.
         bookmarksCursorAdapter = new CursorAdapter(this, bookmarksCursor, false) {

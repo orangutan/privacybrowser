@@ -1,0 +1,2 @@
+• Corregir un bloqueo causado por favoritos con iconos preferidos muy grandes.
+• Permitir mover Navegador Privado a una tarjeta SD.
