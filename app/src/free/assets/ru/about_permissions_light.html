@@ -1,5 +1,5 @@
 <!--
-  Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -47,13 +47,8 @@
         <br/>
 
         <p>Кроме того, Privacy Browser Free отображает объявления из сети Google AdMob с использованием бэкенда Firebase.
-            Для бесплатной версии Firebase добавляет следующие разрешения, даже если они не перечислены в файле манифеста.</p>
-
-        <h3>Чтение статуса телефона и идентификации</h3>
-        <p><a href="https://developer.android.com/reference/android/Manifest.permission#read_phone_state">android.permission.READ_PHONE_STATE</a></p>
-        <p>Позволяет рекламе получать доступ к состоянию телефона, включая номер телефона устройства, текущую информацию о сотовой сети, статус любых текущих вызовов и список любых аккаунтов,
-            зарегистрированных на устройстве. Это опасное разрешение и оно требует явного разрешения от пользователя на Android Marshmallow (API 23) или новее.
-            В моих тестах я не сталкивался с тем, чтобы реклама пыталась запросить или использовать это разрешение.</p>
+            For the free flavor, Firebase adds the following permissions even though they are not listed in the source code
+            <a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=blob;f=app/src/main/AndroidManifest.xml;hb=HEAD">manifest file</a>.</p>
 
         <h3>Просмотр сетевых подключений</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#ACCESS_NETWORK_STATE">android.permission.ACCESS_NETWORK_STATE</a></p>
@@ -64,7 +59,7 @@
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WAKE_LOCK">android.permission.WAKE_LOCK</a></p>
         <p>Позволяет рекламе предотвращать переход процессора в режим сна и экран от выключения. Результаты тестировании не свидетельствуют о том, что реклама на самом деле это делает.</p>
 
-        <h3>Отслеживание установок из рекламных объявлений</h3>
+        <h3>Play Install Referrer API</h3>
         <p><a href="https://android-developers.googleblog.com/2017/11/google-play-referrer-api-track-and.html">com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE</a></p>
         <p>Позволяет сторонним приложениям сообщать о запуске инсталляции из рекламы в Privacy Browser Free.</p>
 
