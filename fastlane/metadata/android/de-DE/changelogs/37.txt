@@ -1,0 +1,11 @@
+• Add encrypted import and export options.
+• Fix a bug when importing databases under certain circumstances.
+• Add an options entry to quickly toggle proxying through Orbot.
+• Add an option to download files using an external app.
+• Fix the deletion of DOM storage.
+• Scroll to the beginning of the URL text box after editing.
+• Allow exiting the Bookmarks activity directly from a subfolder.
+• Change the app icon back to the old style for older versions of Android.
+• Aktualisierte italienische Übersetzung von Francesco Buratti.
+• Aktualisierte russische Übersetzung.
+• Aktualisierte spanische Übersetzung von Jose A. León.

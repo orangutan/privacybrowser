@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -28,7 +28,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
 
 public class DomainsDatabaseHelper extends SQLiteOpenHelper {
-    private static final int SCHEMA_VERSION = 8;
+    private static final int SCHEMA_VERSION = 9;
     static final String DOMAINS_DATABASE = "domains.db";
     static final String DOMAINS_TABLE = "domains";
 
@@ -59,6 +59,8 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
     public static final String SSL_ISSUED_BY_ORGANIZATIONAL_UNIT = "sslissuedbyorganizationalunit";
     public static final String SSL_START_DATE = "sslstartdate";
     public static final String SSL_END_DATE = "sslenddate";
+    public static final String PINNED_IP_ADDRESSES = "pinned_ip_addresses";
+    public static final String IP_ADDRESSES = "ip_addresses";
 
     // Swipe to refresh constants.
     public static final int SWIPE_TO_REFRESH_SYSTEM_DEFAULT = 0;
@@ -102,7 +104,9 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
             SSL_ISSUED_BY_ORGANIZATION + " TEXT, " +
             SSL_ISSUED_BY_ORGANIZATIONAL_UNIT + " TEXT, " +
             SSL_START_DATE + " INTEGER, " +
-            SSL_END_DATE + " INTEGER)";
+            SSL_END_DATE + " INTEGER, " +
+            PINNED_IP_ADDRESSES + " BOOLEAN, " +
+            IP_ADDRESSES + " TEXT)";
 
     private final Context appContext;
 
@@ -161,8 +165,8 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
                 // Get the default block list settings.
                 boolean easyListEnabled = sharedPreferences.getBoolean("easylist", true);
                 boolean easyPrivacyEnabled = sharedPreferences.getBoolean("easyprivacy", true);
-                boolean fanboyAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboy_annoyance_list", true);
-                boolean fanboySocialBlockingListEnabled = sharedPreferences.getBoolean("fanboy_social_blocking_list", true);
+                boolean fanboyAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboys_annoyance_list", true);
+                boolean fanboySocialBlockingListEnabled = sharedPreferences.getBoolean("fanboys_social_blocking_list", true);
 
                 // Set EasyList for existing rows according to the current system-wide default.
                 if (easyListEnabled) {
@@ -209,6 +213,12 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
 
                 // Enable it for all existing rows.
                 domainsDatabase.execSQL("UPDATE " + DOMAINS_TABLE + " SET " + ENABLE_ULTRAPRIVACY + " = " + 1);
+
+            // Upgrade from schema version 8.
+            case 8:
+                // Add the Pinned IP Addresses columns.
+                domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + PINNED_IP_ADDRESSES + " BOOLEAN");
+                domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + IP_ADDRESSES + " TEXT");
         }
     }
 
@@ -276,15 +286,15 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(appContext);
 
         // Get the default settings.
-        boolean javaScriptEnabled = sharedPreferences.getBoolean("javascript_enabled", false);
-        boolean firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies_enabled", false);
-        boolean thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies_enabled", false);
-        boolean domStorageEnabled = sharedPreferences.getBoolean("dom_storage_enabled", false);
-        boolean saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data_enabled", false);  // Form data can be removed once the minimum API >= 26.
+        boolean javaScriptEnabled = sharedPreferences.getBoolean("javascript", false);
+        boolean firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies", false);
+        boolean thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies", false);
+        boolean domStorageEnabled = sharedPreferences.getBoolean("dom_storage", false);
+        boolean saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data", false);  // Form data can be removed once the minimum API >= 26.
         boolean easyListEnabled = sharedPreferences.getBoolean("easylist", true);
         boolean easyPrivacyEnabled = sharedPreferences.getBoolean("easyprivacy", true);
-        boolean fanboyAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboy_annoyance_list", true);
-        boolean fanboySocialBlockingListEnabled = sharedPreferences.getBoolean("fanboy_social_blocking_list", true);
+        boolean fanboyAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboys_annoyance_list", true);
+        boolean fanboySocialBlockingListEnabled = sharedPreferences.getBoolean("fanboys_social_blocking_list", true);
         boolean ultraPrivacyEnabled = sharedPreferences.getBoolean("ultraprivacy", true);
         boolean blockAllThirdPartyRequests = sharedPreferences.getBoolean("block_all_third_party_requests", false);
 
@@ -331,10 +341,9 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainsDatabase.close();
     }
 
-    public void updateDomainExceptCertificate(int databaseId, String domainName, boolean javaScriptEnabled, boolean firstPartyCookiesEnabled, boolean thirdPartyCookiesEnabled, boolean domStorageEnabled,
-                                              boolean formDataEnabled, boolean easyListEnabled, boolean easyPrivacyEnabled, boolean fanboysAnnoyanceEnabled, boolean fanboysSocialBlockingEnabled,
-                                              boolean ultraPrivacyEnabled, boolean blockAllThirdPartyRequests, String userAgent, int fontSize, int swipeToRefresh, int nightMode, int displayImages,
-                                              boolean pinnedSslCertificate) {
+    public void updateDomain(int databaseId, String domainName, boolean javaScriptEnabled, boolean firstPartyCookiesEnabled, boolean thirdPartyCookiesEnabled, boolean domStorageEnabled, boolean formDataEnabled,
+                             boolean easyListEnabled, boolean easyPrivacyEnabled, boolean fanboysAnnoyanceEnabled, boolean fanboysSocialBlockingEnabled, boolean ultraPrivacyEnabled,
+                             boolean blockAllThirdPartyRequests, String userAgent, int fontSize, int swipeToRefresh, int nightMode, int displayImages, boolean pinnedSslCertificate, boolean pinnedIpAddresses) {
 
         // Store the domain data in a `ContentValues`.
         ContentValues domainContentValues = new ContentValues();
@@ -358,6 +367,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainContentValues.put(NIGHT_MODE, nightMode);
         domainContentValues.put(DISPLAY_IMAGES, displayImages);
         domainContentValues.put(PINNED_SSL_CERTIFICATE, pinnedSslCertificate);
+        domainContentValues.put(PINNED_IP_ADDRESSES, pinnedIpAddresses);
 
         // Get a writable database handle.
         SQLiteDatabase domainsDatabase = this.getWritableDatabase();
@@ -369,73 +379,44 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainsDatabase.close();
     }
 
-    public void updateDomainWithCertificate(int databaseId, String domainName, boolean javaScriptEnabled, boolean firstPartyCookiesEnabled, boolean thirdPartyCookiesEnabled, boolean domStorageEnabled,
-                                            boolean formDataEnabled, boolean easyListEnabled, boolean easyPrivacyEnabled, boolean fanboysAnnoyanceEnabled, boolean fanboysSocialBlockingEnabled,
-                                            boolean ultraPrivacyEnabled, boolean blockAllThirdPartyRequests, String userAgent, int fontSize, int swipeToRefresh, int nightMode, int displayImages,
-                                            boolean pinnedSslCertificate, String sslIssuedToCommonName, String sslIssuedToOrganization, String sslIssuedToOrganizationalUnit, String sslIssuedByCommonName,
-                                            String sslIssuedByOrganization, String sslIssuedByOrganizationalUnit, long sslStartDate, long sslEndDate) {
+    public void updatePinnedSslCertificate(int databaseId, String sslIssuedToCommonName, String sslIssuedToOrganization, String sslIssuedToOrganizationalUnit, String sslIssuedByCommonName,
+                                     String sslIssuedByOrganization, String sslIssuedByOrganizationalUnit, long sslStartDate, long sslEndDate) {
 
-        // Store the domain data in a `ContentValues`.
-        ContentValues domainContentValues = new ContentValues();
-
-        // Add entries for each field in the database.
-        domainContentValues.put(DOMAIN_NAME, domainName);
-        domainContentValues.put(ENABLE_JAVASCRIPT, javaScriptEnabled);
-        domainContentValues.put(ENABLE_FIRST_PARTY_COOKIES, firstPartyCookiesEnabled);
-        domainContentValues.put(ENABLE_THIRD_PARTY_COOKIES, thirdPartyCookiesEnabled);
-        domainContentValues.put(ENABLE_DOM_STORAGE, domStorageEnabled);
-        domainContentValues.put(ENABLE_FORM_DATA, formDataEnabled);  // Form data can be removed once the minimum API >= 26.
-        domainContentValues.put(ENABLE_EASYLIST, easyListEnabled);
-        domainContentValues.put(ENABLE_EASYPRIVACY, easyPrivacyEnabled);
-        domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, fanboysAnnoyanceEnabled);
-        domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, fanboysSocialBlockingEnabled);
-        domainContentValues.put(ENABLE_ULTRAPRIVACY, ultraPrivacyEnabled);
-        domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, blockAllThirdPartyRequests);
-        domainContentValues.put(USER_AGENT, userAgent);
-        domainContentValues.put(FONT_SIZE, fontSize);
-        domainContentValues.put(SWIPE_TO_REFRESH, swipeToRefresh);
-        domainContentValues.put(NIGHT_MODE, nightMode);
-        domainContentValues.put(DISPLAY_IMAGES, displayImages);
-        domainContentValues.put(PINNED_SSL_CERTIFICATE, pinnedSslCertificate);
-        domainContentValues.put(SSL_ISSUED_TO_COMMON_NAME, sslIssuedToCommonName);
-        domainContentValues.put(SSL_ISSUED_TO_ORGANIZATION, sslIssuedToOrganization);
-        domainContentValues.put(SSL_ISSUED_TO_ORGANIZATIONAL_UNIT, sslIssuedToOrganizationalUnit);
-        domainContentValues.put(SSL_ISSUED_BY_COMMON_NAME, sslIssuedByCommonName);
-        domainContentValues.put(SSL_ISSUED_BY_ORGANIZATION, sslIssuedByOrganization);
-        domainContentValues.put(SSL_ISSUED_BY_ORGANIZATIONAL_UNIT, sslIssuedByOrganizationalUnit);
-        domainContentValues.put(SSL_START_DATE, sslStartDate);
-        domainContentValues.put(SSL_END_DATE, sslEndDate);
-
-        // Get a writable database handle.
-        SQLiteDatabase domainsDatabase = this.getWritableDatabase();
-
-        // Update the row for `databaseId`.  The last argument is `null` because there are no `whereArgs`.
-        domainsDatabase.update(DOMAINS_TABLE, domainContentValues, _ID + " = " + databaseId, null);
-
-        // Close the database handle.
-        domainsDatabase.close();
-    }
-
-    public void updateCertificate(int databaseId, String sslIssuedToCommonName, String sslIssuedToOrganization, String sslIssuedToOrganizationalUnit, String sslIssuedByCommonName,
-                                  String sslIssuedByOrganization, String sslIssuedByOrganizationalUnit, long sslStartDate, long sslEndDate) {
-        // Store the domain data in a `ContentValues`.
-        ContentValues domainContentValues = new ContentValues();
+        // Store the pinned SSL certificate in a content values.
+        ContentValues pinnedSslCertificateContentValues = new ContentValues();
 
         // Add entries for each field in the certificate.
-        domainContentValues.put(SSL_ISSUED_TO_COMMON_NAME, sslIssuedToCommonName);
-        domainContentValues.put(SSL_ISSUED_TO_ORGANIZATION, sslIssuedToOrganization);
-        domainContentValues.put(SSL_ISSUED_TO_ORGANIZATIONAL_UNIT, sslIssuedToOrganizationalUnit);
-        domainContentValues.put(SSL_ISSUED_BY_COMMON_NAME, sslIssuedByCommonName);
-        domainContentValues.put(SSL_ISSUED_BY_ORGANIZATION, sslIssuedByOrganization);
-        domainContentValues.put(SSL_ISSUED_BY_ORGANIZATIONAL_UNIT, sslIssuedByOrganizationalUnit);
-        domainContentValues.put(SSL_START_DATE, sslStartDate);
-        domainContentValues.put(SSL_END_DATE, sslEndDate);
+        pinnedSslCertificateContentValues.put(SSL_ISSUED_TO_COMMON_NAME, sslIssuedToCommonName);
+        pinnedSslCertificateContentValues.put(SSL_ISSUED_TO_ORGANIZATION, sslIssuedToOrganization);
+        pinnedSslCertificateContentValues.put(SSL_ISSUED_TO_ORGANIZATIONAL_UNIT, sslIssuedToOrganizationalUnit);
+        pinnedSslCertificateContentValues.put(SSL_ISSUED_BY_COMMON_NAME, sslIssuedByCommonName);
+        pinnedSslCertificateContentValues.put(SSL_ISSUED_BY_ORGANIZATION, sslIssuedByOrganization);
+        pinnedSslCertificateContentValues.put(SSL_ISSUED_BY_ORGANIZATIONAL_UNIT, sslIssuedByOrganizationalUnit);
+        pinnedSslCertificateContentValues.put(SSL_START_DATE, sslStartDate);
+        pinnedSslCertificateContentValues.put(SSL_END_DATE, sslEndDate);
 
         // Get a writable database handle.
         SQLiteDatabase domainsDatabase = this.getWritableDatabase();
 
-        // Update the row for `databaseId`.  The last argument is `null` because there are no `whereArgs`.
-        domainsDatabase.update(DOMAINS_TABLE, domainContentValues, _ID + " = " + databaseId, null);
+        // Update the row for database ID.
+        domainsDatabase.update(DOMAINS_TABLE, pinnedSslCertificateContentValues, _ID + " = " + databaseId, null);
+
+        // Close the database handle.
+        domainsDatabase.close();
+    }
+
+    public void updatePinnedIpAddresses(int databaseId, String ipAddresses) {
+        // Store the pinned IP addresses in a content values.
+        ContentValues pinnedIpAddressesContentValues = new ContentValues();
+
+        // Add the IP addresses to the content values.
+        pinnedIpAddressesContentValues.put(IP_ADDRESSES, ipAddresses);
+
+        // Get a writable database handle.
+        SQLiteDatabase domainsDatabase = this.getWritableDatabase();
+
+        // Update the row for the database ID.
+        domainsDatabase.update(DOMAINS_TABLE, pinnedIpAddressesContentValues, _ID + " = " + databaseId, null);
 
         // Close the database handle.
         domainsDatabase.close();

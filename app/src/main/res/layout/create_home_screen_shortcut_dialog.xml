@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -28,17 +28,17 @@
         android:layout_width="match_parent"
         android:orientation="vertical" >
 
-        <android.support.design.widget.TextInputLayout
+        <!-- The `TextInputLayout` makes the `android:hint` float above the `EditText`. -->
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp" >
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp" >
 
-            <!-- `android:imeOptions="actionGo"` sets the keyboard to have a `go` key instead of a `new line` key.
-                 `android:inputType="textUri"` disables spell check in the `EditText`. -->
-            <android.support.design.widget.TextInputEditText
+            <!-- `android:imeOptions="actionGo"` sets the keyboard to have a `go` key instead of a `new line` key.  `android:inputType="textUri"` disables spell check in the `EditText`. -->
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/shortcut_name_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -46,6 +46,53 @@
                 android:imeOptions="actionGo"
                 android:inputType="textUri"
                 android:selectAllOnFocus="true" />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- The `TextInputLayout` makes the `android:hint` float above the `EditText`. -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp" >
+
+            <!-- `android:imeOptions="actionGo"` sets the keyboard to have a `go` key instead of a `new line` key.  `android:inputType="textUri"` disables spell check in the `EditText`. -->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/url_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/url"
+                android:imeOptions="actionGo"
+                android:inputType="textUri"
+                android:selectAllOnFocus="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <RadioGroup
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginBottom="2dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="6dp"
+            android:checkedButton="@+id/open_with_default_browser_radiobutton" >
+
+            <RadioButton
+                android:id="@id/open_with_default_browser_radiobutton"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:text="@string/open_with_default_browser"
+                android:textSize="18sp"
+                android:textColor="?android:textColorPrimary" />
+
+            <RadioButton
+                android:id="@+id/open_with_privacy_browser_radiobutton"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/open_with_privacy_browser"
+                android:textSize="18sp"
+                android:textColor="?android:textColorPrimary" />
+        </RadioGroup>
     </LinearLayout>
 </ScrollView>

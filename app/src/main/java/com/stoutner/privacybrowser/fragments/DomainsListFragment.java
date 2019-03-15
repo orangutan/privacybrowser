@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -19,23 +19,41 @@
 
 package com.stoutner.privacybrowser.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-// `android.support.v4.app.Fragment` must be used until minimum API >= 23.  Otherwise `getContext()` cannot be called.
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;  // The AndroidX fragment must be used until minimum API >= 23.  Otherwise `getContext()` does not work.
+import androidx.fragment.app.FragmentManager;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.DomainsActivity;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
 public class DomainsListFragment extends Fragment {
+    // Instantiate the dismiss snackbar interface handle.
+    private DismissSnackbarInterface dismissSnackbarInterface;
+
+    // Define the public dismiss snackbar interface.
+    public interface DismissSnackbarInterface {
+        void dismissSnackbar();
+    }
+
+    public void onAttach(Context context) {
+        // Run the default commands.
+        super.onAttach(context);
+
+        // Get a handle for the dismiss snackbar interface.
+        dismissSnackbarInterface = (DismissSnackbarInterface) context;
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate `domains_list_fragment`.  `false` does not attach it to the root `container`.
         View domainsListFragmentView = inflater.inflate(R.layout.domains_list_fragment, container, false);
@@ -46,21 +64,23 @@ public class DomainsListFragment extends Fragment {
         // Remove the incorrect lint error below that `.getSupportFragmentManager()` might be null.
         assert getActivity() != null;
 
-        // Get a handle for `supportFragmentManager`.
+        // Get a handle for the support fragment manager.
         final FragmentManager supportFragmentManager = getActivity().getSupportFragmentManager();
 
         domainsListView.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
-            // Dismiss `undoDeleteSnackbar` if it is currently displayed (because a domain has just been deleted).
-            if ((DomainsActivity.undoDeleteSnackbar != null) && (DomainsActivity.undoDeleteSnackbar.isShown())) {
-                DomainsActivity.dismissingSnackbar = true;
-
-                DomainsActivity.undoDeleteSnackbar.dismiss();
-            }
+            // Dismiss the snackbar if it is visible.
+            dismissSnackbarInterface.dismissSnackbar();
 
             // Save the current domain settings if operating in two-paned mode and a domain is currently selected.
             if (DomainsActivity.twoPanedMode && DomainsActivity.deleteMenuItem.isEnabled()) {
+                // Get a handle for the domain settings fragment.
+                Fragment domainSettingsFragment = supportFragmentManager.findFragmentById(R.id.domain_settings_fragment_container);
+
+                // Remove the incorrect lint error below that the domain settings fragment might be null.
+                assert domainSettingsFragment != null;
+
                 // Get a handle for the domain settings fragment view.
-                View domainSettingsFragmentView = supportFragmentManager.findFragmentById(R.id.domain_settings_fragment_container).getView();
+                View domainSettingsFragmentView = domainSettingsFragment.getView();
 
                 // Get a handle for the domains activity.
                 DomainsActivity domainsActivity = new DomainsActivity();
@@ -105,7 +125,7 @@ public class DomainsListFragment extends Fragment {
 
                 // Hide the add domain FAB.
                 FloatingActionButton addDomainFAB = getActivity().findViewById(R.id.add_domain_fab);
-                addDomainFAB.setVisibility(View.GONE);
+                addDomainFAB.hide();
 
                 // Display the domain settings fragment.
                 supportFragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();

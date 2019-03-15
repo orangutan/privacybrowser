@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -25,8 +25,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -35,6 +33,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.R;
@@ -249,7 +250,7 @@ public class AboutTabFragment extends Fragment {
                 securityPatchTextView.setVisibility(View.GONE);
             }
 
-            // Only populate the radio TextView if there is a radio in the device.
+            // Only populate the radio text view if there is a radio in the device.
             if (!radio.isEmpty()) {
                 String radioLabel = getString(R.string.radio) + "  ";
                 SpannableStringBuilder radioStringBuilder = new SpannableStringBuilder(radioLabel + radio);
@@ -259,7 +260,7 @@ public class AboutTabFragment extends Fragment {
                 radioTextView.setVisibility(View.GONE);
             }
 
-            // Only populate the Orbot TextView if it is installed.
+            // Only populate the Orbot text view if it is installed.
             if (!orbot.isEmpty()) {
                 String orbotLabel = getString(R.string.orbot) + "  ";
                 SpannableStringBuilder orbotStringBuilder = new SpannableStringBuilder(orbotLabel + orbot);
@@ -269,11 +270,11 @@ public class AboutTabFragment extends Fragment {
                 orbotTextView.setVisibility(View.GONE);
             }
 
-            // Only populate the EasyKeychain TextView if it is installed.
+            // Only populate the OpenKeychain text view if it is installed.
             if (!openKeychain.isEmpty()) {
-                String openKeychainlabel = getString(R.string.open_keychain) + "  ";
-                SpannableStringBuilder openKeychainStringBuilder = new SpannableStringBuilder(openKeychainlabel + openKeychain);
-                openKeychainStringBuilder.setSpan(blueColorSpan, openKeychainlabel.length(), openKeychainStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                String openKeychainLabel = getString(R.string.openkeychain) + "  ";
+                SpannableStringBuilder openKeychainStringBuilder = new SpannableStringBuilder(openKeychainLabel + openKeychain);
+                openKeychainStringBuilder.setSpan(blueColorSpan, openKeychainLabel.length(), openKeychainStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 openKeychainTextView.setText(openKeychainStringBuilder);
             } else {  //OpenKeychain is not installed.
                 openKeychainTextView.setVisibility(View.GONE);

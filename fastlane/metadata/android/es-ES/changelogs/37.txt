@@ -1,0 +1,11 @@
+• Añadir opciones de importación y exportación cifradas.
+• Corregir un error al importar bases de datos bajo ciertas circunstancias.
+• Añadir una entrada de opciones para alternar rápidamente entre las funciones de proxy a través de Orbot.
+• Añadir una opción para descargar archivos usando una app externa.
+• Arreglar el borrado del almacenamiento DOM.
+• Desplazarse hasta el principio del cuadro de texto de la URL después de la edición.
+• Permitir salir de la actividad de Favoritos directamente desde una subcarpeta.
+• Cambiar el icono de la app de vuelta al estilo antiguo para la versiones antiguas de Android.
+• Actualizada la traducción al español proporcionada por Jose A. León.
+• Actualizada la traducción al italiano proporcionada por Francesco Buratti.
+• Actualizada la traducción al ruso.

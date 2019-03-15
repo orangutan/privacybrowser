@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -51,16 +51,20 @@
 
     <attr name="listSelectorDrawable" format="reference" />
 
-    <attr name="userAgentIcon" format="reference" />
-    <attr name="searchIcon" format="reference" />
-    <attr name="homepageIcon" format="reference" />
-    <attr name="fontSizeIcon" format="reference" />
-    <attr name="deleteIcon" format="reference" />
-    <attr name="addIcon" format="reference" />
+    <attr name="aboutIcon" format="reference" />
     <attr name="addBookmarkIcon" format="reference" />
     <attr name="addFolderIcon" format="reference" />
-    <attr name="selectAllIcon" format="reference" />
+    <attr name="addIcon" format="reference" />
+    <attr name="clearIcon" format="reference" />
+    <attr name="copyIcon" format="reference" />
+    <attr name="deleteIcon" format="reference" />
     <attr name="editIcon" format="reference" />
+    <attr name="fontSizeIcon" format="reference" />
+    <attr name="homepageIcon" format="reference" />
     <attr name="moveToFolderIcon" format="reference" />
-    <attr name="aboutIcon" format="reference" />
+    <attr name="saveIcon" format="reference" />
+    <attr name="searchIcon" format="reference" />
+    <attr name="selectAllIcon" format="reference" />
+    <attr name="sortIcon" format="reference" />
+    <attr name="userAgentIcon" format="reference" />
 </resources>

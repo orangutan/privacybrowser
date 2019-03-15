@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -25,10 +25,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-// We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <=22.
-import android.support.v7.app.AppCompatDialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -38,14 +36,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
+
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 
-public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
+public class CreateBookmarkFolderDialog extends DialogFragment {
     // The public interface is used to send information back to the parent activity.
     public interface CreateBookmarkFolderListener {
-        void onCreateBookmarkFolder(AppCompatDialogFragment dialogFragment);
+        void onCreateBookmarkFolder(DialogFragment dialogFragment);
     }
 
     // `createBookmarkFolderListener` is used in `onAttach()` and `onCreateDialog`.
@@ -79,7 +80,7 @@ public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
         // Remove the warning below that `getLayoutInflater()` might be null.
         assert getActivity() != null;
 
-        // Set the view.  The parent view is `null` because it will be assigned by the `AlertDialog`.
+        // Set the view.  The parent view is null because it will be assigned by the alert dialog.
         dialogBuilder.setView(getActivity().getLayoutInflater().inflate(R.layout.create_bookmark_folder_dialog, null));
 
         // Set an `onClick()` listener for the negative button.
@@ -94,7 +95,7 @@ public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
         });
 
 
-        // Create an `AlertDialog` from the `AlertDialog.Builder`.
+        // Create an alert dialog from the `AlertDialog.Builder`.
         final AlertDialog alertDialog = dialogBuilder.create();
 
         // Remove the warning below that `getWindow()` might be null.
@@ -105,10 +106,7 @@ public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
-        // Show the keyboard when the `Dialog` is displayed on the screen.
-        alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-
-        // The `AlertDialog` must be shown before items in the alert dialog can be modified.
+        // The alert dialog must be shown before items in the alert dialog can be modified.
         alertDialog.show();
 
         // Get handles for the views in the dialog.
@@ -140,14 +138,14 @@ public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
                 String folderName = s.toString();
 
                 // Check if a folder with the name already exists.
-                Cursor folderExistsCursor = bookmarksDatabaseHelper.getFolderCursor(folderName);
+                Cursor folderExistsCursor = bookmarksDatabaseHelper.getFolder(folderName);
 
                 // Enable the create button if the new folder name is not empty and doesn't already exist.
                 createButton.setEnabled(!folderName.isEmpty() && (folderExistsCursor.getCount() == 0));
             }
         });
 
-        // Allow the `enter` key on the keyboard to create the folder from `create_folder_name_edittext`.
+        // Allow the enter key on the keyboard to create the folder from `create_folder_name_edittext`.
         folderNameEditText.setOnKeyListener((View v, int keyCode, KeyEvent event) -> {
             // If the event is a key-down on the `enter` key, select the `PositiveButton` `Create`.
             if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER) && createButton.isEnabled()) {  // The enter key was pressed and the create button is enabled.
@@ -162,10 +160,18 @@ public class CreateBookmarkFolderDialog extends AppCompatDialogFragment {
             }
         });
 
-        // Display the current favorite icon.
-        webPageIconImageView.setImageBitmap(MainWebViewActivity.favoriteIconBitmap);
+        // Get a copy of the favorite icon bitmap.
+        Bitmap favoriteIconBitmap = MainWebViewActivity.favoriteIconBitmap;
 
-        // `onCreateDialog()` requires the return of an `AlertDialog`.
+        // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+        if ((favoriteIconBitmap.getHeight() > 256) || (favoriteIconBitmap.getWidth() > 256)) {
+            favoriteIconBitmap = Bitmap.createScaledBitmap(favoriteIconBitmap, 256, 256, true);
+        }
+
+        // Display the current favorite icon.
+        webPageIconImageView.setImageBitmap(favoriteIconBitmap);
+
+        // Return the alert dialog.
         return alertDialog;
     }
 }

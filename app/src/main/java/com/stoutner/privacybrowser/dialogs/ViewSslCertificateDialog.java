@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -22,7 +22,6 @@ package com.stoutner.privacybrowser.dialogs;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -35,9 +34,11 @@ import android.view.LayoutInflater;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
+
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.R;
-
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -45,12 +46,13 @@ import java.util.Date;
 // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
 @SuppressLint("InflateParams")
 public class ViewSslCertificateDialog extends DialogFragment {
+    @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Get the activity's layout inflater.
-        LayoutInflater layoutInflater   = getActivity().getLayoutInflater();
+        // Remove the incorrect lint warning below that the activity might be null.
+        assert getActivity() != null;
 
-        // Create a drawable version of the favorite icon.
-        Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), MainWebViewActivity.favoriteIconBitmap);
+        // Get the activity's layout inflater.
+        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
 
         // Use a builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
@@ -61,6 +63,9 @@ public class ViewSslCertificateDialog extends DialogFragment {
         } else {
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
         }
+
+        // Create a drawable version of the favorite icon.
+        Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), MainWebViewActivity.favoriteIconBitmap);
 
         // Set the icon.
         dialogBuilder.setIcon(favoriteIconDrawable);
@@ -113,8 +118,9 @@ public class ViewSslCertificateDialog extends DialogFragment {
             // The alert dialog must be shown before items in the layout can be modified.
             alertDialog.show();
 
-            // Get handles for the `TextViews`.
+            // Get handles for the text views.
             TextView domainTextView = alertDialog.findViewById(R.id.domain);
+            TextView ipAddressesTextView = alertDialog.findViewById(R.id.ip_addresses);
             TextView issuedToCNameTextView = alertDialog.findViewById(R.id.issued_to_cname);
             TextView issuedToONameTextView = alertDialog.findViewById(R.id.issued_to_oname);
             TextView issuedToUNameTextView = alertDialog.findViewById(R.id.issued_to_uname);
@@ -126,49 +132,51 @@ public class ViewSslCertificateDialog extends DialogFragment {
 
             // Setup the labels.
             String domainLabel = getString(R.string.domain_label) + "  ";
+            String ipAddressesLabel = getString(R.string.ip_addresses) + "  ";
             String cNameLabel = getString(R.string.common_name) + "  ";
             String oNameLabel = getString(R.string.organization) + "  ";
             String uNameLabel = getString(R.string.organizational_unit) + "  ";
             String startDateLabel = getString(R.string.start_date) + "  ";
             String endDateLabel = getString(R.string.end_date) + "  ";
 
-            // Parse `formattedUrlString` to a `URI`.
+            // Convert the formatted URL string to a URI.
             Uri uri = Uri.parse(MainWebViewActivity.formattedUrlString);
 
-            // Extract the domain name from `uri`.
+            // Extract the domain name from the URI.
             String domainString = uri.getHost();
 
             // Get the SSL certificate.
             SslCertificate sslCertificate = MainWebViewActivity.sslCertificate;
 
             // Get the strings from the SSL certificate.
-            String issuedToCNameString = sslCertificate.getIssuedTo().getCName();
-            String issuedToONameString = sslCertificate.getIssuedTo().getOName();
-            String issuedToUNameString = sslCertificate.getIssuedTo().getUName();
-            String issuedByCNameString = sslCertificate.getIssuedBy().getCName();
-            String issuedByONameString = sslCertificate.getIssuedBy().getOName();
-            String issuedByUNameString = sslCertificate.getIssuedBy().getUName();
+            String issuedToCName = sslCertificate.getIssuedTo().getCName();
+            String issuedToOName = sslCertificate.getIssuedTo().getOName();
+            String issuedToUName = sslCertificate.getIssuedTo().getUName();
+            String issuedByCName = sslCertificate.getIssuedBy().getCName();
+            String issuedByOName = sslCertificate.getIssuedBy().getOName();
+            String issuedByUName = sslCertificate.getIssuedBy().getUName();
             Date startDate = sslCertificate.getValidNotBeforeDate();
             Date endDate = sslCertificate.getValidNotAfterDate();
 
-            // Create a `SpannableStringBuilder` for each `TextView` that needs multiple colors of text.
+            // Create spannable string builders for each text view that needs multiple colors of text.
             SpannableStringBuilder domainStringBuilder = new SpannableStringBuilder(domainLabel + domainString);
-            SpannableStringBuilder issuedToCNameStringBuilder = new SpannableStringBuilder(cNameLabel + issuedToCNameString);
-            SpannableStringBuilder issuedToONameStringBuilder = new SpannableStringBuilder(oNameLabel + issuedToONameString);
-            SpannableStringBuilder issuedToUNameStringBuilder = new SpannableStringBuilder(uNameLabel + issuedToUNameString);
-            SpannableStringBuilder issuedByCNameStringBuilder = new SpannableStringBuilder(cNameLabel + issuedByCNameString);
-            SpannableStringBuilder issuedByONameStringBuilder = new SpannableStringBuilder(oNameLabel + issuedByONameString);
-            SpannableStringBuilder issuedByUNameStringBuilder = new SpannableStringBuilder(uNameLabel + issuedByUNameString);
+            SpannableStringBuilder ipAddressesStringBuilder = new SpannableStringBuilder(ipAddressesLabel + MainWebViewActivity.currentHostIpAddresses);
+            SpannableStringBuilder issuedToCNameStringBuilder = new SpannableStringBuilder(cNameLabel + issuedToCName);
+            SpannableStringBuilder issuedToONameStringBuilder = new SpannableStringBuilder(oNameLabel + issuedToOName);
+            SpannableStringBuilder issuedToUNameStringBuilder = new SpannableStringBuilder(uNameLabel + issuedToUName);
+            SpannableStringBuilder issuedByCNameStringBuilder = new SpannableStringBuilder(cNameLabel + issuedByCName);
+            SpannableStringBuilder issuedByONameStringBuilder = new SpannableStringBuilder(oNameLabel + issuedByOName);
+            SpannableStringBuilder issuedByUNameStringBuilder = new SpannableStringBuilder(uNameLabel + issuedByUName);
             SpannableStringBuilder startDateStringBuilder = new SpannableStringBuilder(startDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(startDate));
             SpannableStringBuilder endDateStringBuilder = new SpannableStringBuilder(endDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(endDate));
 
-            // Create a red `ForegroundColorSpan`.  We have to use the deprecated `getColor` until API >= 23.
+            // Create a red foreground color span.  The deprecated `getColor` must be used until the minimum API >= 23.
             @SuppressWarnings("deprecation") ForegroundColorSpan redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
 
-            // Create a blue `ForegroundColorSpan`.
+            // Create a blue foreground color span.
             ForegroundColorSpan blueColorSpan;
 
-            // Set `blueColorSpan` according to the theme.  We have to use the deprecated `getColor()` until API >= 23.
+            // Set the blue color span according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
             if (MainWebViewActivity.darkTheme) {
                 //noinspection deprecation
                 blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
@@ -177,14 +185,17 @@ public class ViewSslCertificateDialog extends DialogFragment {
                 blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
             }
 
-            // Formet the `domainString` and `issuedToCName` colors.
-            if (domainString.equals(issuedToCNameString)) {  // `domainString` and `issuedToCNameString` match.
+            // Remove the incorrect lint error that `.equals` might produce a NullPointerException.
+            assert domainString != null;
+
+            // Formet the domain string and issued to CName colors.
+            if (domainString.equals(issuedToCName)) {  // `domainString` and `issuedToCName` match.
                 // Set the strings to be blue.
                 domainStringBuilder.setSpan(blueColorSpan, domainLabel.length(), domainStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 issuedToCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), issuedToCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            } else if(issuedToCNameString.startsWith("*.")){  // `issuedToCNameString` begins with a wildcard.
+            } else if(issuedToCName.startsWith("*.")){  // `issuedToCName` begins with a wildcard.
                 // Remove the initial `*.`.
-                String baseCertificateDomain = issuedToCNameString.substring(2);
+                String baseCertificateDomain = issuedToCName.substring(2);
 
                 // Setup a copy of `domainString` to test subdomains.
                 String domainStringSubdomain = domainString;
@@ -219,13 +230,15 @@ public class ViewSslCertificateDialog extends DialogFragment {
                 issuedToCNameStringBuilder.setSpan(redColorSpan, cNameLabel.length(), issuedToCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             }
 
-            // Setup the issued to and issued by spans to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
+            // Set the IP addresses, issued to, and issued by spans to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
+            ipAddressesStringBuilder.setSpan(blueColorSpan, ipAddressesLabel.length(), ipAddressesStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             issuedToONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length(), issuedToONameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             issuedToUNameStringBuilder.setSpan(blueColorSpan, uNameLabel.length(), issuedToUNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             issuedByCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), issuedByCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             issuedByONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length(), issuedByONameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             issuedByUNameStringBuilder.setSpan(blueColorSpan, uNameLabel.length(), issuedByUNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
+            // Get the current date.
             Date currentDate = Calendar.getInstance().getTime();
 
             //  Format the start date color.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
@@ -244,6 +257,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
 
             // Display the strings.
             domainTextView.setText(domainStringBuilder);
+            ipAddressesTextView.setText(ipAddressesStringBuilder);
             issuedToCNameTextView.setText(issuedToCNameStringBuilder);
             issuedToONameTextView.setText(issuedToONameStringBuilder);
             issuedToUNameTextView.setText(issuedToUNameStringBuilder);
@@ -253,7 +267,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
             startDateTextView.setText(startDateStringBuilder);
             endDateTextView.setText(endDateStringBuilder);
 
-            // `onCreateDialog` requires the return of an `AlertDialog`.
+            // `onCreateDialog` requires the return of an alert dialog.
             return alertDialog;
         }
     }

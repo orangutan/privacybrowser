@@ -1,0 +1,1 @@
+• Correzione di un baco che provocava il crash di alcuni dispositivi aprendo una attivita' secondaria.

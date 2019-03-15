@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -24,24 +24,25 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-// We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <= 22.
-import android.support.v7.app.AppCompatDialogFragment;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
+
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.R;
 
-public class CreateBookmarkDialog extends AppCompatDialogFragment {
+public class CreateBookmarkDialog extends DialogFragment {
     // The public interface is used to send information back to the parent activity.
     public interface CreateBookmarkListener {
-        void onCreateBookmark(AppCompatDialogFragment dialogFragment);
+        void onCreateBookmark(DialogFragment dialogFragment);
     }
 
     // `createBookmarkListener` is used in `onAttach()` and `onCreateDialog()`
@@ -60,10 +61,18 @@ public class CreateBookmarkDialog extends AppCompatDialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Create a drawable version of the favorite icon.
-        Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), MainWebViewActivity.favoriteIconBitmap);
+        // Get a copy of the favorite icon bitmap.
+        Bitmap favoriteIconBitmap = MainWebViewActivity.favoriteIconBitmap;
 
-        // Use `AlertDialog.Builder` to create the `AlertDialog`.
+        // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+        if ((favoriteIconBitmap.getHeight() > 256) || (favoriteIconBitmap.getWidth() > 256)) {
+            favoriteIconBitmap = Bitmap.createScaledBitmap(favoriteIconBitmap, 256, 256, true);
+        }
+
+        // Create a drawable version of the favorite icon.
+        Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), favoriteIconBitmap);
+
+        // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
         // Set the style according to the theme.
@@ -108,7 +117,7 @@ public class CreateBookmarkDialog extends AppCompatDialogFragment {
         // Show the keyboard when the `AlertDialog` is displayed on the screen.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
-        // The `AlertDialog` needs to be shown before `setOnKeyListener()` can be called.
+        // The alert dialog needs to be shown before `setOnKeyListener()` can be called.
         alertDialog.show();
 
         // Get a handle for `create_bookmark_name_edittext`.
@@ -155,7 +164,7 @@ public class CreateBookmarkDialog extends AppCompatDialogFragment {
             }
         });
 
-        // `onCreateDialog()` requires the return of an `AlertDialog`.
+        // Return the alert dialog.
         return alertDialog;
     }
 }

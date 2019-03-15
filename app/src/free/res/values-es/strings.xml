@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2017-2018 Jose A. León Becerra <emails@joseleon.me>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017-2019 Jose A. León Becerra <emails@joseleon.me>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -24,10 +24,13 @@
     <!-- Activities. -->
     <string name="privacy_browser">Navegador Privado Gratuito</string>
 
+    <!-- Create Home Screen Shortcut Alert Dialog. -->
+    <string name="open_with_privacy_browser">Abrir con Navegador Privado Gratuito.</string>
+
     <!-- Ad Consent. -->
     <string name="ad_consent_text">Navegador Privado Gratuíto muestra un anuncio de banner en la parte inferior de la pantalla.
-        Estos anuncios proceden del conjunto de proveedores habituales de Google y están configurados para que no sean personalizados ni de seguimiento.
-        \n\nLa versión estándar de Navegador Privado no contiene anuncios.</string>
+        Estos anuncios proceden del conjunto de proveedores habituales de Google y están configurados para que no sean personalizados.
+        \n\nLa versión estándar de Navegador Privado no contiene anuncios de aplicaciones.</string>
     <string name="close_browser">Cerrar el navegador</string>
     <string name="accept_ads">Aceptar anuncios</string>
 </resources>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2018 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2018-2019 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -24,10 +24,13 @@
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser Free</string>
 
+    <!-- Create Home Screen Shortcut Alert Dialog. -->
+    <string name="open_with_privacy_browser">Apri con Privacy Browser Free.</string>
+
     <!-- Ad Consent. -->
     <string name="ad_consent_text">Privacy Browser Free mostra un banner pubblicitario nella parte inferiore dello schermo.
-        Questi annunci provengono dai provider normalmente utilizzati da Google e sono configurati in modo da non essere personalizzati e da non tracciare l\'utente.
-        \n\nLa versione standard di Privacy Browser non contiene annunci.</string>
+        Questi annunci provengono dai provider normalmente utilizzati da Google e sono configurati in modo da non essere personalizzati.
+        \n\nLa versione standard di Privacy Browser non contiene annunci di applicazioni.</string>
     <string name="close_browser">Chiudi il Browser</string>
     <string name="accept_ads">Accetta gli Annunci</string>
 </resources>

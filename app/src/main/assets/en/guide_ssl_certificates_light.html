@@ -1,5 +1,5 @@
 <!--
-  Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -34,13 +34,14 @@
 
         <p>Pinning an SSL certificate tells the browser that only one specific SSL certificate is to be trusted for a particular domain. Any other certificate, even if it is valid, will be rejected.</p>
 
-        <p><img class="center" src="images/ssl_certificate_mismatch.png"></p>
+        <p><img class="center21" src="images/pinned_mismatch.png"></p>
 
         <p>SSL certificates expire on a specified date, so even pinned SSL certificates will legitimately need to be updated from time to time.
             As a general rule, pinning SSL certificates probably isn’t needed in the majority of cases.
-            But for those who suspect that powerful organizations may be targeting them, SSL certificate pinning can detect and thwart a MITM attack.</p>
+            But for those who suspect that powerful organizations may be targeting them, SSL certificate pinning can detect and thwart a MITM attack.
+            Privacy Browser also has the ability to pin IP addresses.</p>
 
-        <p><img class="center" src="images/pinned_ssl_certificate.png"></p>
+        <p><img class="center21" src="images/pinned_ssl_certificate.png"></p>
 
         <p>SSL certificates can be pinned in Domain Settings.
             Besides protecting against MITM attacks, pinning a self-signed certificate for a device like a wireless router or access point will remove the error message that is normally presented every time its website is loaded.

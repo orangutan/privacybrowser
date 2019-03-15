@@ -1,0 +1,11 @@
+• Aggiunte le opzioni di importazione ed esportazione criptate.
+• Correzione di un baco che si verificava quando si importavano i databases in determinate condizioni.
+• Aggiunta un'opzione per attivare rapidamente il proxy con Orbot.
+• Aggiunta un'opzione per scaricare i file utilizzando un'applicazione esterna.
+• Sistemata l'eliminazione del DOM storage.
+• Scroll all'inizio della casella di testo della URL dopo averla modificata.
+• Possibilita' di uscire dalla scheda dei segnalibri direttamente da una sottocartella.
+• Modificata l'icona della app tornando al vecchio stile per le vecchie versioni di Android.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
+• Aggiornamento della traduzione Russo.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León.

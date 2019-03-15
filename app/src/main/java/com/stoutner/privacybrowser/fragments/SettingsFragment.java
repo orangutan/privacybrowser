@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -55,11 +55,11 @@ public class SettingsFragment extends PreferenceFragment {
         savedPreferences = getPreferenceScreen().getSharedPreferences();
 
         // Get handles for the preferences.
-        final Preference javaScriptPreference = findPreference("javascript_enabled");
-        final Preference firstPartyCookiesPreference = findPreference("first_party_cookies_enabled");
-        final Preference thirdPartyCookiesPreference = findPreference("third_party_cookies_enabled");
-        final Preference domStoragePreference = findPreference("dom_storage_enabled");
-        final Preference saveFormDataPreference = findPreference("save_form_data_enabled");  // The form data preference can be removed once the minimum API >= 26.
+        final Preference javaScriptPreference = findPreference("javascript");
+        final Preference firstPartyCookiesPreference = findPreference("first_party_cookies");
+        final Preference thirdPartyCookiesPreference = findPreference("third_party_cookies");
+        final Preference domStoragePreference = findPreference("dom_storage");
+        final Preference saveFormDataPreference = findPreference("save_form_data");  // The form data preference can be removed once the minimum API >= 26.
         final Preference userAgentPreference = findPreference("user_agent");
         final Preference customUserAgentPreference = findPreference("custom_user_agent");
         final Preference incognitoModePreference = findPreference("incognito_mode");
@@ -67,8 +67,8 @@ public class SettingsFragment extends PreferenceFragment {
         final Preference allowScreenshotsPreference = findPreference("allow_screenshots");
         final Preference easyListPreference = findPreference("easylist");
         final Preference easyPrivacyPreference = findPreference("easyprivacy");
-        final Preference fanboyAnnoyanceListPreference = findPreference("fanboy_annoyance_list");
-        final Preference fanboySocialBlockingListPreference = findPreference("fanboy_social_blocking_list");
+        final Preference fanboyAnnoyanceListPreference = findPreference("fanboys_annoyance_list");
+        final Preference fanboySocialBlockingListPreference = findPreference("fanboys_social_blocking_list");
         final Preference ultraPrivacyPreference = findPreference("ultraprivacy");
         final Preference blockAllThirdPartyRequestsPreference = findPreference("block_all_third_party_requests");
         final Preference proxyThroughOrbotPreference = findPreference("proxy_through_orbot");
@@ -78,17 +78,18 @@ public class SettingsFragment extends PreferenceFragment {
         final Preference searchPreference = findPreference("search");
         final Preference searchCustomURLPreference = findPreference("search_custom_url");
         final Preference fullScreenBrowsingModePreference = findPreference("full_screen_browsing_mode");
-        final Preference hideSystemBarsPreference = findPreference("hide_system_bars");
-        final Preference translucentNavigationBarPreference = findPreference("translucent_navigation_bar");
+        final Preference hideAppBarPreference = findPreference("hide_app_bar");
         final Preference clearEverythingPreference = findPreference("clear_everything");
         final Preference clearCookiesPreference = findPreference("clear_cookies");
         final Preference clearDomStoragePreference = findPreference("clear_dom_storage");
         final Preference clearFormDataPreference = findPreference("clear_form_data");  // The clear form data preference can be removed once the minimum API >= 26.
         final Preference clearCachePreference = findPreference("clear_cache");
         final Preference homepagePreference = findPreference("homepage");
-        final Preference defaultFontSizePreference = findPreference("default_font_size");
+        final Preference fontSizePreference = findPreference("font_size");
         final Preference swipeToRefreshPreference = findPreference("swipe_to_refresh");
+        final Preference scrollAppBarPreference = findPreference("scroll_app_bar");
         final Preference displayAdditionalAppBarIconsPreference = findPreference("display_additional_app_bar_icons");
+        final Preference downloadWithExternalAppPreference = findPreference("download_with_external_app");
         final Preference darkThemePreference = findPreference("dark_theme");
         final Preference nightModePreference = findPreference("night_mode");
         final Preference displayWebpageImagesPreference = findPreference("display_webpage_images");
@@ -96,21 +97,20 @@ public class SettingsFragment extends PreferenceFragment {
         // Set dependencies.
         torHomepagePreference.setDependency("proxy_through_orbot");
         torSearchPreference.setDependency("proxy_through_orbot");
-        hideSystemBarsPreference.setDependency("full_screen_browsing_mode");
+        hideAppBarPreference.setDependency("full_screen_browsing_mode");
 
-        // Get Strings from the preferences.
-        String torSearchString = savedPreferences.getString("tor_search", "http://ulrn6sryqaifefld.onion/?q=");
-        String searchString = savedPreferences.getString("search", "https://searx.me/?q=");
+        // Get strings from the preferences.
+        String torSearchString = savedPreferences.getString("tor_search", getString(R.string.tor_search_default_value));
+        String searchString = savedPreferences.getString("search", getString(R.string.search_default_value));
 
         // Get booleans that are used in multiple places from the preferences.
-        final boolean javaScriptEnabled = savedPreferences.getBoolean("javascript_enabled", false);
-        boolean firstPartyCookiesEnabled = savedPreferences.getBoolean("first_party_cookies_enabled", false);
-        boolean thirdPartyCookiesEnabled = savedPreferences.getBoolean("third_party_cookies_enabled", false);
-        boolean fanboyAnnoyanceListEnabled = savedPreferences.getBoolean("fanboy_annoyance_list", true);
-        boolean fanboySocialBlockingEnabled = savedPreferences.getBoolean("fanboy_social_blocking_list", true);
+        final boolean javaScriptEnabled = savedPreferences.getBoolean("javascript", false);
+        boolean firstPartyCookiesEnabled = savedPreferences.getBoolean("first_party_cookies", false);
+        boolean thirdPartyCookiesEnabled = savedPreferences.getBoolean("third_party_cookies", false);
+        boolean fanboyAnnoyanceListEnabled = savedPreferences.getBoolean("fanboys_annoyance_list", true);
+        boolean fanboySocialBlockingEnabled = savedPreferences.getBoolean("fanboys_social_blocking_list", true);
         boolean proxyThroughOrbot = savedPreferences.getBoolean("proxy_through_orbot", false);
         boolean fullScreenBrowsingMode = savedPreferences.getBoolean("full_screen_browsing_mode", false);
-        boolean hideSystemBars = savedPreferences.getBoolean("hide_system_bars", false);
         boolean clearEverything = savedPreferences.getBoolean("clear_everything", true);
         final boolean nightMode = savedPreferences.getBoolean("night_mode", false);
 
@@ -146,7 +146,7 @@ public class SettingsFragment extends PreferenceFragment {
         String[] userAgentDataArray = getResources().getStringArray(R.array.user_agent_data);
 
         // Get the current user agent name from the preference.
-        String userAgentName = savedPreferences.getString("user_agent", "Privacy Browser");
+        String userAgentName = savedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
 
         // Get the array position of the user agent name.
         int userAgentArrayPosition = userAgentNamesArray.getPosition(userAgentName);
@@ -174,12 +174,12 @@ public class SettingsFragment extends PreferenceFragment {
         }
 
         // Set the summary text for the custom user agent preference and enable it if user agent preference is set to custom.
-        customUserAgentPreference.setSummary(savedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0"));
+        customUserAgentPreference.setSummary(savedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value)));
         customUserAgentPreference.setEnabled(userAgentPreference.getSummary().equals(getString(R.string.custom_user_agent)));
 
 
         // Set the Tor homepage URL as the summary text for the `tor_homepage` preference when the preference screen is loaded.  The default is Searx: `http://ulrn6sryqaifefld.onion/`.
-        torHomepagePreference.setSummary(savedPreferences.getString("tor_homepage", "http://ulrn6sryqaifefld.onion/"));
+        torHomepagePreference.setSummary(savedPreferences.getString("tor_homepage", getString(R.string.tor_homepage_default_value)));
 
 
         // Set the Tor search URL as the summary text for the Tor preference when the preference screen is loaded.
@@ -192,7 +192,7 @@ public class SettingsFragment extends PreferenceFragment {
         }
 
         // Set the summary text for `tor_search_custom_url`.  The default is `""`.
-        torSearchCustomURLPreference.setSummary(savedPreferences.getString("tor_search_custom_url", ""));
+        torSearchCustomURLPreference.setSummary(savedPreferences.getString("tor_search_custom_url", getString(R.string.tor_search_custom_url_default_value)));
 
         // Enable the Tor custom URL search options only if proxying through Orbot and the search is set to `Custom URL`.
         torSearchCustomURLPreference.setEnabled(proxyThroughOrbot && torSearchString.equals("Custom URL"));
@@ -208,24 +208,20 @@ public class SettingsFragment extends PreferenceFragment {
         }
 
         // Set the summary text for `search_custom_url` (the default is `""`) and enable it if `search` is set to `Custom URL`.
-        searchCustomURLPreference.setSummary(savedPreferences.getString("search_custom_url", ""));
+        searchCustomURLPreference.setSummary(savedPreferences.getString("search_custom_url", getString(R.string.search_custom_url_default_value)));
         searchCustomURLPreference.setEnabled(searchString.equals("Custom URL"));
 
-
-        // Enable the translucent navigation bar preference only if full screen browsing mode is enabled and `hide_system_bars` is disabled.
-        translucentNavigationBarPreference.setEnabled(fullScreenBrowsingMode && !hideSystemBars);
-
-        // Set the status of the `Clear and Exit` preferences.
+        // Set the status of the Clear and Exit preferences.
         clearCookiesPreference.setEnabled(!clearEverything);
         clearDomStoragePreference.setEnabled(!clearEverything);
         clearFormDataPreference.setEnabled(!clearEverything);  // The form data line can be removed once the minimum API is >= 26.
         clearCachePreference.setEnabled(!clearEverything);
 
         // Set the homepage URL as the summary text for the homepage preference.
-        homepagePreference.setSummary(savedPreferences.getString("homepage", "https://searx.me/"));
+        homepagePreference.setSummary(savedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
 
-        // Set the default font size as the summary text for the preference.
-        defaultFontSizePreference.setSummary(savedPreferences.getString("default_font_size", "100") + "%%");
+        // Set the font size as the summary text for the preference.
+        fontSizePreference.setSummary(savedPreferences.getString("font_size", getString(R.string.font_size_default_value)) + "%%");
 
         // Disable the JavaScript preference if Night Mode is enabled.  JavaScript will be enabled for all web pages.
         javaScriptPreference.setEnabled(!nightMode);
@@ -269,7 +265,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the DOM storage icon.
         if (javaScriptEnabled || nightMode) {  // The preference is enabled.
-            if (savedPreferences.getBoolean("dom_storage_enabled", false)) {  // DOM storage is enabled.
+            if (savedPreferences.getBoolean("dom_storage", false)) {  // DOM storage is enabled.
                 domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
             } else {  // DOM storage is disabled.
                 if (MainWebViewActivity.darkTheme) {
@@ -288,7 +284,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the save form data icon if API < 26.  Save form data has no effect on API >= 26.
         if (Build.VERSION.SDK_INT < 26) {
-            if (savedPreferences.getBoolean("save_form_data_enabled", false)) {
+            if (savedPreferences.getBoolean("save_form_data", false)) {
                 saveFormDataPreference.setIcon(R.drawable.form_data_enabled);
             } else {
                 if (MainWebViewActivity.darkTheme) {
@@ -521,49 +517,30 @@ public class SettingsFragment extends PreferenceFragment {
                 fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled_light);
             }
 
-            if (hideSystemBars) {  // `hideSystemBarsBoolean` is `true`.
-                // Set the icons according to the theme.
+            // Set the hide app bar icon.
+            if (savedPreferences.getBoolean("hide_app_bar", true)) {  // Hide app bar is enabled.
+                // Set the icon according to the theme.
                 if (MainWebViewActivity.darkTheme) {
-                    hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_enabled_dark);
-                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_dark);
+                    hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_dark);
                 } else {
-                    hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_enabled_light);
-                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_light);
+                    hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_light);
                 }
-            } else {  // `hideSystemBarsBoolean` is `false`.
-                // Set the `hideSystemBarsPreference` icon according to the theme.
+            } else {  // Hide app bar is disabled.
+                // Set the icon according to the theme.
                 if (MainWebViewActivity.darkTheme) {
-                    // Set the icon for `hideSystemBarsPreference`.
-                    hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_disabled_dark);
-
-                    // Set the icon for `translucentNavigationBarPreference`.
-                    if (savedPreferences.getBoolean("translucent_navigation_bar", true)) {
-                        translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled_dark);
-                    } else {
-                        translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled_dark);
-                    }
+                    hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_dark);
                 } else {
-                    // Set the icon for `hideSystemBarsPreference`.
-                    hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_disabled_light);
-
-                    // Set the icon for `translucentNavigationBarPreference`.
-                    if (savedPreferences.getBoolean("translucent_navigation_bar", true)) {
-                        translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled_light);
-                    } else {
-                        translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled_light);
-                    }
+                    hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_light);
                 }
             }
         } else {  // Full screen browsing mode is disabled.
             // Set the icons according to the theme.
             if (MainWebViewActivity.darkTheme) {
                 fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled_dark);
-                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_ghosted_dark);
-                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_dark);
+                hideAppBarPreference.setIcon(R.drawable.app_bar_ghosted_dark);
             } else {
                 fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled_light);
-                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_ghosted_light);
-                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_light);
+                hideAppBarPreference.setIcon(R.drawable.app_bar_ghosted_light);
             }
         }
 
@@ -639,6 +616,21 @@ public class SettingsFragment extends PreferenceFragment {
             }
         }
 
+        // Set the scroll app bar preference icon.
+        if (savedPreferences.getBoolean("scroll_app_bar", true)) {
+            if (MainWebViewActivity.darkTheme) {
+                scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_dark);
+            } else {
+                scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_light);
+            }
+        } else {
+            if (MainWebViewActivity.darkTheme) {
+                scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_dark);
+            } else {
+                scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_light);
+            }
+        }
+
         // Set the display additional app bar icons preference icon.
         if (savedPreferences.getBoolean("display_additional_app_bar_icons", false)) {
             if (MainWebViewActivity.darkTheme) {
@@ -651,6 +643,21 @@ public class SettingsFragment extends PreferenceFragment {
                 displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_dark);
             } else {
                 displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_light);
+            }
+        }
+
+        // Set the download with external app preference icon.
+        if (savedPreferences.getBoolean("download_with_external_app", false)) {
+            if (MainWebViewActivity.darkTheme) {
+                downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_dark);
+            } else {
+                downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_light);
+            }
+        } else {
+            if (MainWebViewActivity.darkTheme) {
+                downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_dark);
+            } else {
+                downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_light);
             }
         }
 
@@ -695,9 +702,9 @@ public class SettingsFragment extends PreferenceFragment {
         // Listen for preference changes.
         preferencesListener = (SharedPreferences sharedPreferences, String key) -> {
             switch (key) {
-                case "javascript_enabled":
+                case "javascript":
                     // Update the icons and the DOM storage preference status.
-                    if (sharedPreferences.getBoolean("javascript_enabled", false)) {  // The JavaScript preference is enabled.
+                    if (sharedPreferences.getBoolean("javascript", false)) {  // The JavaScript preference is enabled.
                         // Update the icon for the JavaScript preference.
                         javaScriptPreference.setIcon(R.drawable.javascript_enabled);
 
@@ -705,7 +712,7 @@ public class SettingsFragment extends PreferenceFragment {
                         domStoragePreference.setEnabled(true);
 
                         // Update the icon for the DOM storage preference.
-                        if (sharedPreferences.getBoolean("dom_storage_enabled", false)) {
+                        if (sharedPreferences.getBoolean("dom_storage", false)) {
                             domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
                         } else {
                             if (MainWebViewActivity.darkTheme) {
@@ -730,15 +737,15 @@ public class SettingsFragment extends PreferenceFragment {
                     }
                     break;
 
-                case "first_party_cookies_enabled":
-                    // Update the icons for `first_party_cookies_enabled` and `third_party_cookies_enabled`.
-                    if (sharedPreferences.getBoolean("first_party_cookies_enabled", false)) {
-                        // Set the icon for `first_party_cookies_enabled`.
+                case "first_party_cookies":
+                    // Update the icons for `first_party_cookies` and `third_party_cookies`.
+                    if (sharedPreferences.getBoolean("first_party_cookies", false)) {
+                        // Set the icon for `first_party_cookies`.
                         firstPartyCookiesPreference.setIcon(R.drawable.cookies_enabled);
 
-                        // Update the icon for `third_party_cookies_enabled`.
+                        // Update the icon for `third_party_cookies`.
                         if (Build.VERSION.SDK_INT >= 21) {
-                            if (sharedPreferences.getBoolean("third_party_cookies_enabled", false)) {
+                            if (sharedPreferences.getBoolean("third_party_cookies", false)) {
                                 thirdPartyCookiesPreference.setIcon(R.drawable.cookies_warning);
                             } else {
                                 if (MainWebViewActivity.darkTheme) {
@@ -754,15 +761,15 @@ public class SettingsFragment extends PreferenceFragment {
                                 thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_light);
                             }
                         }
-                    } else {  // `first_party_cookies_enabled` is `false`.
-                        // Update the icon for `first_party_cookies_enabled`.
+                    } else {  // `first_party_cookies` is `false`.
+                        // Update the icon for `first_party_cookies`.
                         if (MainWebViewActivity.darkTheme) {
                             firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_dark);
                         } else {
                             firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_light);
                         }
 
-                        // Set the icon for `third_party_cookies_enabled` to be ghosted.
+                        // Set the icon for `third_party_cookies` to be ghosted.
                         if (MainWebViewActivity.darkTheme) {
                             thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_dark);
                         } else {
@@ -770,13 +777,13 @@ public class SettingsFragment extends PreferenceFragment {
                         }
                     }
 
-                    // Enable `third_party_cookies_enabled` if `first_party_cookies_enabled` is `true` and API >= 21.
-                    thirdPartyCookiesPreference.setEnabled(sharedPreferences.getBoolean("first_party_cookies_enabled", false) && (Build.VERSION.SDK_INT >= 21));
+                    // Enable `third_party_cookies` if `first_party_cookies` is `true` and API >= 21.
+                    thirdPartyCookiesPreference.setEnabled(sharedPreferences.getBoolean("first_party_cookies", false) && (Build.VERSION.SDK_INT >= 21));
                     break;
 
-                case "third_party_cookies_enabled":
+                case "third_party_cookies":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("third_party_cookies_enabled", false)) {
+                    if (sharedPreferences.getBoolean("third_party_cookies", false)) {
                         thirdPartyCookiesPreference.setIcon(R.drawable.cookies_warning);
                     } else {
                         if (MainWebViewActivity.darkTheme) {
@@ -787,9 +794,9 @@ public class SettingsFragment extends PreferenceFragment {
                     }
                     break;
 
-                case "dom_storage_enabled":
+                case "dom_storage":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("dom_storage_enabled", false)) {
+                    if (sharedPreferences.getBoolean("dom_storage", false)) {
                         domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
                     } else {
                         if (MainWebViewActivity.darkTheme) {
@@ -801,9 +808,9 @@ public class SettingsFragment extends PreferenceFragment {
                     break;
 
                 // Save form data can be removed once the minimum API >= 26.
-                case "save_form_data_enabled":
+                case "save_form_data":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("save_form_data_enabled", false)) {
+                    if (sharedPreferences.getBoolean("save_form_data", false)) {
                         saveFormDataPreference.setIcon(R.drawable.form_data_enabled);
                     } else {
                         if (MainWebViewActivity.darkTheme) {
@@ -815,7 +822,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                 case "user_agent":
                     // Get the new user agent name.
-                    String newUserAgentName = sharedPreferences.getString("user_agent", "Privacy Browser");
+                    String newUserAgentName = sharedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
 
                     // Get the array position for the new user agent name.
                     int newUserAgentArrayPosition = userAgentNamesArray.getPosition(newUserAgentName);
@@ -873,7 +880,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                 case "custom_user_agent":
                     // Set the new custom user agent as the summary text for the preference.
-                    customUserAgentPreference.setSummary(sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0"));
+                    customUserAgentPreference.setSummary(sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value)));
                     break;
 
                 case "incognito_mode":
@@ -974,9 +981,9 @@ public class SettingsFragment extends PreferenceFragment {
                     }
                     break;
 
-                case "fanboy_annoyance_list":
-                    boolean currentFanboyAnnoyanceList = sharedPreferences.getBoolean("fanboy_annoyance_list", true);
-                    boolean currentFanboySocialBlockingList = sharedPreferences.getBoolean("fanboy_social_blocking_list", true);
+                case "fanboys_annoyance_list":
+                    boolean currentFanboyAnnoyanceList = sharedPreferences.getBoolean("fanboys_annoyance_list", true);
+                    boolean currentFanboySocialBlockingList = sharedPreferences.getBoolean("fanboys_social_blocking_list", true);
 
                     // Update the Fanboy icons.
                     if (currentFanboyAnnoyanceList) {  // Fanboy's annoyance list is enabled.
@@ -1021,9 +1028,9 @@ public class SettingsFragment extends PreferenceFragment {
                     fanboySocialBlockingListPreference.setEnabled(!currentFanboyAnnoyanceList);
                     break;
 
-                case "fanboy_social_blocking_list":
+                case "fanboys_social_blocking_list":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("fanboy_social_blocking_list", true)) {
+                    if (sharedPreferences.getBoolean("fanboys_social_blocking_list", true)) {
                         if (MainWebViewActivity.darkTheme) {
                             fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_enabled_dark);
                         } else {
@@ -1075,7 +1082,7 @@ public class SettingsFragment extends PreferenceFragment {
                 case "proxy_through_orbot":
                     // Get current settings.
                     boolean currentProxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
-                    String currentTorSearchString = sharedPreferences.getString("tor_search", "http://ulrn6sryqaifefld.onion/?q=");
+                    String currentTorSearchString = sharedPreferences.getString("tor_search", getString(R.string.tor_search_default_value));
 
                     // Enable the Tor custom URL search option only if `currentProxyThroughOrbot` is true and the search is set to `Custom URL`.
                     torSearchCustomURLPreference.setEnabled(currentProxyThroughOrbot && currentTorSearchString.equals("Custom URL"));
@@ -1123,12 +1130,12 @@ public class SettingsFragment extends PreferenceFragment {
 
                 case "tor_homepage":
                     // Set the new tor homepage URL as the summary text for the `tor_homepage` preference.  The default is Searx:  `http://ulrn6sryqaifefld.onion/`.
-                    torHomepagePreference.setSummary(sharedPreferences.getString("tor_homepage", "http://ulrn6sryqaifefld.onion/"));
+                    torHomepagePreference.setSummary(sharedPreferences.getString("tor_homepage", getString(R.string.tor_homepage_default_value)));
                     break;
 
                 case "tor_search":
                     // Get the present search string.
-                    String presentTorSearchString = sharedPreferences.getString("tor_search", "http://ulrn6sryqaifefld.onion/?q=");
+                    String presentTorSearchString = sharedPreferences.getString("tor_search", getString(R.string.tor_search_default_value));
 
                     // Update the preferences.
                     if (presentTorSearchString.equals("Custom URL")) {
@@ -1162,12 +1169,12 @@ public class SettingsFragment extends PreferenceFragment {
 
                 case "tor_search_custom_url":
                     // Set the summary text for `tor_search_custom_url`.
-                    torSearchCustomURLPreference.setSummary(sharedPreferences.getString("tor_search_custom_url", ""));
+                    torSearchCustomURLPreference.setSummary(sharedPreferences.getString("tor_search_custom_url", getString(R.string.tor_search_custom_url_default_value)));
                     break;
 
                 case "search":
                     // Store the new search string.
-                    String newSearchString = sharedPreferences.getString("search", "https://searx.me/?q=");
+                    String newSearchString = sharedPreferences.getString("search", getString(R.string.search_default_value));
 
                     // Update `searchPreference` and `searchCustomURLPreference`.
                     if (newSearchString.equals("Custom URL")) {  // `Custom URL` is selected.
@@ -1201,129 +1208,61 @@ public class SettingsFragment extends PreferenceFragment {
 
                 case "search_custom_url":
                     // Set the new custom search URL as the summary text for `search_custom_url`.  The default is `""`.
-                    searchCustomURLPreference.setSummary(sharedPreferences.getString("search_custom_url", ""));
+                    searchCustomURLPreference.setSummary(sharedPreferences.getString("search_custom_url", getString(R.string.search_custom_url_default_value)));
                     break;
 
                 case "full_screen_browsing_mode":
-                    if (sharedPreferences.getBoolean("full_screen_browsing_mode", false)) {
-                        // Set the `fullScreenBrowsingModePreference` icon according to the theme.
+                    if (sharedPreferences.getBoolean("full_screen_browsing_mode", false)) {  // Full screen browsing is enabled.
+                        // Set the full screen browsing mode preference icon according to the theme.
                         if (MainWebViewActivity.darkTheme) {
                             fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled_dark);
                         } else {
                             fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled_light);
                         }
 
-                        if (sharedPreferences.getBoolean("hide_system_bars", false)) {  // `hide_system_bars` is `true`.
-                            // Disable `translucentNavigationBarPreference`.
-                            translucentNavigationBarPreference.setEnabled(false);
-
-                            // Set the icons according to the theme.
+                        // Set the hide app bar preference icon.
+                        if (sharedPreferences.getBoolean("hide_app_bar", true)) {  //  Hide app bar is enabled.
+                            // Set the icon according to the theme.
                             if (MainWebViewActivity.darkTheme) {
-                                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_enabled_dark);
-                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_dark);
+                                hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_dark);
                             } else {
-                                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_enabled_light);
-                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_light);
+                                hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_light);
                             }
-                        } else {  // `hide_system_bars` is `false`.
-                            // Enable `translucentNavigationBarPreference`.
-                            translucentNavigationBarPreference.setEnabled(true);
-
-                            // Set the icons according to the theme.
-                            if (MainWebViewActivity.darkTheme) {  // Use the dark theme.
-                                // Set the `hideSystemBarsPreference` icon.
-                                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_disabled_dark);
-
-                                // Set the `translucentNavigationBarPreference` icon.
-                                if (sharedPreferences.getBoolean("translucent_navigation_bar", true)) {
-                                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled_dark);
-                                } else {
-                                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled_dark);
-                                }
-                            } else {  // Use the light theme.
-                                // Set the `hideSystemBarsPreference` icon.
-                                hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_disabled_light);
-
-                                // Set the `translucentNavigationBarPreference` icon.
-                                if (sharedPreferences.getBoolean("translucent_navigation_bar", true)) {
-                                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled_light);
-                                } else {
-                                    translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled_light);
-                                }
+                        } else {  // Hide app bar is disabled.
+                            // Set the icon according to the theme.
+                            if (MainWebViewActivity.darkTheme) {
+                                hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_dark);
+                            } else {
+                                hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_light);
                             }
                         }
-                    } else {  // `full_screen_browsing_mode` is false.
-                        // Disable `translucentNavigationBarPreference`.
-                        translucentNavigationBarPreference.setEnabled(false);
-
+                    } else {  // Full screen browsing is disabled.
                         // Update the icons according to the theme.
                         if (MainWebViewActivity.darkTheme) {
                             fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled_dark);
-                            hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_ghosted_dark);
-                            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_dark);
+                            hideAppBarPreference.setIcon(R.drawable.app_bar_ghosted_dark);
                         } else {
                             fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled_light);
-                            hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_ghosted_light);
-                            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_light);
+                            hideAppBarPreference.setIcon(R.drawable.app_bar_ghosted_light);
                         }
                     }
                     break;
 
-                case "hide_system_bars":
-                    if (sharedPreferences.getBoolean("hide_system_bars", false)) {
-                        // Disable `translucentNavigationBarPreference`.
-                        translucentNavigationBarPreference.setEnabled(false);
-
-                        // Set the icons according to the theme.
-                        if (MainWebViewActivity.darkTheme) {
-                            hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_enabled_dark);
-                            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_dark);
-                        } else {
-                            hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_enabled_light);
-                            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_ghosted_light);
-                        }
-                    } else {  // `hide_system_bars` is false.
-                        // Enable `translucentNavigationBarPreference`.
-                        translucentNavigationBarPreference.setEnabled(true);
-
-                        // Set the icons according to the theme.
-                        if (MainWebViewActivity.darkTheme) {
-                            // Set the `hideSystemBarsPreference` icon.
-                            hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_disabled_dark);
-
-                            // Set the `translucentNavigationBarPreference` icon.
-                            if (sharedPreferences.getBoolean("translucent_navigation_bar", true)) {
-                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled_dark);
-                            } else {
-                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled_dark);
-                            }
-                        } else {
-                            // Set the `hideSystemBarsPreference` icon.
-                            hideSystemBarsPreference.setIcon(R.drawable.hide_system_bars_disabled_light);
-
-                            // Set the `translucentNavigationBarPreference` icon.
-                            if (sharedPreferences.getBoolean("translucent_navigation_bar", true)) {
-                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled_light);
-                            } else {
-                                translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled_light);
-                            }
-                        }
-                    }
-                    break;
-
-                case "translucent_navigation_bar":
+                case "hide_app_bar":
                     // Update the icon.
-                    if (sharedPreferences.getBoolean("translucent_navigation_bar", true)) {
+                    if (sharedPreferences.getBoolean("hide_app_bar", true)) {  // Hide app bar is enabled.
+                        // Set the icon according to the theme.
                         if (MainWebViewActivity.darkTheme) {
-                            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled_dark);
+                            hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_dark);
                         } else {
-                            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_enabled_light);
+                            hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_light);
                         }
-                    } else {
+                    } else {  // Hide app bar is disabled.
+                        // Set the icon according to the theme.
                         if (MainWebViewActivity.darkTheme) {
-                            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled_dark);
+                            hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_dark);
                         } else {
-                            translucentNavigationBarPreference.setIcon(R.drawable.translucent_bar_disabled_light);
+                            hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_light);
                         }
                     }
                     break;
@@ -1451,12 +1390,12 @@ public class SettingsFragment extends PreferenceFragment {
 
                 case "homepage":
                     // Set the new homepage URL as the summary text for the Homepage preference.
-                    homepagePreference.setSummary(sharedPreferences.getString("homepage", "https://searx.me/"));
+                    homepagePreference.setSummary(sharedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
                     break;
 
-                case "default_font_size":
-                    // Update the summary text of `default_font_size`.
-                    defaultFontSizePreference.setSummary(sharedPreferences.getString("default_font_size", "100") + "%%");
+                case "font_size":
+                    // Update the font size summary text.
+                    fontSizePreference.setSummary(sharedPreferences.getString("font_size", getString(R.string.font_size_default_value)) + "%%");
                     break;
 
                 case "swipe_to_refresh":
@@ -1476,6 +1415,23 @@ public class SettingsFragment extends PreferenceFragment {
                     }
                     break;
 
+                case "scroll_app_bar":
+                    // Update the icon.
+                    if (sharedPreferences.getBoolean("scroll_app_bar", true)) {
+                        if (MainWebViewActivity.darkTheme) {
+                            scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_dark);
+                        } else {
+                            scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_light);
+                        }
+                    } else {
+                        if (MainWebViewActivity.darkTheme) {
+                            scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_dark);
+                        } else {
+                            scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_light);
+                        }
+                    }
+                    break;
+
                 case "display_additional_app_bar_icons":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("display_additional_app_bar_icons", false)) {
@@ -1489,6 +1445,23 @@ public class SettingsFragment extends PreferenceFragment {
                             displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_dark);
                         } else {
                             displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_light);
+                        }
+                    }
+                    break;
+
+                case "download_with_external_app":
+                    // Update the icon.
+                    if (sharedPreferences.getBoolean("download_with_external_app", false)) {
+                        if (MainWebViewActivity.darkTheme) {
+                            downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_dark);
+                        } else {
+                            downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_light);
+                        }
+                    } else {
+                        if (MainWebViewActivity.darkTheme) {
+                            downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_dark);
+                        } else {
+                            downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_light);
                         }
                     }
                     break;
@@ -1520,7 +1493,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                     // Store the current night mode status.
                     boolean currentNightModeBoolean = sharedPreferences.getBoolean("night_mode", false);
-                    boolean currentJavaScriptBoolean = sharedPreferences.getBoolean("javascript_enabled", false);
+                    boolean currentJavaScriptBoolean = sharedPreferences.getBoolean("javascript", false);
 
                     // Update the icon.
                     if (currentNightModeBoolean) {
@@ -1548,9 +1521,9 @@ public class SettingsFragment extends PreferenceFragment {
                         javaScriptPreference.setIcon(R.drawable.privacy_mode);
                     }
 
-                    // Update the `domStoragePreference` icon.
+                    // Update the DOM storage preference icon.
                     if (currentNightModeBoolean || currentJavaScriptBoolean) {  // The preference is enabled.
-                        if (sharedPreferences.getBoolean("dom_storage_enabled", false)) {  // DOM storage is enabled.
+                        if (sharedPreferences.getBoolean("dom_storage", false)) {  // DOM storage is enabled.
                             domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
                         } else {  // DOM storage is disabled.
                             if (MainWebViewActivity.darkTheme) {
@@ -1598,8 +1571,7 @@ public class SettingsFragment extends PreferenceFragment {
         savedPreferences.registerOnSharedPreferenceChangeListener(preferencesListener);
     }
 
-    // It is necessary to re-register the listener on every resume or it will randomly stop working because apps can be paused and resumed at any time
-    // even while running in the foreground.
+    // It is necessary to re-register the listener on every resume or it will randomly stop working because apps can be paused and resumed at any time, even while running in the foreground.
     @Override
     public void onPause() {
         super.onPause();

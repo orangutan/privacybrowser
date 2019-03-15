@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -80,6 +80,12 @@
             android:title="@string/import_export"
             android:icon="@drawable/import_export_light"
             android:orderInCategory="90" />
+
+        <item
+            android:id="@+id/logcat"
+            android:title="@string/logcat"
+            android:icon="@drawable/bug"
+            android:orderInCategory="100" />
     </group>
 
     <!-- If a group has an id, a line is drawn above it in the navigation view. -->
@@ -89,22 +95,22 @@
             android:id="@+id/guide"
             android:title="@string/guide"
             android:icon="@drawable/guide"
-            android:orderInCategory="100" />
+            android:orderInCategory="110" />
 
         <item
             android:id="@+id/about"
             android:title="@string/about"
             android:icon="@drawable/about_light"
-            android:orderInCategory="110" />
+            android:orderInCategory="120" />
     </group>
 
     <!-- If a group has an id, a line is drawn above it in the navigation view. -->
     <group
         android:id="@+id/exit_group" >
         <item
-            android:id="@+id/clearAndExit"
+            android:id="@+id/clear_and_exit"
             android:title="@string/clear_and_exit"
-            android:icon="@drawable/clear_and_exit"
-            android:orderInCategory="120" />
+            android:icon="@drawable/open_with_external_app_enabled_light"
+            android:orderInCategory="130" />
     </group>
 </menu>

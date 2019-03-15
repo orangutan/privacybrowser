@@ -1,7 +1,7 @@
 <!--
-  Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2017-2018 Jose A. León Becerra.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017-2019 Jose A. León Becerra.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -49,14 +49,8 @@
         <br/>
 
         <p>Además, Navegador Privado Gratuito muestra anuncios de Google AdMob usando el proveedor Firebase.
-            En el sabor gratuito, Firebase añade los siguientes permisos aunque no aparecen en el archivo de manifiesto.</p>
-
-        <h3>Leer el estado y la identidad del teléfono</h3>
-        <p><a href="https://developer.android.com/reference/android/Manifest.permission#read_phone_state">android.permission.READ_PHONE_STATE</a></p>
-        <p>Permite que los anuncios accedan al estado del teléfono, incluyendo el número de teléfono del dispositivo, la información actual de la red celular,
-            el estado de las llamadas en curso y una lista de las cuentas telefónicas registradas en el dispositivo.
-            Este es un permiso peligroso y requiere que el usuario lo permita explícitamente en Android Marshmallow (API 23) o posterior.
-            En mis pruebas no he visto anuncios que intenten solicitar o usar este permiso.</p>
+            En el sabor gratuito, Firebase añade los siguientes permisos aunque no aparecen en el
+            <a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=blob;f=app/src/main/AndroidManifest.xml;hb=HEAD">archivo de manifiesto</a> de código fuente.</p>
 
         <h3>Ver conexiones de red</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#ACCESS_NETWORK_STATE">android.permission.ACCESS_NETWORK_STATE</a></p>
@@ -67,7 +61,7 @@
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WAKE_LOCK">android.permission.WAKE_LOCK</a></p>
         <p>Permite a los anuncios impedir al procesador dormir y a la pantalla atenuar, aunque en mis pruebas no parece que los anuncios lo hagan así.</p>
 
-        <h3>Seguimiento de instalaciones desde los anuncios</h3>
+        <h3>API Install Referrer de Play</h3>
         <p><a href="https://android-developers.googleblog.com/2017/11/google-play-referrer-api-track-and.html">com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE</a></p>
         <p>Permite a otras aplicaciones saber si su instalación se ha iniciado desde un anuncio en el Navegador Privado gratuito.</p>
 

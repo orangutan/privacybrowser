@@ -1,0 +1,9 @@
+• Correzione di un baco, introdotto con la versione 2.15, che faceva ignorare il tentativo di appuntare il certificato SSL in molte situazioni.
+• Aggiunta della possibilità di appuntare l'indirizzo IP alle impostazioni dei domini.
+• Creazione dell'opzione nel menu per aprire collegamenti con applicazioni e altri browser.
+• Miglioramento del colore di selezione del testo con il tema dark.
+• Implementazione di diversi miglioramenti alla scheda di visualizzazione del database dei segnalibri.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
+• Aggiornamento della traduzione Russo.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León.
+• Traduzione parziale in Turco.

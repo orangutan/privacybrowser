@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -30,10 +30,6 @@ import android.database.MergeCursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-// `AppCompatDialogFragment` is required instead of `DialogFragment` or an error is produced on API <=22.
-import android.support.v4.widget.ResourceCursorAdapter;
-import android.support.v7.app.AppCompatDialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -45,6 +41,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ResourceCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -52,7 +49,11 @@ import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 
-public class EditBookmarkDatabaseViewDialog extends AppCompatDialogFragment {
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
+
+public class EditBookmarkDatabaseViewDialog extends DialogFragment {
     // Instantiate the constants.
     public static final int HOME_FOLDER_DATABASE_ID = -1;
 
@@ -71,7 +72,7 @@ public class EditBookmarkDatabaseViewDialog extends AppCompatDialogFragment {
 
     // The public interface is used to send information back to the parent activity.
     public interface EditBookmarkDatabaseViewListener {
-        void onSaveBookmark(AppCompatDialogFragment dialogFragment, int selectedBookmarkDatabaseId);
+        void onSaveBookmark(DialogFragment dialogFragment, int selectedBookmarkDatabaseId);
     }
 
     @Override
@@ -79,8 +80,7 @@ public class EditBookmarkDatabaseViewDialog extends AppCompatDialogFragment {
         // Run the default commands.
         super.onAttach(context);
 
-        // Get a handle for `EditBookmarkDatabaseViewListener` from the launching context.
-
+        // Get a handle for edit bookmark database view listener from the launching context.
         editBookmarkDatabaseViewListener = (EditBookmarkDatabaseViewListener) context;
     }
 
@@ -115,7 +115,7 @@ public class EditBookmarkDatabaseViewDialog extends AppCompatDialogFragment {
         BookmarksDatabaseHelper bookmarksDatabaseHelper = new BookmarksDatabaseHelper(getContext(), null, null, 0);
 
         // Get a cursor with the selected bookmark and move it to the first position.
-        Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmarkCursor(bookmarkDatabaseId);
+        Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmark(bookmarkDatabaseId);
         bookmarkCursor.moveToFirst();
 
         // Use an alert dialog builder to create the alert dialog.
@@ -159,9 +159,6 @@ public class EditBookmarkDatabaseViewDialog extends AppCompatDialogFragment {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
-        // Set the keyboard to be hidden when the `AlertDialog` is first shown.  If this is not set, the `AlertDialog` will not shrink when the keyboard is displayed.
-        alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
         // The alert dialog must be shown before items in the layout can be modified.
         alertDialog.show();
 
@@ -194,20 +191,28 @@ public class EditBookmarkDatabaseViewDialog extends AppCompatDialogFragment {
         // Display `currentIconBitmap` in `edit_bookmark_current_icon`.
         currentIconImageView.setImageBitmap(currentIconBitmap);
 
-        // Get a `Bitmap` of the favorite icon from `MainWebViewActivity` and display it in `edit_bookmark_web_page_favorite_icon`.
-        newFavoriteIconImageView.setImageBitmap(MainWebViewActivity.favoriteIconBitmap);
+        // Get a copy of the favorite icon bitmap.
+        Bitmap favoriteIconBitmap = MainWebViewActivity.favoriteIconBitmap;
+
+        // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+        if ((favoriteIconBitmap.getHeight() > 256) || (favoriteIconBitmap.getWidth() > 256)) {
+            favoriteIconBitmap = Bitmap.createScaledBitmap(favoriteIconBitmap, 256, 256, true);
+        }
+
+        // Set the new favorite icon bitmap.
+        newFavoriteIconImageView.setImageBitmap(favoriteIconBitmap);
 
         // Populate the bookmark name and URL `EditTexts`.
         nameEditText.setText(currentBookmarkName);
         urlEditText.setText(currentUrl);
 
-        // Setup a `MatrixCursor` "Home Folder".
+        // Setup a matrix cursor for "Home Folder".
         String[] matrixCursorColumnNames = {BookmarksDatabaseHelper._ID, BookmarksDatabaseHelper.BOOKMARK_NAME};
         MatrixCursor matrixCursor = new MatrixCursor(matrixCursorColumnNames);
         matrixCursor.addRow(new Object[]{HOME_FOLDER_DATABASE_ID, getString(R.string.home_folder)});
 
-        // Get a `Cursor` with the list of all the folders.
-        Cursor foldersCursor = bookmarksDatabaseHelper.getAllFoldersCursor();
+        // Get a cursor with the list of all the folders.
+        Cursor foldersCursor = bookmarksDatabaseHelper.getAllFolders();
 
         // Combine `matrixCursor` and `foldersCursor`.
         MergeCursor foldersMergeCursor = new MergeCursor(new Cursor[]{matrixCursor, foldersCursor});
@@ -215,20 +220,36 @@ public class EditBookmarkDatabaseViewDialog extends AppCompatDialogFragment {
         // Remove the incorrect lint warning below that `getContext()` might be null.
         assert getContext() != null;
 
-        // Create a `ResourceCursorAdapter` for the `Spinner`.  `0` specifies no flags.;
-        ResourceCursorAdapter foldersCursorAdapter = new ResourceCursorAdapter(getContext(), R.layout.spinner_item, foldersMergeCursor, 0) {
+        // Create a resource cursor adapter for the spinner.
+        ResourceCursorAdapter foldersCursorAdapter = new ResourceCursorAdapter(getContext(), R.layout.databaseview_spinner_item, foldersMergeCursor, 0) {
             @Override
             public void bindView(View view, Context context, Cursor cursor) {
-                // Get a handle for the `Spinner` item `TextView`.
+                // Get handles for the spinner views.
+                ImageView spinnerItemImageView = view.findViewById(R.id.spinner_item_imageview);
                 TextView spinnerItemTextView = view.findViewById(R.id.spinner_item_textview);
 
-                // Set the `TextView` to display the folder name.
+                // Set the folder icon according to the type.
+                if (foldersMergeCursor.getPosition() == 0) {  // Set the `Home Folder` icon.
+                    // Set the gray folder image.  `ContextCompat` must be used until the minimum API >= 21.
+                    spinnerItemImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.folder_gray));
+                } else {  // Set a user folder icon.
+                    // Get the folder icon byte array.
+                    byte[] folderIconByteArray = cursor.getBlob(cursor.getColumnIndex(BookmarksDatabaseHelper.FAVORITE_ICON));
+
+                    // Convert the byte array to a bitmap beginning at the first byte and ending at the last.
+                    Bitmap folderIconBitmap = BitmapFactory.decodeByteArray(folderIconByteArray, 0, folderIconByteArray.length);
+
+                    // Set the folder icon.
+                    spinnerItemImageView.setImageBitmap(folderIconBitmap);
+                }
+
+                // Set the text view to display the folder name.
                 spinnerItemTextView.setText(cursor.getString(cursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME)));
             }
         };
 
         // Set the `ResourceCursorAdapter` drop drown view resource.
-        foldersCursorAdapter.setDropDownViewResource(R.layout.spinner_dropdown_items);
+        foldersCursorAdapter.setDropDownViewResource(R.layout.databaseview_spinner_dropdown_items);
 
         // Set the adapter for the folder `Spinner`.
         folderSpinner.setAdapter(foldersCursorAdapter);

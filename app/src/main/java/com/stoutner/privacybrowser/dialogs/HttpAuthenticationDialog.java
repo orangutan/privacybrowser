@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -25,9 +25,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-// `AppCompatDialogFragment` is used instead of `DialogFragment` to avoid an error on API <=22.
-import android.support.v7.app.AppCompatDialogFragment;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -41,7 +38,10 @@ import android.widget.TextView;
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
-public class HttpAuthenticationDialog extends AppCompatDialogFragment{
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
+
+public class HttpAuthenticationDialog extends DialogFragment{
     // `httpAuthenticationListener` is used in `onAttach()` and `onCreateDialog()`
     private HttpAuthenticationListener httpAuthenticationListener;
 
@@ -49,7 +49,7 @@ public class HttpAuthenticationDialog extends AppCompatDialogFragment{
     public interface HttpAuthenticationListener {
         void onHttpAuthenticationCancel();
 
-        void onHttpAuthenticationProceed(AppCompatDialogFragment dialogFragment);
+        void onHttpAuthenticationProceed(DialogFragment dialogFragment);
     }
 
     public void onAttach(Context context) {

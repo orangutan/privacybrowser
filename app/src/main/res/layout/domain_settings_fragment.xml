@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -29,7 +29,6 @@
     android:descendantFocusability="beforeDescendants" >
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_margin="12dp"
@@ -57,20 +56,20 @@
                     android:tint="?attr/domainSettingsIconTintColor"
                     tools:ignore="contentDescription" />
 
-                <!-- `android.support.design.widget.TextInputLayout` makes the `android:hint` float above the `EditText`. -->
-                <android.support.design.widget.TextInputLayout
+                <!-- `TextInputLayout` makes the `android:hint` float above the `EditText`. -->
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
                     android:layout_marginStart="6dp" >
 
                     <!-- `android:inputType="textUri"` disables spell check in the `EditText`. -->
-                    <android.support.design.widget.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/domain_settings_name_edittext"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/domain_name"
                         android:inputType="textUri" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
             <TextView
@@ -89,7 +88,7 @@
             android:orientation="horizontal" >
 
             <ImageView
-                android:id="@+id/domain_settings_javascript_imageview"
+                android:id="@+id/javascript_imageview"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="1dp"
@@ -98,7 +97,7 @@
                 tools:ignore="contentDescription" />
 
             <Switch
-                android:id="@+id/domain_settings_javascript_switch"
+                android:id="@+id/javascript_switch"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginStart="8dp"
@@ -116,7 +115,7 @@
             android:orientation="horizontal" >
 
             <ImageView
-                android:id="@+id/domain_settings_first_party_cookies_imageview"
+                android:id="@+id/first_party_cookies_imageview"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="1dp"
@@ -125,7 +124,7 @@
                 tools:ignore="contentDescription" />
 
             <Switch
-                android:id="@+id/domain_settings_first_party_cookies_switch"
+                android:id="@+id/first_party_cookies_switch"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginStart="8dp"
@@ -138,13 +137,13 @@
 
         <!-- Third-Party Cookies. -->
         <LinearLayout
-            android:id="@+id/domain_settings_third_party_cookies_linearlayout"
+            android:id="@+id/third_party_cookies_linearlayout"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:orientation="horizontal" >
 
             <ImageView
-                android:id="@+id/domain_settings_third_party_cookies_imageview"
+                android:id="@+id/third_party_cookies_imageview"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="1dp"
@@ -153,7 +152,7 @@
                 tools:ignore="contentDescription" />
 
             <Switch
-                android:id="@+id/domain_settings_third_party_cookies_switch"
+                android:id="@+id/third_party_cookies_switch"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginStart="8dp"
@@ -171,7 +170,7 @@
             android:orientation="horizontal" >
 
             <ImageView
-                android:id="@+id/domain_settings_dom_storage_imageview"
+                android:id="@+id/dom_storage_imageview"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="1dp"
@@ -180,7 +179,7 @@
                 tools:ignore="contentDescription" />
 
             <Switch
-                android:id="@+id/domain_settings_dom_storage_switch"
+                android:id="@+id/dom_storage_switch"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginStart="8dp"
@@ -198,7 +197,7 @@
             android:orientation="horizontal" >
 
             <ImageView
-                android:id="@+id/domain_settings_form_data_imageview"
+                android:id="@+id/form_data_imageview"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="1dp"
@@ -207,7 +206,7 @@
                 tools:ignore="contentDescription" />
 
             <Switch
-                android:id="@+id/domain_settings_form_data_switch"
+                android:id="@+id/form_data_switch"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginStart="8dp"
@@ -225,7 +224,7 @@
             android:orientation="horizontal" >
 
             <ImageView
-                android:id="@+id/domain_settings_easylist_imageview"
+                android:id="@+id/easylist_imageview"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="1dp"
@@ -234,7 +233,7 @@
                 tools:ignore="contentDescription" />
 
             <Switch
-                android:id="@+id/domain_settings_easylist_switch"
+                android:id="@+id/easylist_switch"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginStart="8dp"
@@ -252,7 +251,7 @@
             android:orientation="horizontal" >
 
             <ImageView
-                android:id="@+id/domain_settings_easyprivacy_imageview"
+                android:id="@+id/easyprivacy_imageview"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="1dp"
@@ -261,7 +260,7 @@
                 tools:ignore="contentDescription" />
 
             <Switch
-                android:id="@+id/domain_settings_easyprivacy_switch"
+                android:id="@+id/easyprivacy_switch"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginStart="8dp"
@@ -279,7 +278,7 @@
             android:orientation="horizontal" >
 
             <ImageView
-                android:id="@+id/domain_settings_fanboys_annoyance_list_imageview"
+                android:id="@+id/fanboys_annoyance_list_imageview"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="1dp"
@@ -288,7 +287,7 @@
                 tools:ignore="contentDescription" />
 
             <Switch
-                android:id="@+id/domain_settings_fanboys_annoyance_list_switch"
+                android:id="@+id/fanboys_annoyance_list_switch"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginStart="8dp"
@@ -306,7 +305,7 @@
             android:orientation="horizontal" >
 
             <ImageView
-                android:id="@+id/domain_settings_fanboys_social_blocking_list_imageview"
+                android:id="@+id/fanboys_social_blocking_list_imageview"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="1dp"
@@ -315,7 +314,7 @@
                 tools:ignore="contentDescription" />
 
             <Switch
-                android:id="@+id/domain_settings_fanboys_social_blocking_list_switch"
+                android:id="@+id/fanboys_social_blocking_list_switch"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginStart="8dp"
@@ -333,7 +332,7 @@
             android:orientation="horizontal" >
 
             <ImageView
-                android:id="@+id/domain_settings_ultraprivacy_imageview"
+                android:id="@+id/ultraprivacy_imageview"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="1dp"
@@ -342,7 +341,7 @@
                 tools:ignore="contentDescription" />
 
             <Switch
-                android:id="@+id/domain_settings_ultraprivacy_switch"
+                android:id="@+id/ultraprivacy_switch"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginStart="8dp"
@@ -360,7 +359,7 @@
             android:orientation="horizontal" >
 
             <ImageView
-                android:id="@+id/domain_settings_block_all_third_party_requests_imageview"
+                android:id="@+id/block_all_third_party_requests_imageview"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="1dp"
@@ -369,7 +368,7 @@
                 tools:ignore="contentDescription" />
 
             <Switch
-                android:id="@+id/domain_settings_block_all_third_party_requests_switch"
+                android:id="@+id/block_all_third_party_requests_switch"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginStart="8dp"
@@ -404,13 +403,13 @@
                     android:contentDescription="@string/user_agent" />
 
                 <Spinner
-                    android:id="@+id/domain_settings_user_agent_spinner"
+                    android:id="@+id/user_agent_spinner"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent" />
             </LinearLayout>
 
             <TextView
-                android:id="@+id/domain_settings_user_agent_textview"
+                android:id="@+id/user_agent_textview"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 android:layout_marginStart="45dp"
@@ -418,7 +417,7 @@
                 android:textSize="13sp" />
 
             <EditText
-                android:id="@+id/domain_settings_custom_user_agent_edittext"
+                android:id="@+id/custom_user_agent_edittext"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginStart="40dp"
@@ -453,13 +452,13 @@
                     android:contentDescription="@string/font_size" />
 
                 <Spinner
-                    android:id="@+id/domain_settings_font_size_spinner"
+                    android:id="@+id/font_size_spinner"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent" />
             </LinearLayout>
 
             <TextView
-                android:id="@+id/domain_settings_font_size_textview"
+                android:id="@+id/font_size_textview"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 android:layout_marginStart="45dp"
@@ -482,22 +481,22 @@
                 android:orientation="horizontal" >
 
                 <ImageView
-                    android:id="@+id/domain_settings_swipe_to_refresh_imageview"
+                    android:id="@+id/swipe_to_refresh_imageview"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:layout_marginTop="1dp"
                     android:layout_marginEnd="10dp"
                     android:layout_gravity="center_vertical"
-                    android:contentDescription="@string/swipe_to_refresh_preference" />
+                    android:contentDescription="@string/swipe_to_refresh" />
 
                 <Spinner
-                    android:id="@+id/domain_settings_swipe_to_refresh_spinner"
+                    android:id="@+id/swipe_to_refresh_spinner"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent" />
             </LinearLayout>
 
             <TextView
-                android:id="@+id/domain_settings_swipe_to_refresh_textview"
+                android:id="@+id/swipe_to_refresh_textview"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 android:layout_marginStart="45dp"
@@ -519,7 +518,7 @@
                 android:orientation="horizontal" >
 
                 <ImageView
-                    android:id="@+id/domain_settings_night_mode_imageview"
+                    android:id="@+id/night_mode_imageview"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:layout_marginTop="1dp"
@@ -528,13 +527,13 @@
                     android:contentDescription="@string/night_mode" />
 
                 <Spinner
-                    android:id="@+id/domain_settings_night_mode_spinner"
+                    android:id="@+id/night_mode_spinner"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent" />
             </LinearLayout>
 
             <TextView
-                android:id="@+id/domain_settings_night_mode_textview"
+                android:id="@+id/night_mode_textview"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 android:layout_marginStart="45dp"
@@ -556,7 +555,7 @@
                 android:orientation="horizontal" >
 
                 <ImageView
-                    android:id="@+id/domain_settings_display_webpage_images_imageview"
+                    android:id="@+id/display_webpage_images_imageview"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:layout_marginTop="1dp"
@@ -565,13 +564,13 @@
                     android:contentDescription="@string/display_webpage_images" />
 
                 <Spinner
-                    android:id="@+id/domain_settings_display_webpage_images_spinner"
+                    android:id="@+id/display_webpage_images_spinner"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent" />
             </LinearLayout>
 
             <TextView
-                android:id="@+id/domain_settings_display_webpage_images_textview"
+                android:id="@+id/display_webpage_images_textview"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 android:layout_marginStart="45dp"
@@ -585,7 +584,7 @@
             android:layout_width="match_parent"
             android:orientation="vertical"
             android:layout_marginTop="18dp"
-            android:layout_marginBottom="32dp" >
+            android:layout_marginBottom="18dp" >
 
             <!-- Switch -->
             <LinearLayout
@@ -594,7 +593,7 @@
                 android:orientation="horizontal" >
 
                 <ImageView
-                    android:id="@+id/domain_settings_pinned_ssl_certificate_imageview"
+                    android:id="@+id/pinned_ssl_certificate_imageview"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:layout_marginTop="1dp"
@@ -603,7 +602,7 @@
                     tools:ignore="contentDescription" />
 
                 <Switch
-                    android:id="@+id/domain_settings_pinned_ssl_certificate_switch"
+                    android:id="@+id/pinned_ssl_certificate_switch"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
                     android:layout_marginStart="8dp"
@@ -613,198 +612,210 @@
             </LinearLayout>
 
             <!-- Saved Certificate -->
-            <LinearLayout
-                android:id="@+id/saved_ssl_certificate_linearlayout"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/saved_ssl_certificate_cardview"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp" >
 
-                <RadioButton
-                    android:id="@+id/saved_ssl_certificate_radiobutton"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:text="@string/saved_ssl_certificate"
-                    android:textSize="17sp"
-                    android:textAllCaps="true"
-                    android:textStyle="bold" />
-
                 <LinearLayout
+                    android:id="@+id/saved_ssl_certificate_linearlayout"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
-                    android:layout_marginStart="32dp"
-                    android:orientation="vertical" >
+                    android:orientation="vertical"
+                    android:padding="10dp" >
 
-                    <!-- Saved Certificate Issued To. -->
-                    <TextView
+                    <RadioButton
+                        android:id="@+id/saved_ssl_certificate_radiobutton"
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
-                        android:text="@string/issued_to"
+                        android:text="@string/saved_ssl_certificate"
+                        android:textSize="17sp"
                         android:textAllCaps="true"
                         android:textStyle="bold"
-                        android:textColor="?attr/sslTitle" />
+                        android:textColor="?android:textColorPrimary" />
 
-                    <TextView
-                        android:id="@+id/saved_ssl_certificate_issued_to_cname"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
-
-                    <TextView
-                        android:id="@+id/saved_ssl_certificate_issued_to_oname"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
-
-                    <TextView
-                        android:id="@+id/saved_ssl_certificate_issued_to_uname"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"/>
-
-                    <!-- Saved Certificate Issued By. -->
-                    <TextView
+                    <LinearLayout
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
-                        android:layout_marginTop="15dp"
-                        android:text="@string/issued_by"
-                        android:textAllCaps="true"
-                        android:textStyle="bold"
-                        android:textColor="?attr/sslTitle"/>
+                        android:layout_marginStart="32dp"
+                        android:orientation="vertical" >
 
-                    <TextView
-                        android:id="@+id/saved_ssl_certificate_issued_by_cname"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
+                        <!-- Saved Certificate Issued To. -->
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:text="@string/issued_to"
+                            android:textAllCaps="true"
+                            android:textStyle="bold"
+                            android:textColor="?attr/sslTitle" />
 
-                    <TextView
-                        android:id="@+id/saved_ssl_certificate_issued_by_oname"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
+                        <TextView
+                            android:id="@+id/saved_ssl_certificate_issued_to_cname"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
 
-                    <TextView
-                        android:id="@+id/saved_ssl_certificate_issued_by_uname"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
+                        <TextView
+                            android:id="@+id/saved_ssl_certificate_issued_to_oname"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
 
-                    <!-- Saved Certificate Valid Dates. -->
-                    <TextView
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:layout_marginTop="15dp"
-                        android:text="@string/valid_dates"
-                        android:textAllCaps="true"
-                        android:textStyle="bold"
-                        android:textColor="?attr/sslTitle"/>
+                        <TextView
+                            android:id="@+id/saved_ssl_certificate_issued_to_uname"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"/>
 
-                    <TextView
-                        android:id="@+id/saved_ssl_certificate_start_date"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
+                        <!-- Saved Certificate Issued By. -->
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_marginTop="15dp"
+                            android:text="@string/issued_by"
+                            android:textAllCaps="true"
+                            android:textStyle="bold"
+                            android:textColor="?attr/sslTitle"/>
 
-                    <TextView
-                        android:id="@+id/saved_ssl_certificate_end_date"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
+                        <TextView
+                            android:id="@+id/saved_ssl_certificate_issued_by_cname"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
+
+                        <TextView
+                            android:id="@+id/saved_ssl_certificate_issued_by_oname"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
+
+                        <TextView
+                            android:id="@+id/saved_ssl_certificate_issued_by_uname"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
+
+                        <!-- Saved Certificate Valid Dates. -->
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_marginTop="15dp"
+                            android:text="@string/valid_dates"
+                            android:textAllCaps="true"
+                            android:textStyle="bold"
+                            android:textColor="?attr/sslTitle"/>
+
+                        <TextView
+                            android:id="@+id/saved_ssl_certificate_start_date"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
+
+                        <TextView
+                            android:id="@+id/saved_ssl_certificate_end_date"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <!-- Current Website Certificate -->
-            <LinearLayout
-                android:id="@+id/current_website_certificate_linearlayout"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/current_website_certificate_cardview"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp" >
-
-                <RadioButton
-                    android:id="@+id/current_website_certificate_radiobutton"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:text="@string/current_website_ssl_certificate"
-                    android:textSize="17sp"
-                    android:textAllCaps="true"
-                    android:textStyle="bold" />
+                android:layout_margin="10dp" >
 
                 <LinearLayout
+                    android:id="@+id/current_website_certificate_linearlayout"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
-                    android:layout_marginStart="32dp"
-                    android:orientation="vertical" >
+                    android:orientation="vertical"
+                    android:padding="10dp" >
 
-                    <!-- Current Website Certificate Issued To. -->
-                    <TextView
+                    <RadioButton
+                        android:id="@+id/current_website_certificate_radiobutton"
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
-                        android:text="@string/issued_to"
+                        android:text="@string/current_website_ssl_certificate"
+                        android:textSize="17sp"
                         android:textAllCaps="true"
                         android:textStyle="bold"
-                        android:textColor="?attr/sslTitle" />
+                        android:textColor="?android:textColorPrimary" />
 
-                    <TextView
-                        android:id="@+id/current_website_certificate_issued_to_cname"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
-
-                    <TextView
-                        android:id="@+id/current_website_certificate_issued_to_oname"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
-
-                    <TextView
-                        android:id="@+id/current_website_certificate_issued_to_uname"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
-
-                    <!-- Current Website Certificate Issued By. -->
-                    <TextView
+                    <LinearLayout
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
-                        android:layout_marginTop="15dp"
-                        android:text="@string/issued_by"
-                        android:textAllCaps="true"
-                        android:textStyle="bold"
-                        android:textColor="?attr/sslTitle" />
+                        android:layout_marginStart="32dp"
+                        android:orientation="vertical" >
 
-                    <TextView
-                        android:id="@+id/current_website_certificate_issued_by_cname"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
+                        <!-- Current Website Certificate Issued To. -->
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:text="@string/issued_to"
+                            android:textAllCaps="true"
+                            android:textStyle="bold"
+                            android:textColor="?attr/sslTitle" />
 
-                    <TextView
-                        android:id="@+id/current_website_certificate_issued_by_oname"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
+                        <TextView
+                            android:id="@+id/current_website_certificate_issued_to_cname"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
 
-                    <TextView
-                        android:id="@+id/current_website_certificate_issued_by_uname"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
+                        <TextView
+                            android:id="@+id/current_website_certificate_issued_to_oname"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
 
-                    <!-- Current Website Certificate Valid Dates. -->
-                    <TextView
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:layout_marginTop="15dp"
-                        android:text="@string/valid_dates"
-                        android:textAllCaps="true"
-                        android:textStyle="bold"
-                        android:textColor="?attr/sslTitle" />
+                        <TextView
+                            android:id="@+id/current_website_certificate_issued_to_uname"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
 
-                    <TextView
-                        android:id="@+id/current_website_certificate_start_date"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
+                        <!-- Current Website Certificate Issued By. -->
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_marginTop="15dp"
+                            android:text="@string/issued_by"
+                            android:textAllCaps="true"
+                            android:textStyle="bold"
+                            android:textColor="?attr/sslTitle" />
 
-                    <TextView
-                        android:id="@+id/current_website_certificate_end_date"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent" />
+                        <TextView
+                            android:id="@+id/current_website_certificate_issued_by_cname"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
+
+                        <TextView
+                            android:id="@+id/current_website_certificate_issued_by_oname"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
+
+                        <TextView
+                            android:id="@+id/current_website_certificate_issued_by_uname"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
+
+                        <!-- Current Website Certificate Valid Dates. -->
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_marginTop="15dp"
+                            android:text="@string/valid_dates"
+                            android:textAllCaps="true"
+                            android:textStyle="bold"
+                            android:textColor="?attr/sslTitle" />
+
+                        <TextView
+                            android:id="@+id/current_website_certificate_start_date"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
+
+                        <TextView
+                            android:id="@+id/current_website_certificate_end_date"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent" />
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <!-- Load An Encrypted Website Instructions. -->
             <TextView
@@ -812,10 +823,112 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:layout_marginStart="40dp"
                 android:layout_marginEnd="40dp"
                 android:gravity="center_horizontal"
                 android:text="@string/load_an_encrypted_website" />
+        </LinearLayout>
+
+        <!-- Pinned IP Addresses -->
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="18dp" >
+
+            <!-- Switch -->
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/pinned_ip_addresses_imageview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_gravity="center_vertical"
+                    tools:ignore="contentDescription" />
+
+                <Switch
+                    android:id="@+id/pinned_ip_addresses_switch"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/pinned_ip_addresses"
+                    android:textColor="?android:textColorPrimary"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <!-- Saved IP Addresses -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/saved_ip_addresses_cardview"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp" >
+
+                <LinearLayout
+                    android:id="@+id/saved_ip_addresses_linearlayout"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:padding="10dp" >
+
+                    <RadioButton
+                        android:id="@+id/saved_ip_addresses_radiobutton"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:text="@string/saved_ip_addresses"
+                        android:textSize="17sp"
+                        android:textAllCaps="true"
+                        android:textStyle="bold"
+                        android:textColor="?android:textColorPrimary" />
+
+                    <TextView
+                        android:id="@+id/saved_ip_addresses_textview"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_marginStart="32dp"
+                        android:textColor="?attr/aboutText" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/current_ip_addresses_cardview"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_margin="10dp">
+
+                <LinearLayout
+                    android:id="@+id/current_ip_addresses_linearlayout"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:padding="10dp" >
+
+                    <RadioButton
+                        android:id="@+id/current_ip_addresses_radiobutton"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:text="@string/current_ip_addresses"
+                        android:textSize="17sp"
+                        android:textAllCaps="true"
+                        android:textStyle="bold"
+                        android:textColor="?android:textColorPrimary" />
+
+                    <TextView
+                        android:id="@+id/current_ip_addresses_textview"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_marginStart="32dp"
+                        android:textColor="?attr/aboutText" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

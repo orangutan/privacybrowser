@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -26,9 +26,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
-// We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <= 22.
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatDialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -38,14 +35,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+// The AndroidX dialog fragment must be used or an error is produced on API <=22.
+import androidx.fragment.app.DialogFragment;
+
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 
-public class AddDomainDialog extends AppCompatDialogFragment {
+public class AddDomainDialog extends DialogFragment {
     // The public interface is used to send information back to the parent activity.
     public interface AddDomainListener {
-        void onAddDomain(AppCompatDialogFragment dialogFragment);
+        void onAddDomain(DialogFragment dialogFragment);
     }
 
     // `addDomainListener` is used in `onAttach()` and `onCreateDialog()`.

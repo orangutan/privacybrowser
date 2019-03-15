@@ -1,0 +1,2 @@
+• Fix a crash caused by bookmarks with very large favorite icons.
+• Allow moving Privacy Browser to an SD card.

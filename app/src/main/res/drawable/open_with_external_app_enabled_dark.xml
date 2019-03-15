@@ -1,0 +1,26 @@
+<!-- `open_with_external_app_enabled_dark.xml` is derived from `exit_to_app`, which is part of the Android Material icon set.  It is released under the Apache License 2.0.
+    Modifications copyright © 2017 Soren Stoutner <soren@stoutner.com>.  The resulting image is released under the GPLv3+ license. -->
+
+<!-- `tools:ignore="VectorRaster"` removes the lint warning about `android:autoMirrored="true"` not applying to API < 21. -->
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:height="24dp"
+    android:viewportHeight="24.0"
+    android:viewportWidth="24.0"
+    android:width="24dp"
+    android:autoMirrored="true"
+    tools:ignore="VectorRaster" >
+
+    <!-- A hard coded color must be used until API >= 21.  Then `@color` may be used. -->
+    <path
+        android:fillColor="#FF1E88E5"
+        android:pathData="M2.096,3.377H15.51c1.064,0 1.916,0.862 1.916,1.916V9.126H15.51V5.293H2.096V18.707H15.51v-3.833h1.916v3.833c0,1.054 -0.853,1.916 -1.916,1.916H2.096c-1.054,0 -1.916,-0.862 -1.916,-1.916V5.293c0,-1.054 0.862,-1.916 1.916,-1.916z"
+        android:strokeWidth="0.95815897" />
+
+    <!-- A hard coded color must be used until API >= 21.  Then `@color` may be used. -->
+    <path
+        android:fillColor="#FF1E88E5"
+        android:pathData="m17.845,15.44 l1.351,1.351 4.791,-4.791 -4.791,-4.791 -1.351,1.351 2.472,2.482H8.096v1.916H20.317Z"
+        android:strokeWidth="0.95815897" />
+</vector>

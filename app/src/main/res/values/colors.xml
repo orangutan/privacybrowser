@@ -23,6 +23,9 @@
     <color name="semi_transparent_black">#66000000</color>
 
     <color name="black">#FF000000</color>
+    <color name="black_translucent_11">#11000000</color>
+    <color name="black_translucent_22">#22000000</color>
+    <color name="black_translucent_33">#33000000</color>
 
     <color name="blue_50">#FFE3F2FD</color>
     <color name="blue_100">#FFBBDEFB</color>

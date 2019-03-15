@@ -1,0 +1,2 @@
+• Correzione di un baco causato da segnalibri con icona troppo grande.
+• Introduzione della possibilità di spostare Privacy Browser su memoria SD.

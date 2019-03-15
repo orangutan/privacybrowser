@@ -1,0 +1,1 @@
+• Corregir un error que provocaba que algunos dispositivos se bloquearan al abrir una actividad secundaria.

@@ -1,0 +1,9 @@
+• Arreglar un fallo, introducido en 2.15, que provocaba que se ignorara el fijado del certificado SSL en la mayoría de los casos.
+• Añadir fijación de dirección IP a la configuración de dominio.
+• Crear menú de opciones para abrir con apps y otros navegadores.
+• Mejorar el color de la selección de texto en el modo oscuro.
+• Implementar varias mejoras a la actividad de vista de la base de datos de favoritos.
+• Actualizada la traducción al español proporcionada por Jose A. León.
+• Actualizada la traducción al italiano proporcionada por Francesco Buratti.
+• Actualizada la traducción al ruso.
+• Traducción parcial al turco.

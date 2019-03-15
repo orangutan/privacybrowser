@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -18,15 +18,10 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<!-- `tools:ignore="MissingTranslation"` allows release APKs to be built if translation strings are missing.  The missing strings will fall back to English. -->
-<resources
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation" >
-
+<resources>
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser</string>
-    <string name="privacy_browser_settings">Настройки Privacy Browser</string>
-    <!-- For translations, `android_asset_path` should be the localization abbreviation.  For example, Spanish is `es`.  This should not be translated unless the Guide and About sections are localized. -->
+    <!-- For translations, `android_asset_path` should be the localization abbreviation.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">ru</string> -->
 
     <!-- MainWebView. -->
@@ -37,17 +32,18 @@
     <string name="first_party_cookies_disabled">Первичные файлы cookie отключены</string>
     <string name="third_party_cookies_enabled">Сторонние файлы cookie включены</string>
     <string name="third_party_cookies_disabled">Сторонние файлы cookie отключены</string>
-    <string name="dom_storage_enabled">Хранилище DOM включено</string>
-    <string name="dom_storage_disabled">Хранилище DOM отключено</string>
+    <string name="dom_storage_enabled">DOM-хранилище включено</string>
+    <string name="dom_storage_disabled">DOM-хранилище отключено</string>
     <string name="form_data_enabled">Данные формы включены</string>
     <string name="form_data_disabled">Данные формы отключены</string>
     <string name="cookies_deleted">Файлы cookie удалены</string>
-    <string name="dom_storage_deleted">Хранилище DOM удалено</string>
+    <string name="dom_storage_deleted">DOM-хранилище удалено</string>
     <string name="form_data_deleted">Данные формы удалены</string>
     <string name="open_navigation_drawer">Открыть панель навигации</string>
     <string name="close_navigation_drawer">Закрыть панель навигации</string>
     <string name="no_title">Без названия</string>
     <string name="unrecognized_url">Нераспознанный URL:</string>
+    <string name="open_with">Открыть в</string>
 
     <!-- Save As. -->
     <string name="save_as">Сохранить как</string>
@@ -71,6 +67,7 @@
     <string name="close">Закрыть</string>
     <string name="domain">Домен</string>
     <string name="domain_label">Домен:</string>
+    <string name="ip_addresses">IP-адреса:</string>
     <string name="issued_to">Кому выдан</string>
     <string name="issued_by">Кем выдан</string>
     <string name="common_name">Общепринятое имя (CN):</string>
@@ -92,11 +89,11 @@
     <string name="url">URL</string>
     <string name="url_label">URL:</string>
 
-    <!-- Pinned SSL Certificate Mismatch. -->
-    <string name="update_ssl">Обновление SSL</string>
-    <string name="ssl_certificate_mismatch">Несоответствие сертификата SSL</string>
-    <string name="current_ssl">Текущий SSL</string>
-    <string name="pinned_ssl">Закрепленный SSL</string>
+    <!-- Pinned Mismatch. -->
+    <string name="pinned_mismatch">Несоответствие закрепленных</string>
+    <string name="update">Обновить</string>
+    <string name="current">Текущий</string>
+    <string name="pinned">Закрепленный</string>
 
     <!-- HTTP Authentication. -->
     <string name="http_authentication">Аутентификация HTTP</string>
@@ -112,10 +109,10 @@
     <string name="forward">Вперед</string>
     <string name="history">История</string>
         <string name="clear_history">Очистить историю</string>
-    <string name="bookmarks">Закладки</string>
     <string name="downloads">Загрузки</string>
     <string name="settings">Настройки</string>
     <string name="import_export">Импорт/Экспорт</string>
+    <string name="logcat">Logcat</string>
     <string name="guide">Руководство</string>
     <string name="about">О Privacy Browser</string>
     <string name="clear_and_exit">Очистить и выйти</string>
@@ -126,11 +123,11 @@
     <string name="edit_domain_settings">Изменение параметров домена</string>
     <string name="first_party_cookies">Первичные файлы cookie</string>
     <string name="third_party_cookies">Сторонние файлы cookie</string>
-    <string name="dom_storage">Хранилище DOM</string>
+    <string name="dom_storage">DOM-хранилище</string>
     <string name="form_data">Данные формы</string>
     <string name="clear_data">Очистить данные</string>
         <string name="clear_cookies">Очистить cookie</string>
-        <string name="clear_dom_storage"> Очистить хранилище DOM</string>
+        <string name="clear_dom_storage"> Очистить DOM-хранилище</string>
         <string name="clear_form_data">Очистить данные формы</string>
     <string name="options_fanboys_annoyance_list">Fanboy’s annoyance list</string>
     <string name="options_fanboys_social_blocking_list">Fanboy’s social blocking list</string>
@@ -161,6 +158,9 @@
         <string name="display_images">Показывать изображения</string>
         <string name="view_source">Просмотр исходного кода</string>
     <string name="share">Поделиться</string>
+        <string name="share_url">Поделиться URL</string>
+        <string name="open_with_app">Открыть в приложении</string>
+        <string name="open_with_browser">Открыть в браузере</string>
     <string name="find_on_page">Найти на странице</string>
     <string name="print">Печать</string>
         <string name="privacy_browser_web_page">Privacy Browser веб-страница</string>
@@ -196,10 +196,13 @@
     <!-- Create Home Screen Shortcut Alert Dialog. -->
     <string name="create_shortcut">Создание ярлыка</string>
     <string name="shortcut_name">Имя ярлыка</string>
+    <string name="open_with_default_browser">Открыть в браузере по умолчанию.</string>
+    <string name="open_with_privacy_browser">Открыть в Privacy Browser.</string>
     <string name="cancel">Отмена</string>
     <string name="create">Создать</string>
 
     <!-- Bookmarks. -->
+    <string name="bookmarks">Закладки</string>
     <string name="database_view">Просмотр базы данных</string>
     <string name="create_bookmark">Создание закладки</string>
     <string name="create_folder">Создание папки</string>
@@ -218,31 +221,27 @@
     <string name="save">Сохранить</string>
 
     <!-- Bookmarks Contextual App Bar. -->
-    <string name="one_selected">1 выбрана</string>
-    <string name="selected">выбраны</string>  <!--This is a plural adjective.-->
-    <string name="selected_russian_ends_in_1">выбрана</string>
-    <string name="selected_russian_ends_in_2">выбраны</string>
-    <string name="selected_russian_everything_else">выбрано</string>
+    <string name="selected">выбраны:</string>  <!--This is a plural adjective.-->
     <string name="move_up">Вверх</string>
     <string name="move_down">Вниз</string>
     <string name="edit">Изменить</string>
     <string name="delete">Удалить</string>
     <string name="select_all">Выбрать все</string>
-    <string name="one_bookmark_deleted">1 закладка удалена</string>
-    <string name="bookmarks_deleted">закладок удалены</string>
-    <string name="bookmarks_deleted_russian_ends_in_1">закладка удалена</string>
-    <string name="bookmarks_deleted_russian_ends_in_2">закладки удалены</string>
-    <string name="bookmarks_deleted_russian_everything_else">акладок удалено</string>
+    <string name="bookmarks_deleted">Закладок удалены:</string>
     <string name="undo">Вернуть</string>
 
     <!-- Bookmarks Database View. -->
     <string name="bookmarks_database_view">Просмотр базы данных закладок</string>
     <string name="all_folders">Все папки</string>
     <string name="home_folder">Домашняя папка</string>
+    <string name="sort">Сортировка</string>
+        <string name="sorted_by_database_id">Сортировать по ID базы данных.</string>
+        <string name="sorted_by_display_order">Сортировать по порядку отображения.</string>
     <string name="database_id">ID базы данных:</string>
     <string name="folder">Папка:</string>
     <string name="parent_folder">Родительская папка:</string>
     <string name="display_order">Порядок отображения:</string>
+    <string name="cannot_deselect_bookmark">Невозможно отменить выбор закладки пока выбрана родительская папка.</string>
 
     <!-- Requests. -->
     <string name="requests">Запросы</string>
@@ -309,30 +308,99 @@
         <item>Изображения выключены</item>
     </string-array>
     <string name="pinned_ssl_certificate">Закрепленный сертификат SSL</string>
-    <string name="saved_ssl_certificate">Сохраненный сертификат SSL</string>
-    <string name="current_website_ssl_certificate">Текущий сертификат SSL сайта</string>
-    <string name="load_an_encrypted_website">Откройте зашифрованный сайт перед настройкой домена, чтобы заполнить текущий сертификат SSL веб-сайта.</string>
+        <string name="saved_ssl_certificate">Сохраненный сертификат SSL</string>
+        <string name="current_website_ssl_certificate">Текущий сертификат SSL сайта</string>
+        <string name="load_an_encrypted_website">Откройте зашифрованный сайт перед настройкой домена, чтобы заполнить текущий сертификат SSL веб-сайта.</string>
+    <string name="pinned_ip_addresses">Закрепленные IP-адреса</string>
+        <string name="saved_ip_addresses">Сохраненные IP-адреса</string>
+        <string name="current_ip_addresses">Текущие IP-адреса</string>
 
     <!-- Import/Export. -->
+    <string name="encryption">Шифрование</string>
+    <string-array name="encryption_type">
+        <item>Нет</item>
+        <item>Пароль</item>
+        <item>OpenPGP</item>
+    </string-array>
+    <string name="kitkat_password_encryption_message">Шифрование паролем не работает на Android KitKat.</string>
+    <string name="openkeychain_required">Для использования шифрования OpenPGP необходимо приложение OpenKeychain.</string>
+    <string name="openkeychain_import_instructions">Незашифрованный файл должен быть импортирован на отдельном шаге после его дешифрования.</string>
+    <string name="settings_pbs">Настройки.pbs</string>
+    <string name="file_location">Расположение файла</string>
     <string name="browse">Обзор</string>
     <string name="export">Экспорт</string>
     <string name="import_button">Импорт</string>  <!-- `import` is a reserved word and cannot be used as the name -->
+    <string name="decrypt">Расшифровать</string>
     <string name="export_successful">Экспорт выполнен.</string>
     <string name="export_failed">Сбой при экспорте:</string>
     <string name="import_failed">Сбой при импорте:</string>
-    <string name="cannot_export">Настройки не могут быть экспортированы в это расположение, так как не было предоставлено разрешение на доступ к хранилищу.</string>
-    <string name="cannot_import">Настройки не могут быть импортированы из этого расположения, так как не было предоставлено разрешение на доступ к хранилищу.</string>
     <string name="invalid_location">- недопустимое расположение.</string>
     <string name="storage_permission">Доступ к хранилищу</string>
     <string name="storage_permission_message">Privacy Browser необходимо разрешение на доступ к внешним папкам. Если доступ предоставлен не будет, можно использовать локальную папку приложения.</string>
     <string name="storage_permission_explanation">Для доступа к файлам во внешних папках требуется соответствующее разрешение. В противном случае будут работать только локальные папки.</string>
+    <string name="cannot_use_location">Это расположение использовано быть не может, поскольку разрешение на хранение предоставлено не было.</string>
+
+    <!-- Logcat. -->
+    <string name="copy">Копировать</string>
+    <string name="logcat_copied">Logcat скопирован.</string>
+    <string name="clear">Очистить</string>
+    <string name="save_logcat">Сохранить logcat</string>
+    <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
+    <string name="file_saved_successfully">Файл успешно сохранен.</string>
+    <string name="save_failed">Сохранить не удалось:</string>
 
     <!-- Guide. -->
-    <string name="privacy_browser_guide">Руководство по Privacy Browser</string>
     <string name="overview">Обзор</string>
     <string name="local_storage">Локальное хранилище</string>
     <string name="ssl_certificates">Сертификаты SSL</string>
     <string name="tracking_ids">Идентификаторы отслеживания</string>
+
+    <!-- Download Location -->
+    <string name="download_location">Папка загрузок</string>
+    <string name="download_location_message">Privacy Browser необходимо разрешение на доступ к хранилищу для использования общей папки загрузок.
+        Если разрешение получено не будет, то для загрузок будет использоваться папка приложения</string>
+    <string name="ok">OK</string>
+
+    <!-- Orbot. -->
+    <string name="orbot_proxy_not_installed">Проксирование Orbot работает только с установленным Orbot.</string>
+    <string name="waiting_for_orbot">Ожидание Orbot для подключения...</string>
+
+    <!-- About Activity. -->
+    <string name="about_privacy_browser">О Privacy Browser</string>
+    <string name="version">Версия</string>
+    <string name="version_code">код версии</string>
+    <string name="hardware">Оборудование</string>
+    <string name="brand">Бренд:</string>
+    <string name="manufacturer">Производитель:</string>
+    <string name="model">Модель:</string>
+    <string name="device">Устройство:</string>
+    <string name="bootloader">Загрузчик:</string>
+    <string name="radio">Радио:</string>
+    <string name="software">Программное обеспечение</string>
+    <string name="android">Android:</string>
+    <string name="api">API</string>
+    <string name="build">Сборка:</string>
+    <string name="security_patch">Патч безопасности:</string>
+    <string name="webview">WebView:</string>
+    <string name="orbot">Orbot:</string>
+    <string name="openkeychain">OpenKeychain:</string>
+    <string name="easylist_label">EasyList:</string>
+    <string name="easyprivacy_label">EasyPrivacy:</string>
+    <string name="fanboy_annoyance_label">Fanboy’s Annoyance List:</string>
+    <string name="fanboy_social_label">Fanboy’s Social Blocking List:</string>
+    <string name="ultraprivacy_label">UltraPrivacy:</string>
+    <string name="package_signature">Подпись пакета</string>
+    <string name="issuer_dn">DN эмитента:</string>
+    <string name="subject_dn">DN субъекта:</string>
+    <string name="certificate_version">Версия сертификата:</string>
+    <string name="serial_number">Серийный номер:</string>
+    <string name="signature_algorithm">Алгоритм подписи:</string>
+    <string name="permissions">Разрешения</string>
+    <string name="privacy_policy">Политика конфиденциальности</string>
+    <string name="changelog">История изменений</string>
+    <string name="licenses">Лицензии</string>
+    <string name="contributors">Благодарности</string>
+    <string name="links">Ссылки</string>
 
     <!-- Preferences. -->
     <string name="privacy">Конфиденциальность</string>
@@ -342,7 +410,7 @@
         <string name="first_party_cookies_preference_summary">На устройствах с версией Android старше Lollipop (версия 5.0) этим параметром также активируются сторонние файлы cookie.</string>
         <string name="third_party_cookies_preference">Включить сторонние файлы cookie по умолчанию</string>
         <string name="third_party_cookies_summary">Этот параметр требует Android Lollipop (версия 5.0) или выше. Он не действует, если первичные файлы cookie отключены.</string>
-        <string name="dom_storage_preference">Включить хранилище DOM по умолчанию</string>
+        <string name="dom_storage_preference">Включить DOM-хранилище по умолчанию</string>
         <string name="dom_storage_preference_summary">Для работы хранилища DOM должен быть включен JavaScript.</string>
         <string name="save_form_data_preference">Разрешить сохранение данных формы по умолчанию</string>
         <string name="save_form_data_preference_summary">Сохраненные данные формы могут автоматически заполнять поля на веб-сайтах.</string>
@@ -429,24 +497,22 @@
     <string name="full_screen">Во весь экран</string>
         <string name="full_screen_browsing_mode">Полноэкранный режим просмотра</string>
         <string name="full_screen_browsing_mode_summary">Двойное касание переключает режим просмотра.</string>
-        <string name="hide_system_bars">Скрыть системные панели</string>
-        <string name="hide_system_bars_summary">Скрыть панели статуса и навигации в полноэкранном режиме просмотра. Это не работает при отображении клавиатуры во время полноэкранного просмотра.</string>
-        <string name="translucent_navigation_bar">Полупрозрачная навигационная панель</string>
-        <string name="translucent_navigation_bar_summary">Панель навигации станет полупрозрачной в полноэкранном режиме просмотра.</string>
+        <string name="hide_app_bar">Скрыть панель приложения</string>
+        <string name="hide_app_bar_summary">Скрывает панель приложения, которая содержит URL.</string>
     <string name="clear_everything">Очистить все</string>
-        <string name="clear_everything_summary">Очищает файлы cookie, хранилище DOM, данные формы и кэш WebView. Затем вручную удаляются все каталоги "app_webview" и "cache".</string>
+        <string name="clear_everything_summary">Очищает файлы cookie, DOM-хранилище, данные формы и кэш WebView. Затем вручную удаляются все каталоги "app_webview" и "cache".</string>
         <string name="clear_cookies_preference">Очистить файлы cookie</string>
         <string name="clear_cookies_summary">Очистить первичные и сторонние файлы cookie.</string>
-        <string name="clear_dom_storage_preference">Очистить хранилище DOM</string>
-        <string name="clear_dom_storage_summary">Очищает хранилище DOM.</string>
+        <string name="clear_dom_storage_preference">Очистить DOM-хранилище</string>
+        <string name="clear_dom_storage_summary">Очищает DOM-хранилище.</string>
         <string name="clear_form_data_preference">Очистка данных формы</string>
         <string name="clear_form_data_summary">Очищает данные формы.</string>
         <string name="clear_cache">Очистить кэш</string>
         <string name="clear_cache_summary">Очищает кэш WebView.</string>
     <string name="general">Общее</string>
         <string name="homepage">Домашняя страница</string>
-        <string name="default_font_size">Размер шрифта по умолчанию</string>
-        <string-array name="default_font_size_entries">
+        <string name="font_size_preference">Размер шрифта</string>
+        <string-array name="font_size_entries">
             <item>25%</item>
             <item>50%</item>
             <item>75%</item>
@@ -467,62 +533,20 @@
                 <item>175%</item>
                 <item>200%</item>
             </string-array>
-        <string name="swipe_to_refresh_preference">Потянуть для обновления</string>
+        <string name="swipe_to_refresh">Потянуть для обновления</string>
         <string name="swipe_to_refresh_summary">Некоторые веб-сайты могут работать некорректно при включении данной опции.</string>
+        <string name="scroll_app_bar">Прокручивать панель приложения</string>
+        <string name="scroll_app_bar_summary">Прокручивает панель приложения вверху экрана при прокрутке WebView вниз.</string>
         <string name="display_additional_app_bar_icons">Отображать дополнительные значки на панели приложения</string>
         <string name="display_additional_app_bar_icons_summary">Отображать значки на панели приложения для обновления WebView и, при наличии места, для переключения файлов cookie и хранилища DOM</string>
+        <string name="download_with_external_app">Загрузка с помощью внешнего приложения</string>
+        <string name="download_with_external_app_summary">Менеджер загрузок Android не работает на некоторых устройствах.</string>
         <string name="dark_theme">Темная тема</string>
         <string name="dark_theme_summary">Изменение темы перезапускает Privacy Browser.</string>
         <string name="night_mode">Ночной режим</string>
         <string name="night_mode_summary">Включение ночного режима также включает JavaScript для всех веб-страниц.</string>
         <string name="display_webpage_images">Показывать изображения веб-страницы</string>
         <string name="display_webpage_images_summary">Отключите для экономии трафика.</string>
-
-    <!-- Download Location -->
-    <string name="download_location">Папка загрузок</string>
-    <string name="download_location_message">Privacy Browser необходимо разрешение на доступ к хранилищу для использования общей папки загрузок.
-        Если разрешение получено не будет, то для загрузок будет использоваться папка приложения</string>
-    <string name="ok">OK</string>
-
-    <!-- Orbot. -->
-    <string name="orbot_proxy_not_installed">Проксирование Orbot работает только с установленным Orbot.</string>
-    <string name="waiting_for_orbot">Ожидание Orbot для подключения...</string>
-
-    <!-- About Activity. -->
-    <string name="about_privacy_browser">О Privacy Browser</string>
-    <string name="version">Версия</string>
-        <string name="version_code">код версии</string>
-        <string name="hardware">Оборудование</string>
-            <string name="brand">Бренд:</string>
-            <string name="manufacturer">Производитель:</string>
-            <string name="model">Модель:</string>
-            <string name="device">Устройство:</string>
-            <string name="bootloader">Загрузчик:</string>
-            <string name="radio">Радио:</string>
-        <string name="software">Программное обеспечение</string>
-            <string name="android">Android:</string>
-                <string name="api">API</string>
-            <string name="build">Сборка:</string>
-            <string name="security_patch">Патч безопасности:</string>
-            <string name="webview">WebView:</string>
-            <string name="orbot">Orbot:</string>
-            <string name="easylist_label">EasyList:</string>
-            <string name="easyprivacy_label">EasyPrivacy:</string>
-            <string name="fanboy_annoyance_label">Fanboy’s Annoyance List:</string>
-            <string name="fanboy_social_label">Fanboy’s Social Blocking List:</string>
-            <string name="ultraprivacy_label">UltraPrivacy:</string>
-        <string name="package_signature">Подпись пакета</string>
-            <string name="issuer_dn">DN эмитента:</string>
-            <string name="subject_dn">DN субъекта:</string>
-            <string name="certificate_version">Версия сертификата:</string>
-            <string name="serial_number">Серийный номер:</string>
-            <string name="signature_algorithm">Алгоритм подписи:</string>
-    <string name="permissions">Разрешения</string>
-    <string name="privacy_policy">Политика конфиденциальности</string>
-    <string name="changelog">История изменений</string>
-    <string name="licenses">Лицензии</string>
-    <string name="contributors">Благодарности</string>
-    <string name="links">Ссылки</string>
 
     <!-- Ad Control. There are no ads in the standard flavor, but this string must exist because it is referenced in the code. -->
     <string name="ad_consent">Согласие на рекламу</string>

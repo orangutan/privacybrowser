@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -33,10 +33,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-// `AppCompatDialogFragment` must be used instead of `DialogFragment` or an error is produced on API <=22.
-import android.support.v7.app.AppCompatDialogFragment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -47,6 +43,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <= 22.
+
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.BookmarksActivity;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
@@ -54,7 +54,7 @@ import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 
 import java.io.ByteArrayOutputStream;
 
-public class MoveToFolderDialog extends AppCompatDialogFragment {
+public class MoveToFolderDialog extends DialogFragment {
     // Instantiate the class variables.
     private MoveToFolderListener moveToFolderListener;
     private BookmarksDatabaseHelper bookmarksDatabaseHelper;
@@ -62,7 +62,7 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
 
     // The public interface is used to send information back to the parent activity.
     public interface MoveToFolderListener {
-        void onMoveToFolder(AppCompatDialogFragment dialogFragment);
+        void onMoveToFolder(DialogFragment dialogFragment);
     }
 
     public void onAttach(Context context) {
@@ -78,7 +78,7 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Initialize the database helper.  The two `nulls` do not specify the database name or a `CursorFactory`.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
+        // Initialize the database helper.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
         bookmarksDatabaseHelper = new BookmarksDatabaseHelper(getContext(), null, null, 0);
 
         // Use an alert dialog builder to create the alert dialog.
@@ -165,13 +165,16 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
                 }
             }
 
-            // Get a `Cursor` containing the folders to display.
-            foldersCursor = bookmarksDatabaseHelper.getFoldersCursorExcept(exceptFolders.toString());
+            // Get a cursor containing the folders to display.
+            foldersCursor = bookmarksDatabaseHelper.getFoldersExcept(exceptFolders.toString());
 
             // Setup `foldersCursorAdaptor` with `this` context.  `false` disables autoRequery.
             foldersCursorAdapter = new CursorAdapter(alertDialog.getContext(), foldersCursor, false) {
                 @Override
                 public View newView(Context context, Cursor cursor, ViewGroup parent) {
+                    // Remove the incorrect lint warning that `.getLayoutInflator()` might be false.
+                    assert getActivity() != null;
+
                     // Inflate the individual item layout.  `false` does not attach it to the root.
                     return getActivity().getLayoutInflater().inflate(R.layout.move_to_folder_item_linearlayout, parent, false);
                 }
@@ -233,7 +236,7 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
             }
 
             // Get a `Cursor` containing the folders to display.
-            foldersCursor = bookmarksDatabaseHelper.getFoldersCursorExcept(exceptFolders.toString());
+            foldersCursor = bookmarksDatabaseHelper.getFoldersExcept(exceptFolders.toString());
 
             // Combine `homeFolderMatrixCursor` and `foldersCursor`.
             MergeCursor foldersMergeCursor = new MergeCursor(new Cursor[]{homeFolderMatrixCursor, foldersCursor});
@@ -242,6 +245,9 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
             foldersCursorAdapter = new CursorAdapter(alertDialog.getContext(), foldersMergeCursor, false) {
                 @Override
                 public View newView(Context context, Cursor cursor, ViewGroup parent) {
+                    // Remove the incorrect lint warning that `.getLayoutInflator()` might be false.
+                    assert getActivity() != null;
+
                     // Inflate the individual item layout.  `false` does not attach it to the root.
                     return getActivity().getLayoutInflater().inflate(R.layout.move_to_folder_item_linearlayout, parent, false);
                 }
@@ -280,7 +286,7 @@ public class MoveToFolderDialog extends AppCompatDialogFragment {
 
     private void addSubfoldersToExceptFolders(String folderName) {
         // Get a `Cursor` will all the immediate subfolders.
-        Cursor subfoldersCursor = bookmarksDatabaseHelper.getSubfoldersCursor(folderName);
+        Cursor subfoldersCursor = bookmarksDatabaseHelper.getSubfolders(folderName);
 
         for (int i = 0; i < subfoldersCursor.getCount(); i++) {
             // Move `subfolderCursor` to the current item.

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2017,2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -26,19 +26,18 @@
     android:padding="6dp">
 
 
-    <!-- `android.support.design.widget.TextInputLayout` makes the `android:hint` float above the `EditText`. -->
-    <android.support.design.widget.TextInputLayout
+    <!-- The `TextInputLayout` makes the `android:hint` float above the `EditText`. -->
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent" >
 
-        <!-- `android:imeOptions="actionsGo"` sets the keyboard to have a `go` key instead of a `new line` key.
-            `android:inputType="textUri"` disables spell check in the `EditText`. -->
-        <android.support.design.widget.TextInputEditText
+        <!-- `android:imeOptions="actionsGo"` sets the keyboard to have a `go` key instead of a `new line` key.  `android:inputType="textUri"` disables spell check in the `EditText`. -->
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/download_image_name"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:hint="@string/image_name"
             android:imeOptions="actionGo"
             android:inputType="textUri" />
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>

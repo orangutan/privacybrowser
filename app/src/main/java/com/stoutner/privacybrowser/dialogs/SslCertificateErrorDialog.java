@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -20,16 +20,16 @@
 package com.stoutner.privacybrowser.dialogs;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.net.http.SslCertificate;
 import android.net.http.SslError;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-// `AppCompatDialogFragment` is used instead of `DialogFragment` to avoid an error on API <=22.
-import android.support.v7.app.AppCompatDialogFragment;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -37,13 +37,19 @@ import android.view.LayoutInflater;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
+
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
+import java.lang.ref.WeakReference;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.util.Date;
 
-public class SslCertificateErrorDialog extends AppCompatDialogFragment {
+public class SslCertificateErrorDialog extends DialogFragment {
     // `sslCertificateErrorListener` is used in `onAttach` and `onCreateDialog`.
     private SslCertificateErrorListener sslCertificateErrorListener;
 
@@ -106,7 +112,7 @@ public class SslCertificateErrorDialog extends AppCompatDialogFragment {
 
         // Get the components of the SSL error message from the bundle.
         int primaryErrorInt = getArguments().getInt("PrimaryErrorInt");
-        String urlWithError = getArguments().getString("UrlWithError");
+        String urlWithErrors = getArguments().getString("UrlWithError");
         String issuedToCName = getArguments().getString("IssuedToCName");
         String issuedToOName = getArguments().getString("IssuedToOName");
         String issuedToUName = getArguments().getString("IssuedToUName");
@@ -165,22 +171,28 @@ public class SslCertificateErrorDialog extends AppCompatDialogFragment {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
-        // We have to show the alert dialog before we can modify the content.
+        // Get a URI for the URL with errors.
+        Uri uriWithErrors = Uri.parse(urlWithErrors);
+
+        // Get the IP addresses for the URI.
+        new GetIpAddresses(getActivity(), alertDialog).execute(uriWithErrors.getHost());
+
+        // The alert dialog must be shown before the contents can be modified.
         alertDialog.show();
 
         // Get handles for the `TextViews`
         TextView primaryErrorTextView = alertDialog.findViewById(R.id.primary_error);
-        TextView urlTextView = alertDialog.findViewById(R.id.url_error_dialog);
-        TextView issuedToCNameTextView = alertDialog.findViewById(R.id.issued_to_cname_error_dialog);
-        TextView issuedToONameTextView = alertDialog.findViewById(R.id.issued_to_oname_error_dialog);
-        TextView issuedToUNameTextView = alertDialog.findViewById(R.id.issued_to_uname_error_dialog);
+        TextView urlTextView = alertDialog.findViewById(R.id.url);
+        TextView issuedToCNameTextView = alertDialog.findViewById(R.id.issued_to_cname);
+        TextView issuedToONameTextView = alertDialog.findViewById(R.id.issued_to_oname);
+        TextView issuedToUNameTextView = alertDialog.findViewById(R.id.issued_to_uname);
         TextView issuedByTextView = alertDialog.findViewById(R.id.issued_by_textview);
-        TextView issuedByCNameTextView = alertDialog.findViewById(R.id.issued_by_cname_error_dialog);
-        TextView issuedByONameTextView = alertDialog.findViewById(R.id.issued_by_oname_error_dialog);
-        TextView issuedByUNameTextView = alertDialog.findViewById(R.id.issued_by_uname_error_dialog);
+        TextView issuedByCNameTextView = alertDialog.findViewById(R.id.issued_by_cname);
+        TextView issuedByONameTextView = alertDialog.findViewById(R.id.issued_by_oname);
+        TextView issuedByUNameTextView = alertDialog.findViewById(R.id.issued_by_uname);
         TextView validDatesTextView = alertDialog.findViewById(R.id.valid_dates_textview);
-        TextView startDateTextView = alertDialog.findViewById(R.id.start_date_error_dialog);
-        TextView endDateTextView = alertDialog.findViewById(R.id.end_date_error_dialog);
+        TextView startDateTextView = alertDialog.findViewById(R.id.start_date);
+        TextView endDateTextView = alertDialog.findViewById(R.id.end_date);
 
         // Setup the common strings.
         String urlLabel = getString(R.string.url_label) + "  ";
@@ -190,8 +202,8 @@ public class SslCertificateErrorDialog extends AppCompatDialogFragment {
         String startDateLabel = getString(R.string.start_date) + "  ";
         String endDateLabel = getString(R.string.end_date) + "  ";
 
-        // Create a `SpannableStringBuilder` for each `TextView` that needs multiple colors of text.
-        SpannableStringBuilder urlStringBuilder = new SpannableStringBuilder(urlLabel + urlWithError);
+        // Create a spannable string builder for each text view that needs multiple colors of text.
+        SpannableStringBuilder urlStringBuilder = new SpannableStringBuilder(urlLabel + urlWithErrors);
         SpannableStringBuilder issuedToCNameStringBuilder = new SpannableStringBuilder(cNameLabel + issuedToCName);
         SpannableStringBuilder issuedToONameStringBuilder = new SpannableStringBuilder(oNameLabel + issuedToOName);
         SpannableStringBuilder issuedToUNameStringBuilder = new SpannableStringBuilder(uNameLabel + issuedToUName);
@@ -201,13 +213,13 @@ public class SslCertificateErrorDialog extends AppCompatDialogFragment {
         SpannableStringBuilder startDateStringBuilder = new SpannableStringBuilder(startDateLabel + startDate);
         SpannableStringBuilder endDateStringBuilder = new SpannableStringBuilder((endDateLabel + endDate));
 
-        // Create a red `ForegroundColorSpan`.  We have to use the deprecated `getColor` until API >= 23.
+        // Create a red foreground color span.  The deprecated `getResources().getColor` must be used until the minimum API >= 23.
         @SuppressWarnings("deprecation") ForegroundColorSpan redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
 
         // Create a blue `ForegroundColorSpan`.
         ForegroundColorSpan blueColorSpan;
 
-        // Set `blueColorSpan` according to the theme.  We have to use the deprecated `getColor()` until API >= 23.
+        // Set a blue color span according to the theme.  The deprecated `getResources().getColor` must be used until the minimum API >= 23.
         if (MainWebViewActivity.darkTheme) {
             //noinspection deprecation
             blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
@@ -242,7 +254,7 @@ public class SslCertificateErrorDialog extends AppCompatDialogFragment {
                 break;
 
             case SslError.SSL_UNTRUSTED:
-                // Change the `issuesByTextView` text to red.  We have to use the deprecated `getColor()` until API >= 23.
+                // Change the issued by text view text to red.  The deprecated `getResources().getColor` must be used until the minimum API >= 23.
                 issuedByTextView.setTextColor(getResources().getColor(R.color.red_a700));
 
                 // Change the issued by span color to red.
@@ -255,7 +267,7 @@ public class SslCertificateErrorDialog extends AppCompatDialogFragment {
                 break;
 
             case SslError.SSL_DATE_INVALID:
-                // Change the `validDatesTextView` text to red.  We have to use the deprecated `getColor()` until API >= 23.
+                // Change the valid dates text view text to red.  The deprecated `getResources().getColor` must be used until the minimum API >= 23.
                 validDatesTextView.setTextColor(getResources().getColor(R.color.red_a700));
 
                 // Change the date span colors to red.
@@ -301,7 +313,101 @@ public class SslCertificateErrorDialog extends AppCompatDialogFragment {
         startDateTextView.setText(startDateStringBuilder);
         endDateTextView.setText(endDateStringBuilder);
 
-        // `onCreateDialog` requires the return of an `AlertDialog`.
+        // `onCreateDialog` requires the return of an alert dialog.
         return alertDialog;
+    }
+
+
+    // This must run asynchronously because it involves a network request.  `String` declares the parameters.  `Void` does not declare progress units.  `SpannableStringBuilder` contains the results.
+    private static class GetIpAddresses extends AsyncTask<String, Void, SpannableStringBuilder> {
+        // The weak references are used to determine if the activity or the alert dialog have disappeared while the AsyncTask is running.
+        private WeakReference<Activity> activityWeakReference;
+        private WeakReference<AlertDialog> alertDialogWeakReference;
+
+        GetIpAddresses(Activity activity, AlertDialog alertDialog) {
+            // Populate the weak references.
+            activityWeakReference = new WeakReference<>(activity);
+            alertDialogWeakReference = new WeakReference<>(alertDialog);
+        }
+
+        @Override
+        protected SpannableStringBuilder doInBackground(String... domainName) {
+            // Get handles for the activity and the alert dialog.
+            Activity activity = activityWeakReference.get();
+            AlertDialog alertDialog = alertDialogWeakReference.get();
+
+            // Abort if the activity or the dialog is gone.
+            if ((activity == null) || (activity.isFinishing()) || (alertDialog == null)) {
+                return new SpannableStringBuilder();
+            }
+
+            // Initialize an IP address string builder.
+            StringBuilder ipAddresses = new StringBuilder();
+
+            // Get an array with the IP addresses for the host.
+            try {
+                // Get an array with all the IP addresses for the domain.
+                InetAddress[] inetAddressesArray = InetAddress.getAllByName(domainName[0]);
+
+                // Add each IP address to the string builder.
+                for (InetAddress inetAddress : inetAddressesArray) {
+                    if (ipAddresses.length() == 0) {  // This is the first IP address.
+                        // Add the IP Address to the string builder.
+                        ipAddresses.append(inetAddress.getHostAddress());
+                    } else {  // This is not the first IP address.
+                        // Add a line break to the string builder first.
+                        ipAddresses.append("\n");
+
+                        // Add the IP address to the string builder.
+                        ipAddresses.append(inetAddress.getHostAddress());
+                    }
+                }
+            } catch (UnknownHostException exception) {
+                // Do nothing.
+            }
+
+            // Set the label.
+            String ipAddressesLabel = activity.getString(R.string.ip_addresses) + "  ";
+
+            // Create a spannable string builder.
+            SpannableStringBuilder ipAddressesStringBuilder = new SpannableStringBuilder(ipAddressesLabel + ipAddresses);
+
+            // Create a blue foreground color span.
+            ForegroundColorSpan blueColorSpan;
+
+            // Set the blue color span according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
+            if (MainWebViewActivity.darkTheme) {
+                //noinspection deprecation
+                blueColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.blue_400));
+            } else {
+                //noinspection deprecation
+                blueColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.blue_700));
+            }
+
+            // Set the string builder to display the certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
+            ipAddressesStringBuilder.setSpan(blueColorSpan, ipAddressesLabel.length(), ipAddressesStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+            // Return the formatted string.
+            return ipAddressesStringBuilder;
+        }
+
+        // `onPostExecute()` operates on the UI thread.
+        @Override
+        protected void onPostExecute(SpannableStringBuilder ipAddresses) {
+            // Get handles for the activity and the alert dialog.
+            Activity activity = activityWeakReference.get();
+            AlertDialog alertDialog = alertDialogWeakReference.get();
+
+            // Abort if the activity or the alert dialog is gone.
+            if ((activity == null) || (activity.isFinishing()) || (alertDialog == null)) {
+                return;
+            }
+
+            // Get a handle for the IP addresses text view.
+            TextView ipAddressesTextView = alertDialog.findViewById(R.id.ip_addresses);
+
+            // Populate the IP addresses text view.
+            ipAddressesTextView.setText(ipAddresses);
+        }
     }
 }

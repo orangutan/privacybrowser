@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -24,32 +24,32 @@
         android:title="@string/privacy" >
 
         <SwitchPreference
-            android:key="javascript_enabled"
+            android:key="javascript"
             android:title="@string/javascript_preference"
             android:summary="@string/javascript_preference_summary"
             android:defaultValue="true" />
 
         <SwitchPreference
-            android:key="first_party_cookies_enabled"
+            android:key="first_party_cookies"
             android:title="@string/first_party_cookies_preference"
             android:summary="@string/first_party_cookies_preference_summary"
             android:defaultValue="true" />
 
         <SwitchPreference
-            android:key="third_party_cookies_enabled"
+            android:key="third_party_cookies"
             android:title="@string/third_party_cookies_preference"
             android:summary="@string/third_party_cookies_summary"
             android:defaultValue="true" />
 
         <SwitchPreference
-            android:key="dom_storage_enabled"
+            android:key="dom_storage"
             android:title="@string/dom_storage_preference"
             android:summary="@string/dom_storage_preference_summary"
             android:defaultValue="true" />
 
         <!-- Save form data can be removed once the minimum API >= 26. -->
         <SwitchPreference
-            android:key="save_form_data_enabled"
+            android:key="save_form_data"
             android:title="@string/save_form_data_preference"
             android:summary="@string/save_form_data_preference_summary"
             android:defaultValue="false" />
@@ -66,7 +66,7 @@
         <EditTextPreference
             android:key="custom_user_agent"
             android:title="@string/custom_user_agent"
-            android:defaultValue="PrivacyBrowser/1.0"
+            android:defaultValue="@string/custom_user_agent_default_value"
             android:inputType="textVisiblePassword|textMultiLine" />
 
         <SwitchPreference
@@ -105,13 +105,13 @@
             android:defaultValue="true" />
 
         <SwitchPreference
-            android:key="fanboy_annoyance_list"
+            android:key="fanboys_annoyance_list"
             android:title="@string/fanboys_annoyance_list"
             android:summary="@string/fanboys_annoyance_list_summary"
             android:defaultValue="true" />
 
         <SwitchPreference
-            android:key="fanboy_social_blocking_list"
+            android:key="fanboys_social_blocking_list"
             android:title="@string/fanboys_social_blocking_list"
             android:summary="@string/fanboys_social_blocking_list_summary"
             android:defaultValue="true" />
@@ -142,7 +142,7 @@
         <EditTextPreference
             android:key="tor_homepage"
             android:title="@string/tor_homepage"
-            android:defaultValue="http://ulrn6sryqaifefld.onion/"
+            android:defaultValue="@string/tor_homepage_default_value"
             android:inputType="textUri" />
 
         <ListPreference
@@ -150,14 +150,12 @@
             android:title="@string/tor_search"
             android:entries="@array/tor_search_entries"
             android:entryValues="@array/tor_search_entry_values"
-            android:defaultValue="http://ulrn6sryqaifefld.onion/?q=" />
+            android:defaultValue="@string/tor_search_default_value" />
 
-        <!--suppress AndroidDomInspection -->
-        <!--`suppress AndroidDomInspection` removes the error about the default value being blank. -->
         <EditTextPreference
             android:key="tor_search_custom_url"
             android:title="@string/tor_search_custom_url"
-            android:defaultValue=""
+            android:defaultValue="@string/tor_search_custom_url_default_value"
             android:inputType="textUri" />
     </PreferenceCategory>
 
@@ -170,15 +168,17 @@
             android:title="@string/search"
             android:entries="@array/search_entries"
             android:entryValues="@array/search_entry_values"
+<<<<<<< HEAD
             android:defaultValue="https://duckduckgo.com/?q="
+=======
+            android:defaultValue="@string/search_default_value"
+>>>>>>> upstream/master
             android:icon="?attr/searchIcon" />
 
-        <!--suppress AndroidDomInspection -->
-        <!--`suppress AndroidDomInspection` removes the error about the default value being blank. -->
         <EditTextPreference
             android:key="search_custom_url"
             android:title="@string/search_custom_url"
-            android:defaultValue=""
+            android:defaultValue="@string/search_custom_url_default_value"
             android:inputType="textUri" />
     </PreferenceCategory>
 
@@ -193,15 +193,9 @@
             android:defaultValue="false" />
 
         <SwitchPreference
-            android:key="hide_system_bars"
-            android:title="@string/hide_system_bars"
-            android:summary="@string/hide_system_bars_summary"
-            android:defaultValue="false" />
-
-        <SwitchPreference
-            android:key="translucent_navigation_bar"
-            android:title="@string/translucent_navigation_bar"
-            android:summary="@string/translucent_navigation_bar_summary"
+            android:key="hide_app_bar"
+            android:title="@string/hide_app_bar"
+            android:summary="@string/hide_app_bar_summary"
             android:defaultValue="true" />
     </PreferenceCategory>
 
@@ -227,6 +221,7 @@
             android:summary="@string/clear_dom_storage_summary"
             android:defaultValue="true" />
 
+        <!-- Clear form data can be removed once the minimum API >= 26. -->
         <SwitchPreference
             android:key="clear_form_data"
             android:title="@string/clear_form_data_preference"
@@ -247,28 +242,44 @@
         <EditTextPreference
             android:key="homepage"
             android:title="@string/homepage"
+<<<<<<< HEAD
             android:defaultValue="https://start.duckduckgo.com/"
+=======
+            android:defaultValue="@string/homepage_default_value"
+>>>>>>> upstream/master
             android:inputType="textUri"
             android:icon="?attr/homepageIcon" />
 
         <ListPreference
-            android:key="default_font_size"
-            android:title="@string/default_font_size"
-            android:entries="@array/default_font_size_entries"
-            android:entryValues="@array/default_font_size_entry_values"
-            android:defaultValue="100"
+            android:key="font_size"
+            android:title="@string/font_size_preference"
+            android:entries="@array/font_size_entries"
+            android:entryValues="@array/font_size_entry_values"
+            android:defaultValue="@string/font_size_default_value"
             android:icon="?attr/fontSizeIcon" />
 
         <SwitchPreference
             android:key="swipe_to_refresh"
-            android:title="@string/swipe_to_refresh_preference"
+            android:title="@string/swipe_to_refresh"
             android:summary="@string/swipe_to_refresh_summary"
+            android:defaultValue="true" />
+
+        <SwitchPreference
+            android:key="scroll_app_bar"
+            android:title="@string/scroll_app_bar"
+            android:summary="@string/scroll_app_bar_summary"
             android:defaultValue="true" />
 
         <SwitchPreference
             android:key="display_additional_app_bar_icons"
             android:title="@string/display_additional_app_bar_icons"
             android:summary="@string/display_additional_app_bar_icons_summary"
+            android:defaultValue="false" />
+
+        <SwitchPreference
+            android:key="download_with_external_app"
+            android:title="@string/download_with_external_app"
+            android:summary="@string/download_with_external_app_summary"
             android:defaultValue="false" />
 
         <SwitchPreference

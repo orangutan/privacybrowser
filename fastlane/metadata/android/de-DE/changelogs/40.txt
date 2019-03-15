@@ -1,0 +1,9 @@
+• Fix a bug, introduced in 2.15, that caused SSL certificate pinning to be ignored in most cases.
+• Add IP address pinning to domain settings.
+• Create menu options for opening with apps and other browsers.
+• Improve the text selection color in dark mode.
+• Implement various improvements to the bookmarks database view activity.
+• Aktualisierte italienische Übersetzung von Francesco Buratti.
+• Aktualisierte russische Übersetzung.
+• Aktualisierte spanische Übersetzung von Jose A. León.
+• Partial Turkish translation.

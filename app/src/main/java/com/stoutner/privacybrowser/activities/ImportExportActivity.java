@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -21,24 +21,14 @@ package com.stoutner.privacybrowser.activities;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -52,13 +42,27 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.DialogFragment;
+
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
+
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.dialogs.ImportExportStoragePermissionDialog;
+import com.stoutner.privacybrowser.dialogs.StoragePermissionDialog;
 import com.stoutner.privacybrowser.helpers.ImportExportDatabaseHelper;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -69,7 +73,7 @@ import javax.crypto.CipherOutputStream;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-public class ImportExportActivity extends AppCompatActivity implements ImportExportStoragePermissionDialog.ImportExportStoragePermissionDialogListener {
+public class ImportExportActivity extends AppCompatActivity implements StoragePermissionDialog.StoragePermissionDialogListener {
     // Create the encryption constants.
     private final int NO_ENCRYPTION = 0;
     private final int PASSWORD_ENCRYPTION = 1;
@@ -80,7 +84,7 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
     private final int OPENPGP_EXPORT_RESULT_CODE = 1;
 
     // `openKeychainInstalled` is accessed from an inner class.
-    boolean openKeychainInstalled;
+    private boolean openKeychainInstalled;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -103,13 +107,17 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
         setContentView(R.layout.import_export_coordinatorlayout);
 
         // Use the `SupportActionBar` from `android.support.v7.app.ActionBar` until the minimum API is >= 21.
-        Toolbar importExportAppBar = findViewById(R.id.import_export_toolbar);
-        setSupportActionBar(importExportAppBar);
+        Toolbar toolbar = findViewById(R.id.import_export_toolbar);
+        setSupportActionBar(toolbar);
+
+        // Get a handle for the action bar.
+        ActionBar actionBar = getSupportActionBar();
+
+        // Remove the incorrect lint warning that the action bar might be null.
+        assert actionBar != null;
 
         // Display the home arrow on the support action bar.
-        ActionBar appBar = getSupportActionBar();
-        assert appBar != null;// This assert removes the incorrect warning in Android Studio on the following line that `appBar` might be null.
-        appBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         // Find out if we are running KitKat
         boolean runningKitKat = (Build.VERSION.SDK_INT == 19);
@@ -160,11 +168,11 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
         // Set the default file paths according to the storage permission status.
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
             // Set the default file paths to use the external public directory.
-            defaultFilePath = Environment.getExternalStorageDirectory() + "/" + getString(R.string.privacy_browser_settings);
+            defaultFilePath = Environment.getExternalStorageDirectory() + "/" + getString(R.string.settings_pbs);
             defaultPasswordEncryptionFilePath = defaultFilePath + ".aes";
         } else {  // The storage permission has not been granted.
             // Set the default file paths to use the external private directory.
-            defaultFilePath = getApplicationContext().getExternalFilesDir(null) + "/" + getString(R.string.privacy_browser_settings);
+            defaultFilePath = getApplicationContext().getExternalFilesDir(null) + "/" + getString(R.string.settings_pbs);
             defaultPasswordEncryptionFilePath = defaultFilePath + ".aes";
         }
 
@@ -341,7 +349,7 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
             }
         });
 
-        // Hide the storage permissions TextView on API < 23 as permissions on older devices are automatically granted.
+        // Hide the storage permissions text view on API < 23 as permissions on older devices are automatically granted.
         if (Build.VERSION.SDK_INT < 23) {
             storagePermissionTextView.setVisibility(View.GONE);
         }
@@ -415,15 +423,15 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
             // Create the file picker intent.
             Intent importBrowseIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
 
-            // Set the intent MIME type to include all files.
+            // Set the intent MIME type to include all files so that everything is visible.
             importBrowseIntent.setType("*/*");
 
-            // Set the initial directory if API >= 26.
+            // Set the initial directory if the minimum API >= 26.
             if (Build.VERSION.SDK_INT >= 26) {
                 importBrowseIntent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Environment.getExternalStorageDirectory());
             }
 
-            // Specify that a file that can be opened is requested.
+            // Request a file that can be opened.
             importBrowseIntent.addCategory(Intent.CATEGORY_OPENABLE);
 
             // Launch the file picker.
@@ -432,18 +440,18 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
             // Create the file picker intent.
             Intent exportBrowseIntent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
 
-            // Set the intent MIME type to include all files.
+            // Set the intent MIME type to include all files so that everything is visible.
             exportBrowseIntent.setType("*/*");
 
             // Set the initial export file name.
-            exportBrowseIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.privacy_browser_settings));
+            exportBrowseIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.settings_pbs));
 
-            // Set the initial directory if API >= 26.
+            // Set the initial directory if the minimum API >= 26.
             if (Build.VERSION.SDK_INT >= 26) {
                 exportBrowseIntent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Environment.getExternalStorageDirectory());
             }
 
-            // Specify that a file that can be opened is requested.
+            // Request a file that can be opened.
             exportBrowseIntent.addCategory(Intent.CATEGORY_OPENABLE);
 
             // Launch the file picker.
@@ -478,9 +486,9 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
             String fileNameString = fileNameEditText.getText().toString();
 
             // Get the external private directory `File`.
-            File externalPrivateDirectoryFile = getApplicationContext().getExternalFilesDir(null);
+            File externalPrivateDirectoryFile = getExternalFilesDir(null);
 
-            // Remove the lint error below that the `File` might be null.
+            // Remove the incorrect lint error below that the file might be null.
             assert externalPrivateDirectoryFile != null;
 
             // Get the external private directory string.
@@ -500,10 +508,10 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
                 // Check if the user has previously denied the storage permission.
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
                     // Instantiate the storage permission alert dialog.
-                    DialogFragment importExportStoragePermissionDialogFragment = new ImportExportStoragePermissionDialog();
+                    DialogFragment storagePermissionDialogFragment = new StoragePermissionDialog();
 
                     // Show the storage permission alert dialog.  The permission will be requested when the dialog is closed.
-                    importExportStoragePermissionDialogFragment.show(getFragmentManager(), getString(R.string.storage_permission));
+                    storagePermissionDialogFragment.show(getSupportFragmentManager(), getString(R.string.storage_permission));
                 } else {  // Show the permission request directly.
                     // Request the storage permission.  The export will be run when it finishes.
                     ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
@@ -513,7 +521,7 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
     }
 
     @Override
-    public void onCloseImportExportStoragePermissionDialog() {
+    public void onCloseStoragePermissionDialog() {
         // Request the write external storage permission.  The import/export will be run when it finishes.
         ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
     }
@@ -523,25 +531,19 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
         // Get a handle for the import radiobutton.
         RadioButton importRadioButton = findViewById(R.id.import_radiobutton);
 
-        // Check to see if import or export is selected.
-        if (importRadioButton.isChecked()) {  // Import is selected.
-            // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
-            if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
+        // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
+        if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
+            // Run the import or export methods according to which radio button is selected.
+            if (importRadioButton.isChecked()) {  // Import is selected.
                 // Import the settings.
                 importSettings();
-            } else {  // The storage permission was not granted.
-                // Display an error snackbar.
-                Snackbar.make(importRadioButton, getString(R.string.cannot_import), Snackbar.LENGTH_LONG).show();
-            }
-        } else {  // Export is selected.
-            // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
-            if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
+            } else {  // Export is selected.
                 // Export the settings.
                 exportSettings();
-            } else {  // The storage permission was not granted.
-                // Display an error snackbar.
-                Snackbar.make(importRadioButton, getString(R.string.cannot_export), Snackbar.LENGTH_LONG).show();
             }
+        } else {  // The storage permission was not granted.
+            // Display an error snackbar.
+            Snackbar.make(importRadioButton, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -551,7 +553,7 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
             case (BROWSE_RESULT_CODE):
                 // Don't do anything if the user pressed back from the file picker.
                 if (resultCode == Activity.RESULT_OK) {
-                    // Get a handle for the file name EditText.
+                    // Get a handle for the file name edit text.
                     EditText fileNameEditText = findViewById(R.id.file_name_edittext);
 
                     // Get the file name URI.
@@ -563,7 +565,7 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
                     // Get the raw file name path.
                     String rawFileNamePath = fileNameUri.getPath();
 
-                    // Remove the warning that the file name path might be null.
+                    // Remove the incorrect lint warning that the file name path might be null.
                     assert rawFileNamePath != null;
 
                     // Check to see if the file name Path includes a valid storage location.
@@ -603,7 +605,7 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
 
             case OPENPGP_EXPORT_RESULT_CODE:
                 // Get the temporary unencrypted export file.
-                File temporaryUnencryptedExportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.privacy_browser_settings));
+                File temporaryUnencryptedExportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.settings_pbs));
 
                 // Delete the temporary unencrypted export file if it exists.
                 if (temporaryUnencryptedExportFile.exists()) {
@@ -622,11 +624,14 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
         // Instantiate the import export database helper.
         ImportExportDatabaseHelper importExportDatabaseHelper = new ImportExportDatabaseHelper();
 
-        // Get the export and temporary unencrypted export files.
-        File exportFile = new File(fileNameEditText.getText().toString());
-        File temporaryUnencryptedExportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.privacy_browser_settings));
+        // Get the export file string.
+        String exportFileString = fileNameEditText.getText().toString();
 
-        // Initialize the export status string.
+        // Get the export and temporary unencrypted export files.
+        File exportFile = new File(exportFileString);
+        File temporaryUnencryptedExportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.settings_pbs));
+
+        // Create an export status string.
         String exportStatus;
 
         // Export according to the encryption type.
@@ -674,7 +679,7 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
                     secureRandom.nextBytes(saltByteArray);
 
                     // Convert the encryption password to a byte array.
-                    byte[] encryptionPasswordByteArray = encryptionPasswordString.getBytes("UTF-8");
+                    byte[] encryptionPasswordByteArray = encryptionPasswordString.getBytes(StandardCharsets.UTF_8);
 
                     // Append the salt to the encryption password byte array.  This protects against rainbow table attacks.
                     byte[] encryptionPasswordWithSaltByteArray = new byte[encryptionPasswordByteArray.length + saltByteArray.length];
@@ -775,6 +780,9 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
                 startActivityForResult(openKeychainEncryptIntent, OPENPGP_EXPORT_RESULT_CODE);
                 break;
         }
+
+        // Add the file to the list of recent files.  This doesn't currently work, but maybe it will someday.
+        MediaScannerConnection.scanFile(this, new String[] {exportFileString}, new String[] {"application/x-sqlite3"}, null);
     }
 
     private void importSettings() {
@@ -800,7 +808,7 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
 
             case PASSWORD_ENCRYPTION:
                 // Use a private temporary import location.
-                File temporaryUnencryptedImportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.privacy_browser_settings));
+                File temporaryUnencryptedImportFile = new File(getApplicationContext().getCacheDir() + "/" + getString(R.string.settings_pbs));
 
                 try {
                     // Create an encrypted import file input stream.
@@ -832,7 +840,7 @@ public class ImportExportActivity extends AppCompatActivity implements ImportExp
                     encryptedImportFileInputStream.read(initializationVector);
 
                     // Convert the encryption password to a byte array.
-                    byte[] encryptionPasswordByteArray = encryptionPasswordString.getBytes("UTF-8");
+                    byte[] encryptionPasswordByteArray = encryptionPasswordString.getBytes(StandardCharsets.UTF_8);
 
                     // Append the salt to the encryption password byte array.  This protects against rainbow table attacks.
                     byte[] encryptionPasswordWithSaltByteArray = new byte[encryptionPasswordByteArray.length + saltByteArray.length];

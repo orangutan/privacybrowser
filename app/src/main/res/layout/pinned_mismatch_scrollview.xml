@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:padding="10dp"
+    android:orientation="vertical" >
+
+    <!-- Domain. -->
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/domain"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        android:textColor="?attr/sslTitle" />
+
+    <TextView
+        android:id="@+id/domain_name"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content" />
+
+    <TextView
+        android:id="@+id/ip_addresses"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"/>
+
+
+    <!-- Issued To. -->
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/issued_to"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        android:textColor="?attr/sslTitle" />
+
+    <TextView
+        android:id="@+id/issued_to_cname"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content" />
+
+    <TextView
+        android:id="@+id/issued_to_oname"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content" />
+
+    <TextView
+        android:id="@+id/issued_to_uname"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content" />
+
+
+    <!-- Issued By. -->
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/issued_by"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        android:textColor="?attr/sslTitle" />
+
+    <TextView
+        android:id="@+id/issued_by_cname"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content" />
+
+    <TextView
+        android:id="@+id/issued_by_oname"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content" />
+
+    <TextView
+        android:id="@+id/issued_by_uname"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content" />
+
+
+    <!-- Valid Dates. -->
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/valid_dates"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        android:textColor="?attr/sslTitle" />
+
+    <TextView
+        android:id="@+id/start_date"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content" />
+
+    <TextView
+        android:id="@+id/end_date"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content" />
+</LinearLayout>

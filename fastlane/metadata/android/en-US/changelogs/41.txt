@@ -1,0 +1,12 @@
+• Add the ability to scroll the app bar.
+• Create a Logcat Activity.
+• Allow users to specify the URL and which browser to open when creating a desktop shortcut.
+• Add Open With entries to the link and image context menus.
+• Allow setting default apps from the Open With chooser.
+• Fix a bug that allowed URL syntax highlighting while typing.
+• Fix the pinned mismatch dialog sometimes showing when there is no mismatch.
+• Updated Italian translation provided by Francesco Buratti.
+• Updated Russian translation.
+• Updated Spanish translation provided by Jose A. León.
+• Partial German translation by Bernhard G. Keller.
+• Partial Turkish translation.

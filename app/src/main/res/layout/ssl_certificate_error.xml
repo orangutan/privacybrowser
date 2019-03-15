@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2017,2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -48,9 +48,15 @@
             android:textColor="?attr/sslTitle" />
 
         <TextView
-            android:id="@+id/url_error_dialog"
+            android:id="@+id/url"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content" />
+
+        <TextView
+            android:id="@+id/ip_addresses"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/ip_addresses" />
 
         <!-- Issued To. -->
         <TextView
@@ -63,17 +69,17 @@
             android:textColor="?attr/sslTitle" />
 
         <TextView
-            android:id="@+id/issued_to_cname_error_dialog"
+            android:id="@+id/issued_to_cname"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content" />
 
         <TextView
-            android:id="@+id/issued_to_oname_error_dialog"
+            android:id="@+id/issued_to_oname"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content" />
 
         <TextView
-            android:id="@+id/issued_to_uname_error_dialog"
+            android:id="@+id/issued_to_uname"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"/>
 
@@ -90,17 +96,17 @@
             android:textColor="?attr/sslTitle"/>
 
         <TextView
-            android:id="@+id/issued_by_cname_error_dialog"
+            android:id="@+id/issued_by_cname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/issued_by_oname_error_dialog"
+            android:id="@+id/issued_by_oname"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content" />
 
         <TextView
-            android:id="@+id/issued_by_uname_error_dialog"
+            android:id="@+id/issued_by_uname"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content" />
 
@@ -117,12 +123,12 @@
             android:textColor="?attr/sslTitle"/>
 
         <TextView
-            android:id="@+id/start_date_error_dialog"
+            android:id="@+id/start_date"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content" />
 
         <TextView
-            android:id="@+id/end_date_error_dialog"
+            android:id="@+id/end_date"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content" />
     </LinearLayout>

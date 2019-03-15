@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2017-2018 Jose A. León Becerra.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017-2019 Jose A. León Becerra.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -23,8 +23,7 @@
 <resources>
     <!-- Activities. -->
     <string name="privacy_browser">Navegador Privado</string>
-    <string name="privacy_browser_settings">Configuración de Navegador Privado</string>
-    <!-- For translations, `android_asset_path` should be the localization abbreviation.  For example, Spanish is `es`.  This should not be translated unless the Guide and About sections are localized. -->
+    <!-- For translations, `android_asset_path` should be the localization abbreviation.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">es</string>
 
     <!-- MainWebViewActivity. -->
@@ -46,6 +45,7 @@
     <string name="close_navigation_drawer">Cerrar la caja de navegación</string>
     <string name="no_title">Sin título</string>
     <string name="unrecognized_url">URL no reconocida:</string>
+    <string name="open_with">Abrir con</string>
 
     <!-- Save As. -->
     <string name="save_as">Guardar como</string>
@@ -70,6 +70,7 @@
     <string name="close">Cerrar</string>
     <string name="domain">Dominio</string>
     <string name="domain_label">Dominio:</string>
+    <string name="ip_addresses">Direcciones IP:</string>
     <string name="issued_to">Emitido a</string>
     <string name="issued_by">Emitido por</string>
     <string name="common_name">Nombre Común (CN):</string>
@@ -91,11 +92,11 @@
     <string name="url">URL</string>
     <string name="url_label">URL:</string>
 
-    <!-- Pinned SSL Certificate Mismatch. -->
-    <string name="update_ssl">Actualizar SSL</string>
-    <string name="ssl_certificate_mismatch">No coinciden los certificados SSL</string>
-    <string name="current_ssl">SSL actual</string>
-    <string name="pinned_ssl">SSL fijado</string>
+    <!-- Pinned Mismatch. -->
+    <string name="pinned_mismatch">Desajuste fijado</string>
+    <string name="update">Actualizar</string>
+    <string name="current">Actual</string>
+    <string name="pinned">Fijado</string>
 
     <!-- HTTP Authentication. -->
     <string name="http_authentication">Autenticación HTTP</string>
@@ -111,10 +112,10 @@
     <string name="forward">Adelante</string>
     <string name="history">Historial</string>
         <string name="clear_history">Borrar historial</string>
-    <string name="bookmarks">Favoritos</string>
     <string name="downloads">Descargas</string>
     <string name="settings">Configuración</string>
     <string name="import_export">Importar/Exportar</string>
+    <string name="logcat">Logcat</string>
     <string name="guide">Guía</string>
     <string name="about">Acerca de</string>
     <string name="clear_and_exit">Borrar y salir</string>
@@ -126,11 +127,11 @@
     <string name="first_party_cookies">Cookies de primera parte</string>
     <string name="third_party_cookies">Cookies de terceras partes</string>
     <string name="dom_storage">Almacenamiento DOM</string>
-    <string name="form_data">Datos de formulario</string>
+    <string name="form_data">Datos de formulario</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
     <string name="clear_data">Borrar datos</string>
         <string name="clear_cookies">Borrar cookies</string>
         <string name="clear_dom_storage">Borrar almacenamiento DOM</string>
-        <string name="clear_form_data">Borrar datos de formulario</string>
+        <string name="clear_form_data">Borrar datos de formulario</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
     <string name="options_fanboys_annoyance_list">Lista molesta de Fanboy</string>
     <string name="options_fanboys_social_blocking_list">Lista de bloqueo social de Fanboy</string>
     <string name="options_block_all_third_party_requests">Bloquear todas las solicitudes de terceros</string>
@@ -160,6 +161,9 @@
         <string name="display_images">Mostrar imágenes</string>
         <string name="view_source">Ver la fuente</string>
     <string name="share">Compartir</string>
+        <string name="share_url">Compartir URL</string>
+        <string name="open_with_app">Abrir con App</string>
+        <string name="open_with_browser">Abrir con Navegador</string>
     <string name="find_on_page">Buscar en página</string>
     <string name="print">Imprimir</string>
         <string name="privacy_browser_web_page">Página web de Navegador Privado</string>
@@ -196,10 +200,13 @@
     <!-- Create Home Screen Shortcut Alert Dialog. -->
     <string name="create_shortcut">Crear acceso directo</string>
     <string name="shortcut_name">Nombre de acceso directo</string>
+    <string name="open_with_default_browser">Abrir con navegador por defecto.</string>
+    <string name="open_with_privacy_browser">Abrir con Navegador Privado.</string>
     <string name="cancel">Cancelar</string>
     <string name="create">Crear</string>
 
     <!-- Bookmarks. -->
+    <string name="bookmarks">Favoritos</string>
     <string name="database_view">Vista de base de datos</string>
     <string name="create_bookmark">Crear favorito</string>
     <string name="create_folder">Crear carpeta</string>
@@ -218,31 +225,27 @@
     <string name="save">Guardar</string>
 
     <!-- Bookmarks Contextual App Bar. -->
-    <string name="one_selected">1 seleccionado</string>
-    <string name="selected">seleccionados</string>  <!--This is a plural adjective.-->
-    <string name="selected_russian_ends_in_1">выбрана</string>
-    <string name="selected_russian_ends_in_2">выбраны</string>
-    <string name="selected_russian_everything_else">выбрано</string>
+    <string name="selected">Seleccionados:</string>  <!--This is a plural adjective.-->
     <string name="move_up">Subir</string>
     <string name="move_down">Bajar</string>
     <string name="edit">Editar</string>
     <string name="delete">Borrar</string>
     <string name="select_all">Selectionar todo</string>
-    <string name="one_bookmark_deleted">1 favorito borrado</string>
-    <string name="bookmarks_deleted">favoritos borrados</string>
-    <string name="bookmarks_deleted_russian_ends_in_1">закладка удалена</string>
-    <string name="bookmarks_deleted_russian_ends_in_2">закладки удалены</string>
-    <string name="bookmarks_deleted_russian_everything_else">акладок удалено</string>
+    <string name="bookmarks_deleted">Favoritos borrados:</string>
     <string name="undo">Deshacer</string>
 
     <!-- Bookmarks Database View. -->
     <string name="bookmarks_database_view">Vista de base de datos de favoritos</string>
     <string name="all_folders">Todas las carpetas</string>
     <string name="home_folder">Carpeta inicio</string>
+    <string name="sort">Ordenar</string>
+        <string name="sorted_by_database_id">Ordenados por ID de base de datos.</string>
+        <string name="sorted_by_display_order">Ordenados por orden de visualización.</string>
     <string name="database_id">ID de base de datos:</string>
     <string name="folder">Carpeta:</string>
     <string name="parent_folder">Carpeta superior:</string>
     <string name="display_order">Mostrar orden:</string>
+    <string name="cannot_deselect_bookmark">No se puede deseleccionar un favorito mientras la carpeta superior está seleccionada.</string>
 
     <!-- Requests. -->
     <string name="requests">Peticiones</string>
@@ -309,32 +312,101 @@
         <item>Imágenes deshabilitadas</item>
     </string-array>
     <string name="pinned_ssl_certificate">Certificado SSL fijado</string>
-    <string name="saved_ssl_certificate">Certificado SSL guardado</string>
-    <string name="current_website_ssl_certificate">Certificado SSL actual de la web</string>
-    <string name="load_an_encrypted_website">Cargar una página web cifrada antes de abrir la configuración de dominio para rellenar el certificado SSL de la página web actual.</string>
+        <string name="saved_ssl_certificate">Certificado SSL guardado</string>
+        <string name="current_website_ssl_certificate">Certificado SSL actual de la web</string>
+        <string name="load_an_encrypted_website">Cargar una página web cifrada antes de abrir la configuración de dominio para rellenar el certificado SSL de la página web actual.</string>
+    <string name="pinned_ip_addresses">Direcciones IP fijadas</string>
+        <string name="saved_ip_addresses">Direcciones IP guardadas</string>
+        <string name="current_ip_addresses">Direcciones IP actuales</string>
 
     <!-- Import/Export. -->
+    <string name="encryption">Cifrado</string>
+    <string-array name="encryption_type">
+        <item>Ninguno</item>
+        <item>Contraseña</item>
+        <item>OpenPGP</item>
+    </string-array>
+    <string name="kitkat_password_encryption_message">El cifrado de contraseñas no funciona en Android KitKat.</string>
+    <string name="openkeychain_required">El cifrado OpenPGP requiere que esté instalado OpenKeychain.</string>
+    <string name="openkeychain_import_instructions">El archivo sin cifrar tendrá que ser importado en un paso separado después de ser descifrado.</string>
+    <string name="settings_pbs">Configuración.pbs</string>
+    <string name="file_location">Ubicación del archivo</string>
     <string name="browse">Navegar</string>
     <string name="export">Exportar</string>
     <string name="import_button">Importar</string>  <!-- `import` is a reserved word and cannot be used as the name -->
+    <string name="decrypt">Descifrar</string>
     <string name="export_successful">Exportación exitosa.</string>
     <string name="export_failed">Exportación fallida:</string>
     <string name="import_failed">Importación fallida:</string>
-    <string name="cannot_export">Los ajustes no pueden exportarse a esta ubicación porque no se ha concedido el permiso de almacenamiento.</string>
-    <string name="cannot_import">Los ajustes no pueden importarse desde esta ubicación porque no se ha concedido el permiso de almacenamiento.</string>
     <string name="invalid_location">no es una ubicación válida.</string>
     <string name="storage_permission">Permiso de almacenamiento</string>
     <string name="storage_permission_message">Navegador Privado necesita el permiso de almacenamiento para acceder a los directorios públicos.
         Si se deniega, los directorios de la aplicación pueden seguir utilizándose.</string>
     <string name="storage_permission_explanation">El acceso a los archivos en directorios públicos requiere el permiso de almacenamiento.
         De lo contrario, sólo funcionarán los directorios de aplicaciones.</string>
+    <string name="cannot_use_location">Esta ubicación no se puede utilizar porque no se ha concedido el permiso de almacenamiento.</string>
+
+    <!-- Logcat. -->
+    <string name="copy">Copiar</string>
+    <string name="logcat_copied">Logcat copiado.</string>
+    <string name="clear">Borrar</string>
+    <string name="save_logcat">Guardar logcat</string>
+    <string name="privacy_browser_logcat_txt">Navegador Privado Logcat.txt</string>
+    <string name="file_saved_successfully">Archivo guardado con éxito.</string>
+    <string name="save_failed">Error al guardar:</string>
 
     <!-- Guide. -->
-    <string name="privacy_browser_guide">Guía de Navegador Privado</string>
     <string name="overview">Visión general</string>
     <string name="local_storage">Almacenamiento local</string>
     <string name="ssl_certificates">Certificados SSL</string>
     <string name="tracking_ids">Rastreo de IDs</string>
+
+    <!-- Download Location -->
+    <string name="download_location">Lugar de descarga</string>
+    <string name="download_location_message">Navegador Privado necesita el permiso de almacenamiento para utilizar el directorio de descarga público.
+        Si se deniega, se utilizará el directorio de descarga de la aplicación.</string>
+    <string name="ok">OK</string>
+
+    <!-- Orbot. -->
+    <string name="orbot_proxy_not_installed">Enviar a través de Orbot no funcionará a menos que se instale Orbot.</string>
+    <string name="waiting_for_orbot">Esperando a Orbot para conectar...</string>
+
+    <!-- About Activity. -->
+    <string name="about_privacy_browser">Acerca de Navegador Privado</string>
+    <string name="version">Versión</string>
+    <string name="version_code">código de versión</string>
+    <string name="hardware">Hardware</string>
+    <string name="brand">Marca:</string>
+    <string name="manufacturer">Fabricante:</string>
+    <string name="model">Modelo:</string>
+    <string name="device">Dispositivo:</string>
+    <string name="bootloader">Cargador de arranque:</string>
+    <string name="radio">Radio:</string>
+    <string name="software">Software</string>
+    <string name="android">Android:</string>
+    <string name="api">API</string>
+    <string name="build">Versión de compilación:</string>
+    <string name="security_patch">Parche de seguridad:</string>
+    <string name="webview">WebView:</string>
+    <string name="orbot">Orbot:</string>
+    <string name="openkeychain">OpenKeychain:</string>
+    <string name="easylist_label">EasyList:</string>
+    <string name="easyprivacy_label">EasyPrivacy:</string>
+    <string name="fanboy_annoyance_label">Lista molesta de Fanboy:</string>
+    <string name="fanboy_social_label">Lista de bloqueo social de Fanboy:</string>
+    <string name="ultraprivacy_label">Ultra Privacidad:</string>
+    <string name="package_signature">Firma del paquete</string>
+    <string name="issuer_dn">DN del emisor:</string>
+    <string name="subject_dn">DN del sujeto:</string>
+    <string name="certificate_version">Versión del certificado:</string>
+    <string name="serial_number">Número de serie:</string>
+    <string name="signature_algorithm">Algoritmo de firma:</string>
+    <string name="permissions">Permisos</string>
+    <string name="privacy_policy">Política de privacidad</string>
+    <string name="changelog">Historial de cambios</string>
+    <string name="licenses">Licencias</string>
+    <string name="contributors">Colaboradores</string>
+    <string name="links">Enlaces</string>
 
     <!-- Preferences. -->
     <string name="privacy">Privacidad</string>
@@ -432,11 +504,8 @@
     <string name="full_screen">Pantalla completa</string>
         <string name="full_screen_browsing_mode">Navegación de pantalla completa</string>
         <string name="full_screen_browsing_mode_summary">Doble toque para alternar a modo de navegación de pantalla completa.</string>
-        <string name="hide_system_bars">Esconder barras del systema</string>
-        <string name="hide_system_bars_summary">Esconder las barras de estado y de navegación en el modo de navegación a pantalla completa.
-            Esto no funciona bien si el teclado es mostrado durante el modo de navegación a pantalla completa.</string>
-        <string name="translucent_navigation_bar">Barra de navegación translúcida</string>
-        <string name="translucent_navigation_bar_summary">Hacer la barra de navegación translúcida en el modo de navegación a pantalla completa.</string>
+        <string name="hide_app_bar">Ocultar la barra de aplicaciones</string>
+        <string name="hide_app_bar_summary">Ocultar la barra de aplicaciones que contiene la URL.</string>
     <string name="clear_everything">Borrar todo</string>
         <string name="clear_everything_summary">Borra cookies, almacenamiento DOM, datos de formulario y la caché de  WebView.
             A continuación borra manualmente los directorios “app_webview” y “cache”.</string>
@@ -450,8 +519,8 @@
         <string name="clear_cache_summary">Borra la caché de WebView.</string>
     <string name="general">General</string>
         <string name="homepage">Página de inicio</string>
-        <string name="default_font_size">Tamaño de fuente por defecto</string>
-        <string-array name="default_font_size_entries">
+        <string name="font_size_preference">Tamaño de fuente</string>
+        <string-array name="font_size_entries">
             <item>25%</item>
             <item>50%</item>
             <item>75%</item>
@@ -472,62 +541,20 @@
                 <item>175%</item>
                 <item>200%</item>
             </string-array>
-        <string name="swipe_to_refresh_preference">Deslizar para actualizar</string>
+        <string name="swipe_to_refresh">Deslizar para actualizar</string>
         <string name="swipe_to_refresh_summary">Algunas webs no funcionan bien si la opción deslizar para actualizar está habilitada.</string>
+        <string name="scroll_app_bar">Desplazar la barra de aplicaciones</string>
+        <string name="scroll_app_bar_summary">Desplazar la barra de aplicaciones desde la parte superior de la pantalla cuando el WebView se desplaza hacia abajo.</string>
         <string name="display_additional_app_bar_icons">Mostrar iconos adicionales en la barra de aplicación</string>
         <string name="display_additional_app_bar_icons_summary">Mostrar iconos en la barra de aplicaciones para refrescar el WebView y, si hay espacio, para alternar entre cookies y almacenamiento DOM.</string>
+        <string name="download_with_external_app">Descargar con app externa</string>
+        <string name="download_with_external_app_summary">El gestor de descargas de Android no funciona bien en algunos dispositivos.</string>
         <string name="dark_theme">Tema oscuro</string>
         <string name="dark_theme_summary">Cambiar el tema reiniciará Navegador Privado.</string>
         <string name="night_mode">Modo noche</string>
         <string name="night_mode_summary">Activar el modo noche también activará javascript para todas las páginas web.</string>
         <string name="display_webpage_images">Mostrar imágenes de la página web</string>
         <string name="display_webpage_images_summary">Deshabilitar para conservar ancho de banda.</string>
-
-    <!-- Download Location -->
-    <string name="download_location">Lugar de descarga</string>
-    <string name="download_location_message">Navegador Privado necesita el permiso de almacenamiento para utilizar el directorio de descarga público.
-        Si se deniega, se utilizará el directorio de descarga de la aplicación.</string>
-    <string name="ok">OK</string>
-
-    <!-- Orbot. -->
-    <string name="orbot_proxy_not_installed">Enviar a través de Orbot no funcionará a menos que se instale Orbot.</string>
-    <string name="waiting_for_orbot">Esperando a Orbot para conectar...</string>
-
-    <!-- About Activity. -->
-    <string name="about_privacy_browser">Acerca de Navegador Privado</string>
-    <string name="version">Versión</string>
-        <string name="version_code">código de versión</string>
-        <string name="hardware">Hardware</string>
-            <string name="brand">Marca:</string>
-            <string name="manufacturer">Fabricante:</string>
-            <string name="model">Modelo:</string>
-            <string name="device">Dispositivo:</string>
-            <string name="bootloader">Cargador de arranque:</string>
-            <string name="radio">Radio:</string>
-        <string name="software">Software</string>
-            <string name="android">Android:</string>
-                <string name="api">API</string>
-            <string name="build">Versión de compilación:</string>
-            <string name="security_patch">Parche de seguridad:</string>
-            <string name="webview">WebView:</string>
-            <string name="orbot">Orbot:</string>
-            <string name="easylist_label">EasyList:</string>
-            <string name="easyprivacy_label">EasyPrivacy:</string>
-            <string name="fanboy_annoyance_label">Lista molesta de Fanboy:</string>
-            <string name="fanboy_social_label">Lista de bloqueo social de Fanboy:</string>
-            <string name="ultraprivacy_label">Ultra Privacidad:</string>
-        <string name="package_signature">Firma del paquete</string>
-            <string name="issuer_dn">DN del emisor:</string>
-            <string name="subject_dn">DN del sujeto:</string>
-            <string name="certificate_version">Versión del certificado:</string>
-            <string name="serial_number">Número de serie:</string>
-            <string name="signature_algorithm">Algoritmo de firma:</string>
-    <string name="permissions">Permisos</string>
-    <string name="privacy_policy">Política de privacidad</string>
-    <string name="changelog">Historial de cambios</string>
-    <string name="licenses">Licencias</string>
-    <string name="contributors">Colaboradores</string>
-    <string name="links">Enlaces</string>
 
     <!-- Ad Control. There are no ads in the standard flavor, but this string must exist because it is referenced in the code. -->
     <string name="ad_consent">Autorización publicitaria</string>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -138,8 +138,8 @@
             </RadioGroup>
         </LinearLayout>
 
-        <!-- Folder name.  `android.support.design.widget.TextInputLayout` makes the `android:hint` float above the `EditText`. -->
-        <android.support.design.widget.TextInputLayout
+        <!-- Folder name.  The `TextInputLayout` makes the `android:hint` float above the `EditText`. -->
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_marginTop="12dp"
@@ -148,7 +148,7 @@
             android:layout_marginEnd="4dp" >
 
             <!-- `android:imeOptions="actionGo"` sets the keyboard to have a `go` key instead of a `new line` key.  `android:inputType="textUri"` disables spell check in the `EditText`. -->
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_folder_name_edittext"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
@@ -156,7 +156,7 @@
                 android:imeOptions="actionGo"
                 android:inputType="textUri"
                 android:selectAllOnFocus="true" />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Folder. -->
         <LinearLayout

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017,2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -17,8 +17,8 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<!-- `android:choiceMode="singleChoice"` allows a selected domain to be highlighted.  `android:dividerHeight` must be specified with `android:divider` or the height will be `0dp`.  In our case we want the height to be `0dp`. -->
-<tools:ListView
+<!-- `android:choiceMode="singleChoice"` allows a selected domain to be highlighted.-->
+<ListView
     android:id="@+id/domains_listview"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"

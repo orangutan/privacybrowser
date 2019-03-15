@@ -1,0 +1,2 @@
+• Fix eines Bugs, der Privacy Browser bei Bookmarks von Seiten mit sehr grossen Fav-Icons abstürzen liess.
+• Privacy Browser kann nun auch auf SD-Karten verschoben werden.

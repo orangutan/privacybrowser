@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -20,15 +20,17 @@
 package com.stoutner.privacybrowser.activities;
 
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.WindowManager;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
 
 import com.stoutner.privacybrowser.fragments.AboutTabFragment;
 import com.stoutner.privacybrowser.R;
@@ -55,13 +57,17 @@ public class AboutActivity extends AppCompatActivity {
         setContentView(R.layout.about_coordinatorlayout);
 
         // `SupportActionBar` from `android.support.v7.app.ActionBar` must be used until the minimum API is >= 21.
-        Toolbar aboutAppBar = findViewById(R.id.about_toolbar);
-        setSupportActionBar(aboutAppBar);
+        Toolbar toolbar = findViewById(R.id.about_toolbar);
+        setSupportActionBar(toolbar);
 
-        // Display the home arrow on `supportAppBar`.
-        final ActionBar appBar = getSupportActionBar();
-        assert appBar != null;  // This assert removes the incorrect warning in Android Studio on the following line that appBar might be null.
-        appBar.setDisplayHomeAsUpEnabled(true);
+        // Get a handle for the action bar.
+        final ActionBar actionBar = getSupportActionBar();
+
+        // Remove the incorrect lint warning that the action bar might be null.
+        assert actionBar != null;  //
+
+        // Display the home arrow on action bar.
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         //  Setup the ViewPager.
         ViewPager aboutViewPager = findViewById(R.id.about_viewpager);
@@ -73,8 +79,9 @@ public class AboutActivity extends AppCompatActivity {
     }
 
     private class aboutPagerAdapter extends FragmentPagerAdapter {
-        private aboutPagerAdapter(FragmentManager fm) {
-            super(fm);
+        private aboutPagerAdapter(FragmentManager fragmentManager) {
+            // Run the default commands.
+            super(fragmentManager);
         }
 
         @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * Download cookie code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
  *
@@ -24,8 +24,8 @@ package com.stoutner.privacybrowser.activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.app.DownloadManager;
+import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
@@ -36,6 +36,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -45,6 +46,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.http.SslCertificate;
 import android.net.http.SslError;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -52,25 +54,6 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-// `ShortcutInfoCompat`, `ShortcutManagerCompat`, and `IconCompat` can be switched to the non-compat version once API >= 26.
-import android.support.v4.content.pm.ShortcutInfoCompat;
-import android.support.v4.content.pm.ShortcutManagerCompat;
-import android.support.v4.graphics.drawable.IconCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDialogFragment;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
@@ -93,6 +76,7 @@ import android.webkit.ValueCallback;
 import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceResponse;
+import android.webkit.WebSettings;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -109,6 +93,23 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
+
 import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.dialogs.AdConsentDialog;
@@ -120,7 +121,7 @@ import com.stoutner.privacybrowser.dialogs.DownloadLocationPermissionDialog;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkFolderDialog;
 import com.stoutner.privacybrowser.dialogs.HttpAuthenticationDialog;
-import com.stoutner.privacybrowser.dialogs.PinnedSslCertificateMismatchDialog;
+import com.stoutner.privacybrowser.dialogs.PinnedMismatchDialog;
 import com.stoutner.privacybrowser.dialogs.UrlHistoryDialog;
 import com.stoutner.privacybrowser.dialogs.ViewSslCertificateDialog;
 import com.stoutner.privacybrowser.helpers.AdHelper;
@@ -130,16 +131,20 @@ import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 import com.stoutner.privacybrowser.helpers.OrbotProxyHelper;
 import com.stoutner.privacybrowser.dialogs.DownloadFileDialog;
 import com.stoutner.privacybrowser.dialogs.SslCertificateErrorDialog;
+import com.stoutner.privacybrowser.views.NestedScrollWebView;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.ref.WeakReference;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -150,9 +155,8 @@ import java.util.Set;
 
 // AppCompatActivity from android.support.v7.app.AppCompatActivity must be used to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
-        CreateHomeScreenShortcutDialog.CreateHomeScreenShortcutListener, DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener,
-        DownloadLocationPermissionDialog.DownloadLocationPermissionDialogListener, EditBookmarkDialog.EditBookmarkListener, EditBookmarkFolderDialog.EditBookmarkFolderListener,
-        HttpAuthenticationDialog.HttpAuthenticationListener, NavigationView.OnNavigationItemSelectedListener, PinnedSslCertificateMismatchDialog.PinnedSslCertificateMismatchListener,
+        DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, DownloadLocationPermissionDialog.DownloadLocationPermissionDialogListener, EditBookmarkDialog.EditBookmarkListener,
+        EditBookmarkFolderDialog.EditBookmarkFolderListener, HttpAuthenticationDialog.HttpAuthenticationListener, NavigationView.OnNavigationItemSelectedListener, PinnedMismatchDialog.PinnedMismatchListener,
         SslCertificateErrorDialog.SslCertificateErrorListener, UrlHistoryDialog.UrlHistoryListener {
 
     // `darkTheme` is public static so it can be accessed from everywhere.
@@ -163,21 +167,29 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // `favoriteIconBitmap` is public static so it can be accessed from `CreateHomeScreenShortcutDialog`, `BookmarksActivity`, `BookmarksDatabaseViewActivity`, `CreateBookmarkDialog`,
     // `CreateBookmarkFolderDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`, `EditBookmarkDatabaseViewDialog`, and `ViewSslCertificateDialog`.  It is also used in `onCreate()`,
-    // `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onCreateHomeScreenShortcutCreate()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `applyDomainSettings()`.
+    // `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onCreateHomeScreenShortcut()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `applyDomainSettings()`.
     public static Bitmap favoriteIconBitmap;
 
-    // `formattedUrlString` is public static so it can be accessed from `BookmarksActivity`, `CreateBookmarkDialog`, and `AddDomainDialog`.
+    // `favoriteIconDefaultBitmap` public static so it can be accessed from `PinnedMismatchDialog`.  It is also used in `onCreate()` and `applyDomainSettings`.
+    public static Bitmap favoriteIconDefaultBitmap;
+
+    // `formattedUrlString` is public static so it can be accessed from `AddDomainDialog`, `BookmarksActivity`, `DomainSettingsFragment`, `CreateBookmarkDialog`,
+    // and `PinnedMismatchDialog`.
     // It is also used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onCreateHomeScreenShortcutCreate()`, `loadUrlFromTextBox()`, and `applyProxyThroughOrbot()`.
     public static String formattedUrlString;
 
-    // `sslCertificate` is public static so it can be accessed from `DomainsActivity`, `DomainsListFragment`, `DomainSettingsFragment`, `PinnedSslCertificateMismatchDialog`,
-    // and `ViewSslCertificateDialog`.  It is also used in `onCreate()`.
+    // `sslCertificate` is public static so it can be accessed from `DomainsActivity`, `DomainsListFragment`, `DomainSettingsFragment`, `PinnedMismatchDialog`, and `ViewSslCertificateDialog`.
+    // It is also used in `onCreate()` and `checkPinnedMismatch()`.
     public static SslCertificate sslCertificate;
+
+    // `currentHostIpAddresses` is public static so it can be accessed from `DomainSettingsFragment` and `ViewSslCertificateDialog`.
+    // It is also used in `onCreate()` and `GetHostIpAddresses()`.
+    public static String currentHostIpAddresses;
 
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxyThroughOrbot()`.
     public static String orbotStatus;
 
-    // `webViewTitle` is public static so it can be accessed from `CreateBookmarkDialog` and `CreateHomeScreenShortcutDialog`.  It is also used in `onCreate()`.
+    // `webViewTitle` is public static so it can be accessed from `CreateBookmarkDialog`.  It is also used in `onCreate()`.
     public static String webViewTitle;
 
     // `appliedUserAgentString` is public static so it can be accessed from `ViewSourceActivity`.  It is also used in `applyDomainSettings()`.
@@ -254,18 +266,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `loadBookmarksFolder()`.
     public static String currentBookmarksFolder;
 
-    // `domainSettingsDatabaseId` is public static so it can be accessed from `PinnedSslCertificateMismatchDialog`.  It is also used in `onCreate()`, `onOptionsItemSelected()`, and `applyDomainSettings()`.
+    // `domainSettingsDatabaseId` is public static so it can be accessed from `PinnedMismatchDialog`.  It is also used in `onCreate()`, `onOptionsItemSelected()`, and `applyDomainSettings()`.
     public static int domainSettingsDatabaseId;
 
-    // The pinned domain SSL Certificate variables are public static so they can be accessed from `PinnedSslCertificateMismatchDialog`.  They are also used in `onCreate()` and `applyDomainSettings()`.
-    public static String pinnedDomainSslIssuedToCNameString;
-    public static String pinnedDomainSslIssuedToONameString;
-    public static String pinnedDomainSslIssuedToUNameString;
-    public static String pinnedDomainSslIssuedByCNameString;
-    public static String pinnedDomainSslIssuedByONameString;
-    public static String pinnedDomainSslIssuedByUNameString;
-    public static Date pinnedDomainSslStartDate;
-    public static Date pinnedDomainSslEndDate;
+    // The pinned variables are public static so they can be accessed from `PinnedMismatchDialog`.  They are also used in `onCreate()`, `applyDomainSettings()`, and `checkPinnedMismatch()`.
+    public static String pinnedSslIssuedToCName;
+    public static String pinnedSslIssuedToOName;
+    public static String pinnedSslIssuedToUName;
+    public static String pinnedSslIssuedByCName;
+    public static String pinnedSslIssuedByOName;
+    public static String pinnedSslIssuedByUName;
+    public static Date pinnedSslStartDate;
+    public static Date pinnedSslEndDate;
+    public static String pinnedHostIpAddresses;
 
     // The user agent constants are public static so they can be accessed from `SettingsFragment`, `DomainsActivity`, and `DomainSettingsFragment`.
     public final static int UNRECOGNIZED_USER_AGENT = -1;
@@ -276,30 +289,35 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public final static int DOMAINS_CUSTOM_USER_AGENT = 13;
 
 
-    // `appBar` is used in `onCreate()`, `onOptionsItemSelected()`, `closeFindOnPage()`, `applyAppSettings()`, and `applyProxyThroughOrbot()`.
-    private ActionBar appBar;
+
+    // `urlIsLoading` is used in `onCreate()`, `onCreateOptionsMenu()`, `loadUrl()`, `applyDomainSettings()`, and `GetHostIpAddresses`.
+    private static boolean urlIsLoading;
+
+    // `gettingIpAddresses` is used in `onCreate() and `GetHostIpAddresses`.
+    private static boolean gettingIpAddresses;
+
+    // `pinnedDomainSslCertificate` is used in `onCreate()`, `applyDomainSettings()`, and `checkPinnedMismatch()`.
+    private static boolean pinnedSslCertificate;
+
+    // `pinnedIpAddress` is used in `applyDomainSettings()` and `checkPinnedMismatch()`.
+    private static boolean pinnedIpAddresses;
+
+    // `ignorePinnedDomainInformation` is used in `onSslMismatchProceed()`, `applyDomainSettings()`, and `checkPinnedMismatch()`.
+    private static boolean ignorePinnedDomainInformation;
+
+    // The fragment manager is initialized in `onCreate()` and accessed from the static `checkPinnedMismatch()`.
+    private static FragmentManager fragmentManager;
+
 
     // `navigatingHistory` is used in `onCreate()`, `onNavigationItemSelected()`, `onSslMismatchBack()`, and `applyDomainSettings()`.
     private boolean navigatingHistory;
 
-    // `favoriteIconDefaultBitmap` is used in `onCreate()` and `applyDomainSettings`.
-    private Bitmap favoriteIconDefaultBitmap;
-
-    // `drawerLayout` is used in `onCreate()`, `onNewIntent()`, `onBackPressed()`, and `onRestart()`.
-    private DrawerLayout drawerLayout;
-
-    // `rootCoordinatorLayout` is used in `onCreate()` and `applyAppSettings()`.
-    private CoordinatorLayout rootCoordinatorLayout;
-
     // `mainWebView` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`,
-    // `findNextOnPage()`, `closeFindOnPage()`, `loadUrlFromTextBox()`, `onSslMismatchBack()`, `setDisplayWebpageImages()`, and `applyProxyThroughOrbot()`.
-    private WebView mainWebView;
+    // `findNextOnPage()`, `closeFindOnPage()`, `loadUrlFromTextBox()`, `onSslMismatchBack()`, and `applyProxyThroughOrbot()`.
+    private NestedScrollWebView mainWebView;
 
     // `fullScreenVideoFrameLayout` is used in `onCreate()` and `onConfigurationChanged()`.
     private FrameLayout fullScreenVideoFrameLayout;
-
-    // `swipeRefreshLayout` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `onRestart()`.
-    private SwipeRefreshLayout swipeRefreshLayout;
 
     // `urlAppBarRelativeLayout` is used in `onCreate()` and `applyDomainSettings()`.
     private RelativeLayout urlAppBarRelativeLayout;
@@ -330,9 +348,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // `nightMode` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and  `applyDomainSettings()`.
     private boolean nightMode;
-
-    // `displayWebpageImagesBoolean` is used in `applyAppSettings()` and `applyDomainSettings()`.
-    private boolean displayWebpageImagesBoolean;
 
     // 'homepage' is used in `onCreate()`, `onNavigationItemSelected()`, and `applyProxyThroughOrbot()`.
     private String homepage;
@@ -383,11 +398,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `inFullScreenBrowsingMode` is used in `onCreate()`, `onConfigurationChanged()`, and `applyAppSettings()`.
     private boolean inFullScreenBrowsingMode;
 
-    // `hideSystemBarsOnFullscreen` is used in `onCreate()` and `applyAppSettings()`.
-    private boolean hideSystemBarsOnFullscreen;
-
-    // `translucentNavigationBarOnFullscreen` is used in `onCreate()` and `applyAppSettings()`.
-    private boolean translucentNavigationBarOnFullscreen;
+    // Hide app bar is used in `onCreate()` and `applyAppSettings()`.
+    private boolean hideAppBar;
 
     // `reapplyDomainSettingsOnRestart` is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, and `onAddDomain()`, .
     private boolean reapplyDomainSettingsOnRestart;
@@ -398,11 +410,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `displayingFullScreenVideo` is used in `onCreate()` and `onResume()`.
     private boolean displayingFullScreenVideo;
 
+    // `downloadWithExternalApp` is used in `onCreate()`, `onCreateContextMenu()`, and `applyDomainSettings()`.
+    private boolean downloadWithExternalApp;
+
     // `currentDomainName` is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onAddDomain()`, and `applyDomainSettings()`.
     private String currentDomainName;
-
-    // `ignorePinnedSslCertificateForDomain` is used in `onCreate()`, `onSslMismatchProceed()`, and `applyDomainSettings()`.
-    private boolean ignorePinnedSslCertificate;
 
     // `orbotStatusBroadcastReceiver` is used in `onCreate()` and `onDestroy()`.
     private BroadcastReceiver orbotStatusBroadcastReceiver;
@@ -410,17 +422,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `waitingForOrbot` is used in `onCreate()`, `onResume()`, and `applyProxyThroughOrbot()`.
     private boolean waitingForOrbot;
 
-    // `domainSettingsApplied` is used in `prepareOptionsMenu()`, `applyDomainSettings()`, and `setDisplayWebpageImages()`.
+    // `domainSettingsApplied` is used in `prepareOptionsMenu()` and `applyDomainSettings()`.
     private boolean domainSettingsApplied;
 
     // `domainSettingsJavaScriptEnabled` is used in `onOptionsItemSelected()` and `applyDomainSettings()`.
     private Boolean domainSettingsJavaScriptEnabled;
-
-    // `displayWebpageImagesInt` is used in `applyDomainSettings()` and `setDisplayWebpageImages()`.
-    private int displayWebpageImagesInt;
-
-    // `onTheFlyDisplayImagesSet` is used in `applyDomainSettings()` and `setDisplayWebpageImages()`.
-    private boolean onTheFlyDisplayImagesSet;
 
     // `waitingForOrbotHtmlString` is used in `onCreate()` and `applyProxyThroughOrbot()`.
     private String waitingForOrbotHtmlString;
@@ -428,20 +434,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `privateDataDirectoryString` is used in `onCreate()`, `onOptionsItemSelected()`, and `onNavigationItemSelected()`.
     private String privateDataDirectoryString;
 
-    // `findOnPageLinearLayout` is used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
-    private LinearLayout findOnPageLinearLayout;
-
     // `findOnPageEditText` is used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
     private EditText findOnPageEditText;
 
     // `displayAdditionalAppBarIcons` is used in `onCreate()` and `onCreateOptionsMenu()`.
     private boolean displayAdditionalAppBarIcons;
 
-    // `drawerToggle` is used in `onCreate()`, `onPostCreate()`, `onConfigurationChanged()`, `onNewIntent()`, and `onNavigationItemSelected()`.
-    private ActionBarDrawerToggle drawerToggle;
-
-    // `supportAppBar` is used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
-    private Toolbar supportAppBar;
+    // The action bar drawer toggle is initialized in `onCreate()` and used in `onResume()`.
+    private ActionBarDrawerToggle actionBarDrawerToggle;
 
     // `urlTextBox` is used in `onCreate()`, `onOptionsItemSelected()`, `loadUrlFromTextBox()`, `loadUrl()`, and `highlightUrlText()`.
     private EditText urlTextBox;
@@ -451,6 +451,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private ForegroundColorSpan initialGrayColorSpan;
     private ForegroundColorSpan finalGrayColorSpan;
 
+    // The drawer header padding variables are used in `onCreate()` and `onConfigurationChanged()`.
+    private int drawerHeaderPaddingLeftAndRight;
+    private int drawerHeaderPaddingTop;
+    private int drawerHeaderPaddingBottom;
+
     // `sslErrorHandler` is used in `onCreate()`, `onSslErrorCancel()`, and `onSslErrorProceed`.
     private SslErrorHandler sslErrorHandler;
 
@@ -459,15 +464,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // `inputMethodManager` is used in `onOptionsItemSelected()`, `loadUrlFromTextBox()`, and `closeFindOnPage()`.
     private InputMethodManager inputMethodManager;
-
-    // `mainWebViewRelativeLayout` is used in `onCreate()` and `onNavigationItemSelected()`.
-    private RelativeLayout mainWebViewRelativeLayout;
-
-    // `urlIsLoading` is used in `onCreate()`, `onCreateOptionsMenu()`, `loadUrl()`, and `applyDomainSettings()`.
-    private boolean urlIsLoading;
-
-    // `pinnedDomainSslCertificate` is used in `onCreate()` and `applyDomainSettings()`.
-    private boolean pinnedDomainSslCertificate;
 
     // `bookmarksDatabaseHelper` is used in `onCreate()`, `onDestroy`, `onOptionsItemSelected()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`,
     // and `loadBookmarksFolder()`.
@@ -511,7 +507,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // Remove Android Studio's warning about the dangers of using SetJavaScriptEnabled.  The whole premise of Privacy Browser is built around an understanding of these dangers.
     // Also, remove the warning about needing to override `performClick()` when using an `OnTouchListener` with `WebView`.
     @SuppressLint({"SetJavaScriptEnabled", "ClickableViewAccessibility"})
-    // Remove Android Studio's warning about deprecations.  We have to use the deprecated `getColor()` until API >= 23.
+    // Remove Android Studio's warning about deprecations.  The deprecated `getColor()` must be used until API >= 23.
     @SuppressWarnings("deprecation")
     protected void onCreate(Bundle savedInstanceState) {
         // Get a handle for the shared preferences.
@@ -537,27 +533,29 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         super.onCreate(savedInstanceState);
 
         // Set the content view.
-        setContentView(R.layout.main_drawerlayout);
+        setContentView(R.layout.main_framelayout);
 
-        // Get a handle for `inputMethodManager`.
+        // Get handles for views, resources, and managers.
+        Resources resources = getResources();
+        fragmentManager = getSupportFragmentManager();
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
-        // `SupportActionBar` from `android.support.v7.app.ActionBar` must be used until the minimum API is >= 21.
-        supportAppBar = findViewById(R.id.app_bar);
-        setSupportActionBar(supportAppBar);
-        appBar = getSupportActionBar();
+        // Set the action bar.  `SupportActionBar` must be used until the minimum API is >= 21.
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
 
-        // This is needed to get rid of the Android Studio warning that `appBar` might be null.
-        assert appBar != null;
+        // This is needed to get rid of the Android Studio warning that the action bar might be null.
+        assert actionBar != null;
 
         // Add the custom `url_app_bar` layout, which shows the favorite icon and the URL text bar.
-        appBar.setCustomView(R.layout.url_app_bar);
-        appBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        actionBar.setCustomView(R.layout.url_app_bar);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 
         // Initialize the foreground color spans for highlighting the URLs.  We have to use the deprecated `getColor()` until API >= 23.
-        redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
-        initialGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
-        finalGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
+        redColorSpan = new ForegroundColorSpan(resources.getColor(R.color.red_a700));
+        initialGrayColorSpan = new ForegroundColorSpan(resources.getColor(R.color.gray_500));
+        finalGrayColorSpan = new ForegroundColorSpan(resources.getColor(R.color.gray_500));
 
         // Get a handle for `urlTextBox`.
         urlTextBox = findViewById(R.id.url_edittext);
@@ -583,11 +581,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // If the event is a key-down event on the `enter` button, load the URL.
             if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                 // Load the URL into the mainWebView and consume the event.
-                try {
-                    loadUrlFromTextBox();
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+                loadUrlFromTextBox();
+
                 // If the enter key was pressed, consume the event.
                 return true;
             } else {
@@ -625,17 +620,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Register `orbotStatusBroadcastReceiver` on `this` context.
         this.registerReceiver(orbotStatusBroadcastReceiver, new IntentFilter("org.torproject.android.intent.action.STATUS"));
 
-        // Get handles for views that need to be accessed.
-        drawerLayout = findViewById(R.id.drawerlayout);
-        rootCoordinatorLayout = findViewById(R.id.root_coordinatorlayout);
+        // Get handles for views that need to be modified.
+        FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
+        DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
+        RelativeLayout mainContentRelativeLayout = findViewById(R.id.main_content_relativelayout);
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
+        mainWebView = findViewById(R.id.main_webview);
         bookmarksListView = findViewById(R.id.bookmarks_drawer_listview);
         bookmarksTitleTextView = findViewById(R.id.bookmarks_title_textview);
         FloatingActionButton launchBookmarksActivityFab = findViewById(R.id.launch_bookmarks_activity_fab);
         FloatingActionButton createBookmarkFolderFab = findViewById(R.id.create_bookmark_folder_fab);
         FloatingActionButton createBookmarkFab = findViewById(R.id.create_bookmark_fab);
-        mainWebViewRelativeLayout = findViewById(R.id.main_webview_relativelayout);
-        mainWebView = findViewById(R.id.main_webview);
-        findOnPageLinearLayout = findViewById(R.id.find_on_page_linearlayout);
         findOnPageEditText = findViewById(R.id.find_on_page_edittext);
         fullScreenVideoFrameLayout = findViewById(R.id.full_screen_video_framelayout);
         urlAppBarRelativeLayout = findViewById(R.id.url_app_bar_relativelayout);
@@ -643,15 +638,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Set the bookmarks drawer resources according to the theme.  This can't be done in the layout due to compatibility issues with the `DrawerLayout` support widget.
         if (darkTheme) {
-            launchBookmarksActivityFab.setImageDrawable(getResources().getDrawable(R.drawable.bookmarks_dark));
-            createBookmarkFolderFab.setImageDrawable(getResources().getDrawable(R.drawable.create_folder_dark));
-            createBookmarkFab.setImageDrawable(getResources().getDrawable(R.drawable.create_bookmark_dark));
-            bookmarksListView.setBackgroundColor(getResources().getColor(R.color.gray_850));
+            launchBookmarksActivityFab.setImageDrawable(resources.getDrawable(R.drawable.bookmarks_dark));
+            createBookmarkFolderFab.setImageDrawable(resources.getDrawable(R.drawable.create_folder_dark));
+            createBookmarkFab.setImageDrawable(resources.getDrawable(R.drawable.create_bookmark_dark));
+            bookmarksListView.setBackgroundColor(resources.getColor(R.color.gray_850));
         } else {
-            launchBookmarksActivityFab.setImageDrawable(getResources().getDrawable(R.drawable.bookmarks_light));
-            createBookmarkFolderFab.setImageDrawable(getResources().getDrawable(R.drawable.create_folder_light));
-            createBookmarkFab.setImageDrawable(getResources().getDrawable(R.drawable.create_bookmark_light));
-            bookmarksListView.setBackgroundColor(getResources().getColor(R.color.white));
+            launchBookmarksActivityFab.setImageDrawable(resources.getDrawable(R.drawable.bookmarks_light));
+            createBookmarkFolderFab.setImageDrawable(resources.getDrawable(R.drawable.create_folder_light));
+            createBookmarkFab.setImageDrawable(resources.getDrawable(R.drawable.create_bookmark_light));
+            bookmarksListView.setBackgroundColor(resources.getColor(R.color.white));
         }
 
         // Set the launch bookmarks activity FAB to launch the bookmarks activity.
@@ -668,16 +663,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Set the create new bookmark folder FAB to display an alert dialog.
         createBookmarkFolderFab.setOnClickListener(v -> {
-            // Show the `CreateBookmarkFolderDialog` `AlertDialog` and name the instance `@string/create_folder`.
-            AppCompatDialogFragment createBookmarkFolderDialog = new CreateBookmarkFolderDialog();
-            createBookmarkFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_folder));
+            // Show the create bookmark folder dialog and name the instance `@string/create_folder`.
+            DialogFragment createBookmarkFolderDialog = new CreateBookmarkFolderDialog();
+            createBookmarkFolderDialog.show(fragmentManager, resources.getString(R.string.create_folder));
         });
 
         // Set the create new bookmark FAB to display an alert dialog.
         createBookmarkFab.setOnClickListener(view -> {
-            // Show the `CreateBookmarkDialog` `AlertDialog` and name the instance `@string/create_bookmark`.
-            AppCompatDialogFragment createBookmarkDialog = new CreateBookmarkDialog();
-            createBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_bookmark));
+            // Show the create bookmark dialog and name the instance `@string/create_bookmark`.
+            DialogFragment createBookmarkDialog = new CreateBookmarkDialog();
+            createBookmarkDialog.show(fragmentManager, resources.getString(R.string.create_bookmark));
         });
 
         // Create a double-tap listener to toggle full-screen mode.
@@ -686,66 +681,47 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @Override
             public boolean onDoubleTap(MotionEvent event) {
                 if (fullScreenBrowsingModeEnabled) {  // Only process the double-tap if full screen browsing mode is enabled.
-                    // Toggle `inFullScreenBrowsingMode`.
+                    // Toggle the full screen browsing mode tracker.
                     inFullScreenBrowsingMode = !inFullScreenBrowsingMode;
 
+                    // Toggle the full screen browsing mode.
                     if (inFullScreenBrowsingMode) {  // Switch to full screen mode.
-                        // Hide the `appBar`.
-                        appBar.hide();
+                        // Hide the app bar if specified.
+                        if (hideAppBar) {
+                            actionBar.hide();
+                        }
 
                         // Hide the banner ad in the free flavor.
                         if (BuildConfig.FLAVOR.contentEquals("free")) {
-                            // The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
                             AdHelper.hideAd(findViewById(R.id.adview));
                         }
 
-                        // Modify the system bars.
-                        if (hideSystemBarsOnFullscreen) {  // Hide everything.
-                            // Remove the translucent overlays.
-                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                        // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-                            // Remove the translucent status bar overlay on the `Drawer Layout`, which is special and needs its own command.
-                            drawerLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-
-                            /* SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
-                             * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
-                             * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
-                             */
-                            rootCoordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
-                            // Set `rootCoordinatorLayout` to fill the whole screen.
-                            rootCoordinatorLayout.setFitsSystemWindows(false);
-                        } else {  // Hide everything except the status and navigation bars.
-                            // Set `rootCoordinatorLayout` to fit under the status and navigation bars.
-                            rootCoordinatorLayout.setFitsSystemWindows(false);
-
-                            // There is an Android Support Library bug that causes a scrim to print on the right side of the `Drawer Layout` when the navigation bar is displayed on the right of the screen.
-                            if (translucentNavigationBarOnFullscreen) {
-                                // Set the navigation bar to be translucent.
-                                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-                            }
-                        }
+                        /* Hide the system bars.
+                         * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                         * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+                         * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                         * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+                         */
+                        rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
                     } else {  // Switch to normal viewing mode.
-                        // Show the `appBar`.
-                        appBar.show();
+                        // Show the app bar.
+                        actionBar.show();
 
-                        // Show the `BannerAd` in the free flavor.
+                        // Show the banner ad in the free flavor.
                         if (BuildConfig.FLAVOR.contentEquals("free")) {
-                            // Reload the ad.  The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
+                            // Reload the ad.
                             AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_unit_id));
                         }
 
-                        // Remove the translucent navigation bar flag if it is set.
-                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+                        // Remove the `SYSTEM_UI` flags from the root frame layout.
+                        rootFrameLayout.setSystemUiVisibility(0);
 
-                        // Add the translucent status flag if it is unset.  This also resets `drawerLayout's` `View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN`.
+                        // Add the translucent status flag.
                         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-                        // Remove any `SYSTEM_UI` flags from `rootCoordinatorLayout`.
-                        rootCoordinatorLayout.setSystemUiVisibility(0);
-
-                        // Constrain `rootCoordinatorLayout` inside the status and navigation bars.
-                        rootCoordinatorLayout.setFitsSystemWindows(true);
                     }
 
                     // Consume the double-tap.
@@ -757,9 +733,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         });
 
         // Pass all touch events on `mainWebView` through `gestureDetector` to check for double-taps.
-        mainWebView.setOnTouchListener((View v, MotionEvent event) -> {
+        mainWebView.setOnTouchListener((View view, MotionEvent event) -> {
             // Call `performClick()` on the view, which is required for accessibility.
-            v.performClick();
+            view.performClick();
 
             // Send the `event` to `gestureDetector`.
             return gestureDetector.onTouchEvent(event);
@@ -768,7 +744,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Update `findOnPageCountTextView`.
         mainWebView.setFindListener(new WebView.FindListener() {
             // Get a handle for `findOnPageCountTextView`.
-            final TextView findOnPageCountTextView = (TextView) findViewById(R.id.find_on_page_count_textview);
+            final TextView findOnPageCountTextView = findViewById(R.id.find_on_page_count_textview);
 
             @Override
             public void onFindResultReceived(int activeMatchOrdinal, int numberOfMatches, boolean isDoneCounting) {
@@ -821,10 +797,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
         });
 
-        // Implement swipe to refresh
-        swipeRefreshLayout = findViewById(R.id.swipe_refreshlayout);
-        swipeRefreshLayout.setColorSchemeResources(R.color.blue_700);
+        // Implement swipe to refresh.
         swipeRefreshLayout.setOnRefreshListener(() -> mainWebView.reload());
+
+        // The swipe to refresh circle doesn't always hide itself completely unless it is moved up 10 pixels.
+        swipeRefreshLayout.setProgressViewOffset(false, swipeRefreshLayout.getProgressViewStartOffset() - 10, swipeRefreshLayout.getProgressViewEndOffset());
+
+        // Set the swipe to refresh color according to the theme.
+        if (darkTheme) {
+            swipeRefreshLayout.setColorSchemeResources(R.color.blue_600);
+            swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.gray_850);
+        } else {
+            swipeRefreshLayout.setColorSchemeResources(R.color.blue_700);
+        }
 
         // `DrawerTitle` identifies the `DrawerLayouts` in accessibility mode.
         drawerLayout.setDrawerTitle(GravityCompat.START, getString(R.string.navigation_drawer));
@@ -841,8 +826,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         final MenuItem navigationHistoryMenuItem = navigationMenu.getItem(3);
         final MenuItem navigationRequestsMenuItem = navigationMenu.getItem(4);
 
-        // Initialize the bookmarks database helper.  `this` specifies the context.  The two `nulls` do not specify the database name or a `CursorFactory`.
-        // The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
+        // Initialize the bookmarks database helper.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
         bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this, null, null, 0);
 
         // Initialize `currentBookmarksFolder`.  `""` is the home folder in the database.
@@ -856,7 +840,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             int databaseID = (int) id;
 
             // Get the bookmark cursor for this ID and move it to the first row.
-            Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmarkCursor(databaseID);
+            Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmark(databaseID);
             bookmarkCursor.moveToFirst();
 
             // Act upon the bookmark according to the type.
@@ -890,19 +874,31 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
                 // Show the edit bookmark folder `AlertDialog` and name the instance `@string/edit_folder`.
-                AppCompatDialogFragment editFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId);
-                editFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_folder));
+                DialogFragment editBookmarkFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId);
+                editBookmarkFolderDialog.show(fragmentManager, resources.getString(R.string.edit_folder));
             } else {
                 // Show the edit bookmark `AlertDialog` and name the instance `@string/edit_bookmark`.
-                AppCompatDialogFragment editBookmarkDialog = EditBookmarkDialog.bookmarkDatabaseId(databaseId);
-                editBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_bookmark));
+                DialogFragment editBookmarkDialog = EditBookmarkDialog.bookmarkDatabaseId(databaseId);
+                editBookmarkDialog.show(fragmentManager, resources.getString(R.string.edit_bookmark));
             }
 
             // Consume the event.
             return true;
         });
 
-        // The drawer listener is used to update the navigation menu.
+        // Get the status bar pixel size.
+        int statusBarResourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
+        int statusBarPixelSize = resources.getDimensionPixelSize(statusBarResourceId);
+
+        // Get the resource density.
+        float screenDensity = resources.getDisplayMetrics().density;
+
+        // Calculate the drawer header padding.  This is used to move the text in the drawer headers below any cutouts.
+        drawerHeaderPaddingLeftAndRight = (int) (15 * screenDensity);
+        drawerHeaderPaddingTop = statusBarPixelSize + (int) (4 * screenDensity);
+        drawerHeaderPaddingBottom = (int) (8 * screenDensity);
+
+        // The drawer listener is used to update the navigation menu.`
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
@@ -919,6 +915,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @Override
             public void onDrawerStateChanged(int newState) {
                 if ((newState == DrawerLayout.STATE_SETTLING) || (newState == DrawerLayout.STATE_DRAGGING)) {  // A drawer is opening or closing.
+                    // Get handles for the drawer headers.
+                    TextView navigationHeaderTextView = findViewById(R.id.navigationText);
+                    TextView bookmarksHeaderTextView = findViewById(R.id.bookmarks_title_textview);
+
+                    // Apply the navigation header paddings if the view is not null (sometimes it is null if another activity has already started).  This moves the text in the header below any cutouts.
+                    if (navigationHeaderTextView != null) {
+                        navigationHeaderTextView.setPadding(drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingTop, drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingBottom);
+                    }
+
+                    // Apply the bookmarks header paddings if the view is not null (sometimes it is null if another activity has already started).  This moves the text in the header below any cutouts.
+                    if (bookmarksHeaderTextView != null) {
+                        bookmarksHeaderTextView.setPadding(drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingTop, drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingBottom);
+                    }
+
                     // Update the back, forward, history, and requests menu items.
                     navigationBackMenuItem.setEnabled(mainWebView.canGoBack());
                     navigationForwardMenuItem.setEnabled(mainWebView.canGoForward());
@@ -928,14 +938,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Hide the keyboard (if displayed).
                     inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
 
-                    // Clear the focus from from the URL text box.
+                    // Clear the focus from from the URL text box and the WebView.  This removes any text selection markers and context menus, which otherwise draw above the open drawers.
                     urlTextBox.clearFocus();
+                    mainWebView.clearFocus();
                 }
             }
         });
 
-        // drawerToggle creates the hamburger icon at the start of the AppBar.
-        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, supportAppBar, R.string.open_navigation_drawer, R.string.close_navigation_drawer);
+        // Create the hamburger icon at the start of the AppBar.
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_navigation_drawer, R.string.close_navigation_drawer);
 
         // Get a handle for the progress bar.
         final ProgressBar progressBar = findViewById(R.id.progress_bar);
@@ -948,17 +959,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 if (nightMode) {
                     // `background-color: #212121` sets the background to be dark gray.  `color: #BDBDBD` sets the text color to be light gray.  `box-shadow: none` removes a lower underline on links
                     // used by WordPress.  `text-decoration: none` removes all text underlines.  `text-shadow: none` removes text shadows, which usually have a hard coded color.
-                    // `border: none` removes all borders, which can also be used to underline text.
-                    // `a {color: #1565C0}` sets links to be a dark blue.  `!important` takes precedent over any existing sub-settings.
+                    // `border: none` removes all borders, which can also be used to underline text.  `a {color: #1565C0}` sets links to be a dark blue.
+                    // `::selection {background: #0D47A1}' sets the text selection highlight color to be a dark blue. `!important` takes precedent over any existing sub-settings.
                     mainWebView.evaluateJavascript("(function() {var parent = document.getElementsByTagName('head').item(0); var style = document.createElement('style'); style.type = 'text/css'; " +
                             "style.innerHTML = '* {background-color: #212121 !important; color: #BDBDBD !important; box-shadow: none !important; text-decoration: none !important;" +
-                            "text-shadow: none !important; border: none !important;} a {color: #1565C0 !important;}'; parent.appendChild(style)})()", value -> {
+                            "text-shadow: none !important; border: none !important;} a {color: #1565C0 !important;} ::selection {background: #0D47A1 !important;}'; parent.appendChild(style)})()", value -> {
                                 // Initialize a handler to display `mainWebView`.
                                 Handler displayWebViewHandler = new Handler();
 
                                 // Setup a runnable to display `mainWebView` after a delay to allow the CSS to be applied.
                                 Runnable displayWebViewRunnable = () -> {
-                                    // Only display `mainWebView` if the progress bar is one.  This prevents the display of the `WebView` while it is still loading.
+                                    // Only display `mainWebView` if the progress bar is gone.  This prevents the display of the `WebView` while it is still loading.
                                     if (progressBar.getVisibility() == View.GONE) {
                                         mainWebView.setVisibility(View.VISIBLE);
                                     }
@@ -1014,7 +1025,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Enter full screen video.
             @Override
-            public void onShowCustomView(View view, CustomViewCallback callback) {
+            public void onShowCustomView(View video, CustomViewCallback callback) {
                 // Set the full screen video flag.
                 displayingFullScreenVideo = true;
 
@@ -1024,26 +1035,34 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     AdHelper.pauseAd(findViewById(R.id.adview));
                 }
 
-                // Remove the translucent overlays.
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                // Hide the keyboard.
+                inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
+
+                // Hide the main content relative layout.
+                mainContentRelativeLayout.setVisibility(View.GONE);
 
                 // Remove the translucent status bar overlay on the `Drawer Layout`, which is special and needs its own command.
                 drawerLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
-                /* SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                /* Hide the system bars.
+                 * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                 * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
                  * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
                  * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
                  */
-                rootCoordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
-                // Set `rootCoordinatorLayout` to fill the entire screen.
-                rootCoordinatorLayout.setFitsSystemWindows(false);
+                rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
                 // Disable the sliding drawers.
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
-                // Add `view` to `fullScreenVideoFrameLayout` and display it on the screen.
-                fullScreenVideoFrameLayout.addView(view);
+                // Add the video view to the full screen video frame layout.
+                fullScreenVideoFrameLayout.addView(video);
+
+                // Show the full screen video frame layout.
                 fullScreenVideoFrameLayout.setVisibility(View.VISIBLE);
             }
 
@@ -1053,73 +1072,52 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Unset the full screen video flag.
                 displayingFullScreenVideo = false;
 
-                // Hide `fullScreenVideoFrameLayout`.
+                // Remove all the views from the full screen video frame layout.
                 fullScreenVideoFrameLayout.removeAllViews();
+
+                // Hide the full screen video frame layout.
                 fullScreenVideoFrameLayout.setVisibility(View.GONE);
 
                 // Enable the sliding drawers.
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 
+                // Show the main content relative layout.
+                mainContentRelativeLayout.setVisibility(View.VISIBLE);
+
                 // Apply the appropriate full screen mode the `SYSTEM_UI` flags.
                 if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
-                    if (hideSystemBarsOnFullscreen) {  // Hide everything.
-                        // Remove the translucent navigation setting if it is currently flagged.
-                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-
-                        // Remove the translucent status bar overlay.
-                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-                        // Remove the translucent status bar overlay on the `Drawer Layout`, which is special and needs its own command.
-                        drawerLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-
-                        /* SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
-                         * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
-                         * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
-                         */
-                        rootCoordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-                    } else {  // Hide everything except the status and navigation bars.
-                        // Remove any `SYSTEM_UI` flags from `rootCoordinatorLayout`.
-                        rootCoordinatorLayout.setSystemUiVisibility(0);
-
-                        // Add the translucent status flag if it is unset.
-                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-                        if (translucentNavigationBarOnFullscreen) {
-                            // Set the navigation bar to be translucent.  This also resets `drawerLayout's` `View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN`.
-                            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-                        } else {
-                            // Set the navigation bar to be black.
-                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-                        }
-                    }
-                } else {  // Switch to normal viewing mode.
-                    // Show the `appBar` if `findOnPageLinearLayout` is not visible.
-                    if (findOnPageLinearLayout.getVisibility() == View.GONE) {
-                        appBar.show();
+                    // Hide the app bar if specified.
+                    if (hideAppBar) {
+                        actionBar.hide();
                     }
 
-                    // Show the `BannerAd` in the free flavor.
+                    // Hide the banner ad in the free flavor.
                     if (BuildConfig.FLAVOR.contentEquals("free")) {
-                        // Initialize the ad.  The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
-                        AdHelper.initializeAds(findViewById(R.id.adview), getApplicationContext(), getFragmentManager(), getString(R.string.google_app_id), getString(R.string.ad_unit_id));
+                        AdHelper.hideAd(findViewById(R.id.adview));
                     }
 
-                    // Remove any `SYSTEM_UI` flags from `rootCoordinatorLayout`.
-                    rootCoordinatorLayout.setSystemUiVisibility(0);
+                    // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-                    // Remove the translucent navigation bar flag if it is set.
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+                    /* Hide the system bars.
+                     * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                     * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+                     * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                     * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+                     */
+                    rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                } else {  // Switch to normal viewing mode.
+                    // Remove the `SYSTEM_UI` flags from the root frame layout.
+                    rootFrameLayout.setSystemUiVisibility(0);
 
-                    // Add the translucent status flag if it is unset.  This also resets `drawerLayout's` `View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN`.
+                    // Add the translucent status flag.
                     getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-                    // Constrain `rootCoordinatorLayout` inside the status and navigation bars.
-                    rootCoordinatorLayout.setFitsSystemWindows(true);
                 }
 
-                // Show the ad if this is the free flavor.
-                if (BuildConfig.FLAVOR.contentEquals("free")) {
-                    // Reload the ad.  The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
+                // Reload the ad for the free flavor if not in full screen mode.
+                if (BuildConfig.FLAVOR.contentEquals("free") && !inFullScreenBrowsingMode) {
+                    // Reload the ad.
                     AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_unit_id));
                 }
             }
@@ -1147,32 +1145,37 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Allow the downloading of files.
         mainWebView.setDownloadListener((String url, String userAgent, String contentDisposition, String mimetype, long contentLength) -> {
-            // Check to see if the WRITE_EXTERNAL_STORAGE permission has already been granted.
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                // The WRITE_EXTERNAL_STORAGE permission needs to be requested.
+            // Check if the download should be processed by an external app.
+            if (downloadWithExternalApp) {  // Download with an external app.
+                openUrlWithExternalApp(url);
+            } else {  // Download with Android's download manager.
+                // Check to see if the WRITE_EXTERNAL_STORAGE permission has already been granted.
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {  // The storage permission has not been granted.
+                    // The WRITE_EXTERNAL_STORAGE permission needs to be requested.
 
-                // Store the variables for future use by `onRequestPermissionsResult()`.
-                downloadUrl = url;
-                downloadContentDisposition = contentDisposition;
-                downloadContentLength = contentLength;
+                    // Store the variables for future use by `onRequestPermissionsResult()`.
+                    downloadUrl = url;
+                    downloadContentDisposition = contentDisposition;
+                    downloadContentLength = contentLength;
 
-                // Show a dialog if the user has previously denied the permission.
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
-                    // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_FILE.
-                    DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_FILE);
+                    // Show a dialog if the user has previously denied the permission.
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
+                        // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_FILE.
+                        DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_FILE);
 
-                    // Show the download location permission alert dialog.  The permission will be requested when the the dialog is closed.
-                    downloadLocationPermissionDialogFragment.show(getFragmentManager(), getString(R.string.download_location));
-                } else {  // Show the permission request directly.
-                    // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
-                    ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_FILE_REQUEST_CODE);
+                        // Show the download location permission alert dialog.  The permission will be requested when the the dialog is closed.
+                        downloadLocationPermissionDialogFragment.show(fragmentManager, getString(R.string.download_location));
+                    } else {  // Show the permission request directly.
+                        // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
+                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_FILE_REQUEST_CODE);
+                    }
+                } else {  // The storage permission has already been granted.
+                    // Get a handle for the download file alert dialog.
+                    DialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(url, contentDisposition, contentLength);
+
+                    // Show the download file alert dialog.
+                    downloadFileDialogFragment.show(fragmentManager, getString(R.string.download));
                 }
-            } else {  // The storage permission has already been granted.
-                // Get a handle for the download file alert dialog.
-                AppCompatDialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(url, contentDisposition, contentLength);
-
-                // Show the download file alert dialog.
-                downloadFileDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
             }
         });
 
@@ -1182,10 +1185,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Hide zoom controls.
         mainWebView.getSettings().setDisplayZoomControls(false);
 
-        // Set `mainWebView` to use a wide viewport.  Otherwise, some web pages will be scrunched and some content will render outside the screen.
+        // Don't allow mixed content (HTTP and HTTPS) on the same website.
+        if (Build.VERSION.SDK_INT >= 21) {
+            mainWebView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+        }
+
+        // Set the WebView to use a wide viewport.  Otherwise, some web pages will be scrunched and some content will render outside the screen.
         mainWebView.getSettings().setUseWideViewPort(true);
 
-        // Set `mainWebView` to load in overview mode (zoomed out to the maximum width).
+        // Set the WebView to load in overview mode (zoomed out to the maximum width).
         mainWebView.getSettings().setLoadWithOverviewMode(true);
 
         // Explicitly disable geolocation.
@@ -1199,17 +1207,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Initialize the default preference values the first time the program is run.  `false` keeps this command from resetting any current preferences back to default.
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-
-        // Get the intent that started the app.
-        final Intent launchingIntent = getIntent();
-
-        // Extract the launching intent data as `launchingIntentUriData`.
-        final Uri launchingIntentUriData = launchingIntent.getData();
-
-        // Convert the launching intent URI data (if it exists) to a string and store it in `formattedUrlString`.
-        if (launchingIntentUriData != null) {
-            formattedUrlString = launchingIntentUriData.toString();
-        }
 
         // Get a handle for the `Runtime`.
         privacyBrowserRuntime = Runtime.getRuntime();
@@ -1248,7 +1245,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Initialize the user agent array adapter and string array.
         userAgentNamesArray = ArrayAdapter.createFromResource(this, R.array.user_agent_names, R.layout.spinner_item);
-        userAgentDataArray = getResources().getStringArray(R.array.user_agent_data);
+        userAgentDataArray = resources.getStringArray(R.array.user_agent_data);
 
         // Apply the app settings from the shared preferences.
         applyAppSettings();
@@ -1287,10 +1284,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     formattedUrlString = "";
 
                     // Apply the domain settings for the new URL.  `applyDomainSettings` doesn't do anything if the domain has not changed.
-                    applyDomainSettings(url, true, false);
+                    boolean userAgentChanged = applyDomainSettings(url, true, false);
 
-                    // Returning false causes the current WebView to handle the URL and prevents it from adding redirects to the history list.
-                    return false;
+                    // Check if the user agent has changed.
+                    if (userAgentChanged) {
+                        // Manually load the URL.  The changing of the user agent will cause WebView to reload the previous URL.
+                        mainWebView.loadUrl(url, customHeaders);
+
+                        // Returning true indicates that Privacy Browser is manually handling the loading of the URL.
+                        return true;
+                    } else {
+                        // Returning false causes the current WebView to handle the URL and prevents it from adding redirects to the history list.
+                        return false;
+                    }
                 } else if (url.startsWith("mailto:")) {  // Load the email address in an external email program.
                     // Use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
@@ -1545,13 +1551,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 httpAuthHandler = handler;
 
                 // Display the HTTP authentication dialog.
-                AppCompatDialogFragment httpAuthenticationDialogFragment = HttpAuthenticationDialog.displayDialog(host, realm);
-                httpAuthenticationDialogFragment.show(getSupportFragmentManager(), getString(R.string.http_authentication));
+                DialogFragment httpAuthenticationDialogFragment = HttpAuthenticationDialog.displayDialog(host, realm);
+                httpAuthenticationDialogFragment.show(fragmentManager, getString(R.string.http_authentication));
             }
 
             // Update the URL in urlTextBox when the page starts to load.
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                // Set `urlIsLoading` to `true`, so that redirects while loading do not trigger changes in the user agent, which forces another reload of the existing page.
+                // This is also used to determine when to check for pinned mismatches.
+                urlIsLoading = true;
+
+                // Reset the list of host IP addresses.
+                currentHostIpAddresses = "";
+
                 // Reset the list of resource requests.
                 resourceRequests.clear();
 
@@ -1569,12 +1582,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     mainWebView.setVisibility(View.INVISIBLE);
                 }
 
-                // Hide the keyboard.  `0` indicates no additional flags.
+                // Hide the keyboard.
                 inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
 
                 // Check to see if Privacy Browser is waiting on Orbot.
-                if (!waitingForOrbot) {  // We are not waiting on Orbot, so we need to process the URL.
-                    // We need to update `formattedUrlString` at the beginning of the load, so that if the user toggles JavaScript during the load the new website is reloaded.
+                if (!waitingForOrbot) {  // Process the URL.
+                    // The formatted URL string must be updated at the beginning of the load, so that if the user toggles JavaScript during the load the new website is reloaded.
                     formattedUrlString = url;
 
                     // Display the formatted URL text.
@@ -1583,17 +1596,25 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Apply text highlighting to `urlTextBox`.
                     highlightUrlText();
 
+                    // Get a URI for the current URL.
+                    Uri currentUri = Uri.parse(formattedUrlString);
+
+                    // Get the IP addresses for the host.
+                    new GetHostIpAddresses(activity).execute(currentUri.getHost());
+
                     // Apply any custom domain settings if the URL was loaded by navigating history.
                     if (navigatingHistory) {
+                        // Apply the domain settings.
+                        boolean userAgentChanged = applyDomainSettings(url, true, false);
+
                         // Reset `navigatingHistory`.
                         navigatingHistory = false;
 
-                        // Apply the domain settings.
-                        applyDomainSettings(url, true, false);
+                        // Manually load the URL if the user agent has changed, which will have caused the previous URL to be reloaded.
+                        if (userAgentChanged) {
+                            loadUrl(formattedUrlString);
+                        }
                     }
-
-                    // Set `urlIsLoading` to `true`, so that redirects while loading do not trigger changes in the user agent, which forces another reload of the existing page.
-                    urlIsLoading = true;
 
                     // Replace Refresh with Stop if the menu item has been created.  (The WebView typically begins loading before the menu items are instantiated.)
                     if (refreshMenuItem != null) {
@@ -1617,7 +1638,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             public void onPageFinished(WebView view, String url) {
                 // Reset the wide view port if it has been turned off by the waiting for Orbot message.
                 if (!waitingForOrbot) {
-                    mainWebView.getSettings().setUseWideViewPort(true);
+                    // Only use a wide view port if the URL starts with `http`, not for `file://` and `content://`.
+                    mainWebView.getSettings().setUseWideViewPort(url.startsWith("http"));
                 }
 
                 // Flush any cookies to persistent storage.  `CookieManager` has become very lazy about flushing cookies in recent versions.
@@ -1640,8 +1662,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     }
                 }
 
-                // Reset `urlIsLoading`, which is used to prevent reloads on redirect if the user agent changes.
-                urlIsLoading = false;
+
 
                 // Clear the cache and history if Incognito Mode is enabled.
                 if (incognitoModeEnabled) {
@@ -1664,7 +1685,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     }
                 }
 
-                // Update `urlTextBox` and apply domain settings if not waiting on Orbot.
+                // Update the URL text box and apply domain settings if not waiting on Orbot.
                 if (!waitingForOrbot) {
                     // Check to see if `WebView` has set `url` to be `about:blank`.
                     if (url.equals("about:blank")) {  // `WebView` is blank, so `formattedUrlString` should be `""` and `urlTextBox` should display a hint.
@@ -1682,10 +1703,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Apply the domain settings.  This clears any settings from the previous domain.
                         applyDomainSettings(formattedUrlString, true, false);
                     } else {  // `WebView` has loaded a webpage.
-                        // Set `formattedUrlString`.
-                        formattedUrlString = url;
+                        // Set the formatted URL string.  Getting the URL from the WebView instead of using the one provided by `onPageFinished` makes websites like YouTube function correctly.
+                        formattedUrlString = mainWebView.getUrl();
 
-                        // Only update `urlTextBox` if the user is not typing in it.
+                        // Only update the URL text box if the user is not typing in it.
                         if (!urlTextBox.hasFocus()) {
                             // Display the formatted URL text.
                             urlTextBox.setText(formattedUrlString);
@@ -1695,69 +1716,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         }
                     }
 
-                    // Store the SSL certificate so it can be accessed from `ViewSslCertificateDialog` and `PinnedSslCertificateMismatchDialog`.
+                    // Store the SSL certificate so it can be accessed from `ViewSslCertificateDialog` and `PinnedMismatchDialog`.
                     sslCertificate = mainWebView.getCertificate();
 
-                    // Check the current website SSL certificate against the pinned SSL certificate if there is a pinned SSL certificate the user has not chosen to ignore it for this session.
-                    if (pinnedDomainSslCertificate && !ignorePinnedSslCertificate) {
-                        // Initialize the current SSL certificate variables.
-                        String currentWebsiteIssuedToCName = "";
-                        String currentWebsiteIssuedToOName = "";
-                        String currentWebsiteIssuedToUName = "";
-                        String currentWebsiteIssuedByCName = "";
-                        String currentWebsiteIssuedByOName = "";
-                        String currentWebsiteIssuedByUName = "";
-                        Date currentWebsiteSslStartDate = null;
-                        Date currentWebsiteSslEndDate = null;
-
-
-                        // Extract the individual pieces of information from the current website SSL certificate if it is not null.
-                        if (sslCertificate != null) {
-                            currentWebsiteIssuedToCName = sslCertificate.getIssuedTo().getCName();
-                            currentWebsiteIssuedToOName = sslCertificate.getIssuedTo().getOName();
-                            currentWebsiteIssuedToUName = sslCertificate.getIssuedTo().getUName();
-                            currentWebsiteIssuedByCName = sslCertificate.getIssuedBy().getCName();
-                            currentWebsiteIssuedByOName = sslCertificate.getIssuedBy().getOName();
-                            currentWebsiteIssuedByUName = sslCertificate.getIssuedBy().getUName();
-                            currentWebsiteSslStartDate = sslCertificate.getValidNotBeforeDate();
-                            currentWebsiteSslEndDate = sslCertificate.getValidNotAfterDate();
-                        }
-
-                        // Initialize `String` variables to store the SSL certificate dates.  `Strings` are needed to compare the values below, which doesn't work with `Dates` if they are `null`.
-                        String currentWebsiteSslStartDateString = "";
-                        String currentWebsiteSslEndDateString = "";
-                        String pinnedDomainSslStartDateString = "";
-                        String pinnedDomainSslEndDateString = "";
-
-                        // Convert the `Dates` to `Strings` if they are not `null`.
-                        if (currentWebsiteSslStartDate != null) {
-                            currentWebsiteSslStartDateString = currentWebsiteSslStartDate.toString();
-                        }
-
-                        if (currentWebsiteSslEndDate != null) {
-                            currentWebsiteSslEndDateString = currentWebsiteSslEndDate.toString();
-                        }
-
-                        if (pinnedDomainSslStartDate != null) {
-                            pinnedDomainSslStartDateString = pinnedDomainSslStartDate.toString();
-                        }
-
-                        if (pinnedDomainSslEndDate != null) {
-                            pinnedDomainSslEndDateString = pinnedDomainSslEndDate.toString();
-                        }
-
-                        // Check to see if the pinned SSL certificate matches the current website certificate.
-                        if (!currentWebsiteIssuedToCName.equals(pinnedDomainSslIssuedToCNameString) || !currentWebsiteIssuedToOName.equals(pinnedDomainSslIssuedToONameString) ||
-                                !currentWebsiteIssuedToUName.equals(pinnedDomainSslIssuedToUNameString) || !currentWebsiteIssuedByCName.equals(pinnedDomainSslIssuedByCNameString) ||
-                                !currentWebsiteIssuedByOName.equals(pinnedDomainSslIssuedByONameString) || !currentWebsiteIssuedByUName.equals(pinnedDomainSslIssuedByUNameString) ||
-                                !currentWebsiteSslStartDateString.equals(pinnedDomainSslStartDateString) || !currentWebsiteSslEndDateString.equals(pinnedDomainSslEndDateString)) {
-                            // The pinned SSL certificate doesn't match the current domain certificate.
-                            //Display the pinned SSL certificate mismatch `AlertDialog`.
-                            AppCompatDialogFragment pinnedSslCertificateMismatchDialogFragment = new PinnedSslCertificateMismatchDialog();
-                            pinnedSslCertificateMismatchDialogFragment.show(getSupportFragmentManager(), getString(R.string.ssl_certificate_mismatch));
-                        }
+                    // Check the current website information against any pinned domain information if the current IP addresses have been loaded.
+                    if (!gettingIpAddresses) {
+                        checkPinnedMismatch();
                     }
                 }
+
+                // Reset `urlIsLoading`, which is used to prevent reloads on redirect if the user agent changes.  It is also used to determine when to check for pinned mismatches.
+                urlIsLoading = false;
             }
 
             // Handle SSL Certificate errors.
@@ -1777,24 +1746,50 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 Date currentWebsiteSslEndDate = currentWebsiteSslCertificate.getValidNotAfterDate();
 
                 // Proceed to the website if the current SSL website certificate matches the pinned domain certificate.
-                if (pinnedDomainSslCertificate &&
-                        currentWebsiteIssuedToCName.equals(pinnedDomainSslIssuedToCNameString) && currentWebsiteIssuedToOName.equals(pinnedDomainSslIssuedToONameString) &&
-                        currentWebsiteIssuedToUName.equals(pinnedDomainSslIssuedToUNameString) && currentWebsiteIssuedByCName.equals(pinnedDomainSslIssuedByCNameString) &&
-                        currentWebsiteIssuedByOName.equals(pinnedDomainSslIssuedByONameString) && currentWebsiteIssuedByUName.equals(pinnedDomainSslIssuedByUNameString) &&
-                        currentWebsiteSslStartDate.equals(pinnedDomainSslStartDate) && currentWebsiteSslEndDate.equals(pinnedDomainSslEndDate)) {
-                    // An SSL certificate is pinned and matches the current domain certificate.
-                    // Proceed to the website without displaying an error.
+                if (pinnedSslCertificate &&
+                        currentWebsiteIssuedToCName.equals(pinnedSslIssuedToCName) && currentWebsiteIssuedToOName.equals(pinnedSslIssuedToOName) &&
+                        currentWebsiteIssuedToUName.equals(pinnedSslIssuedToUName) && currentWebsiteIssuedByCName.equals(pinnedSslIssuedByCName) &&
+                        currentWebsiteIssuedByOName.equals(pinnedSslIssuedByOName) && currentWebsiteIssuedByUName.equals(pinnedSslIssuedByUName) &&
+                        currentWebsiteSslStartDate.equals(pinnedSslStartDate) && currentWebsiteSslEndDate.equals(pinnedSslEndDate)) {
+
+                    // An SSL certificate is pinned and matches the current domain certificate.  Proceed to the website without displaying an error.
                     handler.proceed();
                 } else {  // Either there isn't a pinned SSL certificate or it doesn't match the current website certificate.
                     // Store `handler` so it can be accesses from `onSslErrorCancel()` and `onSslErrorProceed()`.
                     sslErrorHandler = handler;
 
                     // Display the SSL error `AlertDialog`.
-                    AppCompatDialogFragment sslCertificateErrorDialogFragment = SslCertificateErrorDialog.displayDialog(error);
-                    sslCertificateErrorDialogFragment.show(getSupportFragmentManager(), getString(R.string.ssl_certificate_error));
+                    DialogFragment sslCertificateErrorDialogFragment = SslCertificateErrorDialog.displayDialog(error);
+                    sslCertificateErrorDialogFragment.show(fragmentManager, getString(R.string.ssl_certificate_error));
                 }
             }
         });
+
+        // Get the intent that started the app.
+        Intent launchingIntent = getIntent();
+
+        // Get the information from the intent.
+        String launchingIntentAction = launchingIntent.getAction();
+        Uri launchingIntentUriData = launchingIntent.getData();
+
+        // If the intent action is a web search, perform the search.
+        if ((launchingIntentAction != null) && launchingIntentAction.equals(Intent.ACTION_WEB_SEARCH)) {
+            // Create an encoded URL string.
+            String encodedUrlString;
+
+            // Sanitize the search input and convert it to a search.
+            try {
+                encodedUrlString = URLEncoder.encode(launchingIntent.getStringExtra(SearchManager.QUERY), "UTF-8");
+            } catch (UnsupportedEncodingException exception) {
+                encodedUrlString = "";
+            }
+
+            // Add the base search URL.
+            formattedUrlString = searchURL + encodedUrlString;
+        } else if (launchingIntentUriData != null){  // Check to see if the intent contains a new URL.
+            // Set the formatted URL string.
+            formattedUrlString = launchingIntentUriData.toString();
+        }
 
         // Load the website if not waiting for Orbot to connect.
         if (!waitingForOrbot) {
@@ -1807,27 +1802,47 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Sets the new intent as the activity intent, so that any future `getIntent()`s pick up this one instead of creating a new activity.
         setIntent(intent);
 
-        // Check to see if the intent contains a new URL.
-        if (intent.getData() != null) {
-            // Get the intent data.
-            final Uri intentUriData = intent.getData();
+        // Get the information from the intent.
+        String intentAction = intent.getAction();
+        Uri intentUriData = intent.getData();
 
-            // Load the website.
-            loadUrl(intentUriData.toString());
+        // If the intent action is a web search, perform the search.
+        if ((intentAction != null) && intentAction.equals(Intent.ACTION_WEB_SEARCH)) {
+            // Create an encoded URL string.
+            String encodedUrlString;
 
-            // Close the navigation drawer if it is open.
-            if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
-                drawerLayout.closeDrawer(GravityCompat.START);
+            // Sanitize the search input and convert it to a search.
+            try {
+                encodedUrlString = URLEncoder.encode(intent.getStringExtra(SearchManager.QUERY), "UTF-8");
+            } catch (UnsupportedEncodingException exception) {
+                encodedUrlString = "";
             }
 
-            // Close the bookmarks drawer if it is open.
-            if (drawerLayout.isDrawerVisible(GravityCompat.END)) {
-                drawerLayout.closeDrawer(GravityCompat.END);
-            }
-
-            // Clear the keyboard if displayed and remove the focus on the urlTextBar if it has it.
-            mainWebView.requestFocus();
+            // Add the base search URL.
+            formattedUrlString = searchURL + encodedUrlString;
+        } else if (intentUriData != null){  // Check to see if the intent contains a new URL.
+            // Set the formatted URL string.
+            formattedUrlString = intentUriData.toString();
         }
+
+        // Load the URL.
+        loadUrl(formattedUrlString);
+
+        // Get a handle for the drawer layout.
+        DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
+
+        // Close the navigation drawer if it is open.
+        if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+
+        // Close the bookmarks drawer if it is open.
+        if (drawerLayout.isDrawerVisible(GravityCompat.END)) {
+            drawerLayout.closeDrawer(GravityCompat.END);
+        }
+
+        // Clear the keyboard if displayed and remove the focus on the urlTextBar if it has it.
+        mainWebView.requestFocus();
     }
 
     @Override
@@ -1885,6 +1900,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Update the bookmarks drawer if returning from the Bookmarks activity.
         if (restartFromBookmarksActivity) {
+            // Get a handle for the drawer layout.
+            DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
+
             // Close the bookmarks drawer.
             drawerLayout.closeDrawer(GravityCompat.END);
 
@@ -1911,12 +1929,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Resume `mainWebView`.
         mainWebView.onResume();
 
-        // Resume the adView for the free flavor.
-        if (BuildConfig.FLAVOR.contentEquals("free")) {
-            // Resume the ad.
-            AdHelper.resumeAd(findViewById(R.id.adview));
-        }
-
         // Display a message to the user if waiting for Orbot.
         if (waitingForOrbot && !orbotStatus.equals("ON")) {
             // Disable the wide view port so that the waiting for Orbot text is displayed correctly.
@@ -1926,18 +1938,24 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             mainWebView.loadData(waitingForOrbotHtmlString, "text/html", null);
         }
 
-        if (displayingFullScreenVideo) {
-            // Remove the translucent overlays.
+        if (displayingFullScreenVideo || inFullScreenBrowsingMode) {
+            // Get a handle for the root frame layouts.
+            FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
+
+            // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-            // Remove the translucent status bar overlay on the `Drawer Layout`, which is special and needs its own command.
-            drawerLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-
-            /* SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+            /* Hide the system bars.
+             * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+             * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
              * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
              * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
              */
-            rootCoordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        } else if (BuildConfig.FLAVOR.contentEquals("free")) {  // Resume the adView for the free flavor.
+            // Resume the ad.
+            AdHelper.resumeAd(findViewById(R.id.adview));
         }
     }
 
@@ -1974,7 +1992,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflate the menu.  This adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.webview_options_menu, menu);
 
         // Set mainMenu so it can be used by `onOptionsItemSelected()` and `updatePrivacyIcons`.
@@ -2046,6 +2064,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        // Get a handle for the swipe refresh layout.
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
+
         // Get handles for the menu items.
         MenuItem addOrEditDomain = menu.findItem(R.id.add_or_edit_domain);
         MenuItem toggleFirstPartyCookiesMenuItem = menu.findItem(R.id.toggle_first_party_cookies);
@@ -2237,10 +2258,27 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // removeAllCookies is deprecated, but it is required for API < 21.
     @SuppressWarnings("deprecation")
     public boolean onOptionsItemSelected(MenuItem menuItem) {
+        // Reenter full screen browsing mode if it was interrupted by the options menu.  <https://redmine.stoutner.com/issues/389>
+        if (inFullScreenBrowsingMode) {
+            // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+            FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
+
+            /* Hide the system bars.
+             * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+             * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+             * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+             * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+             */
+            rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+
         // Get the selected menu item ID.
         int menuItemId = menuItem.getItemId();
 
-        // Set the commands that relate to the menu entries.
+        // Run the commands that correlate to the selected menu item.
         switch (menuItemId) {
             case R.id.toggle_javascript:
                 // Switch the status of javaScriptEnabled.
@@ -2411,21 +2449,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             // Do nothing because everything will be handled by `onDismissed()` below.
                         })
                         .addCallback(new Snackbar.Callback() {
+                            @SuppressLint("SwitchIntDef")  // Ignore the lint warning about not handling the other possible events as they are covered by `default:`.
                             @Override
                             public void onDismissed(Snackbar snackbar, int event) {
                                 switch (event) {
-                                    // The user pushed the `Undo` button.
+                                    // The user pushed the undo button.
                                     case Snackbar.Callback.DISMISS_EVENT_ACTION:
                                         // Do nothing.
                                         break;
 
-                                    // The `Snackbar` was dismissed without the `Undo` button being pushed.
+                                    // The snackbar was dismissed without the undo button being pushed.
                                     default:
                                         // `cookieManager.removeAllCookie()` varies by SDK.
                                         if (Build.VERSION.SDK_INT < 21) {
                                             cookieManager.removeAllCookie();
                                         } else {
-                                            // `null` indicates no callback.
                                             cookieManager.removeAllCookies(null);
                                         }
                                 }
@@ -2440,15 +2478,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             // Do nothing because everything will be handled by `onDismissed()` below.
                         })
                         .addCallback(new Snackbar.Callback() {
+                            @SuppressLint("SwitchIntDef")  // Ignore the lint warning about not handling the other possible events as they are covered by `default:`.
                             @Override
                             public void onDismissed(Snackbar snackbar, int event) {
                                 switch (event) {
-                                    // The user pushed the `Undo` button.
+                                    // The user pushed the undo button.
                                     case Snackbar.Callback.DISMISS_EVENT_ACTION:
                                         // Do nothing.
                                         break;
 
-                                    // The `Snackbar` was dismissed without the `Undo` button being pushed.
+                                    // The snackbar was dismissed without the undo button being pushed.
                                     default:
                                         // Delete the DOM Storage.
                                         WebStorage webStorage = WebStorage.getInstance();
@@ -2460,15 +2499,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                         // Setup a runnable to manually delete the DOM storage files and directories.
                                         Runnable deleteDomStorageRunnable = () -> {
                                             try {
-                                                // A `String[]` must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
-                                                privacyBrowserRuntime.exec(new String[]{"rm", "-rf", privateDataDirectoryString + "/app_webview/Local Storage/"});
+                                                // A string array must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
+                                                Process deleteLocalStorageProcess = privacyBrowserRuntime.exec(new String[]{"rm", "-rf", privateDataDirectoryString + "/app_webview/Local Storage/"});
 
                                                 // Multiple commands must be used because `Runtime.exec()` does not like `*`.
-                                                privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/IndexedDB");
-                                                privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager");
-                                                privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager-journal");
-                                                privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/databases");
-                                            } catch (IOException e) {
+                                                Process deleteIndexProcess = privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/IndexedDB");
+                                                Process deleteQuotaManagerProcess = privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager");
+                                                Process deleteQuotaManagerJournalProcess = privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager-journal");
+                                                Process deleteDatabasesProcess = privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/databases");
+
+                                                // Wait for the processes to finish.
+                                                deleteLocalStorageProcess.waitFor();
+                                                deleteIndexProcess.waitFor();
+                                                deleteQuotaManagerProcess.waitFor();
+                                                deleteQuotaManagerJournalProcess.waitFor();
+                                                deleteDatabasesProcess.waitFor();
+                                            } catch (Exception exception) {
                                                 // Do nothing if an error is thrown.
                                             }
                                         };
@@ -2488,15 +2534,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             // Do nothing because everything will be handled by `onDismissed()` below.
                         })
                         .addCallback(new Snackbar.Callback() {
+                            @SuppressLint("SwitchIntDef")  // Ignore the lint warning about not handling the other possible events as they are covered by `default:`.
                             @Override
                             public void onDismissed(Snackbar snackbar, int event) {
                                 switch (event) {
-                                    // The user pushed the `Undo` button.
+                                    // The user pushed the undo button.
                                     case Snackbar.Callback.DISMISS_EVENT_ACTION:
                                         // Do nothing.
                                         break;
 
-                                    // The `Snackbar` was dismissed without the `Undo` button being pushed.
+                                    // The snackbar was dismissed without the `Undo` button being pushed.
                                     default:
                                         // Delete the form data.
                                         WebViewDatabase mainWebViewDatabase = WebViewDatabase.getInstance(getApplicationContext());
@@ -2714,6 +2761,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 return true;
 
             case R.id.swipe_to_refresh:
+                // Get a handle for the swipe refresh layout.
+                SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
+
                 // Toggle swipe to refresh.
                 swipeRefreshLayout.setEnabled(!swipeRefreshLayout.isEnabled());
                 return true;
@@ -2725,9 +2775,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 } else {  // Images are not currently loaded automatically.
                     mainWebView.getSettings().setLoadsImagesAutomatically(true);
                 }
-
-                // Set `onTheFlyDisplayImagesSet`.
-                onTheFlyDisplayImagesSet = true;
                 return true;
 
             case R.id.night_mode:
@@ -2746,7 +2793,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
                     // Get the JavaScript preference.
-                    javaScriptEnabled = sharedPreferences.getBoolean("javascript_enabled", false);
+                    javaScriptEnabled = sharedPreferences.getBoolean("javascript", false);
                 }
 
                 // Apply the JavaScript setting to the WebView.
@@ -2757,6 +2804,47 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the website.
                 mainWebView.reload();
+                return true;
+
+            case R.id.find_on_page:
+                // Get a handle for the views.
+                Toolbar toolbar = findViewById(R.id.toolbar);
+                LinearLayout findOnPageLinearLayout = findViewById(R.id.find_on_page_linearlayout);
+
+                // Hide the toolbar.
+                toolbar.setVisibility(View.GONE);
+
+                // Show the find on page linear layout.
+                findOnPageLinearLayout.setVisibility(View.VISIBLE);
+
+                // Display the keyboard.  The app must wait 200 ms before running the command to work around a bug in Android.
+                // http://stackoverflow.com/questions/5520085/android-show-softkeyboard-with-showsoftinput-is-not-working
+                findOnPageEditText.postDelayed(() -> {
+                    // Set the focus on `findOnPageEditText`.
+                    findOnPageEditText.requestFocus();
+
+                    // Display the keyboard.  `0` sets no input flags.
+                    inputMethodManager.showSoftInput(findOnPageEditText, 0);
+                }, 200);
+                return true;
+
+            case R.id.view_source:
+                // Launch the View Source activity.
+                Intent viewSourceIntent = new Intent(this, ViewSourceActivity.class);
+                startActivity(viewSourceIntent);
+                return true;
+
+            case R.id.share_url:
+                // Setup the share string.
+                String shareString = webViewTitle + " – " + urlTextBox.getText().toString();
+
+                // Create the share intent.
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareString);
+                shareIntent.setType("text/plain");
+
+                // Make it so.
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_url)));
                 return true;
 
             case R.id.print:
@@ -2773,10 +2861,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 printManager.print(getString(R.string.privacy_browser_web_page), printDocumentAdapter, null);
                 return true;
 
-            case R.id.view_source:
-                // Launch the View Source activity.
-                Intent viewSourceIntent = new Intent(this, ViewSourceActivity.class);
-                startActivity(viewSourceIntent);
+            case R.id.open_with_app:
+                openWithApp(formattedUrlString);
+                return true;
+
+            case R.id.open_with_browser:
+                openWithBrowser(formattedUrlString);
+                return true;
+
+            case R.id.add_to_homescreen:
+                // Instantiate the create home screen shortcut dialog.
+                DialogFragment createHomeScreenShortcutDialogFragment = CreateHomeScreenShortcutDialog.createDialog(mainWebView.getTitle(), formattedUrlString, favoriteIconBitmap);
+
+                // Show the create home screen shortcut dialog.
+                createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getString(R.string.create_shortcut));
                 return true;
 
             case R.id.proxy_through_orbot:
@@ -2785,46 +2883,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Apply the proxy through Orbot settings.
                 applyProxyThroughOrbot(true);
-                return true;
-
-            case R.id.share:
-                // Setup the share string.
-                String shareString = webViewTitle + " – " + urlTextBox.getText().toString();
-
-                // Create the share intent.
-                Intent shareIntent = new Intent();
-                shareIntent.setAction(Intent.ACTION_SEND);
-                shareIntent.putExtra(Intent.EXTRA_TEXT, shareString);
-                shareIntent.setType("text/plain");
-
-                // Make it so.
-                startActivity(Intent.createChooser(shareIntent, "Share URL"));
-                return true;
-
-            case R.id.find_on_page:
-                // Hide the URL app bar.
-                supportAppBar.setVisibility(View.GONE);
-
-                // Show the Find on Page `RelativeLayout`.
-                findOnPageLinearLayout.setVisibility(View.VISIBLE);
-
-                // Display the keyboard.  We have to wait 200 ms before running the command to work around a bug in Android.
-                // http://stackoverflow.com/questions/5520085/android-show-softkeyboard-with-showsoftinput-is-not-working
-                findOnPageEditText.postDelayed(() -> {
-                    // Set the focus on `findOnPageEditText`.
-                    findOnPageEditText.requestFocus();
-
-                    // Display the keyboard.  `0` sets no input flags.
-                    inputMethodManager.showSoftInput(findOnPageEditText, 0);
-                }, 200);
-                return true;
-
-            case R.id.add_to_homescreen:
-                // Show the `CreateHomeScreenShortcutDialog` `AlertDialog` and name this instance `R.string.create_shortcut`.
-                AppCompatDialogFragment createHomeScreenShortcutDialogFragment = new CreateHomeScreenShortcutDialog();
-                createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getString(R.string.create_shortcut));
-
-                //Everything else will be handled by `CreateHomeScreenShortcutDialog` and the associated listener below.
                 return true;
 
             case R.id.refresh:
@@ -2840,7 +2898,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             case R.id.ad_consent:
                 // Display the ad consent dialog.
                 DialogFragment adConsentDialogFragment = new AdConsentDialog();
-                adConsentDialogFragment.show(getFragmentManager(), getString(R.string.ad_consent));
+                adConsentDialogFragment.show(getSupportFragmentManager(), getString(R.string.ad_consent));
                 return true;
 
             default:
@@ -2890,8 +2948,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Get the `WebBackForwardList`.
                 WebBackForwardList webBackForwardList = mainWebView.copyBackForwardList();
 
-                // Show the `UrlHistoryDialog` `AlertDialog` and name this instance `R.string.history`.  `this` is the `Context`.
-                AppCompatDialogFragment urlHistoryDialogFragment = UrlHistoryDialog.loadBackForwardList(this, webBackForwardList);
+                // Show the URL history dialog and name this instance `R.string.history`.
+                DialogFragment urlHistoryDialogFragment = UrlHistoryDialog.loadBackForwardList(this, webBackForwardList);
                 urlHistoryDialogFragment.show(getSupportFragmentManager(), getString(R.string.history));
                 break;
 
@@ -2940,6 +2998,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 startActivity(importExportIntent);
                 break;
 
+            case R.id.logcat:
+                // Launch the logcat activity.
+                Intent logcatIntent = new Intent(this, LogcatActivity.class);
+                startActivity(logcatIntent);
+                break;
+
             case R.id.guide:
                 // Launch `GuideActivity`.
                 Intent guideIntent = new Intent(this, GuideActivity.class);
@@ -2952,14 +3016,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 startActivity(aboutIntent);
                 break;
 
-            case R.id.clearAndExit:
+            case R.id.clear_and_exit:
                 // Close the bookmarks cursor and database.
                 bookmarksCursor.close();
                 bookmarksDatabaseHelper.close();
 
-                // Get a handle for `sharedPreferences`.  `this` references the current context.
+                // Get a handle for the shared preferences.
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
+                // Get the status of the clear everything preference.
                 boolean clearEverything = sharedPreferences.getBoolean("clear_everything", true);
 
                 // Clear cookies.
@@ -2973,10 +3038,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Manually delete the cookies database, as `CookieManager` sometimes will not flush its changes to disk before `System.exit(0)` is run.
                     try {
-                        // We have to use two commands because `Runtime.exec()` does not like `*`.
-                        privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/Cookies");
-                        privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/Cookies-journal");
-                    } catch (IOException e) {
+                        // Two commands must be used because `Runtime.exec()` does not like `*`.
+                        Process deleteCookiesProcess = privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/Cookies");
+                        Process deleteCookiesJournalProcess = privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/Cookies-journal");
+
+                        // Wait until the processes have finished.
+                        deleteCookiesProcess.waitFor();
+                        deleteCookiesJournalProcess.waitFor();
+                    } catch (Exception exception) {
                         // Do nothing if an error is thrown.
                     }
                 }
@@ -2990,14 +3059,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Manually delete the DOM storage files and directories, as `WebStorage` sometimes will not flush its changes to disk before `System.exit(0)` is run.
                     try {
                         // A `String[]` must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
-                        privacyBrowserRuntime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Local Storage/"});
+                        Process deleteLocalStorageProcess = privacyBrowserRuntime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Local Storage/"});
 
                         // Multiple commands must be used because `Runtime.exec()` does not like `*`.
-                        privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/IndexedDB");
-                        privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager");
-                        privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager-journal");
-                        privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/databases");
-                    } catch (IOException e) {
+                        Process deleteIndexProcess = privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/IndexedDB");
+                        Process deleteQuotaManagerProcess = privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager");
+                        Process deleteQuotaManagerJournalProcess = privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager-journal");
+                        Process deleteDatabaseProcess = privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/databases");
+
+                        // Wait until the processes have finished.
+                        deleteLocalStorageProcess.waitFor();
+                        deleteIndexProcess.waitFor();
+                        deleteQuotaManagerProcess.waitFor();
+                        deleteQuotaManagerJournalProcess.waitFor();
+                        deleteDatabaseProcess.waitFor();
+                    } catch (Exception exception) {
                         // Do nothing if an error is thrown.
                     }
                 }
@@ -3009,10 +3085,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Manually delete the form data database, as `WebViewDatabase` sometimes will not flush its changes to disk before `System.exit(0)` is run.
                     try {
-                        // We have to use a `String[]` because the database contains a space and `Runtime.exec` will not escape the string correctly otherwise.
-                        privacyBrowserRuntime.exec(new String[] {"rm", "-f", privateDataDirectoryString + "/app_webview/Web Data"});
-                        privacyBrowserRuntime.exec(new String[] {"rm", "-f", privateDataDirectoryString + "/app_webview/Web Data-journal"});
-                    } catch (IOException e) {
+                        // A string array must be used because the database contains a space and `Runtime.exec` will not otherwise escape the string correctly.
+                        Process deleteWebDataProcess = privacyBrowserRuntime.exec(new String[] {"rm", "-f", privateDataDirectoryString + "/app_webview/Web Data"});
+                        Process deleteWebDataJournalProcess = privacyBrowserRuntime.exec(new String[] {"rm", "-f", privateDataDirectoryString + "/app_webview/Web Data-journal"});
+
+                        // Wait until the processes have finished.
+                        deleteWebDataProcess.waitFor();
+                        deleteWebDataJournalProcess.waitFor();
+                    } catch (Exception exception) {
                         // Do nothing if an error is thrown.
                     }
                 }
@@ -3025,12 +3105,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Manually delete the cache directories.
                     try {
                         // Delete the main cache directory.
-                        privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/cache");
+                        Process deleteCacheProcess = privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/cache");
 
                         // Delete the secondary `Service Worker` cache directory.
-                        // A `String[]` must be used because the directory contains a space and `Runtime.exec` will not escape the string correctly otherwise.
-                        privacyBrowserRuntime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Service Worker/"});
-                    } catch (IOException e) {
+                        // A string array must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
+                        Process deleteServiceWorkerProcess = privacyBrowserRuntime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Service Worker/"});
+
+                        // Wait until the processes have finished.
+                        deleteCacheProcess.waitFor();
+                        deleteServiceWorkerProcess.waitFor();
+                    } catch (Exception exception) {
                         // Do nothing if an error is thrown.
                     }
                 }
@@ -3047,9 +3131,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Clear `customHeaders`.
                 customHeaders.clear();
 
-                // Detach all views from `mainWebViewRelativeLayout`.
-                mainWebViewRelativeLayout.removeAllViews();
-
                 // Destroy the internal state of `mainWebView`.
                 mainWebView.destroy();
 
@@ -3057,8 +3138,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // See `https://code.google.com/p/android/issues/detail?id=233826&thanks=233826&ts=1486670530`.
                 if (clearEverything) {
                     try {
-                        privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview");
-                    } catch (IOException e) {
+                        // Delete the folder.
+                        Process deleteAppWebviewProcess = privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview");
+
+                        // Wait until the process has finished.
+                        deleteAppWebviewProcess.waitFor();
+                    } catch (Exception exception) {
                         // Do nothing if an error is thrown.
                     }
                 }
@@ -3075,6 +3160,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 break;
         }
 
+        // Get a handle for the drawer layout.
+        DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
+
         // Close the navigation drawer.
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
@@ -3082,17 +3170,31 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void onPostCreate(Bundle savedInstanceState) {
+        // Run the default commands.
         super.onPostCreate(savedInstanceState);
 
-        // Sync the state of the DrawerToggle after onRestoreInstanceState has finished.
-        drawerToggle.syncState();
+        // Sync the state of the DrawerToggle after the default `onRestoreInstanceState()` has finished.  This creates the navigation drawer icon.
+        actionBarDrawerToggle.syncState();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
+        // Run the default commands.
         super.onConfigurationChanged(newConfig);
 
-        // Reload the ad for the free flavor if we not in full screen mode.
+        // Get the status bar pixel size.
+        int statusBarResourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        int statusBarPixelSize = getResources().getDimensionPixelSize(statusBarResourceId);
+
+        // Get the resource density.
+        float screenDensity = getResources().getDisplayMetrics().density;
+
+        // Recalculate the drawer header padding.
+        drawerHeaderPaddingLeftAndRight = (int) (15 * screenDensity);
+        drawerHeaderPaddingTop = statusBarPixelSize + (int) (4 * screenDensity);
+        drawerHeaderPaddingBottom = (int) (8 * screenDensity);
+
+        // Reload the ad for the free flavor if not in full screen mode.
         if (BuildConfig.FLAVOR.contentEquals("free") && !inFullScreenBrowsingMode) {
             // Reload the ad.  The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
             AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_unit_id));
@@ -3112,8 +3214,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         final String imageUrl;
         final String linkUrl;
 
-        // Get a handle for the `ClipboardManager`.
+        // Get a handle for the the clipboard and fragment managers.
         final ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+        FragmentManager fragmentManager = getSupportFragmentManager();
 
         // Remove the lint errors below that `clipboardManager` might be `null`.
         assert clipboardManager != null;
@@ -3145,37 +3248,52 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Add a Download URL entry.
                 menu.add(R.string.download_url).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Check to see if the WRITE_EXTERNAL_STORAGE permission has already been granted.
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                        // The WRITE_EXTERNAL_STORAGE permission needs to be requested.
+                    // Check if the download should be processed by an external app.
+                    if (downloadWithExternalApp) {  // Download with an external app.
+                        openUrlWithExternalApp(linkUrl);
+                    } else {  // Download with Android's download manager.
+                        // Check to see if the storage permission has already been granted.
+                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {  // The storage permission needs to be requested.
+                            // Store the variables for future use by `onRequestPermissionsResult()`.
+                            downloadUrl = linkUrl;
+                            downloadContentDisposition = "none";
+                            downloadContentLength = -1;
 
-                        // Store the variables for future use by `onRequestPermissionsResult()`.
-                        downloadUrl = linkUrl;
-                        downloadContentDisposition = "none";
-                        downloadContentLength = -1;
+                            // Show a dialog if the user has previously denied the permission.
+                            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
+                                // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_FILE.
+                                DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_FILE);
 
-                        // Show a dialog if the user has previously denied the permission.
-                        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
-                            // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_FILE.
-                            DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_FILE);
+                                // Show the download location permission alert dialog.  The permission will be requested when the the dialog is closed.
+                                downloadLocationPermissionDialogFragment.show(fragmentManager, getString(R.string.download_location));
+                            } else {  // Show the permission request directly.
+                                // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
+                                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_FILE_REQUEST_CODE);
+                            }
+                        } else {  // The storage permission has already been granted.
+                            // Get a handle for the download file alert dialog.
+                            DialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(linkUrl, "none", -1);
 
-                            // Show the download location permission alert dialog.  The permission will be requested when the the dialog is closed.
-                            downloadLocationPermissionDialogFragment.show(getFragmentManager(), getString(R.string.download_location));
-                        } else {  // Show the permission request directly.
-                            // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
-                            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_FILE_REQUEST_CODE);
+                            // Show the download file alert dialog.
+                            downloadFileDialogFragment.show(fragmentManager, getString(R.string.download));
                         }
-                    } else {  // The WRITE_EXTERNAL_STORAGE permission has already been granted.
-                        // Get a handle for the download file alert dialog.
-                        AppCompatDialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(linkUrl, "none", -1);
-
-                        // Show the download file alert dialog.
-                        downloadFileDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
                     }
                     return false;
                 });
 
-                // Add a `Cancel` entry, which by default closes the `ContextMenu`.
+                // Add an Open with App entry.
+                menu.add(R.string.open_with_app).setOnMenuItemClickListener((MenuItem item) -> {
+                    openWithApp(linkUrl);
+                    return false;
+                });
+
+                // Add an Open with Browser entry.
+                menu.add(R.string.open_with_browser).setOnMenuItemClickListener((MenuItem item) -> {
+                    openWithBrowser(linkUrl);
+                    return false;
+                });
+
+                // Add a Cancel entry, which by default closes the context menu.
                 menu.add(R.string.cancel);
                 break;
 
@@ -3186,9 +3304,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Set the target URL as the title of the `ContextMenu`.
                 menu.setHeaderTitle(linkUrl);
 
-                // Add a `Write Email` entry.
+                // Add a Write Email entry.
                 menu.add(R.string.write_email).setOnMenuItemClickListener(item -> {
-                    // We use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
+                    // Use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
 
                     // Parse the url and set it as the data for the `Intent`.
@@ -3202,7 +3320,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     return false;
                 });
 
-                // Add a `Copy Email Address` entry.
+                // Add a Copy Email Address entry.
                 menu.add(R.string.copy_email_address).setOnMenuItemClickListener(item -> {
                     // Save the email address in a `ClipData`.
                     ClipData srcEmailTypeClipData = ClipData.newPlainText(getString(R.string.email_address), linkUrl);
@@ -3224,49 +3342,64 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Set the image URL as the title of the `ContextMenu`.
                 menu.setHeaderTitle(imageUrl);
 
-                // Add a `View Image` entry.
+                // Add a View Image entry.
                 menu.add(R.string.view_image).setOnMenuItemClickListener(item -> {
                     loadUrl(imageUrl);
                     return false;
                 });
 
-                // Add a `Download Image` entry.
+                // Add a Download Image entry.
                 menu.add(R.string.download_image).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Check to see if the WRITE_EXTERNAL_STORAGE permission has already been granted.
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                        // The WRITE_EXTERNAL_STORAGE permission needs to be requested.
+                    // Check if the download should be processed by an external app.
+                    if (downloadWithExternalApp) {  // Download with an external app.
+                        openUrlWithExternalApp(imageUrl);
+                    } else {  // Download with Android's download manager.
+                        // Check to see if the storage permission has already been granted.
+                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {  // The storage permission needs to be requested.
+                            // Store the image URL for use by `onRequestPermissionResult()`.
+                            downloadImageUrl = imageUrl;
 
-                        // Store the image URL for use by `onRequestPermissionResult()`.
-                        downloadImageUrl = imageUrl;
+                            // Show a dialog if the user has previously denied the permission.
+                            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
+                                // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_IMAGE.
+                                DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_IMAGE);
 
-                        // Show a dialog if the user has previously denied the permission.
-                        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
-                            // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_IMAGE.
-                            DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_IMAGE);
+                                // Show the download location permission alert dialog.  The permission will be requested when the dialog is closed.
+                                downloadLocationPermissionDialogFragment.show(fragmentManager, getString(R.string.download_location));
+                            } else {  // Show the permission request directly.
+                                // Request the permission.  The download dialog will be launched by `onRequestPermissionResult().
+                                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_IMAGE_REQUEST_CODE);
+                            }
+                        } else {  // The storage permission has already been granted.
+                            // Get a handle for the download image alert dialog.
+                            DialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
 
-                            // Show the download location permission alert dialog.  The permission will be requested when the dialog is closed.
-                            downloadLocationPermissionDialogFragment.show(getFragmentManager(), getString(R.string.download_location));
-                        } else {  // Show the permission request directly.
-                            // Request the permission.  The download dialog will be launched by `onRequestPermissionResult().
-                            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_IMAGE_REQUEST_CODE);
+                            // Show the download image alert dialog.
+                            downloadImageDialogFragment.show(fragmentManager, getString(R.string.download));
                         }
-                    } else {  // The WRITE_EXTERNAL_STORAGE permission has already been granted.
-                        // Get a handle for the download image alert dialog.
-                        AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
-
-                        // Show the download image alert dialog.
-                        downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
                     }
                     return false;
                 });
 
-                // Add a `Copy URL` entry.
+                // Add a Copy URL entry.
                 menu.add(R.string.copy_url).setOnMenuItemClickListener(item -> {
                     // Save the image URL in a `ClipData`.
                     ClipData srcImageTypeClipData = ClipData.newPlainText(getString(R.string.url), imageUrl);
 
                     // Set the `ClipData` as the clipboard's primary clip.
                     clipboardManager.setPrimaryClip(srcImageTypeClipData);
+                    return false;
+                });
+
+                // Add an Open with App entry.
+                menu.add(R.string.open_with_app).setOnMenuItemClickListener((MenuItem item) -> {
+                    openWithApp(imageUrl);
+                    return false;
+                });
+
+                // Add an Open with Browser entry.
+                menu.add(R.string.open_with_browser).setOnMenuItemClickListener((MenuItem item) -> {
+                    openWithBrowser(imageUrl);
                     return false;
                 });
 
@@ -3291,30 +3424,33 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Add a `Download Image` entry.
                 menu.add(R.string.download_image).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Check to see if the WRITE_EXTERNAL_STORAGE permission has already been granted.
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                        // The WRITE_EXTERNAL_STORAGE permission needs to be requested.
+                    // Check if the download should be processed by an external app.
+                    if (downloadWithExternalApp) {  // Download with an external app.
+                        openUrlWithExternalApp(imageUrl);
+                    } else {  // Download with Android's download manager.
+                        // Check to see if the storage permission has already been granted.
+                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {  // The storage permission needs to be requested.
+                            // Store the image URL for use by `onRequestPermissionResult()`.
+                            downloadImageUrl = imageUrl;
 
-                        // Store the image URL for use by `onRequestPermissionResult()`.
-                        downloadImageUrl = imageUrl;
+                            // Show a dialog if the user has previously denied the permission.
+                            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
+                                // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_IMAGE.
+                                DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_IMAGE);
 
-                        // Show a dialog if the user has previously denied the permission.
-                        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
-                            // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_IMAGE.
-                            DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_IMAGE);
+                                // Show the download location permission alert dialog.  The permission will be requested when the dialog is closed.
+                                downloadLocationPermissionDialogFragment.show(fragmentManager, getString(R.string.download_location));
+                            } else {  // Show the permission request directly.
+                                // Request the permission.  The download dialog will be launched by `onRequestPermissionResult().
+                                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_IMAGE_REQUEST_CODE);
+                            }
+                        } else {  // The storage permission has already been granted.
+                            // Get a handle for the download image alert dialog.
+                            DialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
 
-                            // Show the download location permission alert dialog.  The permission will be requested when the dialog is closed.
-                            downloadLocationPermissionDialogFragment.show(getFragmentManager(), getString(R.string.download_location));
-                        } else {  // Show the permission request directly.
-                            // Request the permission.  The download dialog will be launched by `onRequestPermissionResult().
-                            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_IMAGE_REQUEST_CODE);
+                            // Show the download image alert dialog.
+                            downloadImageDialogFragment.show(fragmentManager, getString(R.string.download));
                         }
-                    } else {  // The WRITE_EXTERNAL_STORAGE permission has already been granted.
-                        // Get a handle for the download image alert dialog.
-                        AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
-
-                        // Show the download image alert dialog.
-                        downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
                     }
                     return false;
                 });
@@ -3329,6 +3465,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     return false;
                 });
 
+                // Add an Open with App entry.
+                menu.add(R.string.open_with_app).setOnMenuItemClickListener((MenuItem item) -> {
+                    openWithApp(imageUrl);
+                    return false;
+                });
+
+                // Add an Open with Browser entry.
+                menu.add(R.string.open_with_browser).setOnMenuItemClickListener((MenuItem item) -> {
+                    openWithBrowser(imageUrl);
+                    return false;
+                });
+
                 // Add a `Cancel` entry, which by default closes the `ContextMenu`.
                 menu.add(R.string.cancel);
                 break;
@@ -3336,18 +3484,30 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onCreateBookmark(AppCompatDialogFragment dialogFragment) {
-        // Get the `EditTexts` from the `dialogFragment`.
+    public void onCreateBookmark(DialogFragment dialogFragment) {
+        // Get the views from the dialog fragment.
         EditText createBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.create_bookmark_name_edittext);
         EditText createBookmarkUrlEditText = dialogFragment.getDialog().findViewById(R.id.create_bookmark_url_edittext);
 
-        // Extract the strings from the `EditTexts`.
+        // Extract the strings from the edit texts.
         String bookmarkNameString = createBookmarkNameEditText.getText().toString();
         String bookmarkUrlString = createBookmarkUrlEditText.getText().toString();
 
-        // Convert the favoriteIcon Bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
+        // Get a copy of the favorite icon bitmap.
+        Bitmap favoriteIcon = favoriteIconBitmap;
+
+        // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+        if ((favoriteIcon.getHeight() > 256) || (favoriteIcon.getWidth() > 256)) {
+            favoriteIcon = Bitmap.createScaledBitmap(favoriteIcon, 256, 256, true);
+        }
+
+        // Create a favorite icon byte array output stream.
         ByteArrayOutputStream favoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
-        favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
+
+        // Convert the favorite icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
+        favoriteIcon.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
+
+        // Convert the favorite icon byte array stream to a byte array.
         byte[] favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray();
 
         // Display the new bookmark below the current items in the (0 indexed) list.
@@ -3356,10 +3516,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Create the bookmark.
         bookmarksDatabaseHelper.createBookmark(bookmarkNameString, bookmarkUrlString, currentBookmarksFolder, newBookmarkDisplayOrder, favoriteIconByteArray);
 
-        // Update `bookmarksCursor` with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentBookmarksFolder);
+        // Update the bookmarks cursor with the current contents of this folder.
+        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentBookmarksFolder);
 
-        // Update the `ListView`.
+        // Update the list view.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
 
         // Scroll to the new bookmark.
@@ -3367,8 +3527,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onCreateBookmarkFolder(AppCompatDialogFragment dialogFragment) {
-        // Get handles for the views in `dialogFragment`.
+    public void onCreateBookmarkFolder(DialogFragment dialogFragment) {
+        // Get handles for the views in the dialog fragment.
         EditText createFolderNameEditText = dialogFragment.getDialog().findViewById(R.id.create_folder_name_edittext);
         RadioButton defaultFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon_radiobutton);
         ImageView folderIconImageView = dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon);
@@ -3376,20 +3536,36 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get new folder name string.
         String folderNameString = createFolderNameEditText.getText().toString();
 
-        // Get the new folder icon `Bitmap`.
+        // Create a folder icon bitmap.
         Bitmap folderIconBitmap;
+
+        // Set the folder icon bitmap according to the dialog.
         if (defaultFolderIconRadioButton.isChecked()) {  // Use the default folder icon.
-            // Get the default folder icon and convert it to a `Bitmap`.
+            // Get the default folder icon drawable.
             Drawable folderIconDrawable = folderIconImageView.getDrawable();
+
+            // Convert the folder icon drawable to a bitmap drawable.
             BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
+
+            // Convert the folder icon bitmap drawable to a bitmap.
             folderIconBitmap = folderIconBitmapDrawable.getBitmap();
-        } else {  // Use the `WebView` favorite icon.
+        } else {  // Use the WebView favorite icon.
+            // Get a copy of the favorite icon bitmap.
             folderIconBitmap = favoriteIconBitmap;
+
+            // Scale the folder icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+            if ((folderIconBitmap.getHeight() > 256) || (folderIconBitmap.getWidth() > 256)) {
+                folderIconBitmap = Bitmap.createScaledBitmap(folderIconBitmap, 256, 256, true);
+            }
         }
 
-        // Convert `folderIconBitmap` to a byte array.  `0` is for lossless compression (the only option for a PNG).
+        // Create a folder icon byte array output stream.
         ByteArrayOutputStream folderIconByteArrayOutputStream = new ByteArrayOutputStream();
+
+        // Convert the folder icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
         folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, folderIconByteArrayOutputStream);
+
+        // Convert the folder icon byte array stream to a byte array.
         byte[] folderIconByteArray = folderIconByteArrayOutputStream.toByteArray();
 
         // Move all the bookmarks down one in the display order.
@@ -3401,8 +3577,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Create the folder, which will be placed at the top of the `ListView`.
         bookmarksDatabaseHelper.createFolder(folderNameString, currentBookmarksFolder, folderIconByteArray);
 
-        // Update `bookmarksCursor` with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentBookmarksFolder);
+        // Update the bookmarks cursor with the current contents of this folder.
+        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentBookmarksFolder);
 
         // Update the `ListView`.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
@@ -3412,29 +3588,138 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onCreateHomeScreenShortcut(AppCompatDialogFragment dialogFragment) {
-        // Get the shortcut name.
-        EditText shortcutNameEditText = dialogFragment.getDialog().findViewById(R.id.shortcut_name_edittext);
-        String shortcutNameString = shortcutNameEditText.getText().toString();
+    public void onSaveBookmark(DialogFragment dialogFragment, int selectedBookmarkDatabaseId) {
+        // Get handles for the views from `dialogFragment`.
+        EditText editBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_name_edittext);
+        EditText editBookmarkUrlEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_url_edittext);
+        RadioButton currentBookmarkIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_current_icon_radiobutton);
 
-        // Convert the favorite icon bitmap to an `Icon`.  `IconCompat` is required until API >= 26.
-        IconCompat favoriteIcon = IconCompat.createWithBitmap(favoriteIconBitmap);
+        // Store the bookmark strings.
+        String bookmarkNameString = editBookmarkNameEditText.getText().toString();
+        String bookmarkUrlString = editBookmarkUrlEditText.getText().toString();
 
-        // Setup the shortcut intent.
-        Intent shortcutIntent = new Intent();
-        shortcutIntent.setAction(Intent.ACTION_VIEW);
-        shortcutIntent.setData(Uri.parse(formattedUrlString));
+        // Update the bookmark.
+        if (currentBookmarkIconRadioButton.isChecked()) {  // Update the bookmark without changing the favorite icon.
+            bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString);
+        } else {  // Update the bookmark using the `WebView` favorite icon.
+            // Get a copy of the favorite icon bitmap.
+            Bitmap favoriteIcon = favoriteIconBitmap;
 
-        // Create a shortcut info builder.  The shortcut name becomes the shortcut ID.
-        ShortcutInfoCompat.Builder shortcutInfoBuilder = new ShortcutInfoCompat.Builder(this, shortcutNameString);
+            // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+            if ((favoriteIcon.getHeight() > 256) || (favoriteIcon.getWidth() > 256)) {
+                favoriteIcon = Bitmap.createScaledBitmap(favoriteIcon, 256, 256, true);
+            }
 
-        // Add the required fields to the shortcut info builder.
-        shortcutInfoBuilder.setIcon(favoriteIcon);
-        shortcutInfoBuilder.setIntent(shortcutIntent);
-        shortcutInfoBuilder.setShortLabel(shortcutNameString);
+            // Create a favorite icon byte array output stream.
+            ByteArrayOutputStream newFavoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
 
-        // Request the pin.  `ShortcutManagerCompat` can be switched to `ShortcutManager` once API >= 26.
-        ShortcutManagerCompat.requestPinShortcut(this, shortcutInfoBuilder.build(), null);
+            // Convert the favorite icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
+            favoriteIcon.compress(Bitmap.CompressFormat.PNG, 0, newFavoriteIconByteArrayOutputStream);
+
+            // Convert the favorite icon byte array stream to a byte array.
+            byte[] newFavoriteIconByteArray = newFavoriteIconByteArrayOutputStream.toByteArray();
+
+            //  Update the bookmark and the favorite icon.
+            bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString, newFavoriteIconByteArray);
+        }
+
+        // Update the bookmarks cursor with the current contents of this folder.
+        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentBookmarksFolder);
+
+        // Update the list view.
+        bookmarksCursorAdapter.changeCursor(bookmarksCursor);
+    }
+
+    @Override
+    public void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedFolderDatabaseId) {
+        // Get handles for the views from `dialogFragment`.
+        EditText editFolderNameEditText = dialogFragment.getDialog().findViewById(R.id.edit_folder_name_edittext);
+        RadioButton currentFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_current_icon_radiobutton);
+        RadioButton defaultFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_radiobutton);
+        ImageView defaultFolderIconImageView = dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_imageview);
+
+        // Get the new folder name.
+        String newFolderNameString = editFolderNameEditText.getText().toString();
+
+        // Check if the favorite icon has changed.
+        if (currentFolderIconRadioButton.isChecked()) {  // Only the name has changed.
+            // Update the name in the database.
+            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, oldFolderNameString, newFolderNameString);
+        } else if (!currentFolderIconRadioButton.isChecked() && newFolderNameString.equals(oldFolderNameString)) {  // Only the icon has changed.
+            // Create the new folder icon Bitmap.
+            Bitmap folderIconBitmap;
+
+            // Populate the new folder icon bitmap.
+            if (defaultFolderIconRadioButton.isChecked()) {
+                // Get the default folder icon drawable.
+                Drawable folderIconDrawable = defaultFolderIconImageView.getDrawable();
+
+                // Convert the folder icon drawable to a bitmap drawable.
+                BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
+
+                // Convert the folder icon bitmap drawable to a bitmap.
+                folderIconBitmap = folderIconBitmapDrawable.getBitmap();
+            } else {  // Use the `WebView` favorite icon.
+                // Get a copy of the favorite icon bitmap.
+                folderIconBitmap = MainWebViewActivity.favoriteIconBitmap;
+
+                // Scale the folder icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+                if ((folderIconBitmap.getHeight() > 256) || (folderIconBitmap.getWidth() > 256)) {
+                    folderIconBitmap = Bitmap.createScaledBitmap(folderIconBitmap, 256, 256, true);
+                }
+            }
+
+            // Create a folder icon byte array output stream.
+            ByteArrayOutputStream newFolderIconByteArrayOutputStream = new ByteArrayOutputStream();
+
+            // Convert the folder icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
+            folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, newFolderIconByteArrayOutputStream);
+
+            // Convert the folder icon byte array stream to a byte array.
+            byte[] newFolderIconByteArray = newFolderIconByteArrayOutputStream.toByteArray();
+
+            // Update the folder icon in the database.
+            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, newFolderIconByteArray);
+        } else {  // The folder icon and the name have changed.
+            // Get the new folder icon `Bitmap`.
+            Bitmap folderIconBitmap;
+            if (defaultFolderIconRadioButton.isChecked()) {
+                // Get the default folder icon drawable.
+                Drawable folderIconDrawable = defaultFolderIconImageView.getDrawable();
+
+                // Convert the folder icon drawable to a bitmap drawable.
+                BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
+
+                // Convert the folder icon bitmap drawable to a bitmap.
+                folderIconBitmap = folderIconBitmapDrawable.getBitmap();
+            } else {  // Use the `WebView` favorite icon.
+                // Get a copy of the favorite icon bitmap.
+                folderIconBitmap = MainWebViewActivity.favoriteIconBitmap;
+
+                // Scale the folder icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+                if ((folderIconBitmap.getHeight() > 256) || (folderIconBitmap.getWidth() > 256)) {
+                    folderIconBitmap = Bitmap.createScaledBitmap(folderIconBitmap, 256, 256, true);
+                }
+            }
+
+            // Create a folder icon byte array output stream.
+            ByteArrayOutputStream newFolderIconByteArrayOutputStream = new ByteArrayOutputStream();
+
+            // Convert the folder icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
+            folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, newFolderIconByteArrayOutputStream);
+
+            // Convert the folder icon byte array stream to a byte array.
+            byte[] newFolderIconByteArray = newFolderIconByteArrayOutputStream.toByteArray();
+
+            // Update the folder name and icon in the database.
+            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, oldFolderNameString, newFolderNameString, newFolderIconByteArray);
+        }
+
+        // Update the bookmarks cursor with the current contents of this folder.
+        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentBookmarksFolder);
+
+        // Update the `ListView`.
+        bookmarksCursorAdapter.changeCursor(bookmarksCursor);
     }
 
     @Override
@@ -3454,16 +3739,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        // Get a handle for the fragment manager.
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
         switch (requestCode) {
             case DOWNLOAD_FILE_REQUEST_CODE:
                 // Show the download file alert dialog.  When the dialog closes, the correct command will be used based on the permission status.
-                AppCompatDialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(downloadUrl, downloadContentDisposition, downloadContentLength);
+                DialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(downloadUrl, downloadContentDisposition, downloadContentLength);
 
                 // On API 23, displaying the fragment must be delayed or the app will crash.
                 if (Build.VERSION.SDK_INT == 23) {
-                    new Handler().postDelayed(() -> downloadFileDialogFragment.show(getSupportFragmentManager(), getString(R.string.download)), 500);
+                    new Handler().postDelayed(() -> downloadFileDialogFragment.show(fragmentManager, getString(R.string.download)), 500);
                 } else {
-                    downloadFileDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
+                    downloadFileDialogFragment.show(fragmentManager, getString(R.string.download));
                 }
 
                 // Reset the download variables.
@@ -3474,13 +3762,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case DOWNLOAD_IMAGE_REQUEST_CODE:
                 // Show the download image alert dialog.  When the dialog closes, the correct command will be used based on the permission status.
-                AppCompatDialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(downloadImageUrl);
+                DialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(downloadImageUrl);
 
                 // On API 23, displaying the fragment must be delayed or the app will crash.
                 if (Build.VERSION.SDK_INT == 23) {
-                    new Handler().postDelayed(() -> downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download)), 500);
+                    new Handler().postDelayed(() -> downloadImageDialogFragment.show(fragmentManager, getString(R.string.download)), 500);
                 } else {
-                    downloadImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
+                    downloadImageDialogFragment.show(fragmentManager, getString(R.string.download));
                 }
 
                 // Reset the image URL variable.
@@ -3490,7 +3778,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onDownloadImage(AppCompatDialogFragment dialogFragment, String imageUrl) {
+    public void onDownloadImage(DialogFragment dialogFragment, String imageUrl) {
         // Download the image if it has an HTTP or HTTPS URI.
         if (imageUrl.startsWith("http")) {
             // Get a handle for the system `DOWNLOAD_SERVICE`.
@@ -3542,7 +3830,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onDownloadFile(AppCompatDialogFragment dialogFragment, String downloadUrl) {
+    public void onDownloadFile(DialogFragment dialogFragment, String downloadUrl) {
         // Download the file if it has an HTTP or HTTPS URI.
         if (downloadUrl.startsWith("http")) {
             // Get a handle for the system `DOWNLOAD_SERVICE`.
@@ -3594,106 +3882,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onSaveBookmark(AppCompatDialogFragment dialogFragment, int selectedBookmarkDatabaseId) {
-        // Get handles for the views from `dialogFragment`.
-        EditText editBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_name_edittext);
-        EditText editBookmarkUrlEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_url_edittext);
-        RadioButton currentBookmarkIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_current_icon_radiobutton);
-
-        // Store the bookmark strings.
-        String bookmarkNameString = editBookmarkNameEditText.getText().toString();
-        String bookmarkUrlString = editBookmarkUrlEditText.getText().toString();
-
-        // Update the bookmark.
-        if (currentBookmarkIconRadioButton.isChecked()) {  // Update the bookmark without changing the favorite icon.
-            bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString);
-        } else {  // Update the bookmark using the `WebView` favorite icon.
-            // Convert the favorite icon to a byte array.  `0` is for lossless compression (the only option for a PNG).
-            ByteArrayOutputStream newFavoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
-            favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, newFavoriteIconByteArrayOutputStream);
-            byte[] newFavoriteIconByteArray = newFavoriteIconByteArrayOutputStream.toByteArray();
-
-            //  Update the bookmark and the favorite icon.
-            bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString, newFavoriteIconByteArray);
-        }
-
-        // Update `bookmarksCursor` with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentBookmarksFolder);
-
-        // Update the `ListView`.
-        bookmarksCursorAdapter.changeCursor(bookmarksCursor);
-    }
-
-    @Override
-    public void onSaveBookmarkFolder(AppCompatDialogFragment dialogFragment, int selectedFolderDatabaseId) {
-        // Get handles for the views from `dialogFragment`.
-        EditText editFolderNameEditText = dialogFragment.getDialog().findViewById(R.id.edit_folder_name_edittext);
-        RadioButton currentFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_current_icon_radiobutton);
-        RadioButton defaultFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_radiobutton);
-        ImageView folderIconImageView = dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_imageview);
-
-        // Get the new folder name.
-        String newFolderNameString = editFolderNameEditText.getText().toString();
-
-        // Check if the favorite icon has changed.
-        if (currentFolderIconRadioButton.isChecked()) {  // Only the name has changed.
-            // Update the name in the database.
-            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, oldFolderNameString, newFolderNameString);
-        } else if (!currentFolderIconRadioButton.isChecked() && newFolderNameString.equals(oldFolderNameString)) {  // Only the icon has changed.
-            // Get the new folder icon `Bitmap`.
-            Bitmap folderIconBitmap;
-            if (defaultFolderIconRadioButton.isChecked()) {
-                // Get the default folder icon and convert it to a `Bitmap`.
-                Drawable folderIconDrawable = folderIconImageView.getDrawable();
-                BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
-                folderIconBitmap = folderIconBitmapDrawable.getBitmap();
-            } else {  // Use the `WebView` favorite icon.
-                folderIconBitmap = favoriteIconBitmap;
-            }
-
-            // Convert the folder `Bitmap` to a byte array.  `0` is for lossless compression (the only option for a PNG).
-            ByteArrayOutputStream folderIconByteArrayOutputStream = new ByteArrayOutputStream();
-            folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, folderIconByteArrayOutputStream);
-            byte[] folderIconByteArray = folderIconByteArrayOutputStream.toByteArray();
-
-            // Update the folder icon in the database.
-            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, folderIconByteArray);
-        } else {  // The folder icon and the name have changed.
-            // Get the new folder icon `Bitmap`.
-            Bitmap folderIconBitmap;
-            if (defaultFolderIconRadioButton.isChecked()) {
-                // Get the default folder icon and convert it to a `Bitmap`.
-                Drawable folderIconDrawable = folderIconImageView.getDrawable();
-                BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
-                folderIconBitmap = folderIconBitmapDrawable.getBitmap();
-            } else {  // Use the `WebView` favorite icon.
-                folderIconBitmap = MainWebViewActivity.favoriteIconBitmap;
-            }
-
-            // Convert the folder `Bitmap` to a byte array.  `0` is for lossless compression (the only option for a PNG).
-            ByteArrayOutputStream folderIconByteArrayOutputStream = new ByteArrayOutputStream();
-            folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, folderIconByteArrayOutputStream);
-            byte[] folderIconByteArray = folderIconByteArrayOutputStream.toByteArray();
-
-            // Update the folder name and icon in the database.
-            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, oldFolderNameString, newFolderNameString, folderIconByteArray);
-        }
-
-        // Update `bookmarksCursor` with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentBookmarksFolder);
-
-        // Update the `ListView`.
-        bookmarksCursorAdapter.changeCursor(bookmarksCursor);
-    }
-
-    @Override
     public void onHttpAuthenticationCancel() {
         // Cancel the `HttpAuthHandler`.
         httpAuthHandler.cancel();
     }
 
     @Override
-    public void onHttpAuthenticationProceed(AppCompatDialogFragment dialogFragment) {
+    public void onHttpAuthenticationProceed(DialogFragment dialogFragment) {
         // Get handles for the `EditTexts`.
         EditText usernameEditText = dialogFragment.getDialog().findViewById(R.id.http_authentication_username);
         EditText passwordEditText = dialogFragment.getDialog().findViewById(R.id.http_authentication_password);
@@ -3705,7 +3900,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public void viewSslCertificate(View view) {
         // Show the `ViewSslCertificateDialog` `AlertDialog` and name this instance `@string/view_ssl_certificate`.
         DialogFragment viewSslCertificateDialogFragment = new ViewSslCertificateDialog();
-        viewSslCertificateDialogFragment.show(getFragmentManager(), getString(R.string.view_ssl_certificate));
+        viewSslCertificateDialogFragment.show(getSupportFragmentManager(), getString(R.string.view_ssl_certificate));
     }
 
     @Override
@@ -3719,7 +3914,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onSslMismatchBack() {
+    public void onPinnedMismatchBack() {
         if (mainWebView.canGoBack()) {  // There is a back page in the history.
             // Reset the formatted URL string so the page will load correctly if blocking of third-party requests is enabled.
             formattedUrlString = "";
@@ -3736,9 +3931,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onSslMismatchProceed() {
-        // Do not check the pinned SSL certificate for this domain again until the domain changes.
-        ignorePinnedSslCertificate = true;
+    public void onPinnedMismatchProceed() {
+        // Do not check the pinned information for this domain again until the domain changes.
+        ignorePinnedDomainInformation = true;
     }
 
     @Override
@@ -3762,6 +3957,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // Override `onBackPressed` to handle the navigation drawer and `mainWebView`.
     @Override
     public void onBackPressed() {
+        // Get a handle for the drawer layout.
+        DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
+
         if (drawerLayout.isDrawerVisible(GravityCompat.START)) {  // The navigation drawer is open.
             // Close the navigation drawer.
             drawerLayout.closeDrawer(GravityCompat.START);
@@ -3771,7 +3969,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 drawerLayout.closeDrawer(GravityCompat.END);
             } else {  // A subfolder is displayed.
                 // Place the former parent folder in `currentFolder`.
-                currentBookmarksFolder = bookmarksDatabaseHelper.getParentFolder(currentBookmarksFolder);
+                currentBookmarksFolder = bookmarksDatabaseHelper.getParentFolderName(currentBookmarksFolder);
 
                 // Load the new folder.
                 loadBookmarksFolder();
@@ -3802,14 +4000,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
     }
 
-    private void loadUrlFromTextBox() throws UnsupportedEncodingException {
+    private void loadUrlFromTextBox() {
         // Get the text from urlTextBox and convert it to a string.  trim() removes white spaces from the beginning and end of the string.
         String unformattedUrlString = urlTextBox.getText().toString().trim();
 
         // Check to see if `unformattedUrlString` is a valid URL.  Otherwise, convert it into a search.
-        if ((Patterns.WEB_URL.matcher(unformattedUrlString).matches()) || (unformattedUrlString.startsWith("http://")) || (unformattedUrlString.startsWith("https://"))) {
-            // Add `https://` at the beginning if it is missing.  Otherwise the app will segfault.
-            if (!unformattedUrlString.startsWith("http")) {
+        if (unformattedUrlString.startsWith("content://")) {
+            // Load the entire content URL.
+            formattedUrlString = unformattedUrlString;
+        } else if (Patterns.WEB_URL.matcher(unformattedUrlString).matches() || unformattedUrlString.startsWith("http://") || unformattedUrlString.startsWith("https://")
+                || unformattedUrlString.startsWith("file://")) {
+            // Add `https://` at the beginning if there is no protocol.  Otherwise the app will segfault.
+            if (!unformattedUrlString.startsWith("http") && !unformattedUrlString.startsWith("file://") && !unformattedUrlString.startsWith("content://")) {
                 unformattedUrlString = "https://" + unformattedUrlString;
             }
 
@@ -3824,24 +4026,36 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
 
             // The ternary operator (? :) makes sure that a null pointer exception is not thrown, which would happen if `.get` was called on a `null` value.
-            final String scheme = unformattedUrl != null ? unformattedUrl.getProtocol() : null;
-            final String authority = unformattedUrl != null ? unformattedUrl.getAuthority() : null;
-            final String path = unformattedUrl != null ? unformattedUrl.getPath() : null;
-            final String query = unformattedUrl != null ? unformattedUrl.getQuery() : null;
-            final String fragment = unformattedUrl != null ? unformattedUrl.getRef() : null;
+            String scheme = unformattedUrl != null ? unformattedUrl.getProtocol() : null;
+            String authority = unformattedUrl != null ? unformattedUrl.getAuthority() : null;
+            String path = unformattedUrl != null ? unformattedUrl.getPath() : null;
+            String query = unformattedUrl != null ? unformattedUrl.getQuery() : null;
+            String fragment = unformattedUrl != null ? unformattedUrl.getRef() : null;
 
             // Build the URI.
             Uri.Builder formattedUri = new Uri.Builder();
             formattedUri.scheme(scheme).authority(authority).path(path).query(query).fragment(fragment);
 
             // Decode `formattedUri` as a `String` in `UTF-8`.
-            formattedUrlString = URLDecoder.decode(formattedUri.build().toString(), "UTF-8");
+            try {
+                formattedUrlString = URLDecoder.decode(formattedUri.build().toString(), "UTF-8");
+            } catch (UnsupportedEncodingException exception) {
+                // Load a blank string.
+                formattedUrlString = "";
+            }
         } else if (unformattedUrlString.isEmpty()){  // Load a blank web site.
             // Load a blank string.
             formattedUrlString = "";
         } else {  // Search for the contents of the URL box.
-            // Sanitize the search input and convert it to a search.
-            final String encodedUrlString = URLEncoder.encode(unformattedUrlString, "UTF-8");
+            // Create an encoded URL String.
+            String encodedUrlString;
+
+            // Sanitize the search input.
+            try {
+                encodedUrlString = URLEncoder.encode(unformattedUrlString, "UTF-8");
+            } catch (UnsupportedEncodingException exception) {
+                encodedUrlString = "";
+            }
 
             // Add the base search URL.
             formattedUrlString = searchURL + encodedUrlString;
@@ -3879,19 +4093,23 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     public void closeFindOnPage(View view) {
+        // Get a handle for the views.
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        LinearLayout findOnPageLinearLayout = findViewById(R.id.find_on_page_linearlayout);
+
         // Delete the contents of `find_on_page_edittext`.
         findOnPageEditText.setText(null);
 
         // Clear the highlighted phrases.
         mainWebView.clearMatches();
 
-        // Hide the Find on Page `RelativeLayout`.
+        // Hide the find on page linear layout.
         findOnPageLinearLayout.setVisibility(View.GONE);
 
-        // Show the URL app bar.
-        supportAppBar.setVisibility(View.VISIBLE);
+        // Show the toolbar.
+        toolbar.setVisibility(View.VISIBLE);
 
-        // Hide the keyboard so we can see the webpage.  `0` indicates no additional flags.
+        // Hide the keyboard.
         inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
     }
 
@@ -3904,9 +4122,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         boolean doNotTrackEnabled = sharedPreferences.getBoolean("do_not_track", false);
         proxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
         fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("full_screen_browsing_mode", false);
-        hideSystemBarsOnFullscreen = sharedPreferences.getBoolean("hide_system_bars", false);
-        translucentNavigationBarOnFullscreen = sharedPreferences.getBoolean("translucent_navigation_bar", true);
-        displayWebpageImagesBoolean = sharedPreferences.getBoolean("display_webpage_images", true);
+        hideAppBar = sharedPreferences.getBoolean("hide_app_bar", true);
+        downloadWithExternalApp = sharedPreferences.getBoolean("download_with_external_app", false);
+
+        // Get handles for the views that need to be modified.  `getSupportActionBar()` must be used until the minimum API >= 21.
+        FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
+        ActionBar actionBar = getSupportActionBar();
+
+        // Remove the incorrect lint warnings below that the action bar might be null.
+        assert actionBar != null;
 
         // Apply the proxy through Orbot settings.
         applyProxyThroughOrbot(false);
@@ -3918,71 +4142,66 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             customHeaders.remove("DNT");
         }
 
-        // Apply the appropriate full screen mode the `SYSTEM_UI` flags.
+        // Set the app bar scrolling.
+        mainWebView.setNestedScrollingEnabled(sharedPreferences.getBoolean("scroll_app_bar", true));
+
+        // Update the full screen browsing mode settings.
         if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
-            if (hideSystemBarsOnFullscreen) {  // Hide everything.
-                // Remove the translucent navigation setting if it is currently flagged.
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-
-                // Remove the translucent status bar overlay.
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-                // Remove the translucent status bar overlay on the `Drawer Layout`, which is special and needs its own command.
-                drawerLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-
-                /* SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
-                 * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
-                 * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
-                 */
-                rootCoordinatorLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-            } else {  // Hide everything except the status and navigation bars.
-                // Remove any `SYSTEM_UI` flags from `rootCoordinatorLayout`.
-                rootCoordinatorLayout.setSystemUiVisibility(0);
-
-                // Add the translucent status flag if it is unset.
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-                if (translucentNavigationBarOnFullscreen) {
-                    // Set the navigation bar to be translucent.
-                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-                } else {
-                    // Set the navigation bar to be black.
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-                }
+            // Update the visibility of the app bar, which might have changed in the settings.
+            if (hideAppBar) {
+                actionBar.hide();
+            } else {
+                actionBar.show();
             }
+
+            // Hide the banner ad in the free flavor.
+            if (BuildConfig.FLAVOR.contentEquals("free")) {
+                AdHelper.hideAd(findViewById(R.id.adview));
+            }
+
+            // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+            /* Hide the system bars.
+             * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+             * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+             * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+             * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+             */
+            rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         } else {  // Privacy Browser is not in full screen browsing mode.
             // Reset the full screen tracker, which could be true if Privacy Browser was in full screen mode before entering settings and full screen browsing was disabled.
             inFullScreenBrowsingMode = false;
 
-            // Show the `appBar` if `findOnPageLinearLayout` is not visible.
-            if (findOnPageLinearLayout.getVisibility() == View.GONE) {
-                appBar.show();
-            }
+            // Show the app bar.
+            actionBar.show();
 
-            // Show the `BannerAd` in the free flavor.
+            // Show the banner ad in the free flavor.
             if (BuildConfig.FLAVOR.contentEquals("free")) {
-                // Initialize the ad.  The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
-                AdHelper.initializeAds(findViewById(R.id.adview), getApplicationContext(), getFragmentManager(), getString(R.string.google_app_id), getString(R.string.ad_unit_id));
+                // Initialize the ads.  If this isn't the first run, `loadAd()` will be automatically called instead.
+                AdHelper.initializeAds(findViewById(R.id.adview), getApplicationContext(), fragmentManager, getString(R.string.google_app_id), getString(R.string.ad_unit_id));
             }
 
-            // Remove any `SYSTEM_UI` flags from `rootCoordinatorLayout`.
-            rootCoordinatorLayout.setSystemUiVisibility(0);
+            // Remove the `SYSTEM_UI` flags from the root frame layout.
+            rootFrameLayout.setSystemUiVisibility(0);
 
-            // Remove the translucent navigation bar flag if it is set.
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-
-            // Add the translucent status flag if it is unset.  This also resets `drawerLayout's` `View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN`.
+            // Add the translucent status flag.
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-            // Constrain `rootCoordinatorLayout` inside the status and navigation bars.
-            rootCoordinatorLayout.setFitsSystemWindows(true);
         }
     }
+
 
     // `reloadWebsite` is used if returning from the Domains activity.  Otherwise JavaScript might not function correctly if it is newly enabled.
     // The deprecated `.getDrawable()` must be used until the minimum API >= 21.
     @SuppressWarnings("deprecation")
-    private void applyDomainSettings(String url, boolean resetFavoriteIcon, boolean reloadWebsite) {
+    private boolean applyDomainSettings(String url, boolean resetFavoriteIcon, boolean reloadWebsite) {
+        // Get the current user agent.
+        String initialUserAgent = mainWebView.getSettings().getUserAgentString();
+
+        // Initialize a variable to track if the user agent changes.
+        boolean userAgentChanged = false;
+
         // Parse the URL into a URI.
         Uri uri = Uri.parse(url);
 
@@ -4011,14 +4230,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Set the new `hostname` as the `currentDomainName`.
             currentDomainName = hostName;
 
-            // Reset `ignorePinnedSslCertificate`.
-            ignorePinnedSslCertificate = false;
+            // Reset the ignoring of pinned domain information.
+            ignorePinnedDomainInformation = false;
 
             // Reset the favorite icon if specified.
             if (resetFavoriteIcon) {
                 favoriteIconBitmap = favoriteIconDefaultBitmap;
                 favoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(favoriteIconBitmap, 64, 64, true));
             }
+
+            // Get a handle for the swipe refresh layout.
+            SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
 
             // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
             DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
@@ -4073,13 +4295,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
             // Store the general preference information.
-            String defaultFontSizeString = sharedPreferences.getString("default_font_size", "100");
-            String defaultUserAgentName = sharedPreferences.getString("user_agent", "Privacy Browser");
-            defaultCustomUserAgentString = sharedPreferences.getString("custom_user_agent", "PrivacyBrowser/1.0");
+            String defaultFontSizeString = sharedPreferences.getString("font_size", getString(R.string.font_size_default_value));
+            String defaultUserAgentName = sharedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
+            defaultCustomUserAgentString = sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value));
             boolean defaultSwipeToRefresh = sharedPreferences.getBoolean("swipe_to_refresh", true);
             nightMode = sharedPreferences.getBoolean("night_mode", false);
+            boolean displayWebpageImages = sharedPreferences.getBoolean("display_webpage_images", true);
 
-            if (domainSettingsApplied) {  // The url we are loading has custom domain settings.
+            if (domainSettingsApplied) {  // The url has custom domain settings.
                 // Get a cursor for the current host and move it to the first position.
                 Cursor currentHostDomainSettingsCursor = domainsDatabaseHelper.getCursorForDomainName(domainNameInDatabase);
                 currentHostDomainSettingsCursor.moveToFirst();
@@ -4102,14 +4325,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 int fontSize = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
                 int swipeToRefreshInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SWIPE_TO_REFRESH));
                 int nightModeInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.NIGHT_MODE));
-                displayWebpageImagesInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
-                pinnedDomainSslCertificate = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE)) == 1);
-                pinnedDomainSslIssuedToCNameString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME));
-                pinnedDomainSslIssuedToONameString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION));
-                pinnedDomainSslIssuedToUNameString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT));
-                pinnedDomainSslIssuedByCNameString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME));
-                pinnedDomainSslIssuedByONameString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION));
-                pinnedDomainSslIssuedByUNameString = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT));
+                int displayWebpageImagesInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
+                pinnedSslCertificate = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE)) == 1);
+                pinnedSslIssuedToCName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME));
+                pinnedSslIssuedToOName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION));
+                pinnedSslIssuedToUName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT));
+                pinnedSslIssuedByCName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME));
+                pinnedSslIssuedByOName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION));
+                pinnedSslIssuedByUName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT));
+                pinnedIpAddresses = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_IP_ADDRESSES)) == 1);
+                pinnedHostIpAddresses = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.IP_ADDRESSES));
 
                 // Set `nightMode` according to `nightModeInt`.  If `nightModeInt` is `DomainsDatabaseHelper.NIGHT_MODE_SYSTEM_DEFAULT` the current setting from `sharedPreferences` will be used.
                 switch (nightModeInt) {
@@ -4132,16 +4357,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Set the pinned SSL certificate start date to `null` if the saved date `long` is 0.
                 if (currentHostDomainSettingsCursor.getLong(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)) == 0) {
-                    pinnedDomainSslStartDate = null;
+                    pinnedSslStartDate = null;
                 } else {
-                    pinnedDomainSslStartDate = new Date(currentHostDomainSettingsCursor.getLong(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)));
+                    pinnedSslStartDate = new Date(currentHostDomainSettingsCursor.getLong(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)));
                 }
 
                 // Set the pinned SSL certificate end date to `null` if the saved date `long` is 0.
                 if (currentHostDomainSettingsCursor.getLong(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)) == 0) {
-                    pinnedDomainSslEndDate = null;
+                    pinnedSslEndDate = null;
                 } else {
-                    pinnedDomainSslEndDate = new Date(currentHostDomainSettingsCursor.getLong(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)));
+                    pinnedSslEndDate = new Date(currentHostDomainSettingsCursor.getLong(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)));
                 }
 
                 // Close `currentHostDomainSettingsCursor`.
@@ -4218,25 +4443,43 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         }
                     }
 
-                    // Set swipe to refresh.
-                    switch (swipeToRefreshInt) {
-                        case DomainsDatabaseHelper.SWIPE_TO_REFRESH_SYSTEM_DEFAULT:
-                            // Set swipe to refresh according to the default.
-                            swipeRefreshLayout.setEnabled(defaultSwipeToRefresh);
-                            break;
-
-                        case DomainsDatabaseHelper.SWIPE_TO_REFRESH_ENABLED:
-                            // Enable swipe to refresh.
-                            swipeRefreshLayout.setEnabled(true);
-                            break;
-
-                        case DomainsDatabaseHelper.SWIPE_TO_REFRESH_DISABLED:
-                            // Disable swipe to refresh.
-                            swipeRefreshLayout.setEnabled(false);
-                    }
-
                     // Store the applied user agent string, which is used in the View Source activity.
                     appliedUserAgentString = mainWebView.getSettings().getUserAgentString();
+
+                    // Update the user agent change tracker.
+                    userAgentChanged = !appliedUserAgentString.equals(initialUserAgent);
+                }
+
+                // Set swipe to refresh.
+                switch (swipeToRefreshInt) {
+                    case DomainsDatabaseHelper.SWIPE_TO_REFRESH_SYSTEM_DEFAULT:
+                        // Set swipe to refresh according to the default.
+                        swipeRefreshLayout.setEnabled(defaultSwipeToRefresh);
+                        break;
+
+                    case DomainsDatabaseHelper.SWIPE_TO_REFRESH_ENABLED:
+                        // Enable swipe to refresh.
+                        swipeRefreshLayout.setEnabled(true);
+                        break;
+
+                    case DomainsDatabaseHelper.SWIPE_TO_REFRESH_DISABLED:
+                        // Disable swipe to refresh.
+                        swipeRefreshLayout.setEnabled(false);
+                }
+
+                // Set the loading of webpage images.
+                switch (displayWebpageImagesInt) {
+                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT:
+                        mainWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImages);
+                        break;
+
+                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_ENABLED:
+                        mainWebView.getSettings().setLoadsImagesAutomatically(true);
+                        break;
+
+                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_DISABLED:
+                        mainWebView.getSettings().setLoadsImagesAutomatically(false);
+                        break;
                 }
 
                 // Set a green background on `urlTextBox` to indicate that custom domain settings are being used.  We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
@@ -4247,15 +4490,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
             } else {  // The new URL does not have custom domain settings.  Load the defaults.
                 // Store the values from `sharedPreferences` in variables.
-                javaScriptEnabled = sharedPreferences.getBoolean("javascript_enabled", false);
-                firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies_enabled", false);
-                thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies_enabled", false);
-                domStorageEnabled = sharedPreferences.getBoolean("dom_storage_enabled", false);
-                saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data_enabled", false);  // Form data can be removed once the minimum API >= 26.
+                javaScriptEnabled = sharedPreferences.getBoolean("javascript", false);
+                firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies", false);
+                thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies", false);
+                domStorageEnabled = sharedPreferences.getBoolean("dom_storage", false);
+                saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data", false);  // Form data can be removed once the minimum API >= 26.
                 easyListEnabled = sharedPreferences.getBoolean("easylist", true);
                 easyPrivacyEnabled = sharedPreferences.getBoolean("easyprivacy", true);
-                fanboysAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboy_annoyance_list", true);
-                fanboysSocialBlockingListEnabled = sharedPreferences.getBoolean("fanboy_social_blocking_list", true);
+                fanboysAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboys_annoyance_list", true);
+                fanboysSocialBlockingListEnabled = sharedPreferences.getBoolean("fanboys_social_blocking_list", true);
                 ultraPrivacyEnabled = sharedPreferences.getBoolean("ultraprivacy", true);
                 blockAllThirdPartyRequests = sharedPreferences.getBoolean("block_all_third_party_requests", false);
 
@@ -4276,17 +4519,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
                 }
 
-                // Reset the pinned SSL certificate information.
+                // Reset the pinned variables.
                 domainSettingsDatabaseId = -1;
-                pinnedDomainSslCertificate = false;
-                pinnedDomainSslIssuedToCNameString = "";
-                pinnedDomainSslIssuedToONameString = "";
-                pinnedDomainSslIssuedToUNameString = "";
-                pinnedDomainSslIssuedByCNameString = "";
-                pinnedDomainSslIssuedByONameString = "";
-                pinnedDomainSslIssuedByUNameString = "";
-                pinnedDomainSslStartDate = null;
-                pinnedDomainSslEndDate = null;
+                pinnedSslCertificate = false;
+                pinnedSslIssuedToCName = "";
+                pinnedSslIssuedToOName = "";
+                pinnedSslIssuedToUName = "";
+                pinnedSslIssuedByCName = "";
+                pinnedSslIssuedByOName = "";
+                pinnedSslIssuedByUName = "";
+                pinnedSslStartDate = null;
+                pinnedSslEndDate = null;
+                pinnedIpAddresses = false;
+                pinnedHostIpAddresses = "";
 
                 // Set third-party cookies status if API >= 21.
                 if (Build.VERSION.SDK_INT >= 21) {
@@ -4323,18 +4568,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Store the applied user agent string, which is used in the View Source activity.
                     appliedUserAgentString = mainWebView.getSettings().getUserAgentString();
+
+                    // Update the user agent change tracker.
+                    userAgentChanged = !appliedUserAgentString.equals(initialUserAgent);
                 }
 
-                // Set a transparent background on `urlTextBox`.  We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
+                // Set the loading of webpage images.
+                mainWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImages);
+
+                // Set a transparent background on `urlTextBox`.  The deprecated `.getDrawable()` must be used until the minimum API >= 21.
                 urlAppBarRelativeLayout.setBackgroundDrawable(getResources().getDrawable(R.color.transparent));
             }
 
             // Close the domains database helper.
             domainsDatabaseHelper.close();
-
-            // Remove the `onTheFlyDisplayImagesSet` flag and set the display webpage images mode.  `true` indicates that custom domain settings are applied.
-            onTheFlyDisplayImagesSet = false;
-            setDisplayWebpageImages();
 
             // Update the privacy icons, but only if `mainMenu` has already been populated.
             if (mainMenu != null) {
@@ -4346,6 +4593,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         if (reloadWebsite) {
             mainWebView.reload();
         }
+
+        // Return the user agent changed status.
+        return userAgentChanged;
     }
 
     private void applyProxyThroughOrbot(boolean reloadWebsite) {
@@ -4353,12 +4603,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Get the search preferences.
-        String homepageString = sharedPreferences.getString("homepage", "https://searx.me/");
-        String torHomepageString = sharedPreferences.getString("tor_homepage", "http://ulrn6sryqaifefld.onion/");
-        String torSearchString = sharedPreferences.getString("tor_search", "http://ulrn6sryqaifefld.onion/?q=");
-        String torSearchCustomUrlString = sharedPreferences.getString("tor_search_custom_url", "");
-        String searchString = sharedPreferences.getString("search", "https://searx.me/?q=");
-        String searchCustomUrlString = sharedPreferences.getString("search_custom_url", "");
+        String homepageString = sharedPreferences.getString("homepage", getString(R.string.homepage_default_value));
+        String torHomepageString = sharedPreferences.getString("tor_homepage", getString(R.string.tor_homepage_default_value));
+        String torSearchString = sharedPreferences.getString("tor_search", getString(R.string.tor_search_default_value));
+        String torSearchCustomUrlString = sharedPreferences.getString("tor_search_custom_url", getString(R.string.tor_search_custom_url_default_value));
+        String searchString = sharedPreferences.getString("search", getString(R.string.search_default_value));
+        String searchCustomUrlString = sharedPreferences.getString("search_custom_url", getString(R.string.search_custom_url_default_value));
+
+        // Get a handle for the action bar.  `getSupportActionBar()` must be used until the minimum API >= 21.
+        ActionBar actionBar = getSupportActionBar();
+
+        // Remove the incorrect lint warning later that the action bar might be null.
+        assert actionBar != null;
 
         // Set the homepage, search, and proxy options.
         if (proxyThroughOrbot) {  // Set the Tor options.
@@ -4382,9 +4638,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Set the `appBar` background to indicate proxying through Orbot is enabled.  `this` refers to the context.
             if (darkTheme) {
-                appBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.dark_blue_30));
+                actionBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.dark_blue_30));
             } else {
-                appBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.blue_50));
+                actionBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.blue_50));
             }
 
             // Check to see if Orbot is ready.
@@ -4422,9 +4678,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Set the default `appBar` background.  `this` refers to the context.
             if (darkTheme) {
-                appBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.gray_900));
+                actionBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.gray_900));
             } else {
-                appBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.gray_100));
+                actionBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.gray_100));
             }
 
             // Reset `waitingForOrbot.
@@ -4433,28 +4689,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Reload the website if requested.
             if (reloadWebsite) {
                 mainWebView.reload();
-            }
-        }
-    }
-
-    private void setDisplayWebpageImages() {
-        if (!onTheFlyDisplayImagesSet) {
-            if (domainSettingsApplied) {  // Custom domain settings are applied.
-                switch (displayWebpageImagesInt) {
-                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT:
-                        mainWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImagesBoolean);
-                        break;
-
-                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_ENABLED:
-                        mainWebView.getSettings().setLoadsImagesAutomatically(true);
-                        break;
-
-                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_DISABLED:
-                        mainWebView.getSettings().setLoadsImagesAutomatically(false);
-                        break;
-                }
-            } else {  // Default settings are applied.
-                mainWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImagesBoolean);
             }
         }
     }
@@ -4516,27 +4750,84 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
     }
 
+    private void openUrlWithExternalApp(String url) {
+        // Create a download intent.  Not specifying the action type will display the maximum number of options.
+        Intent downloadIntent = new Intent();
+
+        // Set the URI and the MIME type.  Specifying `text/html` displays a good number of options.
+        downloadIntent.setDataAndType(Uri.parse(url), "text/html");
+
+        // Flag the intent to open in a new task.
+        downloadIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        // Show the chooser.
+        startActivity(Intent.createChooser(downloadIntent, getString(R.string.open_with)));
+    }
+
     private void highlightUrlText() {
-        String urlString = urlTextBox.getText().toString();
+        // Only highlight the URL text if the box is not currently selected.
+        if (!urlTextBox.hasFocus()) {
+            // Get the URL string.
+            String urlString = urlTextBox.getText().toString();
 
-        if (urlString.startsWith("http://")) {  // Highlight the protocol of connections that are not encrypted.
-            urlTextBox.getText().setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        } else if (urlString.startsWith("https://")) {  // De-emphasize the protocol of connections that are encrypted.
-            urlTextBox.getText().setSpan(initialGrayColorSpan, 0, 8, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        }
+            // Highlight the URL according to the protocol.
+            if (urlString.startsWith("file://")) {  // This is a file URL.
+                // De-emphasize only the protocol.
+                urlTextBox.getText().setSpan(initialGrayColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            } else if (urlString.startsWith("content://")) {
+                // De-emphasize only the protocol.
+                urlTextBox.getText().setSpan(initialGrayColorSpan, 0, 10, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            } else {  // This is a web URL.
+                // Get the index of the `/` immediately after the domain name.
+                int endOfDomainName = urlString.indexOf("/", (urlString.indexOf("//") + 2));
 
-        // Get the index of the `/` immediately after the domain name.
-        int endOfDomainName = urlString.indexOf("/", (urlString.indexOf("//") + 2));
+                // Create a base URL string.
+                String baseUrl;
 
-        // De-emphasize the text after the domain name.
-        if (endOfDomainName > 0) {
-            urlTextBox.getText().setSpan(finalGrayColorSpan, endOfDomainName, urlString.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                // Get the base URL.
+                if (endOfDomainName > 0) {  // There is at least one character after the base URL.
+                    // Get the base URL.
+                    baseUrl = urlString.substring(0, endOfDomainName);
+                } else {  // There are no characters after the base URL.
+                    // Set the base URL to be the entire URL string.
+                    baseUrl = urlString;
+                }
+
+                // Get the index of the last `.` in the domain.
+                int lastDotIndex = baseUrl.lastIndexOf(".");
+
+                // Get the index of the penultimate `.` in the domain.
+                int penultimateDotIndex = baseUrl.lastIndexOf(".", lastDotIndex - 1);
+
+                // Markup the beginning of the URL.
+                if (urlString.startsWith("http://")) {  // Highlight the protocol of connections that are not encrypted.
+                    urlTextBox.getText().setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                    // De-emphasize subdomains.
+                    if (penultimateDotIndex > 0) {  // There is more than one subdomain in the domain name.
+                        urlTextBox.getText().setSpan(initialGrayColorSpan, 7, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    }
+                } else if (urlString.startsWith("https://")) {  // De-emphasize the protocol of connections that are encrypted.
+                    if (penultimateDotIndex > 0) {  // There is more than one subdomain in the domain name.
+                        // De-emphasize the protocol and the additional subdomains.
+                        urlTextBox.getText().setSpan(initialGrayColorSpan, 0, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    } else {  // There is only one subdomain in the domain name.
+                        // De-emphasize only the protocol.
+                        urlTextBox.getText().setSpan(initialGrayColorSpan, 0, 8, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    }
+                }
+
+                // De-emphasize the text after the domain name.
+                if (endOfDomainName > 0) {
+                    urlTextBox.getText().setSpan(finalGrayColorSpan, endOfDomainName, urlString.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                }
+            }
         }
     }
 
     private void loadBookmarksFolder() {
         // Update the bookmarks cursor with the contents of the bookmarks database for the current folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentBookmarksFolder);
+        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentBookmarksFolder);
 
         // Populate the bookmarks cursor adapter.  `this` specifies the `Context`.  `false` disables `autoRequery`.
         bookmarksCursorAdapter = new CursorAdapter(this, bookmarksCursor, false) {
@@ -4582,6 +4873,187 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             bookmarksTitleTextView.setText(R.string.bookmarks);
         } else {
             bookmarksTitleTextView.setText(currentBookmarksFolder);
+        }
+    }
+
+    private void openWithApp(String url) {
+        // Create the open with intent with `ACTION_VIEW`.
+        Intent openWithAppIntent = new Intent(Intent.ACTION_VIEW);
+
+        // Set the URI but not the MIME type.  This should open all available apps.
+        openWithAppIntent.setData(Uri.parse(url));
+
+        // Flag the intent to open in a new task.
+        openWithAppIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        // Show the chooser.
+        startActivity(openWithAppIntent);
+    }
+
+    private void openWithBrowser(String url) {
+        // Create the open with intent with `ACTION_VIEW`.
+        Intent openWithBrowserIntent = new Intent(Intent.ACTION_VIEW);
+
+        // Set the URI and the MIME type.  `"text/html"` should load browser options.
+        openWithBrowserIntent.setDataAndType(Uri.parse(url), "text/html");
+
+        // Flag the intent to open in a new task.
+        openWithBrowserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        // Show the chooser.
+        startActivity(openWithBrowserIntent);
+    }
+
+    private static void checkPinnedMismatch() {
+        if ((pinnedSslCertificate || pinnedIpAddresses) && !ignorePinnedDomainInformation) {
+            // Initialize the current SSL certificate variables.
+            String currentWebsiteIssuedToCName = "";
+            String currentWebsiteIssuedToOName = "";
+            String currentWebsiteIssuedToUName = "";
+            String currentWebsiteIssuedByCName = "";
+            String currentWebsiteIssuedByOName = "";
+            String currentWebsiteIssuedByUName = "";
+            Date currentWebsiteSslStartDate = null;
+            Date currentWebsiteSslEndDate = null;
+
+
+            // Extract the individual pieces of information from the current website SSL certificate if it is not null.
+            if (sslCertificate != null) {
+                currentWebsiteIssuedToCName = sslCertificate.getIssuedTo().getCName();
+                currentWebsiteIssuedToOName = sslCertificate.getIssuedTo().getOName();
+                currentWebsiteIssuedToUName = sslCertificate.getIssuedTo().getUName();
+                currentWebsiteIssuedByCName = sslCertificate.getIssuedBy().getCName();
+                currentWebsiteIssuedByOName = sslCertificate.getIssuedBy().getOName();
+                currentWebsiteIssuedByUName = sslCertificate.getIssuedBy().getUName();
+                currentWebsiteSslStartDate = sslCertificate.getValidNotBeforeDate();
+                currentWebsiteSslEndDate = sslCertificate.getValidNotAfterDate();
+            }
+
+            // Initialize string variables to store the SSL certificate dates.  Strings are needed to compare the values below, which doesn't work with `Dates` if they are `null`.
+            String currentWebsiteSslStartDateString = "";
+            String currentWebsiteSslEndDateString = "";
+            String pinnedSslStartDateString = "";
+            String pinnedSslEndDateString = "";
+
+            // Convert the `Dates` to `Strings` if they are not `null`.
+            if (currentWebsiteSslStartDate != null) {
+                currentWebsiteSslStartDateString = currentWebsiteSslStartDate.toString();
+            }
+
+            if (currentWebsiteSslEndDate != null) {
+                currentWebsiteSslEndDateString = currentWebsiteSslEndDate.toString();
+            }
+
+            if (pinnedSslStartDate != null) {
+                pinnedSslStartDateString = pinnedSslStartDate.toString();
+            }
+
+            if (pinnedSslEndDate != null) {
+                pinnedSslEndDateString = pinnedSslEndDate.toString();
+            }
+
+            // Check to see if the pinned information matches the current information.
+            if ((pinnedIpAddresses && !currentHostIpAddresses.equals(pinnedHostIpAddresses)) || (pinnedSslCertificate && (!currentWebsiteIssuedToCName.equals(pinnedSslIssuedToCName) ||
+                    !currentWebsiteIssuedToOName.equals(pinnedSslIssuedToOName) || !currentWebsiteIssuedToUName.equals(pinnedSslIssuedToUName) ||
+                    !currentWebsiteIssuedByCName.equals(pinnedSslIssuedByCName) || !currentWebsiteIssuedByOName.equals(pinnedSslIssuedByOName) ||
+                    !currentWebsiteIssuedByUName.equals(pinnedSslIssuedByUName) || !currentWebsiteSslStartDateString.equals(pinnedSslStartDateString) ||
+                    !currentWebsiteSslEndDateString.equals(pinnedSslEndDateString)))) {
+
+                // Get a handle for the pinned mismatch alert dialog.
+                DialogFragment pinnedMismatchDialogFragment = PinnedMismatchDialog.displayDialog(pinnedSslCertificate, pinnedIpAddresses);
+
+                // Show the pinned mismatch alert dialog.
+                pinnedMismatchDialogFragment.show(fragmentManager, "Pinned Mismatch");
+            }
+        }
+    }
+
+    // This must run asynchronously because it involves a network request.  `String` declares the parameters.  `Void` does not declare progress units.  `String` contains the results.
+    private static class GetHostIpAddresses extends AsyncTask<String, Void, String> {
+        // The weak references are used to determine if the activity have disappeared while the AsyncTask is running.
+        private final WeakReference<Activity> activityWeakReference;
+
+        GetHostIpAddresses(Activity activity) {
+            // Populate the weak references.
+            activityWeakReference = new WeakReference<>(activity);
+        }
+
+        // `onPreExecute()` operates on the UI thread.
+        @Override
+        protected void onPreExecute() {
+            // Get a handle for the activity.
+            Activity activity = activityWeakReference.get();
+
+            // Abort if the activity is gone.
+            if ((activity == null) || activity.isFinishing()) {
+                return;
+            }
+
+            // Set the getting IP addresses tracker.
+            gettingIpAddresses = true;
+        }
+
+
+        @Override
+        protected String doInBackground(String... domainName) {
+            // Get a handle for the activity.
+            Activity activity = activityWeakReference.get();
+
+            // Abort if the activity is gone.
+            if ((activity == null) || activity.isFinishing()) {
+                // Return an empty spannable string builder.
+                return "";
+            }
+
+            // Initialize an IP address string builder.
+            StringBuilder ipAddresses = new StringBuilder();
+
+            // Get an array with the IP addresses for the host.
+            try {
+                // Get an array with all the IP addresses for the domain.
+                InetAddress[] inetAddressesArray = InetAddress.getAllByName(domainName[0]);
+
+                // Add each IP address to the string builder.
+                for (InetAddress inetAddress : inetAddressesArray) {
+                    if (ipAddresses.length() == 0) {  // This is the first IP address.
+                        // Add the IP address to the string builder.
+                        ipAddresses.append(inetAddress.getHostAddress());
+                    } else {  // This is not the first IP address.
+                        // Add a line break to the string builder first.
+                        ipAddresses.append("\n");
+
+                        // Add the IP address to the string builder.
+                        ipAddresses.append(inetAddress.getHostAddress());
+                    }
+                }
+            } catch (UnknownHostException exception) {
+                // Do nothing.
+            }
+
+            // Return the string.
+            return ipAddresses.toString();
+        }
+
+        // `onPostExecute()` operates on the UI thread.
+        @Override
+        protected void onPostExecute(String ipAddresses) {
+            // Get a handle for the activity.
+            Activity activity = activityWeakReference.get();
+
+            // Abort if the activity is gone.
+            if ((activity == null) || activity.isFinishing()) {
+                return;
+            }
+
+            // Store the IP addresses.
+            currentHostIpAddresses = ipAddresses;
+
+            if (!urlIsLoading) {
+                checkPinnedMismatch();
+            }
+
+            // Reset the getting IP addresses tracker.
+            gettingIpAddresses = false;
         }
     }
 }

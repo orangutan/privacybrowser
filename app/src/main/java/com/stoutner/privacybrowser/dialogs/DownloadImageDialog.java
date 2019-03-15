@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -26,27 +26,25 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-// We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <= 22.
-import android.support.v7.app.AppCompatDialogFragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
+
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
-// `android.support.v7.app.AlertDialog` uses more of the horizontal screen real estate versus `android.app.AlertDialog's` smaller width.
-// We have to use `AppCompatDialogFragment` instead of `DialogFragment` or an error is produced on API <=22.
-public class DownloadImageDialog extends AppCompatDialogFragment {
+public class DownloadImageDialog extends DialogFragment {
     // `downloadImageListener` is used in `onAttach()` and `onCreateDialog()`.
     private DownloadImageListener downloadImageListener;
 
     // The public interface is used to send information back to the parent activity.
     public interface DownloadImageListener {
-        void onDownloadImage(AppCompatDialogFragment dialogFragment, String downloadUrl);
+        void onDownloadImage(DialogFragment dialogFragment, String downloadUrl);
     }
 
     // Check to make sure tha the parent activity implements the listener.

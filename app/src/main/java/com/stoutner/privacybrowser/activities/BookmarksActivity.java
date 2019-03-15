@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -19,24 +19,20 @@
 
 package com.stoutner.privacybrowser.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.CursorWindow;
+import android.database.sqlite.SQLiteCursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-// `AppCompatDialogFragment` is required instead of `DialogFragment` or an error is produced on API <=22.
-import android.support.v7.app.AppCompatDialogFragment;
-import android.support.v7.widget.Toolbar;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -52,6 +48,15 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;  // The AndroidX toolbar must be used until the minimum API is >= 21.
+import androidx.core.app.NavUtils;
+import androidx.fragment.app.DialogFragment;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkFolderDialog;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkDialog;
@@ -65,7 +70,7 @@ import java.io.ByteArrayOutputStream;
 public class BookmarksActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener, EditBookmarkDialog.EditBookmarkListener,
         EditBookmarkFolderDialog.EditBookmarkFolderListener, MoveToFolderDialog.MoveToFolderListener {
 
-    // `currentFolder` is public static so it can be accessed from `MoveToFolderDialog`.
+    // `currentFolder` is public static so it can be accessed from `MoveToFolderDialog` and `BookmarksDatabaseViewActivity`.
     // It is used in `onCreate`, `onOptionsItemSelected()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`,
     // and `loadFolder()`.
     public static String currentFolder;
@@ -73,6 +78,9 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     // `checkedItemIds` is public static so it can be accessed from `MoveToFolderDialog`.  It is also used in `onCreate()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`,
     // and `updateMoveIcons()`.
     public static long[] checkedItemIds;
+
+    // `restartFromBookmarksDatabaseViewActivity` is public static so it can be accessed from `BookmarksDatabaseViewActivity`.  It is also used in `onRestart()`.
+    public static boolean restartFromBookmarksDatabaseViewActivity;
 
 
     // `bookmarksDatabaseHelper` is used in `onCreate()`, `onOptionsItemSelected()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`,
@@ -85,7 +93,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
     // `bookmarksCursor` is used in `onCreate()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`, `deleteBookmarkFolderContents()`,
     // `loadFolder()`, and `onDestroy()`.
-    private Cursor bookmarksCursor;
+    // TODO This should be switched back to a `Cursor` after the release of 2.17.1.
+    private SQLiteCursor bookmarksCursor;
 
     // `bookmarksCursorAdapter` is used in `onCreate(), `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`, `onMoveToFolder()`, and `onLoadFolder()`.
     private CursorAdapter bookmarksCursorAdapter;
@@ -141,9 +150,9 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Set the content view.
         setContentView(R.layout.bookmarks_coordinatorlayout);
 
-        // Use the `SupportActionBar` from `android.support.v7.app.ActionBar` until the minimum API is >= 21.
-        final Toolbar bookmarksAppBar = findViewById(R.id.bookmarks_toolbar);
-        setSupportActionBar(bookmarksAppBar);
+        // The AndroidX toolbar must be used until the minimum API is >= 21.
+        final Toolbar toolbar = findViewById(R.id.bookmarks_toolbar);
+        setSupportActionBar(toolbar);
 
         // Get a handle for the activity, the app bar, and the ListView.
         final Activity bookmarksActivity = this;
@@ -169,7 +178,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             int databaseID = (int) id;
 
             // Get the bookmark cursor for this ID and move it to the first row.
-            Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmarkCursor(databaseID);
+            Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmark(databaseID);
             bookmarkCursor.moveToFirst();
 
             // Act upon the bookmark according to the type.
@@ -200,10 +209,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             bookmarkCursor.close();
         });
 
-        // Get a handle for the activity.
-        Activity activity = this;
-
-        // `MultiChoiceModeListener` handles long clicks.
+        // Handle long presses on the list view.
         bookmarksListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             // Instantiate the common variables.
             MenuItem editBookmarkMenuItem;
@@ -213,18 +219,17 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                // Inflate the menu for the contextual app bar and set the title.
+                // Inflate the menu for the contextual app bar.
                 getMenuInflater().inflate(R.menu.bookmarks_context_menu, menu);
 
                 // Set the title.
-                if (currentFolder.isEmpty()) {
-                    // Use `R.string.bookmarks` if we are in the home folder.
+                if (currentFolder.isEmpty()) {  // Use `R.string.bookmarks` if in the home folder.
                     mode.setTitle(R.string.bookmarks);
                 } else {  // Use the current folder name as the title.
                     mode.setTitle(currentFolder);
                 }
 
-                // Get a handle for `MenuItems` that need to be selectively disabled.
+                // Get handles for menu items that need to be selectively disabled.
                 moveBookmarkUpMenuItem = menu.findItem(R.id.move_bookmark_up);
                 moveBookmarkDownMenuItem = menu.findItem(R.id.move_bookmark_down);
                 editBookmarkMenuItem = menu.findItem(R.id.edit_bookmark);
@@ -232,11 +237,9 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                 selectAllBookmarksMenuItem = menu.findItem(R.id.context_menu_select_all_bookmarks);
 
                 // Disable the delete bookmarks menu item if a delete is pending.
-                if (deletingBookmarks) {
-                    deleteBookmarksMenuItem.setEnabled(false);
-                }
+                deleteBookmarksMenuItem.setEnabled(!deletingBookmarks);
 
-                // Store `contextualActionMode` so it can be closed programatically.
+                // Store a handle for the contextual action mode so it can be closed programatically.
                 contextualActionMode = mode;
 
                 // Make it so.
@@ -248,8 +251,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                 // Get a handle for the move to folder menu item.
                 MenuItem moveToFolderMenuItem = menu.findItem(R.id.move_to_folder);
 
-                // Get a `Cursor` with all of the folders.
-                Cursor folderCursor = bookmarksDatabaseHelper.getAllFoldersCursor();
+                // Get a Cursor with all of the folders.
+                Cursor folderCursor = bookmarksDatabaseHelper.getAllFolders();
 
                 // Enable the move to folder menu item if at least one folder exists.
                 moveToFolderMenuItem.setVisible(folderCursor.getCount() > 0);
@@ -260,19 +263,13 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
             @Override
             public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-                // Get a long array of the selected bookmarks.
-                long[] selectedBookmarksLongArray = bookmarksListView.getCheckedItemIds();
+                // Get the number of selected bookmarks.
+                int numberOfSelectedBookmarks = bookmarksListView.getCheckedItemCount();
 
-                // Calculate the number of selected bookmarks.
-                int numberOfSelectedBookmarks = selectedBookmarksLongArray.length;
-
-                // Adjust the `ActionMode` and the `Menu` according to the number of selected bookmarks.
-                if (numberOfSelectedBookmarks == 0) {  // No bookmarks are selected.
-                    // Close the `ActionMode`.
-                    mode.finish();
-                } else if (numberOfSelectedBookmarks == 1) {  // One bookmark is selected.
+                // Adjust the ActionMode and the menu according to the number of selected bookmarks.
+                if (numberOfSelectedBookmarks == 1) {  // One bookmark is selected.
                     // List the number of selected bookmarks in the subtitle.
-                    mode.setSubtitle(getString(R.string.one_selected));
+                    mode.setSubtitle(getString(R.string.selected) + "  1");
 
                     // Show the `Move Up`, `Move Down`, and  `Edit` options.
                     moveBookmarkUpMenuItem.setVisible(true);
@@ -282,24 +279,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                     // Update the enabled status of the move icons.
                     updateMoveIcons();
                 } else {  // More than one bookmark is selected.
-                    // List the number of selected bookmarks according to the language.
-                    if (getString(R.string.android_asset_path).equals("ru")) {  // The Russian translation is used.
-                        // Convert the number of selected bookmarks to a string.
-                        String numberOfSelectedBookmarksString = String.valueOf(numberOfSelectedBookmarks);
-
-                        // Russian follows rule #7 at <https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_and_Plurals>.
-                        if (numberOfSelectedBookmarksString.endsWith("1") && !numberOfSelectedBookmarksString.equals("11")) {  //  Ends in 1.
-                            mode.setSubtitle(numberOfSelectedBookmarks + " " + getString(R.string.selected_russian_ends_in_1));
-                        } else if ((numberOfSelectedBookmarksString.endsWith("2") || numberOfSelectedBookmarksString.endsWith("3") || numberOfSelectedBookmarksString.endsWith("4")) &&
-                                !numberOfSelectedBookmarksString.equals("12") && !numberOfSelectedBookmarksString.equals("13") && !numberOfSelectedBookmarksString.equals("14")) {  // Ends in 2-4.
-                            mode.setSubtitle(numberOfSelectedBookmarks + " " + getString(R.string.selected_russian_ends_in_2));
-                        } else {  // Everything else.
-                            mode.setSubtitle(numberOfSelectedBookmarks + " " + getString(R.string.selected_russian_everything_else));
-                        }
-                    } else {  // Another language is used.
-                        // List the number of selected bookmarks in the subtitle.
-                        mode.setSubtitle(numberOfSelectedBookmarks + " " + getString(R.string.selected));
-                    }
+                    // List the number of selected bookmarks in the subtitle.
+                    mode.setSubtitle(getString(R.string.selected) + "  " + numberOfSelectedBookmarks);
 
                     // Hide non-applicable `MenuItems`.
                     moveBookmarkUpMenuItem.setVisible(false);
@@ -307,8 +288,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                     editBookmarkMenuItem.setVisible(false);
                 }
 
-                // Do not show `Select All` if all the bookmarks are already checked.
-                if (bookmarksListView.getCheckedItemIds().length == bookmarksListView.getCount()) {
+                // Do not show the select all menu item if all the bookmarks are already checked.
+                if (bookmarksListView.getCheckedItemCount() == bookmarksListView.getCount()) {
                     selectAllBookmarksMenuItem.setVisible(false);
                 } else {
                     selectAllBookmarksMenuItem.setVisible(true);
@@ -317,15 +298,12 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                // Get the menu item ID.
-                int menuItemId = item.getItemId();
-
                 // Instantiate the common variables.
                 int selectedBookmarkPosition;
                 int selectedBookmarkNewPosition;
                 final SparseBooleanArray selectedBookmarksPositionsSparseBooleanArray;
 
-                switch (menuItemId) {
+                switch (item.getItemId()) {
                     case R.id.move_bookmark_up:
                         // Get the array of checked bookmark positions.
                         selectedBookmarksPositionsSparseBooleanArray = bookmarksListView.getCheckedItemPositions();
@@ -359,8 +337,9 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                             }
                         }
 
-                        // Update `bookmarksCursor` with the current contents of the bookmarks database.
-                        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentFolder);
+                        // Update the bookmarks cursor with the current contents of the bookmarks database.
+                        // TODO Change this back to a `Cursor` after 2.17.1 is released.
+                        bookmarksCursor = (SQLiteCursor) bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
 
                         // Update the `ListView`.
                         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
@@ -405,8 +384,9 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                             }
                         }
 
-                        // Update `bookmarksCursor` with the current contents of the bookmarks database.
-                        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentFolder);
+                        // Update the bookmarks cursor with the current contents of the bookmarks database.
+                        // TODO Change this back to a `Cursor` after 2.17.1 is released.
+                        bookmarksCursor = (SQLiteCursor) bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
 
                         // Update the `ListView`.
                         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
@@ -423,7 +403,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                         checkedItemIds = bookmarksListView.getCheckedItemIds();
 
                         // Show the `MoveToFolderDialog` `AlertDialog` and name the instance `@string/move_to_folder
-                        AppCompatDialogFragment moveToFolderDialog = new MoveToFolderDialog();
+                        DialogFragment moveToFolderDialog = new MoveToFolderDialog();
                         moveToFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.move_to_folder));
                         break;
 
@@ -447,11 +427,11 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                             oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
                             // Show the edit bookmark folder dialog.
-                            AppCompatDialogFragment editFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId);
+                            DialogFragment editFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId);
                             editFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_folder));
                         } else {
                             // Show the edit bookmark dialog.
-                            AppCompatDialogFragment editBookmarkDialog = EditBookmarkDialog.bookmarkDatabaseId(databaseId);
+                            DialogFragment editBookmarkDialog = EditBookmarkDialog.bookmarkDatabaseId(databaseId);
                             editBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_bookmark));
                         }
                         break;
@@ -463,66 +443,43 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                         // Get an array of the selected row IDs.
                         final long[] selectedBookmarksIdsLongArray = bookmarksListView.getCheckedItemIds();
 
-                        // Get the array of checked bookmarks.  `.clone()` makes a copy that won't change if `bookmarksListView` is reloaded, which is needed for re-selecting the bookmarks on undelete.
+                        // Get an array of checked bookmarks.  `.clone()` makes a copy that won't change if the list view is reloaded, which is needed for re-selecting the bookmarks on undelete.
                         selectedBookmarksPositionsSparseBooleanArray = bookmarksListView.getCheckedItemPositions().clone();
 
-                        // Update `bookmarksCursor` with the current contents of the bookmarks database except for the specified database IDs.
-                        bookmarksCursor = bookmarksDatabaseHelper.getBookmarksCursorExcept(selectedBookmarksIdsLongArray, currentFolder);
+                        // Update the bookmarks cursor with the current contents of the bookmarks database except for the specified database IDs.
+                        // TODO Change this back to a `Cursor` after 2.17.1 is released.
+                        bookmarksCursor = (SQLiteCursor) bookmarksDatabaseHelper.getBookmarksByDisplayOrderExcept(selectedBookmarksIdsLongArray, currentFolder);
 
-                        // Update the `ListView`.
+                        // Update the list view.
                         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
 
-                        // Instantiate `snackbarMessage`.
-                        String snackbarMessage;
-
-                        // Determine how many items are in the array and prepare an appropriate snackbar message.
-                        if (selectedBookmarksIdsLongArray.length == 1) {
-                            snackbarMessage = getString(R.string.one_bookmark_deleted);
-                        } else {
-                            // Prepare a snackbar according to the language.
-                            if (getString(R.string.android_asset_path).equals("ru")) {  // The Russian translation is used.
-                                // Convert the number of selected bookmarks to a string.
-                                String numberOfBookmarksString = String.valueOf(selectedBookmarksIdsLongArray.length);
-
-                                // Russian follows rule #7 at <https://developer.mozilla.org/en-US/docs/Mozilla/Localization/Localization_and_Plurals>.
-                                if (numberOfBookmarksString.endsWith("1") && !numberOfBookmarksString.equals("11")) {  //  Ends in 1.
-                                    snackbarMessage = numberOfBookmarksString + " " + getString(R.string.bookmarks_deleted_russian_ends_in_1);
-                                } else if ((numberOfBookmarksString.endsWith("2") || numberOfBookmarksString.endsWith("3") || numberOfBookmarksString.endsWith("4")) &&
-                                        !numberOfBookmarksString.equals("12") && !numberOfBookmarksString.equals("13") && !numberOfBookmarksString.equals("14")) {  // Ends in 2-4.
-                                    snackbarMessage = numberOfBookmarksString + " " + getString(R.string.bookmarks_deleted_russian_ends_in_2);
-                                } else {  // Everything else.
-                                    snackbarMessage = numberOfBookmarksString + " " + getString(R.string.bookmarks_deleted_russian_everything_else);
-                                }
-                            } else {  // Another language is used.
-                                snackbarMessage = selectedBookmarksIdsLongArray.length + " " + getString(R.string.bookmarks_deleted);
-                            }
-                        }
-
-                        // Show a SnackBar.
-                        bookmarksDeletedSnackbar = Snackbar.make(findViewById(R.id.bookmarks_coordinatorlayout), snackbarMessage, Snackbar.LENGTH_LONG)
+                        // Show a Snackbar with the number of deleted bookmarks.
+                        bookmarksDeletedSnackbar = Snackbar.make(findViewById(R.id.bookmarks_coordinatorlayout), getString(R.string.bookmarks_deleted) + "  " + selectedBookmarksIdsLongArray.length,
+                                Snackbar.LENGTH_LONG)
                                 .setAction(R.string.undo, view -> {
                                     // Do nothing because everything will be handled by `onDismissed()` below.
                                 })
                                 .addCallback(new Snackbar.Callback() {
+                                    @SuppressLint("SwitchIntDef")  // Ignore the lint warning about not handling the other possible events as they are covered by `default:`.
                                     @Override
                                     public void onDismissed(Snackbar snackbar, int event) {
                                         switch (event) {
                                             // The user pushed the `Undo` button.
                                             case Snackbar.Callback.DISMISS_EVENT_ACTION:
-                                                // Update `bookmarksCursor` with the current contents of the bookmarks database, including the "deleted" bookmarks.
-                                                bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentFolder);
+                                                // Update the bookmarks cursor with the current contents of the bookmarks database, including the "deleted" bookmarks.
+                                                // TODO Change this back to a `Cursor` after 2.17.1 is released.
+                                                bookmarksCursor = (SQLiteCursor) bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
 
-                                                // Update the `ListView`.
+                                                // Update the list view.
                                                 bookmarksCursorAdapter.changeCursor(bookmarksCursor);
 
                                                 // Re-select the previously selected bookmarks.
                                                 for (int i = 0; i < selectedBookmarksPositionsSparseBooleanArray.size(); i++) {
                                                     bookmarksListView.setItemChecked(selectedBookmarksPositionsSparseBooleanArray.keyAt(i), true);
                                                 }
-
                                                 break;
 
-                                            // The `Snackbar` was dismissed without the `Undo` button being pushed.
+                                            // The Snackbar was dismissed without the `Undo` button being pushed.
                                             default:
                                                 // Delete each selected bookmark.
                                                 for (long databaseIdLong : selectedBookmarksIdsLongArray) {
@@ -553,31 +510,21 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                                                 }
                                         }
 
-                                        // Enable the delete bookmarks menu item.
-                                        deleteBookmarksMenuItem.setEnabled(true);
-
                                         // Reset the deleting bookmarks flag.
                                         deletingBookmarks = false;
 
+                                        // Enable the delete bookmarks menu item.
+                                        deleteBookmarksMenuItem.setEnabled(true);
+
                                         // Close the activity if back has been pressed.
                                         if (closeActivityAfterDismissingSnackbar) {
-                                            // Update the bookmarks folder for the bookmarks drawer in the main WebView activity.
-                                            MainWebViewActivity.currentBookmarksFolder = currentFolder;
-
-                                            // Close the bookmarks drawer and reload the bookmarks ListView when returning to the main WebView activity.
-                                            MainWebViewActivity.restartFromBookmarksActivity = true;
-
-                                            // Return to `MainWebViewActivity`.
-                                            NavUtils.navigateUpFromSameTask(activity);
+                                            onBackPressed();
                                         }
                                     }
                                 });
 
-                        //Show the `SnackBar`.
+                        //Show the Snackbar.
                         bookmarksDeletedSnackbar.show();
-
-                        // Close the `ActionBar`.
-                        mode.finish();
                         break;
 
                     case R.id.context_menu_select_all_bookmarks:
@@ -608,16 +555,31 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Set the create new bookmark folder FAB to display the `AlertDialog`.
         createBookmarkFolderFab.setOnClickListener(v -> {
             // Show the `CreateBookmarkFolderDialog` `AlertDialog` and name the instance `@string/create_folder`.
-            AppCompatDialogFragment createBookmarkFolderDialog = new CreateBookmarkFolderDialog();
+            DialogFragment createBookmarkFolderDialog = new CreateBookmarkFolderDialog();
             createBookmarkFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_folder));
         });
 
         // Set the create new bookmark FAB to display the `AlertDialog`.
         createBookmarkFab.setOnClickListener(view -> {
             // Show the `CreateBookmarkDialog` `AlertDialog` and name the instance `@string/create_bookmark`.
-            AppCompatDialogFragment createBookmarkDialog = new CreateBookmarkDialog();
+            DialogFragment createBookmarkDialog = new CreateBookmarkDialog();
             createBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_bookmark));
         });
+    }
+
+    @Override
+    public void onRestart() {
+        // Run the default commands.
+        super.onRestart();
+
+        // Update the list view if returning from the bookmarks database view activity.
+        if (restartFromBookmarksDatabaseViewActivity) {
+            // Load the current folder in the list view.
+            loadFolder();
+
+            // Reset `restartFromBookmarksDatabaseViewActivity`.
+            restartFromBookmarksDatabaseViewActivity = false;
+        }
     }
 
     @Override
@@ -631,32 +593,14 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        // Get the ID of the `MenuItem` that was selected.
-        int menuItemId = menuItem.getItemId();
-
-        switch (menuItemId) {
+        switch (menuItem.getItemId()) {
             case android.R.id.home:  // The home arrow is identified as `android.R.id.home`, not just `R.id.home`.
                 if (currentFolder.isEmpty()) {  // Currently in the home folder.
-                    // Go home.
-                    if ((bookmarksDeletedSnackbar != null) && bookmarksDeletedSnackbar.isShown()) {  // Close the bookmarks delete snackbar before going home.
-                        // Set the close flag.
-                        closeActivityAfterDismissingSnackbar = true;
-
-                        // Dismiss the snackbar.
-                        bookmarksDeletedSnackbar.dismiss();
-                    } else {  // Go home immediately.
-                        // Update the bookmarks folder for the bookmarks drawer in `MainWebViewActivity`.
-                        MainWebViewActivity.currentBookmarksFolder = "";
-
-                        // Close the bookmarks drawer and reload the bookmarks `ListView` when returning to `MainWebViewActivity`.
-                        MainWebViewActivity.restartFromBookmarksActivity = true;
-
-                        // Return to `MainWebViewActivity`.
-                        NavUtils.navigateUpFromSameTask(this);
-                    }
+                    // Run the back commands.
+                    onBackPressed();
                 } else {  // Currently in a subfolder.
                     // Place the former parent folder in `currentFolder`.
-                    currentFolder = bookmarksDatabaseHelper.getParentFolder(currentFolder);
+                    currentFolder = bookmarksDatabaseHelper.getParentFolderName(currentFolder);
 
                     // Load the new folder.
                     loadFolder();
@@ -684,8 +628,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
     @Override
     public void onBackPressed() {
-        // Check to see if a snackbar is currently displayed.  If so, it must be closed before exiting so that a pending delete is completed before reloading the ListView in the bookmarks drawer.
-        if ((bookmarksDeletedSnackbar != null) && bookmarksDeletedSnackbar.isShown()) {  // Close the bookmarks delete snackbar before going home.
+        // Check to see if a snackbar is currently displayed.  If so, it must be closed before exiting so that a pending delete is completed before reloading the list view in the bookmarks drawer.
+        if ((bookmarksDeletedSnackbar != null) && bookmarksDeletedSnackbar.isShown()) {  // Close the bookmarks deleted snackbar before going home.
             // Set the close flag.
             closeActivityAfterDismissingSnackbar = true;
 
@@ -698,24 +642,36 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             // Close the bookmarks drawer and reload the bookmarks ListView when returning to the main WebView activity.
             MainWebViewActivity.restartFromBookmarksActivity = true;
 
-            // Exit `BookmarksActivity`.
+            // Exit the bookmarks activity.
             super.onBackPressed();
         }
     }
 
     @Override
-    public void onCreateBookmark(AppCompatDialogFragment dialogFragment) {
-        // Get the `EditTexts` from the `dialogFragment`.
+    public void onCreateBookmark(DialogFragment dialogFragment) {
+        // Get the views from the dialog fragment.
         EditText createBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.create_bookmark_name_edittext);
         EditText createBookmarkUrlEditText = dialogFragment.getDialog().findViewById(R.id.create_bookmark_url_edittext);
 
-        // Extract the strings from the `EditTexts`.
+        // Extract the strings from the edit texts.
         String bookmarkNameString = createBookmarkNameEditText.getText().toString();
         String bookmarkUrlString = createBookmarkUrlEditText.getText().toString();
 
-        // Convert the favoriteIcon Bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
+        // Get a copy of the favorite icon bitmap.
+        Bitmap favoriteIcon = MainWebViewActivity.favoriteIconBitmap;
+
+        // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+        if ((favoriteIcon.getHeight() > 256) || (favoriteIcon.getWidth() > 256)) {
+            favoriteIcon = Bitmap.createScaledBitmap(favoriteIcon, 256, 256, true);
+        }
+
+        // Create a favorite icon byte array output stream.
         ByteArrayOutputStream favoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
-        MainWebViewActivity.favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
+
+        // Convert the favorite icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
+        favoriteIcon.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
+
+        // Convert the favorite icon byte array stream to a byte array.
         byte[] favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray();
 
         // Display the new bookmark below the current items in the (0 indexed) list.
@@ -724,8 +680,9 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Create the bookmark.
         bookmarksDatabaseHelper.createBookmark(bookmarkNameString, bookmarkUrlString, currentFolder, newBookmarkDisplayOrder, favoriteIconByteArray);
 
-        // Update `bookmarksCursor` with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentFolder);
+        // Update the bookmarks cursor with the current contents of this folder.
+        // TODO Change this back to a `Cursor` after 2.17.1 is released.
+        bookmarksCursor = (SQLiteCursor) bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
 
         // Update the `ListView`.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
@@ -735,8 +692,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     }
 
     @Override
-    public void onCreateBookmarkFolder(AppCompatDialogFragment dialogFragment) {
-        // Get handles for the views in `dialogFragment`.
+    public void onCreateBookmarkFolder(DialogFragment dialogFragment) {
+        // Get handles for the views in the dialog fragment.
         EditText createFolderNameEditText = dialogFragment.getDialog().findViewById(R.id.create_folder_name_edittext);
         RadioButton defaultFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon_radiobutton);
         ImageView folderIconImageView = dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon);
@@ -744,20 +701,36 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Get new folder name string.
         String folderNameString = createFolderNameEditText.getText().toString();
 
-        // Get the new folder icon `Bitmap`.
+        // Create a folder icon bitmap.
         Bitmap folderIconBitmap;
+
+        // Set the folder icon bitmap according to the dialog.
         if (defaultFolderIconRadioButton.isChecked()) {  // Use the default folder icon.
-            // Get the default folder icon and convert it to a `Bitmap`.
+            // Get the default folder icon drawable.
             Drawable folderIconDrawable = folderIconImageView.getDrawable();
+
+            // Convert the folder icon drawable to a bitmap drawable.
             BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
+
+            // Convert the folder icon bitmap drawable to a bitmap.
             folderIconBitmap = folderIconBitmapDrawable.getBitmap();
-        } else {  // Use the `WebView` favorite icon.
+        } else {  // Use the WebView favorite icon.
+            // Get a copy of the favorite icon bitmap.
             folderIconBitmap = MainWebViewActivity.favoriteIconBitmap;
+
+            // Scale the folder icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+            if ((folderIconBitmap.getHeight() > 256) || (folderIconBitmap.getWidth() > 256)) {
+                folderIconBitmap = Bitmap.createScaledBitmap(folderIconBitmap, 256, 256, true);
+            }
         }
 
-        // Convert `folderIconBitmap` to a byte array.  `0` is for lossless compression (the only option for a PNG).
+        // Create a folder icon byte array output stream.
         ByteArrayOutputStream folderIconByteArrayOutputStream = new ByteArrayOutputStream();
+
+        // Convert the folder icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
         folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, folderIconByteArrayOutputStream);
+
+        // Convert the folder icon byte array stream to a byte array.
         byte[] folderIconByteArray = folderIconByteArrayOutputStream.toByteArray();
 
         // Move all the bookmarks down one in the display order.
@@ -769,8 +742,9 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Create the folder, which will be placed at the top of the `ListView`.
         bookmarksDatabaseHelper.createFolder(folderNameString, currentFolder, folderIconByteArray);
 
-        // Update `bookmarksCursor` with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentFolder);
+        // Update the bookmarks cursor with the current contents of this folder.
+        // TODO Change this back to a `Cursor` after 2.17.1 is released.
+        bookmarksCursor = (SQLiteCursor) bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
 
         // Update the `ListView`.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
@@ -780,7 +754,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     }
 
     @Override
-    public void onSaveBookmark(AppCompatDialogFragment dialogFragment, int selectedBookmarkDatabaseId) {
+    public void onSaveBookmark(DialogFragment dialogFragment, int selectedBookmarkDatabaseId) {
         // Get handles for the views from `dialogFragment`.
         EditText editBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_name_edittext);
         EditText editBookmarkUrlEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_url_edittext);
@@ -794,9 +768,21 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         if (currentBookmarkIconRadioButton.isChecked()) {  // Update the bookmark without changing the favorite icon.
             bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString);
         } else {  // Update the bookmark using the `WebView` favorite icon.
-            // Convert the favorite icon to a byte array.  `0` is for lossless compression (the only option for a PNG).
+            // Get a copy of the favorite icon bitmap.
+            Bitmap favoriteIconBitmap = MainWebViewActivity.favoriteIconBitmap;
+
+            // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+            if ((favoriteIconBitmap.getHeight() > 256) || (favoriteIconBitmap.getWidth() > 256)) {
+                favoriteIconBitmap = Bitmap.createScaledBitmap(favoriteIconBitmap, 256, 256, true);
+            }
+
+            // Create a favorite icon byte array output stream.
             ByteArrayOutputStream newFavoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
-            MainWebViewActivity.favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, newFavoriteIconByteArrayOutputStream);
+
+            // Convert the favorite icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
+            favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, newFavoriteIconByteArrayOutputStream);
+
+            // Convert the favorite icon byte array stream to a byte array.
             byte[] newFavoriteIconByteArray = newFavoriteIconByteArrayOutputStream.toByteArray();
 
             //  Update the bookmark and the favorite icon.
@@ -806,15 +792,16 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Close the contextual action mode.
         contextualActionMode.finish();
 
-        // Update `bookmarksCursor` with the contents of the current folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentFolder);
+        // Update the bookmarks cursor with the contents of the current folder.
+        // TODO Change this back to a `Cursor` after 2.17.1 is released.
+        bookmarksCursor = (SQLiteCursor) bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
 
         // Update the `ListView`.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
     }
 
     @Override
-    public void onSaveBookmarkFolder(AppCompatDialogFragment dialogFragment, int selectedFolderDatabaseId) {
+    public void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedFolderDatabaseId) {
         // Get handles for the views from `dialogFragment`.
         RadioButton currentFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_current_icon_radiobutton);
         RadioButton defaultFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_radiobutton);
@@ -829,49 +816,80 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             // Update the name in the database.
             bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, oldFolderNameString, newFolderNameString);
         } else if (!currentFolderIconRadioButton.isChecked() && newFolderNameString.equals(oldFolderNameString)) {  // Only the icon has changed.
-            // Get the new folder icon `Bitmap`.
+            // Create the new folder icon Bitmap.
             Bitmap folderIconBitmap;
+
+            // Populate the new folder icon bitmap.
             if (defaultFolderIconRadioButton.isChecked()) {
-                // Get the default folder icon and convert it to a `Bitmap`.
+                // Get the default folder icon drawable.
                 Drawable folderIconDrawable = defaultFolderIconImageView.getDrawable();
+
+                // Convert the folder icon drawable to a bitmap drawable.
                 BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
+
+                // Convert the folder icon bitmap drawable to a bitmap.
                 folderIconBitmap = folderIconBitmapDrawable.getBitmap();
-            } else {  // Use the `WebView` favorite icon.
+            } else {  // Use the WebView favorite icon.
+                // Get a copy of the favorite icon bitmap.
                 folderIconBitmap = MainWebViewActivity.favoriteIconBitmap;
+
+                // Scale the folder icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+                if ((folderIconBitmap.getHeight() > 256) || (folderIconBitmap.getWidth() > 256)) {
+                    folderIconBitmap = Bitmap.createScaledBitmap(folderIconBitmap, 256, 256, true);
+                }
             }
 
-            // Convert the folder `Bitmap` to a byte array.  `0` is for lossless compression (the only option for a PNG).
-            ByteArrayOutputStream folderIconByteArrayOutputStream = new ByteArrayOutputStream();
-            folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, folderIconByteArrayOutputStream);
-            byte[] folderIconByteArray = folderIconByteArrayOutputStream.toByteArray();
+            // Create a folder icon byte array output stream.
+            ByteArrayOutputStream newFolderIconByteArrayOutputStream = new ByteArrayOutputStream();
+
+            // Convert the folder icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
+            folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, newFolderIconByteArrayOutputStream);
+
+            // Convert the folder icon byte array stream to a byte array.
+            byte[] newFolderIconByteArray = newFolderIconByteArrayOutputStream.toByteArray();
 
             // Update the folder icon in the database.
-            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, folderIconByteArray);
+            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, newFolderIconByteArray);
         } else {  // The folder icon and the name have changed.
             // Instantiate the new folder icon `Bitmap`.
             Bitmap folderIconBitmap;
 
             // Populate the new folder icon bitmap.
             if (defaultFolderIconRadioButton.isChecked()) {
-                // Get the default folder icon and convert it to a `Bitmap`.
+                // Get the default folder icon drawable.
                 Drawable folderIconDrawable = defaultFolderIconImageView.getDrawable();
+
+                // Convert the folder icon drawable to a bitmap drawable.
                 BitmapDrawable folderIconBitmapDrawable = (BitmapDrawable) folderIconDrawable;
+
+                // Convert the folder icon bitmap drawable to a bitmap.
                 folderIconBitmap = folderIconBitmapDrawable.getBitmap();
-            } else {  // Use the `WebView` favorite icon.
+            } else {  // Use the WebView favorite icon.
+                // Get a copy of the favorite icon bitmap.
                 folderIconBitmap = MainWebViewActivity.favoriteIconBitmap;
+
+                // Scale the folder icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+                if ((folderIconBitmap.getHeight() > 256) || (folderIconBitmap.getWidth() > 256)) {
+                    folderIconBitmap = Bitmap.createScaledBitmap(folderIconBitmap, 256, 256, true);
+                }
             }
 
-            // Convert the folder `Bitmap` to a byte array.  `0` is for lossless compression (the only option for a PNG).
-            ByteArrayOutputStream folderIconByteArrayOutputStream = new ByteArrayOutputStream();
-            folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, folderIconByteArrayOutputStream);
-            byte[] folderIconByteArray = folderIconByteArrayOutputStream.toByteArray();
+            // Create a folder icon byte array output stream.
+            ByteArrayOutputStream newFolderIconByteArrayOutputStream = new ByteArrayOutputStream();
+
+            // Convert the folder icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
+            folderIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, newFolderIconByteArrayOutputStream);
+
+            // Convert the folder icon byte array stream to a byte array.
+            byte[] newFolderIconByteArray = newFolderIconByteArrayOutputStream.toByteArray();
 
             // Update the folder name and icon in the database.
-            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, oldFolderNameString, newFolderNameString, folderIconByteArray);
+            bookmarksDatabaseHelper.updateFolder(selectedFolderDatabaseId, oldFolderNameString, newFolderNameString, newFolderIconByteArray);
         }
 
-        // Update `bookmarksCursor` with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentFolder);
+        // Update the bookmarks cursor with the current contents of this folder.
+        // TODO Change this back to a `Cursor` after 2.17.1 is released.
+        bookmarksCursor = (SQLiteCursor) bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
 
         // Update the `ListView`.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
@@ -881,7 +899,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     }
 
     @Override
-    public void onMoveToFolder(AppCompatDialogFragment dialogFragment) {
+    public void onMoveToFolder(DialogFragment dialogFragment) {
         // Get a handle for the `ListView` from `dialogFragment`.
         ListView folderListView = dialogFragment.getDialog().findViewById(R.id.move_to_folder_listview);
 
@@ -915,8 +933,9 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             bookmarksDatabaseHelper.moveToFolder(databaseIdInt, newFolderName);
         }
 
-        // Update `bookmarksCursor` with the current contents of this folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentFolder);
+        // Update the bookmarks cursor with the current contents of this folder.
+        // TODO Change this back to a `Cursor` after 2.17.1 is released.
+        bookmarksCursor = (SQLiteCursor) bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
 
         // Update the `ListView`.
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
@@ -930,7 +949,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         String folderName = bookmarksDatabaseHelper.getFolderName(databaseId);
 
         // Get the contents of the folder.
-        Cursor folderCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(folderName);
+        Cursor folderCursor = bookmarksDatabaseHelper.getBookmarkIDs(folderName);
 
         // Delete each of the bookmarks in the folder.
         for (int i = 0; i < folderCursor.getCount(); i++) {
@@ -1011,15 +1030,25 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         if (selectedBookmarkPosition <= firstVisibleBookmarkPosition) {  // The selected bookmark position is at or above the top of the screen.
             // Scroll to the selected bookmark position.
             bookmarksListView.setSelection(selectedBookmarkPosition);
-        } else if (selectedBookmarkPosition >= (lastVisibleBookmarkPosition - 1)) {  // The selected bookmark is at or below the bottom of the screen.  The `-1` handles partial bookmarks displayed at the bottom of the `ListView`.
-            // Scroll to display the selected bookmark at the bottom of the screen.  `+1` assured that the entire bookmark will be displayed in situations where only a partial bookmark fits at the bottom of the `ListView`.
+        } else if (selectedBookmarkPosition >= (lastVisibleBookmarkPosition - 1)) {  // The selected bookmark is at or below the bottom of the screen.
+            // The `-1` handles partial bookmarks displayed at the bottom of the list view.  This command scrolls to display the selected bookmark at the bottom of the screen.
+            // `+1` assures that the entire bookmark will be displayed in situations where only a partial bookmark fits at the bottom of the list view.
             bookmarksListView.setSelection(selectedBookmarkPosition - numberOfBookmarksPerScreen + 1);
         }
     }
 
     private void loadFolder() {
-        // Update `bookmarksCursor` with the contents of the bookmarks database for the current folder.
-        bookmarksCursor = bookmarksDatabaseHelper.getAllBookmarksCursorByDisplayOrder(currentFolder);
+        // Update bookmarks cursor with the contents of the bookmarks database for the current folder.
+        // TODO Change this back to a `Cursor` after 2.17.1 is released.
+        bookmarksCursor = (SQLiteCursor) bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
+
+        // TODO Remove after the release of 2.17.1.
+        if (Build.VERSION.SDK_INT >= 28) {
+            // Create a big cursor window.
+            CursorWindow bigCursorWindow = new CursorWindow("Big Cursor Window", 4194304);
+
+            bookmarksCursor.setWindow(bigCursorWindow);
+        }
 
         // Setup a `CursorAdapter`.  `this` specifies the `Context`.  `false` disables `autoRequery`.
         bookmarksCursorAdapter = new CursorAdapter(this, bookmarksCursor, false) {
@@ -1057,7 +1086,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             }
         };
 
-        // Populate the `ListView` with the adapter.
+        // Populate the list view with the adapter.
         bookmarksListView.setAdapter(bookmarksCursorAdapter);
 
         // Set the `AppBar` title.

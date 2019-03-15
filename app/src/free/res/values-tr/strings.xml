@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<resources>
+    <!-- Activities. -->
+    <string name="privacy_browser">Privacy Browser Ücretsiz</string>
+
+    <!-- Create Home Screen Shortcut Alert Dialog. -->
+    <string name="open_with_privacy_browser">Privacy Browser Ücretsiz ile aç.</string>
+
+    <!-- Ad Consent. -->
+    <string name="ad_consent_text">Privacy Browser Ücretsiz ekranın altında bir banner reklam gösterir.
+    Bu reklamlar, Google\'ın sık kullanılan sağlayıcılarından gelmektedir ve kişiselleştirilmeyecek şekilde yapılandırılmıştır.
+    \n\nPrivacy Browser standart versiyonu uygulama reklamları içermez.</string>
+    <string name="close_browser">Tarayıcıyı kapat</string>
+    <string name="accept_ads">Reklamları kabul et</string>
+</resources>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017,2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -18,8 +18,9 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<!-- `android:fitsSystemWindows="true"` moves the AppBar below the status bar.  When it is specified the theme should include `<item name="android:windowTranslucentStatus">true</item>` to make the status bar a transparent, darkened overlay. -->
-<android.support.design.widget.CoordinatorLayout
+<!-- `android:fitsSystemWindows="true"` moves the AppBar below the status bar.
+    When it is specified the theme should include `<item name="android:windowTranslucentStatus">true</item>` to make the status bar a transparent, darkened overlay. -->
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     android:id="@+id/domains_coordinatorlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
@@ -32,26 +33,26 @@
         android:layout_width="match_parent"
         android:orientation="vertical" >
 
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent" >
 
-            <android.support.v7.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                 android:id="@+id/domains_toolbar"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:background="?attr/colorPrimaryDark"
                 android:theme="?attr/appBarTextTheme" />
-        </android.support.design.widget.AppBarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <include layout="@layout/domains_fragments" />
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_domain_fab"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:src="?attr/addIcon" />
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

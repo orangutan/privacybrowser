@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+
+  Translation 2019 Bernhard G. Keller.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   Translation 2018 Stefan Erhardt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -22,11 +24,10 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser</string>
-    <string name="privacy_browser_settings">Privacy Browser Einstellungen</string>
-    <!-- For translations, `android_asset_path` should be the localization abbreviation.  For example, Spanish is `es`.  This should not be translated unless the Guide and About sections are localized. -->
+    <!-- For translations, `android_asset_path` should be the localization abbreviation.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">de</string>
 
     <!-- MainWebView. -->
@@ -48,6 +49,7 @@
     <string name="close_navigation_drawer">Navigationspanel schließen</string>
     <string name="no_title">Kein Titel</string>
     <string name="unrecognized_url">Unbekannte URL:</string>
+    <string name="open_with">Öffnen mit</string>
 
     <!-- Save As. -->
     <string name="save_as">Speichern Unter</string>
@@ -70,6 +72,7 @@
     <string name="ssl_certificate">SSL-Zertifikat</string>
     <string name="close">Schließen</string>
     <string name="domain">Domain</string>
+    <string name="ip_addresses">IP-Addressen:</string>
     <string name="domain_label">Domain:</string>
     <string name="issued_to">Ausgestellt für</string>
     <string name="issued_by">Ausgestellt von</string>
@@ -92,11 +95,11 @@
     <string name="url">URL</string>
     <string name="url_label">URL:</string>
 
-    <!-- Pinned SSL Certificate Mismatch. -->
-    <string name="update_ssl">SSL aktualisieren</string>
-    <string name="ssl_certificate_mismatch">SSL-Zertifikat Mismatch</string>
-    <string name="current_ssl">Aktuelles SSL</string>
-    <string name="pinned_ssl">Pinned SSL</string>
+    <!-- Pinned Mismatch. -->
+    <string name="pinned_mismatch">Verankerungs-Fehler</string>
+    <string name="update">Aktualisieren</string>
+    <string name="current">Aktuelles</string>
+    <string name="pinned">Verankert</string>
 
     <!-- HTTP Authentication. -->
     <string name="http_authentication">HTTP-Authentifizierung</string>
@@ -112,9 +115,10 @@
     <string name="forward">Vorwärts</string>
     <string name="history">Verlauf</string>
         <string name="clear_history">Verlauf löschen</string>
-    <string name="bookmarks">Lesezeichen</string>
     <string name="downloads">Downloads</string>
     <string name="settings">Einstellungen</string>
+    <string name="import_export">Importieren/Exportieren</string>
+    <string name="logcat">Logcat</string>
     <string name="guide">Handbuch</string>
     <string name="about">Infos</string>
     <string name="clear_and_exit">Leeren und verlassen</string>
@@ -131,6 +135,10 @@
         <string name="clear_cookies">Cookies löschen</string>
         <string name="clear_dom_storage">DOM-Speicher löschen</string>
         <string name="clear_form_data">Formulardaten löschen</string>
+    <string name="options_fanboys_annoyance_list">Fanboy’s Annoyance Sperrliste</string>
+    <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking Sperrliste</string>
+    <string name="options_block_all_third_party_requests">Alle Zugriffe auf Dritt-Anbieter-Inhalte blockieren</string>
+    <string name="layout">Ansicht</string>
         <string name="user_agent_webview_default">WebView-Standard</string>
         <string name="user_agent_firefox_on_android">Firefox auf Android</string>
         <string name="user_agent_chrome_on_android">Chrome auf Android</string>
@@ -156,11 +164,15 @@
         <string name="display_images">Bilder anzeigen</string>
         <string name="view_source">Quelltext anzeigen</string>
     <string name="share">Teilen</string>
+        <string name="share_url">URL teilen</string>
+        <string name="open_with_app">Mit App öffnen</string>
+        <string name="open_with_browser">Mit Browser öffnen</string>
     <string name="find_on_page">Auf Seite finden</string>
     <string name="print">Drucken</string>
         <string name="privacy_browser_web_page">Privacy Browser-Website</string>
     <string name="add_to_home_screen">Zur Startseite hinzufügen</string>
     <string name="refresh">Aktualisieren</string>
+    <string name="stop">Stop</string>
 
     <!-- Context Menus. -->
     <string name="load_url">URL laden</string>
@@ -190,10 +202,13 @@
     <!-- Create Home Screen Shortcut Alert Dialog. -->
     <string name="create_shortcut">Verknüpfung erstellen</string>
     <string name="shortcut_name">Name der Verknüpfung</string>
+    <string name="open_with_default_browser">Mit Standard-Browser öffnen.</string>
+    <string name="open_with_privacy_browser">Mit Privacy Browser öffnen.</string>
     <string name="cancel">Abbrechen</string>
     <string name="create">Erstellen</string>
 
     <!-- Bookmarks. -->
+    <string name="bookmarks">Lesezeichen</string>
     <string name="database_view">Lesezeichen-Übersicht</string>
     <string name="create_bookmark">Lesezeichen erstellen</string>
     <string name="create_folder">Ordner erstellen</string>
@@ -212,31 +227,67 @@
     <string name="save">Speichern</string>
 
     <!-- Bookmarks Contextual App Bar. -->
-    <string name="one_selected">1 Ausgewählt</string>
-    <string name="selected">Ausgewählt</string>  <!--This is a plural adjective.-->
-    <string name="selected_russian_ends_in_1">выбрана</string>
-    <string name="selected_russian_ends_in_2">выбраны</string>
-    <string name="selected_russian_everything_else">выбрано</string>
+    <string name="selected">Ausgewählt:</string>  <!--This is a plural adjective.-->
     <string name="move_up">Nach oben verschieben</string>
     <string name="move_down">Nach unten verschieben</string>
     <string name="edit">Bearbeiten</string>
     <string name="delete">Löschen</string>
     <string name="select_all">Alle auswählen</string>
-    <string name="one_bookmark_deleted">1 Lesezeichen gelöscht</string>
-    <string name="bookmarks_deleted">Lesezeichen gelöscht</string>
-    <string name="bookmarks_deleted_russian_ends_in_1">закладка удалена</string>
-    <string name="bookmarks_deleted_russian_ends_in_2">закладки удалены</string>
-    <string name="bookmarks_deleted_russian_everything_else">акладок удалено</string>
+    <string name="bookmarks_deleted">Lesezeichen gelöscht:</string>
     <string name="undo">Rückgängig</string>
 
     <!-- Bookmarks Database View. -->
     <string name="bookmarks_database_view">Lesezeichen-Übersicht</string>
     <string name="all_folders">Alle Ordner</string>
     <string name="home_folder">Standard-Ordner</string>
+    <string name="sort">Sortieren</string>
+        <string name="sorted_by_database_id">Nach Datenbank-ID sortiert.</string>
+        <string name="sorted_by_display_order">Nach Anzeige-Reihenfolge sortiert.</string>
     <string name="database_id">Databank-ID:</string>
     <string name="folder">Ordner:</string>
     <string name="parent_folder">Übergeordneter Ordner:</string>
     <string name="display_order">Sortierung:</string>
+    <string name="cannot_deselect_bookmark">Ein Lesezeichen kann nicht abgewählt werden, solange der übergeordnete Ordner ausgewählt ist.</string>
+
+    <!-- Requests. -->
+    <string name="requests">Zugriffe</string>
+    <string name="request_details">Zugriffs-Details</string>
+    <string name="disposition">Einteilung</string>
+        <string name="all">Alle</string>
+        <string name="default_label">Standard</string>
+        <string name="default_allowed">Standard - erlaubt</string>
+        <string name="allowed">erlaubt</string>
+        <string name="allowed_plural">erlaubt</string>
+        <string name="third_party_plural">Drittanbieter</string>
+        <string name="third_party_blocked">Drittanbieter - blockiert</string>
+        <string name="blocked">blockiert</string>
+        <string name="blocked_plural">blockiert</string>
+    <string name="blocklist">Filterliste</string>
+    <string name="sublist">Unterliste</string>
+        <string name="main_whitelist">Haupt-Positivliste</string>
+        <string name="final_whitelist">finale Positivliste</string>
+        <string name="domain_whitelist">Domänen-Positivliste</string>
+        <string name="domain_initial_whitelist">Domänen-Positivliste (URL-Anfang)</string>
+        <string name="domain_final_whitelist">Domänen-Positivliste (URL-Ende)</string>
+        <string name="third_party_whitelist">Drittanbieter-Positivliste</string>
+        <string name="third_party_domain_whitelist">Drittanbieter-Domänen-Positivliste</string>
+        <string name="third_party_domain_initial_whitelist">Drittanbieter-Domänen-Positivliste (URL-Anfang)</string>
+        <string name="main_blacklist">Haupt-Negativliste</string>
+        <string name="initial_blacklist">Negativliste (URL-Anfang)</string>
+        <string name="final_blacklist">Negativliste (URL-Ende)</string>
+        <string name="domain_blacklist">Domänen-Negativliste</string>
+        <string name="domain_initial_blacklist">Domänen-Negativliste (URL-Anfang)</string>
+        <string name="domain_final_blacklist">Domänen-Negativliste (URL-Ende)</string>
+        <string name="domain_regular_expression_blacklist">Domänen-Negativliste mit regulären Ausdrücken</string>
+        <string name="third_party_blacklist">Drittanbieter-Negativliste</string>
+        <string name="third_party_initial_blacklist">Drittanbieter-Negativliste (URL-Anfang)</string>
+        <string name="third_party_domain_blacklist">Drittanbieter-Domänen-Negativliste</string>
+        <string name="third_party_domain_initial_blacklist">Drittanbieter-Domänen-Negativliste (URL-Anfang)</string>
+        <string name="third_party_regular_expression_blacklist">Drittanbieter-Negativliste  mit regulären Ausdrücken</string>
+        <string name="third_party_domain_regular_expression_blacklist">Drittanbieter-Domänen-Negativliste mit regulären Ausdrücken</string>
+        <string name="regular_expression_blacklist">Negativliste mit regulären Ausdrücken</string>
+    <string name="blocklist_entries">Negativlisten-Einträge</string>
+    <string name="blocklist_original_entry">Negativlisten-Original-Eintrag</string>
 
     <!-- Domains. -->
     <string name="domains">Domains</string>
@@ -263,16 +314,99 @@
         <item>Grafiken deaktiviert</item>
     </string-array>
     <string name="pinned_ssl_certificate">SSL-Zertifikat verankern</string>
-    <string name="saved_ssl_certificate">Gespeicherte SSL-Zertifikate</string>
-    <string name="current_website_ssl_certificate">SSL-Zertifikat der aktuellen Webseite</string>
-    <string name="load_an_encrypted_website">Zuerst verschlüsselte Webseite laden...</string>
+        <string name="saved_ssl_certificate">Gespeicherte SSL-Zertifikate</string>
+        <string name="current_website_ssl_certificate">SSL-Zertifikat der aktuellen Webseite</string>
+        <string name="load_an_encrypted_website">Laden Sie eine verschlüsselte Webseite einmal bevor sie die Domänen-Einstellungen öffnen, um das SSL-Zertifikat der Website festzulegen / zu verankern.</string>
+    <string name="pinned_ip_addresses">Verankerte IP-Adressen</string>
+        <string name="saved_ip_addresses">Gespeicherte IP-Adressen</string>
+        <string name="current_ip_addresses">aktuelle IP-Adressen</string>
+
+    <!-- Import/Export. -->
+    <string name="encryption">Verschlüsselung</string>
+    <string-array name="encryption_type">
+        <item>keine</item>
+        <item>Passwort</item>
+        <item>OpenPGP</item>
+    </string-array>
+    <string name="kitkat_password_encryption_message">Passwort-Verschlüsselung ist mit Android KitKat nicht möglich.</string>
+    <string name="openkeychain_required">Für die OpenPGP-Verschlüsselung muss OpenKeychain installiert sein.</string>
+    <string name="openkeychain_import_instructions">Die unverschlüsselte Datei muss in einem weiteren Schritt importiert werden, nachdem sie entschlüsselt wurde.</string>
+    <string name="settings_pbs">Einstellungen.pbs</string>
+    <string name="file_location">Datei-Ordner</string>
+    <string name="browse">durchsuchen</string>
+    <string name="export">exportieren</string>
+    <string name="import_button">importieren</string>  <!-- `import` is a reserved word and cannot be used as the name -->
+    <string name="decrypt">entschlüsseln</string>
+    <string name="export_successful">Export erfolgreich.</string>
+    <string name="export_failed">Export fehlgeschlagen:</string>
+    <string name="import_failed">Import fehlgeschlagen:</string>
+    <string name="invalid_location">ist kein gültiger Ordner.</string>
+    <string name="storage_permission">Speicher-Berechtigung</string>
+    <string name="storage_permission_message">Privacy Browser benötigt die Speicher-Berechtigung, um auf öffentliche Ordner zuzugreifen.
+        Wenn diese verweigert wird, können die Ordner der Anwendung trotzdem verwendet werden.</string>
+    <string name="storage_permission_explanation">Der Zugriff auf Dateien in öffentlichen Ordnern benötigt die Speicher-Berechtigung. Andernfalls können nur die Ordner der App verwendet werden.</string>
+    <string name="cannot_use_location">Dieser Ordner kann nicht genutzt werden, da die Speicher-Berechtigung nicht erteilt wurde.</string>
+
+    <!-- Logcat. -->
+    <string name="copy">kopieren</string>
+    <string name="logcat_copied">Logcat kopiert.</string>
+    <string name="clear">leeren</string>
+    <string name="save_logcat">Logcat speichern</string>
+    <string name="privacy_browser_logcat_txt">Privacy Browser Logcat.txt</string>
+    <string name="file_saved_successfully">Datei erfolgreich gespeichert.</string>
+    <string name="save_failed">Speichern fehlgeschlagen:</string>
 
     <!-- Guide. -->
-    <string name="privacy_browser_guide">Privacy Browser Handbuch</string>
     <string name="overview">Übersicht</string>
     <string name="local_storage">Lokale Speicherung</string>
     <string name="ssl_certificates">SSL-Zertifikate</string>
     <string name="tracking_ids">Verolgungs-IDs</string>
+
+    <!-- Download Location -->
+    <string name="download_location">Download-Zielordner</string>
+    <string name="download_location_message">Privacy Browser benötigt die Berechtigung zur Speicherung im öffentlichen Download-Ordner. Anderenfalls wird der Download-Ordner der App verwendet.</string>
+    <string name="ok">OK</string>
+
+    <!-- Orbot. -->
+    <string name="orbot_proxy_not_installed">Orbot-Proxy wird nicht funktionieren, solange Orbot nicht installiert ist.</string>
+    <string name="waiting_for_orbot">Warte, bis sich Orbot verbindet...</string>
+
+    <!-- About Activity. -->
+    <string name="about_privacy_browser">Über Privacy Browser</string>
+    <string name="version">Version</string>
+    <string name="version_code">Versions-Code</string>
+    <string name="hardware">Hardware</string>
+    <string name="brand">Marke:</string>
+    <string name="manufacturer">Hersteller:</string>
+    <string name="model">Modell:</string>
+    <string name="device">Gerät:</string>
+    <string name="bootloader">Bootloader:</string>
+    <string name="radio">Radio:</string>
+    <string name="software">Software</string>
+    <string name="android">Android:</string>
+    <string name="api">API</string>
+    <string name="build">Build:</string>
+    <string name="security_patch">Sicherheits-Patch:</string>
+    <string name="webview">WebView:</string>
+    <string name="orbot">Orbot:</string>
+    <string name="openkeychain">OpenKeychain:</string>
+    <string name="easylist_label">EasyList:</string>
+    <string name="easyprivacy_label">EasyPrivacy:</string>
+    <string name="fanboy_annoyance_label">Fanboy’s Annoyance Sperrliste:</string>
+    <string name="fanboy_social_label">Fanboy’s Social Blocking Sperrliste:</string>
+    <string name="ultraprivacy_label">UltraPrivacy:</string>
+    <string name="package_signature">Paket-Signatur</string>
+    <string name="issuer_dn">Aussteller-DN:</string>
+    <string name="subject_dn">Subject DN:</string>
+    <string name="certificate_version">Zertifikat-Version:</string>
+    <string name="serial_number">Seriennummer:</string>
+    <string name="signature_algorithm">Signaturalgorithmus:</string>
+    <string name="permissions">Berechtigungen</string>
+    <string name="privacy_policy">Datenschutzrichtlinie</string>
+    <string name="changelog">Changelog</string>
+    <string name="licenses">Lizenzen</string>
+    <string name="contributors">Mitwirkende</string>
+    <string name="links">Links</string>
 
     <!-- Preferences. -->
     <string name="privacy">Privatsphäre</string>
@@ -304,7 +438,7 @@
             <item>Eigener</item>
         </string-array>
         <string-array name="translated_domain_settings_user_agent_names">  <!-- The translated names of the user agents with a System Default option for the domains spinner. -->
-            <item>System default</item>
+            <item>Standardeinstellung</item>
             <item>Privacy Browser</item>
             <item>WebView-Standard</item>
             <item>Firefox auf Android</item>
@@ -324,35 +458,69 @@
         <string name="incognito_mode_summary">Löscht den Verlauf und den Cache nach jedem fertigen Laden einer Webseite. Zurück und vorwärts funktioniert im Inkognito-Modus nicht.</string>
         <string name="do_not_track">Nicht verfolgen (Do not track)</string>
         <string name="do_not_track_summary">Einen "Do Not Track-Header" senden, der freundlich anfragt, dass Webserver diesen Browser nicht nachverfolgen sollen.</string>
+        <string name="allow_screenshots">Screenshots zulassen</string>
+        <string name="allow_screenshots_summary">Screenshots, Bildschirmvideos und Anzeige auf unsicheren Bildschirmen zulassen. Eine Änderung dieser Einstellung startet Privacy Browser neu.</string>
+    <string name="blocklists">Sperrlisten</string>
+        <string name="easylist">EasyList</string>
+        <string name="easylist_summary">Haupt-Sperrliste gegen Werbung.</string>
+        <string name="easyprivacy">EasyPrivacy</string>
+        <string name="easyprivacy_summary">Haupt-Sperrliste gegen Tracker.</string>
+        <string name="fanboys_annoyance_list">Fanboy’s Annoyance Sperrliste</string>
+        <string name="fanboys_annoyance_list_summary">Blockiert nervende PopUps und Links. Enthält Fanboy’s Social Blocking Sperrliste.</string>
+        <string name="fanboys_social_blocking_list">Fanboy’s Social Blocking Sperrliste</string>
+        <string name="fanboys_social_blocking_list_summary">Blockiert Social-Media-Inhalte von Drittanbietern.</string>
+        <string name="ultraprivacy">UltraPrivacy</string>
+        <string name="ultraprivacy_summary">UltraPrivacy blockiert Tracker, die von EasyPrivacy nicht blockiert werden, da dies Webseiten verunstalten kann.</string>
+        <string name="block_all_third_party_requests">Alle Zugriffe auf Dritt-Anbieter-Inhalte blockieren</string>
+        <string name="block_all_third_party_requests_summary">Alle Zugriffe auf Dritt-Anbieter-Inhalte zu blockieren verbessert die Privatsphäre, kann jedoch Webseiten verunstalten.</string>
     <string name="tor">Tor</string>
         <string name="proxy_through_orbot">Proxy durch Orbot</string>
         <string name="proxy_through_orbot_summary">Sämtlichen Web-Verkehr durch Orbot mittels localhost:8118 leiten.</string>
+        <string name="tor_homepage">TOR-Homepage</string>
+        <string name="tor_search">TOR-Suche</string>
         <string-array name="tor_search_entries">
             <item>Searx</item>
-            <item>DuckDuckGo - JavaScript disabled</item>
-            <item>DuckDuckGo - JavaScript enabled</item>
+            <item>DuckDuckGo - JavaScript deaktiviert</item>
+            <item>DuckDuckGo - JavaScript aktiviert</item>
             <item>Eigene</item>
         </string-array>
+        <string name="tor_search_custom_url">eigene TOR-Such-URL</string>
     <string name="search">Suche</string>
         <string-array name="search_entries">
             <item>Searx</item>
             <item>StartPage</item>
-            <item>DuckDuckGo - JavaScript disabled</item>
-            <item>DuckDuckGo - JavaScript enabled</item>
-            <item>Qwant - JavaScript disabled</item>
-            <item>Qwant - JavaScript enabled</item>
+            <item>DuckDuckGo - JavaScript deaktiviert</item>
+            <item>DuckDuckGo - JavaScript aktiviert</item>
+            <item>Qwant - JavaScript deaktiviert</item>
+            <item>Qwant - JavaScript aktiviert</item>
             <item>Google</item>
             <item>Bing</item>
-            <item>Yahoo - JavaScript disabled</item>
-            <item>Yahoo - JavaScript enabled</item>
+            <item>Yahoo - JavaScript deaktiviert</item>
+            <item>Yahoo - JavaScript aktiviert</item>
             <item>Eigene</item>
         </string-array>
         <string name="search_custom_url">Suchmaschinen-URL</string>
         <string name="custom_url">Eigene URL</string>
+    <string name="full_screen">Vollbild-Modus</string>
+        <string name="full_screen_browsing_mode">Vollbild-Browser-Modus</string>
+        <string name="full_screen_browsing_mode_summary">Doppel-Tippen, um zwischen normalem und Vollbild-Modus umzuschalten.</string>
+        <string name="hide_app_bar">App-Leiste verstecken</string>
+        <string name="hide_app_bar_summary" tools:ignore="Typos">Versteckt die App-Leiste, die die URL enthält.</string>
+    <string name="clear_everything">Alles löschen</string>
+        <!-- The form data part of this string can be removed once the minimum API >= 26. -->
+        <string name="clear_everything_summary">Löscht Cookies, DOM Storage, Formular-Daten und Cache, sowie “app_webview” and “cache”-Ordner.</string>
+        <string name="clear_cookies_preference">Cookies löschen</string>
+        <string name="clear_cookies_summary">Löscht Cookies und Drittanbieter-Cookies.</string>
+        <string name="clear_dom_storage_preference">DOM Storage löschen</string>
+        <string name="clear_dom_storage_summary">Löscht DOM storage (aka Web Storage oder Supercookies).</string>
+        <string name="clear_form_data_preference">Formulardaten löschen</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
+        <string name="clear_form_data_summary">Löscht in Formulare eingegebene Daten.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
+        <string name="clear_cache">Cache löschen</string>
+        <string name="clear_cache_summary">Löscht den WebView-Cache.</string>
     <string name="general">Allgemein</string>
         <string name="homepage">Startseite</string>
-        <string name="default_font_size">Standard-Schriftgröße</string>
-        <string-array name="default_font_size_entries">
+        <string name="font_size_preference">Schriftgröße</string>
+        <string-array name="font_size_entries">
             <item>25%</item>
             <item>50%</item>
             <item>75%</item>
@@ -362,53 +530,32 @@
             <item>175%</item>
             <item>200%</item>
         </string-array>
-        <string name="swipe_to_refresh_preference">Herunterziehen zum Aktualisieren</string>
+            <string-array name="domain_settings_font_size_entries">
+                <item>Standardeinstellung</item>
+                <item>25%</item>
+                <item>50%</item>
+                <item>75%</item>
+                <item>100%</item>
+                <item>125%</item>
+                <item>150%</item>
+                <item>175%</item>
+                <item>200%</item>
+            </string-array>
+        <string name="swipe_to_refresh">Herunterziehen zum Aktualisieren</string>
         <string name="swipe_to_refresh_summary">Einige Websites funktionieren nicht, wenn "Herunterziehen zum Aktualisieren" eingeschaltet ist.</string>
+        <string name="scroll_app_bar">App-Leiste scrollen</string>
+        <string name="scroll_app_bar_summary">Scrollt die App-Leiste mit der URL nach oben, wenn die Webseite gescrollt wird.</string>
         <string name="display_additional_app_bar_icons">Weitere Icons in der Titelleiste</string>
-
-    <!-- Download Location -->
-    <string name="download_location">Download-Zielordner</string>
-    <string name="download_location_message">Privacy Browser benötigt die Berechtigung zur Speicherung im öffentlichen Download-Ordner. Anderenfalls wird der Download-Ordner der App verwendet.</string>
-    <string name="ok">OK</string>
-
-    <!-- Orbot. -->
-    <string name="orbot_proxy_not_installed">Orbot-Proxy wird nicht funktionieren, solange Orbot nicht installiert ist.</string>
-    <string name="waiting_for_orbot">Warte, bis sich Orbot verbindet...</string>
-
-    <!-- About Activity. -->
-    <string name="about_privacy_browser">Über Privacy Browser</string>
-    <string name="version">Version</string>
-        <string name="version_code">Versions-Code</string>
-        <string name="hardware">Hardware</string>
-            <string name="brand">Marke:</string>
-            <string name="manufacturer">Hersteller:</string>
-            <string name="model">Modell:</string>
-            <string name="device">Gerät:</string>
-            <string name="bootloader">Bootloader:</string>
-            <string name="radio">Radio:</string>
-        <string name="software">Software</string>
-            <string name="android">Android:</string>
-                <string name="api">API</string>
-            <string name="build">Build:</string>
-            <string name="security_patch">Sicherheits-Patch:</string>
-            <string name="webview">WebView:</string>
-            <string name="orbot">Orbot:</string>
-            <string name="easylist_label">EasyList:</string>
-            <string name="easyprivacy_label">EasyPrivacy:</string>
-            <string name="fanboy_annoyance_label">Fanboy’s Annoyance List:</string>
-            <string name="fanboy_social_label">Fanboy’s Social Blocking List:</string>
-        <string name="package_signature">Paket-Signatur</string>
-            <string name="issuer_dn">Aussteller-DN:</string>
-            <string name="subject_dn">Subject DN:</string>
-            <string name="certificate_version">Zertifikat-Version:</string>
-            <string name="serial_number">Seriennummer:</string>
-            <string name="signature_algorithm">Signaturalgorithmus:</string>
-    <string name="permissions">Berechtigungen</string>
-    <string name="privacy_policy">Datenschutzrichtlinie</string>
-    <string name="changelog">Changelog</string>
-    <string name="licenses">Lizenzen</string>
-    <string name="contributors">Mitwirkende</string>
-    <string name="links">Links</string>
+        <string name="display_additional_app_bar_icons_summary">Zeigt in der App-Leiste die Icons zum Neu-Laden der Webseite und - sofern Platz vorhanden ist -
+            zum Umschalten von Cookies und DOM Storage.</string>
+        <string name="download_with_external_app">Mit externer App herunterladen</string>
+        <string name="download_with_external_app_summary">Android’s Download-Manager funktioniert auf manchen Geräten nicht zufriedenstellend.</string>
+        <string name="dark_theme">Dunkles Thema</string>
+        <string name="dark_theme_summary">Wechseln des Themas startet Privacy Browser neu.</string>
+        <string name="night_mode">Nacht-Modus</string>
+        <string name="night_mode_summary">Aktivieren des Nacht-Modus aktiviert JavaScript für alle Webseiten.</string>
+        <string name="display_webpage_images">Webseiten-Bilder anzeigen</string>
+        <string name="display_webpage_images_summary">Bilder deaktivieren, um Bandbreite zu sparen.</string>
 
     <!-- Ad Control. There are no ads in the standard flavor, but this string must exist because it is referenced in the code. -->
     <string name="ad_consent">Zustimmung zur Werbung</string>

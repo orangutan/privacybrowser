@@ -1,0 +1,2 @@
+• Büyük simgelere sahip yer imlerinin sebep olduğu bir hata düzeltildi.
+• Privacy Browser'ın SD karta taşınmasına izin verildi.

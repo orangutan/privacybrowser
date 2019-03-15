@@ -1,0 +1,16 @@
+• Correzione di un baco che si verificava cambiando lo user agent nelle impostazioni dei domini.
+• Sistemazione dei layout del cassetto per i telefoni con schermo di forma non regolare.
+• Modifica dell'evidenziamento della sintassi delle URL in modo che sia indicato il dominio principale.
+• Correzione di un baco che si verificava aprendo un cassetto mentre era selezionato un testo.
+• Correzione di due bachi con EasyList.
+• Aggiunto il supporto per URL del tipo: file:// e content://.
+• Aggiornamento di diversi nomi delle preferenze.
+• Registrazione di Privacy Browser come provider di ricerca.
+• Aggiunta di istruzioni per il download di file alla Guida sull'utilizzo di Tor.
+• Creazione di un tema scuro per l'animazione dello swipe per aggiornare.
+• Aggiunta dello swipe per aggiornare alla scheda di visualizzazione della sorgente.
+• Rimozione della libreria Ad Consent di Google nella versione free.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
+• Aggiornamento della traduzione Russo.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León.
+• Traduzione parziale in Turco.

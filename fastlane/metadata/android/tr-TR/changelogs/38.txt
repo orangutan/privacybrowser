@@ -1,0 +1,16 @@
+• Domain ayarlarıyla kullanıcı aracısı değiştirme ile ilgili sorun giderildi.
+• Çekmece tasarımları çentiklerle düzeltildi.
+• URL'de ana domain vurgulanmasi değişikliği yapıldı. (Önceki versiyonunda tüm domain vurgulanıyordu.)
+• Metin seçiliyken bir çekmece açma sorunu giderildi.
+• Easy Listesiyle ilgili 2 sorun giderildi.
+• Destek dosyası ve içerik URL'leri eklendi.
+• Birçok tercih adı güncellendi.
+• Privacy Browser'ı web arama sağlayıcısı olarak kaydetme seçeneği eklendi.
+• Tor kılavuzuyla dosya indirmek için komutlar eklendi.
+• Yenilemek için kaydır animasyonu için koyu tema oluşturuldu.
+• Kaynağı Görüntüle etkinliğine yenilemek için kaydır özelliği eklendi.
+• Ücretsiz versiyonunda Google'ın Reklam Onayı Kütüphanesi kaldırıldı.
+• Kısmi Türkçe çevirisi yapıldı.
+• İtalyan çevirisi güncellendi. (Çevirmen Francesco Buratti.)
+• Rusça çevirisi güncellendi.
+• İspanyol çevirisi güncellendi. (Çevirmen Jose A. León.)

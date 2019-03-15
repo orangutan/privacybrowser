@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -66,9 +66,13 @@
         <item name="addIcon">@drawable/add_light</item>
         <item name="addBookmarkIcon">@drawable/create_bookmark_light</item>
         <item name="addFolderIcon">@drawable/create_folder_light</item>
+        <item name="copyIcon">@drawable/copy_light</item>
+        <item name="clearIcon">@drawable/clear_light</item>
         <item name="selectAllIcon">@drawable/select_all_light</item>
         <item name="editIcon">@drawable/edit_light</item>
         <item name="moveToFolderIcon">@drawable/move_to_folder_light</item>
+        <item name="saveIcon">@drawable/save_light</item>
+        <item name="sortIcon">@drawable/sort_light</item>
         <item name="actionBarPopupTheme">@style/PrivacyBrowserPopupsLight</item>
         <item name="appBarTextTheme">@style/PrivacyBrowserAppBarWhiteText</item>
         <item name="tabLayoutTheme">@style/PrivacyBrowserTabLayoutLight</item>
@@ -161,9 +165,13 @@
         <item name="addIcon">@drawable/add_dark</item>
         <item name="addBookmarkIcon">@drawable/create_bookmark_dark</item>
         <item name="addFolderIcon">@drawable/create_folder_dark</item>
+        <item name="clearIcon">@drawable/clear_dark</item>
+        <item name="copyIcon">@drawable/copy_dark</item>
         <item name="selectAllIcon">@drawable/select_all_dark</item>
         <item name="editIcon">@drawable/edit_dark</item>
         <item name="moveToFolderIcon">@drawable/move_to_folder_dark</item>
+        <item name="saveIcon">@drawable/save_dark</item>
+        <item name="sortIcon">@drawable/sort_dark</item>
         <item name="appBarTextTheme">@style/PrivacyBrowserAppBarDark</item>
         <item name="tabLayoutTheme">@style/PrivacyBrowserTabLayoutDark</item>
         <item name="popupsTheme">@style/PrivacyBrowserPopupsDark</item>

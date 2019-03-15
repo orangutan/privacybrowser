@@ -9,7 +9,7 @@
     android:width="24dp"
     android:viewportWidth="24.0"
     android:viewportHeight="24.0"
-    tools:ignore="VectorRaster">
+    tools:ignore="VectorRaster" >
 
     <!-- A hard coded color must be used until API >= 21.  Then `@color` can be used. -->
     <path

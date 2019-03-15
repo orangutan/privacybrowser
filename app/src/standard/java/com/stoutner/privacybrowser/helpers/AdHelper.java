@@ -18,10 +18,10 @@
  */
 
 package com.stoutner.privacybrowser.helpers;
-
-import android.app.FragmentManager;
 import android.content.Context;
 import android.view.View;
+
+import androidx.fragment.app.FragmentManager;
 
 @SuppressWarnings("unused")
 public class AdHelper {
