@@ -86,7 +86,7 @@
                                 android:paddingStart="15dp"
                                 android:paddingEnd="15dp"
                                 android:src="@drawable/add_light"
-                                android:tint="@color/gray_700"
+                                android:tint="?attr/addTabIconTintColor"
                                 android:onClick="addTab"
                                 android:contentDescription="@string/add_tab" />
                         </LinearLayout>
@@ -167,30 +167,10 @@
                     android:layout_height="match_parent"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior" >
 
-                    <!-- The frame layout allows the progress bar to float above the WebView. -->
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
                         <androidx.viewpager.widget.ViewPager
                             android:id="@+id/webviewpager"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
-
-                        <!-- `android:max` changes the maximum `ProgressBar` value from 10000 to 100 to match progress percentage.
-                            `android:layout_height="2dp"` works best for API >= 23, but `3dp` is required for visibility on API <= 22.
-                            `tools:ignore="UnusedAttribute"` removes the lint warning about `progressTint` and `progressBackgroundTint` not applying to API < 21. -->
-                        <ProgressBar
-                            android:id="@+id/progress_bar"
-                            style="?android:attr/progressBarStyleHorizontal"
-                            android:layout_height="3dp"
-                            android:layout_width="match_parent"
-                            android:max="100"
-                            android:progressTint="?attr/progressTintColor"
-                            android:progressBackgroundTint="@color/transparent"
-                            android:visibility="gone"
-                            tools:ignore="UnusedAttribute" />
-                    </FrameLayout>
                 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
             </androidx.coordinatorlayout.widget.CoordinatorLayout>
         </RelativeLayout>

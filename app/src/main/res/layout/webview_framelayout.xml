@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  Copyright © 2019 Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<!-- The frame layout allows the progress bar to float above the WebView. -->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <com.stoutner.privacybrowser.views.NestedScrollWebView
+        android:id="@+id/nestedscroll_webview"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+
+    <!-- `android:max` changes the maximum `ProgressBar` value from 10000 to 100 to match progress percentage.
+        `android:layout_height="2dp"` works best for API >= 23, but `3dp` is required for visibility on API <= 22.
+        `tools:ignore="UnusedAttribute"` removes the lint warning about `progressTint` and `progressBackgroundTint` not applying to API < 21. -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_height="3dp"
+        android:layout_width="match_parent"
+        android:max="100"
+        android:progressTint="?attr/progressTintColor"
+        android:progressBackgroundTint="@color/transparent"
+        android:visibility="gone"
+        tools:ignore="UnusedAttribute" />
+</FrameLayout>

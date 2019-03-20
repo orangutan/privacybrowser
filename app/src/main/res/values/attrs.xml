@@ -43,10 +43,11 @@
     <attr name="navigationHeaderBackground" format="reference" />
     <attr name="navigationHeaderTextColor" format="reference" />
 
-    <attr name="progressTintColor" format="reference" />
-    <attr name="navigationIconTintColor" format="reference" />
-    <attr name="findOnPageIconTintColor" format="reference" />
+    <attr name="addTabIconTintColor" format="reference" />
     <attr name="domainSettingsIconTintColor" format="reference" />
+    <attr name="findOnPageIconTintColor" format="reference" />
+    <attr name="navigationIconTintColor" format="reference" />
+    <attr name="progressTintColor" format="reference" />
     <attr name="viewSourceIconTintColor" format="reference" />
 
     <attr name="listSelectorDrawable" format="reference" />

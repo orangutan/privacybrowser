@@ -707,8 +707,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Get the current WebView fragment.  Instantiate item returns the current item if it already exists.
                 Fragment webViewFragment = (Fragment) webViewPagerAdapter.instantiateItem(webViewPager, position);
 
+                // Remove the lint error below that the WebView fragment might be null.
+                assert webViewFragment.getView() != null;
+
                 // Store the current WebView.
-                currentWebView = (NestedScrollWebView) webViewFragment.getView();
+                currentWebView = webViewFragment.getView().findViewById(R.id.nestedscroll_webview);
 
                 // Select the corresponding tab if it does not match the currently selected page.  This will happen if the page was scrolled via swiping in the view pager.
                 if (tabLayout.getSelectedTabPosition() != position) {
@@ -835,10 +838,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Set the swipe to refresh color according to the theme.
         if (darkTheme) {
-            swipeRefreshLayout.setColorSchemeResources(R.color.blue_600);
+            swipeRefreshLayout.setColorSchemeResources(R.color.blue_800);
             swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.gray_850);
         } else {
-            swipeRefreshLayout.setColorSchemeResources(R.color.blue_700);
+            swipeRefreshLayout.setColorSchemeResources(R.color.blue_500);
         }
 
         // `DrawerTitle` identifies the `DrawerLayouts` in accessibility mode.
@@ -4444,7 +4447,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void initializeWebView(NestedScrollWebView nestedScrollWebView, int tabNumber) {
+    public void initializeWebView(int tabNumber, ProgressBar progressBar, NestedScrollWebView nestedScrollWebView) {
         // Get handles for the activity views.
         final FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
         final DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
@@ -4486,10 +4489,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get the current views from the tab.
         ImageView tabFavoriteIconImageView = currentTabView.findViewById(R.id.favorite_icon_imageview);
         TextView tabTitleTextView = currentTabView.findViewById(R.id.title_textview);
-
-
-        //TODO
-        final ProgressBar progressBar = findViewById(R.id.progress_bar);
 
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
