@@ -46,7 +46,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.http.SslCertificate;
 import android.net.http.SslError;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -116,6 +115,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.asynctasks.GetHostIpAddresses;
 import com.stoutner.privacybrowser.dialogs.AdConsentDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkFolderDialog;
@@ -143,13 +143,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.ref.WeakReference;
-import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -188,9 +185,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // It is also used in `onCreate()` and `checkPinnedMismatch()`.
     public static SslCertificate sslCertificate;
 
-    // `currentHostIpAddresses` is public static so it can be accessed from `DomainSettingsFragment` and `ViewSslCertificateDialog`.
+    // `currentHostIpAddresses` is public static so it can be accessed from `DomainSettingsFragment`, `GetHostIpAddresses()`, and `ViewSslCertificateDialog`.
     // It is also used in `onCreate()` and `GetHostIpAddresses()`.
     public static String currentHostIpAddresses;
+
+    // The getting IP addresses tracker is used in `onCreate() and `GetHostIpAddresses`.
+    public static boolean gettingIpAddresses;
+
+    // The URL loading tracker is public static so it can be accessed from `GetHostIpAddresses`.
+    // It is also used in `onCreate()`, `onCreateOptionsMenu()`, `loadUrl()`, `applyDomainSettings()`, and `GetHostIpAddresses`.
+    public static boolean urlIsLoading;
 
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxyThroughOrbot()`.
     public static String orbotStatus;
@@ -272,9 +276,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `loadBookmarksFolder()`.
     public static String currentBookmarksFolder;
 
-    // `domainSettingsDatabaseId` is public static so it can be accessed from `PinnedMismatchDialog`.  It is also used in `onCreate()`, `onOptionsItemSelected()`, and `applyDomainSettings()`.
-    public static int domainSettingsDatabaseId;
-
     // The pinned variables are public static so they can be accessed from `PinnedMismatchDialog`.  They are also used in `onCreate()`, `applyDomainSettings()`, and `checkPinnedMismatch()`.
     public static String pinnedSslIssuedToCName;
     public static String pinnedSslIssuedToOName;
@@ -296,12 +297,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
 
 
-    // `urlIsLoading` is used in `onCreate()`, `onCreateOptionsMenu()`, `loadUrl()`, `applyDomainSettings()`, and `GetHostIpAddresses`.
-    private static boolean urlIsLoading;
-
-    // `gettingIpAddresses` is used in `onCreate() and `GetHostIpAddresses`.
-    private static boolean gettingIpAddresses;
-
     // `pinnedDomainSslCertificate` is used in `onCreate()`, `applyDomainSettings()`, and `checkPinnedMismatch()`.
     private static boolean pinnedSslCertificate;
 
@@ -322,7 +317,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private boolean navigatingHistory;
 
     // The current WebView is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`,
-    // `findNextOnPage()`, `closeFindOnPage()`, `loadUrlFromTextBox()`, `onSslMismatchBack()`, and `applyProxyThroughOrbot()`.
+    // `findNextOnPage()`, `closeFindOnPage()`, `loadUrlFromTextBox()`, `onSslMismatchBack()`, `applyProxyThroughOrbot()`, and `applyDomainSettings()`.
     private NestedScrollWebView currentWebView;
 
     // `fullScreenVideoFrameLayout` is used in `onCreate()` and `onConfigurationChanged()`.
@@ -441,9 +436,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `waitingForOrbot` is used in `onCreate()`, `onResume()`, and `applyProxyThroughOrbot()`.
     private boolean waitingForOrbot;
 
-    // `domainSettingsApplied` is used in `prepareOptionsMenu()` and `applyDomainSettings()`.
-    private boolean domainSettingsApplied;
-
     // `domainSettingsJavaScriptEnabled` is used in `onOptionsItemSelected()` and `applyDomainSettings()`.
     private Boolean domainSettingsJavaScriptEnabled;
 
@@ -461,9 +453,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // The action bar drawer toggle is initialized in `onCreate()` and used in `onResume()`.
     private ActionBarDrawerToggle actionBarDrawerToggle;
-
-    // `urlTextBox` is used in `onCreate()`, `onOptionsItemSelected()`, `loadUrlFromTextBox()`, `loadUrl()`, and `highlightUrlText()`.
-    private EditText urlTextBox;
 
     // The color spans are used in `onCreate()` and `highlightUrlText()`.
     private ForegroundColorSpan redColorSpan;
@@ -578,18 +567,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         finalGrayColorSpan = new ForegroundColorSpan(resources.getColor(R.color.gray_500));
 
         // Get a handle for `urlTextBox`.
-        urlTextBox = findViewById(R.id.url_edittext);
+        EditText urlEditText = findViewById(R.id.url_edittext);
 
         // Remove the formatting from `urlTextBar` when the user is editing the text.
-        urlTextBox.setOnFocusChangeListener((View v, boolean hasFocus) -> {
+        urlEditText.setOnFocusChangeListener((View v, boolean hasFocus) -> {
             if (hasFocus) {  // The user is editing the URL text box.
                 // Remove the highlighting.
-                urlTextBox.getText().removeSpan(redColorSpan);
-                urlTextBox.getText().removeSpan(initialGrayColorSpan);
-                urlTextBox.getText().removeSpan(finalGrayColorSpan);
+                urlEditText.getText().removeSpan(redColorSpan);
+                urlEditText.getText().removeSpan(initialGrayColorSpan);
+                urlEditText.getText().removeSpan(finalGrayColorSpan);
             } else {  // The user has stopped editing the URL text box.
                 // Move to the beginning of the string.
-                urlTextBox.setSelection(0);
+                urlEditText.setSelection(0);
 
                 // Reapply the highlighting.
                 highlightUrlText();
@@ -597,7 +586,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         });
 
         // Set the go button on the keyboard to load the URL in `urlTextBox`.
-        urlTextBox.setOnKeyListener((View v, int keyCode, KeyEvent event) -> {
+        urlEditText.setOnKeyListener((View v, int keyCode, KeyEvent event) -> {
             // If the event is a key-down event on the `enter` button, load the URL.
             if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                 // Load the URL into the mainWebView and consume the event.
@@ -713,6 +702,33 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Store the current WebView.
                 currentWebView = webViewFragment.getView().findViewById(R.id.nestedscroll_webview);
 
+                // Store the current formatted URL string.
+                formattedUrlString = currentWebView.getUrl();
+
+                // Clear the focus from the URL text box.
+                urlEditText.clearFocus();
+
+                // Hide the soft keyboard.
+                inputMethodManager.hideSoftInputFromWindow(currentWebView.getWindowToken(), 0);
+
+                // Apply the current URL in the URL text box.
+                urlEditText.setText(formattedUrlString);
+
+                // Highlight the URL text.
+                highlightUrlText();
+
+                // Set the background to indicate the domain settings status.
+                if (currentWebView.getDomainSettingsApplied()) {
+                    // Set a green background on `urlTextBox` to indicate that custom domain settings are being used. The deprecated `.getDrawable()` must be used until the minimum API >= 21.
+                    if (darkTheme) {
+                        urlEditText.setBackground(getResources().getDrawable(R.drawable.url_bar_background_dark_blue));
+                    } else {
+                        urlEditText.setBackground(getResources().getDrawable(R.drawable.url_bar_background_light_green));
+                    }
+                } else {
+                    urlEditText.setBackgroundDrawable(getResources().getDrawable(R.color.transparent));
+                }
+
                 // Select the corresponding tab if it does not match the currently selected page.  This will happen if the page was scrolled via swiping in the view pager.
                 if (tabLayout.getSelectedTabPosition() != position) {
                     // Get a handle for the corresponding tab.
@@ -819,7 +835,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Set the `check mark` button for the `findOnPageEditText` keyboard to close the soft keyboard.
         findOnPageEditText.setOnKeyListener((v, keyCode, event) -> {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {  // The `enter` key was pressed.
-                // Hide the soft keyboard.  `0` indicates no additional flags.
+                // Hide the soft keyboard.
                 inputMethodManager.hideSoftInputFromWindow(currentWebView.getWindowToken(), 0);
 
                 // Consume the event.
@@ -962,7 +978,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     inputMethodManager.hideSoftInputFromWindow(currentWebView.getWindowToken(), 0);
 
                     // Clear the focus from from the URL text box and the WebView.  This removes any text selection markers and context menus, which otherwise draw above the open drawers.
-                    urlTextBox.clearFocus();
+                    urlEditText.clearFocus();
                     currentWebView.clearFocus();
                 }
             }
@@ -1336,7 +1352,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem proxyThroughOrbotMenuItem = menu.findItem(R.id.proxy_through_orbot);
 
         // Set the text for the domain menu item.
-        if (domainSettingsApplied) {
+        if (currentWebView.getDomainSettingsApplied()) {
             addOrEditDomain.setTitle(R.string.edit_domain_settings);
         } else {
             addOrEditDomain.setTitle(R.string.add_domain_settings);
@@ -1558,7 +1574,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 return true;
 
             case R.id.add_or_edit_domain:
-                if (domainSettingsApplied) {  // Edit the current domain settings.
+                if (currentWebView.getDomainSettingsApplied()) {  // Edit the current domain settings.
                     // Reapply the domain settings on returning to `MainWebViewActivity`.
                     reapplyDomainSettingsOnRestart = true;
                     currentDomainName = "";
@@ -1567,7 +1583,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     Intent domainsIntent = new Intent(this, DomainsActivity.class);
 
                     // Put extra information instructing the domains activity to directly load the current domain and close on back instead of returning to the domains list.
-                    domainsIntent.putExtra("loadDomain", domainSettingsDatabaseId);
+                    domainsIntent.putExtra("loadDomain", currentWebView.getDomainSettingsDatabaseId());
                     domainsIntent.putExtra("closeOnBack", true);
 
                     // Make it so.
@@ -2043,7 +2059,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 if (nightMode) {  // Night mode is enabled.  Enable JavaScript.
                     // Update the global variable.
                     javaScriptEnabled = true;
-                } else if (domainSettingsApplied) {  // Night mode is disabled and domain settings are applied.  Set JavaScript according to the domain settings.
+                } else if (currentWebView.getDomainSettingsApplied()) {  // Night mode is disabled and domain settings are applied.  Set JavaScript according to the domain settings.
                     // Get the JavaScript preference that was stored the last time domain settings were loaded.
                     javaScriptEnabled = domainSettingsJavaScriptEnabled;
                 } else {  // Night mode is disabled and domain settings are not applied.  Set JavaScript according to the global preference.
@@ -2094,7 +2110,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.share_url:
                 // Setup the share string.
-                String shareString = webViewTitle + " – " + urlTextBox.getText().toString();
+                String shareString = webViewTitle + " – " + formattedUrlString;
 
                 // Create the share intent.
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
@@ -3270,8 +3286,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void loadUrlFromTextBox() {
+        // Get a handle for the URL edit text.
+        EditText urlEditText = findViewById(R.id.url_edittext);
+
         // Get the text from urlTextBox and convert it to a string.  trim() removes white spaces from the beginning and end of the string.
-        String unformattedUrlString = urlTextBox.getText().toString().trim();
+        String unformattedUrlString = urlEditText.getText().toString().trim();
 
         // Check to see if `unformattedUrlString` is a valid URL.  Otherwise, convert it into a search.
         if (unformattedUrlString.startsWith("content://")) {
@@ -3330,8 +3349,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             formattedUrlString = searchURL + encodedUrlString;
         }
 
-        // Clear the focus from the URL text box.  Otherwise, proximate typing in the box will retain the colorized formatting instead of being reset during refocus.
-        urlTextBox.clearFocus();
+        // Clear the focus from the URL edit text.  Otherwise, proximate typing in the box will retain the colorized formatting instead of being reset during refocus.
+        urlEditText.clearFocus();
 
         // Make it so.
         loadUrl(formattedUrlString);
@@ -3559,21 +3578,26 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Close `domainNameCursor.
             domainNameCursor.close();
 
-            // Initialize variables to track if domain settings will be applied and, if so, under which name.
-            domainSettingsApplied = false;
+            // Initialize the domain name in database variable.
             String domainNameInDatabase = null;
 
-            // Check the hostname.
-            if (domainSettingsSet.contains(hostName)) {
-                domainSettingsApplied = true;
+            // Check the hostname against the domain settings set.
+            if (domainSettingsSet.contains(hostName)) {  // The hostname is contained in the domain settings set.
+                // Record the domain name in the database.
                 domainNameInDatabase = hostName;
+
+                // Set the domain settings applied tracker to true.
+                currentWebView.setDomainSettingsApplied(true);
+            } else {  // The hostname is not contained in the domain settings set.
+                // Set the domain settings applied tracker to false.
+                currentWebView.setDomainSettingsApplied(false);
             }
 
             // Check all the subdomains of the host name against wildcard domains in the domain cursor.
-            while (!domainSettingsApplied && hostName.contains(".")) {  // Stop checking if domain settings are already applied or there are no more `.` in the host name.
+            while (!currentWebView.getDomainSettingsApplied() && hostName.contains(".")) {  // Stop checking if domain settings are already applied or there are no more `.` in the host name.
                 if (domainSettingsSet.contains("*." + hostName)) {  // Check the host name prepended by `*.`.
-                    // Apply the domain settings.
-                    domainSettingsApplied = true;
+                    // Set the domain settings applied tracker to true.
+                    currentWebView.setDomainSettingsApplied(true);
 
                     // Store the applied domain names as it appears in the database.
                     domainNameInDatabase = "*." + hostName;
@@ -3595,13 +3619,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             nightMode = sharedPreferences.getBoolean("night_mode", false);
             boolean displayWebpageImages = sharedPreferences.getBoolean("display_webpage_images", true);
 
-            if (domainSettingsApplied) {  // The url has custom domain settings.
+            if (currentWebView.getDomainSettingsApplied()) {  // The url has custom domain settings.
                 // Get a cursor for the current host and move it to the first position.
                 Cursor currentHostDomainSettingsCursor = domainsDatabaseHelper.getCursorForDomainName(domainNameInDatabase);
                 currentHostDomainSettingsCursor.moveToFirst();
 
                 // Get the settings from the cursor.
-                domainSettingsDatabaseId = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper._ID)));
+                currentWebView.setDomainSettingsDatabaseId(currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper._ID)));
                 javaScriptEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)) == 1);
                 firstPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES)) == 1);
                 thirdPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES)) == 1);
@@ -3775,7 +3799,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         break;
                 }
 
-                // Set a green background on `urlTextBox` to indicate that custom domain settings are being used.  We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
+                // Set a green background on URL edit text to indicate that custom domain settings are being used. The deprecated `.getDrawable()` must be used until the minimum API >= 21.
                 if (darkTheme) {
                     urlEditText.setBackground(getResources().getDrawable(R.drawable.url_bar_background_dark_blue));
                 } else {
@@ -3813,7 +3837,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Reset the pinned variables.
-                domainSettingsDatabaseId = -1;
+                currentWebView.setDomainSettingsDatabaseId(-1);
                 pinnedSslCertificate = false;
                 pinnedSslIssuedToCName = "";
                 pinnedSslIssuedToOName = "";
@@ -3869,7 +3893,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Set the loading of webpage images.
                 currentWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImages);
 
-                // Set a transparent background on `urlTextBox`.  The deprecated `.getDrawable()` must be used until the minimum API >= 21.
+                // Set a transparent background on URL edit text.  The deprecated `.getDrawable()` must be used until the minimum API >= 21.
                 urlEditText.setBackgroundDrawable(getResources().getDrawable(R.color.transparent));
             }
 
@@ -4058,18 +4082,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void highlightUrlText() {
+        // Get a handle for the URL edit text.
+        EditText urlEditText = findViewById(R.id.url_edittext);
+
         // Only highlight the URL text if the box is not currently selected.
-        if (!urlTextBox.hasFocus()) {
+        if (!urlEditText.hasFocus()) {
             // Get the URL string.
-            String urlString = urlTextBox.getText().toString();
+            String urlString = urlEditText.getText().toString();
 
             // Highlight the URL according to the protocol.
             if (urlString.startsWith("file://")) {  // This is a file URL.
                 // De-emphasize only the protocol.
-                urlTextBox.getText().setSpan(initialGrayColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                urlEditText.getText().setSpan(initialGrayColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             } else if (urlString.startsWith("content://")) {
                 // De-emphasize only the protocol.
-                urlTextBox.getText().setSpan(initialGrayColorSpan, 0, 10, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                urlEditText.getText().setSpan(initialGrayColorSpan, 0, 10, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             } else {  // This is a web URL.
                 // Get the index of the `/` immediately after the domain name.
                 int endOfDomainName = urlString.indexOf("/", (urlString.indexOf("//") + 2));
@@ -4094,25 +4121,25 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Markup the beginning of the URL.
                 if (urlString.startsWith("http://")) {  // Highlight the protocol of connections that are not encrypted.
-                    urlTextBox.getText().setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    urlEditText.getText().setSpan(redColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
                     // De-emphasize subdomains.
                     if (penultimateDotIndex > 0) {  // There is more than one subdomain in the domain name.
-                        urlTextBox.getText().setSpan(initialGrayColorSpan, 7, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                        urlEditText.getText().setSpan(initialGrayColorSpan, 7, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                     }
                 } else if (urlString.startsWith("https://")) {  // De-emphasize the protocol of connections that are encrypted.
                     if (penultimateDotIndex > 0) {  // There is more than one subdomain in the domain name.
                         // De-emphasize the protocol and the additional subdomains.
-                        urlTextBox.getText().setSpan(initialGrayColorSpan, 0, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                        urlEditText.getText().setSpan(initialGrayColorSpan, 0, penultimateDotIndex + 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                     } else {  // There is only one subdomain in the domain name.
                         // De-emphasize only the protocol.
-                        urlTextBox.getText().setSpan(initialGrayColorSpan, 0, 8, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                        urlEditText.getText().setSpan(initialGrayColorSpan, 0, 8, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                     }
                 }
 
                 // De-emphasize the text after the domain name.
                 if (endOfDomainName > 0) {
-                    urlTextBox.getText().setSpan(finalGrayColorSpan, endOfDomainName, urlString.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    urlEditText.getText().setSpan(finalGrayColorSpan, endOfDomainName, urlString.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 }
             }
         }
@@ -4197,7 +4224,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         startActivity(openWithBrowserIntent);
     }
 
-    private static void checkPinnedMismatch() {
+    public static void checkPinnedMismatch(int domainSettingsDatabaseId) {
         if ((pinnedSslCertificate || pinnedIpAddresses) && !ignorePinnedDomainInformation) {
             // Initialize the current SSL certificate variables.
             String currentWebsiteIssuedToCName = "";
@@ -4253,100 +4280,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     !currentWebsiteSslEndDateString.equals(pinnedSslEndDateString)))) {
 
                 // Get a handle for the pinned mismatch alert dialog.
-                DialogFragment pinnedMismatchDialogFragment = PinnedMismatchDialog.displayDialog(pinnedSslCertificate, pinnedIpAddresses);
+                DialogFragment pinnedMismatchDialogFragment = PinnedMismatchDialog.displayDialog(domainSettingsDatabaseId, pinnedSslCertificate, pinnedIpAddresses);
 
                 // Show the pinned mismatch alert dialog.
                 pinnedMismatchDialogFragment.show(fragmentManager, "Pinned Mismatch");
             }
-        }
-    }
-
-    // This must run asynchronously because it involves a network request.  `String` declares the parameters.  `Void` does not declare progress units.  `String` contains the results.
-    private static class GetHostIpAddresses extends AsyncTask<String, Void, String> {
-        // The weak references are used to determine if the activity have disappeared while the AsyncTask is running.
-        private final WeakReference<Activity> activityWeakReference;
-
-        GetHostIpAddresses(Activity activity) {
-            // Populate the weak references.
-            activityWeakReference = new WeakReference<>(activity);
-        }
-
-        // `onPreExecute()` operates on the UI thread.
-        @Override
-        protected void onPreExecute() {
-            // Get a handle for the activity.
-            Activity activity = activityWeakReference.get();
-
-            // Abort if the activity is gone.
-            if ((activity == null) || activity.isFinishing()) {
-                return;
-            }
-
-            // Set the getting IP addresses tracker.
-            gettingIpAddresses = true;
-        }
-
-
-        @Override
-        protected String doInBackground(String... domainName) {
-            // Get a handle for the activity.
-            Activity activity = activityWeakReference.get();
-
-            // Abort if the activity is gone.
-            if ((activity == null) || activity.isFinishing()) {
-                // Return an empty spannable string builder.
-                return "";
-            }
-
-            // Initialize an IP address string builder.
-            StringBuilder ipAddresses = new StringBuilder();
-
-            // Get an array with the IP addresses for the host.
-            try {
-                // Get an array with all the IP addresses for the domain.
-                InetAddress[] inetAddressesArray = InetAddress.getAllByName(domainName[0]);
-
-                // Add each IP address to the string builder.
-                for (InetAddress inetAddress : inetAddressesArray) {
-                    if (ipAddresses.length() == 0) {  // This is the first IP address.
-                        // Add the IP address to the string builder.
-                        ipAddresses.append(inetAddress.getHostAddress());
-                    } else {  // This is not the first IP address.
-                        // Add a line break to the string builder first.
-                        ipAddresses.append("\n");
-
-                        // Add the IP address to the string builder.
-                        ipAddresses.append(inetAddress.getHostAddress());
-                    }
-                }
-            } catch (UnknownHostException exception) {
-                // Do nothing.
-            }
-
-            // Return the string.
-            return ipAddresses.toString();
-        }
-
-        // `onPostExecute()` operates on the UI thread.
-        @Override
-        protected void onPostExecute(String ipAddresses) {
-            // Get a handle for the activity.
-            Activity activity = activityWeakReference.get();
-
-            // Abort if the activity is gone.
-            if ((activity == null) || activity.isFinishing()) {
-                return;
-            }
-
-            // Store the IP addresses.
-            currentHostIpAddresses = ipAddresses;
-
-            if (!urlIsLoading) {
-                checkPinnedMismatch();
-            }
-
-            // Reset the getting IP addresses tracker.
-            gettingIpAddresses = false;
         }
     }
 
@@ -4453,6 +4391,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         final DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
         final RelativeLayout mainContentRelativeLayout = findViewById(R.id.main_content_relativelayout);
         final ActionBar actionBar = getSupportActionBar();
+        EditText urlEditText = findViewById(R.id.url_edittext);
         final TabLayout tabLayout = findViewById(R.id.tablayout);
         final SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
 
@@ -5166,7 +5105,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     formattedUrlString = url;
 
                     // Display the formatted URL text.
-                    urlTextBox.setText(formattedUrlString);
+                    urlEditText.setText(formattedUrlString);
 
                     // Apply text highlighting to `urlTextBox`.
                     highlightUrlText();
@@ -5175,7 +5114,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     Uri currentUri = Uri.parse(formattedUrlString);
 
                     // Get the IP addresses for the host.
-                    new GetHostIpAddresses(activity).execute(currentUri.getHost());
+                    new GetHostIpAddresses(activity, currentWebView.getDomainSettingsDatabaseId()).execute(currentUri.getHost());
 
                     // Apply any custom domain settings if the URL was loaded by navigating history.
                     if (navigatingHistory) {
@@ -5266,13 +5205,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Set `formattedUrlString` to `""`.
                         formattedUrlString = "";
 
-                        urlTextBox.setText(formattedUrlString);
+                        urlEditText.setText(formattedUrlString);
 
                         // Request focus for `urlTextBox`.
-                        urlTextBox.requestFocus();
+                        urlEditText.requestFocus();
 
                         // Display the keyboard.
-                        inputMethodManager.showSoftInput(urlTextBox, 0);
+                        inputMethodManager.showSoftInput(urlEditText, 0);
 
                         // Apply the domain settings.  This clears any settings from the previous domain.
                         applyDomainSettings(formattedUrlString, true, false);
@@ -5281,9 +5220,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         formattedUrlString = nestedScrollWebView.getUrl();
 
                         // Only update the URL text box if the user is not typing in it.
-                        if (!urlTextBox.hasFocus()) {
+                        if (!urlEditText.hasFocus()) {
                             // Display the formatted URL text.
-                            urlTextBox.setText(formattedUrlString);
+                            urlEditText.setText(formattedUrlString);
 
                             // Apply text highlighting to `urlTextBox`.
                             highlightUrlText();
@@ -5295,7 +5234,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Check the current website information against any pinned domain information if the current IP addresses have been loaded.
                     if (!gettingIpAddresses) {
-                        checkPinnedMismatch();
+                        checkPinnedMismatch(currentWebView.getDomainSettingsDatabaseId());
                     }
                 }
 

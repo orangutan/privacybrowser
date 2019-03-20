@@ -36,6 +36,10 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     // The previous Y position needs to be tracked between motion events.
     private int previousYPosition;
 
+    // Track if domain settings are applied to this nested scroll WebView and, if so, the database ID.
+    private boolean domainSettingsApplied;
+    private int domainSettingsDatabaseId;
+
     // Basic constructor.
     public NestedScrollWebView(Context context) {
         // Roll up to the next constructor.
@@ -58,6 +62,26 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
 
         // Enable nested scrolling by default.
         nestedScrollingChildHelper.setNestedScrollingEnabled(true);
+    }
+
+    public void setDomainSettingsApplied(boolean applied) {
+        // Store the domain settings applied status.
+        domainSettingsApplied = applied;
+    }
+
+    public boolean getDomainSettingsApplied() {
+        // Return the domain settings applied status.
+        return domainSettingsApplied;
+    }
+
+    public void setDomainSettingsDatabaseId(int databaseId) {
+        // Store the domain settings database ID.
+        domainSettingsDatabaseId = databaseId;
+    }
+
+    public int getDomainSettingsDatabaseId() {
+        // Return the domain settings database ID.
+        return domainSettingsDatabaseId;
     }
 
     @Override

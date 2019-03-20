@@ -83,13 +83,14 @@ public class PinnedMismatchDialog extends DialogFragment {
         pinnedMismatchListener = (PinnedMismatchListener) context;
     }
 
-    public static PinnedMismatchDialog displayDialog(boolean pinnedSslCertificate, boolean pinnedIpAddresses) {
+    public static PinnedMismatchDialog displayDialog(int domainSettingsDatabaseId, boolean pinnedSslCertificate, boolean pinnedIpAddresses) {
         // Create an arguments bundle.
         Bundle argumentsBundle = new Bundle();
 
         // Store the variables in the bundle.
-        argumentsBundle.putBoolean("Pinned_SSL_Certificate", pinnedSslCertificate);
-        argumentsBundle.putBoolean("Pinned_IP_Addresses", pinnedIpAddresses);
+        argumentsBundle.putInt("domain_settings_database_id", domainSettingsDatabaseId);
+        argumentsBundle.putBoolean("pinned_sss_certificate", pinnedSslCertificate);
+        argumentsBundle.putBoolean("pinned_ip_addresses", pinnedIpAddresses);
 
         // Add the arguments bundle to this instance of `PinnedMismatchDialog`.
         PinnedMismatchDialog thisPinnedMismatchDialog = new PinnedMismatchDialog();
@@ -124,8 +125,9 @@ public class PinnedMismatchDialog extends DialogFragment {
         assert getArguments() != null;
 
         // Get the variables from the bundle.
-        pinnedSslCertificate = getArguments().getBoolean("Pinned_SSL_Certificate");
-        pinnedIpAddresses = getArguments().getBoolean("Pinned_IP_Addresses");
+        int domainSettingsDatabaseId = getArguments().getInt("domain_settings_database_id");
+        pinnedSslCertificate = getArguments().getBoolean("pinned_ssl_certificate");
+        pinnedIpAddresses = getArguments().getBoolean("pinned_ip_addresses");
 
         // Set the favorite icon as the dialog icon if it exists.
         if (MainWebViewActivity.favoriteIconBitmap.equals(MainWebViewActivity.favoriteIconDefaultBitmap)) {  // There is no favorite icon.
@@ -164,7 +166,7 @@ public class PinnedMismatchDialog extends DialogFragment {
             // Update the SSL certificate if it is pinned.
             if (pinnedSslCertificate) {
                 // Update the pinned SSL certificate in the domain database.
-                domainsDatabaseHelper.updatePinnedSslCertificate(MainWebViewActivity.domainSettingsDatabaseId, currentSslIssuedToCName, currentSslIssuedToOName, currentSslIssuedToUName,
+                domainsDatabaseHelper.updatePinnedSslCertificate(domainSettingsDatabaseId, currentSslIssuedToCName, currentSslIssuedToOName, currentSslIssuedToUName,
                         currentSslIssuedByCName, currentSslIssuedByOName, currentSslIssuedByUName, currentSslStartDateLong, currentSslEndDateLong);
 
                 // Update the pinned SSL certificate class variables to match the information that is now in the database.
@@ -181,7 +183,7 @@ public class PinnedMismatchDialog extends DialogFragment {
             // Update the IP addresses if they are pinned.
             if (pinnedIpAddresses) {
                 // Update the pinned IP addresses in the domain database.
-                domainsDatabaseHelper.updatePinnedIpAddresses(MainWebViewActivity.domainSettingsDatabaseId, MainWebViewActivity.currentHostIpAddresses);
+                domainsDatabaseHelper.updatePinnedIpAddresses(domainSettingsDatabaseId, MainWebViewActivity.currentHostIpAddresses);
 
                 // Update the pinned IP addresses class variable to match the information that is now in the database.
                 MainWebViewActivity.pinnedHostIpAddresses = MainWebViewActivity.currentHostIpAddresses;
