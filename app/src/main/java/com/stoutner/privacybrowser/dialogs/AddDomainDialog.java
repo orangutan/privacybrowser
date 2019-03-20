@@ -52,7 +52,7 @@ public class AddDomainDialog extends DialogFragment {
     // `addDomainListener` is used in `onAttach()` and `onCreateDialog()`.
     private AddDomainListener addDomainListener;
 
-
+    @Override
     public void onAttach(Context context) {
         // Run the default commands.
         super.onAttach(context);

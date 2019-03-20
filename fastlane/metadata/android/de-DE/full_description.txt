@@ -1,0 +1,13 @@
+Die meisten Browser plaudern still und heimlich jede Menge Informationen an Websiten aus, welche genutzt werden können, um deren Benutzer zu verfolgen und deren Privatsphäre zu kompromittieren. Webseiten und Werbenetzwerke nutzen Technologien wie JavaScript, Cookies, DOM-Speicher, User-Agents und andere, um jeden einzelnen Browser-Benutzer eindeutig zu identifizieren und ihn zwischen seinen Besuchen und sogar quer durch das Internet zu verfolgen.
+
+Privacy Browser wird entwickelt, um die Menge an Informationen, die an Websites geliefert wird, zu minimieren. In der Voreinstellung sind Funktionen, die Ihre Privatsphäre beeinträchtigen können, grundsätzlich deaktiviert. Wenn Webseiten jedoch spezielle Funktionen benötigen, um zu funktionieren, können diese beim Besuch der betreffenden Seite bewusst einmalig aktiviert werden. Darüber hinaus können spezielle Einstellungen für bestimmte Domains auch abgespeichert werden, damit sie bei jedem Besuch der betreffenden Seite automatisch aktiviert und danach wieder deaktiviert werden.
+
+Privacy Browser nutzt aktuell Android's eingebaute WebView-Komponente, um Webseiten anzuzeigen. Er funktioniert daher am Besten, wenn die letzte Version von WebView installiert ist (siehe https://www.stoutner.com/privacy-browser/common-settings/webview/). Ab Version 4.x wird Privacy Browser eine abgeleitete Version von Android's WebView - Privacy WebView genannt - verwenden, um erweiterte Privatsphäre-Funktionen zu bieten.
+
+Achtung: Android KitKat (Version 4.4.x, API 19) wurde mit einer alten Version von OpenSSL ausgeliefert, welche für Man-In-The-Middle-Angriffe (MITM) anfällig ist, wenn auf Webseiten mit veralteten Protokollen und Cipher-Suites gesurft wird. Weitere Informationen dazu sind auf https://www.stoutner.com/kitkat-security-problems/ verfügbar.
+
+Features:
+• Integrierter EasyList-Werbeblocker
+• TOR-Proxy-Unterstützung mittels Orbot
+• Verankerung von SSL-Zertifikaten (Pinning)
+• Import/Export von Einstellungen und Lesezeichen

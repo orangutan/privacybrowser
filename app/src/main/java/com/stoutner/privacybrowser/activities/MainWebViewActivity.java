@@ -103,13 +103,17 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import com.google.android.material.tabs.TabLayout;
 import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.dialogs.AdConsentDialog;
@@ -124,6 +128,7 @@ import com.stoutner.privacybrowser.dialogs.HttpAuthenticationDialog;
 import com.stoutner.privacybrowser.dialogs.PinnedMismatchDialog;
 import com.stoutner.privacybrowser.dialogs.UrlHistoryDialog;
 import com.stoutner.privacybrowser.dialogs.ViewSslCertificateDialog;
+import com.stoutner.privacybrowser.fragments.WebViewTabFragment;
 import com.stoutner.privacybrowser.helpers.AdHelper;
 import com.stoutner.privacybrowser.helpers.BlockListHelper;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
@@ -149,6 +154,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -156,8 +162,8 @@ import java.util.Set;
 // AppCompatActivity from android.support.v7.app.AppCompatActivity must be used to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
         DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, DownloadLocationPermissionDialog.DownloadLocationPermissionDialogListener, EditBookmarkDialog.EditBookmarkListener,
-        EditBookmarkFolderDialog.EditBookmarkFolderListener, HttpAuthenticationDialog.HttpAuthenticationListener, NavigationView.OnNavigationItemSelectedListener, PinnedMismatchDialog.PinnedMismatchListener,
-        SslCertificateErrorDialog.SslCertificateErrorListener, UrlHistoryDialog.UrlHistoryListener {
+        EditBookmarkFolderDialog.EditBookmarkFolderListener, HttpAuthenticationDialog.HttpAuthenticationListener, NavigationView.OnNavigationItemSelectedListener, WebViewTabFragment.NewTabListener,
+        PinnedMismatchDialog.PinnedMismatchListener, SslCertificateErrorDialog.SslCertificateErrorListener, UrlHistoryDialog.UrlHistoryListener {
 
     // `darkTheme` is public static so it can be accessed from everywhere.
     public static boolean darkTheme;
@@ -309,21 +315,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private static FragmentManager fragmentManager;
 
 
+    // A handle for the activity is set in `onCreate()` and accessed in `WebViewPagerAdapter`.
+    private Activity activity;
+
     // `navigatingHistory` is used in `onCreate()`, `onNavigationItemSelected()`, `onSslMismatchBack()`, and `applyDomainSettings()`.
     private boolean navigatingHistory;
 
-    // `mainWebView` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`,
+    // The current WebView is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`,
     // `findNextOnPage()`, `closeFindOnPage()`, `loadUrlFromTextBox()`, `onSslMismatchBack()`, and `applyProxyThroughOrbot()`.
-    private NestedScrollWebView mainWebView;
+    private NestedScrollWebView currentWebView;
 
     // `fullScreenVideoFrameLayout` is used in `onCreate()` and `onConfigurationChanged()`.
     private FrameLayout fullScreenVideoFrameLayout;
-
-    // `urlAppBarRelativeLayout` is used in `onCreate()` and `applyDomainSettings()`.
-    private RelativeLayout urlAppBarRelativeLayout;
-
-    // `favoriteIconImageView` is used in `onCreate()` and `applyDomainSettings()`
-    private ImageView favoriteIconImageView;
 
     // `cookieManager` is used in `onCreate()`, `onOptionsItemSelected()`, and `onNavigationItemSelected()`, `loadUrlFromTextBox()`, `onDownloadImage()`, `onDownloadFile()`, and `onRestart()`.
     private CookieManager cookieManager;
@@ -360,6 +363,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // `refreshMenuItem` is used in `onCreate()` and `onCreateOptionsMenu()`.
     private MenuItem refreshMenuItem;
+
+    // The WebView pager adapter is used in `onCreate()`, `onResume()`, and `addTab()`.
+    private WebViewPagerAdapter webViewPagerAdapter;
+
+    // The navigation requests menu item is used in `onCreate()` and accessed from `WebViewPagerAdapter`.
+    private MenuItem navigationRequestsMenuItem;
+
+    // The blocklist helper is used in `onCreate()` and `WebViewPagerAdapter`.
+    BlockListHelper blockListHelper;
+
+    // The blocklists are populated in `onCreate()` and accessed from `WebViewPagerAdapter`.
+    private ArrayList<List<String[]>> easyList;
+    private ArrayList<List<String[]>> easyPrivacy;
+    private ArrayList<List<String[]>> fanboysAnnoyanceList;
+    private ArrayList<List<String[]>> fanboysSocialList;
+    private ArrayList<List<String[]>> ultraPrivacy;
 
     // The blocklist menu items are used in `onCreate()`, `onCreateOptionsMenu()`, and `onPrepareOptionsMenu()`.
     private MenuItem blocklistsMenuItem;
@@ -487,7 +506,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `fileChooserCallback` is used in `onCreate()` and `onActivityResult()`.
     private ValueCallback<Uri[]> fileChooserCallback;
 
-    // The download strings are used in `onCreate()` and `onRequestPermissionResult()`.
+    // The download strings are used in `onCreate()`, `onRequestPermissionResult()` and `initializeWebView()`.
     private String downloadUrl;
     private String downloadContentDisposition;
     private long downloadContentLength;
@@ -499,7 +518,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private ArrayAdapter<CharSequence> userAgentNamesArray;
     private String[] userAgentDataArray;
 
-    // The request codes are used in `onCreate()`, `onCreateContextMenu()`, `onCloseDownloadLocationPermissionDialog()`, and `onRequestPermissionResult()`.
+    // The request codes are used in `onCreate()`, `onCreateContextMenu()`, `onCloseDownloadLocationPermissionDialog()`, `onRequestPermissionResult()`, and `initializeWebView()`.
     private final int DOWNLOAD_FILE_REQUEST_CODE = 1;
     private final int DOWNLOAD_IMAGE_REQUEST_CODE = 2;
 
@@ -536,6 +555,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         setContentView(R.layout.main_framelayout);
 
         // Get handles for views, resources, and managers.
+        activity = this;
         Resources resources = getResources();
         fragmentManager = getSupportFragmentManager();
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -620,12 +640,32 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Register `orbotStatusBroadcastReceiver` on `this` context.
         this.registerReceiver(orbotStatusBroadcastReceiver, new IntentFilter("org.torproject.android.intent.action.STATUS"));
 
+        // Instantiate the block list helper.
+        blockListHelper = new BlockListHelper();
+
+        // Initialize the list of resource requests.
+        resourceRequests = new ArrayList<>();
+
+        // Parse the block lists.
+        easyList = blockListHelper.parseBlockList(getAssets(), "blocklists/easylist.txt");
+        easyPrivacy = blockListHelper.parseBlockList(getAssets(), "blocklists/easyprivacy.txt");
+        fanboysAnnoyanceList = blockListHelper.parseBlockList(getAssets(), "blocklists/fanboy-annoyance.txt");
+        fanboysSocialList = blockListHelper.parseBlockList(getAssets(), "blocklists/fanboy-social.txt");
+        ultraPrivacy = blockListHelper.parseBlockList(getAssets(), "blocklists/ultraprivacy.txt");
+
+        // Store the list versions.
+        easyListVersion = easyList.get(0).get(0)[0];
+        easyPrivacyVersion = easyPrivacy.get(0).get(0)[0];
+        fanboysAnnoyanceVersion = fanboysAnnoyanceList.get(0).get(0)[0];
+        fanboysSocialVersion = fanboysSocialList.get(0).get(0)[0];
+        ultraPrivacyVersion = ultraPrivacy.get(0).get(0)[0];
+
         // Get handles for views that need to be modified.
-        FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
         DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
-        RelativeLayout mainContentRelativeLayout = findViewById(R.id.main_content_relativelayout);
+        final NavigationView navigationView = findViewById(R.id.navigationview);
+        TabLayout tabLayout = findViewById(R.id.tablayout);
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
-        mainWebView = findViewById(R.id.main_webview);
+        ViewPager webViewPager = findViewById(R.id.webviewpager);
         bookmarksListView = findViewById(R.id.bookmarks_drawer_listview);
         bookmarksTitleTextView = findViewById(R.id.bookmarks_title_textview);
         FloatingActionButton launchBookmarksActivityFab = findViewById(R.id.launch_bookmarks_activity_fab);
@@ -633,8 +673,87 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         FloatingActionButton createBookmarkFab = findViewById(R.id.create_bookmark_fab);
         findOnPageEditText = findViewById(R.id.find_on_page_edittext);
         fullScreenVideoFrameLayout = findViewById(R.id.full_screen_video_framelayout);
-        urlAppBarRelativeLayout = findViewById(R.id.url_app_bar_relativelayout);
-        favoriteIconImageView = findViewById(R.id.favorite_icon);
+
+        // Listen for touches on the navigation menu.
+        navigationView.setNavigationItemSelectedListener(this);
+
+        // Get handles for the navigation menu and the back and forward menu items.  The menu is zero-based.
+        final Menu navigationMenu = navigationView.getMenu();
+        final MenuItem navigationCloseTabMenuItem = navigationMenu.getItem(0);
+        final MenuItem navigationBackMenuItem = navigationMenu.getItem(3);
+        final MenuItem navigationForwardMenuItem = navigationMenu.getItem(4);
+        final MenuItem navigationHistoryMenuItem = navigationMenu.getItem(5);
+        navigationRequestsMenuItem = navigationMenu.getItem(6);
+
+        // Initialize the web view pager adapter.
+        webViewPagerAdapter = new WebViewPagerAdapter(fragmentManager);
+
+        // Set the pager adapter on the web view pager.
+        webViewPager.setAdapter(webViewPagerAdapter);
+
+        // Store up to 100 tabs in memory.
+        webViewPager.setOffscreenPageLimit(100);
+
+        // Update the web view pager every time a tab is modified.
+        webViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                // Do nothing.
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                // TODO.  Consider using an array of the WebViews.
+                // Get the current WebView fragment.  Instantiate item returns the current item if it already exists.
+                Fragment webViewFragment = (Fragment) webViewPagerAdapter.instantiateItem(webViewPager, position);
+
+                // Store the current WebView.
+                currentWebView = (NestedScrollWebView) webViewFragment.getView();
+
+                // Select the corresponding tab if it does not match the currently selected page.  This will happen if the page was scrolled via swiping in the view pager.
+                if (tabLayout.getSelectedTabPosition() != position) {
+                    // Get a handle for the corresponding tab.
+                    TabLayout.Tab correspondingTab = tabLayout.getTabAt(position);
+
+                    // Assert that the corresponding tab is not null.
+                    assert correspondingTab != null;
+
+                    // Select the corresponding tab.
+                    correspondingTab.select();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                // Do nothing.
+            }
+        });
+
+        // Display the View SSL Certificate dialog when the currently selected tab is reselected.
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                // Select the same page in the view pager.
+                webViewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                // Do nothing.
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                // Instantiate the View SSL Certificate dialog.
+                DialogFragment viewSslCertificateDialogFragment = new ViewSslCertificateDialog();
+
+                // Display the View SSL Certificate dialog.
+                viewSslCertificateDialogFragment.show(getSupportFragmentManager(), getString(R.string.view_ssl_certificate));
+            }
+        });
+
+        // Add the first tab.
+        webViewPagerAdapter.addPage();
 
         // Set the bookmarks drawer resources according to the theme.  This can't be done in the layout due to compatibility issues with the `DrawerLayout` support widget.
         if (darkTheme) {
@@ -675,95 +794,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             createBookmarkDialog.show(fragmentManager, resources.getString(R.string.create_bookmark));
         });
 
-        // Create a double-tap listener to toggle full-screen mode.
-        final GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
-            // Override `onDoubleTap()`.  All other events are handled using the default settings.
-            @Override
-            public boolean onDoubleTap(MotionEvent event) {
-                if (fullScreenBrowsingModeEnabled) {  // Only process the double-tap if full screen browsing mode is enabled.
-                    // Toggle the full screen browsing mode tracker.
-                    inFullScreenBrowsingMode = !inFullScreenBrowsingMode;
-
-                    // Toggle the full screen browsing mode.
-                    if (inFullScreenBrowsingMode) {  // Switch to full screen mode.
-                        // Hide the app bar if specified.
-                        if (hideAppBar) {
-                            actionBar.hide();
-                        }
-
-                        // Hide the banner ad in the free flavor.
-                        if (BuildConfig.FLAVOR.contentEquals("free")) {
-                            AdHelper.hideAd(findViewById(R.id.adview));
-                        }
-
-                        // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
-                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-                        /* Hide the system bars.
-                         * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
-                         * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
-                         * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
-                         * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
-                         */
-                        rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-                    } else {  // Switch to normal viewing mode.
-                        // Show the app bar.
-                        actionBar.show();
-
-                        // Show the banner ad in the free flavor.
-                        if (BuildConfig.FLAVOR.contentEquals("free")) {
-                            // Reload the ad.
-                            AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_unit_id));
-                        }
-
-                        // Remove the `SYSTEM_UI` flags from the root frame layout.
-                        rootFrameLayout.setSystemUiVisibility(0);
-
-                        // Add the translucent status flag.
-                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                    }
-
-                    // Consume the double-tap.
-                    return true;
-                } else { // Do not consume the double-tap because full screen browsing mode is disabled.
-                    return false;
-                }
-            }
-        });
-
-        // Pass all touch events on `mainWebView` through `gestureDetector` to check for double-taps.
-        mainWebView.setOnTouchListener((View view, MotionEvent event) -> {
-            // Call `performClick()` on the view, which is required for accessibility.
-            view.performClick();
-
-            // Send the `event` to `gestureDetector`.
-            return gestureDetector.onTouchEvent(event);
-        });
-
-        // Update `findOnPageCountTextView`.
-        mainWebView.setFindListener(new WebView.FindListener() {
-            // Get a handle for `findOnPageCountTextView`.
-            final TextView findOnPageCountTextView = findViewById(R.id.find_on_page_count_textview);
-
-            @Override
-            public void onFindResultReceived(int activeMatchOrdinal, int numberOfMatches, boolean isDoneCounting) {
-                if ((isDoneCounting) && (numberOfMatches == 0)) {  // There are no matches.
-                    // Set `findOnPageCountTextView` to `0/0`.
-                    findOnPageCountTextView.setText(R.string.zero_of_zero);
-                } else if (isDoneCounting) {  // There are matches.
-                    // `activeMatchOrdinal` is zero-based.
-                    int activeMatch = activeMatchOrdinal + 1;
-
-                    // Build the match string.
-                    String matchString = activeMatch + "/" + numberOfMatches;
-
-                    // Set `findOnPageCountTextView`.
-                    findOnPageCountTextView.setText(matchString);
-                }
-            }
-        });
-
         // Search for the string on the page whenever a character changes in the `findOnPageEditText`.
         findOnPageEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -779,7 +809,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @Override
             public void afterTextChanged(Editable s) {
                 // Search for the text in `mainWebView`.
-                mainWebView.findAllAsync(findOnPageEditText.getText().toString());
+                currentWebView.findAllAsync(findOnPageEditText.getText().toString());
             }
         });
 
@@ -787,7 +817,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         findOnPageEditText.setOnKeyListener((v, keyCode, event) -> {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {  // The `enter` key was pressed.
                 // Hide the soft keyboard.  `0` indicates no additional flags.
-                inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
+                inputMethodManager.hideSoftInputFromWindow(currentWebView.getWindowToken(), 0);
 
                 // Consume the event.
                 return true;
@@ -798,7 +828,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         });
 
         // Implement swipe to refresh.
-        swipeRefreshLayout.setOnRefreshListener(() -> mainWebView.reload());
+        swipeRefreshLayout.setOnRefreshListener(() -> currentWebView.reload());
 
         // The swipe to refresh circle doesn't always hide itself completely unless it is moved up 10 pixels.
         swipeRefreshLayout.setProgressViewOffset(false, swipeRefreshLayout.getProgressViewStartOffset() - 10, swipeRefreshLayout.getProgressViewEndOffset());
@@ -814,17 +844,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // `DrawerTitle` identifies the `DrawerLayouts` in accessibility mode.
         drawerLayout.setDrawerTitle(GravityCompat.START, getString(R.string.navigation_drawer));
         drawerLayout.setDrawerTitle(GravityCompat.END, getString(R.string.bookmarks));
-
-        // Listen for touches on the navigation menu.
-        final NavigationView navigationView = findViewById(R.id.navigationview);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        // Get handles for `navigationMenu` and the back and forward menu items.  The menu is zero-based, so items 1, 2, and 3 are the second, third, and fourth entries in the menu.
-        final Menu navigationMenu = navigationView.getMenu();
-        final MenuItem navigationBackMenuItem = navigationMenu.getItem(1);
-        final MenuItem navigationForwardMenuItem = navigationMenu.getItem(2);
-        final MenuItem navigationHistoryMenuItem = navigationMenu.getItem(3);
-        final MenuItem navigationRequestsMenuItem = navigationMenu.getItem(4);
 
         // Initialize the bookmarks database helper.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
         bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this, null, null, 0);
@@ -929,275 +948,25 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         bookmarksHeaderTextView.setPadding(drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingTop, drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingBottom);
                     }
 
-                    // Update the back, forward, history, and requests menu items.
-                    navigationBackMenuItem.setEnabled(mainWebView.canGoBack());
-                    navigationForwardMenuItem.setEnabled(mainWebView.canGoForward());
-                    navigationHistoryMenuItem.setEnabled((mainWebView.canGoBack() || mainWebView.canGoForward()));
+                    // Update the navigation menu items.
+                    navigationCloseTabMenuItem.setEnabled(tabLayout.getTabCount() > 1);
+                    navigationBackMenuItem.setEnabled(currentWebView.canGoBack());
+                    navigationForwardMenuItem.setEnabled(currentWebView.canGoForward());
+                    navigationHistoryMenuItem.setEnabled((currentWebView.canGoBack() || currentWebView.canGoForward()));
                     navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
 
                     // Hide the keyboard (if displayed).
-                    inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
+                    inputMethodManager.hideSoftInputFromWindow(currentWebView.getWindowToken(), 0);
 
                     // Clear the focus from from the URL text box and the WebView.  This removes any text selection markers and context menus, which otherwise draw above the open drawers.
                     urlTextBox.clearFocus();
-                    mainWebView.clearFocus();
+                    currentWebView.clearFocus();
                 }
             }
         });
 
         // Create the hamburger icon at the start of the AppBar.
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_navigation_drawer, R.string.close_navigation_drawer);
-
-        // Get a handle for the progress bar.
-        final ProgressBar progressBar = findViewById(R.id.progress_bar);
-
-        mainWebView.setWebChromeClient(new WebChromeClient() {
-            // Update the progress bar when a page is loading.
-            @Override
-            public void onProgressChanged(WebView view, int progress) {
-                // Inject the night mode CSS if night mode is enabled.
-                if (nightMode) {
-                    // `background-color: #212121` sets the background to be dark gray.  `color: #BDBDBD` sets the text color to be light gray.  `box-shadow: none` removes a lower underline on links
-                    // used by WordPress.  `text-decoration: none` removes all text underlines.  `text-shadow: none` removes text shadows, which usually have a hard coded color.
-                    // `border: none` removes all borders, which can also be used to underline text.  `a {color: #1565C0}` sets links to be a dark blue.
-                    // `::selection {background: #0D47A1}' sets the text selection highlight color to be a dark blue. `!important` takes precedent over any existing sub-settings.
-                    mainWebView.evaluateJavascript("(function() {var parent = document.getElementsByTagName('head').item(0); var style = document.createElement('style'); style.type = 'text/css'; " +
-                            "style.innerHTML = '* {background-color: #212121 !important; color: #BDBDBD !important; box-shadow: none !important; text-decoration: none !important;" +
-                            "text-shadow: none !important; border: none !important;} a {color: #1565C0 !important;} ::selection {background: #0D47A1 !important;}'; parent.appendChild(style)})()", value -> {
-                                // Initialize a handler to display `mainWebView`.
-                                Handler displayWebViewHandler = new Handler();
-
-                                // Setup a runnable to display `mainWebView` after a delay to allow the CSS to be applied.
-                                Runnable displayWebViewRunnable = () -> {
-                                    // Only display `mainWebView` if the progress bar is gone.  This prevents the display of the `WebView` while it is still loading.
-                                    if (progressBar.getVisibility() == View.GONE) {
-                                        mainWebView.setVisibility(View.VISIBLE);
-                                    }
-                                };
-
-                                // Displaying of `mainWebView` after 500 milliseconds.
-                                displayWebViewHandler.postDelayed(displayWebViewRunnable, 500);
-                            });
-                }
-
-                // Update the progress bar.
-                progressBar.setProgress(progress);
-
-                // Set the visibility of the progress bar.
-                if (progress < 100) {
-                    // Show the progress bar.
-                    progressBar.setVisibility(View.VISIBLE);
-                } else {
-                    // Hide the progress bar.
-                    progressBar.setVisibility(View.GONE);
-
-                    // Display `mainWebView` if night mode is disabled.
-                    // Because of a race condition between `applyDomainSettings` and `onPageStarted`, when night mode is set by domain settings the `WebView` may be hidden even if night mode is not
-                    // currently enabled.
-                    if (!nightMode) {
-                        mainWebView.setVisibility(View.VISIBLE);
-                    }
-
-                    //Stop the swipe to refresh indicator if it is running
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-            }
-
-            // Set the favorite icon when it changes.
-            @Override
-            public void onReceivedIcon(WebView view, Bitmap icon) {
-                // Only update the favorite icon if the website has finished loading.
-                if (progressBar.getVisibility() == View.GONE) {
-                    // Save a copy of the favorite icon.
-                    favoriteIconBitmap = icon;
-
-                    // Place the favorite icon in the appBar.
-                    favoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(icon, 64, 64, true));
-                }
-            }
-
-            // Save a copy of the title when it changes.
-            @Override
-            public void onReceivedTitle(WebView view, String title) {
-                // Save a copy of the title.
-                webViewTitle = title;
-            }
-
-            // Enter full screen video.
-            @Override
-            public void onShowCustomView(View video, CustomViewCallback callback) {
-                // Set the full screen video flag.
-                displayingFullScreenVideo = true;
-
-                // Pause the ad if this is the free flavor.
-                if (BuildConfig.FLAVOR.contentEquals("free")) {
-                    // The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
-                    AdHelper.pauseAd(findViewById(R.id.adview));
-                }
-
-                // Hide the keyboard.
-                inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
-
-                // Hide the main content relative layout.
-                mainContentRelativeLayout.setVisibility(View.GONE);
-
-                // Remove the translucent status bar overlay on the `Drawer Layout`, which is special and needs its own command.
-                drawerLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-
-                // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-                /* Hide the system bars.
-                 * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
-                 * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
-                 * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
-                 * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
-                 */
-                rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
-                // Disable the sliding drawers.
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-
-                // Add the video view to the full screen video frame layout.
-                fullScreenVideoFrameLayout.addView(video);
-
-                // Show the full screen video frame layout.
-                fullScreenVideoFrameLayout.setVisibility(View.VISIBLE);
-            }
-
-            // Exit full screen video.
-            @Override
-            public void onHideCustomView() {
-                // Unset the full screen video flag.
-                displayingFullScreenVideo = false;
-
-                // Remove all the views from the full screen video frame layout.
-                fullScreenVideoFrameLayout.removeAllViews();
-
-                // Hide the full screen video frame layout.
-                fullScreenVideoFrameLayout.setVisibility(View.GONE);
-
-                // Enable the sliding drawers.
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-
-                // Show the main content relative layout.
-                mainContentRelativeLayout.setVisibility(View.VISIBLE);
-
-                // Apply the appropriate full screen mode the `SYSTEM_UI` flags.
-                if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
-                    // Hide the app bar if specified.
-                    if (hideAppBar) {
-                        actionBar.hide();
-                    }
-
-                    // Hide the banner ad in the free flavor.
-                    if (BuildConfig.FLAVOR.contentEquals("free")) {
-                        AdHelper.hideAd(findViewById(R.id.adview));
-                    }
-
-                    // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-                    /* Hide the system bars.
-                     * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
-                     * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
-                     * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
-                     * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
-                     */
-                    rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-                } else {  // Switch to normal viewing mode.
-                    // Remove the `SYSTEM_UI` flags from the root frame layout.
-                    rootFrameLayout.setSystemUiVisibility(0);
-
-                    // Add the translucent status flag.
-                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                }
-
-                // Reload the ad for the free flavor if not in full screen mode.
-                if (BuildConfig.FLAVOR.contentEquals("free") && !inFullScreenBrowsingMode) {
-                    // Reload the ad.
-                    AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_unit_id));
-                }
-            }
-
-            // Upload files.
-            @Override
-            public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
-                // Show the file chooser if the device is running API >= 21.
-                if (Build.VERSION.SDK_INT >= 21) {
-                    // Store the file path callback.
-                    fileChooserCallback = filePathCallback;
-
-                    // Create an intent to open a chooser based ont the file chooser parameters.
-                    Intent fileChooserIntent = fileChooserParams.createIntent();
-
-                    // Open the file chooser.  Currently only one `startActivityForResult` exists in this activity, so the request code, used to differentiate them, is simply `0`.
-                    startActivityForResult(fileChooserIntent, 0);
-                }
-                return true;
-            }
-        });
-
-        // Register `mainWebView` for a context menu.  This is used to see link targets and download images.
-        registerForContextMenu(mainWebView);
-
-        // Allow the downloading of files.
-        mainWebView.setDownloadListener((String url, String userAgent, String contentDisposition, String mimetype, long contentLength) -> {
-            // Check if the download should be processed by an external app.
-            if (downloadWithExternalApp) {  // Download with an external app.
-                openUrlWithExternalApp(url);
-            } else {  // Download with Android's download manager.
-                // Check to see if the WRITE_EXTERNAL_STORAGE permission has already been granted.
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {  // The storage permission has not been granted.
-                    // The WRITE_EXTERNAL_STORAGE permission needs to be requested.
-
-                    // Store the variables for future use by `onRequestPermissionsResult()`.
-                    downloadUrl = url;
-                    downloadContentDisposition = contentDisposition;
-                    downloadContentLength = contentLength;
-
-                    // Show a dialog if the user has previously denied the permission.
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
-                        // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_FILE.
-                        DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_FILE);
-
-                        // Show the download location permission alert dialog.  The permission will be requested when the the dialog is closed.
-                        downloadLocationPermissionDialogFragment.show(fragmentManager, getString(R.string.download_location));
-                    } else {  // Show the permission request directly.
-                        // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
-                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_FILE_REQUEST_CODE);
-                    }
-                } else {  // The storage permission has already been granted.
-                    // Get a handle for the download file alert dialog.
-                    DialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(url, contentDisposition, contentLength);
-
-                    // Show the download file alert dialog.
-                    downloadFileDialogFragment.show(fragmentManager, getString(R.string.download));
-                }
-            }
-        });
-
-        // Allow pinch to zoom.
-        mainWebView.getSettings().setBuiltInZoomControls(true);
-
-        // Hide zoom controls.
-        mainWebView.getSettings().setDisplayZoomControls(false);
-
-        // Don't allow mixed content (HTTP and HTTPS) on the same website.
-        if (Build.VERSION.SDK_INT >= 21) {
-            mainWebView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
-        }
-
-        // Set the WebView to use a wide viewport.  Otherwise, some web pages will be scrunched and some content will render outside the screen.
-        mainWebView.getSettings().setUseWideViewPort(true);
-
-        // Set the WebView to load in overview mode (zoomed out to the maximum width).
-        mainWebView.getSettings().setLoadWithOverviewMode(true);
-
-        // Explicitly disable geolocation.
-        mainWebView.getSettings().setGeolocationEnabled(false);
 
         // Initialize cookieManager.
         cookieManager = CookieManager.getInstance();
@@ -1227,7 +996,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         nightMode = false;
 
         // Store the default user agent.
-        webViewDefaultUserAgent = mainWebView.getSettings().getUserAgentString();
+        // TODO webViewDefaultUserAgent = mainWebView.getSettings().getUserAgentString();
 
         // Initialize the WebView title.
         webViewTitle = getString(R.string.no_title);
@@ -1246,524 +1015,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Initialize the user agent array adapter and string array.
         userAgentNamesArray = ArrayAdapter.createFromResource(this, R.array.user_agent_names, R.layout.spinner_item);
         userAgentDataArray = resources.getStringArray(R.array.user_agent_data);
-
-        // Apply the app settings from the shared preferences.
-        applyAppSettings();
-
-        // Instantiate the block list helper.
-        BlockListHelper blockListHelper = new BlockListHelper();
-
-        // Initialize the list of resource requests.
-        resourceRequests = new ArrayList<>();
-
-        // Parse the block lists.
-        final ArrayList<List<String[]>> easyList = blockListHelper.parseBlockList(getAssets(), "blocklists/easylist.txt");
-        final ArrayList<List<String[]>> easyPrivacy = blockListHelper.parseBlockList(getAssets(), "blocklists/easyprivacy.txt");
-        final ArrayList<List<String[]>> fanboysAnnoyanceList = blockListHelper.parseBlockList(getAssets(), "blocklists/fanboy-annoyance.txt");
-        final ArrayList<List<String[]>> fanboysSocialList = blockListHelper.parseBlockList(getAssets(), "blocklists/fanboy-social.txt");
-        final ArrayList<List<String[]>> ultraPrivacy = blockListHelper.parseBlockList(getAssets(), "blocklists/ultraprivacy.txt");
-
-        // Store the list versions.
-        easyListVersion = easyList.get(0).get(0)[0];
-        easyPrivacyVersion = easyPrivacy.get(0).get(0)[0];
-        fanboysAnnoyanceVersion = fanboysAnnoyanceList.get(0).get(0)[0];
-        fanboysSocialVersion = fanboysSocialList.get(0).get(0)[0];
-        ultraPrivacyVersion = ultraPrivacy.get(0).get(0)[0];
-
-        // Get a handle for the activity.  This is used to update the requests counter while the navigation menu is open.
-        Activity activity = this;
-
-        mainWebView.setWebViewClient(new WebViewClient() {
-            // `shouldOverrideUrlLoading` makes this `WebView` the default handler for URLs inside the app, so that links are not kicked out to other apps.
-            // The deprecated `shouldOverrideUrlLoading` must be used until API >= 24.
-            @SuppressWarnings("deprecation")
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (url.startsWith("http")) {  // Load the URL in Privacy Browser.
-                    // Reset the formatted URL string so the page will load correctly if blocking of third-party requests is enabled.
-                    formattedUrlString = "";
-
-                    // Apply the domain settings for the new URL.  `applyDomainSettings` doesn't do anything if the domain has not changed.
-                    boolean userAgentChanged = applyDomainSettings(url, true, false);
-
-                    // Check if the user agent has changed.
-                    if (userAgentChanged) {
-                        // Manually load the URL.  The changing of the user agent will cause WebView to reload the previous URL.
-                        mainWebView.loadUrl(url, customHeaders);
-
-                        // Returning true indicates that Privacy Browser is manually handling the loading of the URL.
-                        return true;
-                    } else {
-                        // Returning false causes the current WebView to handle the URL and prevents it from adding redirects to the history list.
-                        return false;
-                    }
-                } else if (url.startsWith("mailto:")) {  // Load the email address in an external email program.
-                    // Use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
-                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-
-                    // Parse the url and set it as the data for the intent.
-                    emailIntent.setData(Uri.parse(url));
-
-                    // Open the email program in a new task instead of as part of Privacy Browser.
-                    emailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                    // Make it so.
-                    startActivity(emailIntent);
-
-                    // Returning true indicates Privacy Browser is handling the URL by creating an intent.
-                    return true;
-                } else if (url.startsWith("tel:")) {  // Load the phone number in the dialer.
-                    // Open the dialer and load the phone number, but wait for the user to place the call.
-                    Intent dialIntent = new Intent(Intent.ACTION_DIAL);
-
-                    // Add the phone number to the intent.
-                    dialIntent.setData(Uri.parse(url));
-
-                    // Open the dialer in a new task instead of as part of Privacy Browser.
-                    dialIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                    // Make it so.
-                    startActivity(dialIntent);
-
-                    // Returning true indicates Privacy Browser is handling the URL by creating an intent.
-                    return true;
-                } else {  // Load a system chooser to select an app that can handle the URL.
-                    // Open an app that can handle the URL.
-                    Intent genericIntent = new Intent(Intent.ACTION_VIEW);
-
-                    // Add the URL to the intent.
-                    genericIntent.setData(Uri.parse(url));
-
-                    // List all apps that can handle the URL instead of just opening the first one.
-                    genericIntent.addCategory(Intent.CATEGORY_BROWSABLE);
-
-                    // Open the app in a new task instead of as part of Privacy Browser.
-                    genericIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                    // Start the app or display a snackbar if no app is available to handle the URL.
-                    try {
-                        startActivity(genericIntent);
-                    } catch (ActivityNotFoundException exception) {
-                        Snackbar.make(mainWebView, getString(R.string.unrecognized_url) + "  " + url, Snackbar.LENGTH_SHORT).show();
-                    }
-
-                    // Returning true indicates Privacy Browser is handling the URL by creating an intent.
-                    return true;
-                }
-            }
-
-            // Check requests against the block lists.  The deprecated `shouldInterceptRequest()` must be used until minimum API >= 21.
-            @SuppressWarnings("deprecation")
-            @Override
-            public WebResourceResponse shouldInterceptRequest(WebView view, String url){
-                // Create an empty web resource response to be used if the resource request is blocked.
-                WebResourceResponse emptyWebResourceResponse = new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
-
-                // Reset the whitelist results tracker.
-                whiteListResultStringArray = null;
-
-                // Initialize the third party request tracker.
-                boolean isThirdPartyRequest = false;
-
-                // Initialize the current domain string.
-                String currentDomain = "";
-
-                // Nobody is happy when comparing null strings.
-                if (!(formattedUrlString == null) && !(url == null)) {
-                    // Get the domain strings to URIs.
-                    Uri currentDomainUri = Uri.parse(formattedUrlString);
-                    Uri requestDomainUri = Uri.parse(url);
-
-                    // Get the domain host names.
-                    String currentBaseDomain = currentDomainUri.getHost();
-                    String requestBaseDomain = requestDomainUri.getHost();
-
-                    // Update the current domain variable.
-                    currentDomain = currentBaseDomain;
-
-                    // Only compare the current base domain and the request base domain if neither is null.
-                    if (!(currentBaseDomain == null) && !(requestBaseDomain == null)) {
-                        // Determine the current base domain.
-                        while (currentBaseDomain.indexOf(".", currentBaseDomain.indexOf(".") + 1) > 0) {  // There is at least one subdomain.
-                            // Remove the first subdomain.
-                            currentBaseDomain = currentBaseDomain.substring(currentBaseDomain.indexOf(".") + 1);
-                        }
-
-                        // Determine the request base domain.
-                        while (requestBaseDomain.indexOf(".", requestBaseDomain.indexOf(".") + 1) > 0) {  // There is at least one subdomain.
-                            // Remove the first subdomain.
-                            requestBaseDomain = requestBaseDomain.substring(requestBaseDomain.indexOf(".") + 1);
-                        }
-
-                        // Update the third party request tracker.
-                        isThirdPartyRequest = !currentBaseDomain.equals(requestBaseDomain);
-                    }
-                }
-
-                // Block third-party requests if enabled.
-                if (isThirdPartyRequest && blockAllThirdPartyRequests) {
-                    // Increment the blocked requests counters.
-                    blockedRequests++;
-                    thirdPartyBlockedRequests++;
-
-                    // Update the titles of the blocklist menu items.  This must be run from the UI thread.
-                    activity.runOnUiThread(() -> {
-                        navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                        blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                        blockAllThirdPartyRequestsMenuItem.setTitle(thirdPartyBlockedRequests + " - " + getString(R.string.block_all_third_party_requests));
-                    });
-
-                    // Add the request to the log.
-                    resourceRequests.add(new String[]{String.valueOf(REQUEST_THIRD_PARTY), url});
-
-                    // Return an empty web resource response.
-                    return emptyWebResourceResponse;
-                }
-
-                // Check UltraPrivacy if it is enabled.
-                if (ultraPrivacyEnabled) {
-                    if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, ultraPrivacy)) {
-                        // Increment the blocked requests counters.
-                        blockedRequests++;
-                        ultraPrivacyBlockedRequests++;
-
-                        // Update the titles of the blocklist menu items.  This must be run from the UI thread.
-                        activity.runOnUiThread(() -> {
-                            navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                            blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                            ultraPrivacyMenuItem.setTitle(ultraPrivacyBlockedRequests + " - " + getString(R.string.ultraprivacy));
-                        });
-
-                        // The resource request was blocked.  Return an empty web resource response.
-                        return emptyWebResourceResponse;
-                    }
-
-                    // If the whitelist result is not null, the request has been allowed by UltraPrivacy.
-                    if (whiteListResultStringArray != null) {
-                        // Add a whitelist entry to the resource requests array.
-                        resourceRequests.add(whiteListResultStringArray);
-
-                        // The resource request has been allowed by UltraPrivacy.  `return null` loads the requested resource.
-                        return null;
-                    }
-                }
-
-                // Check EasyList if it is enabled.
-                if (easyListEnabled) {
-                    if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, easyList)) {
-                        // Increment the blocked requests counters.
-                        blockedRequests++;
-                        easyListBlockedRequests++;
-
-                        // Update the titles of the blocklist menu items.  This must be run from the UI thread.
-                        activity.runOnUiThread(() -> {
-                            navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                            blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                            easyListMenuItem.setTitle(easyListBlockedRequests + " - " + getString(R.string.easylist));
-                        });
-
-                        // Reset the whitelist results tracker (because otherwise it will sometimes add results to the list due to a race condition).
-                        whiteListResultStringArray = null;
-
-                        // The resource request was blocked.  Return an empty web resource response.
-                        return emptyWebResourceResponse;
-                    }
-                }
-
-                // Check EasyPrivacy if it is enabled.
-                if (easyPrivacyEnabled) {
-                    if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, easyPrivacy)) {
-                        // Increment the blocked requests counters.
-                        blockedRequests++;
-                        easyPrivacyBlockedRequests++;
-
-                        // Update the titles of the blocklist menu items.  This must be run from the UI thread.
-                        activity.runOnUiThread(() -> {
-                            navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                            blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                            easyPrivacyMenuItem.setTitle(easyPrivacyBlockedRequests + " - " + getString(R.string.easyprivacy));
-                        });
-
-                        // Reset the whitelist results tracker (because otherwise it will sometimes add results to the list due to a race condition).
-                        whiteListResultStringArray = null;
-
-                        // The resource request was blocked.  Return an empty web resource response.
-                        return emptyWebResourceResponse;
-                    }
-                }
-
-                // Check Fanboy’s Annoyance List if it is enabled.
-                if (fanboysAnnoyanceListEnabled) {
-                    if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, fanboysAnnoyanceList)) {
-                        // Increment the blocked requests counters.
-                        blockedRequests++;
-                        fanboysAnnoyanceListBlockedRequests++;
-
-                        // Update the titles of the blocklist menu items.  This must be run from the UI thread.
-                        activity.runOnUiThread(() -> {
-                            navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                            blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                            fanboysAnnoyanceListMenuItem.setTitle(fanboysAnnoyanceListBlockedRequests + " - " + getString(R.string.fanboys_annoyance_list));
-                        });
-
-                        // Reset the whitelist results tracker (because otherwise it will sometimes add results to the list due to a race condition).
-                        whiteListResultStringArray = null;
-
-                        // The resource request was blocked.  Return an empty web resource response.
-                        return emptyWebResourceResponse;
-                    }
-                } else if (fanboysSocialBlockingListEnabled){  // Only check Fanboy’s Social Blocking List if Fanboy’s Annoyance List is disabled.
-                    if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, fanboysSocialList)) {
-                        // Increment the blocked requests counters.
-                        blockedRequests++;
-                        fanboysSocialBlockingListBlockedRequests++;
-
-                        // Update the titles of the blocklist menu items.  This must be run from the UI thread.
-                        activity.runOnUiThread(() -> {
-                            navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                            blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                            fanboysSocialBlockingListMenuItem.setTitle(fanboysSocialBlockingListBlockedRequests + " - " + getString(R.string.fanboys_social_blocking_list));
-                        });
-
-                        // Reset the whitelist results tracker (because otherwise it will sometimes add results to the list due to a race condition).
-                        whiteListResultStringArray = null;
-
-                        // The resource request was blocked.  Return an empty web resource response.
-                        return emptyWebResourceResponse;
-                    }
-                }
-
-                // Add the request to the log because it hasn't been processed by any of the previous checks.
-                if (whiteListResultStringArray != null ) {  // The request was processed by a whitelist.
-                    resourceRequests.add(whiteListResultStringArray);
-                } else {  // The request didn't match any blocklist entry.  Log it as a default request.
-                    resourceRequests.add(new String[]{String.valueOf(REQUEST_DEFAULT), url});
-                }
-
-                // The resource request has not been blocked.  `return null` loads the requested resource.
-                return null;
-            }
-
-            // Handle HTTP authentication requests.
-            @Override
-            public void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm) {
-                // Store `handler` so it can be accessed from `onHttpAuthenticationCancel()` and `onHttpAuthenticationProceed()`.
-                httpAuthHandler = handler;
-
-                // Display the HTTP authentication dialog.
-                DialogFragment httpAuthenticationDialogFragment = HttpAuthenticationDialog.displayDialog(host, realm);
-                httpAuthenticationDialogFragment.show(fragmentManager, getString(R.string.http_authentication));
-            }
-
-            // Update the URL in urlTextBox when the page starts to load.
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                // Set `urlIsLoading` to `true`, so that redirects while loading do not trigger changes in the user agent, which forces another reload of the existing page.
-                // This is also used to determine when to check for pinned mismatches.
-                urlIsLoading = true;
-
-                // Reset the list of host IP addresses.
-                currentHostIpAddresses = "";
-
-                // Reset the list of resource requests.
-                resourceRequests.clear();
-
-                // Initialize the counters for requests blocked by each blocklist.
-                blockedRequests = 0;
-                easyListBlockedRequests = 0;
-                easyPrivacyBlockedRequests = 0;
-                fanboysAnnoyanceListBlockedRequests = 0;
-                fanboysSocialBlockingListBlockedRequests = 0;
-                ultraPrivacyBlockedRequests = 0;
-                thirdPartyBlockedRequests = 0;
-
-                // If night mode is enabled, hide `mainWebView` until after the night mode CSS is applied.
-                if (nightMode) {
-                    mainWebView.setVisibility(View.INVISIBLE);
-                }
-
-                // Hide the keyboard.
-                inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
-
-                // Check to see if Privacy Browser is waiting on Orbot.
-                if (!waitingForOrbot) {  // Process the URL.
-                    // The formatted URL string must be updated at the beginning of the load, so that if the user toggles JavaScript during the load the new website is reloaded.
-                    formattedUrlString = url;
-
-                    // Display the formatted URL text.
-                    urlTextBox.setText(formattedUrlString);
-
-                    // Apply text highlighting to `urlTextBox`.
-                    highlightUrlText();
-
-                    // Get a URI for the current URL.
-                    Uri currentUri = Uri.parse(formattedUrlString);
-
-                    // Get the IP addresses for the host.
-                    new GetHostIpAddresses(activity).execute(currentUri.getHost());
-
-                    // Apply any custom domain settings if the URL was loaded by navigating history.
-                    if (navigatingHistory) {
-                        // Apply the domain settings.
-                        boolean userAgentChanged = applyDomainSettings(url, true, false);
-
-                        // Reset `navigatingHistory`.
-                        navigatingHistory = false;
-
-                        // Manually load the URL if the user agent has changed, which will have caused the previous URL to be reloaded.
-                        if (userAgentChanged) {
-                            loadUrl(formattedUrlString);
-                        }
-                    }
-
-                    // Replace Refresh with Stop if the menu item has been created.  (The WebView typically begins loading before the menu items are instantiated.)
-                    if (refreshMenuItem != null) {
-                        // Set the title.
-                        refreshMenuItem.setTitle(R.string.stop);
-
-                        // If the icon is displayed in the AppBar, set it according to the theme.
-                        if (displayAdditionalAppBarIcons) {
-                            if (darkTheme) {
-                                refreshMenuItem.setIcon(R.drawable.close_dark);
-                            } else {
-                                refreshMenuItem.setIcon(R.drawable.close_light);
-                            }
-                        }
-                    }
-                }
-            }
-
-            // It is necessary to update `formattedUrlString` and `urlTextBox` after the page finishes loading because the final URL can change during load.
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                // Reset the wide view port if it has been turned off by the waiting for Orbot message.
-                if (!waitingForOrbot) {
-                    // Only use a wide view port if the URL starts with `http`, not for `file://` and `content://`.
-                    mainWebView.getSettings().setUseWideViewPort(url.startsWith("http"));
-                }
-
-                // Flush any cookies to persistent storage.  `CookieManager` has become very lazy about flushing cookies in recent versions.
-                if (firstPartyCookiesEnabled && Build.VERSION.SDK_INT >= 21) {
-                    cookieManager.flush();
-                }
-
-                // Update the Refresh menu item if it has been created.
-                if (refreshMenuItem != null) {
-                    // Reset the Refresh title.
-                    refreshMenuItem.setTitle(R.string.refresh);
-
-                    // If the icon is displayed in the AppBar, reset it according to the theme.
-                    if (displayAdditionalAppBarIcons) {
-                        if (darkTheme) {
-                            refreshMenuItem.setIcon(R.drawable.refresh_enabled_dark);
-                        } else {
-                            refreshMenuItem.setIcon(R.drawable.refresh_enabled_light);
-                        }
-                    }
-                }
-
-
-
-                // Clear the cache and history if Incognito Mode is enabled.
-                if (incognitoModeEnabled) {
-                    // Clear the cache.  `true` includes disk files.
-                    mainWebView.clearCache(true);
-
-                    // Clear the back/forward history.
-                    mainWebView.clearHistory();
-
-                    // Manually delete cache folders.
-                    try {
-                        // Delete the main cache directory.
-                        privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/cache");
-
-                        // Delete the secondary `Service Worker` cache directory.
-                        // A `String[]` must be used because the directory contains a space and `Runtime.exec` will not escape the string correctly otherwise.
-                        privacyBrowserRuntime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Service Worker/"});
-                    } catch (IOException e) {
-                        // Do nothing if an error is thrown.
-                    }
-                }
-
-                // Update the URL text box and apply domain settings if not waiting on Orbot.
-                if (!waitingForOrbot) {
-                    // Check to see if `WebView` has set `url` to be `about:blank`.
-                    if (url.equals("about:blank")) {  // `WebView` is blank, so `formattedUrlString` should be `""` and `urlTextBox` should display a hint.
-                        // Set `formattedUrlString` to `""`.
-                        formattedUrlString = "";
-
-                        urlTextBox.setText(formattedUrlString);
-
-                        // Request focus for `urlTextBox`.
-                        urlTextBox.requestFocus();
-
-                        // Display the keyboard.
-                        inputMethodManager.showSoftInput(urlTextBox, 0);
-
-                        // Apply the domain settings.  This clears any settings from the previous domain.
-                        applyDomainSettings(formattedUrlString, true, false);
-                    } else {  // `WebView` has loaded a webpage.
-                        // Set the formatted URL string.  Getting the URL from the WebView instead of using the one provided by `onPageFinished` makes websites like YouTube function correctly.
-                        formattedUrlString = mainWebView.getUrl();
-
-                        // Only update the URL text box if the user is not typing in it.
-                        if (!urlTextBox.hasFocus()) {
-                            // Display the formatted URL text.
-                            urlTextBox.setText(formattedUrlString);
-
-                            // Apply text highlighting to `urlTextBox`.
-                            highlightUrlText();
-                        }
-                    }
-
-                    // Store the SSL certificate so it can be accessed from `ViewSslCertificateDialog` and `PinnedMismatchDialog`.
-                    sslCertificate = mainWebView.getCertificate();
-
-                    // Check the current website information against any pinned domain information if the current IP addresses have been loaded.
-                    if (!gettingIpAddresses) {
-                        checkPinnedMismatch();
-                    }
-                }
-
-                // Reset `urlIsLoading`, which is used to prevent reloads on redirect if the user agent changes.  It is also used to determine when to check for pinned mismatches.
-                urlIsLoading = false;
-            }
-
-            // Handle SSL Certificate errors.
-            @Override
-            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-                // Get the current website SSL certificate.
-                SslCertificate currentWebsiteSslCertificate = error.getCertificate();
-
-                // Extract the individual pieces of information from the current website SSL certificate.
-                String currentWebsiteIssuedToCName = currentWebsiteSslCertificate.getIssuedTo().getCName();
-                String currentWebsiteIssuedToOName = currentWebsiteSslCertificate.getIssuedTo().getOName();
-                String currentWebsiteIssuedToUName = currentWebsiteSslCertificate.getIssuedTo().getUName();
-                String currentWebsiteIssuedByCName = currentWebsiteSslCertificate.getIssuedBy().getCName();
-                String currentWebsiteIssuedByOName = currentWebsiteSslCertificate.getIssuedBy().getOName();
-                String currentWebsiteIssuedByUName = currentWebsiteSslCertificate.getIssuedBy().getUName();
-                Date currentWebsiteSslStartDate = currentWebsiteSslCertificate.getValidNotBeforeDate();
-                Date currentWebsiteSslEndDate = currentWebsiteSslCertificate.getValidNotAfterDate();
-
-                // Proceed to the website if the current SSL website certificate matches the pinned domain certificate.
-                if (pinnedSslCertificate &&
-                        currentWebsiteIssuedToCName.equals(pinnedSslIssuedToCName) && currentWebsiteIssuedToOName.equals(pinnedSslIssuedToOName) &&
-                        currentWebsiteIssuedToUName.equals(pinnedSslIssuedToUName) && currentWebsiteIssuedByCName.equals(pinnedSslIssuedByCName) &&
-                        currentWebsiteIssuedByOName.equals(pinnedSslIssuedByOName) && currentWebsiteIssuedByUName.equals(pinnedSslIssuedByUName) &&
-                        currentWebsiteSslStartDate.equals(pinnedSslStartDate) && currentWebsiteSslEndDate.equals(pinnedSslEndDate)) {
-
-                    // An SSL certificate is pinned and matches the current domain certificate.  Proceed to the website without displaying an error.
-                    handler.proceed();
-                } else {  // Either there isn't a pinned SSL certificate or it doesn't match the current website certificate.
-                    // Store `handler` so it can be accesses from `onSslErrorCancel()` and `onSslErrorProceed()`.
-                    sslErrorHandler = handler;
-
-                    // Display the SSL error `AlertDialog`.
-                    DialogFragment sslCertificateErrorDialogFragment = SslCertificateErrorDialog.displayDialog(error);
-                    sslCertificateErrorDialogFragment.show(fragmentManager, getString(R.string.ssl_certificate_error));
-                }
-            }
-        });
 
         // Get the intent that started the app.
         Intent launchingIntent = getIntent();
@@ -1789,11 +1040,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         } else if (launchingIntentUriData != null){  // Check to see if the intent contains a new URL.
             // Set the formatted URL string.
             formattedUrlString = launchingIntentUriData.toString();
-        }
-
-        // Load the website if not waiting for Orbot to connect.
-        if (!waitingForOrbot) {
-            loadUrl(formattedUrlString);
         }
     }
 
@@ -1842,7 +1088,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
 
         // Clear the keyboard if displayed and remove the focus on the urlTextBar if it has it.
-        mainWebView.requestFocus();
+        currentWebView.requestFocus();
     }
 
     @Override
@@ -1869,8 +1115,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Reload the webpage if displaying of images has been disabled in the Settings activity.
             if (reloadOnRestart) {
-                // Reload `mainWebView`.
-                mainWebView.reload();
+                // Reload the WebViews.
+                // TODO
+                currentWebView.reload();
 
                 // Reset `reloadOnRestartBoolean`.
                 reloadOnRestart = false;
@@ -1924,18 +1171,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         super.onResume();
 
         // Resume JavaScript (if enabled).
-        mainWebView.resumeTimers();
+        // TODO mainWebView.resumeTimers();
 
         // Resume `mainWebView`.
-        mainWebView.onResume();
+        // TODO mainWebView.onResume();
 
         // Display a message to the user if waiting for Orbot.
         if (waitingForOrbot && !orbotStatus.equals("ON")) {
             // Disable the wide view port so that the waiting for Orbot text is displayed correctly.
-            mainWebView.getSettings().setUseWideViewPort(false);
+            currentWebView.getSettings().setUseWideViewPort(false);
 
             // Load a waiting page.  `null` specifies no encoding, which defaults to ASCII.
-            mainWebView.loadData(waitingForOrbotHtmlString, "text/html", null);
+            currentWebView.loadData(waitingForOrbotHtmlString, "text/html", null);
         }
 
         if (displayingFullScreenVideo || inFullScreenBrowsingMode) {
@@ -1965,10 +1212,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         super.onPause();
 
         // Pause `mainWebView`.
-        mainWebView.onPause();
+        // TODO
+        currentWebView.onPause();
 
         // Stop all JavaScript.
-        mainWebView.pauseTimers();
+        // TODO
+        currentWebView.pauseTimers();
 
         // Pause the ad or it will continue to consume resources in the background on the free flavor.
         if (BuildConfig.FLAVOR.contentEquals("free")) {
@@ -2102,7 +1351,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         ultraPrivacyMenuItem.setChecked(ultraPrivacyEnabled);
         blockAllThirdPartyRequestsMenuItem.setChecked(blockAllThirdPartyRequests);
         swipeToRefreshMenuItem.setChecked(swipeRefreshLayout.isEnabled());
-        displayImagesMenuItem.setChecked(mainWebView.getSettings().getLoadsImagesAutomatically());
+        // TODO displayImagesMenuItem.setChecked(mainWebView.getSettings().getLoadsImagesAutomatically());
         nightModeMenuItem.setChecked(nightMode);
         proxyThroughOrbotMenuItem.setChecked(proxyThroughOrbot);
 
@@ -2157,7 +1406,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         blockAllThirdPartyRequestsMenuItem.setTitle(thirdPartyBlockedRequests + " - " + getString(R.string.block_all_third_party_requests));
 
         // Get the current user agent.
-        String currentUserAgent = mainWebView.getSettings().getUserAgentString();
+        // TODO String currentUserAgent = mainWebView.getSettings().getUserAgentString();
+        String currentUserAgent = "";
 
         // Select the current user agent menu item.  A switch statement cannot be used because the user agents are not compile time constants.
         if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[0])) {  // Privacy Browser.
@@ -2189,7 +1439,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
 
         // Initialize font size variables.
-        int fontSize = mainWebView.getSettings().getTextZoom();
+        // TODO int fontSize = mainWebView.getSettings().getTextZoom();
+        int fontSize = 100;
         String fontSizeTitle;
         MenuItem selectedFontSizeMenuItem;
 
@@ -2285,22 +1536,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 javaScriptEnabled = !javaScriptEnabled;
 
                 // Apply the new JavaScript status.
-                mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
+                currentWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
 
                 // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
                 updatePrivacyIcons(true);
 
                 // Display a `Snackbar`.
                 if (javaScriptEnabled) {  // JavaScrip is enabled.
-                    Snackbar.make(findViewById(R.id.main_webview), R.string.javascript_enabled, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.webviewpager), R.string.javascript_enabled, Snackbar.LENGTH_SHORT).show();
                 } else if (firstPartyCookiesEnabled) {  // JavaScript is disabled, but first-party cookies are enabled.
-                    Snackbar.make(findViewById(R.id.main_webview), R.string.javascript_disabled, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.webviewpager), R.string.javascript_disabled, Snackbar.LENGTH_SHORT).show();
                 } else {  // Privacy mode.
-                    Snackbar.make(findViewById(R.id.main_webview), R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.webviewpager), R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
                 }
 
-                // Reload the WebView.
-                mainWebView.reload();
+                // Reload the current WebView.
+                currentWebView.reload();
                 return true;
 
             case R.id.add_or_edit_domain:
@@ -2360,15 +1611,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Display a `Snackbar`.
                 if (firstPartyCookiesEnabled) {  // First-party cookies are enabled.
-                    Snackbar.make(findViewById(R.id.main_webview), R.string.first_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.webviewpager), R.string.first_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
                 } else if (javaScriptEnabled) {  // JavaScript is still enabled.
-                    Snackbar.make(findViewById(R.id.main_webview), R.string.first_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.webviewpager), R.string.first_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
                 } else {  // Privacy mode.
-                    Snackbar.make(findViewById(R.id.main_webview), R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.webviewpager), R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
                 }
 
-                // Reload the WebView.
-                mainWebView.reload();
+                // Reload the current WebView.
+                currentWebView.reload();
                 return true;
 
             case R.id.toggle_third_party_cookies:
@@ -2380,17 +1631,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     menuItem.setChecked(thirdPartyCookiesEnabled);
 
                     // Apply the new cookie status.
-                    cookieManager.setAcceptThirdPartyCookies(mainWebView, thirdPartyCookiesEnabled);
+                    cookieManager.setAcceptThirdPartyCookies(currentWebView, thirdPartyCookiesEnabled);
 
                     // Display a `Snackbar`.
                     if (thirdPartyCookiesEnabled) {
-                        Snackbar.make(findViewById(R.id.main_webview), R.string.third_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(R.id.webviewpager), R.string.third_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
                     } else {
-                        Snackbar.make(findViewById(R.id.main_webview), R.string.third_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(R.id.webviewpager), R.string.third_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
                     }
 
-                    // Reload the WebView.
-                    mainWebView.reload();
+                    // Reload the current WebView.
+                    currentWebView.reload();
                 } // Else do nothing because SDK < 21.
                 return true;
 
@@ -2402,20 +1653,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 menuItem.setChecked(domStorageEnabled);
 
                 // Apply the new DOM Storage status.
-                mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
+                currentWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
 
                 // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
                 updatePrivacyIcons(true);
 
                 // Display a `Snackbar`.
                 if (domStorageEnabled) {
-                    Snackbar.make(findViewById(R.id.main_webview), R.string.dom_storage_enabled, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.webviewpager), R.string.dom_storage_enabled, Snackbar.LENGTH_SHORT).show();
                 } else {
-                    Snackbar.make(findViewById(R.id.main_webview), R.string.dom_storage_disabled, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.webviewpager), R.string.dom_storage_disabled, Snackbar.LENGTH_SHORT).show();
                 }
 
-                // Reload the WebView.
-                mainWebView.reload();
+                // Reload the current WebView.
+                currentWebView.reload();
                 return true;
 
             // Form data can be removed once the minimum API >= 26.
@@ -2427,24 +1678,24 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 menuItem.setChecked(saveFormDataEnabled);
 
                 // Apply the new form data status.
-                mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
+                currentWebView.getSettings().setSaveFormData(saveFormDataEnabled);
 
                 // Display a `Snackbar`.
                 if (saveFormDataEnabled) {
-                    Snackbar.make(findViewById(R.id.main_webview), R.string.form_data_enabled, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.webviewpager), R.string.form_data_enabled, Snackbar.LENGTH_SHORT).show();
                 } else {
-                    Snackbar.make(findViewById(R.id.main_webview), R.string.form_data_disabled, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(R.id.webviewpager), R.string.form_data_disabled, Snackbar.LENGTH_SHORT).show();
                 }
 
                 // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
                 updatePrivacyIcons(true);
 
-                // Reload the WebView.
-                mainWebView.reload();
+                // Reload the current WebView.
+                currentWebView.reload();
                 return true;
 
             case R.id.clear_cookies:
-                Snackbar.make(findViewById(R.id.main_webview), R.string.cookies_deleted, Snackbar.LENGTH_LONG)
+                Snackbar.make(findViewById(R.id.webviewpager), R.string.cookies_deleted, Snackbar.LENGTH_LONG)
                         .setAction(R.string.undo, v -> {
                             // Do nothing because everything will be handled by `onDismissed()` below.
                         })
@@ -2473,7 +1724,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 return true;
 
             case R.id.clear_dom_storage:
-                Snackbar.make(findViewById(R.id.main_webview), R.string.dom_storage_deleted, Snackbar.LENGTH_LONG)
+                Snackbar.make(findViewById(R.id.webviewpager), R.string.dom_storage_deleted, Snackbar.LENGTH_LONG)
                         .setAction(R.string.undo, v -> {
                             // Do nothing because everything will be handled by `onDismissed()` below.
                         })
@@ -2529,7 +1780,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Form data can be remove once the minimum API >= 26.
             case R.id.clear_form_data:
-                Snackbar.make(findViewById(R.id.main_webview), R.string.form_data_deleted, Snackbar.LENGTH_LONG)
+                Snackbar.make(findViewById(R.id.webviewpager), R.string.form_data_deleted, Snackbar.LENGTH_LONG)
                         .setAction(R.string.undo, v -> {
                             // Do nothing because everything will be handled by `onDismissed()` below.
                         })
@@ -2561,8 +1812,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Update the menu checkbox.
                 menuItem.setChecked(easyListEnabled);
 
-                // Reload the main WebView.
-                mainWebView.reload();
+                // Reload the current WebView.
+                currentWebView.reload();
                 return true;
 
             case R.id.easyprivacy:
@@ -2572,8 +1823,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Update the menu checkbox.
                 menuItem.setChecked(easyPrivacyEnabled);
 
-                // Reload the main WebView.
-                mainWebView.reload();
+                // Reload the current WebView.
+                currentWebView.reload();
                 return true;
 
             case R.id.fanboys_annoyance_list:
@@ -2587,8 +1838,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 MenuItem fanboysSocialBlockingListMenuItem = mainMenu.findItem(R.id.fanboys_social_blocking_list);
                 fanboysSocialBlockingListMenuItem.setEnabled(!fanboysAnnoyanceListEnabled);
 
-                // Reload the main WebView.
-                mainWebView.reload();
+                // Reload the current WebView.
+                currentWebView.reload();
                 return true;
 
             case R.id.fanboys_social_blocking_list:
@@ -2598,8 +1849,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Update the menu checkbox.
                 menuItem.setChecked(fanboysSocialBlockingListEnabled);
 
-                // Reload the main WebView.
-                mainWebView.reload();
+                // Reload the current WebView.
+                currentWebView.reload();
                 return true;
 
             case R.id.ultraprivacy:
@@ -2609,8 +1860,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Update the menu checkbox.
                 menuItem.setChecked(ultraPrivacyEnabled);
 
-                // Reload the main WebView.
-                mainWebView.reload();
+                // Reload the current WebView.
+                currentWebView.reload();
                 return true;
 
             case R.id.block_all_third_party_requests:
@@ -2620,144 +1871,144 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Update the menu checkbox.
                 menuItem.setChecked(blockAllThirdPartyRequests);
 
-                // Reload the main WebView.
-                mainWebView.reload();
+                // Reload the current WebView.
+                currentWebView.reload();
                 return true;
 
             case R.id.user_agent_privacy_browser:
                 // Update the user agent.
-                mainWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[0]);
+                currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[0]);
 
-                // Reload the WebView.
-                mainWebView.reload();
+                // Reload the current WebView.
+                currentWebView.reload();
                 return true;
 
             case R.id.user_agent_webview_default:
                 // Update the user agent.
-                mainWebView.getSettings().setUserAgentString("");
+                currentWebView.getSettings().setUserAgentString("");
 
-                // Reload the WebView.
-                mainWebView.reload();
+                // Reload the current WebView.
+                currentWebView.reload();
                 return true;
 
             case R.id.user_agent_firefox_on_android:
                 // Update the user agent.
-                mainWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[2]);
+                currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[2]);
 
-                // Reload the WebView.
-                mainWebView.reload();
+                // Reload the current WebView.
+                currentWebView.reload();
                 return true;
 
             case R.id.user_agent_chrome_on_android:
                 // Update the user agent.
-                mainWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[3]);
+                currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[3]);
 
-                // Reload the WebView.
-                mainWebView.reload();
+                // Reload the current WebView.
+                currentWebView.reload();
                 return true;
 
             case R.id.user_agent_safari_on_ios:
                 // Update the user agent.
-                mainWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[4]);
+                currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[4]);
 
-                // Reload the WebView.
-                mainWebView.reload();
+                // Reload the current WebView.
+                currentWebView.reload();
                 return true;
 
             case R.id.user_agent_firefox_on_linux:
                 // Update the user agent.
-                mainWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[5]);
+                currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[5]);
 
-                // Reload the WebView.
-                mainWebView.reload();
+                // Reload the current WebView.
+                currentWebView.reload();
                 return true;
 
             case R.id.user_agent_chromium_on_linux:
                 // Update the user agent.
-                mainWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[6]);
+                currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[6]);
 
-                // Reload the WebView.
-                mainWebView.reload();
+                // Reload the current WebView.
+                currentWebView.reload();
                 return true;
 
             case R.id.user_agent_firefox_on_windows:
                 // Update the user agent.
-                mainWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[7]);
+                currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[7]);
 
-                // Reload the WebView.
-                mainWebView.reload();
+                // Reload the current WebView.
+                currentWebView.reload();
                 return true;
 
             case R.id.user_agent_chrome_on_windows:
                 // Update the user agent.
-                mainWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[8]);
+                currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[8]);
 
-                // Reload the WebView.
-                mainWebView.reload();
+                // Reload the current WebView.
+                currentWebView.reload();
                 return true;
 
             case R.id.user_agent_edge_on_windows:
                 // Update the user agent.
-                mainWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[9]);
+                currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[9]);
 
-                // Reload the WebView.
-                mainWebView.reload();
+                // Reload the current WebView.
+                currentWebView.reload();
                 return true;
 
             case R.id.user_agent_internet_explorer_on_windows:
                 // Update the user agent.
-                mainWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[10]);
+                currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[10]);
 
-                // Reload the WebView.
-                mainWebView.reload();
+                // Reload the current WebView.
+                currentWebView.reload();
                 return true;
 
             case R.id.user_agent_safari_on_macos:
                 // Update the user agent.
-                mainWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[11]);
+                currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[11]);
 
-                // Reload the WebView.
-                mainWebView.reload();
+                // Reload the current WebView.
+                currentWebView.reload();
                 return true;
 
             case R.id.user_agent_custom:
                 // Update the user agent.
-                mainWebView.getSettings().setUserAgentString(defaultCustomUserAgentString);
+                currentWebView.getSettings().setUserAgentString(defaultCustomUserAgentString);
 
-                // Reload the WebView.
-                mainWebView.reload();
+                // Reload the current WebView.
+                currentWebView.reload();
                 return true;
 
             case R.id.font_size_twenty_five_percent:
-                mainWebView.getSettings().setTextZoom(25);
+                currentWebView.getSettings().setTextZoom(25);
                 return true;
 
             case R.id.font_size_fifty_percent:
-                mainWebView.getSettings().setTextZoom(50);
+                currentWebView.getSettings().setTextZoom(50);
                 return true;
 
             case R.id.font_size_seventy_five_percent:
-                mainWebView.getSettings().setTextZoom(75);
+                currentWebView.getSettings().setTextZoom(75);
                 return true;
 
             case R.id.font_size_one_hundred_percent:
-                mainWebView.getSettings().setTextZoom(100);
+                currentWebView.getSettings().setTextZoom(100);
                 return true;
 
             case R.id.font_size_one_hundred_twenty_five_percent:
-                mainWebView.getSettings().setTextZoom(125);
+                currentWebView.getSettings().setTextZoom(125);
                 return true;
 
             case R.id.font_size_one_hundred_fifty_percent:
-                mainWebView.getSettings().setTextZoom(150);
+                currentWebView.getSettings().setTextZoom(150);
                 return true;
 
             case R.id.font_size_one_hundred_seventy_five_percent:
-                mainWebView.getSettings().setTextZoom(175);
+                currentWebView.getSettings().setTextZoom(175);
                 return true;
 
             case R.id.font_size_two_hundred_percent:
-                mainWebView.getSettings().setTextZoom(200);
+                currentWebView.getSettings().setTextZoom(200);
                 return true;
 
             case R.id.swipe_to_refresh:
@@ -2769,11 +2020,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 return true;
 
             case R.id.display_images:
-                if (mainWebView.getSettings().getLoadsImagesAutomatically()) {  // Images are currently loaded automatically.
-                    mainWebView.getSettings().setLoadsImagesAutomatically(false);
-                    mainWebView.reload();
+                if (currentWebView.getSettings().getLoadsImagesAutomatically()) {  // Images are currently loaded automatically.
+                    // Disable loading of images.
+                    currentWebView.getSettings().setLoadsImagesAutomatically(false);
+
+                    // Reload the website to remove existing images.
+                    currentWebView.reload();
                 } else {  // Images are not currently loaded automatically.
-                    mainWebView.getSettings().setLoadsImagesAutomatically(true);
+                    // Enable loading of images.  Missing images will be loaded without the need for a reload.
+                    currentWebView.getSettings().setLoadsImagesAutomatically(true);
                 }
                 return true;
 
@@ -2797,13 +2052,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Apply the JavaScript setting to the WebView.
-                mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
+                currentWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
 
                 // Update the privacy icons.
                 updatePrivacyIcons(false);
 
                 // Reload the website.
-                mainWebView.reload();
+                currentWebView.reload();
                 return true;
 
             case R.id.find_on_page:
@@ -2851,8 +2106,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Get a `PrintManager` instance.
                 PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
 
-                // Convert `mainWebView` to `printDocumentAdapter`.
-                PrintDocumentAdapter printDocumentAdapter = mainWebView.createPrintDocumentAdapter();
+                // Create a print document adapter form the current WebView.
+                PrintDocumentAdapter printDocumentAdapter = currentWebView.createPrintDocumentAdapter();
 
                 // Remove the lint error below that `printManager` might be `null`.
                 assert printManager != null;
@@ -2871,7 +2126,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.add_to_homescreen:
                 // Instantiate the create home screen shortcut dialog.
-                DialogFragment createHomeScreenShortcutDialogFragment = CreateHomeScreenShortcutDialog.createDialog(mainWebView.getTitle(), formattedUrlString, favoriteIconBitmap);
+                DialogFragment createHomeScreenShortcutDialogFragment = CreateHomeScreenShortcutDialog.createDialog(currentWebView.getTitle(), formattedUrlString, favoriteIconBitmap);
 
                 // Show the create home screen shortcut dialog.
                 createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getString(R.string.create_shortcut));
@@ -2887,11 +2142,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.refresh:
                 if (menuItem.getTitle().equals(getString(R.string.refresh))) {  // The refresh button was pushed.
-                    // Reload the WebView.
-                    mainWebView.reload();
+                    // Reload the current WebView.
+                    currentWebView.reload();
                 } else {  // The stop button was pushed.
                     // Stop the loading of the WebView.
-                    mainWebView.stopLoading();
+                    currentWebView.stopLoading();
                 }
                 return true;
 
@@ -2911,109 +2166,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     @SuppressWarnings("deprecation")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        // Get the menu item ID.
         int menuItemId = menuItem.getItemId();
 
+        // Run the commands that correspond to the selected menu item.
         switch (menuItemId) {
-            case R.id.home:
-                loadUrl(homepage);
-                break;
+            case R.id.close_tab:
+                // Get a handle for the tab layout.
+                TabLayout tabLayout = findViewById(R.id.tablayout);
 
-            case R.id.back:
-                if (mainWebView.canGoBack()) {
-                    // Reset the formatted URL string so the page will load correctly if blocking of third-party requests is enabled.
-                    formattedUrlString = "";
+                // Get the current tab number.
+                int currentTabNumber = tabLayout.getSelectedTabPosition();
 
-                    // Set `navigatingHistory` so that the domain settings are applied when the new URL is loaded.
-                    navigatingHistory = true;
-
-                    // Load the previous website in the history.
-                    mainWebView.goBack();
-                }
-                break;
-
-            case R.id.forward:
-                if (mainWebView.canGoForward()) {
-                    // Reset the formatted URL string so the page will load correctly if blocking of third-party requests is enabled.
-                    formattedUrlString = "";
-
-                    // Set `navigatingHistory` so that the domain settings are applied when the new URL is loaded.
-                    navigatingHistory = true;
-
-                    // Load the next website in the history.
-                    mainWebView.goForward();
-                }
-                break;
-
-            case R.id.history:
-                // Get the `WebBackForwardList`.
-                WebBackForwardList webBackForwardList = mainWebView.copyBackForwardList();
-
-                // Show the URL history dialog and name this instance `R.string.history`.
-                DialogFragment urlHistoryDialogFragment = UrlHistoryDialog.loadBackForwardList(this, webBackForwardList);
-                urlHistoryDialogFragment.show(getSupportFragmentManager(), getString(R.string.history));
-                break;
-
-            case R.id.requests:
-                // Launch the requests activity.
-                Intent requestsIntent = new Intent(this, RequestsActivity.class);
-                startActivity(requestsIntent);
-                break;
-
-            case R.id.downloads:
-                // Launch the system Download Manager.
-                Intent downloadManagerIntent = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
-
-                // Launch as a new task so that Download Manager and Privacy Browser show as separate windows in the recent tasks list.
-                downloadManagerIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                startActivity(downloadManagerIntent);
-                break;
-
-            case R.id.domains:
-                // Set the flag to reapply the domain settings on restart when returning from Domain Settings.
-                reapplyDomainSettingsOnRestart = true;
-                currentDomainName = "";
-
-                // Launch the domains activity.
-                Intent domainsIntent = new Intent(this, DomainsActivity.class);
-                startActivity(domainsIntent);
-                break;
-
-            case R.id.settings:
-                // Set the flag to reapply app settings on restart when returning from Settings.
-                reapplyAppSettingsOnRestart = true;
-
-                // Set the flag to reapply the domain settings on restart when returning from Settings.
-                reapplyDomainSettingsOnRestart = true;
-                currentDomainName = "";
-
-                // Launch the settings activity.
-                Intent settingsIntent = new Intent(this, SettingsActivity.class);
-                startActivity(settingsIntent);
-                break;
-
-            case R.id.import_export:
-                // Launch the import/export activity.
-                Intent importExportIntent = new Intent (this, ImportExportActivity.class);
-                startActivity(importExportIntent);
-                break;
-
-            case R.id.logcat:
-                // Launch the logcat activity.
-                Intent logcatIntent = new Intent(this, LogcatActivity.class);
-                startActivity(logcatIntent);
-                break;
-
-            case R.id.guide:
-                // Launch `GuideActivity`.
-                Intent guideIntent = new Intent(this, GuideActivity.class);
-                startActivity(guideIntent);
-                break;
-
-            case R.id.about:
-                // Launch `AboutActivity`.
-                Intent aboutIntent = new Intent(this, AboutActivity.class);
-                startActivity(aboutIntent);
+                // Delete the tab and page.
+                webViewPagerAdapter.deletePage(currentTabNumber);
                 break;
 
             case R.id.clear_and_exit:
@@ -3099,8 +2265,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Clear the cache.
                 if (clearEverything || sharedPreferences.getBoolean("clear_cache", true)) {
-                    // `true` includes disk files.
-                    mainWebView.clearCache(true);
+                    // Clear the cache.
+                    // TODO
+                    currentWebView.clearCache(true);
 
                     // Manually delete the cache directories.
                     try {
@@ -3120,10 +2287,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Clear SSL certificate preferences.
-                mainWebView.clearSslPreferences();
+                // TODO
+                currentWebView.clearSslPreferences();
 
                 // Clear the back/forward history.
-                mainWebView.clearHistory();
+                // TODO
+                currentWebView.clearHistory();
 
                 // Clear `formattedUrlString`.
                 formattedUrlString = null;
@@ -3132,7 +2301,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 customHeaders.clear();
 
                 // Destroy the internal state of `mainWebView`.
-                mainWebView.destroy();
+                // TODO
+                currentWebView.destroy();
 
                 // Manually delete the `app_webview` folder, which contains the cookies, DOM storage, form data, and `Service Worker` cache.
                 // See `https://code.google.com/p/android/issues/detail?id=233826&thanks=233826&ts=1486670530`.
@@ -3157,6 +2327,108 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Remove the terminated program from RAM.  The status code is `0`.
                 System.exit(0);
+                break;
+
+            case R.id.home:
+                loadUrl(homepage);
+                break;
+
+            case R.id.back:
+                if (currentWebView.canGoBack()) {
+                    // Reset the formatted URL string so the page will load correctly if blocking of third-party requests is enabled.
+                    formattedUrlString = "";
+
+                    // Set `navigatingHistory` so that the domain settings are applied when the new URL is loaded.
+                    navigatingHistory = true;
+
+                    // Load the previous website in the history.
+                    currentWebView.goBack();
+                }
+                break;
+
+            case R.id.forward:
+                if (currentWebView.canGoForward()) {
+                    // Reset the formatted URL string so the page will load correctly if blocking of third-party requests is enabled.
+                    formattedUrlString = "";
+
+                    // Set `navigatingHistory` so that the domain settings are applied when the new URL is loaded.
+                    navigatingHistory = true;
+
+                    // Load the next website in the history.
+                    currentWebView.goForward();
+                }
+                break;
+
+            case R.id.history:
+                // Get the `WebBackForwardList`.
+                WebBackForwardList webBackForwardList = currentWebView.copyBackForwardList();
+
+                // Show the URL history dialog and name this instance `R.string.history`.
+                DialogFragment urlHistoryDialogFragment = UrlHistoryDialog.loadBackForwardList(this, webBackForwardList);
+                urlHistoryDialogFragment.show(getSupportFragmentManager(), getString(R.string.history));
+                break;
+
+            case R.id.requests:
+                // Launch the requests activity.
+                Intent requestsIntent = new Intent(this, RequestsActivity.class);
+                startActivity(requestsIntent);
+                break;
+
+            case R.id.downloads:
+                // Launch the system Download Manager.
+                Intent downloadManagerIntent = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
+
+                // Launch as a new task so that Download Manager and Privacy Browser show as separate windows in the recent tasks list.
+                downloadManagerIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                startActivity(downloadManagerIntent);
+                break;
+
+            case R.id.domains:
+                // Set the flag to reapply the domain settings on restart when returning from Domain Settings.
+                reapplyDomainSettingsOnRestart = true;
+                currentDomainName = "";
+
+                // Launch the domains activity.
+                Intent domainsIntent = new Intent(this, DomainsActivity.class);
+                startActivity(domainsIntent);
+                break;
+
+            case R.id.settings:
+                // Set the flag to reapply app settings on restart when returning from Settings.
+                reapplyAppSettingsOnRestart = true;
+
+                // Set the flag to reapply the domain settings on restart when returning from Settings.
+                reapplyDomainSettingsOnRestart = true;
+                currentDomainName = "";
+
+                // Launch the settings activity.
+                Intent settingsIntent = new Intent(this, SettingsActivity.class);
+                startActivity(settingsIntent);
+                break;
+
+            case R.id.import_export:
+                // Launch the import/export activity.
+                Intent importExportIntent = new Intent (this, ImportExportActivity.class);
+                startActivity(importExportIntent);
+                break;
+
+            case R.id.logcat:
+                // Launch the logcat activity.
+                Intent logcatIntent = new Intent(this, LogcatActivity.class);
+                startActivity(logcatIntent);
+                break;
+
+            case R.id.guide:
+                // Launch `GuideActivity`.
+                Intent guideIntent = new Intent(this, GuideActivity.class);
+                startActivity(guideIntent);
+                break;
+
+            case R.id.about:
+                // Launch `AboutActivity`.
+                Intent aboutIntent = new Intent(this, AboutActivity.class);
+                startActivity(aboutIntent);
                 break;
         }
 
@@ -3208,7 +2480,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     @Override
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
         // Store the `HitTestResult`.
-        final WebView.HitTestResult hitTestResult = mainWebView.getHitTestResult();
+        final WebView.HitTestResult hitTestResult = currentWebView.getHitTestResult();
 
         // Create strings.
         final String imageUrl;
@@ -3825,7 +3097,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Initiate the download.
             downloadManager.enqueue(downloadRequest);
         } else {  // The image is not an HTTP or HTTPS URI.
-            Snackbar.make(mainWebView, R.string.cannot_download_image, Snackbar.LENGTH_INDEFINITE).show();
+            Snackbar.make(currentWebView, R.string.cannot_download_image, Snackbar.LENGTH_INDEFINITE).show();
         }
     }
 
@@ -3877,7 +3149,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Initiate the download.
             downloadManager.enqueue(downloadRequest);
         } else {  // The download is not an HTTP or HTTPS URI.
-            Snackbar.make(mainWebView, R.string.cannot_download_file, Snackbar.LENGTH_INDEFINITE).show();
+            Snackbar.make(currentWebView, R.string.cannot_download_file, Snackbar.LENGTH_INDEFINITE).show();
         }
     }
 
@@ -3897,12 +3169,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         httpAuthHandler.proceed(usernameEditText.getText().toString(), passwordEditText.getText().toString());
     }
 
-    public void viewSslCertificate(View view) {
-        // Show the `ViewSslCertificateDialog` `AlertDialog` and name this instance `@string/view_ssl_certificate`.
-        DialogFragment viewSslCertificateDialogFragment = new ViewSslCertificateDialog();
-        viewSslCertificateDialogFragment.show(getSupportFragmentManager(), getString(R.string.view_ssl_certificate));
-    }
-
     @Override
     public void onSslErrorCancel() {
         sslErrorHandler.cancel();
@@ -3915,7 +3181,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void onPinnedMismatchBack() {
-        if (mainWebView.canGoBack()) {  // There is a back page in the history.
+        if (currentWebView.canGoBack()) {  // There is a back page in the history.
             // Reset the formatted URL string so the page will load correctly if blocking of third-party requests is enabled.
             formattedUrlString = "";
 
@@ -3923,7 +3189,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             navigatingHistory = true;
 
             // Go back.
-            mainWebView.goBack();
+            currentWebView.goBack();
         } else {  // There are no pages to go back to.
             // Load a blank page
             loadUrl("");
@@ -3945,13 +3211,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         navigatingHistory = true;
 
         // Load the history entry.
-        mainWebView.goBackOrForward(moveBackOrForwardSteps);
+        currentWebView.goBackOrForward(moveBackOrForwardSteps);
     }
 
     @Override
     public void onClearHistory() {
         // Clear the history.
-        mainWebView.clearHistory();
+        currentWebView.clearHistory();
     }
 
     // Override `onBackPressed` to handle the navigation drawer and `mainWebView`.
@@ -3975,7 +3241,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 loadBookmarksFolder();
             }
 
-        } else if (mainWebView.canGoBack()) {  // There is at least one item in the `WebView` history.
+        } else if (currentWebView.canGoBack()) {  // There is at least one item in the current WebView history.
             // Reset the formatted URL string so the page will load correctly if blocking of third-party requests is enabled.
             formattedUrlString = "";
 
@@ -3983,7 +3249,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             navigatingHistory = true;
 
             // Go back.
-            mainWebView.goBack();
+            currentWebView.goBack();
         } else {  // There isn't anything to do in Privacy Browser.
             // Pass `onBackPressed()` to the system.
             super.onBackPressed();
@@ -4079,17 +3345,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         urlIsLoading = !url.equals("");
 
         // Load the URL.
-        mainWebView.loadUrl(url, customHeaders);
+        currentWebView.loadUrl(url, customHeaders);
     }
 
     public void findPreviousOnPage(View view) {
         // Go to the previous highlighted phrase on the page.  `false` goes backwards instead of forwards.
-        mainWebView.findNext(false);
+        currentWebView.findNext(false);
     }
 
     public void findNextOnPage(View view) {
         // Go to the next highlighted phrase on the page. `true` goes forwards instead of backwards.
-        mainWebView.findNext(true);
+        currentWebView.findNext(true);
     }
 
     public void closeFindOnPage(View view) {
@@ -4101,7 +3367,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         findOnPageEditText.setText(null);
 
         // Clear the highlighted phrases.
-        mainWebView.clearMatches();
+        currentWebView.clearMatches();
 
         // Hide the find on page linear layout.
         findOnPageLinearLayout.setVisibility(View.GONE);
@@ -4110,7 +3376,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         toolbar.setVisibility(View.VISIBLE);
 
         // Hide the keyboard.
-        inputMethodManager.hideSoftInputFromWindow(mainWebView.getWindowToken(), 0);
+        inputMethodManager.hideSoftInputFromWindow(currentWebView.getWindowToken(), 0);
     }
 
     private void applyAppSettings() {
@@ -4143,7 +3409,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
 
         // Set the app bar scrolling.
-        mainWebView.setNestedScrollingEnabled(sharedPreferences.getBoolean("scroll_app_bar", true));
+        currentWebView.setNestedScrollingEnabled(sharedPreferences.getBoolean("scroll_app_bar", true));
 
         // Update the full screen browsing mode settings.
         if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
@@ -4196,8 +3462,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // The deprecated `.getDrawable()` must be used until the minimum API >= 21.
     @SuppressWarnings("deprecation")
     private boolean applyDomainSettings(String url, boolean resetFavoriteIcon, boolean reloadWebsite) {
+        // Get a handle for the URL edit text.
+        EditText urlEditText = findViewById(R.id.url_edittext);
+
         // Get the current user agent.
-        String initialUserAgent = mainWebView.getSettings().getUserAgentString();
+        String initialUserAgent = currentWebView.getSettings().getUserAgentString();
 
         // Initialize a variable to track if the user agent changes.
         boolean userAgentChanged = false;
@@ -4235,8 +3504,29 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Reset the favorite icon if specified.
             if (resetFavoriteIcon) {
+                // Store the favorite icon bitmap.
                 favoriteIconBitmap = favoriteIconDefaultBitmap;
-                favoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(favoriteIconBitmap, 64, 64, true));
+
+                // Get a handle for the tab layout.
+                TabLayout tabLayout = findViewById(R.id.tablayout);
+
+                // Get the current tab.
+                TabLayout.Tab currentTab = tabLayout.getTabAt(tabLayout.getSelectedTabPosition());
+
+                // Remove the warning below that the current tab might be null.
+                assert currentTab != null;
+
+                // Get the current tab custom view.
+                View currentTabCustomView = currentTab.getCustomView();
+
+                // Remove the warning below that the current tab custom view might be null.
+                assert currentTabCustomView != null;
+
+                // Get the current tab favorite icon image view.
+                ImageView currentTabFavoriteIconImageView = currentTabCustomView.findViewById(R.id.favorite_icon_imageview);
+
+                // Set the default favorite icon as the favorite icon for this tab.
+                currentTabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(favoriteIconBitmap, 64, 64, true));
             }
 
             // Get a handle for the swipe refresh layout.
@@ -4373,25 +3663,25 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 currentHostDomainSettingsCursor.close();
 
                 // Apply the domain settings.
-                mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
+                currentWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
                 cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
-                mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
+                currentWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
 
                 // Apply the form data setting if the API < 26.
                 if (Build.VERSION.SDK_INT < 26) {
-                    mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
+                    currentWebView.getSettings().setSaveFormData(saveFormDataEnabled);
                 }
 
                 // Apply the font size.
                 if (fontSize == 0) {  // Apply the default font size.
-                    mainWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
+                    currentWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
                 } else {  // Apply the specified font size.
-                    mainWebView.getSettings().setTextZoom(fontSize);
+                    currentWebView.getSettings().setTextZoom(fontSize);
                 }
 
                 // Set third-party cookies status if API >= 21.
                 if (Build.VERSION.SDK_INT >= 21) {
-                    cookieManager.setAcceptThirdPartyCookies(mainWebView, thirdPartyCookiesEnabled);
+                    cookieManager.setAcceptThirdPartyCookies(currentWebView, thirdPartyCookiesEnabled);
                 }
 
                 // Only set the user agent if the webpage is not currently loading.  Otherwise, changing the user agent on redirects can cause the original website to reload.
@@ -4406,22 +3696,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         switch (defaultUserAgentArrayPosition) {
                             case UNRECOGNIZED_USER_AGENT:  // The default user agent name is not on the canonical list.
                                 // This is probably because it was set in an older version of Privacy Browser before the switch to persistent user agent names.
-                                mainWebView.getSettings().setUserAgentString(defaultUserAgentName);
+                                currentWebView.getSettings().setUserAgentString(defaultUserAgentName);
                                 break;
 
                             case SETTINGS_WEBVIEW_DEFAULT_USER_AGENT:
                                 // Set the user agent to `""`, which uses the default value.
-                                mainWebView.getSettings().setUserAgentString("");
+                                currentWebView.getSettings().setUserAgentString("");
                                 break;
 
                             case SETTINGS_CUSTOM_USER_AGENT:
                                 // Set the custom user agent.
-                                mainWebView.getSettings().setUserAgentString(defaultCustomUserAgentString);
+                                currentWebView.getSettings().setUserAgentString(defaultCustomUserAgentString);
                                 break;
 
                             default:
                                 // Get the user agent string from the user agent data array
-                                mainWebView.getSettings().setUserAgentString(userAgentDataArray[defaultUserAgentArrayPosition]);
+                                currentWebView.getSettings().setUserAgentString(userAgentDataArray[defaultUserAgentArrayPosition]);
                         }
                     } else {  // Set the user agent according to the stored name.
                         // Get the array position of the user agent name.
@@ -4429,22 +3719,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         switch (userAgentArrayPosition) {
                             case UNRECOGNIZED_USER_AGENT:  // The user agent name contains a custom user agent.
-                                mainWebView.getSettings().setUserAgentString(userAgentName);
+                                currentWebView.getSettings().setUserAgentString(userAgentName);
                                 break;
 
                             case SETTINGS_WEBVIEW_DEFAULT_USER_AGENT:
                                 // Set the user agent to `""`, which uses the default value.
-                                mainWebView.getSettings().setUserAgentString("");
+                                currentWebView.getSettings().setUserAgentString("");
                                 break;
 
                             default:
                                 // Get the user agent string from the user agent data array.
-                                mainWebView.getSettings().setUserAgentString(userAgentDataArray[userAgentArrayPosition]);
+                                currentWebView.getSettings().setUserAgentString(userAgentDataArray[userAgentArrayPosition]);
                         }
                     }
 
                     // Store the applied user agent string, which is used in the View Source activity.
-                    appliedUserAgentString = mainWebView.getSettings().getUserAgentString();
+                    appliedUserAgentString = currentWebView.getSettings().getUserAgentString();
 
                     // Update the user agent change tracker.
                     userAgentChanged = !appliedUserAgentString.equals(initialUserAgent);
@@ -4470,23 +3760,23 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Set the loading of webpage images.
                 switch (displayWebpageImagesInt) {
                     case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT:
-                        mainWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImages);
+                        currentWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImages);
                         break;
 
                     case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_ENABLED:
-                        mainWebView.getSettings().setLoadsImagesAutomatically(true);
+                        currentWebView.getSettings().setLoadsImagesAutomatically(true);
                         break;
 
                     case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_DISABLED:
-                        mainWebView.getSettings().setLoadsImagesAutomatically(false);
+                        currentWebView.getSettings().setLoadsImagesAutomatically(false);
                         break;
                 }
 
                 // Set a green background on `urlTextBox` to indicate that custom domain settings are being used.  We have to use the deprecated `.getDrawable()` until the minimum API >= 21.
                 if (darkTheme) {
-                    urlAppBarRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_dark_blue));
+                    urlEditText.setBackground(getResources().getDrawable(R.drawable.url_bar_background_dark_blue));
                 } else {
-                    urlAppBarRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_light_green));
+                    urlEditText.setBackground(getResources().getDrawable(R.drawable.url_bar_background_light_green));
                 }
             } else {  // The new URL does not have custom domain settings.  Load the defaults.
                 // Store the values from `sharedPreferences` in variables.
@@ -4508,15 +3798,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Apply the default settings.
-                mainWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
+                currentWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
                 cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
-                mainWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
-                mainWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
+                currentWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
+                currentWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
                 swipeRefreshLayout.setEnabled(defaultSwipeToRefresh);
 
                 // Apply the form data setting if the API < 26.
                 if (Build.VERSION.SDK_INT < 26) {
-                    mainWebView.getSettings().setSaveFormData(saveFormDataEnabled);
+                    currentWebView.getSettings().setSaveFormData(saveFormDataEnabled);
                 }
 
                 // Reset the pinned variables.
@@ -4535,7 +3825,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Set third-party cookies status if API >= 21.
                 if (Build.VERSION.SDK_INT >= 21) {
-                    cookieManager.setAcceptThirdPartyCookies(mainWebView, thirdPartyCookiesEnabled);
+                    cookieManager.setAcceptThirdPartyCookies(currentWebView, thirdPartyCookiesEnabled);
                 }
 
                 // Only set the user agent if the webpage is not currently loading.  Otherwise, changing the user agent on redirects can cause the original website to reload.
@@ -4548,36 +3838,36 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     switch (userAgentArrayPosition) {
                         case UNRECOGNIZED_USER_AGENT:  // The default user agent name is not on the canonical list.
                             // This is probably because it was set in an older version of Privacy Browser before the switch to persistent user agent names.
-                            mainWebView.getSettings().setUserAgentString(defaultUserAgentName);
+                            currentWebView.getSettings().setUserAgentString(defaultUserAgentName);
                             break;
 
                         case SETTINGS_WEBVIEW_DEFAULT_USER_AGENT:
                             // Set the user agent to `""`, which uses the default value.
-                            mainWebView.getSettings().setUserAgentString("");
+                            currentWebView.getSettings().setUserAgentString("");
                             break;
 
                         case SETTINGS_CUSTOM_USER_AGENT:
                             // Set the custom user agent.
-                            mainWebView.getSettings().setUserAgentString(defaultCustomUserAgentString);
+                            currentWebView.getSettings().setUserAgentString(defaultCustomUserAgentString);
                             break;
 
                         default:
                             // Get the user agent string from the user agent data array
-                            mainWebView.getSettings().setUserAgentString(userAgentDataArray[userAgentArrayPosition]);
+                            currentWebView.getSettings().setUserAgentString(userAgentDataArray[userAgentArrayPosition]);
                     }
 
                     // Store the applied user agent string, which is used in the View Source activity.
-                    appliedUserAgentString = mainWebView.getSettings().getUserAgentString();
+                    appliedUserAgentString = currentWebView.getSettings().getUserAgentString();
 
                     // Update the user agent change tracker.
                     userAgentChanged = !appliedUserAgentString.equals(initialUserAgent);
                 }
 
                 // Set the loading of webpage images.
-                mainWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImages);
+                currentWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImages);
 
                 // Set a transparent background on `urlTextBox`.  The deprecated `.getDrawable()` must be used until the minimum API >= 21.
-                urlAppBarRelativeLayout.setBackgroundDrawable(getResources().getDrawable(R.color.transparent));
+                urlEditText.setBackgroundDrawable(getResources().getDrawable(R.color.transparent));
             }
 
             // Close the domains database helper.
@@ -4591,7 +3881,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Reload the website if returning from the Domains activity.
         if (reloadWebsite) {
-            mainWebView.reload();
+            currentWebView.reload();
         }
 
         // Return the user agent changed status.
@@ -4649,13 +3939,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 waitingForOrbot = true;
 
                 // Disable the wide view port so that the waiting for Orbot text is displayed correctly.
-                mainWebView.getSettings().setUseWideViewPort(false);
+                currentWebView.getSettings().setUseWideViewPort(false);
 
                 // Load a waiting page.  `null` specifies no encoding, which defaults to ASCII.
-                mainWebView.loadData(waitingForOrbotHtmlString, "text/html", null);
+                currentWebView.loadData(waitingForOrbotHtmlString, "text/html", null);
             } else if (reloadWebsite) {  // Orbot is ready and the website should be reloaded.
                 // Reload the website.
-                mainWebView.reload();
+                currentWebView.reload();
             }
         } else {  // Set the non-Tor options.
             // Set `homepageString` as `homepage`.
@@ -4688,7 +3978,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Reload the website if requested.
             if (reloadWebsite) {
-                mainWebView.reload();
+                currentWebView.reload();
             }
         }
     }
@@ -5054,6 +4344,1014 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Reset the getting IP addresses tracker.
             gettingIpAddresses = false;
+        }
+    }
+
+    private class WebViewPagerAdapter extends FragmentPagerAdapter {
+        // The WebView fragments list contains all the WebViews.
+        private LinkedList<WebViewTabFragment> webViewFragmentsList = new LinkedList<>();
+
+        // Define the constructor.
+        private WebViewPagerAdapter(FragmentManager fragmentManager){
+            // Run the default commands.
+            super(fragmentManager);
+        }
+
+        @Override
+        public int getCount() {
+            // Return the number of pages.
+            return webViewFragmentsList.size();
+        }
+
+        @Override
+        public int getItemPosition(@NonNull Object object) {
+            //noinspection SuspiciousMethodCalls
+            if (webViewFragmentsList.contains(object)) {
+                // The tab has not been deleted.
+                return POSITION_UNCHANGED;
+            } else {
+                // The tab has been deleted.
+                return POSITION_NONE;
+            }
+        }
+
+        @Override
+        public Fragment getItem(int pageNumber) {
+            // Get a WebView for a particular page.  Page numbers are 0 indexed.
+            return webViewFragmentsList.get(pageNumber);
+        }
+
+        private void addPage() {
+            // Add a new page.  The pages and tabs are 0 indexed, so the size of the current list equals the number of the next page.
+            webViewFragmentsList.add(WebViewTabFragment.createTab(webViewFragmentsList.size()));
+
+            // Update the view pager.
+            notifyDataSetChanged();
+        }
+
+        private void deletePage(int pageNumber) {
+            // Get a handle for the tab layout.
+            TabLayout tabLayout = findViewById(R.id.tablayout);
+
+            // TODO always move to the next tab if possible.
+            // Select a tab that is not being deleted.
+            if (pageNumber == 0) {  // The first tab is being deleted.
+                // Get a handle for the second tab.  The tabs are 0 indexed.
+                TabLayout.Tab secondTab = tabLayout.getTabAt(1);
+
+                // Remove the incorrect lint warning below that the second tab might be null.
+                assert secondTab != null;
+
+                // Select the second tab.
+                secondTab.select();
+            } else {  // The first tab is not being deleted.
+                // Get a handle for the previous tab.
+                TabLayout.Tab previousTab = tabLayout.getTabAt(pageNumber - 1);
+
+                // Remove the incorrect lint warning below tha the previous tab might be null.
+                assert previousTab != null;
+
+                // Select the previous tab.
+                previousTab.select();
+            }
+
+            // Delete the page.
+            webViewFragmentsList.remove(pageNumber);
+
+            // Delete the tab.
+            tabLayout.removeTabAt(pageNumber);
+
+            // Update the view pager.
+            notifyDataSetChanged();
+        }
+    }
+
+    public void addTab(View view) {
+        // Add the new WebView page.
+        webViewPagerAdapter.addPage();
+
+        // Get a handle for the tab layout.
+        TabLayout tabLayout = findViewById(R.id.tablayout);
+
+        // Get a handle for the new tab.  The tabs are 0 indexed.
+        TabLayout.Tab newTab = tabLayout.getTabAt(tabLayout.getTabCount() - 1);
+
+        // Remove the incorrect warning below that the new tab might be null.
+        assert newTab != null;
+
+        // Move the tab layout to the new tab.
+        newTab.select();
+    }
+
+    @Override
+    public void initializeWebView(NestedScrollWebView nestedScrollWebView, int tabNumber) {
+        // Get handles for the activity views.
+        final FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
+        final DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
+        final RelativeLayout mainContentRelativeLayout = findViewById(R.id.main_content_relativelayout);
+        final ActionBar actionBar = getSupportActionBar();
+        final TabLayout tabLayout = findViewById(R.id.tablayout);
+        final SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
+
+        // Remove the incorrect lint warnings below that the some of the views might be null.
+        assert actionBar != null;
+
+        // TODO.  Still doesn't work right.
+        // Create the tab if it doesn't already exist.
+        try {
+            TabLayout.Tab tab = tabLayout.getTabAt(tabNumber);
+
+            assert tab != null;
+
+            tab.getCustomView();
+        } catch (Exception exception) {
+            tabLayout.addTab(tabLayout.newTab());
+        }
+
+        // Get the current tab.
+        TabLayout.Tab currentTab = tabLayout.getTabAt(tabNumber);
+
+        // Remove the lint warning below that the current tab might be null.
+        assert currentTab != null;
+
+        // Set a custom view on the current tab.
+        currentTab.setCustomView(R.layout.custom_tab_view);
+
+        // Get the custom view from the tab.
+        View currentTabView = currentTab.getCustomView();
+
+        // Remove the incorrect warning below that the current tab view might be null.
+        assert currentTabView != null;
+
+        // Get the current views from the tab.
+        ImageView tabFavoriteIconImageView = currentTabView.findViewById(R.id.favorite_icon_imageview);
+        TextView tabTitleTextView = currentTabView.findViewById(R.id.title_textview);
+
+
+        //TODO
+        final ProgressBar progressBar = findViewById(R.id.progress_bar);
+
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Get the relevant preferences.
+        boolean downloadWithExternalApp = sharedPreferences.getBoolean("download_with_external_app", false);
+
+        // Allow pinch to zoom.
+        nestedScrollWebView.getSettings().setBuiltInZoomControls(true);
+
+        // Hide zoom controls.
+        nestedScrollWebView.getSettings().setDisplayZoomControls(false);
+
+        // Don't allow mixed content (HTTP and HTTPS) on the same website.
+        if (Build.VERSION.SDK_INT >= 21) {
+            nestedScrollWebView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+        }
+
+        // Set the WebView to use a wide viewport.  Otherwise, some web pages will be scrunched and some content will render outside the screen.
+        nestedScrollWebView.getSettings().setUseWideViewPort(true);
+
+        // Set the WebView to load in overview mode (zoomed out to the maximum width).
+        nestedScrollWebView.getSettings().setLoadWithOverviewMode(true);
+
+        // Explicitly disable geolocation.
+        nestedScrollWebView.getSettings().setGeolocationEnabled(false);
+
+        // Create a double-tap gesture detector to toggle full-screen mode.
+        GestureDetector doubleTapGestureDetector = new GestureDetector(getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
+            // Override `onDoubleTap()`.  All other events are handled using the default settings.
+            @Override
+            public boolean onDoubleTap(MotionEvent event) {
+                if (fullScreenBrowsingModeEnabled) {  // Only process the double-tap if full screen browsing mode is enabled.
+                    // Toggle the full screen browsing mode tracker.
+                    inFullScreenBrowsingMode = !inFullScreenBrowsingMode;
+
+                    // Toggle the full screen browsing mode.
+                    if (inFullScreenBrowsingMode) {  // Switch to full screen mode.
+                        // Hide the app bar if specified.
+                        if (hideAppBar) {
+                            actionBar.hide();
+                        }
+
+                        // Hide the banner ad in the free flavor.
+                        if (BuildConfig.FLAVOR.contentEquals("free")) {
+                            AdHelper.hideAd(findViewById(R.id.adview));
+                        }
+
+                        // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                        /* Hide the system bars.
+                         * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                         * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+                         * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                         * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+                         */
+                        rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                    } else {  // Switch to normal viewing mode.
+                        // Show the app bar.
+                        actionBar.show();
+
+                        // Show the banner ad in the free flavor.
+                        if (BuildConfig.FLAVOR.contentEquals("free")) {
+                            // Reload the ad.
+                            AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_unit_id));
+                        }
+
+                        // Remove the `SYSTEM_UI` flags from the root frame layout.
+                        rootFrameLayout.setSystemUiVisibility(0);
+
+                        // Add the translucent status flag.
+                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                    }
+
+                    // Consume the double-tap.
+                    return true;
+                } else { // Do not consume the double-tap because full screen browsing mode is disabled.
+                    return false;
+                }
+            }
+        });
+
+        // Pass all touch events on the WebView through the double-tap gesture detector.
+        nestedScrollWebView.setOnTouchListener((View view, MotionEvent event) -> {
+            // Call `performClick()` on the view, which is required for accessibility.
+            view.performClick();
+
+            // Send the event to the gesture detector.
+            return doubleTapGestureDetector.onTouchEvent(event);
+        });
+
+        // Register the WebView for a context menu.  This is used to see link targets and download images.
+        registerForContextMenu(nestedScrollWebView);
+
+        // Allow the downloading of files.
+        nestedScrollWebView.setDownloadListener((String url, String userAgent, String contentDisposition, String mimetype, long contentLength) -> {
+            // Check if the download should be processed by an external app.
+            if (downloadWithExternalApp) {  // Download with an external app.
+                // Create a download intent.  Not specifying the action type will display the maximum number of options.
+                Intent downloadIntent = new Intent();
+
+                // Set the URI and the MIME type.  Specifying `text/html` displays a good number of options.
+                downloadIntent.setDataAndType(Uri.parse(url), "text/html");
+
+                // Flag the intent to open in a new task.
+                downloadIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                // Show the chooser.
+                startActivity(Intent.createChooser(downloadIntent, getString(R.string.open_with)));
+            } else {  // Download with Android's download manager.
+                // Check to see if the WRITE_EXTERNAL_STORAGE permission has already been granted.
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {  // The storage permission has not been granted.
+                    // The WRITE_EXTERNAL_STORAGE permission needs to be requested.
+
+                    // Store the variables for future use by `onRequestPermissionsResult()`.
+                    downloadUrl = url;
+                    downloadContentDisposition = contentDisposition;
+                    downloadContentLength = contentLength;
+
+                    // Show a dialog if the user has previously denied the permission.
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
+                        // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_FILE.
+                        DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_FILE);
+
+                        // Show the download location permission alert dialog.  The permission will be requested when the the dialog is closed.
+                        downloadLocationPermissionDialogFragment.show(fragmentManager, getString(R.string.download_location));
+                    } else {  // Show the permission request directly.
+                        // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
+                        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_FILE_REQUEST_CODE);
+                    }
+                } else {  // The storage permission has already been granted.
+                    // Get a handle for the download file alert dialog.
+                    DialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(url, contentDisposition, contentLength);
+
+                    // Show the download file alert dialog.
+                    downloadFileDialogFragment.show(fragmentManager, getString(R.string.download));
+                }
+            }
+        });
+
+        // Update the find on page count.
+        nestedScrollWebView.setFindListener(new WebView.FindListener() {
+            // Get a handle for `findOnPageCountTextView`.
+            final TextView findOnPageCountTextView = findViewById(R.id.find_on_page_count_textview);
+
+            @Override
+            public void onFindResultReceived(int activeMatchOrdinal, int numberOfMatches, boolean isDoneCounting) {
+                if ((isDoneCounting) && (numberOfMatches == 0)) {  // There are no matches.
+                    // Set `findOnPageCountTextView` to `0/0`.
+                    findOnPageCountTextView.setText(R.string.zero_of_zero);
+                } else if (isDoneCounting) {  // There are matches.
+                    // `activeMatchOrdinal` is zero-based.
+                    int activeMatch = activeMatchOrdinal + 1;
+
+                    // Build the match string.
+                    String matchString = activeMatch + "/" + numberOfMatches;
+
+                    // Set `findOnPageCountTextView`.
+                    findOnPageCountTextView.setText(matchString);
+                }
+            }
+        });
+
+        // Set the web chrome client.
+        nestedScrollWebView.setWebChromeClient(new WebChromeClient() {
+            // Update the progress bar when a page is loading.
+            @Override
+            public void onProgressChanged(WebView view, int progress) {
+                // Inject the night mode CSS if night mode is enabled.
+                if (nightMode) {
+                    // `background-color: #212121` sets the background to be dark gray.  `color: #BDBDBD` sets the text color to be light gray.  `box-shadow: none` removes a lower underline on links
+                    // used by WordPress.  `text-decoration: none` removes all text underlines.  `text-shadow: none` removes text shadows, which usually have a hard coded color.
+                    // `border: none` removes all borders, which can also be used to underline text.  `a {color: #1565C0}` sets links to be a dark blue.
+                    // `::selection {background: #0D47A1}' sets the text selection highlight color to be a dark blue. `!important` takes precedent over any existing sub-settings.
+                    nestedScrollWebView.evaluateJavascript("(function() {var parent = document.getElementsByTagName('head').item(0); var style = document.createElement('style'); style.type = 'text/css'; " +
+                            "style.innerHTML = '* {background-color: #212121 !important; color: #BDBDBD !important; box-shadow: none !important; text-decoration: none !important;" +
+                            "text-shadow: none !important; border: none !important;} a {color: #1565C0 !important;} ::selection {background: #0D47A1 !important;}'; parent.appendChild(style)})()", value -> {
+                        // Initialize a handler to display `mainWebView`.
+                        Handler displayWebViewHandler = new Handler();
+
+                        // Setup a runnable to display `mainWebView` after a delay to allow the CSS to be applied.
+                        Runnable displayWebViewRunnable = () -> {
+                            // Only display `mainWebView` if the progress bar is gone.  This prevents the display of the `WebView` while it is still loading.
+                            if (progressBar.getVisibility() == View.GONE) {
+                                nestedScrollWebView.setVisibility(View.VISIBLE);
+                            }
+                        };
+
+                        // Displaying of `mainWebView` after 500 milliseconds.
+                        displayWebViewHandler.postDelayed(displayWebViewRunnable, 500);
+                    });
+                }
+
+                // Update the progress bar.
+                progressBar.setProgress(progress);
+
+                // Set the visibility of the progress bar.
+                if (progress < 100) {
+                    // Show the progress bar.
+                    progressBar.setVisibility(View.VISIBLE);
+                } else {
+                    // Hide the progress bar.
+                    progressBar.setVisibility(View.GONE);
+
+                    // Display `mainWebView` if night mode is disabled.
+                    // Because of a race condition between `applyDomainSettings` and `onPageStarted`, when night mode is set by domain settings the `WebView` may be hidden even if night mode is not
+                    // currently enabled.
+                    if (!nightMode) {
+                        nestedScrollWebView.setVisibility(View.VISIBLE);
+                    }
+
+                    //Stop the swipe to refresh indicator if it is running
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+
+            // Set the favorite icon when it changes.
+            @Override
+            public void onReceivedIcon(WebView view, Bitmap icon) {
+                // Only update the favorite icon if the website has finished loading.
+                if (progressBar.getVisibility() == View.GONE) {
+                    // Save a copy of the favorite icon.
+                    // TODO.  We need to save and access the icons for each tab.
+                    favoriteIconBitmap = icon;
+
+                    tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(icon, 64, 64, true));
+                }
+            }
+
+            // Save a copy of the title when it changes.
+            @Override
+            public void onReceivedTitle(WebView view, String title) {
+                // Save a copy of the title.
+                // TODO.  Replace `webViewTitle` with `currentWebView.getTitle()`.
+                webViewTitle = title;
+
+                // Set the title as the tab text.
+                tabTitleTextView.setText(webViewTitle);
+            }
+
+            // Enter full screen video.
+            @Override
+            public void onShowCustomView(View video, CustomViewCallback callback) {
+                // Set the full screen video flag.
+                displayingFullScreenVideo = true;
+
+                // Pause the ad if this is the free flavor.
+                if (BuildConfig.FLAVOR.contentEquals("free")) {
+                    // The AdView is destroyed and recreated, which changes the ID, every time it is reloaded to handle possible rotations.
+                    AdHelper.pauseAd(findViewById(R.id.adview));
+                }
+
+                // Hide the keyboard.
+                inputMethodManager.hideSoftInputFromWindow(nestedScrollWebView.getWindowToken(), 0);
+
+                // Hide the main content relative layout.
+                mainContentRelativeLayout.setVisibility(View.GONE);
+
+                // Remove the translucent status bar overlay on the `Drawer Layout`, which is special and needs its own command.
+                drawerLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
+                // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                /* Hide the system bars.
+                 * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                 * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+                 * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                 * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+                 */
+                rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+                // Disable the sliding drawers.
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+                // Add the video view to the full screen video frame layout.
+                fullScreenVideoFrameLayout.addView(video);
+
+                // Show the full screen video frame layout.
+                fullScreenVideoFrameLayout.setVisibility(View.VISIBLE);
+            }
+
+            // Exit full screen video.
+            @Override
+            public void onHideCustomView() {
+                // Unset the full screen video flag.
+                displayingFullScreenVideo = false;
+
+                // Remove all the views from the full screen video frame layout.
+                fullScreenVideoFrameLayout.removeAllViews();
+
+                // Hide the full screen video frame layout.
+                fullScreenVideoFrameLayout.setVisibility(View.GONE);
+
+                // Enable the sliding drawers.
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+
+                // Show the main content relative layout.
+                mainContentRelativeLayout.setVisibility(View.VISIBLE);
+
+                // Apply the appropriate full screen mode the `SYSTEM_UI` flags.
+                if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
+                    // Hide the app bar if specified.
+                    if (hideAppBar) {
+                        actionBar.hide();
+                    }
+
+                    // Hide the banner ad in the free flavor.
+                    if (BuildConfig.FLAVOR.contentEquals("free")) {
+                        AdHelper.hideAd(findViewById(R.id.adview));
+                    }
+
+                    // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                    /* Hide the system bars.
+                     * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                     * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+                     * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                     * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+                     */
+                    rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                } else {  // Switch to normal viewing mode.
+                    // Remove the `SYSTEM_UI` flags from the root frame layout.
+                    rootFrameLayout.setSystemUiVisibility(0);
+
+                    // Add the translucent status flag.
+                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                }
+
+                // Reload the ad for the free flavor if not in full screen mode.
+                if (BuildConfig.FLAVOR.contentEquals("free") && !inFullScreenBrowsingMode) {
+                    // Reload the ad.
+                    AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_unit_id));
+                }
+            }
+
+            // Upload files.
+            @Override
+            public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+                // Show the file chooser if the device is running API >= 21.
+                if (Build.VERSION.SDK_INT >= 21) {
+                    // Store the file path callback.
+                    fileChooserCallback = filePathCallback;
+
+                    // Create an intent to open a chooser based ont the file chooser parameters.
+                    Intent fileChooserIntent = fileChooserParams.createIntent();
+
+                    // Open the file chooser.  Currently only one `startActivityForResult` exists in this activity, so the request code, used to differentiate them, is simply `0`.
+                    startActivityForResult(fileChooserIntent, 0);
+                }
+                return true;
+            }
+        });
+
+        nestedScrollWebView.setWebViewClient(new WebViewClient() {
+            // `shouldOverrideUrlLoading` makes this `WebView` the default handler for URLs inside the app, so that links are not kicked out to other apps.
+            // The deprecated `shouldOverrideUrlLoading` must be used until API >= 24.
+            @SuppressWarnings("deprecation")
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url.startsWith("http")) {  // Load the URL in Privacy Browser.
+                    // Reset the formatted URL string so the page will load correctly if blocking of third-party requests is enabled.
+                    formattedUrlString = "";
+
+                    // Apply the domain settings for the new URL.  `applyDomainSettings` doesn't do anything if the domain has not changed.
+                    boolean userAgentChanged = applyDomainSettings(url, true, false);
+
+                    // Check if the user agent has changed.
+                    if (userAgentChanged) {
+                        // Manually load the URL.  The changing of the user agent will cause WebView to reload the previous URL.
+                        nestedScrollWebView.loadUrl(url, customHeaders);
+
+                        // Returning true indicates that Privacy Browser is manually handling the loading of the URL.
+                        return true;
+                    } else {
+                        // Returning false causes the current WebView to handle the URL and prevents it from adding redirects to the history list.
+                        return false;
+                    }
+                } else if (url.startsWith("mailto:")) {  // Load the email address in an external email program.
+                    // Use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+
+                    // Parse the url and set it as the data for the intent.
+                    emailIntent.setData(Uri.parse(url));
+
+                    // Open the email program in a new task instead of as part of Privacy Browser.
+                    emailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                    // Make it so.
+                    startActivity(emailIntent);
+
+                    // Returning true indicates Privacy Browser is handling the URL by creating an intent.
+                    return true;
+                } else if (url.startsWith("tel:")) {  // Load the phone number in the dialer.
+                    // Open the dialer and load the phone number, but wait for the user to place the call.
+                    Intent dialIntent = new Intent(Intent.ACTION_DIAL);
+
+                    // Add the phone number to the intent.
+                    dialIntent.setData(Uri.parse(url));
+
+                    // Open the dialer in a new task instead of as part of Privacy Browser.
+                    dialIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                    // Make it so.
+                    startActivity(dialIntent);
+
+                    // Returning true indicates Privacy Browser is handling the URL by creating an intent.
+                    return true;
+                } else {  // Load a system chooser to select an app that can handle the URL.
+                    // Open an app that can handle the URL.
+                    Intent genericIntent = new Intent(Intent.ACTION_VIEW);
+
+                    // Add the URL to the intent.
+                    genericIntent.setData(Uri.parse(url));
+
+                    // List all apps that can handle the URL instead of just opening the first one.
+                    genericIntent.addCategory(Intent.CATEGORY_BROWSABLE);
+
+                    // Open the app in a new task instead of as part of Privacy Browser.
+                    genericIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                    // Start the app or display a snackbar if no app is available to handle the URL.
+                    try {
+                        startActivity(genericIntent);
+                    } catch (ActivityNotFoundException exception) {
+                        Snackbar.make(nestedScrollWebView, getString(R.string.unrecognized_url) + "  " + url, Snackbar.LENGTH_SHORT).show();
+                    }
+
+                    // Returning true indicates Privacy Browser is handling the URL by creating an intent.
+                    return true;
+                }
+            }
+
+            // Check requests against the block lists.  The deprecated `shouldInterceptRequest()` must be used until minimum API >= 21.
+            @SuppressWarnings("deprecation")
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+                // Create an empty web resource response to be used if the resource request is blocked.
+                WebResourceResponse emptyWebResourceResponse = new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
+
+                // Reset the whitelist results tracker.
+                whiteListResultStringArray = null;
+
+                // Initialize the third party request tracker.
+                boolean isThirdPartyRequest = false;
+
+                // Initialize the current domain string.
+                String currentDomain = "";
+
+                // Nobody is happy when comparing null strings.
+                if (!(formattedUrlString == null) && !(url == null)) {
+                    // Get the domain strings to URIs.
+                    Uri currentDomainUri = Uri.parse(formattedUrlString);
+                    Uri requestDomainUri = Uri.parse(url);
+
+                    // Get the domain host names.
+                    String currentBaseDomain = currentDomainUri.getHost();
+                    String requestBaseDomain = requestDomainUri.getHost();
+
+                    // Update the current domain variable.
+                    currentDomain = currentBaseDomain;
+
+                    // Only compare the current base domain and the request base domain if neither is null.
+                    if (!(currentBaseDomain == null) && !(requestBaseDomain == null)) {
+                        // Determine the current base domain.
+                        while (currentBaseDomain.indexOf(".", currentBaseDomain.indexOf(".") + 1) > 0) {  // There is at least one subdomain.
+                            // Remove the first subdomain.
+                            currentBaseDomain = currentBaseDomain.substring(currentBaseDomain.indexOf(".") + 1);
+                        }
+
+                        // Determine the request base domain.
+                        while (requestBaseDomain.indexOf(".", requestBaseDomain.indexOf(".") + 1) > 0) {  // There is at least one subdomain.
+                            // Remove the first subdomain.
+                            requestBaseDomain = requestBaseDomain.substring(requestBaseDomain.indexOf(".") + 1);
+                        }
+
+                        // Update the third party request tracker.
+                        isThirdPartyRequest = !currentBaseDomain.equals(requestBaseDomain);
+                    }
+                }
+
+                // Block third-party requests if enabled.
+                if (isThirdPartyRequest && blockAllThirdPartyRequests) {
+                    // Increment the blocked requests counters.
+                    blockedRequests++;
+                    thirdPartyBlockedRequests++;
+
+                    // Update the titles of the blocklist menu items.  This must be run from the UI thread.
+                    activity.runOnUiThread(() -> {
+                        navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                        blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                        blockAllThirdPartyRequestsMenuItem.setTitle(thirdPartyBlockedRequests + " - " + getString(R.string.block_all_third_party_requests));
+                    });
+
+                    // Add the request to the log.
+                    resourceRequests.add(new String[]{String.valueOf(REQUEST_THIRD_PARTY), url});
+
+                    // Return an empty web resource response.
+                    return emptyWebResourceResponse;
+                }
+
+                // Check UltraPrivacy if it is enabled.
+                if (ultraPrivacyEnabled) {
+                    if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, ultraPrivacy)) {
+                        // Increment the blocked requests counters.
+                        blockedRequests++;
+                        ultraPrivacyBlockedRequests++;
+
+                        // Update the titles of the blocklist menu items.  This must be run from the UI thread.
+                        activity.runOnUiThread(() -> {
+                            navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                            blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                            ultraPrivacyMenuItem.setTitle(ultraPrivacyBlockedRequests + " - " + getString(R.string.ultraprivacy));
+                        });
+
+                        // The resource request was blocked.  Return an empty web resource response.
+                        return emptyWebResourceResponse;
+                    }
+
+                    // If the whitelist result is not null, the request has been allowed by UltraPrivacy.
+                    if (whiteListResultStringArray != null) {
+                        // Add a whitelist entry to the resource requests array.
+                        resourceRequests.add(whiteListResultStringArray);
+
+                        // The resource request has been allowed by UltraPrivacy.  `return null` loads the requested resource.
+                        return null;
+                    }
+                }
+
+                // Check EasyList if it is enabled.
+                if (easyListEnabled) {
+                    if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, easyList)) {
+                        // Increment the blocked requests counters.
+                        blockedRequests++;
+                        easyListBlockedRequests++;
+
+                        // Update the titles of the blocklist menu items.  This must be run from the UI thread.
+                        activity.runOnUiThread(() -> {
+                            navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                            blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                            easyListMenuItem.setTitle(easyListBlockedRequests + " - " + getString(R.string.easylist));
+                        });
+
+                        // Reset the whitelist results tracker (because otherwise it will sometimes add results to the list due to a race condition).
+                        whiteListResultStringArray = null;
+
+                        // The resource request was blocked.  Return an empty web resource response.
+                        return emptyWebResourceResponse;
+                    }
+                }
+
+                // Check EasyPrivacy if it is enabled.
+                if (easyPrivacyEnabled) {
+                    if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, easyPrivacy)) {
+                        // Increment the blocked requests counters.
+                        blockedRequests++;
+                        easyPrivacyBlockedRequests++;
+
+                        // Update the titles of the blocklist menu items.  This must be run from the UI thread.
+                        activity.runOnUiThread(() -> {
+                            navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                            blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                            easyPrivacyMenuItem.setTitle(easyPrivacyBlockedRequests + " - " + getString(R.string.easyprivacy));
+                        });
+
+                        // Reset the whitelist results tracker (because otherwise it will sometimes add results to the list due to a race condition).
+                        whiteListResultStringArray = null;
+
+                        // The resource request was blocked.  Return an empty web resource response.
+                        return emptyWebResourceResponse;
+                    }
+                }
+
+                // Check Fanboy’s Annoyance List if it is enabled.
+                if (fanboysAnnoyanceListEnabled) {
+                    if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, fanboysAnnoyanceList)) {
+                        // Increment the blocked requests counters.
+                        blockedRequests++;
+                        fanboysAnnoyanceListBlockedRequests++;
+
+                        // Update the titles of the blocklist menu items.  This must be run from the UI thread.
+                        activity.runOnUiThread(() -> {
+                            navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                            blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                            fanboysAnnoyanceListMenuItem.setTitle(fanboysAnnoyanceListBlockedRequests + " - " + getString(R.string.fanboys_annoyance_list));
+                        });
+
+                        // Reset the whitelist results tracker (because otherwise it will sometimes add results to the list due to a race condition).
+                        whiteListResultStringArray = null;
+
+                        // The resource request was blocked.  Return an empty web resource response.
+                        return emptyWebResourceResponse;
+                    }
+                } else if (fanboysSocialBlockingListEnabled) {  // Only check Fanboy’s Social Blocking List if Fanboy’s Annoyance List is disabled.
+                    if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, fanboysSocialList)) {
+                        // Increment the blocked requests counters.
+                        blockedRequests++;
+                        fanboysSocialBlockingListBlockedRequests++;
+
+                        // Update the titles of the blocklist menu items.  This must be run from the UI thread.
+                        activity.runOnUiThread(() -> {
+                            navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                            blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                            fanboysSocialBlockingListMenuItem.setTitle(fanboysSocialBlockingListBlockedRequests + " - " + getString(R.string.fanboys_social_blocking_list));
+                        });
+
+                        // Reset the whitelist results tracker (because otherwise it will sometimes add results to the list due to a race condition).
+                        whiteListResultStringArray = null;
+
+                        // The resource request was blocked.  Return an empty web resource response.
+                        return emptyWebResourceResponse;
+                    }
+                }
+
+                // Add the request to the log because it hasn't been processed by any of the previous checks.
+                if (whiteListResultStringArray != null) {  // The request was processed by a whitelist.
+                    resourceRequests.add(whiteListResultStringArray);
+                } else {  // The request didn't match any blocklist entry.  Log it as a default request.
+                    resourceRequests.add(new String[]{String.valueOf(REQUEST_DEFAULT), url});
+                }
+
+                // The resource request has not been blocked.  `return null` loads the requested resource.
+                return null;
+            }
+
+            // Handle HTTP authentication requests.
+            @Override
+            public void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm) {
+                // Store `handler` so it can be accessed from `onHttpAuthenticationCancel()` and `onHttpAuthenticationProceed()`.
+                httpAuthHandler = handler;
+
+                // Display the HTTP authentication dialog.
+                DialogFragment httpAuthenticationDialogFragment = HttpAuthenticationDialog.displayDialog(host, realm);
+                httpAuthenticationDialogFragment.show(fragmentManager, getString(R.string.http_authentication));
+            }
+
+            // Update the URL in urlTextBox when the page starts to load.
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                // Set `urlIsLoading` to `true`, so that redirects while loading do not trigger changes in the user agent, which forces another reload of the existing page.
+                // This is also used to determine when to check for pinned mismatches.
+                urlIsLoading = true;
+
+                // Reset the list of host IP addresses.
+                currentHostIpAddresses = "";
+
+                // Reset the list of resource requests.
+                resourceRequests.clear();
+
+                // Initialize the counters for requests blocked by each blocklist.
+                blockedRequests = 0;
+                easyListBlockedRequests = 0;
+                easyPrivacyBlockedRequests = 0;
+                fanboysAnnoyanceListBlockedRequests = 0;
+                fanboysSocialBlockingListBlockedRequests = 0;
+                ultraPrivacyBlockedRequests = 0;
+                thirdPartyBlockedRequests = 0;
+
+                // If night mode is enabled, hide `mainWebView` until after the night mode CSS is applied.
+                if (nightMode) {
+                    nestedScrollWebView.setVisibility(View.INVISIBLE);
+                }
+
+                // Hide the keyboard.
+                inputMethodManager.hideSoftInputFromWindow(nestedScrollWebView.getWindowToken(), 0);
+
+                // Check to see if Privacy Browser is waiting on Orbot.
+                if (!waitingForOrbot) {  // Process the URL.
+                    // The formatted URL string must be updated at the beginning of the load, so that if the user toggles JavaScript during the load the new website is reloaded.
+                    formattedUrlString = url;
+
+                    // Display the formatted URL text.
+                    urlTextBox.setText(formattedUrlString);
+
+                    // Apply text highlighting to `urlTextBox`.
+                    highlightUrlText();
+
+                    // Get a URI for the current URL.
+                    Uri currentUri = Uri.parse(formattedUrlString);
+
+                    // Get the IP addresses for the host.
+                    new GetHostIpAddresses(activity).execute(currentUri.getHost());
+
+                    // Apply any custom domain settings if the URL was loaded by navigating history.
+                    if (navigatingHistory) {
+                        // Apply the domain settings.
+                        boolean userAgentChanged = applyDomainSettings(url, true, false);
+
+                        // Reset `navigatingHistory`.
+                        navigatingHistory = false;
+
+                        // Manually load the URL if the user agent has changed, which will have caused the previous URL to be reloaded.
+                        if (userAgentChanged) {
+                            loadUrl(formattedUrlString);
+                        }
+                    }
+
+                    // Replace Refresh with Stop if the menu item has been created.  (The WebView typically begins loading before the menu items are instantiated.)
+                    if (refreshMenuItem != null) {
+                        // Set the title.
+                        refreshMenuItem.setTitle(R.string.stop);
+
+                        // If the icon is displayed in the AppBar, set it according to the theme.
+                        if (displayAdditionalAppBarIcons) {
+                            if (darkTheme) {
+                                refreshMenuItem.setIcon(R.drawable.close_dark);
+                            } else {
+                                refreshMenuItem.setIcon(R.drawable.close_light);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // It is necessary to update `formattedUrlString` and `urlTextBox` after the page finishes loading because the final URL can change during load.
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                // Reset the wide view port if it has been turned off by the waiting for Orbot message.
+                if (!waitingForOrbot) {
+                    // Only use a wide view port if the URL starts with `http`, not for `file://` and `content://`.
+                    nestedScrollWebView.getSettings().setUseWideViewPort(url.startsWith("http"));
+                }
+
+                // Flush any cookies to persistent storage.  `CookieManager` has become very lazy about flushing cookies in recent versions.
+                if (firstPartyCookiesEnabled && Build.VERSION.SDK_INT >= 21) {
+                    cookieManager.flush();
+                }
+
+                // Update the Refresh menu item if it has been created.
+                if (refreshMenuItem != null) {
+                    // Reset the Refresh title.
+                    refreshMenuItem.setTitle(R.string.refresh);
+
+                    // If the icon is displayed in the AppBar, reset it according to the theme.
+                    if (displayAdditionalAppBarIcons) {
+                        if (darkTheme) {
+                            refreshMenuItem.setIcon(R.drawable.refresh_enabled_dark);
+                        } else {
+                            refreshMenuItem.setIcon(R.drawable.refresh_enabled_light);
+                        }
+                    }
+                }
+
+
+                // Clear the cache and history if Incognito Mode is enabled.
+                if (incognitoModeEnabled) {
+                    // Clear the cache.  `true` includes disk files.
+                    nestedScrollWebView.clearCache(true);
+
+                    // Clear the back/forward history.
+                    nestedScrollWebView.clearHistory();
+
+                    // Manually delete cache folders.
+                    try {
+                        // Delete the main cache directory.
+                        privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/cache");
+
+                        // Delete the secondary `Service Worker` cache directory.
+                        // A `String[]` must be used because the directory contains a space and `Runtime.exec` will not escape the string correctly otherwise.
+                        privacyBrowserRuntime.exec(new String[]{"rm", "-rf", privateDataDirectoryString + "/app_webview/Service Worker/"});
+                    } catch (IOException e) {
+                        // Do nothing if an error is thrown.
+                    }
+                }
+
+                // Update the URL text box and apply domain settings if not waiting on Orbot.
+                if (!waitingForOrbot) {
+                    // Check to see if `WebView` has set `url` to be `about:blank`.
+                    if (url.equals("about:blank")) {  // `WebView` is blank, so `formattedUrlString` should be `""` and `urlTextBox` should display a hint.
+                        // Set `formattedUrlString` to `""`.
+                        formattedUrlString = "";
+
+                        urlTextBox.setText(formattedUrlString);
+
+                        // Request focus for `urlTextBox`.
+                        urlTextBox.requestFocus();
+
+                        // Display the keyboard.
+                        inputMethodManager.showSoftInput(urlTextBox, 0);
+
+                        // Apply the domain settings.  This clears any settings from the previous domain.
+                        applyDomainSettings(formattedUrlString, true, false);
+                    } else {  // `WebView` has loaded a webpage.
+                        // Set the formatted URL string.  Getting the URL from the WebView instead of using the one provided by `onPageFinished` makes websites like YouTube function correctly.
+                        formattedUrlString = nestedScrollWebView.getUrl();
+
+                        // Only update the URL text box if the user is not typing in it.
+                        if (!urlTextBox.hasFocus()) {
+                            // Display the formatted URL text.
+                            urlTextBox.setText(formattedUrlString);
+
+                            // Apply text highlighting to `urlTextBox`.
+                            highlightUrlText();
+                        }
+                    }
+
+                    // Store the SSL certificate so it can be accessed from `ViewSslCertificateDialog` and `PinnedMismatchDialog`.
+                    sslCertificate = nestedScrollWebView.getCertificate();
+
+                    // Check the current website information against any pinned domain information if the current IP addresses have been loaded.
+                    if (!gettingIpAddresses) {
+                        checkPinnedMismatch();
+                    }
+                }
+
+                // Reset `urlIsLoading`, which is used to prevent reloads on redirect if the user agent changes.  It is also used to determine when to check for pinned mismatches.
+                urlIsLoading = false;
+            }
+
+            // Handle SSL Certificate errors.
+            @Override
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                // Get the current website SSL certificate.
+                SslCertificate currentWebsiteSslCertificate = error.getCertificate();
+
+                // Extract the individual pieces of information from the current website SSL certificate.
+                String currentWebsiteIssuedToCName = currentWebsiteSslCertificate.getIssuedTo().getCName();
+                String currentWebsiteIssuedToOName = currentWebsiteSslCertificate.getIssuedTo().getOName();
+                String currentWebsiteIssuedToUName = currentWebsiteSslCertificate.getIssuedTo().getUName();
+                String currentWebsiteIssuedByCName = currentWebsiteSslCertificate.getIssuedBy().getCName();
+                String currentWebsiteIssuedByOName = currentWebsiteSslCertificate.getIssuedBy().getOName();
+                String currentWebsiteIssuedByUName = currentWebsiteSslCertificate.getIssuedBy().getUName();
+                Date currentWebsiteSslStartDate = currentWebsiteSslCertificate.getValidNotBeforeDate();
+                Date currentWebsiteSslEndDate = currentWebsiteSslCertificate.getValidNotAfterDate();
+
+                // Proceed to the website if the current SSL website certificate matches the pinned domain certificate.
+                if (pinnedSslCertificate &&
+                        currentWebsiteIssuedToCName.equals(pinnedSslIssuedToCName) && currentWebsiteIssuedToOName.equals(pinnedSslIssuedToOName) &&
+                        currentWebsiteIssuedToUName.equals(pinnedSslIssuedToUName) && currentWebsiteIssuedByCName.equals(pinnedSslIssuedByCName) &&
+                        currentWebsiteIssuedByOName.equals(pinnedSslIssuedByOName) && currentWebsiteIssuedByUName.equals(pinnedSslIssuedByUName) &&
+                        currentWebsiteSslStartDate.equals(pinnedSslStartDate) && currentWebsiteSslEndDate.equals(pinnedSslEndDate)) {
+
+                    // An SSL certificate is pinned and matches the current domain certificate.  Proceed to the website without displaying an error.
+                    handler.proceed();
+                } else {  // Either there isn't a pinned SSL certificate or it doesn't match the current website certificate.
+                    // Store `handler` so it can be accesses from `onSslErrorCancel()` and `onSslErrorProceed()`.
+                    sslErrorHandler = handler;
+
+                    // Display the SSL error `AlertDialog`.
+                    DialogFragment sslCertificateErrorDialogFragment = SslCertificateErrorDialog.displayDialog(error);
+                    sslCertificateErrorDialogFragment.show(fragmentManager, getString(R.string.ssl_certificate_error));
+                }
+            }
+        });
+
+        // Check to see if this is the first tab.
+        if (tabNumber == 0) {
+            // Set this nested scroll WebView as the current WebView.
+            currentWebView = nestedScrollWebView;
+
+            // Apply the app settings from the shared preferences.
+            applyAppSettings();
+
+            // Load the website if not waiting for Orbot to connect.
+            if (!waitingForOrbot) {
+                loadUrl(formattedUrlString);
+            }
         }
     }
 }

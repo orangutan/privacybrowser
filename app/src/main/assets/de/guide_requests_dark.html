@@ -1,6 +1,8 @@
 <!--
   Copyright © 2018 Soren Stoutner <soren@stoutner.com>.
 
+  Translation 2019 Bernhard G. Keller.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
   Privacy Browser is free software: you can redistribute it and/or modify
@@ -24,57 +26,58 @@
     </head>
 
     <body>
-        <h3><img class="title" src="../shared_images/local_activity_blue_dark.png"> Resource Requests</h3>
-
-        <p>When a URL is loaded, it typically makes a number of resource requests for CCS, JavaScript, image, and other files. Details about these requests can be viewed in the Requests activity.
-            The navigation drawer has a link to the Requests activity and also shows how many requests were blocked. Tapping on a request displays details about why it was allowed or blocked.</p>
+        <h3><img class="title" src="../shared_images/local_activity_blue_dark.png"> Resourcen-Zugriffe</h3>
+        
+        <p>Wenn eine URL geladen wird, wird üblicherweise eine Menge Anfragen für mit der Seite verbundene Ressourcen wie Bilder, CSS-, JavaScript- und andere Dateien an den betreffenden Webserver gestellt.
+			Details dazu können in der Ansicht "Zugriffe" betrachtet werden, welche über das Navigations-Menü links erreicht werden kann.
+			In dieser Ansicht wird auch dargestellt, wie viele (und welche) Anfragen geblockt wurden.
+            Durch Antippen der betreffenden Anfragen können weitere Details dazu angezeigt werden, die zeigen, warum die Anfrage erlaubt oder blockiert wurde.</p>
 
         <p><img class="center21" src="images/request_details.png"></p>
 
-        <p>Privacy Browser includes four <a href="https://easylist.to/">common blocklists</a> based on the <a href="https://adblockplus.org/filters">Adblock syntax</a>:
-            EasyList, EasyPrivacy, Fanboy’s Annoyance List, and Fanboy’s Social Blocking List.
-            These blocklists are processed by Privacy Browser into the following 22 sublists, which check resource requests in the order listed.</p>
+		<p>Privacy Browser enthält vier <a href="https://easylist.to/">gebräuchliche Filterlisten</a>, die auf der <a href="https://adblockplus.org/filters">Adblock-Syntax</a> basieren:
+			EasyList, EasyPrivacy, Fanboy’s Annoyance Filterliste und Fanboy’s Social Blocking Filterliste.
+			Diese werden in 22 Unter-Listen aufgeteilt, welche die Ressourcen-Zugriffe in der folgenden Reihenfolge überprüfen:</p>
 
         <ol>
-            <li>Main Whitelist</li>
-            <li>Final Whitelist</li>
-            <li>Domain Whitelist</li>
-            <li>Domain Initial Whitelist</li>
-            <li>Domain Final Whitelist</li>
-            <li>Third-Party Whitelist</li>
-            <li>Third-Party Domain Whitelist</li>
-            <li>Third-Party Domain Initial Whitelist</li>
-            <li>Main Blacklist</li>
-            <li>Initial Blacklist</li>
-            <li>Final Blacklist</li>
-            <li>Domain Blacklist</li>
-            <li>Domain Initial Blacklist</li>
-            <li>Domain Final Blacklist</li>
-            <li>Domain Regular Expression Blacklist</li>
-            <li>Third-Party Blacklist</li>
-            <li>Third-Party Initial Blacklist</li>
-            <li>Third-Party Domain Blacklist</li>
-            <li>Third-Party Domain Initial Blacklist</li>
-            <li>Third-Party Regular Expression Blacklist</li>
-            <li>Third-Party Domain Regular Expression Blacklist</li>
-            <li>Regular Expression Blacklist</li>
+            <li>Haupt-Positivliste</li>
+            <li>Positivliste (URL-Ende)</li>
+            <li>Domänen-Positivliste</li>
+            <li>Domänen-Positivliste (URL-Anfang)</li>
+            <li>Domänen-Positivliste (URL-Ende)</li>
+            <li>Drittanbieter-Positivliste</li>
+            <li>Drittanbieter-Domänen-Positivliste</li>
+            <li>Drittanbieter-Domänen-Positivliste (URL-Anfang)</li>
+            <li>Haupt-Negativliste</li>
+            <li>Negativliste (URL-Anfang)</li>
+            <li>Negativliste (URL-Ende)</li>
+            <li>Domänen-Negativliste</li>
+            <li>Domänen-Negativliste (URL-Anfang)</li>
+            <li>Domänen-Negativliste (URL-Ende)</li>
+            <li>Domänen-Negativliste mit regulären Ausdrücken</li>
+            <li>Drittanbieter-Negativliste</li>
+            <li>Drittanbieter-Negativliste (URL-Anfang)</li>
+            <li>Drittanbieter-Domänen-Negativliste</li>
+            <li>Drittanbieter-Domänen-Negativliste (URL-Anfang)</li>
+            <li>Drittanbieter-Negativliste mit regulären Ausdrücken</li>
+            <li>Drittanbieter-Domänen-Negativliste mit regulären Ausdrücken</li>
+            <li>Negativliste mit regulären Ausdrücken</li>
         </ol>
 
-        <p>Initial lists check against the beginning of the URL. Final lists check against the end of the URL. Domain lists only check against certain domains.
-            Third-party lists only apply if the root domain of the request is different than the root domain of the main URL.
-            Regular expression lists follow the <a href="https://en.wikipedia.org/wiki/Regular_expression">regular expression syntax</a>. Each sublist item has one or more entry.
-            In the case of domain sublists, the resource request is only checked against the item if the first entry matches the domain of the main URL.</p>
+        <p>Listen mit "(URL-Anfang)" prüfen gegen den Anfang einer URL, solche mit "(URL-Ende)" gegen das Ende der URL. Domänen-Listen prüfen gegen bestimmte Domains.
+			Drittanbieter-Listen greifen nur, wenn die Domain der Anfrage eine andere ist als die Domain der aufgerufenen URL.
+			Listen mit regulären Ausdrücken folgen der <a href="https://de.wikipedia.org/wiki/Reguläre_Ausdrücke">Syntax für reguläre Ausdrücke</a>. Jede Unter-Liste hat dabei einen oder mehrere Einträge.
+			Bei Domänen-Unterlisten werden die Ressourcen-Zugriffe nur dann überprüft, wenn der erste Eintrag der Domain der aufgerufenen URL entspricht.</p>
 
-        <p>Because of limitations in Android’s WebView, and to speed up processing of requests, Privacy Browser implements a simplified interpretation of the Adblock syntax.
-            This can sometimes lead to false positives, where resources are allowed or blocked in ways that weren’t intended by the original entry.
-            A more detailed description of how the blocklist entries are processed is available at <a href="https://www.stoutner.com/privacy-browser/blocklists/">stoutner.com</a>.</p>
+		<p>Aufgrund von Einschränkungen in Android’s WebView und um die Geschwindigkeit von Anfragen zu steigern, verwendet Privacy Browser eine vereinfachte Auswertung der Adblock-Syntax.
+			Dies kann manchmal zu "false positives" führen, bei denen Ressourcen erlaubt oder blockiert werden, die in den originalen Einträgen anders intendiert wären.
+			Eine detailiertere Beschreibung, wie die Listen-Einträge abgearbeitet werden, ist unter <a href="https://www.stoutner.com/privacy-browser/blocklists/">stoutner.com</a> verfügbar.</p>
 
-        <p>Privacy Browser has two additional blocklists,
-            one called <a href="https://www.stoutner.com/privacy-browser/blocklists/ultraprivacy/">UltraPrivacy</a> that blocks trackers that EasyPrivacy allows,
-            and the other that blocks all third-party requests.
-            A request is only considered third-party if the base domain of the request is different than the base domain of the URL.
-            For example, if <code>www.website.com</code> loads a picture from <code>images.website.com</code>,
-            this is not blocked as a third-party request because they both share the same base domain of <code>website.com</code>.
-            Blocking all third-party requests increases privacy, but this blocklist is disabled by default because it breaks a large number of websites.</p>
+		<p>Privacy Browser hat zwei weitere Sperrlisten: <a href="https://www.stoutner.com/privacy-browser/blocklists/ultraprivacy/">UltraPrivacy</a>, welche Tracker blockiert, die EasyPrivacy erlaubt,
+            und eine andere, die alle Drittanbieter-Anfragen blockiert.
+			Eine Anfrage wird dabei nur als Drittanbieter-Anfrage gewertet, wenn die Basis-Domain der Anfrage eine andere ist als die Basis-Domain der angefragten URL.
+			Lädt zum Beispiel die Seite <code>www.website.com</code> ein Bild von <code>images.website.com</code>, wird diese Anfrage nicht als Drittanbieter-Anfrage gewertet,
+            da die beiden Anfragen dieselbe Basis-Domain <code>website.com</code> haben.
+			Alle Drittanbieter-Anfragen zu blockieren verbessert zwar die Privatsphäre, diese Einstellung ist jedoch standardmäßig deaktiviert, da dadurch viele Webseiten verunstaltet werden können.</p>
     </body>
 </html>

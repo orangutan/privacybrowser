@@ -101,9 +101,10 @@
     <string name="username">Имя пользователя</string>
     <string name="password">Пароль</string>
 
-    <!-- MainWebViewActivity Navigation Drawer. -->
+    <!-- MainWebViewActivity Navigation Menu. -->
     <string name="navigation_drawer">Навигационная панель</string>
     <string name="navigation">Навигация</string>
+    <string name="clear_and_exit">Очистить и выйти</string>
     <string name="home">Домой</string>
     <string name="back">Назад</string>
     <string name="forward">Вперед</string>
@@ -115,7 +116,6 @@
     <string name="logcat">Logcat</string>
     <string name="guide">Руководство</string>
     <string name="about">О Privacy Browser</string>
-    <string name="clear_and_exit">Очистить и выйти</string>
 
     <!-- MainWebViewActivity Options Menu. -->
     <string name="javascript">JavaScript</string>

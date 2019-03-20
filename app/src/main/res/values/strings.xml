@@ -51,6 +51,8 @@
     <string name="no_title">No title</string>
     <string name="unrecognized_url">Unrecognized URL:</string>
     <string name="open_with">Open with</string>
+    <string name="new_tab">New tab</string>
+    <string name="add_tab">Add tab</string>
 
     <!-- Save As. -->
     <string name="save_as">Save As</string>
@@ -108,9 +110,11 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
 
-    <!-- MainWebViewActivity Navigation Drawer. -->
+    <!-- MainWebViewActivity Navigation Menu. -->
     <string name="navigation_drawer">Navigation Drawer</string>
     <string name="navigation">Navigation</string>
+    <string name="close_tab">Close Tab</string>
+    <string name="clear_and_exit">Clear and Exit</string>
     <string name="home">Home</string>
     <string name="back">Back</string>
     <string name="forward">Forward</string>
@@ -122,7 +126,6 @@
     <string name="logcat">Logcat</string>
     <string name="guide">Guide</string>
     <string name="about">About</string>
-    <string name="clear_and_exit">Clear and Exit</string>
 
     <!-- MainWebViewActivity Options Menu. -->
     <string name="javascript">JavaScript</string>

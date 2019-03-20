@@ -56,8 +56,12 @@ public class AboutActivity extends AppCompatActivity {
         // Set the content view.
         setContentView(R.layout.about_coordinatorlayout);
 
-        // `SupportActionBar` from `android.support.v7.app.ActionBar` must be used until the minimum API is >= 21.
+        // Get handles for the views.
         Toolbar toolbar = findViewById(R.id.about_toolbar);
+        TabLayout aboutTabLayout = findViewById(R.id.about_tablayout);
+        ViewPager aboutViewPager = findViewById(R.id.about_viewpager);
+
+        // Set the action bar.  `SupportActionBar` must be used until the minimum API is >= 21.
         setSupportActionBar(toolbar);
 
         // Get a handle for the action bar.
@@ -70,16 +74,14 @@ public class AboutActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         //  Setup the ViewPager.
-        ViewPager aboutViewPager = findViewById(R.id.about_viewpager);
-        aboutViewPager.setAdapter(new aboutPagerAdapter(getSupportFragmentManager()));
+        aboutViewPager.setAdapter(new AboutPagerAdapter(getSupportFragmentManager()));
 
-        // Setup the TabLayout and connect it to the ViewPager.
-        TabLayout aboutTabLayout = findViewById(R.id.about_tablayout);
+        // Connect the tab layout to the view pager.
         aboutTabLayout.setupWithViewPager(aboutViewPager);
     }
 
-    private class aboutPagerAdapter extends FragmentPagerAdapter {
-        private aboutPagerAdapter(FragmentManager fragmentManager) {
+    private class AboutPagerAdapter extends FragmentPagerAdapter {
+        private AboutPagerAdapter(FragmentManager fragmentManager) {
             // Run the default commands.
             super(fragmentManager);
         }

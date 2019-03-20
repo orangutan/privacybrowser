@@ -103,6 +103,7 @@
       <w>mitm</w>
       <w>mozilla</w>
       <w>navigationview</w>
+      <w>nestedscroll</w>
       <w>nightmode</w>
       <w>nist</w>
       <w>nojs</w>
@@ -183,6 +184,7 @@
       <w>webpage</w>
       <w>websocket</w>
       <w>webview</w>
+      <w>webviewpager</w>
       <w>whatismyip</w>
       <w>wipo</w>
       <w>wouldn</w>

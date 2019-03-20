@@ -1585,7 +1585,7 @@ public class BlockListHelper {
     }
 
     public boolean isBlocked(String currentDomain, String resourceUrl, boolean isThirdPartyRequest, ArrayList<List<String[]>> blockList) {
-        // Get the block list name.
+        // Get the blocklist name.
         String BLOCK_LIST_NAME_STRING = blockList.get(0).get(1)[0];
 
         // Assert that currentDomain != null only if this is a third party request.  Apparently, lint can't tell that this isn't redundant.

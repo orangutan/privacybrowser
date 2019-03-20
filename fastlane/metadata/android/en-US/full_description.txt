@@ -1,13 +1,13 @@
-Privacy Browser protects your privacy by disabling features like JavaScript, DOM storage, and cookies that are used by websites to track users.  Settings can be adjusted by domain and on-the-fly to enable these features when needed.  In addition, Privacy Browser incorporates the EasyList block lists, which block many tracking technologies even when JavaScript is enabled.
+Most browsers silently give websites massive amounts of information that allows them to track you and compromise your privacy. Websites and ad networks use technologies like JavaScript, cookies, DOM storage, user agents, and many other things to uniquely identify each user and track them between visits and across the web.
 
-Privacy Browser does not have tabbed browsing yet.  This is a planned feature for the 3.x series.
+Privacy Browser is designed to minimize the amount of information the browser presents to websites. By default, privacy sensitive features are disabled. If one of these technologies is required for a website to function correctly, the user may choose to turn it on for just that visit. Or, they can use domain settings to automatically turn on certain features when entering a specific website and turn them off again when leaving.
 
-Privacy Browser currently uses Android’s built-in WebView to render web pages.  As such, it works best when the latest version of WebView is installed.  In the 4.x series, Privacy Browser will switch to a forked version of Android’s WebView called Privacy WebView that will allow for advanced privacy features.
+Privacy Browser currently uses Android’s built-in WebView to render web pages. As such, it works best when the latest version of WebView is installed (see https://www.stoutner.com/privacy-browser/common-settings/webview/). In the 4.x series, Privacy Browser will switch to a forked version of Android’s WebView called Privacy WebView that will allow for advanced privacy features.
 
-Warning: Due to limitations in the OS, Privacy Browser is susceptible to MITM (Man In The Middle) attacks when browsing insecure websites from devices running Android KitKat (version 4.4.x, API 19).  More information about this issue is available at https://www.stoutner.com/kitkat-security-problems/.
+Warning: Android KitKat (version 4.4.x, API 19) ships an older version of OpenSSL, which is susceptible to MITM (Man In The Middle) attacks when browsing websites that use outdated protocols and cipher suites. More information about this issue is available at https://www.stoutner.com/kitkat-security-problems/.
 
 Features:
+• Integrated EasyList ad blocking.
 • Tor Orbot proxy support.
 • SSL certificate pinning.
-• Full screen browsing mode.
-• Night mode.
+• Import/Export of settings and bookmarks.

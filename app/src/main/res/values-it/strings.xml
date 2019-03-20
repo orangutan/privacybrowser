@@ -104,9 +104,10 @@
     <string name="username">Nome utente</string>
     <string name="password">Password</string>
 
-    <!-- MainWebViewActivity Navigation Drawer. -->
+    <!-- MainWebViewActivity Navigation Menu. -->
     <string name="navigation_drawer">Menù di navigazione</string>
     <string name="navigation">Navigazione</string>
+    <string name="clear_and_exit">Elimina dati ed esci</string>
     <string name="home">Home</string>
     <string name="back">Indietro</string>
     <string name="forward">Avanti</string>
@@ -118,7 +119,6 @@
     <string name="logcat">Logcat</string>
     <string name="guide">Guida</string>
     <string name="about">Informazioni</string>
-    <string name="clear_and_exit">Elimina dati ed esci</string>
 
     <!-- MainWebViewActivity Options Menu. -->
     <string name="javascript">JavaScript</string>

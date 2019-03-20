@@ -52,6 +52,7 @@ import java.text.DateFormat;
 import java.util.Date;
 
 public class AboutTabFragment extends Fragment {
+    // Track the current tab number.
     private int tabNumber;
 
     // Store the tab number in the arguments bundle.
@@ -83,7 +84,7 @@ public class AboutTabFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
         // Create a tab layout view.
         View tabLayout;
 
@@ -94,7 +95,7 @@ public class AboutTabFragment extends Fragment {
         // Load the tabs.  Tab numbers start at 0.
         if (tabNumber == 0) {  // Load the about tab.
             // Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.  The fragment will take care of attaching the root automatically.
-            tabLayout = inflater.inflate(R.layout.about_tab_version, container, false);
+            tabLayout = layoutInflater.inflate(R.layout.about_tab_version, container, false);
 
             // Get handles for the `TextViews`.
             TextView versionTextView = tabLayout.findViewById(R.id.version);
@@ -147,7 +148,7 @@ public class AboutTabFragment extends Fragment {
             String signatureAlgorithmLabel = getString(R.string.signature_algorithm) + "  ";
 
             // `webViewLayout` is only used to get the default user agent from `bare_webview`.  It is not used to render content on the screen.
-            View webViewLayout = inflater.inflate(R.layout.bare_webview, container, false);
+            View webViewLayout = layoutInflater.inflate(R.layout.bare_webview, container, false);
             WebView tabLayoutWebView = webViewLayout.findViewById(R.id.bare_webview);
             String userAgentString =  tabLayoutWebView.getSettings().getUserAgentString();
 
@@ -339,14 +340,14 @@ public class AboutTabFragment extends Fragment {
             }
         } else { // load a `WebView` for all the other tabs.  Tab numbers start at 0.
             // Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.  The fragment will take care of attaching the root automatically.
-            tabLayout = inflater.inflate(R.layout.bare_webview, container, false);
+            tabLayout = layoutInflater.inflate(R.layout.bare_webview, container, false);
 
             // Get a handle for `tabWebView`.
             WebView tabWebView = (WebView) tabLayout;
 
             // Load the tabs according to the theme.
             if (MainWebViewActivity.darkTheme) {  // The dark theme is applied.
-                // Set the background color.  We have to use the deprecated `.getColor()` until API >= 23.
+                // Set the background color.  The deprecated `.getColor()` must be used until the minimum API >= 23.
                 //noinspection deprecation
                 tabWebView.setBackgroundColor(getResources().getColor(R.color.gray_850));
 
