@@ -692,15 +692,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             @Override
             public void onPageSelected(int position) {
-                // TODO.  Consider using an array of the WebViews.
-                // Get the current WebView fragment.  Instantiate item returns the current item if it already exists.
-                Fragment webViewFragment = (Fragment) webViewPagerAdapter.instantiateItem(webViewPager, position);
+                // Get the WebView tab fragment.
+                WebViewTabFragment webViewTabFragment = webViewPagerAdapter.webViewFragmentsList.get(position);
 
-                // Remove the lint error below that the WebView fragment might be null.
-                assert webViewFragment.getView() != null;
+                // Get the fragment view.
+                View fragmentView = webViewTabFragment.getView();
+
+                // Remove the incorrect lint warning below that the fragment view might be null.
+                assert fragmentView != null;
 
                 // Store the current WebView.
-                currentWebView = webViewFragment.getView().findViewById(R.id.nestedscroll_webview);
+                currentWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
 
                 // Store the current formatted URL string.
                 formattedUrlString = currentWebView.getUrl();
@@ -711,7 +713,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Hide the soft keyboard.
                 inputMethodManager.hideSoftInputFromWindow(currentWebView.getWindowToken(), 0);
 
-                // Apply the current URL in the URL text box.
+                // Display the current URL in the URL text box.
                 urlEditText.setText(formattedUrlString);
 
                 // Highlight the URL text.
@@ -1189,11 +1191,25 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Run the default commands.
         super.onResume();
 
-        // Resume JavaScript (if enabled).
-        // TODO mainWebView.resumeTimers();
+        for (int i = 0; i < webViewPagerAdapter.webViewFragmentsList.size(); i++) {
+            // Get the WebView tab fragment.
+            WebViewTabFragment webViewTabFragment = webViewPagerAdapter.webViewFragmentsList.get(i);
 
-        // Resume `mainWebView`.
-        // TODO mainWebView.onResume();
+            // Get the fragment view.
+            View fragmentView = webViewTabFragment.getView();
+
+            // Only resume the WebViews if they exist (they won't when the app is first created).
+            if (fragmentView != null) {
+                // Get the nested scroll WebView from the tab fragment.
+                NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+
+                // Pause the nested scroll WebView JavaScript timers.
+                nestedScrollWebView.resumeTimers();
+
+                // Pause the nested scroll WebView.
+                nestedScrollWebView.onResume();
+            }
+        }
 
         // Display a message to the user if waiting for Orbot.
         if (waitingForOrbot && !orbotStatus.equals("ON")) {
@@ -1230,13 +1246,25 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Run the default commands.
         super.onPause();
 
-        // Pause `mainWebView`.
-        // TODO
-        currentWebView.onPause();
+        for (int i = 0; i < webViewPagerAdapter.webViewFragmentsList.size(); i++) {
+            // Get the WebView tab fragment.
+            WebViewTabFragment webViewTabFragment = webViewPagerAdapter.webViewFragmentsList.get(i);
 
-        // Stop all JavaScript.
-        // TODO
-        currentWebView.pauseTimers();
+            // Get the fragment view.
+            View fragmentView = webViewTabFragment.getView();
+
+            // Only pause the WebViews if they exist (they won't when the app is first created).
+            if (fragmentView != null) {
+                // Get the nested scroll WebView from the tab fragment.
+                NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+
+                // Pause the nested scroll WebView.
+                nestedScrollWebView.onPause();
+
+                // Pause the nested scroll WebView JavaScript timers.
+                nestedScrollWebView.pauseTimers();
+            }
+        }
 
         // Pause the ad or it will continue to consume resources in the background on the free flavor.
         if (BuildConfig.FLAVOR.contentEquals("free")) {
