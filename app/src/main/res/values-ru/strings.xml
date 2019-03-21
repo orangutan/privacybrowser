@@ -133,6 +133,7 @@
     <string name="options_fanboys_social_blocking_list">Fanboy’s social blocking list</string>
     <string name="options_block_all_third_party_requests">Блокировать все сторонние запросы</string>
     <string name="layout">Внешний вид</string>
+        <string name="user_agent_privacy_browser">Privacy Browser</string>
         <string name="user_agent_webview_default">WebView по умолчанию</string>
         <string name="user_agent_firefox_on_android">Firefox на Android</string>
         <string name="user_agent_chrome_on_android">Chrome на Android</string>

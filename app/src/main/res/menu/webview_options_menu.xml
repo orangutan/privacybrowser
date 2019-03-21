@@ -159,7 +159,7 @@
                     <group android:checkableBehavior ="single">
                         <item
                             android:id="@+id/user_agent_privacy_browser"
-                            android:title="@string/privacy_browser"
+                            android:title="@string/user_agent_privacy_browser"
                             android:orderInCategory="911"
                             app:showAsAction="never" />
 

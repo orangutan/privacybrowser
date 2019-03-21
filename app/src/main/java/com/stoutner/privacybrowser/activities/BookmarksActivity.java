@@ -79,6 +79,10 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     // `restartFromBookmarksDatabaseViewActivity` is public static so it can be accessed from `BookmarksDatabaseViewActivity`.  It is also used in `onRestart()`.
     public static boolean restartFromBookmarksDatabaseViewActivity;
 
+    //  The current WebView strings are public static so they can be updated from `MainWebViewActivity`.  They are use in `onCreate()`.
+    public static String currentWebViewUrl;
+    public static String currentWebViewTitle;
+
 
     // `bookmarksDatabaseHelper` is used in `onCreate()`, `onOptionsItemSelected()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`,
     // `onMoveToFolder()`, `deleteBookmarkFolderContents()`, `loadFolder()`, and `onDestroy()`.
@@ -553,8 +557,10 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
         // Set the create new bookmark FAB to display the `AlertDialog`.
         createBookmarkFab.setOnClickListener(view -> {
-            // Show the `CreateBookmarkDialog` `AlertDialog` and name the instance `@string/create_bookmark`.
-            DialogFragment createBookmarkDialog = new CreateBookmarkDialog();
+            // Instantiate the create bookmark dialog.
+            DialogFragment createBookmarkDialog = CreateBookmarkDialog.createBookmark(currentWebViewUrl, currentWebViewTitle, MainWebViewActivity.favoriteIconBitmap);
+
+            // Display the create bookmark dialog.
             createBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_bookmark));
         });
     }

@@ -111,8 +111,8 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
-
 import com.google.android.material.tabs.TabLayout;
+
 import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.asynctasks.GetHostIpAddresses;
@@ -120,12 +120,14 @@ import com.stoutner.privacybrowser.dialogs.AdConsentDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkFolderDialog;
 import com.stoutner.privacybrowser.dialogs.CreateHomeScreenShortcutDialog;
+import com.stoutner.privacybrowser.dialogs.DownloadFileDialog;
 import com.stoutner.privacybrowser.dialogs.DownloadImageDialog;
 import com.stoutner.privacybrowser.dialogs.DownloadLocationPermissionDialog;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkFolderDialog;
 import com.stoutner.privacybrowser.dialogs.HttpAuthenticationDialog;
 import com.stoutner.privacybrowser.dialogs.PinnedMismatchDialog;
+import com.stoutner.privacybrowser.dialogs.SslCertificateErrorDialog;
 import com.stoutner.privacybrowser.dialogs.UrlHistoryDialog;
 import com.stoutner.privacybrowser.dialogs.ViewSslCertificateDialog;
 import com.stoutner.privacybrowser.fragments.WebViewTabFragment;
@@ -134,8 +136,6 @@ import com.stoutner.privacybrowser.helpers.BlockListHelper;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 import com.stoutner.privacybrowser.helpers.OrbotProxyHelper;
-import com.stoutner.privacybrowser.dialogs.DownloadFileDialog;
-import com.stoutner.privacybrowser.dialogs.SslCertificateErrorDialog;
 import com.stoutner.privacybrowser.views.NestedScrollWebView;
 
 import java.io.ByteArrayInputStream;
@@ -162,22 +162,26 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         EditBookmarkFolderDialog.EditBookmarkFolderListener, HttpAuthenticationDialog.HttpAuthenticationListener, NavigationView.OnNavigationItemSelectedListener, WebViewTabFragment.NewTabListener,
         PinnedMismatchDialog.PinnedMismatchListener, SslCertificateErrorDialog.SslCertificateErrorListener, UrlHistoryDialog.UrlHistoryListener {
 
+    // TODO Consider removing
     // `darkTheme` is public static so it can be accessed from everywhere.
     public static boolean darkTheme;
 
+    // TODO Consider removing
     // `allowScreenshots` is public static so it can be accessed from everywhere.  It is also used in `onCreate()`.
     public static boolean allowScreenshots;
 
-    // `favoriteIconBitmap` is public static so it can be accessed from `CreateHomeScreenShortcutDialog`, `BookmarksActivity`, `BookmarksDatabaseViewActivity`, `CreateBookmarkDialog`,
-    // `CreateBookmarkFolderDialog`, `EditBookmarkDialog`, `EditBookmarkFolderDialog`, `EditBookmarkDatabaseViewDialog`, and `ViewSslCertificateDialog`.  It is also used in `onCreate()`,
-    // `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onCreateHomeScreenShortcut()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `applyDomainSettings()`.
+    // TODO Remove
+    // `favoriteIconBitmap` is public static so it can be accessed from `BookmarksActivity`, `BookmarksDatabaseViewActivity`, `CreateBookmarkFolderDialog`,
+    // `EditBookmarkDialog`, `EditBookmarkFolderDialog`, `EditBookmarkDatabaseViewDialog`, and `ViewSslCertificateDialog`.  It is also used in `onCreate()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`,
+    // `onCreateHomeScreenShortcut()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `applyDomainSettings()`.
     public static Bitmap favoriteIconBitmap;
 
+    // TODO Remove
     // `favoriteIconDefaultBitmap` public static so it can be accessed from `PinnedMismatchDialog`.  It is also used in `onCreate()` and `applyDomainSettings`.
     public static Bitmap favoriteIconDefaultBitmap;
 
-    // `formattedUrlString` is public static so it can be accessed from `AddDomainDialog`, `BookmarksActivity`, `DomainSettingsFragment`, `CreateBookmarkDialog`,
-    // and `PinnedMismatchDialog`.
+    // TODO Consider removing the formatted URL string.
+    // `formattedUrlString` is public static so it can be accessed from `AddDomainDialog`, `BookmarksActivity`, `DomainSettingsFragment`, and `PinnedMismatchDialog`.
     // It is also used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onCreateHomeScreenShortcutCreate()`, `loadUrlFromTextBox()`, and `applyProxyThroughOrbot()`.
     public static String formattedUrlString;
 
@@ -198,9 +202,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxyThroughOrbot()`.
     public static String orbotStatus;
-
-    // `webViewTitle` is public static so it can be accessed from `CreateBookmarkDialog`.  It is also used in `onCreate()`.
-    public static String webViewTitle;
 
     // `appliedUserAgentString` is public static so it can be accessed from `ViewSourceActivity`.  It is also used in `applyDomainSettings()`.
     public static String appliedUserAgentString;
@@ -791,6 +792,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Set the launch bookmarks activity FAB to launch the bookmarks activity.
         launchBookmarksActivityFab.setOnClickListener(v -> {
+            // Store the current WebView url and title in the bookmarks activity.
+            BookmarksActivity.currentWebViewUrl = currentWebView.getUrl();
+            BookmarksActivity.currentWebViewTitle = currentWebView.getTitle();
+
             // Create an intent to launch the bookmarks activity.
             Intent bookmarksIntent = new Intent(getApplicationContext(), BookmarksActivity.class);
 
@@ -810,8 +815,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Set the create new bookmark FAB to display an alert dialog.
         createBookmarkFab.setOnClickListener(view -> {
-            // Show the create bookmark dialog and name the instance `@string/create_bookmark`.
-            DialogFragment createBookmarkDialog = new CreateBookmarkDialog();
+            // Instantiate the create bookmark dialog.
+            DialogFragment createBookmarkDialog = CreateBookmarkDialog.createBookmark(currentWebView.getUrl(), currentWebView.getTitle(), favoriteIconBitmap);
+
+            // Display the create bookmark dialog.
             createBookmarkDialog.show(fragmentManager, resources.getString(R.string.create_bookmark));
         });
 
@@ -1016,11 +1023,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         saveFormDataEnabled = false;  // Form data can be removed once the minimum API >= 26.
         nightMode = false;
 
-        // Store the default user agent.
-        // TODO webViewDefaultUserAgent = mainWebView.getSettings().getUserAgentString();
+        // Inflate a bare WebView to get the default user agent.  It is not used to render content on the screen.
+        @SuppressLint("InflateParams") View webViewLayout = getLayoutInflater().inflate(R.layout.bare_webview, null, false);
 
-        // Initialize the WebView title.
-        webViewTitle = getString(R.string.no_title);
+        // Get a handle for the WebView.
+        WebView bareWebView = webViewLayout.findViewById(R.id.bare_webview);
+
+        // Store the default user agent.
+        webViewDefaultUserAgent = bareWebView.getSettings().getUserAgentString();
+
+        // Destroy the bare WebView.
+        bareWebView.destroy();
 
         // Initialize the favorite icon bitmap.  `ContextCompat` must be used until API >= 21.
         Drawable favoriteIconDrawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.world);
@@ -1137,8 +1150,23 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Reload the webpage if displaying of images has been disabled in the Settings activity.
             if (reloadOnRestart) {
                 // Reload the WebViews.
-                // TODO
-                currentWebView.reload();
+                for (int i = 0; i < webViewPagerAdapter.webViewFragmentsList.size(); i++) {
+                    // Get the WebView tab fragment.
+                    WebViewTabFragment webViewTabFragment = webViewPagerAdapter.webViewFragmentsList.get(i);
+
+                    // Get the fragment view.
+                    View fragmentView = webViewTabFragment.getView();
+
+                    // Only reload the WebViews if they exist.
+                    if (fragmentView != null) {
+                        // Get the nested scroll WebView from the tab fragment.
+                        NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+
+                        // TODO this doesn't seem to work if for WebViews that aren't visible.
+                        // Reload the WebView.
+                        nestedScrollWebView.reload();
+                    }
+                }
 
                 // Reset `reloadOnRestartBoolean`.
                 reloadOnRestart = false;
@@ -1398,7 +1426,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         ultraPrivacyMenuItem.setChecked(ultraPrivacyEnabled);
         blockAllThirdPartyRequestsMenuItem.setChecked(blockAllThirdPartyRequests);
         swipeToRefreshMenuItem.setChecked(swipeRefreshLayout.isEnabled());
-        // TODO displayImagesMenuItem.setChecked(mainWebView.getSettings().getLoadsImagesAutomatically());
+        displayImagesMenuItem.setChecked(currentWebView.getSettings().getLoadsImagesAutomatically());
         nightModeMenuItem.setChecked(nightMode);
         proxyThroughOrbotMenuItem.setChecked(proxyThroughOrbot);
 
@@ -1453,8 +1481,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         blockAllThirdPartyRequestsMenuItem.setTitle(thirdPartyBlockedRequests + " - " + getString(R.string.block_all_third_party_requests));
 
         // Get the current user agent.
-        // TODO String currentUserAgent = mainWebView.getSettings().getUserAgentString();
-        String currentUserAgent = "";
+        String currentUserAgent = currentWebView.getSettings().getUserAgentString();
 
         // Select the current user agent menu item.  A switch statement cannot be used because the user agents are not compile time constants.
         if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[0])) {  // Privacy Browser.
@@ -1486,8 +1513,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
 
         // Initialize font size variables.
-        // TODO int fontSize = mainWebView.getSettings().getTextZoom();
-        int fontSize = 100;
+        int fontSize = currentWebView.getSettings().getTextZoom();
         String fontSizeTitle;
         MenuItem selectedFontSizeMenuItem;
 
@@ -2138,7 +2164,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.share_url:
                 // Setup the share string.
-                String shareString = webViewTitle + " – " + formattedUrlString;
+                String shareString = currentWebView.getTitle() + " – " + formattedUrlString;
 
                 // Create the share intent.
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
@@ -3458,8 +3484,24 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             customHeaders.remove("DNT");
         }
 
-        // Set the app bar scrolling.
-        currentWebView.setNestedScrollingEnabled(sharedPreferences.getBoolean("scroll_app_bar", true));
+        // TODO this also needs to be set when creating a new tab.
+        // Set the app bar scrolling for each WebView.
+        for (int i = 0; i < webViewPagerAdapter.webViewFragmentsList.size(); i++) {
+            // Get the WebView tab fragment.
+            WebViewTabFragment webViewTabFragment = webViewPagerAdapter.webViewFragmentsList.get(i);
+
+            // Get the fragment view.
+            View fragmentView = webViewTabFragment.getView();
+
+            // Only modify the WebViews if they exist.
+            if (fragmentView != null) {
+                // Get the nested scroll WebView from the tab fragment.
+                NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+
+                // Set the app bar scrolling.
+                nestedScrollWebView.setNestedScrollingEnabled(sharedPreferences.getBoolean("scroll_app_bar", true));
+            }
+        }
 
         // Update the full screen browsing mode settings.
         if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
@@ -4031,9 +4073,25 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Reset `waitingForOrbot.
             waitingForOrbot = false;
 
-            // Reload the website if requested.
+            // Reload the WebViews if requested.
             if (reloadWebsite) {
-                currentWebView.reload();
+                // Reload the WebViews.
+                for (int i = 0; i < webViewPagerAdapter.webViewFragmentsList.size(); i++) {
+                    // Get the WebView tab fragment.
+                    WebViewTabFragment webViewTabFragment = webViewPagerAdapter.webViewFragmentsList.get(i);
+
+                    // Get the fragment view.
+                    View fragmentView = webViewTabFragment.getView();
+
+                    // Only reload the WebViews if they exist.
+                    if (fragmentView != null) {
+                        // Get the nested scroll WebView from the tab fragment.
+                        NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+
+                        // Reload the WebView.
+                        nestedScrollWebView.reload();
+                    }
+                }
             }
         }
     }
@@ -4690,12 +4748,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Save a copy of the title when it changes.
             @Override
             public void onReceivedTitle(WebView view, String title) {
-                // Save a copy of the title.
-                // TODO.  Replace `webViewTitle` with `currentWebView.getTitle()`.
-                webViewTitle = title;
-
                 // Set the title as the tab text.
-                tabTitleTextView.setText(webViewTitle);
+                tabTitleTextView.setText(title);
             }
 
             // Enter full screen video.

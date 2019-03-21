@@ -143,6 +143,7 @@
     <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking List</string>
     <string name="options_block_all_third_party_requests">Block All Third-Party Requests</string>
     <string name="layout">Layout</string>
+        <string name="user_agent_privacy_browser">Privacy Browser</string>
         <string name="user_agent_webview_default">WebView Default</string>
         <string name="user_agent_firefox_on_android">Firefox on Android</string>
         <string name="user_agent_chrome_on_android">Chrome on Android</string>

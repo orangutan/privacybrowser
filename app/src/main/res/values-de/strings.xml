@@ -139,6 +139,7 @@
     <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking Sperrliste</string>
     <string name="options_block_all_third_party_requests">Alle Zugriffe auf Dritt-Anbieter-Inhalte blockieren</string>
     <string name="layout">Ansicht</string>
+        <string name="user_agent_privacy_browser">Privacy Browser</string>
         <string name="user_agent_webview_default">WebView-Standard</string>
         <string name="user_agent_firefox_on_android">Firefox auf Android</string>
         <string name="user_agent_chrome_on_android">Chrome auf Android</string>

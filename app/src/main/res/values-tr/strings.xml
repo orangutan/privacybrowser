@@ -133,6 +133,7 @@
     <string name="options_fanboys_social_blocking_list">Fanboy Sosyal Engelleme Listesi</string>
     <string name="options_block_all_third_party_requests">Tüm Üçüncü Taraf İstekleri Engelle</string>
     <string name="layout">Düzen</string>
+        <string name="user_agent_privacy_browser">Privacy Browser</string>
         <string name="user_agent_webview_default">Varsayılan Web Görünümü</string>
         <string name="user_agent_firefox_on_android">Android\'te kurulu Firefox</string>
         <string name="user_agent_chrome_on_android">Android\'te kurulu Chrome</string>

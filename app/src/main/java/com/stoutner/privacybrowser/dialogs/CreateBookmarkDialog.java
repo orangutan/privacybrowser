@@ -24,10 +24,13 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -36,24 +39,88 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
 
-import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.R;
 
+import java.io.ByteArrayOutputStream;
+
 public class CreateBookmarkDialog extends DialogFragment {
+    // Create the class variables.
+    String url;
+    String title;
+    Bitmap favoriteIconBitmap;
+
     // The public interface is used to send information back to the parent activity.
     public interface CreateBookmarkListener {
         void onCreateBookmark(DialogFragment dialogFragment);
     }
 
-    // `createBookmarkListener` is used in `onAttach()` and `onCreateDialog()`
+    // The create bookmark listener is initialized in `onAttach()` and used in `onCreateDialog()`.
     private CreateBookmarkListener createBookmarkListener;
 
-
     public void onAttach(Context context) {
+        // Run the default commands.
         super.onAttach(context);
 
         // Get a handle for `CreateBookmarkListener` from the launching context.
         createBookmarkListener = (CreateBookmarkListener) context;
+    }
+
+    public static CreateBookmarkDialog createBookmark(String url, String title, Bitmap favoriteIconBitmap) {
+        // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+        if ((favoriteIconBitmap.getHeight() > 256) || (favoriteIconBitmap.getWidth() > 256)) {
+            favoriteIconBitmap = Bitmap.createScaledBitmap(favoriteIconBitmap, 256, 256, true);
+        }
+
+        // Create a favorite icon byte array output stream.
+        ByteArrayOutputStream favoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
+
+        // Convert the favorite icon to a PNG and place it in the byte array output stream.  `0` is for lossless compression (the only option for a PNG).
+        favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
+
+        // Convert the byte array output stream to a byte array.
+        byte[] favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray();
+
+        // Create a bundle.
+        Bundle bundle = new Bundle();
+
+        // Store the variables in the bundle
+        bundle.putString("url", url);
+        bundle.putString("title", title);
+        bundle.putByteArray("favorite_icon_byte_array", favoriteIconByteArray);
+
+        // Create a new instance of the dialog.
+        CreateBookmarkDialog createBookmarkDialog = new CreateBookmarkDialog();
+
+        // Add the bundle to the dialog.
+        createBookmarkDialog.setArguments(bundle);
+
+        // Return the new dialog.
+        return createBookmarkDialog;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        // Run the default commands.
+        super.onCreate(savedInstanceState);
+
+        // Get the arguments.
+        Bundle arguments = getArguments();
+
+        // Remove the incorrect lint warning below that the arguments might be null.
+        assert arguments != null;
+
+        // Store the contents of the arguments in class variables.
+        url = arguments.getString("url");
+        title = arguments.getString("title");
+
+        // Get the favorite icon byte array.
+        byte[] favoriteIconByteArray = arguments.getByteArray("favorite_icon_byte_array");
+
+        // Remove the incorrect lint warning below that the favorite icon byte array might be null.
+        assert favoriteIconByteArray != null;
+
+        // Convert the favorite icon byte array to a bitmap and store it in a class variable.
+        favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.length);
     }
 
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
@@ -61,13 +128,12 @@ public class CreateBookmarkDialog extends DialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Get a copy of the favorite icon bitmap.
-        Bitmap favoriteIconBitmap = MainWebViewActivity.favoriteIconBitmap;
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-        // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
-        if ((favoriteIconBitmap.getHeight() > 256) || (favoriteIconBitmap.getWidth() > 256)) {
-            favoriteIconBitmap = Bitmap.createScaledBitmap(favoriteIconBitmap, 256, 256, true);
-        }
+        // Get the theme and screenshot preferences.
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
 
         // Create a drawable version of the favorite icon.
         Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), favoriteIconBitmap);
@@ -76,7 +142,7 @@ public class CreateBookmarkDialog extends DialogFragment {
         AlertDialog.Builder dialogBuilder;
 
         // Set the style according to the theme.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
         } else {
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
@@ -110,7 +176,7 @@ public class CreateBookmarkDialog extends DialogFragment {
         assert alertDialog.getWindow() != null;
 
         // Disable screenshots if not allowed.
-        if (!MainWebViewActivity.allowScreenshots) {
+        if (!allowScreenshots) {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
@@ -124,7 +190,7 @@ public class CreateBookmarkDialog extends DialogFragment {
         EditText createBookmarkNameEditText = alertDialog.findViewById(R.id.create_bookmark_name_edittext);
 
         // Set the current `WebView` title as the text for `create_bookmark_name_edittext`.
-        createBookmarkNameEditText.setText(MainWebViewActivity.webViewTitle);
+        createBookmarkNameEditText.setText(title);
 
         // Allow the `enter` key on the keyboard to create the bookmark from `create_bookmark_name_edittext`.
         createBookmarkNameEditText.setOnKeyListener((View view, int keyCode, KeyEvent event) -> {
@@ -145,7 +211,7 @@ public class CreateBookmarkDialog extends DialogFragment {
 
         // Set the formattedUrlString as the initial text of `create_bookmark_url_edittext`.
         EditText createBookmarkUrlEditText = alertDialog.findViewById(R.id.create_bookmark_url_edittext);
-        createBookmarkUrlEditText.setText(MainWebViewActivity.formattedUrlString);
+        createBookmarkUrlEditText.setText(url);
 
         // Allow the `enter` key on the keyboard to create the bookmark from `create_bookmark_url_edittext`.
         createBookmarkUrlEditText.setOnKeyListener((View v, int keyCode, KeyEvent event) -> {

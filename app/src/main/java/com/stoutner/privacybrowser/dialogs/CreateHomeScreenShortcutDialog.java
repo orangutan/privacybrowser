@@ -25,12 +25,14 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -49,7 +51,6 @@ import androidx.core.graphics.drawable.IconCompat;
 import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
 
 import com.stoutner.privacybrowser.BuildConfig;
-import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.R;
 
 import java.io.ByteArrayOutputStream;
@@ -100,7 +101,7 @@ public class CreateHomeScreenShortcutDialog extends DialogFragment {
         // Get the arguments.
         Bundle arguments = getArguments();
 
-        // Remove the incorrect lint warning that the arguments might be null.
+        // Remove the incorrect lint warning below that the arguments might be null.
         assert arguments != null;
 
         // Store the strings in class variables.
@@ -122,7 +123,14 @@ public class CreateHomeScreenShortcutDialog extends DialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Remove the incorrect lint warning below that `getLayoutInflater()` might be null.
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the theme and screenshot preferences.
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
+        // Remove the incorrect lint warning below that the layout inflater might be null.
         assert getActivity() != null;
 
         // Get the activity's layout inflater.
@@ -135,7 +143,7 @@ public class CreateHomeScreenShortcutDialog extends DialogFragment {
         AlertDialog.Builder dialogBuilder;
 
         // Set the style according to the theme.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
         } else {
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
@@ -164,7 +172,7 @@ public class CreateHomeScreenShortcutDialog extends DialogFragment {
         assert alertDialog.getWindow() != null;
 
         // Disable screenshots if not allowed.
-        if (!MainWebViewActivity.allowScreenshots) {
+        if (allowScreenshots) {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
