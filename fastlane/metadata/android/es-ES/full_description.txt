@@ -1,13 +1,13 @@
-Navegador Privado protege tu privacidad desactivando características como JavaScript, almacenamiento DOM y cookies que son utilizadas por los sitios web para rastrear a los usuarios.  La configuración se puede ajustar por dominio y sobre la marcha para habilitar estas funciones cuando sea necesario.  Además, Navegador Privado incorpora las listas de bloqueo EasyList, que bloquean muchas tecnologías de seguimiento incluso cuando JavaScript está habilitado.
+La mayoría de los navegadores proporcionan a los sitios web cantidades masivas de información que les permite rastrearte y comprometer tu privacidad. Los sitios web y las redes publicitarias utilizan tecnologías como JavaScript, cookies, almacenamiento DOM, agentes de usuario y muchas otras cosas para identificar de forma única a cada usuario y rastrearlo entre visitas y a través de la web.
 
-Navegador Privado aún no tiene navegación con pestañas.  Esta es una característica planificada para la serie 3. x.
+Navegador Privado está diseñado para minimizar la cantidad de información que el navegador presenta a los sitios web. De forma predeterminada, las funciones sensibles a la privacidad están desactivadas. Si una de estas tecnologías es necesaria para el correcto funcionamiento de un sitio web, el usuario puede optar por activarla sólo para esa visita. O bien, puede utilizar la configuración del dominio para activar automáticamente determinadas funciones al entrar en un sitio web específico y desactivarlas de nuevo al salir.
 
-Navegador Privado actualmente utiliza el WebView que trae Android para renderizar páginas web.  Como tal, funciona mejor cuando se instala la última versión de WebView.  En la serie 4.x, Navegador Privado utilizará una versión bifurcada del WebView de android llamada Privacy WebView (Privacidad de WebView) que permitirá funciones avanzadas de privacidad.
+Navegador Privado utiliza actualmente el WebView incorporado de Android para renderizar las páginas web. Como tal, funciona mejor cuando se instala la última versión de WebView (ver https://www.stoutner.com/privacy-browser/common-settings/webview/). En la serie 4.x, Navegador Privado cambiará a una versión bifurcada del WebView de Android llamada Privacy WebView que permitirá características de privacidad avanzadas.
 
-Advertencia: Debido a las limitaciones del sistema operativo, Navegador Privado es susceptible a los ataques MITM (Man In The Middle/Hombre en medio) cuando navega por sitios web inseguros desde dispositivos que ejecutan Android KitKat (versión 4.4. x, API 19).  Más información sobre este tema está disponible en https://www.stoutner.com/kitkat-security-problems/.
+Advertencia: Android KitKat (versión 4.4.x, API 19) incluye una versión anterior de OpenSSL que es susceptible a ataques MITM (Man In The Middle) cuando se navega por sitios web que utilizan protocolos y suites de cifrado anticuados. Más información sobre este tema está disponible en https://www.stoutner.com/kitkat-security-problems/.
 
 Características:
-• Soporte para proxy Tor Orbot.
-• Fijación de certificados SSL.
-• Modo de navegación a pantalla completa.
-• Modo nocturno.
+- Bloqueo de anuncios EasyList integrado.
+- Soporte para proxy de Tor Orbot.
+- Fijación de certificados SSL.
+- Importar/Exportar la configuración y los marcadores.

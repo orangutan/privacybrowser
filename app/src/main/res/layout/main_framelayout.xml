@@ -79,16 +79,16 @@
                                 android:layout_width="wrap_content"
                                 app:tabMode="scrollable" />
 
+                            <!-- `style="?android:borderlessButtonStyle"` shows a visual indication when the image view is tapped. -->
                             <ImageView
                                 android:layout_height="wrap_content"
                                 android:layout_width="wrap_content"
                                 android:layout_gravity="center_vertical"
-                                android:paddingStart="15dp"
-                                android:paddingEnd="15dp"
                                 android:src="@drawable/add_light"
                                 android:tint="?attr/addTabIconTintColor"
                                 android:onClick="addTab"
-                                android:contentDescription="@string/add_tab" />
+                                android:contentDescription="@string/add_tab"
+                                style="?android:attr/borderlessButtonStyle" />
                         </LinearLayout>
                     </HorizontalScrollView>
 

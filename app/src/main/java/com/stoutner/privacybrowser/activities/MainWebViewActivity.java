@@ -102,9 +102,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
@@ -115,6 +113,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.adapters.WebViewPagerAdapter;
 import com.stoutner.privacybrowser.asynctasks.GetHostIpAddresses;
 import com.stoutner.privacybrowser.dialogs.AdConsentDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkDialog;
@@ -151,7 +150,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -558,7 +556,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // This is needed to get rid of the Android Studio warning that the action bar might be null.
         assert actionBar != null;
 
-        // Add the custom `url_app_bar` layout, which shows the favorite icon and the URL text bar.
+        // Add the custom layout, which shows the URL text bar.
         actionBar.setCustomView(R.layout.url_app_bar);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 
@@ -694,7 +692,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @Override
             public void onPageSelected(int position) {
                 // Get the WebView tab fragment.
-                WebViewTabFragment webViewTabFragment = webViewPagerAdapter.webViewFragmentsList.get(position);
+                WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(position);
 
                 // Get the fragment view.
                 View fragmentView = webViewTabFragment.getView();
@@ -774,8 +772,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
         });
 
-        // Add the first tab.
-        webViewPagerAdapter.addPage();
+        // Add the first tab.  (It doesn't matter what view is passed.  That is just required as part of the ImageView `onClick()` syntax).
+        addTab(webViewPager);
 
         // Set the bookmarks drawer resources according to the theme.  This can't be done in the layout due to compatibility issues with the `DrawerLayout` support widget.
         if (darkTheme) {
@@ -1150,9 +1148,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Reload the webpage if displaying of images has been disabled in the Settings activity.
             if (reloadOnRestart) {
                 // Reload the WebViews.
-                for (int i = 0; i < webViewPagerAdapter.webViewFragmentsList.size(); i++) {
+                for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
                     // Get the WebView tab fragment.
-                    WebViewTabFragment webViewTabFragment = webViewPagerAdapter.webViewFragmentsList.get(i);
+                    WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
 
                     // Get the fragment view.
                     View fragmentView = webViewTabFragment.getView();
@@ -1219,9 +1217,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Run the default commands.
         super.onResume();
 
-        for (int i = 0; i < webViewPagerAdapter.webViewFragmentsList.size(); i++) {
+        for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
             // Get the WebView tab fragment.
-            WebViewTabFragment webViewTabFragment = webViewPagerAdapter.webViewFragmentsList.get(i);
+            WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
 
             // Get the fragment view.
             View fragmentView = webViewTabFragment.getView();
@@ -1231,10 +1229,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Get the nested scroll WebView from the tab fragment.
                 NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
 
-                // Pause the nested scroll WebView JavaScript timers.
+                // Resume the nested scroll WebView JavaScript timers.
                 nestedScrollWebView.resumeTimers();
 
-                // Pause the nested scroll WebView.
+                // Resume the nested scroll WebView.
                 nestedScrollWebView.onResume();
             }
         }
@@ -1274,9 +1272,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Run the default commands.
         super.onPause();
 
-        for (int i = 0; i < webViewPagerAdapter.webViewFragmentsList.size(); i++) {
+        for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
             // Get the WebView tab fragment.
-            WebViewTabFragment webViewTabFragment = webViewPagerAdapter.webViewFragmentsList.get(i);
+            WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
 
             // Get the fragment view.
             View fragmentView = webViewTabFragment.getView();
@@ -1407,11 +1405,27 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem nightModeMenuItem = menu.findItem(R.id.night_mode);
         MenuItem proxyThroughOrbotMenuItem = menu.findItem(R.id.proxy_through_orbot);
 
-        // Set the text for the domain menu item.
-        if (currentWebView.getDomainSettingsApplied()) {
-            addOrEditDomain.setTitle(R.string.edit_domain_settings);
-        } else {
-            addOrEditDomain.setTitle(R.string.add_domain_settings);
+        // Initialize the current user agent string and the font size.
+        String currentUserAgent = getString(R.string.user_agent_privacy_browser);
+        int fontSize = 100;
+
+        // Set items that require the current web view to be populated.  It will be null when the program is first opened, as `onPrepareOptionsMenu()` is called before the first WebView is initialized.
+        if (currentWebView != null) {
+            // Set the add or edit domain text.
+            if (currentWebView.getDomainSettingsApplied()) {
+                addOrEditDomain.setTitle(R.string.edit_domain_settings);
+            } else {
+                addOrEditDomain.setTitle(R.string.add_domain_settings);
+            }
+
+            // Get the current user agent from the WebView.
+            currentUserAgent = currentWebView.getSettings().getUserAgentString();
+
+            // Get the current font size from the
+            fontSize = currentWebView.getSettings().getTextZoom();
+
+            // Set the status of the display images menu item.
+            displayImagesMenuItem.setChecked(currentWebView.getSettings().getLoadsImagesAutomatically());
         }
 
         // Set the status of the menu item checkboxes.
@@ -1426,7 +1440,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         ultraPrivacyMenuItem.setChecked(ultraPrivacyEnabled);
         blockAllThirdPartyRequestsMenuItem.setChecked(blockAllThirdPartyRequests);
         swipeToRefreshMenuItem.setChecked(swipeRefreshLayout.isEnabled());
-        displayImagesMenuItem.setChecked(currentWebView.getSettings().getLoadsImagesAutomatically());
         nightModeMenuItem.setChecked(nightMode);
         proxyThroughOrbotMenuItem.setChecked(proxyThroughOrbot);
 
@@ -1480,9 +1493,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         ultraPrivacyMenuItem.setTitle(ultraPrivacyBlockedRequests + " - " + getString(R.string.ultraprivacy));
         blockAllThirdPartyRequestsMenuItem.setTitle(thirdPartyBlockedRequests + " - " + getString(R.string.block_all_third_party_requests));
 
-        // Get the current user agent.
-        String currentUserAgent = currentWebView.getSettings().getUserAgentString();
-
         // Select the current user agent menu item.  A switch statement cannot be used because the user agents are not compile time constants.
         if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[0])) {  // Privacy Browser.
             menu.findItem(R.id.user_agent_privacy_browser).setChecked(true);
@@ -1512,8 +1522,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             menu.findItem(R.id.user_agent_custom).setChecked(true);
         }
 
-        // Initialize font size variables.
-        int fontSize = currentWebView.getSettings().getTextZoom();
+        // Instantiate the font size title and the selected font size menu item.
         String fontSizeTitle;
         MenuItem selectedFontSizeMenuItem;
 
@@ -2251,7 +2260,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Get the current tab number.
                 int currentTabNumber = tabLayout.getSelectedTabPosition();
 
-                // Delete the tab and page.
+                // Delete the current tab.
+                tabLayout.removeTabAt(currentTabNumber);
+
+                // Delete the current page.
                 webViewPagerAdapter.deletePage(currentTabNumber);
                 break;
 
@@ -3486,9 +3498,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // TODO this also needs to be set when creating a new tab.
         // Set the app bar scrolling for each WebView.
-        for (int i = 0; i < webViewPagerAdapter.webViewFragmentsList.size(); i++) {
+        for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
             // Get the WebView tab fragment.
-            WebViewTabFragment webViewTabFragment = webViewPagerAdapter.webViewFragmentsList.get(i);
+            WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
 
             // Get the fragment view.
             View fragmentView = webViewTabFragment.getView();
@@ -4076,9 +4088,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Reload the WebViews if requested.
             if (reloadWebsite) {
                 // Reload the WebViews.
-                for (int i = 0; i < webViewPagerAdapter.webViewFragmentsList.size(); i++) {
+                for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
                     // Get the WebView tab fragment.
-                    WebViewTabFragment webViewTabFragment = webViewPagerAdapter.webViewFragmentsList.get(i);
+                    WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
 
                     // Get the fragment view.
                     View fragmentView = webViewTabFragment.getView();
@@ -4374,146 +4386,47 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
     }
 
-    private class WebViewPagerAdapter extends FragmentPagerAdapter {
-        // The WebView fragments list contains all the WebViews.
-        private LinkedList<WebViewTabFragment> webViewFragmentsList = new LinkedList<>();
-
-        // Define the constructor.
-        private WebViewPagerAdapter(FragmentManager fragmentManager){
-            // Run the default commands.
-            super(fragmentManager);
-        }
-
-        @Override
-        public int getCount() {
-            // Return the number of pages.
-            return webViewFragmentsList.size();
-        }
-
-        @Override
-        public int getItemPosition(@NonNull Object object) {
-            //noinspection SuspiciousMethodCalls
-            if (webViewFragmentsList.contains(object)) {
-                // The tab has not been deleted.
-                return POSITION_UNCHANGED;
-            } else {
-                // The tab has been deleted.
-                return POSITION_NONE;
-            }
-        }
-
-        @Override
-        public Fragment getItem(int pageNumber) {
-            // Get a WebView for a particular page.  Page numbers are 0 indexed.
-            return webViewFragmentsList.get(pageNumber);
-        }
-
-        private void addPage() {
-            // Add a new page.  The pages and tabs are 0 indexed, so the size of the current list equals the number of the next page.
-            webViewFragmentsList.add(WebViewTabFragment.createTab(webViewFragmentsList.size()));
-
-            // Update the view pager.
-            notifyDataSetChanged();
-        }
-
-        private void deletePage(int pageNumber) {
-            // Get a handle for the tab layout.
-            TabLayout tabLayout = findViewById(R.id.tablayout);
-
-            // TODO always move to the next tab if possible.
-            // Select a tab that is not being deleted.
-            if (pageNumber == 0) {  // The first tab is being deleted.
-                // Get a handle for the second tab.  The tabs are 0 indexed.
-                TabLayout.Tab secondTab = tabLayout.getTabAt(1);
-
-                // Remove the incorrect lint warning below that the second tab might be null.
-                assert secondTab != null;
-
-                // Select the second tab.
-                secondTab.select();
-            } else {  // The first tab is not being deleted.
-                // Get a handle for the previous tab.
-                TabLayout.Tab previousTab = tabLayout.getTabAt(pageNumber - 1);
-
-                // Remove the incorrect lint warning below tha the previous tab might be null.
-                assert previousTab != null;
-
-                // Select the previous tab.
-                previousTab.select();
-            }
-
-            // Delete the page.
-            webViewFragmentsList.remove(pageNumber);
-
-            // Delete the tab.
-            tabLayout.removeTabAt(pageNumber);
-
-            // Update the view pager.
-            notifyDataSetChanged();
-        }
-    }
-
     public void addTab(View view) {
-        // Add the new WebView page.
-        webViewPagerAdapter.addPage();
-
         // Get a handle for the tab layout.
         TabLayout tabLayout = findViewById(R.id.tablayout);
 
-        // Get a handle for the new tab.  The tabs are 0 indexed.
-        TabLayout.Tab newTab = tabLayout.getTabAt(tabLayout.getTabCount() - 1);
+        // Get the new page number.  The page numbers are 0 indexed, so the new page number will match the current count.
+        int newTabNumber = tabLayout.getTabCount();
 
-        // Remove the incorrect warning below that the new tab might be null.
+        // Add a new tab.
+        tabLayout.addTab(tabLayout.newTab());
+
+        // Get the new tab.
+        TabLayout.Tab newTab = tabLayout.getTabAt(newTabNumber);
+
+        // Remove the lint warning below that the current tab might be null.
         assert newTab != null;
 
-        // Move the tab layout to the new tab.
-        newTab.select();
+        // Set a custom view on the current tab.
+        newTab.setCustomView(R.layout.custom_tab_view);
+
+        // Add the new WebView page.
+        webViewPagerAdapter.addPage(newTabNumber);
+
+        if (newTabNumber > 0) {
+            // Move to the new tab.
+            newTab.select();
+        }
     }
 
     @Override
-    public void initializeWebView(int tabNumber, ProgressBar progressBar, NestedScrollWebView nestedScrollWebView) {
+    public void initializeWebView(long pageId, int pageNumber, ProgressBar progressBar, NestedScrollWebView nestedScrollWebView) {
         // Get handles for the activity views.
-        final FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
-        final DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
-        final RelativeLayout mainContentRelativeLayout = findViewById(R.id.main_content_relativelayout);
-        final ActionBar actionBar = getSupportActionBar();
+        FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
+        DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
+        RelativeLayout mainContentRelativeLayout = findViewById(R.id.main_content_relativelayout);
+        ActionBar actionBar = getSupportActionBar();
         EditText urlEditText = findViewById(R.id.url_edittext);
-        final TabLayout tabLayout = findViewById(R.id.tablayout);
-        final SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
+        TabLayout tabLayout = findViewById(R.id.tablayout);
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
 
         // Remove the incorrect lint warnings below that the some of the views might be null.
         assert actionBar != null;
-
-        // TODO.  Still doesn't work right.
-        // Create the tab if it doesn't already exist.
-        try {
-            TabLayout.Tab tab = tabLayout.getTabAt(tabNumber);
-
-            assert tab != null;
-
-            tab.getCustomView();
-        } catch (Exception exception) {
-            tabLayout.addTab(tabLayout.newTab());
-        }
-
-        // Get the current tab.
-        TabLayout.Tab currentTab = tabLayout.getTabAt(tabNumber);
-
-        // Remove the lint warning below that the current tab might be null.
-        assert currentTab != null;
-
-        // Set a custom view on the current tab.
-        currentTab.setCustomView(R.layout.custom_tab_view);
-
-        // Get the custom view from the tab.
-        View currentTabView = currentTab.getCustomView();
-
-        // Remove the incorrect warning below that the current tab view might be null.
-        assert currentTabView != null;
-
-        // Get the current views from the tab.
-        ImageView tabFavoriteIconImageView = currentTabView.findViewById(R.id.favorite_icon_imageview);
-        TextView tabTitleTextView = currentTabView.findViewById(R.id.title_textview);
 
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -4738,9 +4651,27 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Only update the favorite icon if the website has finished loading.
                 if (progressBar.getVisibility() == View.GONE) {
                     // Save a copy of the favorite icon.
-                    // TODO.  We need to save and access the icons for each tab.
                     favoriteIconBitmap = icon;
 
+                    // Get the current page position.
+                    int currentPosition = webViewPagerAdapter.getPositionForId(pageId);
+
+                    // Get the current tab.
+                    TabLayout.Tab tab = tabLayout.getTabAt(currentPosition);
+
+                    // Remove the lint warning below that the current tab might be null.
+                    assert tab != null;
+
+                    // Get the custom view from the tab.
+                    View tabView = tab.getCustomView();
+
+                    // Remove the incorrect warning below that the current tab view might be null.
+                    assert tabView != null;
+
+                    // Get the favorite icon image view from the tab.
+                    ImageView tabFavoriteIconImageView = tabView.findViewById(R.id.favorite_icon_imageview);
+
+                    // Display the favorite icon in the tab.
                     tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(icon, 64, 64, true));
                 }
             }
@@ -4748,6 +4679,24 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Save a copy of the title when it changes.
             @Override
             public void onReceivedTitle(WebView view, String title) {
+                // Get the current page position.
+                int currentPosition = webViewPagerAdapter.getPositionForId(pageId);
+
+                // Get the current tab.
+                TabLayout.Tab tab = tabLayout.getTabAt(currentPosition);
+
+                // Remove the lint warning below that the current tab might be null.
+                assert tab != null;
+
+                // Get the custom view from the tab.
+                View tabView = tab.getCustomView();
+
+                // Remove the incorrect warning below that the current tab view might be null.
+                assert tabView != null;
+
+                // Get the title text view from the tab.
+                TextView tabTitleTextView = tabView.findViewById(R.id.title_textview);
+
                 // Set the title as the tab text.
                 tabTitleTextView.setText(title);
             }
@@ -5360,8 +5309,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
         });
 
-        // Check to see if this is the first tab.
-        if (tabNumber == 0) {
+        // Check to see if this is the first page.
+        if (pageNumber == 0) {
             // Set this nested scroll WebView as the current WebView.
             currentWebView = nestedScrollWebView;
 

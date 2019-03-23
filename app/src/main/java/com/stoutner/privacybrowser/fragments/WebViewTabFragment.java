@@ -32,10 +32,15 @@ import androidx.fragment.app.Fragment;
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.views.NestedScrollWebView;
 
+import java.util.Calendar;
+
 public class WebViewTabFragment extends Fragment {
+    // Set a unique ID for this tab based on the time it was created.
+    public long tabId = Calendar.getInstance().getTimeInMillis();
+
     // The public interface is used to send information back to the parent activity.
     public interface NewTabListener {
-        void initializeWebView(int tabNumber, ProgressBar progressBar, NestedScrollWebView nestedScrollWebView);
+        void initializeWebView(long pageId, int pageNumber, ProgressBar progressBar, NestedScrollWebView nestedScrollWebView);
     }
 
     // The new tab listener is used in `onAttach()` and `onCreateView()`.
@@ -50,12 +55,12 @@ public class WebViewTabFragment extends Fragment {
         newTabListener = (NewTabListener) context;
     }
 
-    public static WebViewTabFragment createTab(int tabNumber) {
+    public static WebViewTabFragment createPage(int pageNumber) {
         // Create a bundle.
         Bundle bundle = new Bundle();
 
-        // Store the tab number in the bundle.
-        bundle.putInt("tab_number", tabNumber);
+        // Store the page number in the bundle.
+        bundle.putInt("page_number", pageNumber);
 
         // Create a new instance of the WebView tab fragment.
         WebViewTabFragment webViewTabFragment = new WebViewTabFragment();
@@ -76,19 +81,19 @@ public class WebViewTabFragment extends Fragment {
         assert arguments != null;
 
         // Get the variables from the arguments
-        int tabNumber = arguments.getInt("tab_number");
+        int pageNumber = arguments.getInt("page_number");
 
         // Inflate the tab's WebView.  Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.  The fragment will take care of attaching the root automatically.
-        View tabView = layoutInflater.inflate(R.layout.webview_framelayout, container, false);
+        View newPageView = layoutInflater.inflate(R.layout.webview_framelayout, container, false);
 
-        // Get a handle for the nested scroll WebView.
-        NestedScrollWebView nestedScrollWebView = tabView.findViewById(R.id.nestedscroll_webview);
-        ProgressBar progressBar = tabView.findViewById(R.id.progress_bar);
+        // Get handles for the views.
+        NestedScrollWebView nestedScrollWebView = newPageView.findViewById(R.id.nestedscroll_webview);
+        ProgressBar progressBar = newPageView.findViewById(R.id.progress_bar);
 
         // Request the main activity initialize the WebView.
-        newTabListener.initializeWebView(tabNumber, progressBar, nestedScrollWebView);
+        newTabListener.initializeWebView(tabId, pageNumber, progressBar, nestedScrollWebView);
 
-        // Return the tab view.
-        return tabView;
+        // Return the new page view.
+        return newPageView;
     }
 }
