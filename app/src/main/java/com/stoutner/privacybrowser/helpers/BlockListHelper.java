@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -21,8 +21,6 @@ package com.stoutner.privacybrowser.helpers;
 
 import android.content.res.AssetManager;
 
-import com.stoutner.privacybrowser.activities.MainWebViewActivity;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -31,6 +29,46 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class BlockListHelper {
+    // Describe the schema of the string array in each entry of the resource requests array list.
+    public final static int REQUEST_DISPOSITION = 0;
+    public final static int REQUEST_URL = 1;
+    public final static int REQUEST_BLOCKLIST = 2;
+    public final static int REQUEST_SUBLIST = 3;
+    public final static int REQUEST_BLOCKLIST_ENTRIES = 4;
+    public final static int REQUEST_BLOCKLIST_ORIGINAL_ENTRY = 5;
+
+    // The request disposition options.
+    public final static String REQUEST_DEFAULT = "0";
+    public final static String REQUEST_ALLOWED = "1";
+    public final static String REQUEST_THIRD_PARTY = "2";
+    public final static String REQUEST_BLOCKED = "3";
+
+    // The whitelists.
+    public final static String MAIN_WHITELIST = "1";
+    public final static String FINAL_WHITELIST = "2";
+    public final static String DOMAIN_WHITELIST = "3";
+    public final static String DOMAIN_INITIAL_WHITELIST = "4";
+    public final static String DOMAIN_FINAL_WHITELIST = "5";
+    public final static String THIRD_PARTY_WHITELIST = "6";
+    public final static String THIRD_PARTY_DOMAIN_WHITELIST = "7";
+    public final static String THIRD_PARTY_DOMAIN_INITIAL_WHITELIST = "8";
+
+    // The blacklists.
+    public final static String MAIN_BLACKLIST = "9";
+    public final static String INITIAL_BLACKLIST = "10";
+    public final static String FINAL_BLACKLIST = "11";
+    public final static String DOMAIN_BLACKLIST = "12";
+    public final static String DOMAIN_INITIAL_BLACKLIST = "13";
+    public final static String DOMAIN_FINAL_BLACKLIST = "14";
+    public final static String DOMAIN_REGULAR_EXPRESSION_BLACKLIST = "15";
+    public final static String THIRD_PARTY_BLACKLIST = "16";
+    public final static String THIRD_PARTY_INITIAL_BLACKLIST = "17";
+    public final static String THIRD_PARTY_DOMAIN_BLACKLIST = "18";
+    public final static String THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST = "19";
+    public final static String THIRD_PARTY_REGULAR_EXPRESSION_BLACKLIST = "20";
+    public final static String THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLACKLIST = "21";
+    public final static String REGULAR_EXPRESSION_BLACKLIST = "22";
+
     public ArrayList<List<String[]>> parseBlockList(AssetManager assets, String blockListName) {
         // Initialize the header list.
         List<String[]> headers = new ArrayList<>();  // 0.
@@ -91,7 +129,7 @@ public class BlockListHelper {
                         //Log.i("BlockLists", headers.get(1)[0] + " not added: " + originalBlockListEntry);
                 } else //noinspection StatementWithEmptyBody
                     if (blockListEntry.contains("$websocket") || blockListEntry.contains("$third-party,websocket") || blockListEntry.contains("$script,websocket")) {  // Ignore entries with `websocket`.
-                        // Do nothing.  Privacy Browser does not differentiate between websocket requests and other requests and these entries cause a lot of false positivies.
+                        // Do nothing.  Privacy Browser does not differentiate between websocket requests and other requests and these entries cause a lot of false positives.
 
                         //Log.i("BlockLists", headers.get(1)[0] + " not added: " + originalBlockListEntry);
                 } else if (blockListEntry.startsWith("!")) {  //  Comment entries.
@@ -1584,7 +1622,7 @@ public class BlockListHelper {
         return combinedLists;
     }
 
-    public boolean isBlocked(String currentDomain, String resourceUrl, boolean isThirdPartyRequest, ArrayList<List<String[]>> blockList) {
+    public String[] checkBlocklist(String currentDomain, String resourceUrl, boolean isThirdPartyRequest, ArrayList<List<String[]>> blockList) {
         // Get the blocklist name.
         String BLOCK_LIST_NAME_STRING = blockList.get(0).get(1)[0];
 
@@ -1596,63 +1634,42 @@ public class BlockListHelper {
 
         // Process the white lists.
         // Main white list.
-        for (String[] whiteListEntry : blockList.get(MainWebViewActivity.MAIN_WHITELIST)) {
+        for (String[] whiteListEntry : blockList.get(Integer.valueOf(MAIN_WHITELIST))) {
             switch (whiteListEntry.length) {
                 case 2:  // There is one entry.
                     if (resourceUrl.contains(whiteListEntry[0])) {
-                        // Store the entry in the resource request log.
-                        MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                String.valueOf(MainWebViewActivity.MAIN_WHITELIST), whiteListEntry[0], whiteListEntry[1]};
-
-                        // Not blocked.
-                        return false;
+                        // Return a whitelist match request allowed.
+                        return new String[] {REQUEST_ALLOWED, resourceUrl, BLOCK_LIST_NAME_STRING, MAIN_WHITELIST, whiteListEntry[0], whiteListEntry[1]};
                     }
                     break;
 
                 case 3:  // There are two entries.
                     if (resourceUrl.contains(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1])) {
-                        // Store the entry in the resource request log.
-                        MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                String.valueOf(MainWebViewActivity.MAIN_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1],
-                                whiteListEntry[2]};
-
-                        // Not blocked.
-                        return false;
+                        // Return a whitelist match request allowed.
+                        return new String[] {REQUEST_ALLOWED, resourceUrl, BLOCK_LIST_NAME_STRING, MAIN_WHITELIST, whiteListEntry[0] + "\n" + whiteListEntry[1], whiteListEntry[2]};
                     }
                     break;
 
                 case 4:  // There are three entries.
                     if (resourceUrl.contains(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1]) && resourceUrl.contains(whiteListEntry[2])) {
-                        // Store the entry in the resource request log.
-                        MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                String.valueOf(MainWebViewActivity.MAIN_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2], whiteListEntry[3]};
-
-                        // Not blocked.
-                        return false;
+                        // Return a whitelist match request allowed.
+                        return new String[] {REQUEST_ALLOWED, resourceUrl, BLOCK_LIST_NAME_STRING, MAIN_WHITELIST, whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2], whiteListEntry[3]};
                     }
                     break;
             }
         }
 
         // Final white list.
-        for (String[] whiteListEntry : blockList.get(MainWebViewActivity.FINAL_WHITELIST)) {
+        for (String[] whiteListEntry : blockList.get(Integer.valueOf(FINAL_WHITELIST))) {
             if (whiteListEntry.length == 2) {  // There is one entry.
                 if (resourceUrl.contains(whiteListEntry[0])) {
-                    // Store the entry in the resource request log.
-                    MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                            String.valueOf(MainWebViewActivity.FINAL_WHITELIST), whiteListEntry[0], whiteListEntry[1]};
-
-                    // Not blocked.
-                    return false;
+                    // Return a whitelist match request allowed.
+                    return new String[] {REQUEST_ALLOWED, resourceUrl, BLOCK_LIST_NAME_STRING, FINAL_WHITELIST, whiteListEntry[0], whiteListEntry[1]};
                 }
             } else {  // There are two entries.
                 if (resourceUrl.contains(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1])) {
-                    // Store the entry in the resource request log.
-                    MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                            String.valueOf(MainWebViewActivity.FINAL_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1], whiteListEntry[2]};
-
-                    // Not blocked.
-                    return false;
+                    // Return a whitelist match request allowed.
+                    return new String[] {REQUEST_ALLOWED, resourceUrl, BLOCK_LIST_NAME_STRING, FINAL_WHITELIST, whiteListEntry[0] + "\n" + whiteListEntry[1], whiteListEntry[2]};
                 }
             }
         }
@@ -1660,119 +1677,85 @@ public class BlockListHelper {
         // Only check the domain lists if the current domain is not null (like `about:blank`).
         if (currentDomain != null) {
             // Domain white list.
-            for (String[] whiteListEntry : blockList.get(MainWebViewActivity.DOMAIN_WHITELIST)) {
+            for (String[] whiteListEntry : blockList.get(Integer.valueOf(DOMAIN_WHITELIST))) {
                 switch (whiteListEntry.length) {
                     case 3:  // There is one entry.
                         if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.DOMAIN_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1], whiteListEntry[2]};
-
-                            // Not blocked.
-                            return false;
+                            // Return a whitelist match request allowed.
+                            return new String[] {REQUEST_ALLOWED, resourceUrl, BLOCK_LIST_NAME_STRING, DOMAIN_WHITELIST, whiteListEntry[0] + "\n" + whiteListEntry[1], whiteListEntry[2]};
                         }
                         break;
 
                     case 4:  // There are two entries.
                         if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1]) && resourceUrl.contains(whiteListEntry[2])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.DOMAIN_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2], whiteListEntry[3]};
-
-                            // Not blocked.
-                            return false;
+                            // Return a whitelist match request allowed.
+                            return new String[] {REQUEST_ALLOWED, resourceUrl, BLOCK_LIST_NAME_STRING, DOMAIN_WHITELIST, whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2],
+                                    whiteListEntry[3]};
                         }
                         break;
 
                     case 5:  // There are three entries.
                         if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1]) && resourceUrl.contains(whiteListEntry[2]) && resourceUrl.contains(whiteListEntry[3])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.DOMAIN_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2] + "\n" + whiteListEntry[3],
-                                    whiteListEntry[4]};
-
-                            // Not blocked.
-                            return false;
+                            // Return a whitelist match request allowed.
+                            return new String[] {REQUEST_ALLOWED, resourceUrl, BLOCK_LIST_NAME_STRING, DOMAIN_WHITELIST, whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2] + "\n" +
+                                    whiteListEntry[3], whiteListEntry[4]};
                         }
                         break;
 
                     case 6:  // There are four entries.
                         if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1]) && resourceUrl.contains(whiteListEntry[2]) && resourceUrl.contains(whiteListEntry[3]) &&
                                 resourceUrl.contains(whiteListEntry[4])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.DOMAIN_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2] + "\n" + whiteListEntry[3] + "\n" +
-                                    whiteListEntry[4], whiteListEntry[5]};
-
-                            // Not blocked.
-                            return false;
+                            // Return a whitelist match request allowed.
+                            return new String[] {REQUEST_ALLOWED, resourceUrl, BLOCK_LIST_NAME_STRING, DOMAIN_WHITELIST, whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2] + "\n" +
+                                    whiteListEntry[3] + "\n" + whiteListEntry[4], whiteListEntry[5]};
                         }
                         break;
                 }
             }
 
             // Domain initial white list.
-            for (String[] whiteListEntry : blockList.get(MainWebViewActivity.DOMAIN_INITIAL_WHITELIST)) {
+            for (String[] whiteListEntry : blockList.get(Integer.valueOf(DOMAIN_INITIAL_WHITELIST))) {
                 switch (whiteListEntry.length) {
                     case 3:  // There is one entry.
                         if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.startsWith(whiteListEntry[1])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.DOMAIN_INITIAL_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1], whiteListEntry[2]};
-
-                            // Not blocked.
-                            return false;
+                            // Return a whitelist match request allowed.
+                            return new String[] {REQUEST_ALLOWED, resourceUrl, BLOCK_LIST_NAME_STRING, DOMAIN_INITIAL_WHITELIST, whiteListEntry[0] + "\n" + whiteListEntry[1], whiteListEntry[2]};
                         }
                         break;
 
                     case 4:  // There are two entries.
                         if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.startsWith(whiteListEntry[1]) && resourceUrl.contains(whiteListEntry[2])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.DOMAIN_INITIAL_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2], whiteListEntry[3]};
-
-                            // Not blocked.
-                            return false;
+                            // Return a whitelist match request allowed.
+                            return new String[] {REQUEST_ALLOWED, resourceUrl, BLOCK_LIST_NAME_STRING, DOMAIN_INITIAL_WHITELIST, whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2],
+                                    whiteListEntry[3]};
                         }
                         break;
 
                     case 5:  // There are three entries.
                         if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.startsWith(whiteListEntry[1]) && resourceUrl.contains(whiteListEntry[2]) && resourceUrl.startsWith(whiteListEntry[3])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.DOMAIN_INITIAL_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2] + "\n" + whiteListEntry[3],
-                                    whiteListEntry[4]};
-
-                            // Not blocked.
-                            return false;
+                            // Return a whitelist match request allowed.
+                            return new String[] {REQUEST_ALLOWED, resourceUrl, BLOCK_LIST_NAME_STRING, DOMAIN_INITIAL_WHITELIST, whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2] + "\n" +
+                                    whiteListEntry[3], whiteListEntry[4]};
                         }
                         break;
                 }
             }
 
             // Domain final white list.
-            for (String[] whiteListEntry : blockList.get(MainWebViewActivity.DOMAIN_FINAL_WHITELIST)) {
+            for (String[] whiteListEntry : blockList.get(Integer.valueOf(DOMAIN_FINAL_WHITELIST))) {
                 switch (whiteListEntry.length) {
                     case 3:  // There is one entry;
                         if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.endsWith(whiteListEntry[1])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.DOMAIN_FINAL_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1], whiteListEntry[2]};
-
-                            // Not blocked.
-                            return false;
+                            // Return a whitelist match request allowed.
+                            return new String[] {REQUEST_ALLOWED, resourceUrl, BLOCK_LIST_NAME_STRING, DOMAIN_FINAL_WHITELIST, whiteListEntry[0] + "\n" + whiteListEntry[1], whiteListEntry[2]};
                         }
                         break;
 
                     case 4:  // There are two entries;
                         if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1]) && resourceUrl.endsWith(whiteListEntry[2])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.DOMAIN_FINAL_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2], whiteListEntry[3]};
-
-
-                            // Not blocked.
-                            return false;
+                            // Return a whitelist match request allowed.
+                            return new String[] {REQUEST_ALLOWED, resourceUrl, BLOCK_LIST_NAME_STRING, DOMAIN_FINAL_WHITELIST, whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2],
+                                    whiteListEntry[3]};
                         }
                         break;
                 }
@@ -1782,109 +1765,77 @@ public class BlockListHelper {
         // Only check the third-party white lists if this is a third-party request.
         if (isThirdPartyRequest) {
             // Third-party white list.
-            for (String[] whiteListEntry : blockList.get(MainWebViewActivity.THIRD_PARTY_WHITELIST)) {
+            for (String[] whiteListEntry : blockList.get(Integer.valueOf(THIRD_PARTY_WHITELIST))) {
                 switch (whiteListEntry.length) {
                     case 2:  // There is one entry
                         if (resourceUrl.contains(whiteListEntry[0])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.THIRD_PARTY_WHITELIST), whiteListEntry[0], whiteListEntry[1]};
-
-                            // Not blocked.
-                            return false;
+                            // Return a whitelist match request allowed.
+                            return new String[] {REQUEST_ALLOWED, resourceUrl, BLOCK_LIST_NAME_STRING, THIRD_PARTY_WHITELIST, whiteListEntry[0], whiteListEntry[1]};
                         }
                         break;
 
                     case 3:  // There are two entries.
                         if (resourceUrl.contains(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.THIRD_PARTY_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1], whiteListEntry[2]};
-
-                            // Not blocked.
-                            return false;
+                            // Return a whitelist match request allowed.
+                            return new String[] {REQUEST_ALLOWED, resourceUrl, BLOCK_LIST_NAME_STRING, THIRD_PARTY_WHITELIST, whiteListEntry[0] + "\n" + whiteListEntry[1], whiteListEntry[2]};
                         }
                         break;
 
                     case 4:  // There are three entries.
                         if (resourceUrl.contains(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1]) && resourceUrl.contains(whiteListEntry[2])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.THIRD_PARTY_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2], whiteListEntry[3]};
-
-                            // Not blocked.
-                            return false;
+                            // Return a whitelist match request allowed.
+                            return new String[] {REQUEST_ALLOWED, resourceUrl, BLOCK_LIST_NAME_STRING, THIRD_PARTY_WHITELIST, whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2],
+                                    whiteListEntry[3]};
                         }
                         break;
 
                     case 5:  // There are four entries.
                         if (resourceUrl.contains(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1]) && resourceUrl.contains(whiteListEntry[2]) && resourceUrl.contains(whiteListEntry[3])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.THIRD_PARTY_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2] + "\n" + whiteListEntry[3],
-                                    whiteListEntry[4]};
-                            // Not blocked.
-                            return false;
+                            // Return a whitelist match request allowed.
+                            return new String[] {REQUEST_ALLOWED, resourceUrl, BLOCK_LIST_NAME_STRING, THIRD_PARTY_WHITELIST, whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2] + "\n" +
+                                    whiteListEntry[3], whiteListEntry[4]};
                         }
                         break;
 
                     case 6:  // There are five entries.
                         if (resourceUrl.contains(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1]) && resourceUrl.contains(whiteListEntry[2]) && resourceUrl.contains(whiteListEntry[3]) &&
                                 resourceUrl.contains(whiteListEntry[4])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.THIRD_PARTY_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2] + "\n" + whiteListEntry[3] + "\n" +
-                                    whiteListEntry[4], whiteListEntry[5]};
-
-                            // Not blocked.
-                            return false;
+                            // Return a whitelist match request allowed.
+                            return new String[] {REQUEST_ALLOWED, resourceUrl, BLOCK_LIST_NAME_STRING, THIRD_PARTY_WHITELIST, whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2] + "\n" +
+                                    whiteListEntry[3] + "\n" + whiteListEntry[4], whiteListEntry[5]};
                         }
                         break;
                 }
             }
 
             // Third-party domain white list.
-            for (String[] whiteListEntry : blockList.get(MainWebViewActivity.THIRD_PARTY_DOMAIN_WHITELIST)) {
+            for (String[] whiteListEntry : blockList.get(Integer.valueOf(THIRD_PARTY_DOMAIN_WHITELIST))) {
                 if (whiteListEntry.length == 3) {  // There is one entry.
                     if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1])) {
-                        // Store the entry in the resource request log.
-                        MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                String.valueOf(MainWebViewActivity.THIRD_PARTY_DOMAIN_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1], whiteListEntry[2]};
-
-                        // Not blocked.
-                        return false;
+                        // Return a whitelist match request allowed.
+                        return new String[] {REQUEST_ALLOWED, resourceUrl, BLOCK_LIST_NAME_STRING, THIRD_PARTY_DOMAIN_WHITELIST, whiteListEntry[0] + "\n" + whiteListEntry[1], whiteListEntry[2]};
                     }
                 } else {  // There are two entries.
                     if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.contains(whiteListEntry[1]) && resourceUrl.contains(whiteListEntry[2])) {
-                        // Store the entry in the resource request log.
-                        MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                String.valueOf(MainWebViewActivity.THIRD_PARTY_DOMAIN_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2], whiteListEntry[3]};
-
-                        // Not blocked.
-                        return false;
+                        // Return a whitelist match request allowed.
+                        return new String[] {REQUEST_ALLOWED, resourceUrl, BLOCK_LIST_NAME_STRING, THIRD_PARTY_DOMAIN_WHITELIST, whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2],
+                                whiteListEntry[3]};
                     }
                 }
             }
 
             // Third-party domain initial white list.
-            for (String[] whiteListEntry : blockList.get(MainWebViewActivity.THIRD_PARTY_DOMAIN_INITIAL_WHITELIST)) {
+            for (String[] whiteListEntry : blockList.get(Integer.valueOf(THIRD_PARTY_DOMAIN_INITIAL_WHITELIST))) {
                 if (whiteListEntry.length == 3) {  // There is one entry.
                     if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.startsWith(whiteListEntry[1])) {
-                        // Store the entry in the resource request log.
-                        MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                String.valueOf(MainWebViewActivity.THIRD_PARTY_DOMAIN_INITIAL_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1], whiteListEntry[2]};
-
-                        // Not blocked.
-                        return false;
+                        // Return a whitelist match request allowed.
+                        return new String[] {REQUEST_ALLOWED, resourceUrl, BLOCK_LIST_NAME_STRING, THIRD_PARTY_DOMAIN_INITIAL_WHITELIST, whiteListEntry[0] + "\n" + whiteListEntry[1], whiteListEntry[2]};
                     }
                 } else {  // There are two entries.
                     if (currentDomain.endsWith(whiteListEntry[0]) && resourceUrl.startsWith(whiteListEntry[1]) && resourceUrl.contains(whiteListEntry[2])) {
-                        // Store the entry in the resource request log.
-                        MainWebViewActivity.whiteListResultStringArray = new String[] {String.valueOf(MainWebViewActivity.REQUEST_ALLOWED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                String.valueOf(MainWebViewActivity.THIRD_PARTY_DOMAIN_WHITELIST), whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2], whiteListEntry[3]};
-
-                        // Not blocked.
-                        return false;
+                        // Return a whitelist match request allowed.
+                        return new String[] {REQUEST_ALLOWED, resourceUrl, BLOCK_LIST_NAME_STRING, THIRD_PARTY_DOMAIN_WHITELIST, whiteListEntry[0] + "\n" + whiteListEntry[1] + "\n" + whiteListEntry[2],
+                                whiteListEntry[3]};
                     }
                 }
             }
@@ -1892,123 +1843,84 @@ public class BlockListHelper {
 
         // Process the black lists.
         // Main black list.
-        for (String[] blackListEntry : blockList.get(MainWebViewActivity.MAIN_BLACKLIST)) {
+        for (String[] blackListEntry : blockList.get(Integer.valueOf(MAIN_BLACKLIST))) {
             switch (blackListEntry.length) {
                 case 2:  // There is one entry.
                     if (resourceUrl.contains(blackListEntry[0])) {
-                        // Store the entry in the resource request log.
-                        MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                String.valueOf(MainWebViewActivity.MAIN_BLACKLIST), blackListEntry[0], blackListEntry[1]});
-
-                        // Blocked.
-                        return true;
+                        // Return a blacklist match request blocked.
+                        return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, MAIN_BLACKLIST, blackListEntry[0], blackListEntry[1]};
                     }
                     break;
 
                 case 3:  // There are two entries.
                     if (resourceUrl.contains(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1])) {
-                        // Store the entry in the resource request log.
-                        MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                String.valueOf(MainWebViewActivity.MAIN_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]});
-
-                        // Blocked.
-                        return true;
+                        // Return a blacklist match request blocked.
+                        return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, MAIN_BLACKLIST, blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]};
                     }
                     break;
 
                 case 4:  // There are three entries.
                     if (resourceUrl.contains(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1]) && resourceUrl.contains(blackListEntry[2])) {
-                        // Store the entry in the resource request log.
-                        MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                String.valueOf(MainWebViewActivity.MAIN_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2], blackListEntry[3]});
-
-                        // Blocked.
-                        return true;
+                        // Return a blacklist match request blocked.
+                        return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, MAIN_BLACKLIST, blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2], blackListEntry[3]};
                     }
                     break;
 
                 case 5:  // There are four entries.
                     if (resourceUrl.contains(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1]) && resourceUrl.contains(blackListEntry[2]) && resourceUrl.contains(blackListEntry[3])) {
-                        // Store the entry in the resource request log.
-                        MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                String.valueOf(MainWebViewActivity.MAIN_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2] + "\n" + blackListEntry[3], blackListEntry[4]});
-
-                        // Blocked.
-                        return true;
+                        // Return a blacklist match request blocked.
+                        return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, MAIN_BLACKLIST, blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2] + "\n" +
+                                blackListEntry[3], blackListEntry[4]};
                     }
                     break;
 
                 case 6:  // There are five entries.
                     if (resourceUrl.contains(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1]) && resourceUrl.contains(blackListEntry[2]) && resourceUrl.contains(blackListEntry[3]) &&
                             resourceUrl.contains(blackListEntry[4])) {
-                        // Store the entry in the resource request log.
-                        MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                String.valueOf(MainWebViewActivity.MAIN_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2] + "\n" + blackListEntry[3] + "\n" +
-                                blackListEntry[4], blackListEntry[5]});
-
-                        // Blocked.
-                        return true;
+                        // Return a blacklist match request blocked.
+                        return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, MAIN_BLACKLIST, blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2] + "\n" +
+                                blackListEntry[3] + "\n" + blackListEntry[4], blackListEntry[5]};
                     }
                     break;
             }
         }
 
         // Initial black list.
-        for (String[] blackListEntry : blockList.get(MainWebViewActivity.INITIAL_BLACKLIST)) {
+        for (String[] blackListEntry : blockList.get(Integer.valueOf(INITIAL_BLACKLIST))) {
             if (blackListEntry.length == 2) {  // There is one entry.
                 if (resourceUrl.startsWith(blackListEntry[0])) {
-                    // Store the entry in the resource request log.
-                    MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                            String.valueOf(MainWebViewActivity.INITIAL_BLACKLIST), blackListEntry[0], blackListEntry[1]});
-
-                    // Blocked.
-                    return true;
+                    // Return a blacklist match request blocked.
+                    return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, INITIAL_BLACKLIST, blackListEntry[0], blackListEntry[1]};
                 }
             } else {  // There are two entries
                 if (resourceUrl.startsWith(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1])) {
-                    // Store the entry in the resource request log.
-                    MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                            String.valueOf(MainWebViewActivity.INITIAL_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]});
-
-                    // Blocked.
-                    return true;
+                    // Return a blacklist match request blocked.
+                    return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, INITIAL_BLACKLIST, blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]};
                 }
             }
         }
 
         // Final black list.
-        for (String[] blackListEntry : blockList.get(MainWebViewActivity.FINAL_BLACKLIST)) {
+        for (String[] blackListEntry : blockList.get(Integer.valueOf(FINAL_BLACKLIST))) {
             switch (blackListEntry.length) {
                 case 2:  // There is one entry.
                     if (resourceUrl.endsWith(blackListEntry[0])) {
-                        // Store the entry in the resource request log.
-                        MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                String.valueOf(MainWebViewActivity.FINAL_BLACKLIST), blackListEntry[0], blackListEntry[1]});
-
-                        // Blocked.
-                        return true;
+                        // Return a blacklist match request blocked.
+                        return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, FINAL_BLACKLIST, blackListEntry[0], blackListEntry[1]};
                     }
                     break;
 
                 case 3:  // There are two entries.
                     if (resourceUrl.contains(blackListEntry[0]) && resourceUrl.endsWith(blackListEntry[1])) {
-                        // Store the entry in the resource request log.
-                        MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                String.valueOf(MainWebViewActivity.FINAL_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]});
-
-                        // Blocked.
-                        return true;
+                        // Return a blacklist match request blocked.
+                        return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, FINAL_BLACKLIST, blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]};
                     }
                     break;
 
                 case 4:  // There are three entries.
                     if (resourceUrl.contains(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1]) && resourceUrl.endsWith(blackListEntry[2])) {
-                        // Store the entry in the resource request log.
-                        MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                String.valueOf(MainWebViewActivity.FINAL_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2], blackListEntry[3]});
-
-                        // Blocked.
-                        return true;
+                        // Return a blacklist match request blocked.
+                        return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, FINAL_BLACKLIST, blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2], blackListEntry[3]};
                     }
                     break;
             }
@@ -2017,93 +1929,67 @@ public class BlockListHelper {
         // Only check the domain lists if the current domain is not null (like `about:blank`).
         if (currentDomain != null) {
             // Domain black list.
-            for (String[] blackListEntry : blockList.get(MainWebViewActivity.DOMAIN_BLACKLIST)) {
+            for (String[] blackListEntry : blockList.get(Integer.valueOf(DOMAIN_BLACKLIST))) {
                 switch (blackListEntry.length) {
                     case 3:  // There is one entry.
                         if (currentDomain.endsWith(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.DOMAIN_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]});
-
-                            // Blocked.
-                            return true;
+                            // Return a blacklist match request blocked.
+                            return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, DOMAIN_BLACKLIST, blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]};
                         }
                         break;
 
                     case 4:  // There are two entries.
                         if (currentDomain.endsWith(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1]) && resourceUrl.contains(blackListEntry[2])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.DOMAIN_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2], blackListEntry[3]});
-
-                            // Blocked.
-                            return true;
+                            // Return a blacklist match request blocked.
+                            return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, DOMAIN_BLACKLIST, blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2],
+                                    blackListEntry[3]};
                         }
                         break;
 
                     case 5:  // There are three entries.
                         if (currentDomain.endsWith(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1]) && resourceUrl.contains(blackListEntry[2]) && resourceUrl.contains(blackListEntry[3])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.DOMAIN_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2] + "\n" + blackListEntry[3],
-                                    blackListEntry[4]});
-
-                            // Blocked.
-                            return true;
+                            // Return a blacklist match request blocked.
+                            return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, DOMAIN_BLACKLIST, blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2] + "\n" +
+                                    blackListEntry[3], blackListEntry[4]};
                         }
                         break;
                 }
             }
 
             // Domain initial black list.
-            for (String[] blackListEntry : blockList.get(MainWebViewActivity.DOMAIN_INITIAL_BLACKLIST)) {
+            for (String[] blackListEntry : blockList.get(Integer.valueOf(DOMAIN_INITIAL_BLACKLIST))) {
                 // Store the entry in the resource request log.
                 if (currentDomain.endsWith(blackListEntry[0]) && resourceUrl.startsWith(blackListEntry[1])) {
-                    MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                            String.valueOf(MainWebViewActivity.DOMAIN_INITIAL_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1],
-                            blackListEntry[2]});
-
-                    // Blocked.
-                    return true;
+                    // Return a blacklist match request blocked.
+                    return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, DOMAIN_INITIAL_BLACKLIST, blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]};
                 }
             }
 
             // Domain final black list.
-            for (String[] blackListEntry : blockList.get(MainWebViewActivity.DOMAIN_FINAL_BLACKLIST)) {
+            for (String[] blackListEntry : blockList.get(Integer.valueOf(DOMAIN_FINAL_BLACKLIST))) {
                 switch (blackListEntry.length) {
                     case 3:  // There is one entry.
                         if (currentDomain.endsWith(blackListEntry[0]) && resourceUrl.endsWith(blackListEntry[1])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.DOMAIN_FINAL_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]});
-
-                            // Blocked.
-                            return true;
+                            // Return a blacklist match request blocked.
+                            return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, DOMAIN_FINAL_BLACKLIST, blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]};
                         }
                         break;
 
                     case 4:  // There are two entries.
                         if (currentDomain.endsWith(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1]) && resourceUrl.endsWith(blackListEntry[2])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.DOMAIN_FINAL_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2], blackListEntry[3]});
-
-                            // Blocked.
-                            return true;
+                            // Return a blacklist match request blocked.
+                            return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, DOMAIN_FINAL_BLACKLIST, blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2],
+                                    blackListEntry[3]};
                         }
                         break;
                 }
             }
 
             // Domain regular expression black list.
-            for (String[] blackListEntry : blockList.get(MainWebViewActivity.DOMAIN_REGULAR_EXPRESSION_BLACKLIST)) {
+            for (String[] blackListEntry : blockList.get(Integer.valueOf(DOMAIN_REGULAR_EXPRESSION_BLACKLIST))) {
                 if (currentDomain.endsWith(blackListEntry[0]) && Pattern.matches(blackListEntry[1], resourceUrl)) {
-                    // Store the entry in the resource request log.
-                    MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                            String.valueOf(MainWebViewActivity.DOMAIN_REGULAR_EXPRESSION_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]});
-
-                    // Blocked.
-                    return true;
+                    // Return a blacklist match request blocked.
+                    return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, DOMAIN_REGULAR_EXPRESSION_BLACKLIST, blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]};
                 }
             }
         }
@@ -2111,177 +1997,125 @@ public class BlockListHelper {
         // Only check the third-party black lists if this is a third-party request.
         if (isThirdPartyRequest) {
             // Third-party black list.
-            for (String[] blackListEntry : blockList.get(MainWebViewActivity.THIRD_PARTY_BLACKLIST)) {
+            for (String[] blackListEntry : blockList.get(Integer.valueOf(THIRD_PARTY_BLACKLIST))) {
                 switch (blackListEntry.length) {
                     case 2:  // There is one entry.
                         if (resourceUrl.contains(blackListEntry[0])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.THIRD_PARTY_BLACKLIST), blackListEntry[0], blackListEntry[1]});
-
-                            // Blocked.
-                            return true;
+                            // Return a blacklist match request blocked.
+                            return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, THIRD_PARTY_BLACKLIST, blackListEntry[0], blackListEntry[1]};
                         }
                         break;
 
                     case 3:  // There are two entries.
                         if (resourceUrl.contains(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.THIRD_PARTY_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]});
-
-                            // Blocked.
-                            return true;
+                            // Return a blacklist match request blocked.
+                            return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, THIRD_PARTY_BLACKLIST, blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]};
                         }
                         break;
 
                     case 4:  // There are three entries.
                         if (resourceUrl.contains(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1]) && resourceUrl.contains(blackListEntry[2])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.THIRD_PARTY_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2], blackListEntry[3]});
-
-                            // Blocked.
-                            return true;
+                            // Return a blacklist match request blocked.
+                            return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, THIRD_PARTY_BLACKLIST, blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2],
+                                    blackListEntry[3]};
                         }
                         break;
 
                     case 5:  // There are four entries.
                         if (resourceUrl.contains(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1]) && resourceUrl.contains(blackListEntry[2]) && resourceUrl.contains(blackListEntry[3])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.THIRD_PARTY_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2] + "\n" + blackListEntry[3],
-                                    blackListEntry[4]});
-
-                            // Blocked.
-                            return true;
+                            // Return a blacklist match request blocked.
+                            return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, THIRD_PARTY_BLACKLIST, blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2] + "\n" +
+                                    blackListEntry[3], blackListEntry[4]};
                         }
                         break;
                 }
             }
 
             // Third-party initial black list.
-            for (String[] blackListEntry : blockList.get(MainWebViewActivity.THIRD_PARTY_INITIAL_BLACKLIST)) {
+            for (String[] blackListEntry : blockList.get(Integer.valueOf(THIRD_PARTY_INITIAL_BLACKLIST))) {
                 if (blackListEntry.length == 2) {  // There is one entry.
                     if (resourceUrl.startsWith(blackListEntry[0])) {
-                        // Store the entry in the resource request log.
-                        MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                String.valueOf(MainWebViewActivity.THIRD_PARTY_INITIAL_BLACKLIST), blackListEntry[0], blackListEntry[1]});
-
-                        // Blocked.
-                        return true;
+                        // Return a blacklist match request blocked.
+                        return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, THIRD_PARTY_INITIAL_BLACKLIST, blackListEntry[0], blackListEntry[1]};
                     }
                 } else {  // There are two entries.
                     if (resourceUrl.startsWith(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1])) {
-                        // Store the entry in the resource request log.
-                        MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                String.valueOf(MainWebViewActivity.THIRD_PARTY_INITIAL_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]});
-
-                        // Blocked.
-                        return true;
+                        // Return a blacklist match request blocked.
+                        return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, THIRD_PARTY_INITIAL_BLACKLIST, blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]};
                     }
                 }
             }
 
             // Third-party domain black list.
-            for (String[] blackListEntry : blockList.get(MainWebViewActivity.THIRD_PARTY_DOMAIN_BLACKLIST)) {
+            for (String[] blackListEntry : blockList.get(Integer.valueOf(THIRD_PARTY_DOMAIN_BLACKLIST))) {
                 if (blackListEntry.length == 3) {  // There is one entry.
                     if (currentDomain.endsWith(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1])) {
-                        // Store the entry in the resource request log.
-                        MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                String.valueOf(MainWebViewActivity.THIRD_PARTY_DOMAIN_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]});
-
-                        // Blocked.
-                        return true;
+                        // Return a blacklist match request blocked.
+                        return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, THIRD_PARTY_DOMAIN_BLACKLIST, blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]};
                     }
                 } else { // There are two entries.
                     if (currentDomain.endsWith(blackListEntry[0]) && resourceUrl.contains(blackListEntry[1]) && resourceUrl.contains(blackListEntry[2])) {
-                        // Store the entry in the resource request log.
-                        MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                String.valueOf(MainWebViewActivity.THIRD_PARTY_DOMAIN_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2], blackListEntry[3]});
-
-                        // Blocked.
-                        return true;
+                        // Return a blacklist match request blocked.
+                        return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, THIRD_PARTY_DOMAIN_BLACKLIST, blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2],
+                                blackListEntry[3]};
                     }
                 }
             }
 
             // Third-party domain initial black list.
-            for (String[] blackListEntry : blockList.get(MainWebViewActivity.THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST)) {
+            for (String[] blackListEntry : blockList.get(Integer.valueOf(THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST))) {
                 switch (blackListEntry.length) {
                     case 3:  // There is one entry.
                         if (currentDomain.endsWith(blackListEntry[0]) && resourceUrl.startsWith(blackListEntry[1])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]});
-                            // Blocked.
-                            return true;
+                            // Return a blacklist match request blocked.
+                            return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST, blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]};
                         }
                         break;
 
                     case 4:  // There are two entries.
                         if (currentDomain.endsWith(blackListEntry[0]) && resourceUrl.startsWith(blackListEntry[1]) && resourceUrl.contains(blackListEntry[2])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2], blackListEntry[3]});
-
-                            // Blocked.
-                            return true;
+                            // Return a blacklist match request blocked.
+                            return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST, blackListEntry[0] + "\n" + blackListEntry[1] + "\n" +
+                                    blackListEntry[2], blackListEntry[3]};
                         }
                         break;
 
                     case 5:  // There are three entries.
                         if (currentDomain.endsWith(blackListEntry[0]) && resourceUrl.startsWith(blackListEntry[1]) && resourceUrl.contains(blackListEntry[2]) && resourceUrl.contains(blackListEntry[3])) {
-                            // Store the entry in the resource request log.
-                            MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                                    String.valueOf(MainWebViewActivity.THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1] + "\n" + blackListEntry[2] + "\n" + blackListEntry[3],
-                                    blackListEntry[4]});
-
-                            // Blocked.
-                            return true;
+                            // Return a blacklist match request blocked.
+                            return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST, blackListEntry[0] + "\n" + blackListEntry[1] + "\n" +
+                                    blackListEntry[2] + "\n" + blackListEntry[3], blackListEntry[4]};
                         }
                         break;
                 }
             }
 
             // Third-party regular expression black list.
-            for (String[] blackListEntry : blockList.get(MainWebViewActivity.THIRD_PARTY_REGULAR_EXPRESSION_BLACKLIST)) {
+            for (String[] blackListEntry : blockList.get(Integer.valueOf(THIRD_PARTY_REGULAR_EXPRESSION_BLACKLIST))) {
                 if (Pattern.matches(blackListEntry[0], resourceUrl)) {
-                    // Store the entry in the resource request log.
-                    MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                            String.valueOf(MainWebViewActivity.THIRD_PARTY_REGULAR_EXPRESSION_BLACKLIST), blackListEntry[0], blackListEntry[1]});
-
-                    // Blocked.
-                    return true;
+                    // Return a blacklist match request blocked.
+                    return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, THIRD_PARTY_REGULAR_EXPRESSION_BLACKLIST, blackListEntry[0], blackListEntry[1]};
                 }
             }
 
             // Third-party domain regular expression black list.
-            for (String[] blackListEntry : blockList.get(MainWebViewActivity.THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLACKLIST)) {
+            for (String[] blackListEntry : blockList.get(Integer.valueOf(THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLACKLIST))) {
                 if (currentDomain.endsWith(blackListEntry[0]) && Pattern.matches(blackListEntry[1], resourceUrl)) {
-                    // Store the entry in the resource request log.
-                    MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                            String.valueOf(MainWebViewActivity.THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLACKLIST), blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]});
-
-                    // Blocked.
-                    return true;
+                    // Return a blacklist match request blocked.
+                    return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLACKLIST, blackListEntry[0] + "\n" + blackListEntry[1], blackListEntry[2]};
                 }
             }
         }
 
         // Regular expression black list.
-        for (String[] blackListEntry : blockList.get(MainWebViewActivity.REGULAR_EXPRESSION_BLACKLIST)) {
+        for (String[] blackListEntry : blockList.get(Integer.valueOf(REGULAR_EXPRESSION_BLACKLIST))) {
             if (Pattern.matches(blackListEntry[0], resourceUrl)) {
-                // Store the entry in the resource request log.
-                MainWebViewActivity.resourceRequests.add(new String[] {String.valueOf(MainWebViewActivity.REQUEST_BLOCKED), resourceUrl, BLOCK_LIST_NAME_STRING,
-                        String.valueOf(MainWebViewActivity.REGULAR_EXPRESSION_BLACKLIST), blackListEntry[0], blackListEntry[1]});
-
-                // blocked.
-                return true;
+                // Return a blacklist match request blocked.
+                return new String[] {REQUEST_BLOCKED, resourceUrl, BLOCK_LIST_NAME_STRING, REGULAR_EXPRESSION_BLACKLIST, blackListEntry[0], blackListEntry[1]};
             }
         }
 
-        // Not blocked.
-        return false;
+        // Return a no match request default.
+        return new String[] {REQUEST_DEFAULT};
     }
 }

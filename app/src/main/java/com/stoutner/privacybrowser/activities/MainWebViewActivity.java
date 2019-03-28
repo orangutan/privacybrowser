@@ -160,25 +160,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         EditBookmarkFolderDialog.EditBookmarkFolderListener, HttpAuthenticationDialog.HttpAuthenticationListener, NavigationView.OnNavigationItemSelectedListener, WebViewTabFragment.NewTabListener,
         PinnedMismatchDialog.PinnedMismatchListener, SslCertificateErrorDialog.SslCertificateErrorListener, UrlHistoryDialog.UrlHistoryListener {
 
-    // TODO Consider removing
     // `darkTheme` is public static so it can be accessed from everywhere.
     public static boolean darkTheme;
 
-    // TODO Consider removing
     // `allowScreenshots` is public static so it can be accessed from everywhere.  It is also used in `onCreate()`.
     public static boolean allowScreenshots;
 
-    // TODO Remove
     // `favoriteIconBitmap` is public static so it can be accessed from `BookmarksActivity`, `BookmarksDatabaseViewActivity`, `CreateBookmarkFolderDialog`,
     // `EditBookmarkDialog`, `EditBookmarkFolderDialog`, `EditBookmarkDatabaseViewDialog`, and `ViewSslCertificateDialog`.  It is also used in `onCreate()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`,
     // `onCreateHomeScreenShortcut()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `applyDomainSettings()`.
     public static Bitmap favoriteIconBitmap;
 
-    // TODO Remove
     // `favoriteIconDefaultBitmap` public static so it can be accessed from `PinnedMismatchDialog`.  It is also used in `onCreate()` and `applyDomainSettings`.
     public static Bitmap favoriteIconDefaultBitmap;
 
-    // TODO Consider removing the formatted URL string.
     // `formattedUrlString` is public static so it can be accessed from `AddDomainDialog`, `BookmarksActivity`, `DomainSettingsFragment`, and `PinnedMismatchDialog`.
     // It is also used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onCreateHomeScreenShortcutCreate()`, `loadUrlFromTextBox()`, and `applyProxyThroughOrbot()`.
     public static String formattedUrlString;
@@ -213,59 +208,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `restartFromBookmarksActivity` is public static so it can be accessed from `BookmarksActivity`.  It is also used in `onRestart()`.
     public static boolean restartFromBookmarksActivity;
 
-    // The block list versions are public static so they can be accessed from `AboutTabFragment`.  They are also used in `onCreate()`.
+    // The blocklist versions are public static so they can be accessed from `AboutTabFragment`.  They are also used in `onCreate()`.
     public static String easyListVersion;
     public static String easyPrivacyVersion;
     public static String fanboysAnnoyanceVersion;
     public static String fanboysSocialVersion;
     public static String ultraPrivacyVersion;
-
-    // The request items are public static so they can be accessed by `BlockListHelper`, `RequestsArrayAdapter`, and `ViewRequestsDialog`.  They are also used in `onCreate()` and `onPrepareOptionsMenu()`.
-    public static List<String[]> resourceRequests;
-    public static String[] whiteListResultStringArray;
-    private int blockedRequests;
-    private int easyListBlockedRequests;
-    private int easyPrivacyBlockedRequests;
-    private int fanboysAnnoyanceListBlockedRequests;
-    private int fanboysSocialBlockingListBlockedRequests;
-    private int ultraPrivacyBlockedRequests;
-    private int thirdPartyBlockedRequests;
-
-    public final static int REQUEST_DISPOSITION = 0;
-    public final static int REQUEST_URL = 1;
-    public final static int REQUEST_BLOCKLIST = 2;
-    public final static int REQUEST_SUBLIST = 3;
-    public final static int REQUEST_BLOCKLIST_ENTRIES = 4;
-    public final static int REQUEST_BLOCKLIST_ORIGINAL_ENTRY = 5;
-
-    public final static int REQUEST_DEFAULT = 0;
-    public final static int REQUEST_ALLOWED = 1;
-    public final static int REQUEST_THIRD_PARTY = 2;
-    public final static int REQUEST_BLOCKED = 3;
-
-    public final static int MAIN_WHITELIST = 1;
-    public final static int FINAL_WHITELIST = 2;
-    public final static int DOMAIN_WHITELIST = 3;
-    public final static int DOMAIN_INITIAL_WHITELIST = 4;
-    public final static int DOMAIN_FINAL_WHITELIST = 5;
-    public final static int THIRD_PARTY_WHITELIST = 6;
-    public final static int THIRD_PARTY_DOMAIN_WHITELIST = 7;
-    public final static int THIRD_PARTY_DOMAIN_INITIAL_WHITELIST = 8;
-
-    public final static int MAIN_BLACKLIST = 9;
-    public final static int INITIAL_BLACKLIST = 10;
-    public final static int FINAL_BLACKLIST = 11;
-    public final static int DOMAIN_BLACKLIST = 12;
-    public final static int DOMAIN_INITIAL_BLACKLIST = 13;
-    public final static int DOMAIN_FINAL_BLACKLIST = 14;
-    public final static int DOMAIN_REGULAR_EXPRESSION_BLACKLIST = 15;
-    public final static int THIRD_PARTY_BLACKLIST = 16;
-    public final static int THIRD_PARTY_INITIAL_BLACKLIST = 17;
-    public final static int THIRD_PARTY_DOMAIN_BLACKLIST = 18;
-    public final static int THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST = 19;
-    public final static int THIRD_PARTY_REGULAR_EXPRESSION_BLACKLIST = 20;
-    public final static int THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLACKLIST = 21;
-    public final static int REGULAR_EXPRESSION_BLACKLIST = 22;
 
     // `blockAllThirdPartyRequests` is public static so it can be accessed from `RequestsActivity`.
     // It is also used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applyAppSettings()`
@@ -631,9 +579,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Instantiate the block list helper.
         blockListHelper = new BlockListHelper();
 
-        // Initialize the list of resource requests.
-        resourceRequests = new ArrayList<>();
-
         // Parse the block lists.
         easyList = blockListHelper.parseBlockList(getAssets(), "blocklists/easylist.txt");
         easyPrivacy = blockListHelper.parseBlockList(getAssets(), "blocklists/easyprivacy.txt");
@@ -979,7 +924,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     navigationBackMenuItem.setEnabled(currentWebView.canGoBack());
                     navigationForwardMenuItem.setEnabled(currentWebView.canGoForward());
                     navigationHistoryMenuItem.setEnabled((currentWebView.canGoBack() || currentWebView.canGoForward()));
-                    navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
+                    navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + currentWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
 
                     // Hide the keyboard (if displayed).
                     inputMethodManager.hideSoftInputFromWindow(currentWebView.getWindowToken(), 0);
@@ -1426,6 +1371,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Set the status of the display images menu item.
             displayImagesMenuItem.setChecked(currentWebView.getSettings().getLoadsImagesAutomatically());
+
+            // Initialize the display names for the blocklists with the number of blocked requests.
+            blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + currentWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+            easyListMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.EASY_LIST_BLOCKED_REQUESTS) + " - " + getString(R.string.easylist));
+            easyPrivacyMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.EASY_PRIVACY_BLOCKED_REQUESTS) + " - " + getString(R.string.easyprivacy));
+            fanboysAnnoyanceListMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST_BLOCKED_REQUESTS) + " - " + getString(R.string.fanboys_annoyance_list));
+            fanboysSocialBlockingListMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST_BLOCKED_REQUESTS) + " - " +
+                    getString(R.string.fanboys_social_blocking_list));
+            ultraPrivacyMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.ULTRA_PRIVACY_BLOCKED_REQUESTS) + " - " + getString(R.string.ultraprivacy));
+            blockAllThirdPartyRequestsMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.THIRD_PARTY_BLOCKED_REQUESTS) + " - " + getString(R.string.block_all_third_party_requests));
         }
 
         // Set the status of the menu item checkboxes.
@@ -1483,15 +1438,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Disable Fanboy's Social Blocking List if Fanboy's Annoyance List is checked.
         fanboysSocialBlockingListMenuItem.setEnabled(!fanboysAnnoyanceListEnabled);
-
-        // Initialize the display names for the blocklists with the number of blocked requests.
-        blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + blockedRequests);
-        easyListMenuItem.setTitle(easyListBlockedRequests + " - " + getString(R.string.easylist));
-        easyPrivacyMenuItem.setTitle(easyPrivacyBlockedRequests + " - " + getString(R.string.easyprivacy));
-        fanboysAnnoyanceListMenuItem.setTitle(fanboysAnnoyanceListBlockedRequests + " - " + getString(R.string.fanboys_annoyance_list));
-        fanboysSocialBlockingListMenuItem.setTitle(fanboysSocialBlockingListBlockedRequests + " - " + getString(R.string.fanboys_social_blocking_list));
-        ultraPrivacyMenuItem.setTitle(ultraPrivacyBlockedRequests + " - " + getString(R.string.ultraprivacy));
-        blockAllThirdPartyRequestsMenuItem.setTitle(thirdPartyBlockedRequests + " - " + getString(R.string.block_all_third_party_requests));
 
         // Select the current user agent menu item.  A switch statement cannot be used because the user agents are not compile time constants.
         if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[0])) {  // Privacy Browser.
@@ -2454,8 +2400,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 break;
 
             case R.id.requests:
-                // Launch the requests activity.
+                // Populate the resource requests.
+                RequestsActivity.resourceRequests = currentWebView.getResourceRequests();
+
+                // Create an intent to launch the Requests activity.
                 Intent requestsIntent = new Intent(this, RequestsActivity.class);
+
+                // Make it so.
                 startActivity(requestsIntent);
                 break;
 
@@ -4905,7 +4856,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 WebResourceResponse emptyWebResourceResponse = new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
 
                 // Reset the whitelist results tracker.
-                whiteListResultStringArray = null;
+                String[] whitelistResultStringArray = null;
 
                 // Initialize the third party request tracker.
                 boolean isThirdPartyRequest = false;
@@ -4945,21 +4896,32 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     }
                 }
 
+                // Get the current WebView page position.
+                int webViewPagePosition = webViewPagerAdapter.getPositionForId(pageId);
+
+                // Determine if the WebView is currently displayed.
+                boolean webViewDisplayed = (webViewPagePosition == tabLayout.getSelectedTabPosition());
+
                 // Block third-party requests if enabled.
                 if (isThirdPartyRequest && blockAllThirdPartyRequests) {
+                    // Add the result to the resource requests.
+                    nestedScrollWebView.addResourceRequest(new String[]{BlockListHelper.REQUEST_THIRD_PARTY, url});
+
                     // Increment the blocked requests counters.
-                    blockedRequests++;
-                    thirdPartyBlockedRequests++;
+                    nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS);
+                    nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.THIRD_PARTY_BLOCKED_REQUESTS);
 
-                    // Update the titles of the blocklist menu items.  This must be run from the UI thread.
-                    activity.runOnUiThread(() -> {
-                        navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                        blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                        blockAllThirdPartyRequestsMenuItem.setTitle(thirdPartyBlockedRequests + " - " + getString(R.string.block_all_third_party_requests));
-                    });
-
-                    // Add the request to the log.
-                    resourceRequests.add(new String[]{String.valueOf(REQUEST_THIRD_PARTY), url});
+                    // Update the titles of the blocklist menu items if the WebView is currently displayed.
+                    if (webViewDisplayed) {
+                        // Updating the UI must be run from the UI thread.
+                        activity.runOnUiThread(() -> {
+                            // Update the menu item titles.
+                            navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                            blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                            blockAllThirdPartyRequestsMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.THIRD_PARTY_BLOCKED_REQUESTS) + " - " +
+                                    getString(R.string.block_all_third_party_requests));
+                        });
+                    }
 
                     // Return an empty web resource response.
                     return emptyWebResourceResponse;
@@ -4967,26 +4929,36 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Check UltraPrivacy if it is enabled.
                 if (ultraPrivacyEnabled) {
-                    if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, ultraPrivacy)) {
-                        // Increment the blocked requests counters.
-                        blockedRequests++;
-                        ultraPrivacyBlockedRequests++;
+                    // Check the URL against UltraPrivacy.
+                    String[] ultraPrivacyResults = blockListHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, ultraPrivacy);
 
-                        // Update the titles of the blocklist menu items.  This must be run from the UI thread.
-                        activity.runOnUiThread(() -> {
-                            navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                            blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                            ultraPrivacyMenuItem.setTitle(ultraPrivacyBlockedRequests + " - " + getString(R.string.ultraprivacy));
-                        });
+                    // Process the UltraPrivacy results.
+                    if (ultraPrivacyResults[0].equals(BlockListHelper.REQUEST_BLOCKED)) {  // The resource request matched UltraPrivacy's blacklist.
+                        // Add the result to the resource requests.
+                        nestedScrollWebView.addResourceRequest(new String[] {ultraPrivacyResults[0], ultraPrivacyResults[1], ultraPrivacyResults[2], ultraPrivacyResults[3], ultraPrivacyResults[4],
+                                ultraPrivacyResults[5]});
+
+                        // Increment the blocked requests counters.
+                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS);
+                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.ULTRA_PRIVACY_BLOCKED_REQUESTS);
+
+                        // Update the titles of the blocklist menu items if the WebView is currently displayed.
+                        if (webViewDisplayed) {
+                            // Updating the UI must be run from the UI thread.
+                            activity.runOnUiThread(() -> {
+                                // Update the menu item titles.
+                                navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                                blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                                ultraPrivacyMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.ULTRA_PRIVACY_BLOCKED_REQUESTS) + " - " + getString(R.string.ultraprivacy));
+                            });
+                        }
 
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse;
-                    }
-
-                    // If the whitelist result is not null, the request has been allowed by UltraPrivacy.
-                    if (whiteListResultStringArray != null) {
+                    } else if (ultraPrivacyResults[0].equals(BlockListHelper.REQUEST_ALLOWED)) {  // The resource request matched UltraPrivacy's whitelist.
                         // Add a whitelist entry to the resource requests array.
-                        resourceRequests.add(whiteListResultStringArray);
+                        nestedScrollWebView.addResourceRequest(new String[] {ultraPrivacyResults[0], ultraPrivacyResults[1], ultraPrivacyResults[2], ultraPrivacyResults[3], ultraPrivacyResults[4],
+                                ultraPrivacyResults[5]});
 
                         // The resource request has been allowed by UltraPrivacy.  `return null` loads the requested resource.
                         return null;
@@ -4995,94 +4967,145 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Check EasyList if it is enabled.
                 if (easyListEnabled) {
-                    if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, easyList)) {
+                    // Check the URL against EasyList.
+                    String[] easyListResults = blockListHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, easyList);
+
+                    // Process the EasyList results.
+                    if (easyListResults[0].equals(BlockListHelper.REQUEST_BLOCKED)) {  // The resource request matched EasyList's blacklist.
+                        // Add the result to the resource requests.
+                        nestedScrollWebView.addResourceRequest(new String[] {easyListResults[0], easyListResults[1], easyListResults[2], easyListResults[3], easyListResults[4], easyListResults[5]});
+
                         // Increment the blocked requests counters.
-                        blockedRequests++;
-                        easyListBlockedRequests++;
+                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS);
+                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.EASY_LIST_BLOCKED_REQUESTS);
 
-                        // Update the titles of the blocklist menu items.  This must be run from the UI thread.
-                        activity.runOnUiThread(() -> {
-                            navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                            blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                            easyListMenuItem.setTitle(easyListBlockedRequests + " - " + getString(R.string.easylist));
-                        });
-
-                        // Reset the whitelist results tracker (because otherwise it will sometimes add results to the list due to a race condition).
-                        whiteListResultStringArray = null;
+                        // Update the titles of the blocklist menu items if the WebView is currently displayed.
+                        if (webViewDisplayed) {
+                            // Updating the UI must be run from the UI thread.
+                            activity.runOnUiThread(() -> {
+                                // Update the menu item titles.
+                                navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                                blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                                easyListMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.EASY_LIST_BLOCKED_REQUESTS) + " - " + getString(R.string.easylist));
+                            });
+                        }
 
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse;
+                    } else if (easyListResults[0].equals(BlockListHelper.REQUEST_ALLOWED)) {  // The resource request matched EasyList's whitelist.
+                        // Update the whitelist result string array tracker.
+                        whitelistResultStringArray = new String[] {easyListResults[0], easyListResults[1], easyListResults[2], easyListResults[3], easyListResults[4], easyListResults[5]};
                     }
                 }
 
                 // Check EasyPrivacy if it is enabled.
                 if (easyPrivacyEnabled) {
-                    if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, easyPrivacy)) {
+                    // Check the URL against EasyPrivacy.
+                    String[] easyPrivacyResults = blockListHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, easyPrivacy);
+
+                    // Process the EasyPrivacy results.
+                    if (easyPrivacyResults[0].equals(BlockListHelper.REQUEST_BLOCKED)) {  // The resource request matched EasyPrivacy's blacklist.
+                        // Add the result to the resource requests.
+                        nestedScrollWebView.addResourceRequest(new String[] {easyPrivacyResults[0], easyPrivacyResults[1], easyPrivacyResults[2], easyPrivacyResults[3], easyPrivacyResults[5],
+                                easyPrivacyResults[5]});
+
                         // Increment the blocked requests counters.
-                        blockedRequests++;
-                        easyPrivacyBlockedRequests++;
+                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS);
+                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.EASY_PRIVACY_BLOCKED_REQUESTS);
 
-                        // Update the titles of the blocklist menu items.  This must be run from the UI thread.
-                        activity.runOnUiThread(() -> {
-                            navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                            blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                            easyPrivacyMenuItem.setTitle(easyPrivacyBlockedRequests + " - " + getString(R.string.easyprivacy));
-                        });
-
-                        // Reset the whitelist results tracker (because otherwise it will sometimes add results to the list due to a race condition).
-                        whiteListResultStringArray = null;
+                        // Update the titles of the blocklist menu items if the WebView is currently displayed.
+                        if (webViewDisplayed) {
+                            // Updating the UI must be run from the UI thread.
+                            activity.runOnUiThread(() -> {
+                                // Update the menu item titles.
+                                navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                                blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                                easyPrivacyMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.EASY_PRIVACY_BLOCKED_REQUESTS) + " - " + getString(R.string.easyprivacy));
+                            });
+                        }
 
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse;
+                    } else if (easyPrivacyResults[0].equals(BlockListHelper.REQUEST_ALLOWED)) {  // The resource request matched EasyPrivacy's whitelist.
+                        // Update the whitelist result string array tracker.
+                        whitelistResultStringArray = new String[] {easyPrivacyResults[0], easyPrivacyResults[1], easyPrivacyResults[2], easyPrivacyResults[3], easyPrivacyResults[4], easyPrivacyResults[5]};
                     }
                 }
 
                 // Check Fanboy’s Annoyance List if it is enabled.
                 if (fanboysAnnoyanceListEnabled) {
-                    if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, fanboysAnnoyanceList)) {
+                    // Check the URL against Fanboy's Annoyance List.
+                    String[] fanboysAnnoyanceListResults = blockListHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, fanboysAnnoyanceList);
+
+                    // Process the Fanboy's Annoyance List results.
+                    if (fanboysAnnoyanceListResults[0].equals(BlockListHelper.REQUEST_BLOCKED)) {  // The resource request matched Fanboy's Annoyance List's blacklist.
+                        // Add the result to the resource requests.
+                        nestedScrollWebView.addResourceRequest(new String[] {fanboysAnnoyanceListResults[0], fanboysAnnoyanceListResults[1], fanboysAnnoyanceListResults[2], fanboysAnnoyanceListResults[3],
+                                fanboysAnnoyanceListResults[4], fanboysAnnoyanceListResults[5]});
+
                         // Increment the blocked requests counters.
-                        blockedRequests++;
-                        fanboysAnnoyanceListBlockedRequests++;
+                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS);
+                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST_BLOCKED_REQUESTS);
 
-                        // Update the titles of the blocklist menu items.  This must be run from the UI thread.
-                        activity.runOnUiThread(() -> {
-                            navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                            blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                            fanboysAnnoyanceListMenuItem.setTitle(fanboysAnnoyanceListBlockedRequests + " - " + getString(R.string.fanboys_annoyance_list));
-                        });
-
-                        // Reset the whitelist results tracker (because otherwise it will sometimes add results to the list due to a race condition).
-                        whiteListResultStringArray = null;
+                        // Update the titles of the blocklist menu items if the WebView is currently displayed.
+                        if (webViewDisplayed) {
+                            // Updating the UI must be run from the UI thread.
+                            activity.runOnUiThread(() -> {
+                                // Update the menu item titles.
+                                navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                                blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                                fanboysAnnoyanceListMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST_BLOCKED_REQUESTS) + " - " +
+                                        getString(R.string.fanboys_annoyance_list));
+                            });
+                        }
 
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse;
+                    } else if (fanboysAnnoyanceListResults[0].equals(BlockListHelper.REQUEST_ALLOWED)){  // The resource request matched Fanboy's Annoyance List's whitelist.
+                        // Update the whitelist result string array tracker.
+                        whitelistResultStringArray = new String[] {fanboysAnnoyanceListResults[0], fanboysAnnoyanceListResults[1], fanboysAnnoyanceListResults[2], fanboysAnnoyanceListResults[3],
+                                fanboysAnnoyanceListResults[4], fanboysAnnoyanceListResults[5]};
                     }
                 } else if (fanboysSocialBlockingListEnabled) {  // Only check Fanboy’s Social Blocking List if Fanboy’s Annoyance List is disabled.
-                    if (blockListHelper.isBlocked(currentDomain, url, isThirdPartyRequest, fanboysSocialList)) {
+                    // Check the URL against Fanboy's Annoyance List.
+                    String[] fanboysSocialListResults = blockListHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, fanboysSocialList);
+
+                    // Process the Fanboy's Social Blocking List results.
+                    if (fanboysSocialListResults[0].equals(BlockListHelper.REQUEST_BLOCKED)) {  // The resource request matched Fanboy's Social Blocking List's blacklist.
+                        // Add the result to the resource requests.
+                        nestedScrollWebView.addResourceRequest(new String[] {fanboysSocialListResults[0], fanboysSocialListResults[1], fanboysSocialListResults[2], fanboysSocialListResults[3],
+                                fanboysSocialListResults[4], fanboysSocialListResults[5]});
+
                         // Increment the blocked requests counters.
-                        blockedRequests++;
-                        fanboysSocialBlockingListBlockedRequests++;
+                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS);
+                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST_BLOCKED_REQUESTS);
 
-                        // Update the titles of the blocklist menu items.  This must be run from the UI thread.
-                        activity.runOnUiThread(() -> {
-                            navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                            blocklistsMenuItem.setTitle(getString(R.string.requests) + " - " + blockedRequests);
-                            fanboysSocialBlockingListMenuItem.setTitle(fanboysSocialBlockingListBlockedRequests + " - " + getString(R.string.fanboys_social_blocking_list));
-                        });
-
-                        // Reset the whitelist results tracker (because otherwise it will sometimes add results to the list due to a race condition).
-                        whiteListResultStringArray = null;
+                        // Update the titles of the blocklist menu items if the WebView is currently displayed.
+                        if (webViewDisplayed) {
+                            // Updating the UI must be run from the UI thread.
+                            activity.runOnUiThread(() -> {
+                                // Update the menu item titles.
+                                navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                                blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                                fanboysSocialBlockingListMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST_BLOCKED_REQUESTS) + " - " +
+                                        getString(R.string.fanboys_social_blocking_list));
+                            });
+                        }
 
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse;
+                    } else if (fanboysSocialListResults[0].equals(BlockListHelper.REQUEST_ALLOWED)) {  // The resource request matched Fanboy's Social Blocking List's whitelist.
+                        // Update the whitelist result string array tracker.
+                        whitelistResultStringArray = new String[] {fanboysSocialListResults[0], fanboysSocialListResults[1], fanboysSocialListResults[2], fanboysSocialListResults[3],
+                                fanboysSocialListResults[4], fanboysSocialListResults[5]};
                     }
                 }
 
                 // Add the request to the log because it hasn't been processed by any of the previous checks.
-                if (whiteListResultStringArray != null) {  // The request was processed by a whitelist.
-                    resourceRequests.add(whiteListResultStringArray);
+                if (whitelistResultStringArray != null) {  // The request was processed by a whitelist.
+                    nestedScrollWebView.addResourceRequest(whitelistResultStringArray);
                 } else {  // The request didn't match any blocklist entry.  Log it as a default request.
-                    resourceRequests.add(new String[]{String.valueOf(REQUEST_DEFAULT), url});
+                    nestedScrollWebView.addResourceRequest(new String[]{BlockListHelper.REQUEST_DEFAULT, url});
                 }
 
                 // The resource request has not been blocked.  `return null` loads the requested resource.
@@ -5111,16 +5134,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 currentHostIpAddresses = "";
 
                 // Reset the list of resource requests.
-                resourceRequests.clear();
+                nestedScrollWebView.clearResourceRequests();
 
                 // Initialize the counters for requests blocked by each blocklist.
-                blockedRequests = 0;
-                easyListBlockedRequests = 0;
-                easyPrivacyBlockedRequests = 0;
-                fanboysAnnoyanceListBlockedRequests = 0;
-                fanboysSocialBlockingListBlockedRequests = 0;
-                ultraPrivacyBlockedRequests = 0;
-                thirdPartyBlockedRequests = 0;
+                nestedScrollWebView.resetRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS);
+                nestedScrollWebView.resetRequestsCount(NestedScrollWebView.EASY_LIST_BLOCKED_REQUESTS);
+                nestedScrollWebView.resetRequestsCount(NestedScrollWebView.EASY_PRIVACY_BLOCKED_REQUESTS);
+                nestedScrollWebView.resetRequestsCount(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST_BLOCKED_REQUESTS);
+                nestedScrollWebView.resetRequestsCount(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST_BLOCKED_REQUESTS);
+                nestedScrollWebView.resetRequestsCount(NestedScrollWebView.ULTRA_PRIVACY_BLOCKED_REQUESTS);
+                nestedScrollWebView.resetRequestsCount(NestedScrollWebView.THIRD_PARTY_BLOCKED_REQUESTS);
 
                 // If night mode is enabled, hide `mainWebView` until after the night mode CSS is applied.
                 if (nightMode) {
