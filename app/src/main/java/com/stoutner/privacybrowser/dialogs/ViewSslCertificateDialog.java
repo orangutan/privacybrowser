@@ -31,6 +31,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -39,6 +40,9 @@ import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment mu
 
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.fragments.WebViewTabFragment;
+import com.stoutner.privacybrowser.views.NestedScrollWebView;
+
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -46,6 +50,23 @@ import java.util.Date;
 // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
 @SuppressLint("InflateParams")
 public class ViewSslCertificateDialog extends DialogFragment {
+    public static ViewSslCertificateDialog displayDialog(long webViewFragmentId) {
+        // Create an arguments bundle.
+        Bundle argumentsBundle = new Bundle();
+
+        // Store the WebView fragment ID in the bundle.
+        argumentsBundle.putLong("webview_fragment_id", webViewFragmentId);
+
+        // Create a new instance of the dialog.
+        ViewSslCertificateDialog viewSslCertificateDialog = new ViewSslCertificateDialog();
+
+        // Add the bundle to the dialog.
+        viewSslCertificateDialog.setArguments(argumentsBundle);
+
+        // Return the new dialog.
+        return viewSslCertificateDialog;
+    }
+
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Remove the incorrect lint warning below that the activity might be null.
@@ -53,6 +74,24 @@ public class ViewSslCertificateDialog extends DialogFragment {
 
         // Get the activity's layout inflater.
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+
+        // Remove the incorrect lint warning below that `getArguments().getLong()` might be null.
+        assert getArguments() != null;
+
+        // Get the current position of this WebView fragment.
+        int webViewPosition = MainWebViewActivity.webViewPagerAdapter.getPositionForId(getArguments().getLong("webview_fragment_id"));
+
+        // Get the WebView tab fragment.
+        WebViewTabFragment webViewTabFragment = MainWebViewActivity.webViewPagerAdapter.getPageFragment(webViewPosition);
+
+        // Get the fragment view.
+        View fragmentView = webViewTabFragment.getView();
+
+        // Remove the incorrect lint warning below that the fragment view might be null.
+        assert fragmentView != null;
+
+        // Get a handle for the current WebView.
+        NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
 
         // Use a builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
@@ -73,8 +112,11 @@ public class ViewSslCertificateDialog extends DialogFragment {
         // Set a listener on the negative button.  Using `null` as the listener closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.close, null);
 
+        // Get the SSL certificate.
+        SslCertificate sslCertificate = nestedScrollWebView.getCertificate();
+
         // Check to see if the website is encrypted.
-        if (MainWebViewActivity.sslCertificate == null) {  // The website is not encrypted.
+        if (sslCertificate == null) {  // The website is not encrypted.
             // Set the title.
             dialogBuilder.setTitle(R.string.unencrypted_website);
 
@@ -145,9 +187,6 @@ public class ViewSslCertificateDialog extends DialogFragment {
             // Extract the domain name from the URI.
             String domainString = uri.getHost();
 
-            // Get the SSL certificate.
-            SslCertificate sslCertificate = MainWebViewActivity.sslCertificate;
-
             // Get the strings from the SSL certificate.
             String issuedToCName = sslCertificate.getIssuedTo().getCName();
             String issuedToOName = sslCertificate.getIssuedTo().getOName();
@@ -160,7 +199,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
 
             // Create spannable string builders for each text view that needs multiple colors of text.
             SpannableStringBuilder domainStringBuilder = new SpannableStringBuilder(domainLabel + domainString);
-            SpannableStringBuilder ipAddressesStringBuilder = new SpannableStringBuilder(ipAddressesLabel + MainWebViewActivity.currentHostIpAddresses);
+            SpannableStringBuilder ipAddressesStringBuilder = new SpannableStringBuilder(ipAddressesLabel + nestedScrollWebView.getCurrentIpAddresses());
             SpannableStringBuilder issuedToCNameStringBuilder = new SpannableStringBuilder(cNameLabel + issuedToCName);
             SpannableStringBuilder issuedToONameStringBuilder = new SpannableStringBuilder(oNameLabel + issuedToOName);
             SpannableStringBuilder issuedToUNameStringBuilder = new SpannableStringBuilder(uNameLabel + issuedToUName);

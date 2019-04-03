@@ -66,10 +66,10 @@ public class WebViewPagerAdapter extends FragmentPagerAdapter {
     @Override
     public long getItemId(int position) {
         // Return the unique ID for this page.
-        return webViewFragmentsList.get(position).tabId;
+        return webViewFragmentsList.get(position).fragmentId;
     }
 
-    public int getPositionForId(long pageId) {
+    public int getPositionForId(long fragmentId) {
         // Initialize the position variable.
         int position = -1;
 
@@ -79,7 +79,7 @@ public class WebViewPagerAdapter extends FragmentPagerAdapter {
         // Find the current position of the WebView fragment with the given ID.
         while (position < 0 && i < webViewFragmentsList.size()) {
             // Check to see if the tab ID of this WebView matches the page ID.
-            if (webViewFragmentsList.get(i).tabId == pageId) {
+            if (webViewFragmentsList.get(i).fragmentId == fragmentId) {
                 // Store the position if they are a match.
                 position = i;
             }

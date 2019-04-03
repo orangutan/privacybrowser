@@ -53,6 +53,7 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;  // The AndroidX fragment must be used until minimum API >= 23.  Otherwise `getContext()` does not work.
 
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.activities.DomainsActivity;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 
@@ -182,7 +183,7 @@ public class DomainSettingsFragment extends Fragment {
         String endDateLabel = getString(R.string.end_date) + "  ";
 
         // Get the current website SSL certificate
-        final SslCertificate currentWebsiteSslCertificate = MainWebViewActivity.sslCertificate;
+        final SslCertificate currentWebsiteSslCertificate = DomainsActivity.currentSslCertificate;
 
         // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
         DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(context, null, null, 0);
@@ -1163,7 +1164,7 @@ public class DomainSettingsFragment extends Fragment {
 
         // Populate the saved and current IP addresses.
         savedIpAddressesTextView.setText(savedIpAddresses);
-        currentIpAddressesTextView.setText(MainWebViewActivity.currentHostIpAddresses);
+        currentIpAddressesTextView.setText(DomainsActivity.currentIpAddresses);
 
         // Set the initial display status of the IP addresses card views.
         if (pinnedIpAddressesSwitch.isChecked()) {  // IP addresses are pinned.

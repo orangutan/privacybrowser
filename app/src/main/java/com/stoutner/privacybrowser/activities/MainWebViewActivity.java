@@ -36,7 +36,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -133,6 +132,7 @@ import com.stoutner.privacybrowser.fragments.WebViewTabFragment;
 import com.stoutner.privacybrowser.helpers.AdHelper;
 import com.stoutner.privacybrowser.helpers.BlockListHelper;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
+import com.stoutner.privacybrowser.helpers.CheckPinnedMismatchHelper;
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 import com.stoutner.privacybrowser.helpers.OrbotProxyHelper;
 import com.stoutner.privacybrowser.views.NestedScrollWebView;
@@ -154,6 +154,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+// TODO.  The swipe refresh indicator needs to be enabled/disabled when switching tabs.
+
 // AppCompatActivity from android.support.v7.app.AppCompatActivity must be used to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
         DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, DownloadLocationPermissionDialog.DownloadLocationPermissionDialogListener, EditBookmarkDialog.EditBookmarkListener,
@@ -174,21 +176,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `favoriteIconDefaultBitmap` public static so it can be accessed from `PinnedMismatchDialog`.  It is also used in `onCreate()` and `applyDomainSettings`.
     public static Bitmap favoriteIconDefaultBitmap;
 
+    // TODO Remove.
     // `formattedUrlString` is public static so it can be accessed from `AddDomainDialog`, `BookmarksActivity`, `DomainSettingsFragment`, and `PinnedMismatchDialog`.
     // It is also used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onCreateHomeScreenShortcutCreate()`, `loadUrlFromTextBox()`, and `applyProxyThroughOrbot()`.
     public static String formattedUrlString;
 
-    // `sslCertificate` is public static so it can be accessed from `DomainsActivity`, `DomainsListFragment`, `DomainSettingsFragment`, `PinnedMismatchDialog`, and `ViewSslCertificateDialog`.
-    // It is also used in `onCreate()` and `checkPinnedMismatch()`.
-    public static SslCertificate sslCertificate;
-
-    // `currentHostIpAddresses` is public static so it can be accessed from `DomainSettingsFragment`, `GetHostIpAddresses()`, and `ViewSslCertificateDialog`.
-    // It is also used in `onCreate()` and `GetHostIpAddresses()`.
-    public static String currentHostIpAddresses;
-
-    // The getting IP addresses tracker is used in `onCreate() and `GetHostIpAddresses`.
-    public static boolean gettingIpAddresses;
-
+    // TODO.  We are going to have to move this to the NestedScrollWebView.
     // The URL loading tracker is public static so it can be accessed from `GetHostIpAddresses`.
     // It is also used in `onCreate()`, `onCreateOptionsMenu()`, `loadUrl()`, `applyDomainSettings()`, and `GetHostIpAddresses`.
     public static boolean urlIsLoading;
@@ -196,8 +189,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxyThroughOrbot()`.
     public static String orbotStatus;
 
+    // TODO.
     // `appliedUserAgentString` is public static so it can be accessed from `ViewSourceActivity`.  It is also used in `applyDomainSettings()`.
     public static String appliedUserAgentString;
+
+    // The WebView pager adapter is accessed from `PinnedMismatchDialog`.  It is also used in `onCreate()`, `onResume()`, and `addTab()`.
+    public static WebViewPagerAdapter webViewPagerAdapter;
 
     // `reloadOnRestart` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onRestart()`
     public static boolean reloadOnRestart;
@@ -223,17 +220,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `loadBookmarksFolder()`.
     public static String currentBookmarksFolder;
 
-    // The pinned variables are public static so they can be accessed from `PinnedMismatchDialog`.  They are also used in `onCreate()`, `applyDomainSettings()`, and `checkPinnedMismatch()`.
-    public static String pinnedSslIssuedToCName;
-    public static String pinnedSslIssuedToOName;
-    public static String pinnedSslIssuedToUName;
-    public static String pinnedSslIssuedByCName;
-    public static String pinnedSslIssuedByOName;
-    public static String pinnedSslIssuedByUName;
-    public static Date pinnedSslStartDate;
-    public static Date pinnedSslEndDate;
-    public static String pinnedHostIpAddresses;
-
     // The user agent constants are public static so they can be accessed from `SettingsFragment`, `DomainsActivity`, and `DomainSettingsFragment`.
     public final static int UNRECOGNIZED_USER_AGENT = -1;
     public final static int SETTINGS_WEBVIEW_DEFAULT_USER_AGENT = 1;
@@ -243,22 +229,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public final static int DOMAINS_CUSTOM_USER_AGENT = 13;
 
 
-
-    // `pinnedDomainSslCertificate` is used in `onCreate()`, `applyDomainSettings()`, and `checkPinnedMismatch()`.
-    private static boolean pinnedSslCertificate;
-
-    // `pinnedIpAddress` is used in `applyDomainSettings()` and `checkPinnedMismatch()`.
-    private static boolean pinnedIpAddresses;
-
-    // `ignorePinnedDomainInformation` is used in `onSslMismatchProceed()`, `applyDomainSettings()`, and `checkPinnedMismatch()`.
-    private static boolean ignorePinnedDomainInformation;
-
-    // The fragment manager is initialized in `onCreate()` and accessed from the static `checkPinnedMismatch()`.
-    private static FragmentManager fragmentManager;
-
-
-    // A handle for the activity is set in `onCreate()` and accessed in `WebViewPagerAdapter`.
-    private Activity activity;
 
     // `navigatingHistory` is used in `onCreate()`, `onNavigationItemSelected()`, `onSslMismatchBack()`, and `applyDomainSettings()`.
     private boolean navigatingHistory;
@@ -291,6 +261,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `saveFormDataEnabled` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applyDomainSettings()`.  It can be removed once the minimum API >= 26.
     private boolean saveFormDataEnabled;
 
+    // TODO Move to NestedScrollWebView.
     // `nightMode` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and  `applyDomainSettings()`.
     private boolean nightMode;
 
@@ -306,14 +277,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `refreshMenuItem` is used in `onCreate()` and `onCreateOptionsMenu()`.
     private MenuItem refreshMenuItem;
 
-    // The WebView pager adapter is used in `onCreate()`, `onResume()`, and `addTab()`.
-    private WebViewPagerAdapter webViewPagerAdapter;
-
     // The navigation requests menu item is used in `onCreate()` and accessed from `WebViewPagerAdapter`.
     private MenuItem navigationRequestsMenuItem;
 
+    // TODO.  This could probably be removed.
     // The blocklist helper is used in `onCreate()` and `WebViewPagerAdapter`.
-    BlockListHelper blockListHelper;
+    private BlockListHelper blockListHelper;
 
     // The blocklists are populated in `onCreate()` and accessed from `WebViewPagerAdapter`.
     private ArrayList<List<String[]>> easyList;
@@ -490,10 +459,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Set the content view.
         setContentView(R.layout.main_framelayout);
 
-        // Get handles for views, resources, and managers.
-        activity = this;
-        Resources resources = getResources();
-        fragmentManager = getSupportFragmentManager();
+        // Get handles for the input method manager and toolbar.
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         Toolbar toolbar = findViewById(R.id.toolbar);
 
@@ -509,9 +475,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 
         // Initialize the foreground color spans for highlighting the URLs.  We have to use the deprecated `getColor()` until API >= 23.
-        redColorSpan = new ForegroundColorSpan(resources.getColor(R.color.red_a700));
-        initialGrayColorSpan = new ForegroundColorSpan(resources.getColor(R.color.gray_500));
-        finalGrayColorSpan = new ForegroundColorSpan(resources.getColor(R.color.gray_500));
+        redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
+        initialGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
+        finalGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
 
         // Get a handle for `urlTextBox`.
         EditText urlEditText = findViewById(R.id.url_edittext);
@@ -619,7 +585,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         navigationRequestsMenuItem = navigationMenu.getItem(6);
 
         // Initialize the web view pager adapter.
-        webViewPagerAdapter = new WebViewPagerAdapter(fragmentManager);
+        webViewPagerAdapter = new WebViewPagerAdapter(getSupportFragmentManager());
 
         // Set the pager adapter on the web view pager.
         webViewPager.setAdapter(webViewPagerAdapter);
@@ -710,7 +676,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
                 // Instantiate the View SSL Certificate dialog.
-                DialogFragment viewSslCertificateDialogFragment = new ViewSslCertificateDialog();
+                DialogFragment viewSslCertificateDialogFragment = ViewSslCertificateDialog.displayDialog(currentWebView.getWebViewFragmentId());
 
                 // Display the View SSL Certificate dialog.
                 viewSslCertificateDialogFragment.show(getSupportFragmentManager(), getString(R.string.view_ssl_certificate));
@@ -721,16 +687,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         addTab(webViewPager);
 
         // Set the bookmarks drawer resources according to the theme.  This can't be done in the layout due to compatibility issues with the `DrawerLayout` support widget.
+        // The deprecated `getResources().getDrawable()` must be used until the minimum API >= 21 and and `getResources().getColor()` must be used until the minimum API >= 23.
         if (darkTheme) {
-            launchBookmarksActivityFab.setImageDrawable(resources.getDrawable(R.drawable.bookmarks_dark));
-            createBookmarkFolderFab.setImageDrawable(resources.getDrawable(R.drawable.create_folder_dark));
-            createBookmarkFab.setImageDrawable(resources.getDrawable(R.drawable.create_bookmark_dark));
-            bookmarksListView.setBackgroundColor(resources.getColor(R.color.gray_850));
+            launchBookmarksActivityFab.setImageDrawable(getResources().getDrawable(R.drawable.bookmarks_dark));
+            createBookmarkFolderFab.setImageDrawable(getResources().getDrawable(R.drawable.create_folder_dark));
+            createBookmarkFab.setImageDrawable(getResources().getDrawable(R.drawable.create_bookmark_dark));
+            bookmarksListView.setBackgroundColor(getResources().getColor(R.color.gray_850));
         } else {
-            launchBookmarksActivityFab.setImageDrawable(resources.getDrawable(R.drawable.bookmarks_light));
-            createBookmarkFolderFab.setImageDrawable(resources.getDrawable(R.drawable.create_folder_light));
-            createBookmarkFab.setImageDrawable(resources.getDrawable(R.drawable.create_bookmark_light));
-            bookmarksListView.setBackgroundColor(resources.getColor(R.color.white));
+            launchBookmarksActivityFab.setImageDrawable(getResources().getDrawable(R.drawable.bookmarks_light));
+            createBookmarkFolderFab.setImageDrawable(getResources().getDrawable(R.drawable.create_folder_light));
+            createBookmarkFab.setImageDrawable(getResources().getDrawable(R.drawable.create_bookmark_light));
+            bookmarksListView.setBackgroundColor(getResources().getColor(R.color.white));
         }
 
         // Set the launch bookmarks activity FAB to launch the bookmarks activity.
@@ -753,7 +720,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         createBookmarkFolderFab.setOnClickListener(v -> {
             // Show the create bookmark folder dialog and name the instance `@string/create_folder`.
             DialogFragment createBookmarkFolderDialog = new CreateBookmarkFolderDialog();
-            createBookmarkFolderDialog.show(fragmentManager, resources.getString(R.string.create_folder));
+            createBookmarkFolderDialog.show(getSupportFragmentManager(), getString(R.string.create_folder));
         });
 
         // Set the create new bookmark FAB to display an alert dialog.
@@ -762,7 +729,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             DialogFragment createBookmarkDialog = CreateBookmarkDialog.createBookmark(currentWebView.getUrl(), currentWebView.getTitle(), favoriteIconBitmap);
 
             // Display the create bookmark dialog.
-            createBookmarkDialog.show(fragmentManager, resources.getString(R.string.create_bookmark));
+            createBookmarkDialog.show(getSupportFragmentManager(), getString(R.string.create_bookmark));
         });
 
         // Search for the string on the page whenever a character changes in the `findOnPageEditText`.
@@ -865,11 +832,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Show the edit bookmark folder `AlertDialog` and name the instance `@string/edit_folder`.
                 DialogFragment editBookmarkFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId);
-                editBookmarkFolderDialog.show(fragmentManager, resources.getString(R.string.edit_folder));
+                editBookmarkFolderDialog.show(getSupportFragmentManager(), getString(R.string.edit_folder));
             } else {
                 // Show the edit bookmark `AlertDialog` and name the instance `@string/edit_bookmark`.
                 DialogFragment editBookmarkDialog = EditBookmarkDialog.bookmarkDatabaseId(databaseId);
-                editBookmarkDialog.show(fragmentManager, resources.getString(R.string.edit_bookmark));
+                editBookmarkDialog.show(getSupportFragmentManager(), getString(R.string.edit_bookmark));
             }
 
             // Consume the event.
@@ -877,11 +844,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         });
 
         // Get the status bar pixel size.
-        int statusBarResourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
-        int statusBarPixelSize = resources.getDimensionPixelSize(statusBarResourceId);
+        int statusBarResourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        int statusBarPixelSize = getResources().getDimensionPixelSize(statusBarResourceId);
 
         // Get the resource density.
-        float screenDensity = resources.getDisplayMetrics().density;
+        float screenDensity = getResources().getDisplayMetrics().density;
 
         // Calculate the drawer header padding.  This is used to move the text in the drawer headers below any cutouts.
         drawerHeaderPaddingLeftAndRight = (int) (15 * screenDensity);
@@ -991,7 +958,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Initialize the user agent array adapter and string array.
         userAgentNamesArray = ArrayAdapter.createFromResource(this, R.array.user_agent_names, R.layout.spinner_item);
-        userAgentDataArray = resources.getStringArray(R.array.user_agent_data);
+        userAgentDataArray = getResources().getStringArray(R.array.user_agent_data);
 
         // Get the intent that started the app.
         Intent launchingIntent = getIntent();
@@ -1085,7 +1052,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             sendBroadcast(orbotIntent);
         }
 
-        // Apply the app settings if returning from the Settings activity..
+        // Apply the app settings if returning from the Settings activity.
         if (reapplyAppSettingsOnRestart) {
             // Apply the app settings.
             applyAppSettings();
@@ -1105,8 +1072,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Get the nested scroll WebView from the tab fragment.
                         NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
 
-                        // TODO this doesn't seem to work if for WebViews that aren't visible.
-                        // Reload the WebView.
+                        // Reload the WebView.  This doesn't seem to work if for WebViews that aren't visible.
                         nestedScrollWebView.reload();
                     }
                 }
@@ -1119,10 +1085,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             reapplyAppSettingsOnRestart = false;
         }
 
+        // TODO apply to all the tabs.
         // Apply the domain settings if returning from the Domains activity.
         if (reapplyDomainSettingsOnRestart) {
             // Reapply the domain settings.
-            applyDomainSettings(formattedUrlString, false, true);
+            applyDomainSettings(currentWebView, formattedUrlString, false, true);
 
             // Reset `reapplyDomainSettingsOnRestart`.
             reapplyDomainSettingsOnRestart = false;
@@ -1588,6 +1555,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     reapplyDomainSettingsOnRestart = true;
                     currentDomainName = "";
 
+                    // TODO.  Move these to `putExtra`.  The certificate can be stored as strings.
+                    // Store the current SSL certificate and IP addresses in the domains activity.
+                    DomainsActivity.currentSslCertificate = currentWebView.getCertificate();
+                    DomainsActivity.currentIpAddresses = currentWebView.getCurrentIpAddresses();
+
                     // Create an intent to launch the domains activity.
                     Intent domainsIntent = new Intent(this, DomainsActivity.class);
 
@@ -1611,6 +1583,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Create the domain and store the database ID.
                     int newDomainDatabaseId = domainsDatabaseHelper.addDomain(currentDomain);
+
+                    // TODO.  Move these to `putExtra`.  The certificate can be stored as strings.
+                    // Store the current SSL certificate and IP addresses in the domains activity.
+                    DomainsActivity.currentSslCertificate = currentWebView.getCertificate();
+                    DomainsActivity.currentIpAddresses = currentWebView.getCurrentIpAddresses();
 
                     // Create an intent to launch the domains activity.
                     Intent domainsIntent = new Intent(this, DomainsActivity.class);
@@ -2296,9 +2273,23 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Clear the cache.
                 if (clearEverything || sharedPreferences.getBoolean("clear_cache", true)) {
-                    // Clear the cache.
-                    // TODO
-                    currentWebView.clearCache(true);
+                    // Clear the cache from each WebView.
+                    for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
+                        // Get the WebView tab fragment.
+                        WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
+
+                        // Get the fragment view.
+                        View fragmentView = webViewTabFragment.getView();
+
+                        // Only clear the cache if the WebView exists.
+                        if (fragmentView != null) {
+                            // Get the nested scroll WebView from the tab fragment.
+                            NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+
+                            // Clear the cache for this WebView.
+                            nestedScrollWebView.clearCache(true);
+                        }
+                    }
 
                     // Manually delete the cache directories.
                     try {
@@ -2317,23 +2308,35 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     }
                 }
 
-                // Clear SSL certificate preferences.
-                // TODO
-                currentWebView.clearSslPreferences();
+                // Wipe out each WebView.
+                for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
+                    // Get the WebView tab fragment.
+                    WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
 
-                // Clear the back/forward history.
-                // TODO
-                currentWebView.clearHistory();
+                    // Get the fragment view.
+                    View fragmentView = webViewTabFragment.getView();
 
-                // Clear `formattedUrlString`.
+                    // Only wipe out the WebView if it exists.
+                    if (fragmentView != null) {
+                        // Get the nested scroll WebView from the tab fragment.
+                        NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+
+                        // Clear SSL certificate preferences for this WebView.
+                        nestedScrollWebView.clearSslPreferences();
+
+                        // Clear the back/forward history for this WebView.
+                        nestedScrollWebView.clearHistory();
+
+                        // Destroy the internal state of `mainWebView`.
+                        nestedScrollWebView.destroy();
+                    }
+                }
+
+                // Clear the formatted URL string.
                 formattedUrlString = null;
 
-                // Clear `customHeaders`.
+                // Clear the custom headers.
                 customHeaders.clear();
-
-                // Destroy the internal state of `mainWebView`.
-                // TODO
-                currentWebView.destroy();
 
                 // Manually delete the `app_webview` folder, which contains the cookies, DOM storage, form data, and `Service Worker` cache.
                 // See `https://code.google.com/p/android/issues/detail?id=233826&thanks=233826&ts=1486670530`.
@@ -2424,6 +2427,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Set the flag to reapply the domain settings on restart when returning from Domain Settings.
                 reapplyDomainSettingsOnRestart = true;
                 currentDomainName = "";
+
+                // TODO.  Move these to `putExtra`.  The certificate can be stored as strings.
+                // Store the current SSL certificate and IP addresses in the domains activity.
+                DomainsActivity.currentSslCertificate = currentWebView.getCertificate();
+                DomainsActivity.currentIpAddresses = currentWebView.getCurrentIpAddresses();
 
                 // Launch the domains activity.
                 Intent domainsIntent = new Intent(this, DomainsActivity.class);
@@ -3216,13 +3224,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onPinnedMismatchBack() {
+    public void onPinnedMismatchBack() {  // TODO.  Move this logic to the dialog.
         if (currentWebView.canGoBack()) {  // There is a back page in the history.
             // Reset the formatted URL string so the page will load correctly if blocking of third-party requests is enabled.
-            formattedUrlString = "";
+            formattedUrlString = "";  // TODO.
 
             // Set `navigatingHistory` so that the domain settings are applied when the new URL is loaded.
-            navigatingHistory = true;
+            navigatingHistory = true;  // TODO.
 
             // Go back.
             currentWebView.goBack();
@@ -3233,9 +3241,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onPinnedMismatchProceed() {
+    public void onPinnedMismatchProceed() {  // TODO.  Move this logic to the dialog.
         // Do not check the pinned information for this domain again until the domain changes.
-        ignorePinnedDomainInformation = true;
+        currentWebView.setIgnorePinnedDomainInformation(true);
     }
 
     @Override
@@ -3378,7 +3386,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         formattedUrlString = url;
 
         // Apply the domain settings.
-        applyDomainSettings(url, true, false);
+        applyDomainSettings(currentWebView, url, true, false);
 
         // If loading a website, set `urlIsLoading` to prevent changes in the user agent on websites with redirects from reloading the current website.
         urlIsLoading = !url.equals("");
@@ -3447,7 +3455,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             customHeaders.remove("DNT");
         }
 
-        // TODO this also needs to be set when creating a new tab.
         // Set the app bar scrolling for each WebView.
         for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
             // Get the WebView tab fragment.
@@ -3501,7 +3508,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Show the banner ad in the free flavor.
             if (BuildConfig.FLAVOR.contentEquals("free")) {
                 // Initialize the ads.  If this isn't the first run, `loadAd()` will be automatically called instead.
-                AdHelper.initializeAds(findViewById(R.id.adview), getApplicationContext(), fragmentManager, getString(R.string.google_app_id), getString(R.string.ad_unit_id));
+                AdHelper.initializeAds(findViewById(R.id.adview), getApplicationContext(), getSupportFragmentManager(), getString(R.string.google_app_id), getString(R.string.ad_unit_id));
             }
 
             // Remove the `SYSTEM_UI` flags from the root frame layout.
@@ -3516,12 +3523,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `reloadWebsite` is used if returning from the Domains activity.  Otherwise JavaScript might not function correctly if it is newly enabled.
     // The deprecated `.getDrawable()` must be used until the minimum API >= 21.
     @SuppressWarnings("deprecation")
-    private boolean applyDomainSettings(String url, boolean resetFavoriteIcon, boolean reloadWebsite) {
+    private boolean applyDomainSettings(NestedScrollWebView nestedScrollWebView, String url, boolean resetFavoriteIcon, boolean reloadWebsite) {
         // Get a handle for the URL edit text.
         EditText urlEditText = findViewById(R.id.url_edittext);
 
         // Get the current user agent.
-        String initialUserAgent = currentWebView.getSettings().getUserAgentString();
+        String initialUserAgent = nestedScrollWebView.getSettings().getUserAgentString();
 
         // Initialize a variable to track if the user agent changes.
         boolean userAgentChanged = false;
@@ -3538,10 +3545,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // If either `hostName` or `currentDomainName` are `null`, run the options for loading a new domain name.
         // The lint suggestion to simplify the `if` statement is incorrect, because `hostName.equals(currentDomainName)` can produce a `null object reference.`
         //noinspection SimplifiableIfStatement
-        if ((hostName == null) || (currentDomainName == null)) {
+        if ((hostName == null) || (currentDomainName == null)) {  // TODO.
             loadingNewDomainName = true;
         } else {  // Determine if `hostName` equals `currentDomainName`.
-            loadingNewDomainName = !hostName.equals(currentDomainName);
+            loadingNewDomainName = !hostName.equals(currentDomainName);  // TODO.
         }
 
         // Strings don't like to be null.
@@ -3552,21 +3559,25 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Only apply the domain settings if a new domain is being loaded.  This allows the user to set temporary settings for JavaScript, cookies, DOM storage, etc.
         if (loadingNewDomainName) {
             // Set the new `hostname` as the `currentDomainName`.
-            currentDomainName = hostName;
+            currentDomainName = hostName;  // TODO.
 
             // Reset the ignoring of pinned domain information.
-            ignorePinnedDomainInformation = false;
+            nestedScrollWebView.setIgnorePinnedDomainInformation(false);
+
+            // Clear any pinned SSL certificate or IP addresses.
+            nestedScrollWebView.clearPinnedSslCertificate();
+            nestedScrollWebView.clearPinnedIpAddresses();
 
             // Reset the favorite icon if specified.
             if (resetFavoriteIcon) {
                 // Store the favorite icon bitmap.
-                favoriteIconBitmap = favoriteIconDefaultBitmap;
+                favoriteIconBitmap = favoriteIconDefaultBitmap;  // TODO.
 
                 // Get a handle for the tab layout.
                 TabLayout tabLayout = findViewById(R.id.tablayout);
 
                 // Get the current tab.
-                TabLayout.Tab currentTab = tabLayout.getTabAt(tabLayout.getSelectedTabPosition());
+                TabLayout.Tab currentTab = tabLayout.getTabAt(tabLayout.getSelectedTabPosition());  // TODO.  We need to get the tab for this WebView, which might not be the current tab.
 
                 // Remove the warning below that the current tab might be null.
                 assert currentTab != null;
@@ -3620,17 +3631,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 domainNameInDatabase = hostName;
 
                 // Set the domain settings applied tracker to true.
-                currentWebView.setDomainSettingsApplied(true);
+                nestedScrollWebView.setDomainSettingsApplied(true);
             } else {  // The hostname is not contained in the domain settings set.
                 // Set the domain settings applied tracker to false.
-                currentWebView.setDomainSettingsApplied(false);
+                nestedScrollWebView.setDomainSettingsApplied(false);
             }
 
             // Check all the subdomains of the host name against wildcard domains in the domain cursor.
-            while (!currentWebView.getDomainSettingsApplied() && hostName.contains(".")) {  // Stop checking if domain settings are already applied or there are no more `.` in the host name.
+            while (!nestedScrollWebView.getDomainSettingsApplied() && hostName.contains(".")) {  // Stop checking if domain settings are already applied or there are no more `.` in the host name.
                 if (domainSettingsSet.contains("*." + hostName)) {  // Check the host name prepended by `*.`.
                     // Set the domain settings applied tracker to true.
-                    currentWebView.setDomainSettingsApplied(true);
+                    nestedScrollWebView.setDomainSettingsApplied(true);
 
                     // Store the applied domain names as it appears in the database.
                     domainNameInDatabase = "*." + hostName;
@@ -3647,131 +3658,147 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Store the general preference information.
             String defaultFontSizeString = sharedPreferences.getString("font_size", getString(R.string.font_size_default_value));
             String defaultUserAgentName = sharedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
-            defaultCustomUserAgentString = sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value));
+            defaultCustomUserAgentString = sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value));  // TODO.
             boolean defaultSwipeToRefresh = sharedPreferences.getBoolean("swipe_to_refresh", true);
-            nightMode = sharedPreferences.getBoolean("night_mode", false);
+            nightMode = sharedPreferences.getBoolean("night_mode", false);  // TODO.
             boolean displayWebpageImages = sharedPreferences.getBoolean("display_webpage_images", true);
 
-            if (currentWebView.getDomainSettingsApplied()) {  // The url has custom domain settings.
+            if (nestedScrollWebView.getDomainSettingsApplied()) {  // The url has custom domain settings.
                 // Get a cursor for the current host and move it to the first position.
                 Cursor currentHostDomainSettingsCursor = domainsDatabaseHelper.getCursorForDomainName(domainNameInDatabase);
                 currentHostDomainSettingsCursor.moveToFirst();
 
                 // Get the settings from the cursor.
-                currentWebView.setDomainSettingsDatabaseId(currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper._ID)));
-                javaScriptEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)) == 1);
-                firstPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES)) == 1);
-                thirdPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES)) == 1);
-                domStorageEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)) == 1);
+                nestedScrollWebView.setDomainSettingsDatabaseId(currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper._ID)));
+                javaScriptEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)) == 1);  // TODO.
+                firstPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES)) == 1);  // TODO.
+                thirdPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES)) == 1);  // TODO.
+                domStorageEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)) == 1);  // TODO.
                 // Form data can be removed once the minimum API >= 26.
-                saveFormDataEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA)) == 1);
-                easyListEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYLIST)) == 1);
-                easyPrivacyEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY)) == 1);
-                fanboysAnnoyanceListEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST)) == 1);
-                fanboysSocialBlockingListEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)) == 1);
-                ultraPrivacyEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY)) == 1);
-                blockAllThirdPartyRequests = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)) == 1);
+                saveFormDataEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA)) == 1);  // TODO.
+                easyListEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYLIST)) == 1);  // TODO.
+                easyPrivacyEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY)) == 1);  // TODO.
+                fanboysAnnoyanceListEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST)) == 1);  // TODO.
+                fanboysSocialBlockingListEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)) == 1);  // TODO.
+                ultraPrivacyEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY)) == 1);  // TODO.
+                blockAllThirdPartyRequests = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)) == 1);  // TODO.
                 String userAgentName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
                 int fontSize = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
                 int swipeToRefreshInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SWIPE_TO_REFRESH));
                 int nightModeInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.NIGHT_MODE));
                 int displayWebpageImagesInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
-                pinnedSslCertificate = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE)) == 1);
-                pinnedSslIssuedToCName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME));
-                pinnedSslIssuedToOName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION));
-                pinnedSslIssuedToUName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT));
-                pinnedSslIssuedByCName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME));
-                pinnedSslIssuedByOName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION));
-                pinnedSslIssuedByUName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT));
-                pinnedIpAddresses = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_IP_ADDRESSES)) == 1);
-                pinnedHostIpAddresses = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.IP_ADDRESSES));
+                boolean pinnedSslCertificate = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE)) == 1);
+                String pinnedSslIssuedToCName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME));
+                String pinnedSslIssuedToOName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION));
+                String pinnedSslIssuedToUName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT));
+                String pinnedSslIssuedByCName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME));
+                String pinnedSslIssuedByOName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION));
+                String pinnedSslIssuedByUName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT));
+                boolean pinnedIpAddresses = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_IP_ADDRESSES)) == 1);
+                String pinnedHostIpAddresses = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.IP_ADDRESSES));
 
-                // Set `nightMode` according to `nightModeInt`.  If `nightModeInt` is `DomainsDatabaseHelper.NIGHT_MODE_SYSTEM_DEFAULT` the current setting from `sharedPreferences` will be used.
-                switch (nightModeInt) {
-                    case DomainsDatabaseHelper.NIGHT_MODE_ENABLED:
-                        nightMode = true;
-                        break;
+                // Create the pinned SSL date variables.
+                Date pinnedSslStartDate;
+                Date pinnedSslEndDate;
 
-                    case DomainsDatabaseHelper.NIGHT_MODE_DISABLED:
-                        nightMode = false;
-                        break;
-                }
-
-                // Store the domain JavaScript status.  This is used by the options menu night mode toggle.
-                domainSettingsJavaScriptEnabled = javaScriptEnabled;
-
-                // Enable JavaScript if night mode is enabled.
-                if (nightMode) {
-                    javaScriptEnabled = true;
-                }
-
-                // Set the pinned SSL certificate start date to `null` if the saved date `long` is 0.
+                // Set the pinned SSL certificate start date to `null` if the saved date `long` is 0 because creating a new Date results in an error if the input is 0.
                 if (currentHostDomainSettingsCursor.getLong(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)) == 0) {
                     pinnedSslStartDate = null;
                 } else {
                     pinnedSslStartDate = new Date(currentHostDomainSettingsCursor.getLong(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)));
                 }
 
-                // Set the pinned SSL certificate end date to `null` if the saved date `long` is 0.
+                // Set the pinned SSL certificate end date to `null` if the saved date `long` is 0 because creating a new Date results in an error if the input is 0.
                 if (currentHostDomainSettingsCursor.getLong(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)) == 0) {
                     pinnedSslEndDate = null;
                 } else {
                     pinnedSslEndDate = new Date(currentHostDomainSettingsCursor.getLong(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)));
                 }
 
+                // If there is a pinned SSL certificate, store it in the WebView.
+                if (pinnedSslCertificate) {
+                    nestedScrollWebView.setPinnedSslCertificate(pinnedSslIssuedToCName, pinnedSslIssuedToOName, pinnedSslIssuedToUName, pinnedSslIssuedByCName, pinnedSslIssuedByOName, pinnedSslIssuedByUName,
+                            pinnedSslStartDate, pinnedSslEndDate);
+                }
+
+                // If there is a pinned IP address, store it in the WebView.
+                if (pinnedIpAddresses) {
+                    nestedScrollWebView.setPinnedIpAddresses(pinnedHostIpAddresses);
+                }
+
+                // Set `nightMode` according to `nightModeInt`.  If `nightModeInt` is `DomainsDatabaseHelper.NIGHT_MODE_SYSTEM_DEFAULT` the current setting from `sharedPreferences` will be used.
+                switch (nightModeInt) {
+                    case DomainsDatabaseHelper.NIGHT_MODE_ENABLED:
+                        nightMode = true;  // TODO.
+                        break;
+
+                    case DomainsDatabaseHelper.NIGHT_MODE_DISABLED:
+                        nightMode = false;  // TODO.
+                        break;
+                }
+
+                // TODO.
+                // Store the domain JavaScript status.  This is used by the options menu night mode toggle.
+                domainSettingsJavaScriptEnabled = javaScriptEnabled;
+
+                // Enable JavaScript if night mode is enabled.
+                if (nightMode) {
+                    javaScriptEnabled = true;  // TODO.
+                }
+
                 // Close `currentHostDomainSettingsCursor`.
                 currentHostDomainSettingsCursor.close();
 
                 // Apply the domain settings.
-                currentWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
-                cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
-                currentWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
+                nestedScrollWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);  // TODO.
+                cookieManager.setAcceptCookie(firstPartyCookiesEnabled);  //TODO  This could be bad.
+                nestedScrollWebView.getSettings().setDomStorageEnabled(domStorageEnabled);  // TODO.
 
                 // Apply the form data setting if the API < 26.
                 if (Build.VERSION.SDK_INT < 26) {
-                    currentWebView.getSettings().setSaveFormData(saveFormDataEnabled);
+                    nestedScrollWebView.getSettings().setSaveFormData(saveFormDataEnabled);
                 }
 
                 // Apply the font size.
                 if (fontSize == 0) {  // Apply the default font size.
-                    currentWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
+                    nestedScrollWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
                 } else {  // Apply the specified font size.
-                    currentWebView.getSettings().setTextZoom(fontSize);
+                    nestedScrollWebView.getSettings().setTextZoom(fontSize);
                 }
 
                 // Set third-party cookies status if API >= 21.
                 if (Build.VERSION.SDK_INT >= 21) {
-                    cookieManager.setAcceptThirdPartyCookies(currentWebView, thirdPartyCookiesEnabled);
+                    cookieManager.setAcceptThirdPartyCookies(nestedScrollWebView, thirdPartyCookiesEnabled);  // TODO.
                 }
 
                 // Only set the user agent if the webpage is not currently loading.  Otherwise, changing the user agent on redirects can cause the original website to reload.
                 // <https://redmine.stoutner.com/issues/160>
-                if (!urlIsLoading) {
+                if (!urlIsLoading) {  // TODO.  We need to track this by WebView.
                     // Set the user agent.
                     if (userAgentName.equals(getString(R.string.system_default_user_agent))) {  // Use the system default user agent.
                         // Get the array position of the default user agent name.
-                        int defaultUserAgentArrayPosition = userAgentNamesArray.getPosition(defaultUserAgentName);
+                        int defaultUserAgentArrayPosition = userAgentNamesArray.getPosition(defaultUserAgentName);  // TODO Could this be local.
 
                         // Set the user agent according to the system default.
                         switch (defaultUserAgentArrayPosition) {
                             case UNRECOGNIZED_USER_AGENT:  // The default user agent name is not on the canonical list.
                                 // This is probably because it was set in an older version of Privacy Browser before the switch to persistent user agent names.
-                                currentWebView.getSettings().setUserAgentString(defaultUserAgentName);
+                                nestedScrollWebView.getSettings().setUserAgentString(defaultUserAgentName);
                                 break;
 
                             case SETTINGS_WEBVIEW_DEFAULT_USER_AGENT:
                                 // Set the user agent to `""`, which uses the default value.
-                                currentWebView.getSettings().setUserAgentString("");
+                                nestedScrollWebView.getSettings().setUserAgentString("");
                                 break;
 
                             case SETTINGS_CUSTOM_USER_AGENT:
                                 // Set the custom user agent.
-                                currentWebView.getSettings().setUserAgentString(defaultCustomUserAgentString);
+                                nestedScrollWebView.getSettings().setUserAgentString(defaultCustomUserAgentString);
                                 break;
 
                             default:
                                 // Get the user agent string from the user agent data array
-                                currentWebView.getSettings().setUserAgentString(userAgentDataArray[defaultUserAgentArrayPosition]);
+                                nestedScrollWebView.getSettings().setUserAgentString(userAgentDataArray[defaultUserAgentArrayPosition]);
                         }
                     } else {  // Set the user agent according to the stored name.
                         // Get the array position of the user agent name.
@@ -3779,29 +3806,29 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         switch (userAgentArrayPosition) {
                             case UNRECOGNIZED_USER_AGENT:  // The user agent name contains a custom user agent.
-                                currentWebView.getSettings().setUserAgentString(userAgentName);
+                                nestedScrollWebView.getSettings().setUserAgentString(userAgentName);
                                 break;
 
                             case SETTINGS_WEBVIEW_DEFAULT_USER_AGENT:
                                 // Set the user agent to `""`, which uses the default value.
-                                currentWebView.getSettings().setUserAgentString("");
+                                nestedScrollWebView.getSettings().setUserAgentString("");
                                 break;
 
                             default:
                                 // Get the user agent string from the user agent data array.
-                                currentWebView.getSettings().setUserAgentString(userAgentDataArray[userAgentArrayPosition]);
+                                nestedScrollWebView.getSettings().setUserAgentString(userAgentDataArray[userAgentArrayPosition]);
                         }
                     }
 
                     // Store the applied user agent string, which is used in the View Source activity.
-                    appliedUserAgentString = currentWebView.getSettings().getUserAgentString();
+                    appliedUserAgentString = nestedScrollWebView.getSettings().getUserAgentString();  // TODO.
 
                     // Update the user agent change tracker.
-                    userAgentChanged = !appliedUserAgentString.equals(initialUserAgent);
+                    userAgentChanged = !appliedUserAgentString.equals(initialUserAgent);  // TODO.
                 }
 
                 // Set swipe to refresh.
-                switch (swipeToRefreshInt) {
+                switch (swipeToRefreshInt) {  // TODO.  This needs to be set and updated by tab.
                     case DomainsDatabaseHelper.SWIPE_TO_REFRESH_SYSTEM_DEFAULT:
                         // Set swipe to refresh according to the default.
                         swipeRefreshLayout.setEnabled(defaultSwipeToRefresh);
@@ -3820,15 +3847,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Set the loading of webpage images.
                 switch (displayWebpageImagesInt) {
                     case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT:
-                        currentWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImages);
+                        nestedScrollWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImages);
                         break;
 
                     case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_ENABLED:
-                        currentWebView.getSettings().setLoadsImagesAutomatically(true);
+                        nestedScrollWebView.getSettings().setLoadsImagesAutomatically(true);
                         break;
 
                     case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_DISABLED:
-                        currentWebView.getSettings().setLoadsImagesAutomatically(false);
+                        nestedScrollWebView.getSettings().setLoadsImagesAutomatically(false);
                         break;
                 }
 
@@ -3840,28 +3867,28 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
             } else {  // The new URL does not have custom domain settings.  Load the defaults.
                 // Store the values from `sharedPreferences` in variables.
-                javaScriptEnabled = sharedPreferences.getBoolean("javascript", false);
-                firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies", false);
-                thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies", false);
-                domStorageEnabled = sharedPreferences.getBoolean("dom_storage", false);
-                saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data", false);  // Form data can be removed once the minimum API >= 26.
-                easyListEnabled = sharedPreferences.getBoolean("easylist", true);
-                easyPrivacyEnabled = sharedPreferences.getBoolean("easyprivacy", true);
-                fanboysAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboys_annoyance_list", true);
-                fanboysSocialBlockingListEnabled = sharedPreferences.getBoolean("fanboys_social_blocking_list", true);
-                ultraPrivacyEnabled = sharedPreferences.getBoolean("ultraprivacy", true);
-                blockAllThirdPartyRequests = sharedPreferences.getBoolean("block_all_third_party_requests", false);
+                javaScriptEnabled = sharedPreferences.getBoolean("javascript", false);  // TODO.
+                firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies", false);  // TODO.
+                thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies", false);  // TODO.
+                domStorageEnabled = sharedPreferences.getBoolean("dom_storage", false);  // TODO.
+                saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data", false);  // Form data can be removed once the minimum API >= 26.  // TODO.
+                easyListEnabled = sharedPreferences.getBoolean("easylist", true);  // TODO.
+                easyPrivacyEnabled = sharedPreferences.getBoolean("easyprivacy", true);  // TODO.
+                fanboysAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboys_annoyance_list", true);  // TODO.
+                fanboysSocialBlockingListEnabled = sharedPreferences.getBoolean("fanboys_social_blocking_list", true);  // TODO.
+                ultraPrivacyEnabled = sharedPreferences.getBoolean("ultraprivacy", true);  // TODO.
+                blockAllThirdPartyRequests = sharedPreferences.getBoolean("block_all_third_party_requests", false);  // TODO.
 
                 // Set `javaScriptEnabled` to be `true` if `night_mode` is `true`.
                 if (nightMode) {
-                    javaScriptEnabled = true;
+                    javaScriptEnabled = true;  // TODO.
                 }
 
                 // Apply the default settings.
-                currentWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
-                cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
-                currentWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
-                currentWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
+                nestedScrollWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);  // TODO.
+                cookieManager.setAcceptCookie(firstPartyCookiesEnabled);  // TODO.
+                nestedScrollWebView.getSettings().setDomStorageEnabled(domStorageEnabled);  // TODO.
+                nestedScrollWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
                 swipeRefreshLayout.setEnabled(defaultSwipeToRefresh);
 
                 // Apply the form data setting if the API < 26.
@@ -3870,27 +3897,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Reset the pinned variables.
-                currentWebView.setDomainSettingsDatabaseId(-1);
-                pinnedSslCertificate = false;
-                pinnedSslIssuedToCName = "";
-                pinnedSslIssuedToOName = "";
-                pinnedSslIssuedToUName = "";
-                pinnedSslIssuedByCName = "";
-                pinnedSslIssuedByOName = "";
-                pinnedSslIssuedByUName = "";
-                pinnedSslStartDate = null;
-                pinnedSslEndDate = null;
-                pinnedIpAddresses = false;
-                pinnedHostIpAddresses = "";
+                nestedScrollWebView.setDomainSettingsDatabaseId(-1);
 
                 // Set third-party cookies status if API >= 21.
                 if (Build.VERSION.SDK_INT >= 21) {
-                    cookieManager.setAcceptThirdPartyCookies(currentWebView, thirdPartyCookiesEnabled);
+                    cookieManager.setAcceptThirdPartyCookies(nestedScrollWebView, thirdPartyCookiesEnabled);
                 }
 
                 // Only set the user agent if the webpage is not currently loading.  Otherwise, changing the user agent on redirects can cause the original website to reload.
                 // <https://redmine.stoutner.com/issues/160>
-                if (!urlIsLoading) {
+                if (!urlIsLoading) {  // TODO.
                     // Get the array position of the user agent name.
                     int userAgentArrayPosition = userAgentNamesArray.getPosition(defaultUserAgentName);
 
@@ -3898,33 +3914,33 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     switch (userAgentArrayPosition) {
                         case UNRECOGNIZED_USER_AGENT:  // The default user agent name is not on the canonical list.
                             // This is probably because it was set in an older version of Privacy Browser before the switch to persistent user agent names.
-                            currentWebView.getSettings().setUserAgentString(defaultUserAgentName);
+                            nestedScrollWebView.getSettings().setUserAgentString(defaultUserAgentName);
                             break;
 
                         case SETTINGS_WEBVIEW_DEFAULT_USER_AGENT:
                             // Set the user agent to `""`, which uses the default value.
-                            currentWebView.getSettings().setUserAgentString("");
+                            nestedScrollWebView.getSettings().setUserAgentString("");
                             break;
 
                         case SETTINGS_CUSTOM_USER_AGENT:
                             // Set the custom user agent.
-                            currentWebView.getSettings().setUserAgentString(defaultCustomUserAgentString);
+                            nestedScrollWebView.getSettings().setUserAgentString(defaultCustomUserAgentString);  // TODO.
                             break;
 
                         default:
                             // Get the user agent string from the user agent data array
-                            currentWebView.getSettings().setUserAgentString(userAgentDataArray[userAgentArrayPosition]);
+                            nestedScrollWebView.getSettings().setUserAgentString(userAgentDataArray[userAgentArrayPosition]);
                     }
 
                     // Store the applied user agent string, which is used in the View Source activity.
-                    appliedUserAgentString = currentWebView.getSettings().getUserAgentString();
+                    appliedUserAgentString = nestedScrollWebView.getSettings().getUserAgentString();  // TODO.
 
                     // Update the user agent change tracker.
-                    userAgentChanged = !appliedUserAgentString.equals(initialUserAgent);
+                    userAgentChanged = !appliedUserAgentString.equals(initialUserAgent);  // TODO.
                 }
 
                 // Set the loading of webpage images.
-                currentWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImages);
+                nestedScrollWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImages);
 
                 // Set a transparent background on URL edit text.  The deprecated `.getDrawable()` must be used until the minimum API >= 21.
                 urlEditText.setBackgroundDrawable(getResources().getDrawable(R.color.transparent));
@@ -3933,15 +3949,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Close the domains database helper.
             domainsDatabaseHelper.close();
 
-            // Update the privacy icons, but only if `mainMenu` has already been populated.
-            if (mainMenu != null) {
+            // Update the privacy icons, but only if the options menu has already been populated.
+            if (mainMenu != null) {  // TODO.  Consider renaming this to optionsMenu.
                 updatePrivacyIcons(true);
             }
         }
 
         // Reload the website if returning from the Domains activity.
         if (reloadWebsite) {
-            currentWebView.reload();
+            nestedScrollWebView.reload();
         }
 
         // Return the user agent changed status.
@@ -4273,70 +4289,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         startActivity(openWithBrowserIntent);
     }
 
-    public static void checkPinnedMismatch(int domainSettingsDatabaseId) {
-        if ((pinnedSslCertificate || pinnedIpAddresses) && !ignorePinnedDomainInformation) {
-            // Initialize the current SSL certificate variables.
-            String currentWebsiteIssuedToCName = "";
-            String currentWebsiteIssuedToOName = "";
-            String currentWebsiteIssuedToUName = "";
-            String currentWebsiteIssuedByCName = "";
-            String currentWebsiteIssuedByOName = "";
-            String currentWebsiteIssuedByUName = "";
-            Date currentWebsiteSslStartDate = null;
-            Date currentWebsiteSslEndDate = null;
-
-
-            // Extract the individual pieces of information from the current website SSL certificate if it is not null.
-            if (sslCertificate != null) {
-                currentWebsiteIssuedToCName = sslCertificate.getIssuedTo().getCName();
-                currentWebsiteIssuedToOName = sslCertificate.getIssuedTo().getOName();
-                currentWebsiteIssuedToUName = sslCertificate.getIssuedTo().getUName();
-                currentWebsiteIssuedByCName = sslCertificate.getIssuedBy().getCName();
-                currentWebsiteIssuedByOName = sslCertificate.getIssuedBy().getOName();
-                currentWebsiteIssuedByUName = sslCertificate.getIssuedBy().getUName();
-                currentWebsiteSslStartDate = sslCertificate.getValidNotBeforeDate();
-                currentWebsiteSslEndDate = sslCertificate.getValidNotAfterDate();
-            }
-
-            // Initialize string variables to store the SSL certificate dates.  Strings are needed to compare the values below, which doesn't work with `Dates` if they are `null`.
-            String currentWebsiteSslStartDateString = "";
-            String currentWebsiteSslEndDateString = "";
-            String pinnedSslStartDateString = "";
-            String pinnedSslEndDateString = "";
-
-            // Convert the `Dates` to `Strings` if they are not `null`.
-            if (currentWebsiteSslStartDate != null) {
-                currentWebsiteSslStartDateString = currentWebsiteSslStartDate.toString();
-            }
-
-            if (currentWebsiteSslEndDate != null) {
-                currentWebsiteSslEndDateString = currentWebsiteSslEndDate.toString();
-            }
-
-            if (pinnedSslStartDate != null) {
-                pinnedSslStartDateString = pinnedSslStartDate.toString();
-            }
-
-            if (pinnedSslEndDate != null) {
-                pinnedSslEndDateString = pinnedSslEndDate.toString();
-            }
-
-            // Check to see if the pinned information matches the current information.
-            if ((pinnedIpAddresses && !currentHostIpAddresses.equals(pinnedHostIpAddresses)) || (pinnedSslCertificate && (!currentWebsiteIssuedToCName.equals(pinnedSslIssuedToCName) ||
-                    !currentWebsiteIssuedToOName.equals(pinnedSslIssuedToOName) || !currentWebsiteIssuedToUName.equals(pinnedSslIssuedToUName) ||
-                    !currentWebsiteIssuedByCName.equals(pinnedSslIssuedByCName) || !currentWebsiteIssuedByOName.equals(pinnedSslIssuedByOName) ||
-                    !currentWebsiteIssuedByUName.equals(pinnedSslIssuedByUName) || !currentWebsiteSslStartDateString.equals(pinnedSslStartDateString) ||
-                    !currentWebsiteSslEndDateString.equals(pinnedSslEndDateString)))) {
-
-                // Get a handle for the pinned mismatch alert dialog.
-                DialogFragment pinnedMismatchDialogFragment = PinnedMismatchDialog.displayDialog(domainSettingsDatabaseId, pinnedSslCertificate, pinnedIpAddresses);
-
-                // Show the pinned mismatch alert dialog.
-                pinnedMismatchDialogFragment.show(fragmentManager, "Pinned Mismatch");
-            }
-        }
-    }
-
     public void addTab(View view) {
         // Get a handle for the tab layout.
         TabLayout tabLayout = findViewById(R.id.tablayout);
@@ -4366,7 +4318,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void initializeWebView(long pageId, int pageNumber, ProgressBar progressBar, NestedScrollWebView nestedScrollWebView) {
+    public void initializeWebView(NestedScrollWebView nestedScrollWebView, int pageNumber, ProgressBar progressBar) {
         // Get handles for the activity views.
         FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
         DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
@@ -4379,11 +4331,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Remove the incorrect lint warnings below that the some of the views might be null.
         assert actionBar != null;
 
+        // Get a handle for the activity
+        Activity activity = this;
+
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Get the relevant preferences.
         boolean downloadWithExternalApp = sharedPreferences.getBoolean("download_with_external_app", false);
+
+        // Set the app bar scrolling.
+        nestedScrollWebView.setNestedScrollingEnabled(sharedPreferences.getBoolean("scroll_app_bar", true));
 
         // Allow pinch to zoom.
         nestedScrollWebView.getSettings().setBuiltInZoomControls(true);
@@ -4500,22 +4458,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     downloadContentLength = contentLength;
 
                     // Show a dialog if the user has previously denied the permission.
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
                         // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_FILE.
                         DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_FILE);
 
                         // Show the download location permission alert dialog.  The permission will be requested when the the dialog is closed.
-                        downloadLocationPermissionDialogFragment.show(fragmentManager, getString(R.string.download_location));
+                        downloadLocationPermissionDialogFragment.show(getSupportFragmentManager(), getString(R.string.download_location));
                     } else {  // Show the permission request directly.
                         // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
-                        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_FILE_REQUEST_CODE);
+                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_FILE_REQUEST_CODE);
                     }
                 } else {  // The storage permission has already been granted.
                     // Get a handle for the download file alert dialog.
                     DialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(url, contentDisposition, contentLength);
 
                     // Show the download file alert dialog.
-                    downloadFileDialogFragment.show(fragmentManager, getString(R.string.download));
+                    downloadFileDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
                 }
             }
         });
@@ -4605,7 +4563,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     favoriteIconBitmap = icon;
 
                     // Get the current page position.
-                    int currentPosition = webViewPagerAdapter.getPositionForId(pageId);
+                    int currentPosition = webViewPagerAdapter.getPositionForId(nestedScrollWebView.getWebViewFragmentId());
 
                     // Get the current tab.
                     TabLayout.Tab tab = tabLayout.getTabAt(currentPosition);
@@ -4631,7 +4589,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @Override
             public void onReceivedTitle(WebView view, String title) {
                 // Get the current page position.
-                int currentPosition = webViewPagerAdapter.getPositionForId(pageId);
+                int currentPosition = webViewPagerAdapter.getPositionForId(nestedScrollWebView.getWebViewFragmentId());
 
                 // Get the current tab.
                 TabLayout.Tab tab = tabLayout.getTabAt(currentPosition);
@@ -4780,7 +4738,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     formattedUrlString = "";
 
                     // Apply the domain settings for the new URL.  `applyDomainSettings` doesn't do anything if the domain has not changed.
-                    boolean userAgentChanged = applyDomainSettings(url, true, false);
+                    boolean userAgentChanged = applyDomainSettings(nestedScrollWebView, url, true, false);
 
                     // Check if the user agent has changed.
                     if (userAgentChanged) {
@@ -4897,7 +4855,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Get the current WebView page position.
-                int webViewPagePosition = webViewPagerAdapter.getPositionForId(pageId);
+                int webViewPagePosition = webViewPagerAdapter.getPositionForId(nestedScrollWebView.getWebViewFragmentId());
 
                 // Determine if the WebView is currently displayed.
                 boolean webViewDisplayed = (webViewPagePosition == tabLayout.getSelectedTabPosition());
@@ -5120,18 +5078,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Display the HTTP authentication dialog.
                 DialogFragment httpAuthenticationDialogFragment = HttpAuthenticationDialog.displayDialog(host, realm);
-                httpAuthenticationDialogFragment.show(fragmentManager, getString(R.string.http_authentication));
+                httpAuthenticationDialogFragment.show(getSupportFragmentManager(), getString(R.string.http_authentication));
             }
 
-            // Update the URL in urlTextBox when the page starts to load.
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 // Set `urlIsLoading` to `true`, so that redirects while loading do not trigger changes in the user agent, which forces another reload of the existing page.
                 // This is also used to determine when to check for pinned mismatches.
                 urlIsLoading = true;
-
-                // Reset the list of host IP addresses.
-                currentHostIpAddresses = "";
 
                 // Reset the list of resource requests.
                 nestedScrollWebView.clearResourceRequests();
@@ -5167,13 +5121,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Get a URI for the current URL.
                     Uri currentUri = Uri.parse(formattedUrlString);
 
+                    // Reset the list of host IP addresses.
+                    nestedScrollWebView.clearCurrentIpAddresses();
+
                     // Get the IP addresses for the host.
-                    new GetHostIpAddresses(activity, currentWebView.getDomainSettingsDatabaseId()).execute(currentUri.getHost());
+                    new GetHostIpAddresses(activity, getSupportFragmentManager(), nestedScrollWebView).execute(currentUri.getHost());
 
                     // Apply any custom domain settings if the URL was loaded by navigating history.
                     if (navigatingHistory) {
                         // Apply the domain settings.
-                        boolean userAgentChanged = applyDomainSettings(url, true, false);
+                        boolean userAgentChanged = applyDomainSettings(nestedScrollWebView, url, true, false);
 
                         // Reset `navigatingHistory`.
                         navigatingHistory = false;
@@ -5268,7 +5225,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         inputMethodManager.showSoftInput(urlEditText, 0);
 
                         // Apply the domain settings.  This clears any settings from the previous domain.
-                        applyDomainSettings(formattedUrlString, true, false);
+                        applyDomainSettings(nestedScrollWebView, formattedUrlString, true, false);
                     } else {  // `WebView` has loaded a webpage.
                         // Set the formatted URL string.  Getting the URL from the WebView instead of using the one provided by `onPageFinished` makes websites like YouTube function correctly.
                         formattedUrlString = nestedScrollWebView.getUrl();
@@ -5283,12 +5240,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         }
                     }
 
-                    // Store the SSL certificate so it can be accessed from `ViewSslCertificateDialog` and `PinnedMismatchDialog`.
-                    sslCertificate = nestedScrollWebView.getCertificate();
-
                     // Check the current website information against any pinned domain information if the current IP addresses have been loaded.
-                    if (!gettingIpAddresses) {
-                        checkPinnedMismatch(currentWebView.getDomainSettingsDatabaseId());
+                    if ((nestedScrollWebView.hasPinnedSslCertificate() || nestedScrollWebView.hasPinnedIpAddresses()) && nestedScrollWebView.hasCurrentIpAddresses() &&
+                            !nestedScrollWebView.ignorePinnedDomainInformation()) {
+                        CheckPinnedMismatchHelper.checkPinnedMismatch(getSupportFragmentManager(), nestedScrollWebView);
                     }
                 }
 
@@ -5313,21 +5268,30 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 Date currentWebsiteSslEndDate = currentWebsiteSslCertificate.getValidNotAfterDate();
 
                 // Proceed to the website if the current SSL website certificate matches the pinned domain certificate.
-                if (pinnedSslCertificate &&
-                        currentWebsiteIssuedToCName.equals(pinnedSslIssuedToCName) && currentWebsiteIssuedToOName.equals(pinnedSslIssuedToOName) &&
-                        currentWebsiteIssuedToUName.equals(pinnedSslIssuedToUName) && currentWebsiteIssuedByCName.equals(pinnedSslIssuedByCName) &&
-                        currentWebsiteIssuedByOName.equals(pinnedSslIssuedByOName) && currentWebsiteIssuedByUName.equals(pinnedSslIssuedByUName) &&
-                        currentWebsiteSslStartDate.equals(pinnedSslStartDate) && currentWebsiteSslEndDate.equals(pinnedSslEndDate)) {
+                if (nestedScrollWebView.hasPinnedSslCertificate()) {
+                    // Get the pinned SSL certificate.
+                    ArrayList<Object> pinnedSslCertificateArrayList = nestedScrollWebView.getPinnedSslCertificate();
 
-                    // An SSL certificate is pinned and matches the current domain certificate.  Proceed to the website without displaying an error.
-                    handler.proceed();
+                    // Extract the arrays from the array list.
+                    String[] pinnedSslCertificateStringArray = (String[]) pinnedSslCertificateArrayList.get(0);
+                    Date[] pinnedSslCertificateDateArray = (Date[]) pinnedSslCertificateArrayList.get(1);
+
+                    // Check if the current SSL certificate matches the pinned certificate.
+                    if (currentWebsiteIssuedToCName.equals(pinnedSslCertificateStringArray[0]) && currentWebsiteIssuedToOName.equals(pinnedSslCertificateStringArray[1]) &&
+                        currentWebsiteIssuedToUName.equals(pinnedSslCertificateStringArray[2]) && currentWebsiteIssuedByCName.equals(pinnedSslCertificateStringArray[3]) &&
+                        currentWebsiteIssuedByOName.equals(pinnedSslCertificateStringArray[4]) && currentWebsiteIssuedByUName.equals(pinnedSslCertificateStringArray[5]) &&
+                        currentWebsiteSslStartDate.equals(pinnedSslCertificateDateArray[0]) && currentWebsiteSslEndDate.equals(pinnedSslCertificateDateArray[1])) {
+
+                        // An SSL certificate is pinned and matches the current domain certificate.  Proceed to the website without displaying an error.
+                        handler.proceed();
+                    }
                 } else {  // Either there isn't a pinned SSL certificate or it doesn't match the current website certificate.
                     // Store `handler` so it can be accesses from `onSslErrorCancel()` and `onSslErrorProceed()`.
-                    sslErrorHandler = handler;
+                    sslErrorHandler = handler;  // TODO.  We need to pass this in instead of using a static variable.  Because multiple could be displayed at once from different tabs.
 
                     // Display the SSL error `AlertDialog`.
                     DialogFragment sslCertificateErrorDialogFragment = SslCertificateErrorDialog.displayDialog(error);
-                    sslCertificateErrorDialogFragment.show(fragmentManager, getString(R.string.ssl_certificate_error));
+                    sslCertificateErrorDialogFragment.show(getSupportFragmentManager(), getString(R.string.ssl_certificate_error));
                 }
             }
         });

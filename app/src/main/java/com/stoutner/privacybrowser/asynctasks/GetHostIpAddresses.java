@@ -22,7 +22,11 @@ package com.stoutner.privacybrowser.asynctasks;
 import android.app.Activity;
 import android.os.AsyncTask;
 
+import androidx.fragment.app.FragmentManager;
+
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
+import com.stoutner.privacybrowser.helpers.CheckPinnedMismatchHelper;
+import com.stoutner.privacybrowser.views.NestedScrollWebView;
 
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
@@ -32,39 +36,25 @@ import java.net.UnknownHostException;
 public class GetHostIpAddresses extends AsyncTask<String, Void, String> {
     // The weak references are used to determine if the activity have disappeared while the AsyncTask is running.
     private final WeakReference<Activity> activityWeakReference;
-    private final int domainSettingsDatabaseId;
+    private final WeakReference<FragmentManager> fragmentManagerWeakReference;
+    private final WeakReference<NestedScrollWebView> nestedScrollWebViewWeakReference;
 
-    public GetHostIpAddresses(Activity activity, int domainSettingsDatabaseId) {
-        // Populate the weak activity reference.
+    public GetHostIpAddresses(Activity activity, FragmentManager fragmentManager, NestedScrollWebView nestedScrollWebView) {
+        // Populate the weak references.
         activityWeakReference = new WeakReference<>(activity);
-
-        // Populate the domain settings database ID.
-        this.domainSettingsDatabaseId = domainSettingsDatabaseId;
+        fragmentManagerWeakReference = new WeakReference<>(fragmentManager);
+        nestedScrollWebViewWeakReference = new WeakReference<>(nestedScrollWebView);
     }
-
-    // `onPreExecute()` operates on the UI thread.
-    @Override
-    protected void onPreExecute() {
-        // Get a handle for the activity.
-        Activity activity = activityWeakReference.get();
-
-        // Abort if the activity is gone.
-        if ((activity == null) || activity.isFinishing()) {
-            return;
-        }
-
-        // Set the getting IP addresses tracker.
-        MainWebViewActivity.gettingIpAddresses = true;
-    }
-
 
     @Override
     protected String doInBackground(String... domainName) {
-        // Get a handle for the activity.
+        // Get a handles for the weak references.
         Activity activity = activityWeakReference.get();
+        FragmentManager fragmentManager = fragmentManagerWeakReference.get();
+        NestedScrollWebView nestedScrollWebView = nestedScrollWebViewWeakReference.get();
 
-        // Abort if the activity is gone.
-        if ((activity == null) || activity.isFinishing()) {
+        // Abort if the activity or its components are gone.
+        if ((activity == null) || activity.isFinishing() || fragmentManager == null || nestedScrollWebView == null) {
             // Return an empty spannable string builder.
             return "";
         }
@@ -101,22 +91,22 @@ public class GetHostIpAddresses extends AsyncTask<String, Void, String> {
     // `onPostExecute()` operates on the UI thread.
     @Override
     protected void onPostExecute(String ipAddresses) {
-        // Get a handle for the activity.
+        // Get a handle for the activity and the nested scroll WebView.
         Activity activity = activityWeakReference.get();
+        FragmentManager fragmentManager = fragmentManagerWeakReference.get();
+        NestedScrollWebView nestedScrollWebView = nestedScrollWebViewWeakReference.get();
 
-        // Abort if the activity is gone.
-        if ((activity == null) || activity.isFinishing()) {
+        // Abort if the activity or its components are gone.
+        if ((activity == null) || activity.isFinishing() || fragmentManager == null || nestedScrollWebView == null) {
             return;
         }
 
         // Store the IP addresses.
-        MainWebViewActivity.currentHostIpAddresses = ipAddresses;
+        nestedScrollWebView.setCurrentIpAddresses(ipAddresses);
 
-        if (!MainWebViewActivity.urlIsLoading) {
-            MainWebViewActivity.checkPinnedMismatch(domainSettingsDatabaseId);
+        //TODO.  Move `urlIsLoading` to the WebView.
+        if (!MainWebViewActivity.urlIsLoading && !nestedScrollWebView.ignorePinnedDomainInformation() && (nestedScrollWebView.hasPinnedSslCertificate() || nestedScrollWebView.hasPinnedIpAddresses())) {
+            CheckPinnedMismatchHelper.checkPinnedMismatch(fragmentManager, nestedScrollWebView);
         }
-
-        // Reset the getting IP addresses tracker.
-        MainWebViewActivity.gettingIpAddresses = false;
     }
 }

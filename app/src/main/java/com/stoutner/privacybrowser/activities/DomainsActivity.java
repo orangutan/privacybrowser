@@ -72,6 +72,11 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
     // `dismissingSnackbar` is public static so it can be accessed from `DomainsListFragment`.  It is also used in `onOptionsItemSelected()`.
     public static boolean dismissingSnackbar;
 
+    // The SSL certificate and current IP addresses are used to update pinned settings.
+    public static SslCertificate currentSslCertificate;
+    public static String currentIpAddresses;
+
+
     // `closeActivityAfterDismissingSnackbar` is used in `onOptionsItemSelected()`, and `onBackPressed()`.
     private boolean closeActivityAfterDismissingSnackbar;
 
@@ -719,18 +724,15 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
         // Update the pinned SSL certificate if a new one is checked.
         if (currentWebsiteCertificateRadioButton.isChecked()) {
-            // Get the current website SSL certificate.
-            SslCertificate currentWebsiteSslCertificate = MainWebViewActivity.sslCertificate;
-
             // Store the values from the SSL certificate.
-            String issuedToCommonName = currentWebsiteSslCertificate.getIssuedTo().getCName();
-            String issuedToOrganization = currentWebsiteSslCertificate.getIssuedTo().getOName();
-            String issuedToOrganizationalUnit = currentWebsiteSslCertificate.getIssuedTo().getUName();
-            String issuedByCommonName = currentWebsiteSslCertificate.getIssuedBy().getCName();
-            String issuedByOrganization = currentWebsiteSslCertificate.getIssuedBy().getOName();
-            String issuedByOrganizationalUnit = currentWebsiteSslCertificate.getIssuedBy().getUName();
-            long startDateLong = currentWebsiteSslCertificate.getValidNotBeforeDate().getTime();
-            long endDateLong = currentWebsiteSslCertificate.getValidNotAfterDate().getTime();
+            String issuedToCommonName = currentSslCertificate.getIssuedTo().getCName();
+            String issuedToOrganization = currentSslCertificate.getIssuedTo().getOName();
+            String issuedToOrganizationalUnit = currentSslCertificate.getIssuedTo().getUName();
+            String issuedByCommonName = currentSslCertificate.getIssuedBy().getCName();
+            String issuedByOrganization = currentSslCertificate.getIssuedBy().getOName();
+            String issuedByOrganizationalUnit = currentSslCertificate.getIssuedBy().getUName();
+            long startDateLong = currentSslCertificate.getValidNotBeforeDate().getTime();
+            long endDateLong = currentSslCertificate.getValidNotAfterDate().getTime();
 
             // Update the database.
             domainsDatabaseHelper.updatePinnedSslCertificate(currentDomainDatabaseId, issuedToCommonName, issuedToOrganization, issuedToOrganizationalUnit, issuedByCommonName, issuedByOrganization,

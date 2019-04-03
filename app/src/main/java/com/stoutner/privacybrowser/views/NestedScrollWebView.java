@@ -29,6 +29,7 @@ import androidx.core.view.NestedScrollingChildHelper;
 import androidx.core.view.ViewCompat;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 // NestedScrollWebView extends WebView to handle nested scrolls (scrolling the app bar off the screen).
 public class NestedScrollWebView extends WebView implements NestedScrollingChild2 {
@@ -41,11 +42,8 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     public final static int ULTRA_PRIVACY_BLOCKED_REQUESTS = 5;
     public final static int THIRD_PARTY_BLOCKED_REQUESTS = 6;
 
-    // The nested scrolling child helper is used throughout the class.
-    private NestedScrollingChildHelper nestedScrollingChildHelper;
-
-    // The previous Y position needs to be tracked between motion events.
-    private int previousYPosition;
+    // Keep a copy of the WebView fragment ID.
+    private long webViewFragmentId;
 
     // Track if domain settings are applied to this nested scroll WebView and, if so, the database ID.
     private boolean domainSettingsApplied;
@@ -61,19 +59,49 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     private int ultraPrivacyBlockedRequests;
     private int thirdPartyBlockedRequests;
 
-    // Basic constructor.
+    // The pinned SSL certificate variables.
+    private boolean hasPinnedSslCertificate;
+    private String pinnedSslIssuedToCName;
+    private String pinnedSslIssuedToOName;
+    private String pinnedSslIssuedToUName;
+    private String pinnedSslIssuedByCName;
+    private String pinnedSslIssuedByOName;
+    private String pinnedSslIssuedByUName;
+    private Date pinnedSslStartDate;
+    private Date pinnedSslEndDate;
+
+    // The current IP addresses variables.
+    private boolean hasCurrentIpAddresses;
+    private String currentIpAddresses;
+
+    // The pinned IP addresses variables.
+    private boolean hasPinnedIpAddresses;
+    private String pinnedIpAddresses;
+
+    // The ignore pinned domain information tracker.  This is set when a user proceeds past a pinned mismatch dialog to prevent the dialog from showing again until after the domain changes.
+    private boolean ignorePinnedDomainInformation;
+
+    // The nested scrolling child helper is used throughout the class.
+    private NestedScrollingChildHelper nestedScrollingChildHelper;
+
+    // The previous Y position needs to be tracked between motion events.
+    private int previousYPosition;
+
+
+
+    // The basic constructor.
     public NestedScrollWebView(Context context) {
         // Roll up to the next constructor.
         this(context, null);
     }
 
-    // Intermediate constructor.
+    // The intermediate constructor.
     public NestedScrollWebView(Context context, AttributeSet attributeSet) {
         // Roll up to the next constructor.
         this(context, attributeSet, android.R.attr.webViewStyle);
     }
 
-    // Full constructor.
+    // The full constructor.
     public NestedScrollWebView(Context context, AttributeSet attributeSet, int defaultStyle) {
         // Run the default commands.
         super(context, attributeSet, defaultStyle);
@@ -85,6 +113,21 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
         nestedScrollingChildHelper.setNestedScrollingEnabled(true);
     }
 
+
+
+    // WebView Fragment ID.
+    public void setWebViewFragmentId(long webViewFragmentId) {
+        // Store the WebView fragment ID.
+        this.webViewFragmentId = webViewFragmentId;
+    }
+
+    public long getWebViewFragmentId() {
+        // Return the WebView fragment ID.
+        return webViewFragmentId;
+    }
+
+
+    // Domain settings.
     public void setDomainSettingsApplied(boolean applied) {
         // Store the domain settings applied status.
         domainSettingsApplied = applied;
@@ -95,6 +138,8 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
         return domainSettingsApplied;
     }
 
+
+    // Domain settings database ID.
     public void setDomainSettingsDatabaseId(int databaseId) {
         // Store the domain settings database ID.
         domainSettingsDatabaseId = databaseId;
@@ -105,6 +150,8 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
         return domainSettingsDatabaseId;
     }
 
+
+    // Resource requests.
     public void addResourceRequest(String[] resourceRequest) {
         // Add the resource request to the list.
         resourceRequests.add(resourceRequest);
@@ -120,6 +167,8 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
         resourceRequests.clear();
     }
 
+
+    // Resource request counters.
     public void resetRequestsCount(int list) {
         // Run the command on the indicated list.
         switch (list) {
@@ -236,6 +285,132 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
                 return 0;
         }
     }
+
+
+    // Pinned SSL certificates.
+    public boolean hasPinnedSslCertificate() {
+        // Return the status of the pinned SSL certificate.
+        return hasPinnedSslCertificate;
+    }
+
+    public void setPinnedSslCertificate(String issuedToCName, String issuedToOName, String issuedToUName, String issuedByCName, String issuedByOName, String issuedByUName, Date startDate, Date endDate) {
+        // Store the pinned SSL certificate information.
+        pinnedSslIssuedToCName = issuedToCName;
+        pinnedSslIssuedToOName = issuedToOName;
+        pinnedSslIssuedToUName = issuedToUName;
+        pinnedSslIssuedByCName = issuedByCName;
+        pinnedSslIssuedByOName = issuedByOName;
+        pinnedSslIssuedByUName = issuedByUName;
+        pinnedSslStartDate = startDate;
+        pinnedSslEndDate = endDate;
+
+        // Set the pinned SSL certificate tracker.
+        hasPinnedSslCertificate = true;
+    }
+
+    public ArrayList<Object> getPinnedSslCertificate() {
+        // Initialize an array list.
+        ArrayList<Object> arrayList = new ArrayList<>();
+
+        // Create the SSL certificate string array.
+        String[] sslCertificateStringArray = new String[] {pinnedSslIssuedToCName, pinnedSslIssuedToOName, pinnedSslIssuedToUName, pinnedSslIssuedByCName, pinnedSslIssuedByOName, pinnedSslIssuedByUName};
+
+        // Create the SSL certificate date array.
+        Date[] sslCertificateDateArray = new Date[] {pinnedSslStartDate, pinnedSslEndDate};
+
+        // Add the arrays to the array list.
+        arrayList.add(sslCertificateStringArray);
+        arrayList.add(sslCertificateDateArray);
+
+        // Return the pinned SSL certificate array list.
+        return arrayList;
+    }
+
+    public void clearPinnedSslCertificate() {
+        // Clear the pinned SSL certificate.
+        pinnedSslIssuedToCName = null;
+        pinnedSslIssuedToOName = null;
+        pinnedSslIssuedToUName = null;
+        pinnedSslIssuedByCName = null;
+        pinnedSslIssuedByOName = null;
+        pinnedSslIssuedByUName = null;
+        pinnedSslStartDate = null;
+        pinnedSslEndDate = null;
+
+        // Clear the pinned SSL certificate tracker.
+        hasPinnedSslCertificate = false;
+    }
+
+
+    // Current IP addresses.
+    public boolean hasCurrentIpAddresses() {
+        // Return the status of the current IP addresses.
+        return hasCurrentIpAddresses;
+    }
+
+    public void setCurrentIpAddresses(String ipAddresses) {
+        // Store the current IP addresses.
+        currentIpAddresses = ipAddresses;
+
+        // Set the current IP addresses tracker.
+        hasCurrentIpAddresses = true;
+    }
+
+    public String getCurrentIpAddresses() {
+        // Return the current IP addresses.
+        return currentIpAddresses;
+    }
+
+    public void clearCurrentIpAddresses() {
+        // Clear the current IP addresses.
+        currentIpAddresses = null;
+
+        // Clear the current IP addresses tracker.
+        hasCurrentIpAddresses = false;
+    }
+
+
+    // Pinned IP addresses.
+    public boolean hasPinnedIpAddresses() {
+        // Return the status of the pinned IP addresses.
+        return hasPinnedIpAddresses;
+    }
+
+    public void setPinnedIpAddresses(String ipAddresses) {
+        // Store the pinned IP addresses.
+        pinnedIpAddresses = ipAddresses;
+
+        // Set the pinned IP addresses tracker.
+        hasPinnedIpAddresses = true;
+    }
+
+    public String getPinnedIpAddresses() {
+        // Return the pinned IP addresses.
+        return pinnedIpAddresses;
+    }
+
+    public void clearPinnedIpAddresses() {
+        // Clear the pinned IP addresses.
+        pinnedIpAddresses = null;
+
+        // Clear the pinned IP addresses tracker.
+        hasPinnedIpAddresses = false;
+    }
+
+
+    // Ignore pinned information.  The syntax looks better as written, even if it is always inverted.
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public boolean ignorePinnedDomainInformation() {
+        // Return the status of the ignore pinned domain information tracker.
+        return ignorePinnedDomainInformation;
+    }
+
+    public void setIgnorePinnedDomainInformation(boolean status) {
+        // Set the status of the ignore pinned domain information tracker.
+        ignorePinnedDomainInformation = status;
+    }
+
+
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {

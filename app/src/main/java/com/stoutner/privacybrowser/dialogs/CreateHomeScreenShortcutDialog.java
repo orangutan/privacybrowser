@@ -75,19 +75,19 @@ public class CreateHomeScreenShortcutDialog extends DialogFragment {
         // Convert the byte array output stream to a byte array.
         byte[] favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray();
 
-        // Create a bundle.
-        Bundle bundle = new Bundle();
+        // Create an arguments bundle.
+        Bundle argumentsBundle = new Bundle();
 
         // Store the variables in the bundle.
-        bundle.putString("shortcut_name", shortcutName);
-        bundle.putString("url_string", urlString);
-        bundle.putByteArray("favorite_icon_byte_array", favoriteIconByteArray);
+        argumentsBundle.putString("shortcut_name", shortcutName);
+        argumentsBundle.putString("url_string", urlString);
+        argumentsBundle.putByteArray("favorite_icon_byte_array", favoriteIconByteArray);
 
         // Create a new instance of the dialog.
         CreateHomeScreenShortcutDialog createHomeScreenShortcutDialog = new CreateHomeScreenShortcutDialog();
 
         // Add the bundle to the dialog.
-        createHomeScreenShortcutDialog.setArguments(bundle);
+        createHomeScreenShortcutDialog.setArguments(argumentsBundle);
 
         // Return the new dialog.
         return createHomeScreenShortcutDialog;

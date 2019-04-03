@@ -36,11 +36,11 @@ import java.util.Calendar;
 
 public class WebViewTabFragment extends Fragment {
     // Set a unique ID for this tab based on the time it was created.
-    public long tabId = Calendar.getInstance().getTimeInMillis();
+    public long fragmentId = Calendar.getInstance().getTimeInMillis();
 
     // The public interface is used to send information back to the parent activity.
     public interface NewTabListener {
-        void initializeWebView(long pageId, int pageNumber, ProgressBar progressBar, NestedScrollWebView nestedScrollWebView);
+        void initializeWebView(NestedScrollWebView nestedScrollWebView, int pageNumber, ProgressBar progressBar);
     }
 
     // The new tab listener is used in `onAttach()` and `onCreateView()`.
@@ -90,8 +90,11 @@ public class WebViewTabFragment extends Fragment {
         NestedScrollWebView nestedScrollWebView = newPageView.findViewById(R.id.nestedscroll_webview);
         ProgressBar progressBar = newPageView.findViewById(R.id.progress_bar);
 
+        // Store the WebView fragment ID in the nested scroll WebView.
+        nestedScrollWebView.setWebViewFragmentId(fragmentId);
+
         // Request the main activity initialize the WebView.
-        newTabListener.initializeWebView(tabId, pageNumber, progressBar, nestedScrollWebView);
+        newTabListener.initializeWebView(nestedScrollWebView, pageNumber, progressBar);
 
         // Return the new page view.
         return newPageView;
