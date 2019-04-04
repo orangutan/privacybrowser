@@ -104,8 +104,8 @@ public class GetHostIpAddresses extends AsyncTask<String, Void, String> {
         // Store the IP addresses.
         nestedScrollWebView.setCurrentIpAddresses(ipAddresses);
 
-        //TODO.  Move `urlIsLoading` to the WebView.
-        if (!MainWebViewActivity.urlIsLoading && !nestedScrollWebView.ignorePinnedDomainInformation() && (nestedScrollWebView.hasPinnedSslCertificate() || nestedScrollWebView.hasPinnedIpAddresses())) {
+        // Checked for pinned mismatches if the WebView is not loading a URL, pinned information is not ignored, and there is pinned information.
+        if ((nestedScrollWebView.getProgress() == 100) && !nestedScrollWebView.ignorePinnedDomainInformation() && (nestedScrollWebView.hasPinnedSslCertificate() || nestedScrollWebView.hasPinnedIpAddresses())) {
             CheckPinnedMismatchHelper.checkPinnedMismatch(fragmentManager, nestedScrollWebView);
         }
     }

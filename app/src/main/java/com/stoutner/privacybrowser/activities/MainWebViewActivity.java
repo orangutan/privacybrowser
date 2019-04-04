@@ -181,17 +181,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // It is also used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onCreateHomeScreenShortcutCreate()`, `loadUrlFromTextBox()`, and `applyProxyThroughOrbot()`.
     public static String formattedUrlString;
 
-    // TODO.  We are going to have to move this to the NestedScrollWebView.
-    // The URL loading tracker is public static so it can be accessed from `GetHostIpAddresses`.
-    // It is also used in `onCreate()`, `onCreateOptionsMenu()`, `loadUrl()`, `applyDomainSettings()`, and `GetHostIpAddresses`.
-    public static boolean urlIsLoading;
-
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxyThroughOrbot()`.
     public static String orbotStatus;
-
-    // TODO.
-    // `appliedUserAgentString` is public static so it can be accessed from `ViewSourceActivity`.  It is also used in `applyDomainSettings()`.
-    public static String appliedUserAgentString;
 
     // The WebView pager adapter is accessed from `PinnedMismatchDialog`.  It is also used in `onCreate()`, `onResume()`, and `addTab()`.
     public static WebViewPagerAdapter webViewPagerAdapter;
@@ -246,9 +237,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `customHeader` is used in `onCreate()`, `onOptionsItemSelected()`, `onCreateContextMenu()`, and `loadUrl()`.
     private final Map<String, String> customHeaders = new HashMap<>();
 
-    // `javaScriptEnabled` is also used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `applyDomainSettings()`, and `updatePrivacyIcons()`.
-    private boolean javaScriptEnabled;
-
     // `firstPartyCookiesEnabled` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onDownloadImage()`, `onDownloadFile()`, and `applyDomainSettings()`.
     private boolean firstPartyCookiesEnabled;
 
@@ -271,14 +259,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `searchURL` is used in `loadURLFromTextBox()` and `applyProxyThroughOrbot()`.
     private String searchURL;
 
-    // `mainMenu` is used in `onCreateOptionsMenu()` and `updatePrivacyIcons()`.
-    private Menu mainMenu;
+    // The options menu is set in `onCreateOptionsMenu()` and used in `onOptionsItemSelected()` and `updatePrivacyIcons()`.
+    private Menu optionsMenu;
 
-    // `refreshMenuItem` is used in `onCreate()` and `onCreateOptionsMenu()`.
+    // The refresh menu item is set in `onCreateOptionsMenu()` and accessed from `initializeWebView()`.
+    // It must be this way because `initializeWebView()` runs before the menu is created but doesn't actually modify the menu until later.
     private MenuItem refreshMenuItem;
 
     // The navigation requests menu item is used in `onCreate()` and accessed from `WebViewPagerAdapter`.
-    private MenuItem navigationRequestsMenuItem;
+    private MenuItem navigationRequestsMenuItem;  // TODO.
 
     // TODO.  This could probably be removed.
     // The blocklist helper is used in `onCreate()` and `WebViewPagerAdapter`.
@@ -310,9 +299,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `webViewDefaultUserAgent` is used in `onCreate()` and `onPrepareOptionsMenu()`.
     private String webViewDefaultUserAgent;
 
-    // `defaultCustomUserAgentString` is used in `onPrepareOptionsMenu()` and `applyDomainSettings()`.
-    private String defaultCustomUserAgentString;
-
     // `privacyBrowserRuntime` is used in `onCreate()`, `onOptionsItemSelected()`, and `applyAppSettings()`.
     private Runtime privacyBrowserRuntime;
 
@@ -342,9 +328,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // `downloadWithExternalApp` is used in `onCreate()`, `onCreateContextMenu()`, and `applyDomainSettings()`.
     private boolean downloadWithExternalApp;
-
-    // `currentDomainName` is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onAddDomain()`, and `applyDomainSettings()`.
-    private String currentDomainName;
 
     // `orbotStatusBroadcastReceiver` is used in `onCreate()` and `onDestroy()`.
     private BroadcastReceiver orbotStatusBroadcastReceiver;
@@ -428,11 +411,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private final int DOWNLOAD_IMAGE_REQUEST_CODE = 2;
 
     @Override
-    // Remove Android Studio's warning about the dangers of using SetJavaScriptEnabled.  The whole premise of Privacy Browser is built around an understanding of these dangers.
-    // Also, remove the warning about needing to override `performClick()` when using an `OnTouchListener` with `WebView`.
-    @SuppressLint({"SetJavaScriptEnabled", "ClickableViewAccessibility"})
-    // Remove Android Studio's warning about deprecations.  The deprecated `getColor()` must be used until API >= 23.
-    @SuppressWarnings("deprecation")
+    // Remove the warning about needing to override `performClick()` when using an `OnTouchListener` with `WebView`.
+    @SuppressLint("ClickableViewAccessibility")
     protected void onCreate(Bundle savedInstanceState) {
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -516,8 +496,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Set `waitingForOrbotHTMLString`.
         waitingForOrbotHtmlString = "<html><body><br/><center><h1>" + getString(R.string.waiting_for_orbot) + "</h1></center></body></html>";
 
-        // Initialize `currentDomainName`, `orbotStatus`, and `waitingForOrbot`.
-        currentDomainName = "";
+        // Initialize the Orbot status and the waiting for Orbot trackers.
         orbotStatus = "unknown";
         waitingForOrbot = false;
 
@@ -614,6 +593,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Store the current WebView.
                 currentWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
 
+                // Update the privacy icons.  `true` redraws the icons in the app bar.
+                updatePrivacyIcons(true);
+
                 // Store the current formatted URL string.
                 formattedUrlString = currentWebView.getUrl();
 
@@ -638,7 +620,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         urlEditText.setBackground(getResources().getDrawable(R.drawable.url_bar_background_light_green));
                     }
                 } else {
-                    urlEditText.setBackgroundDrawable(getResources().getDrawable(R.color.transparent));
+                    urlEditText.setBackground(getResources().getDrawable(R.color.transparent));
                 }
 
                 // Select the corresponding tab if it does not match the currently selected page.  This will happen if the page was scrolled via swiping in the view pager.
@@ -926,7 +908,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         inFullScreenBrowsingMode = false;
 
         // Initialize the privacy settings variables.
-        javaScriptEnabled = false;
         firstPartyCookiesEnabled = false;
         thirdPartyCookiesEnabled = false;
         domStorageEnabled = false;
@@ -1229,8 +1210,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Inflate the menu.  This adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.webview_options_menu, menu);
 
-        // Set mainMenu so it can be used by `onOptionsItemSelected()` and `updatePrivacyIcons`.
-        mainMenu = menu;
+        // Store a handle for the options menu so it can be used by `onOptionsItemSelected()` and `updatePrivacyIcons`.
+        optionsMenu = menu;
 
         // Set the initial status of the privacy icons.  `false` does not call `invalidateOptionsMenu` as the last step.
         updatePrivacyIcons(false);
@@ -1279,7 +1260,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
 
         // Replace Refresh with Stop if a URL is already loading.
-        if (urlIsLoading) {
+        if (currentWebView != null && currentWebView.getProgress() != 100) {
             // Set the title.
             refreshMenuItem.setTitle(R.string.stop);
 
@@ -1369,7 +1350,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         toggleThirdPartyCookiesMenuItem.setEnabled(firstPartyCookiesEnabled);
 
         // Enable DOM Storage if JavaScript is enabled.
-        toggleDomStorageMenuItem.setEnabled(javaScriptEnabled);
+        toggleDomStorageMenuItem.setEnabled(currentWebView.getSettings().getJavaScriptEnabled());
 
         // Enable Clear Cookies if there are any.
         clearCookiesMenuItem.setEnabled(cookieManager.hasCookies());
@@ -1524,20 +1505,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get the selected menu item ID.
         int menuItemId = menuItem.getItemId();
 
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         // Run the commands that correlate to the selected menu item.
         switch (menuItemId) {
             case R.id.toggle_javascript:
-                // Switch the status of javaScriptEnabled.
-                javaScriptEnabled = !javaScriptEnabled;
-
-                // Apply the new JavaScript status.
-                currentWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
+                // Toggle the JavaScript status.
+                currentWebView.getSettings().setJavaScriptEnabled(!currentWebView.getSettings().getJavaScriptEnabled());
 
                 // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
                 updatePrivacyIcons(true);
 
                 // Display a `Snackbar`.
-                if (javaScriptEnabled) {  // JavaScrip is enabled.
+                if (currentWebView.getSettings().getJavaScriptEnabled()) {  // JavaScrip is enabled.
                     Snackbar.make(findViewById(R.id.webviewpager), R.string.javascript_enabled, Snackbar.LENGTH_SHORT).show();
                 } else if (firstPartyCookiesEnabled) {  // JavaScript is disabled, but first-party cookies are enabled.
                     Snackbar.make(findViewById(R.id.webviewpager), R.string.javascript_disabled, Snackbar.LENGTH_SHORT).show();
@@ -1553,7 +1534,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 if (currentWebView.getDomainSettingsApplied()) {  // Edit the current domain settings.
                     // Reapply the domain settings on returning to `MainWebViewActivity`.
                     reapplyDomainSettingsOnRestart = true;
-                    currentDomainName = "";
+                    currentWebView.resetCurrentDomainName();
 
                     // TODO.  Move these to `putExtra`.  The certificate can be stored as strings.
                     // Store the current SSL certificate and IP addresses in the domains activity.
@@ -1564,15 +1545,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     Intent domainsIntent = new Intent(this, DomainsActivity.class);
 
                     // Put extra information instructing the domains activity to directly load the current domain and close on back instead of returning to the domains list.
-                    domainsIntent.putExtra("loadDomain", currentWebView.getDomainSettingsDatabaseId());
-                    domainsIntent.putExtra("closeOnBack", true);
+                    domainsIntent.putExtra("load_domain", currentWebView.getDomainSettingsDatabaseId());
+                    domainsIntent.putExtra("close_on_back", true);
 
                     // Make it so.
                     startActivity(domainsIntent);
                 } else {  // Add a new domain.
                     // Apply the new domain settings on returning to `MainWebViewActivity`.
                     reapplyDomainSettingsOnRestart = true;
-                    currentDomainName = "";
+                    currentWebView.resetCurrentDomainName();
 
                     // Get the current domain
                     Uri currentUri = Uri.parse(formattedUrlString);
@@ -1593,8 +1574,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     Intent domainsIntent = new Intent(this, DomainsActivity.class);
 
                     // Put extra information instructing the domains activity to directly load the new domain and close on back instead of returning to the domains list.
-                    domainsIntent.putExtra("loadDomain", newDomainDatabaseId);
-                    domainsIntent.putExtra("closeOnBack", true);
+                    domainsIntent.putExtra("load_domain", newDomainDatabaseId);
+                    domainsIntent.putExtra("close_on_back", true);
 
                     // Make it so.
                     startActivity(domainsIntent);
@@ -1617,7 +1598,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Display a `Snackbar`.
                 if (firstPartyCookiesEnabled) {  // First-party cookies are enabled.
                     Snackbar.make(findViewById(R.id.webviewpager), R.string.first_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
-                } else if (javaScriptEnabled) {  // JavaScript is still enabled.
+                } else if (currentWebView.getSettings().getJavaScriptEnabled()) {  // JavaScript is still enabled.
                     Snackbar.make(findViewById(R.id.webviewpager), R.string.first_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
                 } else {  // Privacy mode.
                     Snackbar.make(findViewById(R.id.webviewpager), R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
@@ -1840,7 +1821,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 menuItem.setChecked(fanboysAnnoyanceListEnabled);
 
                 // Update the staus of Fanboy's Social Blocking List.
-                MenuItem fanboysSocialBlockingListMenuItem = mainMenu.findItem(R.id.fanboys_social_blocking_list);
+                MenuItem fanboysSocialBlockingListMenuItem = optionsMenu.findItem(R.id.fanboys_social_blocking_list);
                 fanboysSocialBlockingListMenuItem.setEnabled(!fanboysAnnoyanceListEnabled);
 
                 // Reload the current WebView.
@@ -1978,7 +1959,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.user_agent_custom:
                 // Update the user agent.
-                currentWebView.getSettings().setUserAgentString(defaultCustomUserAgentString);
+                currentWebView.getSettings().setUserAgentString(sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value)));
 
                 // Reload the current WebView.
                 currentWebView.reload();
@@ -2042,22 +2023,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 nightMode = !nightMode;
 
                 // Enable or disable JavaScript according to night mode, the global preference, and any domain settings.
-                if (nightMode) {  // Night mode is enabled.  Enable JavaScript.
-                    // Update the global variable.
-                    javaScriptEnabled = true;
+                if (nightMode) {  // Night mode is enabled, which requires JavaScript.
+                    // Enable JavaScript.
+                    currentWebView.getSettings().setJavaScriptEnabled(true);
                 } else if (currentWebView.getDomainSettingsApplied()) {  // Night mode is disabled and domain settings are applied.  Set JavaScript according to the domain settings.
-                    // Get the JavaScript preference that was stored the last time domain settings were loaded.
-                    javaScriptEnabled = domainSettingsJavaScriptEnabled;
+                    // Apply the JavaScript preference that was stored the last time domain settings were loaded.
+                    currentWebView.getSettings().setJavaScriptEnabled(domainSettingsJavaScriptEnabled);
                 } else {  // Night mode is disabled and domain settings are not applied.  Set JavaScript according to the global preference.
-                    // Get a handle for the shared preference.
-                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-                    // Get the JavaScript preference.
-                    javaScriptEnabled = sharedPreferences.getBoolean("javascript", false);
+                    // Apply the JavaScript preference.
+                    currentWebView.getSettings().setJavaScriptEnabled(sharedPreferences.getBoolean("javascript", false));
                 }
-
-                // Apply the JavaScript setting to the WebView.
-                currentWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
 
                 // Update the privacy icons.
                 updatePrivacyIcons(false);
@@ -2089,8 +2064,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 return true;
 
             case R.id.view_source:
-                // Launch the View Source activity.
+                // Create an intent to launch the view source activity.
                 Intent viewSourceIntent = new Intent(this, ViewSourceActivity.class);
+
+                // Add the user agent as an extra to the intent.
+                viewSourceIntent.putExtra("user_agent", currentWebView.getSettings().getUserAgentString());
+
+                // Make it so.
                 startActivity(viewSourceIntent);
                 return true;
 
@@ -2426,7 +2406,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             case R.id.domains:
                 // Set the flag to reapply the domain settings on restart when returning from Domain Settings.
                 reapplyDomainSettingsOnRestart = true;
-                currentDomainName = "";
+                currentWebView.resetCurrentDomainName();  // TODO.  Do this for all tabs.
 
                 // TODO.  Move these to `putExtra`.  The certificate can be stored as strings.
                 // Store the current SSL certificate and IP addresses in the domains activity.
@@ -2444,7 +2424,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Set the flag to reapply the domain settings on restart when returning from Settings.
                 reapplyDomainSettingsOnRestart = true;
-                currentDomainName = "";
+                currentWebView.resetCurrentDomainName();  // TODO.  Do this for all tabs.
 
                 // Launch the settings activity.
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);
@@ -3214,12 +3194,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onSslErrorCancel() {
+    public void onSslErrorCancel() {  // TODO.  How to handle this with multiple tabs?  There could be multiple errors at once.
         sslErrorHandler.cancel();
     }
 
     @Override
-    public void onSslErrorProceed() {
+    public void onSslErrorProceed() {  // TODO.  How to handle this with multiple tabs?  There could be multiple errors at once.
         sslErrorHandler.proceed();
     }
 
@@ -3388,9 +3368,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Apply the domain settings.
         applyDomainSettings(currentWebView, url, true, false);
 
-        // If loading a website, set `urlIsLoading` to prevent changes in the user agent on websites with redirects from reloading the current website.
-        urlIsLoading = !url.equals("");
-
         // Load the URL.
         currentWebView.loadUrl(url, customHeaders);
     }
@@ -3521,45 +3498,29 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
 
     // `reloadWebsite` is used if returning from the Domains activity.  Otherwise JavaScript might not function correctly if it is newly enabled.
-    // The deprecated `.getDrawable()` must be used until the minimum API >= 21.
-    @SuppressWarnings("deprecation")
+    @SuppressLint("SetJavaScriptEnabled")
     private boolean applyDomainSettings(NestedScrollWebView nestedScrollWebView, String url, boolean resetFavoriteIcon, boolean reloadWebsite) {
         // Get a handle for the URL edit text.
         EditText urlEditText = findViewById(R.id.url_edittext);
 
-        // Get the current user agent.
+        // Store a copy of the current user agent to track changes for the return boolean.
         String initialUserAgent = nestedScrollWebView.getSettings().getUserAgentString();
-
-        // Initialize a variable to track if the user agent changes.
-        boolean userAgentChanged = false;
 
         // Parse the URL into a URI.
         Uri uri = Uri.parse(url);
 
         // Extract the domain from `uri`.
-        String hostName = uri.getHost();
-
-        // Initialize `loadingNewDomainName`.
-        boolean loadingNewDomainName;
-
-        // If either `hostName` or `currentDomainName` are `null`, run the options for loading a new domain name.
-        // The lint suggestion to simplify the `if` statement is incorrect, because `hostName.equals(currentDomainName)` can produce a `null object reference.`
-        //noinspection SimplifiableIfStatement
-        if ((hostName == null) || (currentDomainName == null)) {  // TODO.
-            loadingNewDomainName = true;
-        } else {  // Determine if `hostName` equals `currentDomainName`.
-            loadingNewDomainName = !hostName.equals(currentDomainName);  // TODO.
-        }
+        String newHostName = uri.getHost();
 
         // Strings don't like to be null.
-        if (hostName == null) {
-            hostName = "";
+        if (newHostName == null) {
+            newHostName = "";
         }
 
         // Only apply the domain settings if a new domain is being loaded.  This allows the user to set temporary settings for JavaScript, cookies, DOM storage, etc.
-        if (loadingNewDomainName) {
-            // Set the new `hostname` as the `currentDomainName`.
-            currentDomainName = hostName;  // TODO.
+        if (!nestedScrollWebView.getCurrentDomainName().equals(newHostName)) {
+            // Set the new host name as the current domain name.
+            nestedScrollWebView.setCurrentDomainName(newHostName);
 
             // Reset the ignoring of pinned domain information.
             nestedScrollWebView.setIgnorePinnedDomainInformation(false);
@@ -3626,9 +3587,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             String domainNameInDatabase = null;
 
             // Check the hostname against the domain settings set.
-            if (domainSettingsSet.contains(hostName)) {  // The hostname is contained in the domain settings set.
+            if (domainSettingsSet.contains(newHostName)) {  // The hostname is contained in the domain settings set.
                 // Record the domain name in the database.
-                domainNameInDatabase = hostName;
+                domainNameInDatabase = newHostName;
 
                 // Set the domain settings applied tracker to true.
                 nestedScrollWebView.setDomainSettingsApplied(true);
@@ -3638,30 +3599,32 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
 
             // Check all the subdomains of the host name against wildcard domains in the domain cursor.
-            while (!nestedScrollWebView.getDomainSettingsApplied() && hostName.contains(".")) {  // Stop checking if domain settings are already applied or there are no more `.` in the host name.
-                if (domainSettingsSet.contains("*." + hostName)) {  // Check the host name prepended by `*.`.
+            while (!nestedScrollWebView.getDomainSettingsApplied() && newHostName.contains(".")) {  // Stop checking if domain settings are already applied or there are no more `.` in the host name.
+                if (domainSettingsSet.contains("*." + newHostName)) {  // Check the host name prepended by `*.`.
                     // Set the domain settings applied tracker to true.
                     nestedScrollWebView.setDomainSettingsApplied(true);
 
                     // Store the applied domain names as it appears in the database.
-                    domainNameInDatabase = "*." + hostName;
+                    domainNameInDatabase = "*." + newHostName;
                 }
 
                 // Strip out the lowest subdomain of of the host name.
-                hostName = hostName.substring(hostName.indexOf(".") + 1);
+                newHostName = newHostName.substring(newHostName.indexOf(".") + 1);
             }
 
 
-            // Get a handle for the shared preference.
+            // Get a handle for the shared preferences.
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
             // Store the general preference information.
             String defaultFontSizeString = sharedPreferences.getString("font_size", getString(R.string.font_size_default_value));
             String defaultUserAgentName = sharedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
-            defaultCustomUserAgentString = sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value));  // TODO.
             boolean defaultSwipeToRefresh = sharedPreferences.getBoolean("swipe_to_refresh", true);
             nightMode = sharedPreferences.getBoolean("night_mode", false);  // TODO.
             boolean displayWebpageImages = sharedPreferences.getBoolean("display_webpage_images", true);
+
+            // Declare the JavaScript tracker.
+            boolean javaScriptEnabled;
 
             if (nestedScrollWebView.getDomainSettingsApplied()) {  // The url has custom domain settings.
                 // Get a cursor for the current host and move it to the first position.
@@ -3670,7 +3633,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Get the settings from the cursor.
                 nestedScrollWebView.setDomainSettingsDatabaseId(currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper._ID)));
-                javaScriptEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)) == 1);  // TODO.
+                javaScriptEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)) == 1);  // TODO.  Rename to domainSettingsJavaScriptEnabled after the global variable is removed.
                 firstPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES)) == 1);  // TODO.
                 thirdPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES)) == 1);  // TODO.
                 domStorageEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)) == 1);  // TODO.
@@ -3743,14 +3706,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Enable JavaScript if night mode is enabled.
                 if (nightMode) {
-                    javaScriptEnabled = true;  // TODO.
+                    // Enable JavaScript.
+                    nestedScrollWebView.getSettings().setJavaScriptEnabled(true);
+                } else {
+                    // Set JavaScript according to the domain settings.
+                    nestedScrollWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
                 }
 
                 // Close `currentHostDomainSettingsCursor`.
                 currentHostDomainSettingsCursor.close();
 
                 // Apply the domain settings.
-                nestedScrollWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);  // TODO.
                 cookieManager.setAcceptCookie(firstPartyCookiesEnabled);  //TODO  This could be bad.
                 nestedScrollWebView.getSettings().setDomStorageEnabled(domStorageEnabled);  // TODO.
 
@@ -3773,7 +3739,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Only set the user agent if the webpage is not currently loading.  Otherwise, changing the user agent on redirects can cause the original website to reload.
                 // <https://redmine.stoutner.com/issues/160>
-                if (!urlIsLoading) {  // TODO.  We need to track this by WebView.
+                if (nestedScrollWebView.getProgress() == 100) {  // A URL is not loading.
                     // Set the user agent.
                     if (userAgentName.equals(getString(R.string.system_default_user_agent))) {  // Use the system default user agent.
                         // Get the array position of the default user agent name.
@@ -3792,8 +3758,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 break;
 
                             case SETTINGS_CUSTOM_USER_AGENT:
-                                // Set the custom user agent.
-                                nestedScrollWebView.getSettings().setUserAgentString(defaultCustomUserAgentString);
+                                // Set the default custom user agent.
+                                nestedScrollWebView.getSettings().setUserAgentString(sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value)));
                                 break;
 
                             default:
@@ -3819,12 +3785,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 nestedScrollWebView.getSettings().setUserAgentString(userAgentDataArray[userAgentArrayPosition]);
                         }
                     }
-
-                    // Store the applied user agent string, which is used in the View Source activity.
-                    appliedUserAgentString = nestedScrollWebView.getSettings().getUserAgentString();  // TODO.
-
-                    // Update the user agent change tracker.
-                    userAgentChanged = !appliedUserAgentString.equals(initialUserAgent);  // TODO.
                 }
 
                 // Set swipe to refresh.
@@ -3881,11 +3841,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Set `javaScriptEnabled` to be `true` if `night_mode` is `true`.
                 if (nightMode) {
-                    javaScriptEnabled = true;  // TODO.
+                    // Enable JavaScript.
+                    nestedScrollWebView.getSettings().setJavaScriptEnabled(true);
+                } else {
+                    // Set JavaScript according to the domain settings.
+                    nestedScrollWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
                 }
 
                 // Apply the default settings.
-                nestedScrollWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);  // TODO.
                 cookieManager.setAcceptCookie(firstPartyCookiesEnabled);  // TODO.
                 nestedScrollWebView.getSettings().setDomStorageEnabled(domStorageEnabled);  // TODO.
                 nestedScrollWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
@@ -3906,7 +3869,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Only set the user agent if the webpage is not currently loading.  Otherwise, changing the user agent on redirects can cause the original website to reload.
                 // <https://redmine.stoutner.com/issues/160>
-                if (!urlIsLoading) {  // TODO.
+                if (nestedScrollWebView.getProgress() == 100) {  // A URL is not loading.
                     // Get the array position of the user agent name.
                     int userAgentArrayPosition = userAgentNamesArray.getPosition(defaultUserAgentName);
 
@@ -3923,36 +3886,28 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             break;
 
                         case SETTINGS_CUSTOM_USER_AGENT:
-                            // Set the custom user agent.
-                            nestedScrollWebView.getSettings().setUserAgentString(defaultCustomUserAgentString);  // TODO.
+                            // Set the default custom user agent.
+                            nestedScrollWebView.getSettings().setUserAgentString(sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value)));
                             break;
 
                         default:
                             // Get the user agent string from the user agent data array
                             nestedScrollWebView.getSettings().setUserAgentString(userAgentDataArray[userAgentArrayPosition]);
                     }
-
-                    // Store the applied user agent string, which is used in the View Source activity.
-                    appliedUserAgentString = nestedScrollWebView.getSettings().getUserAgentString();  // TODO.
-
-                    // Update the user agent change tracker.
-                    userAgentChanged = !appliedUserAgentString.equals(initialUserAgent);  // TODO.
                 }
 
                 // Set the loading of webpage images.
                 nestedScrollWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImages);
 
-                // Set a transparent background on URL edit text.  The deprecated `.getDrawable()` must be used until the minimum API >= 21.
-                urlEditText.setBackgroundDrawable(getResources().getDrawable(R.color.transparent));
+                // Set a transparent background on URL edit text.  The deprecated `getResources().getDrawable()` must be used until the minimum API >= 21.
+                urlEditText.setBackground(getResources().getDrawable(R.color.transparent));
             }
 
             // Close the domains database helper.
             domainsDatabaseHelper.close();
 
-            // Update the privacy icons, but only if the options menu has already been populated.
-            if (mainMenu != null) {  // TODO.  Consider renaming this to optionsMenu.
-                updatePrivacyIcons(true);
-            }
+            // Update the privacy icons.
+            updatePrivacyIcons(true);
         }
 
         // Reload the website if returning from the Domains activity.
@@ -3961,7 +3916,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
 
         // Return the user agent changed status.
-        return userAgentChanged;
+        return !nestedScrollWebView.getSettings().getUserAgentString().equals(initialUserAgent);
     }
 
     private void applyProxyThroughOrbot(boolean reloadWebsite) {
@@ -4076,59 +4031,62 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void updatePrivacyIcons(boolean runInvalidateOptionsMenu) {
-        // Get handles for the menu items.
-        MenuItem privacyMenuItem = mainMenu.findItem(R.id.toggle_javascript);
-        MenuItem firstPartyCookiesMenuItem = mainMenu.findItem(R.id.toggle_first_party_cookies);
-        MenuItem domStorageMenuItem = mainMenu.findItem(R.id.toggle_dom_storage);
-        MenuItem refreshMenuItem = mainMenu.findItem(R.id.refresh);
+        // Only update the privacy icons if the options menu has already been populated.
+        if (optionsMenu != null) {
+            // Get handles for the menu items.
+            MenuItem privacyMenuItem = optionsMenu.findItem(R.id.toggle_javascript);
+            MenuItem firstPartyCookiesMenuItem = optionsMenu.findItem(R.id.toggle_first_party_cookies);
+            MenuItem domStorageMenuItem = optionsMenu.findItem(R.id.toggle_dom_storage);
+            MenuItem refreshMenuItem = optionsMenu.findItem(R.id.refresh);
 
-        // Update the privacy icon.
-        if (javaScriptEnabled) {  // JavaScript is enabled.
-            privacyMenuItem.setIcon(R.drawable.javascript_enabled);
-        } else if (firstPartyCookiesEnabled) {  // JavaScript is disabled but cookies are enabled.
-            privacyMenuItem.setIcon(R.drawable.warning);
-        } else {  // All the dangerous features are disabled.
-            privacyMenuItem.setIcon(R.drawable.privacy_mode);
-        }
-
-        // Update the first-party cookies icon.
-        if (firstPartyCookiesEnabled) {  // First-party cookies are enabled.
-            firstPartyCookiesMenuItem.setIcon(R.drawable.cookies_enabled);
-        } else {  // First-party cookies are disabled.
-            if (darkTheme) {
-                firstPartyCookiesMenuItem.setIcon(R.drawable.cookies_disabled_dark);
-            } else {
-                firstPartyCookiesMenuItem.setIcon(R.drawable.cookies_disabled_light);
+            // Update the privacy icon.
+            if (currentWebView.getSettings().getJavaScriptEnabled()) {  // JavaScript is enabled.
+                privacyMenuItem.setIcon(R.drawable.javascript_enabled);
+            } else if (firstPartyCookiesEnabled) {  // JavaScript is disabled but cookies are enabled.
+                privacyMenuItem.setIcon(R.drawable.warning);
+            } else {  // All the dangerous features are disabled.
+                privacyMenuItem.setIcon(R.drawable.privacy_mode);
             }
-        }
 
-        // Update the DOM storage icon.
-        if (javaScriptEnabled && domStorageEnabled) {  // Both JavaScript and DOM storage are enabled.
-            domStorageMenuItem.setIcon(R.drawable.dom_storage_enabled);
-        } else if (javaScriptEnabled) {  // JavaScript is enabled but DOM storage is disabled.
-            if (darkTheme) {
-                domStorageMenuItem.setIcon(R.drawable.dom_storage_disabled_dark);
-            } else {
-                domStorageMenuItem.setIcon(R.drawable.dom_storage_disabled_light);
+            // Update the first-party cookies icon.
+            if (firstPartyCookiesEnabled) {  // First-party cookies are enabled.
+                firstPartyCookiesMenuItem.setIcon(R.drawable.cookies_enabled);
+            } else {  // First-party cookies are disabled.
+                if (darkTheme) {
+                    firstPartyCookiesMenuItem.setIcon(R.drawable.cookies_disabled_dark);
+                } else {
+                    firstPartyCookiesMenuItem.setIcon(R.drawable.cookies_disabled_light);
+                }
             }
-        } else {  // JavaScript is disabled, so DOM storage is ghosted.
-            if (darkTheme) {
-                domStorageMenuItem.setIcon(R.drawable.dom_storage_ghosted_dark);
-            } else {
-                domStorageMenuItem.setIcon(R.drawable.dom_storage_ghosted_light);
+
+            // Update the DOM storage icon.
+            if (currentWebView.getSettings().getJavaScriptEnabled() && domStorageEnabled) {  // Both JavaScript and DOM storage are enabled.
+                domStorageMenuItem.setIcon(R.drawable.dom_storage_enabled);
+            } else if (currentWebView.getSettings().getJavaScriptEnabled()) {  // JavaScript is enabled but DOM storage is disabled.
+                if (darkTheme) {
+                    domStorageMenuItem.setIcon(R.drawable.dom_storage_disabled_dark);
+                } else {
+                    domStorageMenuItem.setIcon(R.drawable.dom_storage_disabled_light);
+                }
+            } else {  // JavaScript is disabled, so DOM storage is ghosted.
+                if (darkTheme) {
+                    domStorageMenuItem.setIcon(R.drawable.dom_storage_ghosted_dark);
+                } else {
+                    domStorageMenuItem.setIcon(R.drawable.dom_storage_ghosted_light);
+                }
             }
-        }
 
-        // Update the refresh icon.
-        if (darkTheme) {
-            refreshMenuItem.setIcon(R.drawable.refresh_enabled_dark);
-        } else {
-            refreshMenuItem.setIcon(R.drawable.refresh_enabled_light);
-        }
+            // Update the refresh icon.
+            if (darkTheme) {
+                refreshMenuItem.setIcon(R.drawable.refresh_enabled_dark);
+            } else {
+                refreshMenuItem.setIcon(R.drawable.refresh_enabled_light);
+            }
 
-        // `invalidateOptionsMenu` calls `onPrepareOptionsMenu()` and redraws the icons in the `AppBar`.
-        if (runInvalidateOptionsMenu) {
-            invalidateOptionsMenu();
+            // `invalidateOptionsMenu` calls `onPrepareOptionsMenu()` and redraws the icons in the `AppBar`.
+            if (runInvalidateOptionsMenu) {
+                invalidateOptionsMenu();
+            }
         }
     }
 
@@ -5083,10 +5041,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                // Set `urlIsLoading` to `true`, so that redirects while loading do not trigger changes in the user agent, which forces another reload of the existing page.
-                // This is also used to determine when to check for pinned mismatches.
-                urlIsLoading = true;
-
                 // Reset the list of resource requests.
                 nestedScrollWebView.clearResourceRequests();
 
@@ -5246,9 +5200,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         CheckPinnedMismatchHelper.checkPinnedMismatch(getSupportFragmentManager(), nestedScrollWebView);
                     }
                 }
-
-                // Reset `urlIsLoading`, which is used to prevent reloads on redirect if the user agent changes.  It is also used to determine when to check for pinned mismatches.
-                urlIsLoading = false;
             }
 
             // Handle SSL Certificate errors.

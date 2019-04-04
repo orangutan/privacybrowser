@@ -24,6 +24,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.webkit.WebView;
 
+import androidx.annotation.NonNull;
 import androidx.core.view.NestedScrollingChild2;
 import androidx.core.view.NestedScrollingChildHelper;
 import androidx.core.view.ViewCompat;
@@ -48,6 +49,9 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     // Track if domain settings are applied to this nested scroll WebView and, if so, the database ID.
     private boolean domainSettingsApplied;
     private int domainSettingsDatabaseId;
+
+    // Keep track of when the domain name changes so that domain settings can be reapplied.  This should never be null.
+    private String currentDomainName = "";
 
     // Track the resource requests.
     private ArrayList<String[]> resourceRequests = new ArrayList<>();
@@ -148,6 +152,23 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     public int getDomainSettingsDatabaseId() {
         // Return the domain settings database ID.
         return domainSettingsDatabaseId;
+    }
+
+
+    // Current domain name.  To function well when called, the domain name should never be allowed to be null.
+    public void setCurrentDomainName(@NonNull String domainName) {
+        // Store the current domain name.
+        currentDomainName = domainName;
+    }
+
+    public void resetCurrentDomainName() {
+        // Reset the current domain name.
+        currentDomainName = "";
+    }
+
+    public String getCurrentDomainName() {
+        // Return the current domain name.
+        return currentDomainName;
     }
 
 

@@ -136,18 +136,18 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         // Extract the values from `savedInstanceState` if it is not `null`.
         if (savedInstanceState != null) {
             restartAfterRotate = true;
-            domainSettingsDisplayedBeforeRotate = savedInstanceState.getBoolean("domainSettingsDisplayed");
-            domainSettingsDatabaseIdBeforeRotate = savedInstanceState.getInt("domainSettingsDatabaseId");
+            domainSettingsDisplayedBeforeRotate = savedInstanceState.getBoolean("domain_settings_displayed");
+            domainSettingsDatabaseIdBeforeRotate = savedInstanceState.getInt("domain_settings_database_id");
         }
 
         // Get the launching intent
         Intent intent = getIntent();
 
         // Extract the domain to load if there is one.  `-1` is the default value.
-        goDirectlyToDatabaseId = intent.getIntExtra("loadDomain", -1);
+        goDirectlyToDatabaseId = intent.getIntExtra("load_domain", -1);
 
         // Get the status of close-on-back, which is true when the domains activity is called from the options menu.
-        closeOnBack = intent.getBooleanExtra("closeOnBack", false);
+        closeOnBack = intent.getBooleanExtra("close_on_back", false);
 
         // Set the content view.
         setContentView(R.layout.domains_coordinatorlayout);
@@ -536,11 +536,11 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             saveDomainSettings(coordinatorLayout, resources);
 
             // Store `DomainSettingsDisplayed`.
-            outState.putBoolean("domainSettingsDisplayed", true);
-            outState.putInt("domainSettingsDatabaseId", DomainSettingsFragment.databaseId);
+            outState.putBoolean("domain_settings_displayed", true);
+            outState.putInt("domain_settings_database_id", DomainSettingsFragment.databaseId);
         } else {  // `DomainSettingsFragment` is not displayed.
-            outState.putBoolean("domainSettingsDisplayed", false);
-            outState.putInt("domainSettingsDatabaseId", -1);
+            outState.putBoolean("domain_settings_displayed", false);
+            outState.putInt("domain_settings_database_id", -1);
         }
 
         super.onSaveInstanceState(outState);
