@@ -20,6 +20,7 @@
 package com.stoutner.privacybrowser.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.MatrixCursor;
@@ -77,6 +78,12 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
 
         // Run the default commands.
         super.onCreate(savedInstanceState);
+
+        // Get the launching intent
+        Intent intent = getIntent();
+
+        // Get the status of the third-party blocklist.
+        boolean blockAllThirdPartyRequests = intent.getBooleanExtra("block_all_third_party_requests", false);
 
         // Set the content view.
         setContentView(R.layout.requests_coordinatorlayout);
@@ -145,7 +152,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
         spinnerCursor.addRow(new Object[]{0, getString(R.string.all) + " - " + allResourceRequests.size()});
         spinnerCursor.addRow(new Object[]{1, getString(R.string.default_label) + " - " + defaultResourceRequests.size()});
         spinnerCursor.addRow(new Object[]{2, getString(R.string.allowed_plural) + " - " + allowedResourceRequests.size()});
-        if (MainWebViewActivity.blockAllThirdPartyRequests) {
+        if (blockAllThirdPartyRequests) {
             spinnerCursor.addRow(new Object[]{3, getString(R.string.third_party_plural) + " - " + thirdPartyResourceRequests.size()});
         }
         spinnerCursor.addRow(new Object[]{4, getString(R.string.blocked_plural) + " - " + blockedResourceRequests.size()});

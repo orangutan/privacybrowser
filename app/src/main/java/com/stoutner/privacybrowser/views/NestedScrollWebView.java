@@ -36,12 +36,12 @@ import java.util.Date;
 public class NestedScrollWebView extends WebView implements NestedScrollingChild2 {
     // These constants identify the blocklists.
     public final static int BLOCKED_REQUESTS = 0;
-    public final static int EASY_LIST_BLOCKED_REQUESTS = 1;
-    public final static int EASY_PRIVACY_BLOCKED_REQUESTS = 2;
-    public final static int FANBOYS_ANNOYANCE_LIST_BLOCKED_REQUESTS = 3;
-    public final static int FANBOYS_SOCIAL_BLOCKING_LIST_BLOCKED_REQUESTS = 4;
-    public final static int ULTRA_PRIVACY_BLOCKED_REQUESTS = 5;
-    public final static int THIRD_PARTY_BLOCKED_REQUESTS = 6;
+    public final static int EASY_LIST = 1;
+    public final static int EASY_PRIVACY = 2;
+    public final static int FANBOYS_ANNOYANCE_LIST = 3;
+    public final static int FANBOYS_SOCIAL_BLOCKING_LIST = 4;
+    public final static int ULTRA_PRIVACY = 5;
+    public final static int THIRD_PARTY_REQUESTS = 6;
 
     // Keep a copy of the WebView fragment ID.
     private long webViewFragmentId;
@@ -55,6 +55,12 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
 
     // Track the resource requests.
     private ArrayList<String[]> resourceRequests = new ArrayList<>();
+    private boolean easyListEnabled;
+    private boolean easyPrivacyEnabled;
+    private boolean fanboysAnnoyanceListEnabled;
+    private boolean fanboysSocialBlockingListEnabled;
+    private boolean ultraPrivacyEnabled;
+    private boolean blockAllThirdPartyRequests;
     private int blockedRequests;
     private int easyListBlockedRequests;
     private int easyPrivacyBlockedRequests;
@@ -189,115 +195,156 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     }
 
 
-    // Resource request counters.
-    public void resetRequestsCount(int list) {
-        // Run the command on the indicated list.
-        switch (list) {
-            case BLOCKED_REQUESTS:
-                // Reset the blocked requests count.
-                blockedRequests = 0;
+    // Blocklists.
+    public void enableBlocklist(int blocklist, boolean status) {
+        // Update the status of the indicated blocklist.
+        switch (blocklist) {
+            case EASY_LIST:
+                // Update the status of the blocklist.
+                easyListEnabled = status;
                 break;
 
-            case EASY_LIST_BLOCKED_REQUESTS:
-                // Reset the EasyList blocked requests count.
-                easyListBlockedRequests = 0;
+            case EASY_PRIVACY:
+                // Update the status of the blocklist.
+                easyPrivacyEnabled = status;
                 break;
 
-            case EASY_PRIVACY_BLOCKED_REQUESTS:
-                // Reset the EasyPrivacy blocked requests count.
-                easyPrivacyBlockedRequests = 0;
+            case FANBOYS_ANNOYANCE_LIST:
+                // Update the status of the blocklist.
+                fanboysAnnoyanceListEnabled = status;
                 break;
 
-            case FANBOYS_ANNOYANCE_LIST_BLOCKED_REQUESTS:
-                // Reset the Fanboy's Annoyance List blocked requests count.
-                fanboysAnnoyanceListBlockedRequests = 0;
+            case FANBOYS_SOCIAL_BLOCKING_LIST:
+                // Update the status of the blocklist.
+                fanboysSocialBlockingListEnabled = status;
                 break;
 
-            case FANBOYS_SOCIAL_BLOCKING_LIST_BLOCKED_REQUESTS:
-                // Reset the Fanboy's Social Blocking List blocked requests count.
-                fanboysSocialBlockingListBlockedRequests = 0;
+            case ULTRA_PRIVACY:
+                // Update the status of the blocklist.
+                ultraPrivacyEnabled = status;
                 break;
 
-            case ULTRA_PRIVACY_BLOCKED_REQUESTS:
-                // Reset the UltraPrivacy blocked requests count.
-                ultraPrivacyBlockedRequests = 0;
-                break;
-
-            case THIRD_PARTY_BLOCKED_REQUESTS:
-                // Reset the Third Party blocked requests count.
-                thirdPartyBlockedRequests = 0;
+            case THIRD_PARTY_REQUESTS:
+                // Update the status of the blocklist.
+                blockAllThirdPartyRequests = status;
                 break;
         }
     }
 
-    public void incrementRequestsCount(int list) {
-        // Run the command on the indicated list.
-        switch (list) {
+    public boolean isBlocklistEnabled(int blocklist) {
+        // Get the status of the indicated blocklist.
+        switch (blocklist) {
+            case EASY_LIST:
+                // Return the status of the blocklist.
+                return easyListEnabled;
+
+            case EASY_PRIVACY:
+                // Return the status of the blocklist.
+                return easyPrivacyEnabled;
+
+            case FANBOYS_ANNOYANCE_LIST:
+                // Return the status of the blocklist.
+                return fanboysAnnoyanceListEnabled;
+
+            case FANBOYS_SOCIAL_BLOCKING_LIST:
+                // Return the status of the blocklist.
+                return fanboysSocialBlockingListEnabled;
+
+            case ULTRA_PRIVACY:
+                // Return the status of the blocklist.
+                return ultraPrivacyEnabled;
+
+            case THIRD_PARTY_REQUESTS:
+                // Return the status of the blocklist.
+                return blockAllThirdPartyRequests;
+
+            default:
+                // The default value is required but should never be used.
+                return false;
+        }
+    }
+
+
+    // Resource request counters.
+    public void resetRequestsCounters() {
+        // Reset all the resource request counters.
+        blockedRequests = 0;
+        easyListBlockedRequests = 0;
+        easyPrivacyBlockedRequests = 0;
+        fanboysAnnoyanceListBlockedRequests = 0;
+        fanboysSocialBlockingListBlockedRequests = 0;
+        ultraPrivacyBlockedRequests = 0;
+        thirdPartyBlockedRequests = 0;
+    }
+
+    public void incrementRequestsCount(int blocklist) {
+        // Increment the count of the indicated blocklist.
+        switch (blocklist) {
             case BLOCKED_REQUESTS:
                 // Increment the blocked requests count.
                 blockedRequests++;
                 break;
 
-            case EASY_LIST_BLOCKED_REQUESTS:
+            case EASY_LIST:
                 // Increment the EasyList blocked requests count.
                 easyListBlockedRequests++;
                 break;
 
-            case EASY_PRIVACY_BLOCKED_REQUESTS:
+            case EASY_PRIVACY:
                 // Increment the EasyPrivacy blocked requests count.
                 easyPrivacyBlockedRequests++;
                 break;
 
-            case FANBOYS_ANNOYANCE_LIST_BLOCKED_REQUESTS:
+            case FANBOYS_ANNOYANCE_LIST:
                 // Increment the Fanboy's Annoyance List blocked requests count.
                 fanboysAnnoyanceListBlockedRequests++;
                 break;
 
-            case FANBOYS_SOCIAL_BLOCKING_LIST_BLOCKED_REQUESTS:
+            case FANBOYS_SOCIAL_BLOCKING_LIST:
                 // Increment the Fanboy's Social Blocking List blocked requests count.
                 fanboysSocialBlockingListBlockedRequests++;
                 break;
 
-            case ULTRA_PRIVACY_BLOCKED_REQUESTS:
+            case ULTRA_PRIVACY:
                 // Increment the UltraPrivacy blocked requests count.
                 ultraPrivacyBlockedRequests++;
                 break;
 
-            case THIRD_PARTY_BLOCKED_REQUESTS:
+            case THIRD_PARTY_REQUESTS:
                 // Increment the Third Party blocked requests count.
                 thirdPartyBlockedRequests++;
                 break;
         }
     }
 
-    public int getRequestsCount(int list) {
-        // Run the command on the indicated list.
-        switch (list) {
+    public int getRequestsCount(int blocklist) {
+        // Get the count of the indicated blocklist.
+        switch (blocklist) {
             case BLOCKED_REQUESTS:
                 // Return the blocked requests count.
                 return blockedRequests;
 
-            case EASY_LIST_BLOCKED_REQUESTS:
+            case EASY_LIST:
                 // Return the EasyList blocked requests count.
                 return easyListBlockedRequests;
 
-            case EASY_PRIVACY_BLOCKED_REQUESTS:
+            case EASY_PRIVACY:
                 // Return the EasyPrivacy blocked requests count.
                 return easyPrivacyBlockedRequests;
 
-            case FANBOYS_ANNOYANCE_LIST_BLOCKED_REQUESTS:
+            case FANBOYS_ANNOYANCE_LIST:
                 // Return the Fanboy's Annoyance List blocked requests count.
                 return fanboysAnnoyanceListBlockedRequests;
 
-            case FANBOYS_SOCIAL_BLOCKING_LIST_BLOCKED_REQUESTS:
+            case FANBOYS_SOCIAL_BLOCKING_LIST:
                 // Return the Fanboy's Social Blocking List blocked requests count.
                 return fanboysSocialBlockingListBlockedRequests;
 
-            case ULTRA_PRIVACY_BLOCKED_REQUESTS:
+            case ULTRA_PRIVACY:
                 // Return the UltraPrivacy blocked requests count.
                 return ultraPrivacyBlockedRequests;
 
-            case THIRD_PARTY_BLOCKED_REQUESTS:
+            case THIRD_PARTY_REQUESTS:
                 // Return the Third Party blocked requests count.
                 return thirdPartyBlockedRequests;
 

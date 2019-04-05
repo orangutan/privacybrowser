@@ -19,14 +19,15 @@
 
 package com.stoutner.privacybrowser.adapters;
 
-import com.stoutner.privacybrowser.fragments.WebViewTabFragment;
-
-import java.util.LinkedList;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import com.stoutner.privacybrowser.fragments.WebViewTabFragment;
+
+import java.util.LinkedList;
 
 public class WebViewPagerAdapter extends FragmentPagerAdapter {
     // The WebView fragments list contains all the WebViews.
@@ -92,12 +93,17 @@ public class WebViewPagerAdapter extends FragmentPagerAdapter {
         return position;
     }
 
-    public void addPage(int pageNumber) {
+    public void addPage(int pageNumber, ViewPager webViewPager) {
         // Add a new page.
         webViewFragmentsList.add(WebViewTabFragment.createPage(pageNumber));
 
         // Update the view pager.
         notifyDataSetChanged();
+
+        // Move to the new page if it isn't the first one.
+        if (pageNumber > 0) {
+            webViewPager.setCurrentItem(pageNumber);
+        }
     }
 
     public void deletePage(int pageNumber) {

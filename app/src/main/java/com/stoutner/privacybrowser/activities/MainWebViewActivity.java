@@ -203,10 +203,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public static String fanboysSocialVersion;
     public static String ultraPrivacyVersion;
 
-    // `blockAllThirdPartyRequests` is public static so it can be accessed from `RequestsActivity`.
-    // It is also used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applyAppSettings()`
-    public static boolean blockAllThirdPartyRequests;
-
     // `currentBookmarksFolder` is public static so it can be accessed from `BookmarksActivity`.  It is also used in `onCreate()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`,
     // `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `loadBookmarksFolder()`.
     public static String currentBookmarksFolder;
@@ -239,12 +235,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // `firstPartyCookiesEnabled` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onDownloadImage()`, `onDownloadFile()`, and `applyDomainSettings()`.
     private boolean firstPartyCookiesEnabled;
-
-    // `thirdPartyCookiesEnabled` used in `onCreate()`, `onPrepareOptionsMenu()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applyDomainSettings()`.
-    private boolean thirdPartyCookiesEnabled;
-
-    // `domStorageEnabled` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applyDomainSettings()`.
-    private boolean domStorageEnabled;
 
     // `saveFormDataEnabled` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applyDomainSettings()`.  It can be removed once the minimum API >= 26.
     private boolean saveFormDataEnabled;
@@ -280,7 +270,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private ArrayList<List<String[]>> fanboysSocialList;
     private ArrayList<List<String[]>> ultraPrivacy;
 
-    // The blocklist menu items are used in `onCreate()`, `onCreateOptionsMenu()`, and `onPrepareOptionsMenu()`.
+    // The blocklist menu items are used in `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, and `initializeWebView()`.
     private MenuItem blocklistsMenuItem;
     private MenuItem easyListMenuItem;
     private MenuItem easyPrivacyMenuItem;
@@ -288,13 +278,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private MenuItem fanboysSocialBlockingListMenuItem;
     private MenuItem ultraPrivacyMenuItem;
     private MenuItem blockAllThirdPartyRequestsMenuItem;
-
-    // The blocklist variables are used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applyAppSettings()`.
-    private boolean easyListEnabled;
-    private boolean easyPrivacyEnabled;
-    private boolean fanboysAnnoyanceListEnabled;
-    private boolean fanboysSocialBlockingListEnabled;
-    private boolean ultraPrivacyEnabled;
 
     // `webViewDefaultUserAgent` is used in `onCreate()` and `onPrepareOptionsMenu()`.
     private String webViewDefaultUserAgent;
@@ -459,7 +442,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         initialGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
         finalGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
 
-        // Get a handle for `urlTextBox`.
+        // Get handles for the URL views.
+        RelativeLayout urlRelativeLayout = findViewById(R.id.url_relativelayout);
         EditText urlEditText = findViewById(R.id.url_edittext);
 
         // Remove the formatting from `urlTextBar` when the user is editing the text.
@@ -613,14 +597,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Set the background to indicate the domain settings status.
                 if (currentWebView.getDomainSettingsApplied()) {
-                    // Set a green background on `urlTextBox` to indicate that custom domain settings are being used. The deprecated `.getDrawable()` must be used until the minimum API >= 21.
+                    // Set a green background on the URL relative layout to indicate that custom domain settings are being used. The deprecated `.getDrawable()` must be used until the minimum API >= 21.
                     if (darkTheme) {
-                        urlEditText.setBackground(getResources().getDrawable(R.drawable.url_bar_background_dark_blue));
+                        urlRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_dark_blue));
                     } else {
-                        urlEditText.setBackground(getResources().getDrawable(R.drawable.url_bar_background_light_green));
+                        urlRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_light_green));
                     }
                 } else {
-                    urlEditText.setBackground(getResources().getDrawable(R.color.transparent));
+                    urlRelativeLayout.setBackground(getResources().getDrawable(R.color.transparent));
                 }
 
                 // Select the corresponding tab if it does not match the currently selected page.  This will happen if the page was scrolled via swiping in the view pager.
@@ -665,8 +649,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
         });
 
-        // Add the first tab.  (It doesn't matter what view is passed.  That is just required as part of the ImageView `onClick()` syntax).
-        addTab(webViewPager);
+        // Add the first tab.
+        addTab(null);
 
         // Set the bookmarks drawer resources according to the theme.  This can't be done in the layout due to compatibility issues with the `DrawerLayout` support widget.
         // The deprecated `getResources().getDrawable()` must be used until the minimum API >= 21 and and `getResources().getColor()` must be used until the minimum API >= 23.
@@ -909,8 +893,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Initialize the privacy settings variables.
         firstPartyCookiesEnabled = false;
-        thirdPartyCookiesEnabled = false;
-        domStorageEnabled = false;
         saveFormDataEnabled = false;  // Form data can be removed once the minimum API >= 26.
         nightMode = false;
 
@@ -970,6 +952,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     protected void onNewIntent(Intent intent) {
+        // Add a new tab.
+        addTab(null);
+
         // Sets the new intent as the activity intent, so that any future `getIntent()`s pick up this one instead of creating a new activity.
         setIntent(intent);
 
@@ -1317,37 +1302,41 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Get the current font size from the
             fontSize = currentWebView.getSettings().getTextZoom();
 
-            // Set the status of the display images menu item.
+            // Set the status of the menu item checkboxes.
+            toggleDomStorageMenuItem.setChecked(currentWebView.getSettings().getDomStorageEnabled());
+            easyListMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASY_LIST));
+            easyPrivacyMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASY_PRIVACY));
+            fanboysAnnoyanceListMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST));
+            fanboysSocialBlockingListMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST));
+            ultraPrivacyMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRA_PRIVACY));
+            blockAllThirdPartyRequestsMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.THIRD_PARTY_REQUESTS));
             displayImagesMenuItem.setChecked(currentWebView.getSettings().getLoadsImagesAutomatically());
 
             // Initialize the display names for the blocklists with the number of blocked requests.
             blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + currentWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-            easyListMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.EASY_LIST_BLOCKED_REQUESTS) + " - " + getString(R.string.easylist));
-            easyPrivacyMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.EASY_PRIVACY_BLOCKED_REQUESTS) + " - " + getString(R.string.easyprivacy));
-            fanboysAnnoyanceListMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST_BLOCKED_REQUESTS) + " - " + getString(R.string.fanboys_annoyance_list));
-            fanboysSocialBlockingListMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST_BLOCKED_REQUESTS) + " - " +
-                    getString(R.string.fanboys_social_blocking_list));
-            ultraPrivacyMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.ULTRA_PRIVACY_BLOCKED_REQUESTS) + " - " + getString(R.string.ultraprivacy));
-            blockAllThirdPartyRequestsMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.THIRD_PARTY_BLOCKED_REQUESTS) + " - " + getString(R.string.block_all_third_party_requests));
+            easyListMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.EASY_LIST) + " - " + getString(R.string.easylist));
+            easyPrivacyMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.EASY_PRIVACY) + " - " + getString(R.string.easyprivacy));
+            fanboysAnnoyanceListMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST) + " - " + getString(R.string.fanboys_annoyance_list));
+            fanboysSocialBlockingListMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST) + " - " + getString(R.string.fanboys_social_blocking_list));
+            ultraPrivacyMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.ULTRA_PRIVACY) + " - " + getString(R.string.ultraprivacy));
+            blockAllThirdPartyRequestsMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.THIRD_PARTY_REQUESTS) + " - " + getString(R.string.block_all_third_party_requests));
         }
 
         // Set the status of the menu item checkboxes.
         toggleFirstPartyCookiesMenuItem.setChecked(firstPartyCookiesEnabled);
-        toggleThirdPartyCookiesMenuItem.setChecked(thirdPartyCookiesEnabled);
-        toggleDomStorageMenuItem.setChecked(domStorageEnabled);
         toggleSaveFormDataMenuItem.setChecked(saveFormDataEnabled);  // Form data can be removed once the minimum API >= 26.
-        easyListMenuItem.setChecked(easyListEnabled);
-        easyPrivacyMenuItem.setChecked(easyPrivacyEnabled);
-        fanboysAnnoyanceListMenuItem.setChecked(fanboysAnnoyanceListEnabled);
-        fanboysSocialBlockingListMenuItem.setChecked(fanboysSocialBlockingListEnabled);
-        ultraPrivacyMenuItem.setChecked(ultraPrivacyEnabled);
-        blockAllThirdPartyRequestsMenuItem.setChecked(blockAllThirdPartyRequests);
         swipeToRefreshMenuItem.setChecked(swipeRefreshLayout.isEnabled());
         nightModeMenuItem.setChecked(nightMode);
         proxyThroughOrbotMenuItem.setChecked(proxyThroughOrbot);
 
-        // Enable third-party cookies if first-party cookies are enabled.
-        toggleThirdPartyCookiesMenuItem.setEnabled(firstPartyCookiesEnabled);
+        // Only modify third-party cookies if the API >= 21.
+        if (Build.VERSION.SDK_INT >= 21) {
+            // Set the status of the third-party cookies checkbox.
+            toggleThirdPartyCookiesMenuItem.setChecked(cookieManager.acceptThirdPartyCookies(currentWebView));
+
+            // Enable third-party cookies if first-party cookies are enabled.
+            toggleThirdPartyCookiesMenuItem.setEnabled(firstPartyCookiesEnabled);
+        }
 
         // Enable DOM Storage if JavaScript is enabled.
         toggleDomStorageMenuItem.setEnabled(currentWebView.getSettings().getJavaScriptEnabled());
@@ -1384,8 +1373,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Enable Clear Data if any of the submenu items are enabled.
         clearDataMenuItem.setEnabled(clearCookiesMenuItem.isEnabled() || clearDOMStorageMenuItem.isEnabled() || clearFormDataMenuItem.isEnabled());
 
-        // Disable Fanboy's Social Blocking List if Fanboy's Annoyance List is checked.
-        fanboysSocialBlockingListMenuItem.setEnabled(!fanboysAnnoyanceListEnabled);
+        // Disable Fanboy's Social Blocking List menu item if Fanboy's Annoyance List is checked.
+        fanboysSocialBlockingListMenuItem.setEnabled(!fanboysAnnoyanceListMenuItem.isChecked());
 
         // Select the current user agent menu item.  A switch statement cannot be used because the user agents are not compile time constants.
         if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[0])) {  // Privacy Browser.
@@ -1611,16 +1600,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             case R.id.toggle_third_party_cookies:
                 if (Build.VERSION.SDK_INT >= 21) {
                     // Switch the status of thirdPartyCookiesEnabled.
-                    thirdPartyCookiesEnabled = !thirdPartyCookiesEnabled;
+                    cookieManager.setAcceptThirdPartyCookies(currentWebView, !cookieManager.acceptThirdPartyCookies(currentWebView));
 
                     // Update the menu checkbox.
-                    menuItem.setChecked(thirdPartyCookiesEnabled);
+                    menuItem.setChecked(cookieManager.acceptThirdPartyCookies(currentWebView));
 
-                    // Apply the new cookie status.
-                    cookieManager.setAcceptThirdPartyCookies(currentWebView, thirdPartyCookiesEnabled);
-
-                    // Display a `Snackbar`.
-                    if (thirdPartyCookiesEnabled) {
+                    // Display a snackbar.
+                    if (cookieManager.acceptThirdPartyCookies(currentWebView)) {
                         Snackbar.make(findViewById(R.id.webviewpager), R.string.third_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
                     } else {
                         Snackbar.make(findViewById(R.id.webviewpager), R.string.third_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
@@ -1632,20 +1618,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 return true;
 
             case R.id.toggle_dom_storage:
-                // Switch the status of domStorageEnabled.
-                domStorageEnabled = !domStorageEnabled;
+                // Toggle the status of domStorageEnabled.
+                currentWebView.getSettings().setDomStorageEnabled(!currentWebView.getSettings().getDomStorageEnabled());
 
                 // Update the menu checkbox.
-                menuItem.setChecked(domStorageEnabled);
+                menuItem.setChecked(currentWebView.getSettings().getDomStorageEnabled());
 
-                // Apply the new DOM Storage status.
-                currentWebView.getSettings().setDomStorageEnabled(domStorageEnabled);
-
-                // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
+                // Update the privacy icon.  `true` refreshes the app bar icons.
                 updatePrivacyIcons(true);
 
-                // Display a `Snackbar`.
-                if (domStorageEnabled) {
+                // Display a snackbar.
+                if (currentWebView.getSettings().getDomStorageEnabled()) {
                     Snackbar.make(findViewById(R.id.webviewpager), R.string.dom_storage_enabled, Snackbar.LENGTH_SHORT).show();
                 } else {
                     Snackbar.make(findViewById(R.id.webviewpager), R.string.dom_storage_disabled, Snackbar.LENGTH_SHORT).show();
@@ -1793,10 +1776,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.easylist:
                 // Toggle the EasyList status.
-                easyListEnabled = !easyListEnabled;
+                currentWebView.enableBlocklist(NestedScrollWebView.EASY_LIST, !currentWebView.isBlocklistEnabled(NestedScrollWebView.EASY_LIST));
 
                 // Update the menu checkbox.
-                menuItem.setChecked(easyListEnabled);
+                menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASY_LIST));
 
                 // Reload the current WebView.
                 currentWebView.reload();
@@ -1804,10 +1787,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.easyprivacy:
                 // Toggle the EasyPrivacy status.
-                easyPrivacyEnabled = !easyPrivacyEnabled;
+                currentWebView.enableBlocklist(NestedScrollWebView.EASY_PRIVACY, !currentWebView.isBlocklistEnabled(NestedScrollWebView.EASY_PRIVACY));
 
                 // Update the menu checkbox.
-                menuItem.setChecked(easyPrivacyEnabled);
+                menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASY_PRIVACY));
 
                 // Reload the current WebView.
                 currentWebView.reload();
@@ -1815,14 +1798,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.fanboys_annoyance_list:
                 // Toggle Fanboy's Annoyance List status.
-                fanboysAnnoyanceListEnabled = !fanboysAnnoyanceListEnabled;
+                currentWebView.enableBlocklist(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST, !currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST));
 
                 // Update the menu checkbox.
-                menuItem.setChecked(fanboysAnnoyanceListEnabled);
+                menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST));
 
                 // Update the staus of Fanboy's Social Blocking List.
                 MenuItem fanboysSocialBlockingListMenuItem = optionsMenu.findItem(R.id.fanboys_social_blocking_list);
-                fanboysSocialBlockingListMenuItem.setEnabled(!fanboysAnnoyanceListEnabled);
+                fanboysSocialBlockingListMenuItem.setEnabled(!currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST));
 
                 // Reload the current WebView.
                 currentWebView.reload();
@@ -1830,10 +1813,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.fanboys_social_blocking_list:
                 // Toggle Fanboy's Social Blocking List status.
-                fanboysSocialBlockingListEnabled = !fanboysSocialBlockingListEnabled;
+                currentWebView.enableBlocklist(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST, !currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST));
 
                 // Update the menu checkbox.
-                menuItem.setChecked(fanboysSocialBlockingListEnabled);
+                menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST));
 
                 // Reload the current WebView.
                 currentWebView.reload();
@@ -1841,10 +1824,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.ultraprivacy:
                 // Toggle the UltraPrivacy status.
-                ultraPrivacyEnabled = !ultraPrivacyEnabled;
+                currentWebView.enableBlocklist(NestedScrollWebView.ULTRA_PRIVACY, !currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRA_PRIVACY));
 
                 // Update the menu checkbox.
-                menuItem.setChecked(ultraPrivacyEnabled);
+                menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRA_PRIVACY));
 
                 // Reload the current WebView.
                 currentWebView.reload();
@@ -1852,10 +1835,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.block_all_third_party_requests:
                 //Toggle the third-party requests blocker status.
-                blockAllThirdPartyRequests = !blockAllThirdPartyRequests;
+                currentWebView.enableBlocklist(NestedScrollWebView.THIRD_PARTY_REQUESTS, !currentWebView.isBlocklistEnabled(NestedScrollWebView.THIRD_PARTY_REQUESTS));
 
                 // Update the menu checkbox.
-                menuItem.setChecked(blockAllThirdPartyRequests);
+                menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.THIRD_PARTY_REQUESTS));
 
                 // Reload the current WebView.
                 currentWebView.reload();
@@ -2388,6 +2371,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Create an intent to launch the Requests activity.
                 Intent requestsIntent = new Intent(this, RequestsActivity.class);
+
+                // Add the block third-party requests status to the intent.
+                requestsIntent.putExtra("block_all_third_party_requests", currentWebView.isBlocklistEnabled(NestedScrollWebView.THIRD_PARTY_REQUESTS));
 
                 // Make it so.
                 startActivity(requestsIntent);
@@ -3500,8 +3486,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `reloadWebsite` is used if returning from the Domains activity.  Otherwise JavaScript might not function correctly if it is newly enabled.
     @SuppressLint("SetJavaScriptEnabled")
     private boolean applyDomainSettings(NestedScrollWebView nestedScrollWebView, String url, boolean resetFavoriteIcon, boolean reloadWebsite) {
-        // Get a handle for the URL edit text.
-        EditText urlEditText = findViewById(R.id.url_edittext);
+        // Get a handle for the URL relative layout.
+        RelativeLayout urlRelativeLayout = findViewById(R.id.url_relativelayout);
 
         // Store a copy of the current user agent to track changes for the return boolean.
         String initialUserAgent = nestedScrollWebView.getSettings().getUserAgentString();
@@ -3623,59 +3609,62 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             nightMode = sharedPreferences.getBoolean("night_mode", false);  // TODO.
             boolean displayWebpageImages = sharedPreferences.getBoolean("display_webpage_images", true);
 
-            // Declare the JavaScript tracker.
-            boolean javaScriptEnabled;
-
             if (nestedScrollWebView.getDomainSettingsApplied()) {  // The url has custom domain settings.
                 // Get a cursor for the current host and move it to the first position.
-                Cursor currentHostDomainSettingsCursor = domainsDatabaseHelper.getCursorForDomainName(domainNameInDatabase);
-                currentHostDomainSettingsCursor.moveToFirst();
+                Cursor currentDomainSettingsCursor = domainsDatabaseHelper.getCursorForDomainName(domainNameInDatabase);
+                currentDomainSettingsCursor.moveToFirst();
 
                 // Get the settings from the cursor.
-                nestedScrollWebView.setDomainSettingsDatabaseId(currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper._ID)));
-                javaScriptEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)) == 1);  // TODO.  Rename to domainSettingsJavaScriptEnabled after the global variable is removed.
-                firstPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES)) == 1);  // TODO.
-                thirdPartyCookiesEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES)) == 1);  // TODO.
-                domStorageEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)) == 1);  // TODO.
+                nestedScrollWebView.setDomainSettingsDatabaseId(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper._ID)));
+                boolean domainJavaScriptEnabled = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)) == 1);
+                firstPartyCookiesEnabled = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES)) == 1);  // TODO.
+                boolean domainThirdPartyCookiesEnabled = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES)) == 1);
+                boolean domainDomStorageEnabled = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)) == 1);
                 // Form data can be removed once the minimum API >= 26.
-                saveFormDataEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA)) == 1);  // TODO.
-                easyListEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYLIST)) == 1);  // TODO.
-                easyPrivacyEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY)) == 1);  // TODO.
-                fanboysAnnoyanceListEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST)) == 1);  // TODO.
-                fanboysSocialBlockingListEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)) == 1);  // TODO.
-                ultraPrivacyEnabled = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY)) == 1);  // TODO.
-                blockAllThirdPartyRequests = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)) == 1);  // TODO.
-                String userAgentName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
-                int fontSize = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
-                int swipeToRefreshInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SWIPE_TO_REFRESH));
-                int nightModeInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.NIGHT_MODE));
-                int displayWebpageImagesInt = currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
-                boolean pinnedSslCertificate = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE)) == 1);
-                String pinnedSslIssuedToCName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME));
-                String pinnedSslIssuedToOName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION));
-                String pinnedSslIssuedToUName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT));
-                String pinnedSslIssuedByCName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME));
-                String pinnedSslIssuedByOName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION));
-                String pinnedSslIssuedByUName = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT));
-                boolean pinnedIpAddresses = (currentHostDomainSettingsCursor.getInt(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_IP_ADDRESSES)) == 1);
-                String pinnedHostIpAddresses = currentHostDomainSettingsCursor.getString(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.IP_ADDRESSES));
+                saveFormDataEnabled = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA)) == 1);  // TODO.
+                nestedScrollWebView.enableBlocklist(NestedScrollWebView.EASY_LIST,
+                        currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYLIST)) == 1);
+                nestedScrollWebView.enableBlocklist(NestedScrollWebView.EASY_PRIVACY,
+                        currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY)) == 1);
+                nestedScrollWebView.enableBlocklist(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST,
+                        currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST)) == 1);
+                nestedScrollWebView.enableBlocklist(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST,
+                        currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)) == 1);
+                nestedScrollWebView.enableBlocklist(NestedScrollWebView.ULTRA_PRIVACY,
+                        currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY)) == 1);
+                nestedScrollWebView.enableBlocklist(NestedScrollWebView.THIRD_PARTY_REQUESTS,
+                        currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)) == 1);
+                String userAgentName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
+                int fontSize = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
+                int swipeToRefreshInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SWIPE_TO_REFRESH));
+                int nightModeInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.NIGHT_MODE));
+                int displayWebpageImagesInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
+                boolean pinnedSslCertificate = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE)) == 1);
+                String pinnedSslIssuedToCName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME));
+                String pinnedSslIssuedToOName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION));
+                String pinnedSslIssuedToUName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT));
+                String pinnedSslIssuedByCName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME));
+                String pinnedSslIssuedByOName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION));
+                String pinnedSslIssuedByUName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT));
+                boolean pinnedIpAddresses = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_IP_ADDRESSES)) == 1);
+                String pinnedHostIpAddresses = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.IP_ADDRESSES));
 
                 // Create the pinned SSL date variables.
                 Date pinnedSslStartDate;
                 Date pinnedSslEndDate;
 
                 // Set the pinned SSL certificate start date to `null` if the saved date `long` is 0 because creating a new Date results in an error if the input is 0.
-                if (currentHostDomainSettingsCursor.getLong(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)) == 0) {
+                if (currentDomainSettingsCursor.getLong(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)) == 0) {
                     pinnedSslStartDate = null;
                 } else {
-                    pinnedSslStartDate = new Date(currentHostDomainSettingsCursor.getLong(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)));
+                    pinnedSslStartDate = new Date(currentDomainSettingsCursor.getLong(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)));
                 }
 
                 // Set the pinned SSL certificate end date to `null` if the saved date `long` is 0 because creating a new Date results in an error if the input is 0.
-                if (currentHostDomainSettingsCursor.getLong(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)) == 0) {
+                if (currentDomainSettingsCursor.getLong(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)) == 0) {
                     pinnedSslEndDate = null;
                 } else {
-                    pinnedSslEndDate = new Date(currentHostDomainSettingsCursor.getLong(currentHostDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)));
+                    pinnedSslEndDate = new Date(currentDomainSettingsCursor.getLong(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)));
                 }
 
                 // If there is a pinned SSL certificate, store it in the WebView.
@@ -3702,7 +3691,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // TODO.
                 // Store the domain JavaScript status.  This is used by the options menu night mode toggle.
-                domainSettingsJavaScriptEnabled = javaScriptEnabled;
+                domainSettingsJavaScriptEnabled = domainJavaScriptEnabled;
 
                 // Enable JavaScript if night mode is enabled.
                 if (nightMode) {
@@ -3710,15 +3699,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     nestedScrollWebView.getSettings().setJavaScriptEnabled(true);
                 } else {
                     // Set JavaScript according to the domain settings.
-                    nestedScrollWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
+                    nestedScrollWebView.getSettings().setJavaScriptEnabled(domainJavaScriptEnabled);
                 }
 
                 // Close `currentHostDomainSettingsCursor`.
-                currentHostDomainSettingsCursor.close();
+                currentDomainSettingsCursor.close();
 
                 // Apply the domain settings.
                 cookieManager.setAcceptCookie(firstPartyCookiesEnabled);  //TODO  This could be bad.
-                nestedScrollWebView.getSettings().setDomStorageEnabled(domStorageEnabled);  // TODO.
+                nestedScrollWebView.getSettings().setDomStorageEnabled(domainDomStorageEnabled);  // TODO.  Move up.
 
                 // Apply the form data setting if the API < 26.
                 if (Build.VERSION.SDK_INT < 26) {
@@ -3734,7 +3723,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Set third-party cookies status if API >= 21.
                 if (Build.VERSION.SDK_INT >= 21) {
-                    cookieManager.setAcceptThirdPartyCookies(nestedScrollWebView, thirdPartyCookiesEnabled);  // TODO.
+                    cookieManager.setAcceptThirdPartyCookies(nestedScrollWebView, domainThirdPartyCookiesEnabled);
                 }
 
                 // Only set the user agent if the webpage is not currently loading.  Otherwise, changing the user agent on redirects can cause the original website to reload.
@@ -3819,38 +3808,37 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         break;
                 }
 
-                // Set a green background on URL edit text to indicate that custom domain settings are being used. The deprecated `.getDrawable()` must be used until the minimum API >= 21.
+                // Set a green background on the URL relative layout to indicate that custom domain settings are being used. The deprecated `.getDrawable()` must be used until the minimum API >= 21.
                 if (darkTheme) {
-                    urlEditText.setBackground(getResources().getDrawable(R.drawable.url_bar_background_dark_blue));
+                    urlRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_dark_blue));
                 } else {
-                    urlEditText.setBackground(getResources().getDrawable(R.drawable.url_bar_background_light_green));
+                    urlRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_light_green));
                 }
             } else {  // The new URL does not have custom domain settings.  Load the defaults.
-                // Store the values from `sharedPreferences` in variables.
-                javaScriptEnabled = sharedPreferences.getBoolean("javascript", false);  // TODO.
+                // Store the values from the shared preferences.
+                boolean defaultJavaScriptEnabled = sharedPreferences.getBoolean("javascript", false);
                 firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies", false);  // TODO.
-                thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies", false);  // TODO.
-                domStorageEnabled = sharedPreferences.getBoolean("dom_storage", false);  // TODO.
+                boolean defaultThirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies", false);
+                nestedScrollWebView.getSettings().setDomStorageEnabled(sharedPreferences.getBoolean("dom_storage", false));
                 saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data", false);  // Form data can be removed once the minimum API >= 26.  // TODO.
-                easyListEnabled = sharedPreferences.getBoolean("easylist", true);  // TODO.
-                easyPrivacyEnabled = sharedPreferences.getBoolean("easyprivacy", true);  // TODO.
-                fanboysAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboys_annoyance_list", true);  // TODO.
-                fanboysSocialBlockingListEnabled = sharedPreferences.getBoolean("fanboys_social_blocking_list", true);  // TODO.
-                ultraPrivacyEnabled = sharedPreferences.getBoolean("ultraprivacy", true);  // TODO.
-                blockAllThirdPartyRequests = sharedPreferences.getBoolean("block_all_third_party_requests", false);  // TODO.
+                nestedScrollWebView.enableBlocklist(NestedScrollWebView.EASY_LIST, sharedPreferences.getBoolean("easylist", true));
+                nestedScrollWebView.enableBlocklist(NestedScrollWebView.EASY_PRIVACY, sharedPreferences.getBoolean("easyprivacy", true));
+                nestedScrollWebView.enableBlocklist(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST, sharedPreferences.getBoolean("fanboys_annoyance_list", true));
+                nestedScrollWebView.enableBlocklist(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST, sharedPreferences.getBoolean("fanboys_social_blocking_list", true));
+                nestedScrollWebView.enableBlocklist(NestedScrollWebView.ULTRA_PRIVACY, sharedPreferences.getBoolean("ultraprivacy", true));
+                nestedScrollWebView.enableBlocklist(NestedScrollWebView.THIRD_PARTY_REQUESTS, sharedPreferences.getBoolean("block_all_third_party_requests", false));
 
-                // Set `javaScriptEnabled` to be `true` if `night_mode` is `true`.
+                // Enable JavaScript if night mode is enabled.
                 if (nightMode) {
                     // Enable JavaScript.
                     nestedScrollWebView.getSettings().setJavaScriptEnabled(true);
                 } else {
                     // Set JavaScript according to the domain settings.
-                    nestedScrollWebView.getSettings().setJavaScriptEnabled(javaScriptEnabled);
+                    nestedScrollWebView.getSettings().setJavaScriptEnabled(defaultJavaScriptEnabled);
                 }
 
                 // Apply the default settings.
                 cookieManager.setAcceptCookie(firstPartyCookiesEnabled);  // TODO.
-                nestedScrollWebView.getSettings().setDomStorageEnabled(domStorageEnabled);  // TODO.
                 nestedScrollWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
                 swipeRefreshLayout.setEnabled(defaultSwipeToRefresh);
 
@@ -3864,7 +3852,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Set third-party cookies status if API >= 21.
                 if (Build.VERSION.SDK_INT >= 21) {
-                    cookieManager.setAcceptThirdPartyCookies(nestedScrollWebView, thirdPartyCookiesEnabled);
+                    cookieManager.setAcceptThirdPartyCookies(nestedScrollWebView, defaultThirdPartyCookiesEnabled);
                 }
 
                 // Only set the user agent if the webpage is not currently loading.  Otherwise, changing the user agent on redirects can cause the original website to reload.
@@ -3900,7 +3888,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 nestedScrollWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImages);
 
                 // Set a transparent background on URL edit text.  The deprecated `getResources().getDrawable()` must be used until the minimum API >= 21.
-                urlEditText.setBackground(getResources().getDrawable(R.color.transparent));
+                urlRelativeLayout.setBackground(getResources().getDrawable(R.color.transparent));
             }
 
             // Close the domains database helper.
@@ -4060,7 +4048,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
 
             // Update the DOM storage icon.
-            if (currentWebView.getSettings().getJavaScriptEnabled() && domStorageEnabled) {  // Both JavaScript and DOM storage are enabled.
+            if (currentWebView.getSettings().getJavaScriptEnabled() && currentWebView.getSettings().getDomStorageEnabled()) {  // Both JavaScript and DOM storage are enabled.
                 domStorageMenuItem.setIcon(R.drawable.dom_storage_enabled);
             } else if (currentWebView.getSettings().getJavaScriptEnabled()) {  // JavaScript is enabled but DOM storage is disabled.
                 if (darkTheme) {
@@ -4248,8 +4236,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     public void addTab(View view) {
-        // Get a handle for the tab layout.
+        // Get a handle for the tab layout and the view pager.
         TabLayout tabLayout = findViewById(R.id.tablayout);
+        ViewPager webViewPager = findViewById(R.id.webviewpager);
 
         // Get the new page number.  The page numbers are 0 indexed, so the new page number will match the current count.
         int newTabNumber = tabLayout.getTabCount();
@@ -4263,16 +4252,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Remove the lint warning below that the current tab might be null.
         assert newTab != null;
 
-        // Set a custom view on the current tab.
+        // Set a custom view on the new tab.
         newTab.setCustomView(R.layout.custom_tab_view);
 
         // Add the new WebView page.
-        webViewPagerAdapter.addPage(newTabNumber);
-
-        if (newTabNumber > 0) {
-            // Move to the new tab.
-            newTab.select();
-        }
+        webViewPagerAdapter.addPage(newTabNumber, webViewPager);
     }
 
     @Override
@@ -4819,13 +4803,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 boolean webViewDisplayed = (webViewPagePosition == tabLayout.getSelectedTabPosition());
 
                 // Block third-party requests if enabled.
-                if (isThirdPartyRequest && blockAllThirdPartyRequests) {
+                if (isThirdPartyRequest && nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.THIRD_PARTY_REQUESTS)) {
                     // Add the result to the resource requests.
                     nestedScrollWebView.addResourceRequest(new String[]{BlockListHelper.REQUEST_THIRD_PARTY, url});
 
                     // Increment the blocked requests counters.
                     nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS);
-                    nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.THIRD_PARTY_BLOCKED_REQUESTS);
+                    nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.THIRD_PARTY_REQUESTS);
 
                     // Update the titles of the blocklist menu items if the WebView is currently displayed.
                     if (webViewDisplayed) {
@@ -4834,7 +4818,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             // Update the menu item titles.
                             navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
                             blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                            blockAllThirdPartyRequestsMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.THIRD_PARTY_BLOCKED_REQUESTS) + " - " +
+                            blockAllThirdPartyRequestsMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.THIRD_PARTY_REQUESTS) + " - " +
                                     getString(R.string.block_all_third_party_requests));
                         });
                     }
@@ -4844,7 +4828,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Check UltraPrivacy if it is enabled.
-                if (ultraPrivacyEnabled) {
+                if (nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.ULTRA_PRIVACY)) {
                     // Check the URL against UltraPrivacy.
                     String[] ultraPrivacyResults = blockListHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, ultraPrivacy);
 
@@ -4856,7 +4840,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // Increment the blocked requests counters.
                         nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS);
-                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.ULTRA_PRIVACY_BLOCKED_REQUESTS);
+                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.ULTRA_PRIVACY);
 
                         // Update the titles of the blocklist menu items if the WebView is currently displayed.
                         if (webViewDisplayed) {
@@ -4865,7 +4849,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 // Update the menu item titles.
                                 navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
                                 blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                ultraPrivacyMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.ULTRA_PRIVACY_BLOCKED_REQUESTS) + " - " + getString(R.string.ultraprivacy));
+                                ultraPrivacyMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.ULTRA_PRIVACY) + " - " + getString(R.string.ultraprivacy));
                             });
                         }
 
@@ -4882,7 +4866,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Check EasyList if it is enabled.
-                if (easyListEnabled) {
+                if (nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.EASY_LIST)) {
                     // Check the URL against EasyList.
                     String[] easyListResults = blockListHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, easyList);
 
@@ -4893,7 +4877,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // Increment the blocked requests counters.
                         nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS);
-                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.EASY_LIST_BLOCKED_REQUESTS);
+                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.EASY_LIST);
 
                         // Update the titles of the blocklist menu items if the WebView is currently displayed.
                         if (webViewDisplayed) {
@@ -4902,7 +4886,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 // Update the menu item titles.
                                 navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
                                 blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                easyListMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.EASY_LIST_BLOCKED_REQUESTS) + " - " + getString(R.string.easylist));
+                                easyListMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.EASY_LIST) + " - " + getString(R.string.easylist));
                             });
                         }
 
@@ -4915,7 +4899,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Check EasyPrivacy if it is enabled.
-                if (easyPrivacyEnabled) {
+                if (nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.EASY_PRIVACY)) {
                     // Check the URL against EasyPrivacy.
                     String[] easyPrivacyResults = blockListHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, easyPrivacy);
 
@@ -4927,7 +4911,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // Increment the blocked requests counters.
                         nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS);
-                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.EASY_PRIVACY_BLOCKED_REQUESTS);
+                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.EASY_PRIVACY);
 
                         // Update the titles of the blocklist menu items if the WebView is currently displayed.
                         if (webViewDisplayed) {
@@ -4936,7 +4920,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 // Update the menu item titles.
                                 navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
                                 blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                easyPrivacyMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.EASY_PRIVACY_BLOCKED_REQUESTS) + " - " + getString(R.string.easyprivacy));
+                                easyPrivacyMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.EASY_PRIVACY) + " - " + getString(R.string.easyprivacy));
                             });
                         }
 
@@ -4949,7 +4933,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Check Fanboy’s Annoyance List if it is enabled.
-                if (fanboysAnnoyanceListEnabled) {
+                if (nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST)) {
                     // Check the URL against Fanboy's Annoyance List.
                     String[] fanboysAnnoyanceListResults = blockListHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, fanboysAnnoyanceList);
 
@@ -4961,7 +4945,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // Increment the blocked requests counters.
                         nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS);
-                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST_BLOCKED_REQUESTS);
+                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST);
 
                         // Update the titles of the blocklist menu items if the WebView is currently displayed.
                         if (webViewDisplayed) {
@@ -4970,7 +4954,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 // Update the menu item titles.
                                 navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
                                 blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                fanboysAnnoyanceListMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST_BLOCKED_REQUESTS) + " - " +
+                                fanboysAnnoyanceListMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST) + " - " +
                                         getString(R.string.fanboys_annoyance_list));
                             });
                         }
@@ -4982,7 +4966,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         whitelistResultStringArray = new String[] {fanboysAnnoyanceListResults[0], fanboysAnnoyanceListResults[1], fanboysAnnoyanceListResults[2], fanboysAnnoyanceListResults[3],
                                 fanboysAnnoyanceListResults[4], fanboysAnnoyanceListResults[5]};
                     }
-                } else if (fanboysSocialBlockingListEnabled) {  // Only check Fanboy’s Social Blocking List if Fanboy’s Annoyance List is disabled.
+                } else if (nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST)) {  // Only check Fanboy’s Social Blocking List if Fanboy’s Annoyance List is disabled.
                     // Check the URL against Fanboy's Annoyance List.
                     String[] fanboysSocialListResults = blockListHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, fanboysSocialList);
 
@@ -4994,7 +4978,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // Increment the blocked requests counters.
                         nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS);
-                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST_BLOCKED_REQUESTS);
+                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST);
 
                         // Update the titles of the blocklist menu items if the WebView is currently displayed.
                         if (webViewDisplayed) {
@@ -5003,7 +4987,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 // Update the menu item titles.
                                 navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
                                 blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                fanboysSocialBlockingListMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST_BLOCKED_REQUESTS) + " - " +
+                                fanboysSocialBlockingListMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST) + " - " +
                                         getString(R.string.fanboys_social_blocking_list));
                             });
                         }
@@ -5044,14 +5028,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Reset the list of resource requests.
                 nestedScrollWebView.clearResourceRequests();
 
-                // Initialize the counters for requests blocked by each blocklist.
-                nestedScrollWebView.resetRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS);
-                nestedScrollWebView.resetRequestsCount(NestedScrollWebView.EASY_LIST_BLOCKED_REQUESTS);
-                nestedScrollWebView.resetRequestsCount(NestedScrollWebView.EASY_PRIVACY_BLOCKED_REQUESTS);
-                nestedScrollWebView.resetRequestsCount(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST_BLOCKED_REQUESTS);
-                nestedScrollWebView.resetRequestsCount(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST_BLOCKED_REQUESTS);
-                nestedScrollWebView.resetRequestsCount(NestedScrollWebView.ULTRA_PRIVACY_BLOCKED_REQUESTS);
-                nestedScrollWebView.resetRequestsCount(NestedScrollWebView.THIRD_PARTY_BLOCKED_REQUESTS);
+                // Reset the requests counters.
+                nestedScrollWebView.resetRequestsCounters();
 
                 // If night mode is enabled, hide `mainWebView` until after the night mode CSS is applied.
                 if (nightMode) {

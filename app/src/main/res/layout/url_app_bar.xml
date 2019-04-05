@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -18,17 +18,26 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<!-- `android:imeOptions="actionGo"` sets the keyboard to have a go key instead of a new line key.  `android:inputType="textUri"` disables spell check in the `EditText`.
-     `android:autofillHints` only applies to API >= 26.  `tools:ignore="UnusedAttribute"` removes the lint warning. -->
-<EditText
+<!-- A relative layout is used instead of a linear layout because the app bar does not let `android:layout_weight="1"` cause the URL text bar to fill all the available space.
+    Placing the edit text inside a relative layout also draws a line under the edit text. -->
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/url_edittext"
+    android:id="@+id/url_relativelayout"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:hint="@string/url_or_search_terms"
-    android:imeOptions="actionGo"
-    android:inputType="textUri"
-    android:selectAllOnFocus="true"
-    android:autofillHints=""
-    tools:ignore="UnusedAttribute" />
+    android:orientation="horizontal" >
+
+    <!-- `android:imeOptions="actionGo"` sets the keyboard to have a go key instead of a new line key.  `android:inputType="textUri"` disables spell check in the `EditText`.
+        `android:autofillHints` only applies to API >= 26.  `tools:ignore="UnusedAttribute"` removes the lint warning. -->
+    <EditText
+        android:id="@+id/url_edittext"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:hint="@string/url_or_search_terms"
+        android:imeOptions="actionGo"
+        android:inputType="textUri"
+        android:selectAllOnFocus="true"
+        android:autofillHints=""
+        tools:ignore="UnusedAttribute" />
+</RelativeLayout>
