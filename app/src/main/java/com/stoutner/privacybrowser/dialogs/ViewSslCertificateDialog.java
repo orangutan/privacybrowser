@@ -22,6 +22,8 @@ package com.stoutner.privacybrowser.dialogs;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -43,6 +45,7 @@ import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.fragments.WebViewTabFragment;
 import com.stoutner.privacybrowser.views.NestedScrollWebView;
 
+import java.io.ByteArrayOutputStream;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -50,12 +53,22 @@ import java.util.Date;
 // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
 @SuppressLint("InflateParams")
 public class ViewSslCertificateDialog extends DialogFragment {
-    public static ViewSslCertificateDialog displayDialog(long webViewFragmentId) {
+    public static ViewSslCertificateDialog displayDialog(long webViewFragmentId, Bitmap favoriteIconBitmap) {
+        // Create a favorite icon byte array output stream.
+        ByteArrayOutputStream favoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
+
+        // Convert the favorite icon to a PNG and place it in the byte array output stream.  `0` is for lossless compression (the only option for a PNG).
+        favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
+
+        // Convert the byte array output stream to a byte array.
+        byte[] favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray();
+
         // Create an arguments bundle.
         Bundle argumentsBundle = new Bundle();
 
-        // Store the WebView fragment ID in the bundle.
+        // Store the variables in the bundle.
         argumentsBundle.putLong("webview_fragment_id", webViewFragmentId);
+        argumentsBundle.putByteArray("favorite_icon_byte_array", favoriteIconByteArray);
 
         // Create a new instance of the dialog.
         ViewSslCertificateDialog viewSslCertificateDialog = new ViewSslCertificateDialog();
@@ -75,11 +88,23 @@ public class ViewSslCertificateDialog extends DialogFragment {
         // Get the activity's layout inflater.
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
 
+        // Get the arguments.
+        Bundle arguments = getArguments();
+
         // Remove the incorrect lint warning below that `getArguments().getLong()` might be null.
-        assert getArguments() != null;
+        assert arguments != null;
+
+        // Get the favorite icon byte array.
+        byte[] favoriteIconByteArray = arguments.getByteArray("favorite_icon_byte_array");
+
+        // Remove the incorrect lint warning below that the favorite icon byte array might be null.
+        assert favoriteIconByteArray != null;
+
+        // Convert the favorite icon byte array to a bitmap.
+        Bitmap favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.length);
 
         // Get the current position of this WebView fragment.
-        int webViewPosition = MainWebViewActivity.webViewPagerAdapter.getPositionForId(getArguments().getLong("webview_fragment_id"));
+        int webViewPosition = MainWebViewActivity.webViewPagerAdapter.getPositionForId(arguments.getLong("webview_fragment_id"));
 
         // Get the WebView tab fragment.
         WebViewTabFragment webViewTabFragment = MainWebViewActivity.webViewPagerAdapter.getPageFragment(webViewPosition);
@@ -104,7 +129,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
         }
 
         // Create a drawable version of the favorite icon.
-        Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), MainWebViewActivity.favoriteIconBitmap);
+        Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), favoriteIconBitmap);
 
         // Set the icon.
         dialogBuilder.setIcon(favoriteIconDrawable);

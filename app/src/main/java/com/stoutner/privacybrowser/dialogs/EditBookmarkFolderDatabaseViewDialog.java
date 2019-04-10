@@ -33,6 +33,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -54,26 +55,19 @@ import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 
+import java.io.ByteArrayOutputStream;
+
 public class EditBookmarkFolderDatabaseViewDialog extends DialogFragment {
-    // Instantiate the constants.
+    // Define the home folder database ID constant.
     public static final int HOME_FOLDER_DATABASE_ID = -1;
 
-    // Instantiate the class variables.
+    // Define the edit bookmark folder database view listener.
     private EditBookmarkFolderDatabaseViewListener editBookmarkFolderDatabaseViewListener;
-    private BookmarksDatabaseHelper bookmarksDatabaseHelper;
-    private StringBuilder exceptFolders;
-    private String currentFolderName;
-    private int currentParentFolderDatabaseId;
-    private String currentDisplayOrder;
-    private RadioButton currentIconRadioButton;
-    private EditText nameEditText;
-    private Spinner folderSpinner;
-    private EditText displayOrderEditText;
-    private Button editButton;
+
 
     // The public interface is used to send information back to the parent activity.
     public interface EditBookmarkFolderDatabaseViewListener {
-        void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedFolderDatabaseId);
+        void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedFolderDatabaseId, Bitmap favoriteIconBitmap);
     }
 
     public void onAttach(Context context) {
@@ -84,17 +78,29 @@ public class EditBookmarkFolderDatabaseViewDialog extends DialogFragment {
         editBookmarkFolderDatabaseViewListener = (EditBookmarkFolderDatabaseViewListener) context;
     }
 
-    // Store the database ID in the arguments bundle.
-    public static EditBookmarkFolderDatabaseViewDialog folderDatabaseId(int databaseId) {
-        // Create a bundle.
-        Bundle bundle = new Bundle();
 
-        // Store the bookmark database ID in the bundle.
-        bundle.putInt("Database ID", databaseId);
+    public static EditBookmarkFolderDatabaseViewDialog folderDatabaseId(int databaseId, Bitmap favoriteIconBitmap) {
+        // Create a favorite icon byte array output stream.
+        ByteArrayOutputStream favoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
 
-        // Add the bundle to the dialog.
+        // Convert the favorite icon to a PNG and place it in the byte array output stream.  `0` is for lossless compression (the only option for a PNG).
+        favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
+
+        // Convert the byte array output stream to a byte array.
+        byte[] favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray();
+
+        // Create an arguments bundle.
+        Bundle argumentsBundle = new Bundle();
+
+        // Store the variables in the bundle.
+        argumentsBundle.putInt("database_id", databaseId);
+        argumentsBundle.putByteArray("favorite_icon_byte_array", favoriteIconByteArray);
+
+        // Create a new instance of the dialog.
         EditBookmarkFolderDatabaseViewDialog editBookmarkFolderDatabaseViewDialog = new EditBookmarkFolderDatabaseViewDialog();
-        editBookmarkFolderDatabaseViewDialog.setArguments(bundle);
+
+        // Add the arguments bundle to the dialog.
+        editBookmarkFolderDatabaseViewDialog.setArguments(argumentsBundle);
 
         // Return the new dialog.
         return editBookmarkFolderDatabaseViewDialog;
@@ -105,14 +111,26 @@ public class EditBookmarkFolderDatabaseViewDialog extends DialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Remove the incorrect lint warning that `getInt()` might be null.
-        assert getArguments() != null;
+        // Get the arguments.
+        Bundle arguments = getArguments();
+
+        // Remove the incorrect lint warning below that the arguments might be null.
+        assert arguments != null;
 
         // Get the bookmark database ID from the bundle.
-        int folderDatabaseId = getArguments().getInt("Database ID");
+        int folderDatabaseId = getArguments().getInt("database_id");
 
-        // Initialize the database helper.  The two `nulls` do not specify the database name or a `CursorFactory`.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
-        bookmarksDatabaseHelper = new BookmarksDatabaseHelper(getContext(), null, null, 0);
+        // Get the favorite icon byte array.
+        byte[] favoriteIconByteArray = arguments.getByteArray("favorite_icon_byte_array");
+
+        // Remove the incorrect lint warning below that the favorite icon byte array might be null.
+        assert favoriteIconByteArray != null;
+
+        // Convert the favorite icon byte array to a bitmap.
+        Bitmap favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.length);
+
+        // Initialize the database helper.   The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
+        BookmarksDatabaseHelper bookmarksDatabaseHelper = new BookmarksDatabaseHelper(getContext(), null, null, 0);
 
         // Get a `Cursor` with the selected bookmark and move it to the first position.
         Cursor folderCursor = bookmarksDatabaseHelper.getBookmark(folderDatabaseId);
@@ -145,7 +163,7 @@ public class EditBookmarkFolderDatabaseViewDialog extends DialogFragment {
         // Set the listener fo the positive button.
         dialogBuilder.setPositiveButton(R.string.save, (DialogInterface dialog, int which) -> {
             // Return the `DialogFragment` to the parent activity on save.
-            editBookmarkFolderDatabaseViewListener.onSaveBookmarkFolder(EditBookmarkFolderDatabaseViewDialog.this, folderDatabaseId);
+            editBookmarkFolderDatabaseViewListener.onSaveBookmarkFolder(this, folderDatabaseId, favoriteIconBitmap);
         });
 
         // Create an alert dialog from the alert dialog builder.
@@ -167,15 +185,14 @@ public class EditBookmarkFolderDatabaseViewDialog extends DialogFragment {
         RadioGroup iconRadioGroup = alertDialog.findViewById(R.id.edit_folder_icon_radiogroup);
         ImageView currentIconImageView = alertDialog.findViewById(R.id.edit_folder_current_icon_imageview);
         ImageView newFavoriteIconImageView = alertDialog.findViewById(R.id.edit_folder_webpage_favorite_icon_imageview);
-        currentIconRadioButton = alertDialog.findViewById(R.id.edit_folder_current_icon_radiobutton);
-        nameEditText = alertDialog.findViewById(R.id.edit_folder_name_edittext);
-        folderSpinner = alertDialog.findViewById(R.id.edit_folder_parent_folder_spinner);
-        displayOrderEditText = alertDialog.findViewById(R.id.edit_folder_display_order_edittext);
-        editButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        EditText nameEditText = alertDialog.findViewById(R.id.edit_folder_name_edittext);
+        Spinner folderSpinner = alertDialog.findViewById(R.id.edit_folder_parent_folder_spinner);
+        EditText displayOrderEditText = alertDialog.findViewById(R.id.edit_folder_display_order_edittext);
+        Button editButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
         // Store the current folder values.
-        currentFolderName = folderCursor.getString(folderCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
-        currentDisplayOrder = folderCursor.getString(folderCursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER));
+        String currentFolderName = folderCursor.getString(folderCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
+        int currentDisplayOrder = folderCursor.getInt(folderCursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER));
         String parentFolder = folderCursor.getString(folderCursor.getColumnIndex(BookmarksDatabaseHelper.PARENT_FOLDER));
 
         // Set the database ID.
@@ -190,14 +207,6 @@ public class EditBookmarkFolderDatabaseViewDialog extends DialogFragment {
         // Display the current icon bitmap in `edit_bookmark_current_icon`.
         currentIconImageView.setImageBitmap(currentIconBitmap);
 
-        // Get a copy of the favorite icon bitmap.
-        Bitmap favoriteIconBitmap = MainWebViewActivity.favoriteIconBitmap;
-
-        // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
-        if ((favoriteIconBitmap.getHeight() > 256) || (favoriteIconBitmap.getWidth() > 256)) {
-            favoriteIconBitmap = Bitmap.createScaledBitmap(favoriteIconBitmap, 256, 256, true);
-        }
-
         // Set the new favorite icon bitmap.
         newFavoriteIconImageView.setImageBitmap(favoriteIconBitmap);
 
@@ -209,14 +218,13 @@ public class EditBookmarkFolderDatabaseViewDialog extends DialogFragment {
         MatrixCursor matrixCursor = new MatrixCursor(matrixCursorColumnNames);
         matrixCursor.addRow(new Object[]{HOME_FOLDER_DATABASE_ID, getString(R.string.home_folder)});
 
-        // Initialize a string builder to track the folders not to display in the spinner and populate it with the current folder.
-        exceptFolders = new StringBuilder(DatabaseUtils.sqlEscapeString(currentFolderName));
-
         // Add all subfolders of the current folder to the list of folders not to display.
-        addSubfoldersToExceptFolders(currentFolderName);
+        String exceptFolders = getStringOfSubfolders(currentFolderName, bookmarksDatabaseHelper);
+
+        Log.i("Folders", "String of Folders Not To Display:  " + exceptFolders);
 
         // Get a cursor with the list of all the folders.
-        Cursor foldersCursor = bookmarksDatabaseHelper.getFoldersExcept(exceptFolders.toString());
+        Cursor foldersCursor = bookmarksDatabaseHelper.getFoldersExcept(exceptFolders);
 
         // Combine the matrix cursor and the folders cursor.
         MergeCursor foldersMergeCursor = new MergeCursor(new Cursor[]{matrixCursor, foldersCursor});
@@ -284,7 +292,7 @@ public class EditBookmarkFolderDatabaseViewDialog extends DialogFragment {
         }
 
         // Store the current folder database ID.
-        currentParentFolderDatabaseId = (int) folderSpinner.getSelectedItemId();
+        int currentParentFolderDatabaseId = (int) folderSpinner.getSelectedItemId();
 
         // Populate the display order `EditText`.
         displayOrderEditText.setText(String.valueOf(folderCursor.getInt(folderCursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER))));
@@ -295,7 +303,7 @@ public class EditBookmarkFolderDatabaseViewDialog extends DialogFragment {
         // Update the edit button if the icon selection changes.
         iconRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             // Update the edit button.
-            updateEditButton();
+            updateEditButton(alertDialog, bookmarksDatabaseHelper, currentFolderName, currentParentFolderDatabaseId, currentDisplayOrder);
         });
 
         // Update the edit button if the bookmark name changes.
@@ -313,7 +321,7 @@ public class EditBookmarkFolderDatabaseViewDialog extends DialogFragment {
             @Override
             public void afterTextChanged(Editable s) {
                 // Update the edit button.
-                updateEditButton();
+                updateEditButton(alertDialog, bookmarksDatabaseHelper, currentFolderName, currentParentFolderDatabaseId, currentDisplayOrder);
             }
         });
 
@@ -322,7 +330,7 @@ public class EditBookmarkFolderDatabaseViewDialog extends DialogFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // Update the edit button.
-                updateEditButton();
+                updateEditButton(alertDialog, bookmarksDatabaseHelper, currentFolderName, currentParentFolderDatabaseId, currentDisplayOrder);
             }
 
             @Override
@@ -346,7 +354,7 @@ public class EditBookmarkFolderDatabaseViewDialog extends DialogFragment {
             @Override
             public void afterTextChanged(Editable s) {
                 // Update the edit button.
-                updateEditButton();
+                updateEditButton(alertDialog, bookmarksDatabaseHelper, currentFolderName, currentParentFolderDatabaseId, currentDisplayOrder);
             }
         });
 
@@ -355,7 +363,7 @@ public class EditBookmarkFolderDatabaseViewDialog extends DialogFragment {
             // Save the bookmark if the event is a key-down on the "enter" button.
             if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER) && editButton.isEnabled()) {  // The enter key was pressed and the edit button is enabled.
                 // Trigger the `Listener` and return the `DialogFragment` to the parent activity.
-                editBookmarkFolderDatabaseViewListener.onSaveBookmarkFolder(EditBookmarkFolderDatabaseViewDialog.this, folderDatabaseId);
+                editBookmarkFolderDatabaseViewListener.onSaveBookmarkFolder(this, folderDatabaseId, favoriteIconBitmap);
 
                 // Manually dismiss `alertDialog`.
                 alertDialog.dismiss();
@@ -372,7 +380,7 @@ public class EditBookmarkFolderDatabaseViewDialog extends DialogFragment {
             // Save the bookmark if the event is a key-down on the "enter" button.
             if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER) && editButton.isEnabled()) {  // The enter key was pressed and the edit button is enabled.
                 // Trigger the `Listener` and return the `DialogFragment` to the parent activity.
-                editBookmarkFolderDatabaseViewListener.onSaveBookmarkFolder(EditBookmarkFolderDatabaseViewDialog.this, folderDatabaseId);
+                editBookmarkFolderDatabaseViewListener.onSaveBookmarkFolder(this, folderDatabaseId, favoriteIconBitmap);
 
                 // Manually dismiss the `AlertDialog`.
                 alertDialog.dismiss();
@@ -388,7 +396,14 @@ public class EditBookmarkFolderDatabaseViewDialog extends DialogFragment {
         return alertDialog;
     }
 
-    private void updateEditButton() {
+    private void updateEditButton(AlertDialog alertDialog, BookmarksDatabaseHelper bookmarksDatabaseHelper, String currentFolderName, int currentParentFolderDatabaseId, int currentDisplayOrder) {
+        // Get handles for the views.
+        EditText nameEditText = alertDialog.findViewById(R.id.edit_folder_name_edittext);
+        Spinner folderSpinner = alertDialog.findViewById(R.id.edit_folder_parent_folder_spinner);
+        EditText displayOrderEditText = alertDialog.findViewById(R.id.edit_folder_display_order_edittext);
+        RadioButton currentIconRadioButton = alertDialog.findViewById(R.id.edit_folder_current_icon_radiobutton);
+        Button editButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+
         // Get the values from the dialog.
         String newFolderName = nameEditText.getText().toString();
         int newParentFolderDatabaseId = (int) folderSpinner.getSelectedItemId();
@@ -413,7 +428,7 @@ public class EditBookmarkFolderDatabaseViewDialog extends DialogFragment {
         boolean parentFolderChanged = newParentFolderDatabaseId != currentParentFolderDatabaseId;
 
         // Has the display order changed?
-        boolean displayOrderChanged = !newDisplayOrder.equals(currentDisplayOrder);
+        boolean displayOrderChanged = !newDisplayOrder.equals(String.valueOf(currentDisplayOrder));
 
         // Is the display order empty?
         boolean displayOrderNotEmpty = !newDisplayOrder.isEmpty();
@@ -422,23 +437,31 @@ public class EditBookmarkFolderDatabaseViewDialog extends DialogFragment {
         editButton.setEnabled((iconChanged || folderRenamed || parentFolderChanged || displayOrderChanged) && folderNameNotEmpty && displayOrderNotEmpty);
     }
 
-    private void addSubfoldersToExceptFolders(String folderName) {
-        // Get a `Cursor` will all the immediate subfolders.
+    private String getStringOfSubfolders(String folderName, BookmarksDatabaseHelper bookmarksDatabaseHelper) {
+        // Get a cursor will all the immediate subfolders.
         Cursor subfoldersCursor = bookmarksDatabaseHelper.getSubfolders(folderName);
 
+        // Initialize a string builder to track the folders not to display in the spinner and populate it with the current folder.
+        StringBuilder exceptFoldersStringBuilder = new StringBuilder(DatabaseUtils.sqlEscapeString(folderName));
+
         for (int i = 0; i < subfoldersCursor.getCount(); i++) {
-            // Move `subfolderCursor` to the current item.
+            // Move the subfolder cursor to the current item.
             subfoldersCursor.moveToPosition(i);
 
             // Get the name of the subfolder.
             String subfolderName = subfoldersCursor.getString(subfoldersCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
-            // Add the subfolder to `exceptFolders`.
-            exceptFolders.append(",");
-            exceptFolders.append(DatabaseUtils.sqlEscapeString(subfolderName));
+            // Add a comma to the end of the existing string.
+            exceptFoldersStringBuilder.append(",");
 
-            // Run the same tasks for any subfolders of the subfolder.
-            addSubfoldersToExceptFolders(subfolderName);
+            // Get the folder name and run the task for any subfolders.
+            String subfolderString = getStringOfSubfolders(subfolderName, bookmarksDatabaseHelper);
+
+            // Add the folder name to the string builder.
+            exceptFoldersStringBuilder.append(subfolderString);
         }
+
+        // Return the string of folders.
+        return exceptFoldersStringBuilder.toString();
     }
 }

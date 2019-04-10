@@ -20,11 +20,17 @@
 package com.stoutner.privacybrowser.views;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.webkit.WebView;
 
+import com.stoutner.privacybrowser.R;
+
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.NestedScrollingChild2;
 import androidx.core.view.NestedScrollingChildHelper;
 import androidx.core.view.ViewCompat;
@@ -90,6 +96,9 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
 
     // The ignore pinned domain information tracker.  This is set when a user proceeds past a pinned mismatch dialog to prevent the dialog from showing again until after the domain changes.
     private boolean ignorePinnedDomainInformation;
+
+    // The default or favorite icon.
+    Bitmap favoriteOrDefaultIcon;
 
     // The nested scrolling child helper is used throughout the class.
     private NestedScrollingChildHelper nestedScrollingChildHelper;
@@ -476,6 +485,37 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     public void setIgnorePinnedDomainInformation(boolean status) {
         // Set the status of the ignore pinned domain information tracker.
         ignorePinnedDomainInformation = status;
+    }
+
+
+    // Favorite or default icon.
+    public void initializeFavoriteIcon() {
+        // Get the default favorite icon drawable.  `ContextCompat` must be used until API >= 21.
+        Drawable favoriteIconDrawable = ContextCompat.getDrawable(getContext(), R.drawable.world);
+
+        // Cast the favorite icon drawable to a bitmap drawable.
+        BitmapDrawable favoriteIconBitmapDrawable = (BitmapDrawable) favoriteIconDrawable;
+
+        // Remove the incorrect warning below that the favorite icon bitmap drawable might be null.
+        assert favoriteIconBitmapDrawable != null;
+
+        // Store the default icon bitmap.
+        favoriteOrDefaultIcon = favoriteIconBitmapDrawable.getBitmap();
+    }
+
+    public void setFavoriteOrDefaultIcon(Bitmap icon) {
+        // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
+        if ((icon.getHeight() > 256) || (icon.getWidth() > 256)) {
+            favoriteOrDefaultIcon = Bitmap.createScaledBitmap(icon, 256, 256, true);
+        } else {
+            // Store the icon as presented.
+            favoriteOrDefaultIcon = icon;
+        }
+    }
+
+    public Bitmap getFavoriteOrDefaultIcon() {
+        // Return the favorite or default icon.
+        return favoriteOrDefaultIcon;
     }
 
 

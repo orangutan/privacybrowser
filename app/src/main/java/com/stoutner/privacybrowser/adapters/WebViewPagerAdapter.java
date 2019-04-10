@@ -106,12 +106,15 @@ public class WebViewPagerAdapter extends FragmentPagerAdapter {
         }
     }
 
-    public void deletePage(int pageNumber) {
+    public boolean deletePage(int pageNumber, ViewPager webViewPager) {
         // Delete the page.
         webViewFragmentsList.remove(pageNumber);
 
         // Update the view pager.
         notifyDataSetChanged();
+
+        // Return true if the selected page number did not change after the delete.  This will cause the calling method to reset the current WebView to the new contents of this page number.
+        return (webViewPager.getCurrentItem() == pageNumber);
     }
 
     public WebViewTabFragment getPageFragment(int pageNumber) {

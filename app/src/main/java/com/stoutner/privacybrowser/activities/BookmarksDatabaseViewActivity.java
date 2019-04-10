@@ -21,6 +21,7 @@ package com.stoutner.privacybrowser.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.MergeCursor;
@@ -114,6 +115,18 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         // Run the default commands.
         super.onCreate(savedInstanceState);
 
+        // Get the intent that launched the activity.
+        Intent launchingIntent = getIntent();
+
+        // Get the favorite icon byte array.
+        byte[] favoriteIconByteArray = launchingIntent.getByteArrayExtra("favorite_icon_byte_array");
+
+        // Remove the incorrect lint warning below that the favorite icon byte array might be null.
+        assert favoriteIconByteArray != null;
+
+        // Convert the favorite icon byte array to a bitmap and store it in a class variable.
+        Bitmap favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.length);
+
         // Set the content view.
         setContentView(R.layout.bookmarks_databaseview_coordinatorlayout);
 
@@ -121,7 +134,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         Toolbar toolbar = findViewById(R.id.bookmarks_databaseview_toolbar);
         setSupportActionBar(toolbar);
 
-        // Get a handle for the `AppBar`.
+        // Get a handle for the action bar.
         ActionBar actionBar = getSupportActionBar();
 
         // Remove the incorrect lint warning that the action bar might be null.
@@ -337,11 +350,11 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                 oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
                 // Show the edit bookmark folder dialog.
-                DialogFragment editBookmarkFolderDatabaseViewDialog = EditBookmarkFolderDatabaseViewDialog.folderDatabaseId(databaseId);
+                DialogFragment editBookmarkFolderDatabaseViewDialog = EditBookmarkFolderDatabaseViewDialog.folderDatabaseId(databaseId, favoriteIconBitmap);
                 editBookmarkFolderDatabaseViewDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_folder));
             } else {
                 // Show the edit bookmark dialog.
-                DialogFragment editBookmarkDatabaseViewDialog = EditBookmarkDatabaseViewDialog.bookmarkDatabaseId(databaseId);
+                DialogFragment editBookmarkDatabaseViewDialog = EditBookmarkDatabaseViewDialog.bookmarkDatabaseId(databaseId, favoriteIconBitmap);
                 editBookmarkDatabaseViewDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_bookmark));
             }
         });
@@ -736,7 +749,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
     }
 
     @Override
-    public void onSaveBookmark(DialogFragment dialogFragment, int selectedBookmarkDatabaseId) {
+    public void onSaveBookmark(DialogFragment dialogFragment, int selectedBookmarkDatabaseId, Bitmap favoriteIconBitmap) {
         // Get handles for the views from dialog fragment.
         RadioButton currentBookmarkIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_current_icon_radiobutton);
         EditText editBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_name_edittext);
@@ -764,14 +777,6 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         if (currentBookmarkIconRadioButton.isChecked()) {  // Update the bookmark without changing the favorite icon.
             bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString, parentFolderNameString, displayOrderInt);
         } else {  // Update the bookmark using the `WebView` favorite icon.
-            // Get a copy of the favorite icon bitmap.
-            Bitmap favoriteIconBitmap = MainWebViewActivity.favoriteIconBitmap;
-
-            // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
-            if ((favoriteIconBitmap.getHeight() > 256) || (favoriteIconBitmap.getWidth() > 256)) {
-                favoriteIconBitmap = Bitmap.createScaledBitmap(favoriteIconBitmap, 256, 256, true);
-            }
-
             // Create a favorite icon byte array output stream.
             ByteArrayOutputStream newFavoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
 
@@ -790,7 +795,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
     }
 
     @Override
-    public void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedBookmarkDatabaseId) {
+    public void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedBookmarkDatabaseId, Bitmap favoriteIconBitmap) {
         // Get handles for the views from dialog fragment.
         RadioButton currentBookmarkIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_current_icon_radiobutton);
         RadioButton defaultFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_radiobutton);
@@ -833,12 +838,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                 folderIconBitmap = folderIconBitmapDrawable.getBitmap();
             } else {  // Use the `WebView` favorite icon.
                 // Get a copy of the favorite icon bitmap.
-                folderIconBitmap = MainWebViewActivity.favoriteIconBitmap;
-
-                // Scale the folder icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
-                if ((folderIconBitmap.getHeight() > 256) || (folderIconBitmap.getWidth() > 256)) {
-                    folderIconBitmap = Bitmap.createScaledBitmap(folderIconBitmap, 256, 256, true);
-                }
+                folderIconBitmap = favoriteIconBitmap;
             }
 
             // Create a folder icon byte array output stream.

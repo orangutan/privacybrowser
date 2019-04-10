@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -43,10 +44,12 @@ import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 
+import java.io.ByteArrayOutputStream;
+
 public class CreateBookmarkFolderDialog extends DialogFragment {
     // The public interface is used to send information back to the parent activity.
     public interface CreateBookmarkFolderListener {
-        void onCreateBookmarkFolder(DialogFragment dialogFragment);
+        void onCreateBookmarkFolder(DialogFragment dialogFragment, Bitmap favoriteIconBitmap);
     }
 
     // `createBookmarkFolderListener` is used in `onAttach()` and `onCreateDialog`.
@@ -59,11 +62,52 @@ public class CreateBookmarkFolderDialog extends DialogFragment {
         createBookmarkFolderListener = (CreateBookmarkFolderListener) context;
     }
 
+    public static CreateBookmarkFolderDialog createBookmarkFolder(Bitmap favoriteIconBitmap) {
+        // Create a favorite icon byte array output stream.
+        ByteArrayOutputStream favoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
+
+        // Convert the favorite icon to a PNG and place it in the byte array output stream.  `0` is for lossless compression (the only option for a PNG).
+        favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
+
+        // Convert the byte array output stream to a byte array.
+        byte[] favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray();
+
+        // Create an arguments bundle.
+        Bundle argumentsBundle = new Bundle();
+
+        // Store the favorite icon in the bundle.
+        argumentsBundle.putByteArray("favorite_icon_byte_array", favoriteIconByteArray);
+
+        // Create a new instance of the dialog.
+        CreateBookmarkFolderDialog createBookmarkFolderDialog = new CreateBookmarkFolderDialog();
+
+        // Add the bundle to the dialog.
+        createBookmarkFolderDialog.setArguments(argumentsBundle);
+
+        // Return the new dialog.
+        return createBookmarkFolderDialog;
+    }
+
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Get the arguments.
+        Bundle arguments = getArguments();
+
+        // Remove the incorrect lint warning below that the arguments might be null.
+        assert arguments != null;
+
+        // Get the favorite icon byte array.
+        byte[] favoriteIconByteArray = arguments.getByteArray("favorite_icon_byte_array");
+
+        // Remove the incorrect lint warning below that the favorite icon byte array might be null.
+        assert favoriteIconByteArray != null;
+
+        // Convert the favorite icon byte array to a bitmap.
+        Bitmap favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.length);
+
         // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
@@ -91,7 +135,7 @@ public class CreateBookmarkFolderDialog extends DialogFragment {
         // Set an `onClick()` listener fo the positive button.
         dialogBuilder.setPositiveButton(R.string.create, (DialogInterface dialog, int which) -> {
             // Return the `DialogFragment` to the parent activity on create.
-            createBookmarkFolderListener.onCreateBookmarkFolder(CreateBookmarkFolderDialog.this);
+            createBookmarkFolderListener.onCreateBookmarkFolder(this, favoriteIconBitmap);
         });
 
 
@@ -150,7 +194,7 @@ public class CreateBookmarkFolderDialog extends DialogFragment {
             // If the event is a key-down on the `enter` key, select the `PositiveButton` `Create`.
             if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER) && createButton.isEnabled()) {  // The enter key was pressed and the create button is enabled.
                 // Trigger `createBookmarkFolderListener` and return the `DialogFragment` to the parent activity.
-                createBookmarkFolderListener.onCreateBookmarkFolder(CreateBookmarkFolderDialog.this);
+                createBookmarkFolderListener.onCreateBookmarkFolder(this, favoriteIconBitmap);
                 // Manually dismiss the `AlertDialog`.
                 alertDialog.dismiss();
                 // Consume the event.
@@ -159,14 +203,6 @@ public class CreateBookmarkFolderDialog extends DialogFragment {
                 return false;
             }
         });
-
-        // Get a copy of the favorite icon bitmap.
-        Bitmap favoriteIconBitmap = MainWebViewActivity.favoriteIconBitmap;
-
-        // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
-        if ((favoriteIconBitmap.getHeight() > 256) || (favoriteIconBitmap.getWidth() > 256)) {
-            favoriteIconBitmap = Bitmap.createScaledBitmap(favoriteIconBitmap, 256, 256, true);
-        }
 
         // Display the current favorite icon.
         webPageIconImageView.setImageBitmap(favoriteIconBitmap);

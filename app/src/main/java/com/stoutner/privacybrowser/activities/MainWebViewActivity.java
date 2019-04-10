@@ -168,14 +168,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `allowScreenshots` is public static so it can be accessed from everywhere.  It is also used in `onCreate()`.
     public static boolean allowScreenshots;
 
-    // `favoriteIconBitmap` is public static so it can be accessed from `BookmarksActivity`, `BookmarksDatabaseViewActivity`, `CreateBookmarkFolderDialog`,
-    // `EditBookmarkDialog`, `EditBookmarkFolderDialog`, `EditBookmarkDatabaseViewDialog`, and `ViewSslCertificateDialog`.  It is also used in `onCreate()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`,
-    // `onCreateHomeScreenShortcut()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `applyDomainSettings()`.
-    public static Bitmap favoriteIconBitmap;
-
-    // `favoriteIconDefaultBitmap` public static so it can be accessed from `PinnedMismatchDialog`.  It is also used in `onCreate()` and `applyDomainSettings`.
-    public static Bitmap favoriteIconDefaultBitmap;
-
     // TODO Remove.
     // `formattedUrlString` is public static so it can be accessed from `AddDomainDialog`, `BookmarksActivity`, `DomainSettingsFragment`, and `PinnedMismatchDialog`.
     // It is also used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onCreateHomeScreenShortcutCreate()`, `loadUrlFromTextBox()`, and `applyProxyThroughOrbot()`.
@@ -218,17 +210,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
 
     // `navigatingHistory` is used in `onCreate()`, `onNavigationItemSelected()`, `onSslMismatchBack()`, and `applyDomainSettings()`.
-    private boolean navigatingHistory;
+    private boolean navigatingHistory;  // TODO.
 
     // The current WebView is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`,
     // `findNextOnPage()`, `closeFindOnPage()`, `loadUrlFromTextBox()`, `onSslMismatchBack()`, `applyProxyThroughOrbot()`, and `applyDomainSettings()`.
     private NestedScrollWebView currentWebView;
-
-    // `fullScreenVideoFrameLayout` is used in `onCreate()` and `onConfigurationChanged()`.
-    private FrameLayout fullScreenVideoFrameLayout;
-
-    // `cookieManager` is used in `onCreate()`, `onOptionsItemSelected()`, and `onNavigationItemSelected()`, `loadUrlFromTextBox()`, `onDownloadImage()`, `onDownloadFile()`, and `onRestart()`.
-    private CookieManager cookieManager;
 
     // `customHeader` is used in `onCreate()`, `onOptionsItemSelected()`, `onCreateContextMenu()`, and `loadUrl()`.
     private final Map<String, String> customHeaders = new HashMap<>();
@@ -244,20 +230,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private boolean nightMode;
 
     // 'homepage' is used in `onCreate()`, `onNavigationItemSelected()`, and `applyProxyThroughOrbot()`.
-    private String homepage;
+    private String homepage;  // TODO ?
 
     // `searchURL` is used in `loadURLFromTextBox()` and `applyProxyThroughOrbot()`.
-    private String searchURL;
+    private String searchURL;  // TODO ?
 
     // The options menu is set in `onCreateOptionsMenu()` and used in `onOptionsItemSelected()` and `updatePrivacyIcons()`.
     private Menu optionsMenu;
 
     // The refresh menu item is set in `onCreateOptionsMenu()` and accessed from `initializeWebView()`.
     // It must be this way because `initializeWebView()` runs before the menu is created but doesn't actually modify the menu until later.
-    private MenuItem refreshMenuItem;
-
-    // The navigation requests menu item is used in `onCreate()` and accessed from `WebViewPagerAdapter`.
-    private MenuItem navigationRequestsMenuItem;  // TODO.
+    private MenuItem refreshMenuItem;  // TODO.  Create it from `optionsMenu`.
 
     // TODO.  This could probably be removed.
     // The blocklist helper is used in `onCreate()` and `WebViewPagerAdapter`.
@@ -270,7 +253,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private ArrayList<List<String[]>> fanboysSocialList;
     private ArrayList<List<String[]>> ultraPrivacy;
 
-    // The blocklist menu items are used in `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, and `initializeWebView()`.
+    // The blocklist menu items are used in `onCreateOptionsMenu()`, `onPrepareOptionsMenu()`, and `initializeWebView()`.  // TODO.
     private MenuItem blocklistsMenuItem;
     private MenuItem easyListMenuItem;
     private MenuItem easyPrivacyMenuItem;
@@ -282,23 +265,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `webViewDefaultUserAgent` is used in `onCreate()` and `onPrepareOptionsMenu()`.
     private String webViewDefaultUserAgent;
 
-    // `privacyBrowserRuntime` is used in `onCreate()`, `onOptionsItemSelected()`, and `applyAppSettings()`.
-    private Runtime privacyBrowserRuntime;
-
     // `proxyThroughOrbot` is used in `onRestart()`, `onOptionsItemSelected()`, `applyAppSettings()`, and `applyProxyThroughOrbot()`.
     private boolean proxyThroughOrbot;
 
     // `incognitoModeEnabled` is used in `onCreate()` and `applyAppSettings()`.
-    private boolean incognitoModeEnabled;
+    private boolean incognitoModeEnabled;  // TODO.
 
     // `fullScreenBrowsingModeEnabled` is used in `onCreate()` and `applyAppSettings()`.
-    private boolean fullScreenBrowsingModeEnabled;
+    private boolean fullScreenBrowsingModeEnabled;  // TODO.
 
     // `inFullScreenBrowsingMode` is used in `onCreate()`, `onConfigurationChanged()`, and `applyAppSettings()`.
     private boolean inFullScreenBrowsingMode;
 
     // Hide app bar is used in `onCreate()` and `applyAppSettings()`.
-    private boolean hideAppBar;
+    private boolean hideAppBar;  // TODO.
 
     // `reapplyDomainSettingsOnRestart` is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, and `onAddDomain()`, .
     private boolean reapplyDomainSettingsOnRestart;
@@ -310,7 +290,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private boolean displayingFullScreenVideo;
 
     // `downloadWithExternalApp` is used in `onCreate()`, `onCreateContextMenu()`, and `applyDomainSettings()`.
-    private boolean downloadWithExternalApp;
+    private boolean downloadWithExternalApp;  // TODO.
 
     // `orbotStatusBroadcastReceiver` is used in `onCreate()` and `onDestroy()`.
     private BroadcastReceiver orbotStatusBroadcastReceiver;
@@ -319,22 +299,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private boolean waitingForOrbot;
 
     // `domainSettingsJavaScriptEnabled` is used in `onOptionsItemSelected()` and `applyDomainSettings()`.
-    private Boolean domainSettingsJavaScriptEnabled;
+    private Boolean domainSettingsJavaScriptEnabled;  // TODO.
 
     // `waitingForOrbotHtmlString` is used in `onCreate()` and `applyProxyThroughOrbot()`.
-    private String waitingForOrbotHtmlString;
+    private String waitingForOrbotHtmlString;  // TODO.
 
     // `privateDataDirectoryString` is used in `onCreate()`, `onOptionsItemSelected()`, and `onNavigationItemSelected()`.
-    private String privateDataDirectoryString;
+    private String privateDataDirectoryString;  // TODO.
 
     // `findOnPageEditText` is used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
-    private EditText findOnPageEditText;
+    private EditText findOnPageEditText;  // TODO.
 
     // `displayAdditionalAppBarIcons` is used in `onCreate()` and `onCreateOptionsMenu()`.
-    private boolean displayAdditionalAppBarIcons;
+    private boolean displayAdditionalAppBarIcons;  // TODO.
 
     // The action bar drawer toggle is initialized in `onCreate()` and used in `onResume()`.
-    private ActionBarDrawerToggle actionBarDrawerToggle;
+    private ActionBarDrawerToggle actionBarDrawerToggle;  // TODO.
 
     // The color spans are used in `onCreate()` and `highlightUrlText()`.
     private ForegroundColorSpan redColorSpan;
@@ -347,23 +327,23 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private int drawerHeaderPaddingBottom;
 
     // `sslErrorHandler` is used in `onCreate()`, `onSslErrorCancel()`, and `onSslErrorProceed`.
-    private SslErrorHandler sslErrorHandler;
+    private SslErrorHandler sslErrorHandler;  // TODO.
 
     // `httpAuthHandler` is used in `onCreate()`, `onHttpAuthenticationCancel()`, and `onHttpAuthenticationProceed()`.
-    private static HttpAuthHandler httpAuthHandler;
+    private static HttpAuthHandler httpAuthHandler;  // TODO.
 
     // `inputMethodManager` is used in `onOptionsItemSelected()`, `loadUrlFromTextBox()`, and `closeFindOnPage()`.
-    private InputMethodManager inputMethodManager;
+    private InputMethodManager inputMethodManager;  // TODO.
 
     // `bookmarksDatabaseHelper` is used in `onCreate()`, `onDestroy`, `onOptionsItemSelected()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`,
     // and `loadBookmarksFolder()`.
-    private BookmarksDatabaseHelper bookmarksDatabaseHelper;
+    private BookmarksDatabaseHelper bookmarksDatabaseHelper;  // TODO.
 
     // `bookmarksListView` is used in `onCreate()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, and `loadBookmarksFolder()`.
-    private ListView bookmarksListView;
+    private ListView bookmarksListView;  // TODO.
 
     // `bookmarksTitleTextView` is used in `onCreate()` and `loadBookmarksFolder()`.
-    private TextView bookmarksTitleTextView;
+    private TextView bookmarksTitleTextView;  // TODO.
 
     // `bookmarksCursor` is used in `onDestroy()`, `onOptionsItemSelected()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `loadBookmarksFolder()`.
     private Cursor bookmarksCursor;
@@ -443,7 +423,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         finalGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
 
         // Get handles for the URL views.
-        RelativeLayout urlRelativeLayout = findViewById(R.id.url_relativelayout);
         EditText urlEditText = findViewById(R.id.url_edittext);
 
         // Remove the formatting from `urlTextBar` when the user is editing the text.
@@ -524,7 +503,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Get handles for views that need to be modified.
         DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
-        final NavigationView navigationView = findViewById(R.id.navigationview);
+        NavigationView navigationView = findViewById(R.id.navigationview);
         TabLayout tabLayout = findViewById(R.id.tablayout);
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
         ViewPager webViewPager = findViewById(R.id.webviewpager);
@@ -534,18 +513,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         FloatingActionButton createBookmarkFolderFab = findViewById(R.id.create_bookmark_folder_fab);
         FloatingActionButton createBookmarkFab = findViewById(R.id.create_bookmark_fab);
         findOnPageEditText = findViewById(R.id.find_on_page_edittext);
-        fullScreenVideoFrameLayout = findViewById(R.id.full_screen_video_framelayout);
 
         // Listen for touches on the navigation menu.
         navigationView.setNavigationItemSelectedListener(this);
 
         // Get handles for the navigation menu and the back and forward menu items.  The menu is zero-based.
-        final Menu navigationMenu = navigationView.getMenu();
-        final MenuItem navigationCloseTabMenuItem = navigationMenu.getItem(0);
-        final MenuItem navigationBackMenuItem = navigationMenu.getItem(3);
-        final MenuItem navigationForwardMenuItem = navigationMenu.getItem(4);
-        final MenuItem navigationHistoryMenuItem = navigationMenu.getItem(5);
-        navigationRequestsMenuItem = navigationMenu.getItem(6);
+        Menu navigationMenu = navigationView.getMenu();
+        MenuItem navigationCloseTabMenuItem = navigationMenu.getItem(0);
+        MenuItem navigationBackMenuItem = navigationMenu.getItem(3);
+        MenuItem navigationForwardMenuItem = navigationMenu.getItem(4);
+        MenuItem navigationHistoryMenuItem = navigationMenu.getItem(5);
+        MenuItem navigationRequestsMenuItem = navigationMenu.getItem(6);
 
         // Initialize the web view pager adapter.
         webViewPagerAdapter = new WebViewPagerAdapter(getSupportFragmentManager());
@@ -565,47 +543,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             @Override
             public void onPageSelected(int position) {
-                // Get the WebView tab fragment.
-                WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(position);
-
-                // Get the fragment view.
-                View fragmentView = webViewTabFragment.getView();
-
-                // Remove the incorrect lint warning below that the fragment view might be null.
-                assert fragmentView != null;
-
-                // Store the current WebView.
-                currentWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
-
-                // Update the privacy icons.  `true` redraws the icons in the app bar.
-                updatePrivacyIcons(true);
-
-                // Store the current formatted URL string.
-                formattedUrlString = currentWebView.getUrl();
-
-                // Clear the focus from the URL text box.
-                urlEditText.clearFocus();
-
-                // Hide the soft keyboard.
-                inputMethodManager.hideSoftInputFromWindow(currentWebView.getWindowToken(), 0);
-
-                // Display the current URL in the URL text box.
-                urlEditText.setText(formattedUrlString);
-
-                // Highlight the URL text.
-                highlightUrlText();
-
-                // Set the background to indicate the domain settings status.
-                if (currentWebView.getDomainSettingsApplied()) {
-                    // Set a green background on the URL relative layout to indicate that custom domain settings are being used. The deprecated `.getDrawable()` must be used until the minimum API >= 21.
-                    if (darkTheme) {
-                        urlRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_dark_blue));
-                    } else {
-                        urlRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_light_green));
-                    }
-                } else {
-                    urlRelativeLayout.setBackground(getResources().getDrawable(R.color.transparent));
-                }
+                // Set the current WebView.
+                setCurrentWebView(position);
 
                 // Select the corresponding tab if it does not match the currently selected page.  This will happen if the page was scrolled via swiping in the view pager.
                 if (tabLayout.getSelectedTabPosition() != position) {
@@ -642,7 +581,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
                 // Instantiate the View SSL Certificate dialog.
-                DialogFragment viewSslCertificateDialogFragment = ViewSslCertificateDialog.displayDialog(currentWebView.getWebViewFragmentId());
+                DialogFragment viewSslCertificateDialogFragment = ViewSslCertificateDialog.displayDialog(currentWebView.getWebViewFragmentId(), currentWebView.getFavoriteOrDefaultIcon());
 
                 // Display the View SSL Certificate dialog.
                 viewSslCertificateDialogFragment.show(getSupportFragmentManager(), getString(R.string.view_ssl_certificate));
@@ -668,15 +607,28 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Set the launch bookmarks activity FAB to launch the bookmarks activity.
         launchBookmarksActivityFab.setOnClickListener(v -> {
-            // Store the current WebView url and title in the bookmarks activity.
+            // Store the current WebView url and title in the bookmarks activity.  // TODO.
             BookmarksActivity.currentWebViewUrl = currentWebView.getUrl();
             BookmarksActivity.currentWebViewTitle = currentWebView.getTitle();
+
+            // Get a copy of the favorite icon bitmap.
+            Bitmap favoriteIconBitmap = currentWebView.getFavoriteOrDefaultIcon();
+
+            // Create a favorite icon byte array output stream.
+            ByteArrayOutputStream favoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
+
+            // Convert the favorite icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
+            favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
+
+            // Convert the favorite icon byte array stream to a byte array.
+            byte[] favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray();
 
             // Create an intent to launch the bookmarks activity.
             Intent bookmarksIntent = new Intent(getApplicationContext(), BookmarksActivity.class);
 
-            // Include the current folder with the `Intent`.
-            bookmarksIntent.putExtra("Current Folder", currentBookmarksFolder);
+            // Add the extra information to the intent.
+            bookmarksIntent.putExtra("current_folder", currentBookmarksFolder);
+            bookmarksIntent.putExtra("favorite_icon_byte_array", favoriteIconByteArray);
 
             // Make it so.
             startActivity(bookmarksIntent);
@@ -684,15 +636,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Set the create new bookmark folder FAB to display an alert dialog.
         createBookmarkFolderFab.setOnClickListener(v -> {
-            // Show the create bookmark folder dialog and name the instance `@string/create_folder`.
-            DialogFragment createBookmarkFolderDialog = new CreateBookmarkFolderDialog();
+            // Create a create bookmark folder dialog.
+            DialogFragment createBookmarkFolderDialog = CreateBookmarkFolderDialog.createBookmarkFolder(currentWebView.getFavoriteOrDefaultIcon());
+
+            // Show the create bookmark folder dialog.
             createBookmarkFolderDialog.show(getSupportFragmentManager(), getString(R.string.create_folder));
         });
 
         // Set the create new bookmark FAB to display an alert dialog.
         createBookmarkFab.setOnClickListener(view -> {
             // Instantiate the create bookmark dialog.
-            DialogFragment createBookmarkDialog = CreateBookmarkDialog.createBookmark(currentWebView.getUrl(), currentWebView.getTitle(), favoriteIconBitmap);
+            DialogFragment createBookmarkDialog = CreateBookmarkDialog.createBookmark(currentWebView.getUrl(), currentWebView.getTitle(), currentWebView.getFavoriteOrDefaultIcon());
 
             // Display the create bookmark dialog.
             createBookmarkDialog.show(getSupportFragmentManager(), getString(R.string.create_bookmark));
@@ -797,11 +751,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
                 // Show the edit bookmark folder `AlertDialog` and name the instance `@string/edit_folder`.
-                DialogFragment editBookmarkFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId);
+                DialogFragment editBookmarkFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId, currentWebView.getFavoriteOrDefaultIcon());
                 editBookmarkFolderDialog.show(getSupportFragmentManager(), getString(R.string.edit_folder));
             } else {
                 // Show the edit bookmark `AlertDialog` and name the instance `@string/edit_bookmark`.
-                DialogFragment editBookmarkDialog = EditBookmarkDialog.bookmarkDatabaseId(databaseId);
+                DialogFragment editBookmarkDialog = EditBookmarkDialog.bookmarkDatabaseId(databaseId, currentWebView.getFavoriteOrDefaultIcon());
                 editBookmarkDialog.show(getSupportFragmentManager(), getString(R.string.edit_bookmark));
             }
 
@@ -872,17 +826,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Create the hamburger icon at the start of the AppBar.
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_navigation_drawer, R.string.close_navigation_drawer);
 
-        // Initialize cookieManager.
-        cookieManager = CookieManager.getInstance();
-
         // Replace the header that `WebView` creates for `X-Requested-With` with a null value.  The default value is the application ID (com.stoutner.privacybrowser.standard).
         customHeaders.put("X-Requested-With", "");
 
         // Initialize the default preference values the first time the program is run.  `false` keeps this command from resetting any current preferences back to default.
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-
-        // Get a handle for the `Runtime`.
-        privacyBrowserRuntime = Runtime.getRuntime();
 
         // Store the application's private data directory.
         privateDataDirectoryString = getApplicationInfo().dataDir;
@@ -907,17 +855,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Destroy the bare WebView.
         bareWebView.destroy();
-
-        // Initialize the favorite icon bitmap.  `ContextCompat` must be used until API >= 21.
-        Drawable favoriteIconDrawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.world);
-        BitmapDrawable favoriteIconBitmapDrawable = (BitmapDrawable) favoriteIconDrawable;
-        assert favoriteIconBitmapDrawable != null;
-        favoriteIconDefaultBitmap = favoriteIconBitmapDrawable.getBitmap();
-
-        // If the favorite icon is null, load the default.
-        if (favoriteIconBitmap == null) {
-            favoriteIconBitmap = favoriteIconDefaultBitmap;
-        }
 
         // Initialize the user agent array adapter and string array.
         userAgentNamesArray = ArrayAdapter.createFromResource(this, R.array.user_agent_names, R.layout.spinner_item);
@@ -952,53 +889,56 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     protected void onNewIntent(Intent intent) {
-        // Add a new tab.
-        addTab(null);
-
-        // Sets the new intent as the activity intent, so that any future `getIntent()`s pick up this one instead of creating a new activity.
-        setIntent(intent);
-
         // Get the information from the intent.
         String intentAction = intent.getAction();
         Uri intentUriData = intent.getData();
 
-        // If the intent action is a web search, perform the search.
-        if ((intentAction != null) && intentAction.equals(Intent.ACTION_WEB_SEARCH)) {
-            // Create an encoded URL string.
-            String encodedUrlString;
+        // Only process the URI if it contains data.  If the user pressed the desktop icon after the app was already running the URI will be null.
+        if (intentUriData != null) {
+            // Sets the new intent as the activity intent, which replaces the one that originally started the app.
+            setIntent(intent);
 
-            // Sanitize the search input and convert it to a search.
-            try {
-                encodedUrlString = URLEncoder.encode(intent.getStringExtra(SearchManager.QUERY), "UTF-8");
-            } catch (UnsupportedEncodingException exception) {
-                encodedUrlString = "";
+            // Add a new tab.
+            addTab(null);
+
+            // If the intent action is a web search, perform the search.
+            if ((intentAction != null) && intentAction.equals(Intent.ACTION_WEB_SEARCH)) {
+                // Create an encoded URL string.
+                String encodedUrlString;
+
+                // Sanitize the search input and convert it to a search.
+                try {
+                    encodedUrlString = URLEncoder.encode(intent.getStringExtra(SearchManager.QUERY), "UTF-8");
+                } catch (UnsupportedEncodingException exception) {
+                    encodedUrlString = "";
+                }
+
+                // Add the base search URL.
+                formattedUrlString = searchURL + encodedUrlString;
+            } else {  // The intent should contain a URL.
+                // Set the formatted URL string.
+                formattedUrlString = intentUriData.toString();
             }
 
-            // Add the base search URL.
-            formattedUrlString = searchURL + encodedUrlString;
-        } else if (intentUriData != null){  // Check to see if the intent contains a new URL.
-            // Set the formatted URL string.
-            formattedUrlString = intentUriData.toString();
+            // Load the URL.
+            loadUrl(formattedUrlString);
+
+            // Get a handle for the drawer layout.
+            DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
+
+            // Close the navigation drawer if it is open.
+            if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START);
+            }
+
+            // Close the bookmarks drawer if it is open.
+            if (drawerLayout.isDrawerVisible(GravityCompat.END)) {
+                drawerLayout.closeDrawer(GravityCompat.END);
+            }
+
+            // Clear the keyboard if displayed and remove the focus on the urlTextBar if it has it.
+            currentWebView.requestFocus();
         }
-
-        // Load the URL.
-        loadUrl(formattedUrlString);
-
-        // Get a handle for the drawer layout.
-        DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
-
-        // Close the navigation drawer if it is open.
-        if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        }
-
-        // Close the bookmarks drawer if it is open.
-        if (drawerLayout.isDrawerVisible(GravityCompat.END)) {
-            drawerLayout.closeDrawer(GravityCompat.END);
-        }
-
-        // Clear the keyboard if displayed and remove the focus on the urlTextBar if it has it.
-        currentWebView.requestFocus();
     }
 
     @Override
@@ -1283,6 +1223,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem nightModeMenuItem = menu.findItem(R.id.night_mode);
         MenuItem proxyThroughOrbotMenuItem = menu.findItem(R.id.proxy_through_orbot);
 
+        // Get a handle for the cookie manager.
+        CookieManager cookieManager = CookieManager.getInstance();
+
         // Initialize the current user agent string and the font size.
         String currentUserAgent = getString(R.string.user_agent_privacy_browser);
         int fontSize = 100;
@@ -1496,6 +1439,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Get a handle for the cookie manager.
+        CookieManager cookieManager = CookieManager.getInstance();
 
         // Run the commands that correlate to the selected menu item.
         switch (menuItemId) {
@@ -1719,14 +1665,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                         // Setup a runnable to manually delete the DOM storage files and directories.
                                         Runnable deleteDomStorageRunnable = () -> {
                                             try {
+                                                // Get a handle for the runtime.
+                                                Runtime runtime = Runtime.getRuntime();
+
                                                 // A string array must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
-                                                Process deleteLocalStorageProcess = privacyBrowserRuntime.exec(new String[]{"rm", "-rf", privateDataDirectoryString + "/app_webview/Local Storage/"});
+                                                Process deleteLocalStorageProcess = runtime.exec(new String[]{"rm", "-rf", privateDataDirectoryString + "/app_webview/Local Storage/"});
 
                                                 // Multiple commands must be used because `Runtime.exec()` does not like `*`.
-                                                Process deleteIndexProcess = privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/IndexedDB");
-                                                Process deleteQuotaManagerProcess = privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager");
-                                                Process deleteQuotaManagerJournalProcess = privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager-journal");
-                                                Process deleteDatabasesProcess = privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/databases");
+                                                Process deleteIndexProcess = runtime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/IndexedDB");
+                                                Process deleteQuotaManagerProcess = runtime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager");
+                                                Process deleteQuotaManagerJournalProcess = runtime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager-journal");
+                                                Process deleteDatabasesProcess = runtime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/databases");
 
                                                 // Wait for the processes to finish.
                                                 deleteLocalStorageProcess.waitFor();
@@ -2094,7 +2043,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.add_to_homescreen:
                 // Instantiate the create home screen shortcut dialog.
-                DialogFragment createHomeScreenShortcutDialogFragment = CreateHomeScreenShortcutDialog.createDialog(currentWebView.getTitle(), formattedUrlString, favoriteIconBitmap);
+                DialogFragment createHomeScreenShortcutDialogFragment = CreateHomeScreenShortcutDialog.createDialog(currentWebView.getTitle(), formattedUrlString, currentWebView.getFavoriteOrDefaultIcon());
 
                 // Show the create home screen shortcut dialog.
                 createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getString(R.string.create_shortcut));
@@ -2140,8 +2089,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Run the commands that correspond to the selected menu item.
         switch (menuItemId) {
             case R.id.close_tab:
-                // Get a handle for the tab layout.
+                // Get a handle for the tab layout and the view pager.
                 TabLayout tabLayout = findViewById(R.id.tablayout);
+                ViewPager webViewPager = findViewById(R.id.webviewpager);
 
                 // Get the current tab number.
                 int currentTabNumber = tabLayout.getSelectedTabPosition();
@@ -2149,8 +2099,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Delete the current tab.
                 tabLayout.removeTabAt(currentTabNumber);
 
-                // Delete the current page.
-                webViewPagerAdapter.deletePage(currentTabNumber);
+                // Delete the current page.  If the selected page number did not change during the delete, it will return true, meaning that the current WebView must be reset.
+                if (webViewPagerAdapter.deletePage(currentTabNumber, webViewPager)) {
+                    setCurrentWebView(currentTabNumber);
+                }
                 break;
 
             case R.id.clear_and_exit:
@@ -2164,20 +2116,23 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Get the status of the clear everything preference.
                 boolean clearEverything = sharedPreferences.getBoolean("clear_everything", true);
 
+                // Get a handle for the runtime.
+                Runtime runtime = Runtime.getRuntime();
+
                 // Clear cookies.
                 if (clearEverything || sharedPreferences.getBoolean("clear_cookies", true)) {
                     // The command to remove cookies changed slightly in API 21.
                     if (Build.VERSION.SDK_INT >= 21) {
-                        cookieManager.removeAllCookies(null);
+                        CookieManager.getInstance().removeAllCookies(null);
                     } else {
-                        cookieManager.removeAllCookie();
+                        CookieManager.getInstance().removeAllCookie();
                     }
 
                     // Manually delete the cookies database, as `CookieManager` sometimes will not flush its changes to disk before `System.exit(0)` is run.
                     try {
                         // Two commands must be used because `Runtime.exec()` does not like `*`.
-                        Process deleteCookiesProcess = privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/Cookies");
-                        Process deleteCookiesJournalProcess = privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/Cookies-journal");
+                        Process deleteCookiesProcess = runtime.exec("rm -f " + privateDataDirectoryString + "/app_webview/Cookies");
+                        Process deleteCookiesJournalProcess = runtime.exec("rm -f " + privateDataDirectoryString + "/app_webview/Cookies-journal");
 
                         // Wait until the processes have finished.
                         deleteCookiesProcess.waitFor();
@@ -2196,13 +2151,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Manually delete the DOM storage files and directories, as `WebStorage` sometimes will not flush its changes to disk before `System.exit(0)` is run.
                     try {
                         // A `String[]` must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
-                        Process deleteLocalStorageProcess = privacyBrowserRuntime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Local Storage/"});
+                        Process deleteLocalStorageProcess = runtime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Local Storage/"});
 
                         // Multiple commands must be used because `Runtime.exec()` does not like `*`.
-                        Process deleteIndexProcess = privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/IndexedDB");
-                        Process deleteQuotaManagerProcess = privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager");
-                        Process deleteQuotaManagerJournalProcess = privacyBrowserRuntime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager-journal");
-                        Process deleteDatabaseProcess = privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/databases");
+                        Process deleteIndexProcess = runtime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/IndexedDB");
+                        Process deleteQuotaManagerProcess = runtime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager");
+                        Process deleteQuotaManagerJournalProcess = runtime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager-journal");
+                        Process deleteDatabaseProcess = runtime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/databases");
 
                         // Wait until the processes have finished.
                         deleteLocalStorageProcess.waitFor();
@@ -2223,8 +2178,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Manually delete the form data database, as `WebViewDatabase` sometimes will not flush its changes to disk before `System.exit(0)` is run.
                     try {
                         // A string array must be used because the database contains a space and `Runtime.exec` will not otherwise escape the string correctly.
-                        Process deleteWebDataProcess = privacyBrowserRuntime.exec(new String[] {"rm", "-f", privateDataDirectoryString + "/app_webview/Web Data"});
-                        Process deleteWebDataJournalProcess = privacyBrowserRuntime.exec(new String[] {"rm", "-f", privateDataDirectoryString + "/app_webview/Web Data-journal"});
+                        Process deleteWebDataProcess = runtime.exec(new String[] {"rm", "-f", privateDataDirectoryString + "/app_webview/Web Data"});
+                        Process deleteWebDataJournalProcess = runtime.exec(new String[] {"rm", "-f", privateDataDirectoryString + "/app_webview/Web Data-journal"});
 
                         // Wait until the processes have finished.
                         deleteWebDataProcess.waitFor();
@@ -2257,11 +2212,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Manually delete the cache directories.
                     try {
                         // Delete the main cache directory.
-                        Process deleteCacheProcess = privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/cache");
+                        Process deleteCacheProcess = runtime.exec("rm -rf " + privateDataDirectoryString + "/cache");
 
                         // Delete the secondary `Service Worker` cache directory.
                         // A string array must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
-                        Process deleteServiceWorkerProcess = privacyBrowserRuntime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Service Worker/"});
+                        Process deleteServiceWorkerProcess = runtime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Service Worker/"});
 
                         // Wait until the processes have finished.
                         deleteCacheProcess.waitFor();
@@ -2306,7 +2261,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 if (clearEverything) {
                     try {
                         // Delete the folder.
-                        Process deleteAppWebviewProcess = privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/app_webview");
+                        Process deleteAppWebviewProcess = runtime.exec("rm -rf " + privateDataDirectoryString + "/app_webview");
 
                         // Wait until the process has finished.
                         deleteAppWebviewProcess.waitFor();
@@ -2766,7 +2721,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onCreateBookmark(DialogFragment dialogFragment) {
+    public void onCreateBookmark(DialogFragment dialogFragment, Bitmap favoriteIconBitmap) {
         // Get the views from the dialog fragment.
         EditText createBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.create_bookmark_name_edittext);
         EditText createBookmarkUrlEditText = dialogFragment.getDialog().findViewById(R.id.create_bookmark_url_edittext);
@@ -2775,19 +2730,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         String bookmarkNameString = createBookmarkNameEditText.getText().toString();
         String bookmarkUrlString = createBookmarkUrlEditText.getText().toString();
 
-        // Get a copy of the favorite icon bitmap.
-        Bitmap favoriteIcon = favoriteIconBitmap;
-
-        // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
-        if ((favoriteIcon.getHeight() > 256) || (favoriteIcon.getWidth() > 256)) {
-            favoriteIcon = Bitmap.createScaledBitmap(favoriteIcon, 256, 256, true);
-        }
-
         // Create a favorite icon byte array output stream.
         ByteArrayOutputStream favoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
 
         // Convert the favorite icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
-        favoriteIcon.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
+        favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
 
         // Convert the favorite icon byte array stream to a byte array.
         byte[] favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray();
@@ -2809,7 +2756,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onCreateBookmarkFolder(DialogFragment dialogFragment) {
+    public void onCreateBookmarkFolder(DialogFragment dialogFragment, Bitmap favoriteIconBitmap) {
         // Get handles for the views in the dialog fragment.
         EditText createFolderNameEditText = dialogFragment.getDialog().findViewById(R.id.create_folder_name_edittext);
         RadioButton defaultFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon_radiobutton);
@@ -2832,13 +2779,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Convert the folder icon bitmap drawable to a bitmap.
             folderIconBitmap = folderIconBitmapDrawable.getBitmap();
         } else {  // Use the WebView favorite icon.
-            // Get a copy of the favorite icon bitmap.
+            // Copy the favorite icon bitmap to the folder icon bitmap.
             folderIconBitmap = favoriteIconBitmap;
-
-            // Scale the folder icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
-            if ((folderIconBitmap.getHeight() > 256) || (folderIconBitmap.getWidth() > 256)) {
-                folderIconBitmap = Bitmap.createScaledBitmap(folderIconBitmap, 256, 256, true);
-            }
         }
 
         // Create a folder icon byte array output stream.
@@ -2870,7 +2812,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onSaveBookmark(DialogFragment dialogFragment, int selectedBookmarkDatabaseId) {
+    public void onSaveBookmark(DialogFragment dialogFragment, int selectedBookmarkDatabaseId, Bitmap favoriteIconBitmap) {
         // Get handles for the views from `dialogFragment`.
         EditText editBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_name_edittext);
         EditText editBookmarkUrlEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_url_edittext);
@@ -2884,19 +2826,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         if (currentBookmarkIconRadioButton.isChecked()) {  // Update the bookmark without changing the favorite icon.
             bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString);
         } else {  // Update the bookmark using the `WebView` favorite icon.
-            // Get a copy of the favorite icon bitmap.
-            Bitmap favoriteIcon = favoriteIconBitmap;
-
-            // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
-            if ((favoriteIcon.getHeight() > 256) || (favoriteIcon.getWidth() > 256)) {
-                favoriteIcon = Bitmap.createScaledBitmap(favoriteIcon, 256, 256, true);
-            }
-
             // Create a favorite icon byte array output stream.
             ByteArrayOutputStream newFavoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
 
             // Convert the favorite icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
-            favoriteIcon.compress(Bitmap.CompressFormat.PNG, 0, newFavoriteIconByteArrayOutputStream);
+            favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, newFavoriteIconByteArrayOutputStream);
 
             // Convert the favorite icon byte array stream to a byte array.
             byte[] newFavoriteIconByteArray = newFavoriteIconByteArrayOutputStream.toByteArray();
@@ -2913,7 +2847,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedFolderDatabaseId) {
+    public void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedFolderDatabaseId, Bitmap favoriteIconBitmap) {
         // Get handles for the views from `dialogFragment`.
         EditText editFolderNameEditText = dialogFragment.getDialog().findViewById(R.id.edit_folder_name_edittext);
         RadioButton currentFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_current_icon_radiobutton);
@@ -2942,13 +2876,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Convert the folder icon bitmap drawable to a bitmap.
                 folderIconBitmap = folderIconBitmapDrawable.getBitmap();
             } else {  // Use the `WebView` favorite icon.
-                // Get a copy of the favorite icon bitmap.
-                folderIconBitmap = MainWebViewActivity.favoriteIconBitmap;
-
-                // Scale the folder icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
-                if ((folderIconBitmap.getHeight() > 256) || (folderIconBitmap.getWidth() > 256)) {
-                    folderIconBitmap = Bitmap.createScaledBitmap(folderIconBitmap, 256, 256, true);
-                }
+                // Copy the favorite icon bitmap to the folder icon bitmap.
+                folderIconBitmap = favoriteIconBitmap;
             }
 
             // Create a folder icon byte array output stream.
@@ -2975,13 +2904,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Convert the folder icon bitmap drawable to a bitmap.
                 folderIconBitmap = folderIconBitmapDrawable.getBitmap();
             } else {  // Use the `WebView` favorite icon.
-                // Get a copy of the favorite icon bitmap.
-                folderIconBitmap = MainWebViewActivity.favoriteIconBitmap;
-
-                // Scale the folder icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
-                if ((folderIconBitmap.getHeight() > 256) || (folderIconBitmap.getWidth() > 256)) {
-                    folderIconBitmap = Bitmap.createScaledBitmap(folderIconBitmap, 256, 256, true);
-                }
+                // Copy the favorite icon bitmap to the folder icon bitmap.
+                folderIconBitmap = favoriteIconBitmap;
             }
 
             // Create a folder icon byte array output stream.
@@ -3073,7 +2997,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
             if (firstPartyCookiesEnabled) {
                 // Get the cookies for `imageUrl`.
-                String cookies = cookieManager.getCookie(imageUrl);
+                String cookies = CookieManager.getInstance().getCookie(imageUrl);
 
                 // Add the cookies to `downloadRequest`.  In the HTTP request header, cookies are named `Cookie`.
                 downloadRequest.addRequestHeader("Cookie", cookies);
@@ -3125,7 +3049,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
             if (firstPartyCookiesEnabled) {
                 // Get the cookies for `downloadUrl`.
-                String cookies = cookieManager.getCookie(downloadUrl);
+                String cookies = CookieManager.getInstance().getCookie(downloadUrl);
 
                 // Add the cookies to `downloadRequest`.  In the HTTP request header, cookies are named `Cookie`.
                 downloadRequest.addRequestHeader("Cookie", cookies);
@@ -3517,8 +3441,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Reset the favorite icon if specified.
             if (resetFavoriteIcon) {
-                // Store the favorite icon bitmap.
-                favoriteIconBitmap = favoriteIconDefaultBitmap;  // TODO.
+                // Initialize the favorite icon.
+                currentWebView.initializeFavoriteIcon();
 
                 // Get a handle for the tab layout.
                 TabLayout tabLayout = findViewById(R.id.tablayout);
@@ -3539,7 +3463,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 ImageView currentTabFavoriteIconImageView = currentTabCustomView.findViewById(R.id.favorite_icon_imageview);
 
                 // Set the default favorite icon as the favorite icon for this tab.
-                currentTabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(favoriteIconBitmap, 64, 64, true));
+                currentTabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(nestedScrollWebView.getFavoriteOrDefaultIcon(), 64, 64, true));
             }
 
             // Get a handle for the swipe refresh layout.
@@ -3608,6 +3532,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             boolean defaultSwipeToRefresh = sharedPreferences.getBoolean("swipe_to_refresh", true);
             nightMode = sharedPreferences.getBoolean("night_mode", false);  // TODO.
             boolean displayWebpageImages = sharedPreferences.getBoolean("display_webpage_images", true);
+
+            // Get a handle for the cookie manager.
+            CookieManager cookieManager = CookieManager.getInstance();
 
             if (nestedScrollWebView.getDomainSettingsApplied()) {  // The url has custom domain settings.
                 // Get a cursor for the current host and move it to the first position.
@@ -4259,6 +4186,54 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         webViewPagerAdapter.addPage(newTabNumber, webViewPager);
     }
 
+    private void setCurrentWebView(int pageNumber) {
+        // Get handles for the URL views.
+        RelativeLayout urlRelativeLayout = findViewById(R.id.url_relativelayout);
+        EditText urlEditText = findViewById(R.id.url_edittext);
+
+        // Get the WebView tab fragment.
+        WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(pageNumber);
+
+        // Get the fragment view.
+        View fragmentView = webViewTabFragment.getView();
+
+        // Remove the incorrect lint warning below that the fragment view might be null.
+        assert fragmentView != null;
+
+        // Store the current WebView.
+        currentWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+
+        // Update the privacy icons.  `true` redraws the icons in the app bar.
+        updatePrivacyIcons(true);
+
+        // Store the current formatted URL string.
+        formattedUrlString = currentWebView.getUrl();
+
+        // Clear the focus from the URL text box.
+        urlEditText.clearFocus();
+
+        // Hide the soft keyboard.
+        inputMethodManager.hideSoftInputFromWindow(currentWebView.getWindowToken(), 0);
+
+        // Display the current URL in the URL text box.
+        urlEditText.setText(formattedUrlString);
+
+        // Highlight the URL text.
+        highlightUrlText();
+
+        // Set the background to indicate the domain settings status.
+        if (currentWebView.getDomainSettingsApplied()) {
+            // Set a green background on the URL relative layout to indicate that custom domain settings are being used. The deprecated `.getDrawable()` must be used until the minimum API >= 21.
+            if (darkTheme) {
+                urlRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_dark_blue));
+            } else {
+                urlRelativeLayout.setBackground(getResources().getDrawable(R.drawable.url_bar_background_light_green));
+            }
+        } else {
+            urlRelativeLayout.setBackground(getResources().getDrawable(R.color.transparent));
+        }
+    }
+
     @Override
     public void initializeWebView(NestedScrollWebView nestedScrollWebView, int pageNumber, ProgressBar progressBar) {
         // Get handles for the activity views.
@@ -4281,6 +4256,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Get the relevant preferences.
         boolean downloadWithExternalApp = sharedPreferences.getBoolean("download_with_external_app", false);
+
+        // Initialize the favorite icon.
+        nestedScrollWebView.initializeFavoriteIcon();
 
         // Set the app bar scrolling.
         nestedScrollWebView.setNestedScrollingEnabled(sharedPreferences.getBoolean("scroll_app_bar", true));
@@ -4501,8 +4479,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             public void onReceivedIcon(WebView view, Bitmap icon) {
                 // Only update the favorite icon if the website has finished loading.
                 if (progressBar.getVisibility() == View.GONE) {
-                    // Save a copy of the favorite icon.
-                    favoriteIconBitmap = icon;
+                    // Store the new favorite icon.
+                    nestedScrollWebView.setFavoriteOrDefaultIcon(icon);
 
                     // Get the current page position.
                     int currentPosition = webViewPagerAdapter.getPositionForId(nestedScrollWebView.getWebViewFragmentId());
@@ -4536,25 +4514,28 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Get the current tab.
                 TabLayout.Tab tab = tabLayout.getTabAt(currentPosition);
 
-                // Remove the lint warning below that the current tab might be null.
-                assert tab != null;
+                // Only populate the title text view if the tab has been fully created.
+                if (tab != null) {
+                    // Get the custom view from the tab.
+                    View tabView = tab.getCustomView();
 
-                // Get the custom view from the tab.
-                View tabView = tab.getCustomView();
+                    // Remove the incorrect warning below that the current tab view might be null.
+                    assert tabView != null;
 
-                // Remove the incorrect warning below that the current tab view might be null.
-                assert tabView != null;
+                    // Get the title text view from the tab.
+                    TextView tabTitleTextView = tabView.findViewById(R.id.title_textview);
 
-                // Get the title text view from the tab.
-                TextView tabTitleTextView = tabView.findViewById(R.id.title_textview);
-
-                // Set the title as the tab text.
-                tabTitleTextView.setText(title);
+                    // Set the title as the tab text.
+                    tabTitleTextView.setText(title);
+                }
             }
 
             // Enter full screen video.
             @Override
             public void onShowCustomView(View video, CustomViewCallback callback) {
+                // Get a handle for the full screen video frame layout.
+                FrameLayout fullScreenVideoFrameLayout = findViewById(R.id.full_screen_video_framelayout);
+
                 // Set the full screen video flag.
                 displayingFullScreenVideo = true;
 
@@ -4598,6 +4579,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Exit full screen video.
             @Override
             public void onHideCustomView() {
+                // Get a handle for the full screen video frame layout.
+                FrameLayout fullScreenVideoFrameLayout = findViewById(R.id.full_screen_video_framelayout);
+
                 // Unset the full screen video flag.
                 displayingFullScreenVideo = false;
 
@@ -4752,6 +4736,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @SuppressWarnings("deprecation")
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+                // Get a handle for the navigation view.
+                NavigationView navigationView = findViewById(R.id.navigationview);
+
+                // Get a handle for the navigation menu.
+                Menu navigationMenu = navigationView.getMenu();
+
+                // Get a handle for the navigation requests menu item.  The menu is 0 based.
+                MenuItem navigationRequestsMenuItem = navigationMenu.getItem(6);
+
                 // Create an empty web resource response to be used if the resource request is blocked.
                 WebResourceResponse emptyWebResourceResponse = new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
 
@@ -4906,7 +4899,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Process the EasyPrivacy results.
                     if (easyPrivacyResults[0].equals(BlockListHelper.REQUEST_BLOCKED)) {  // The resource request matched EasyPrivacy's blacklist.
                         // Add the result to the resource requests.
-                        nestedScrollWebView.addResourceRequest(new String[] {easyPrivacyResults[0], easyPrivacyResults[1], easyPrivacyResults[2], easyPrivacyResults[3], easyPrivacyResults[5],
+                        nestedScrollWebView.addResourceRequest(new String[] {easyPrivacyResults[0], easyPrivacyResults[1], easyPrivacyResults[2], easyPrivacyResults[3], easyPrivacyResults[4],
                                 easyPrivacyResults[5]});
 
                         // Increment the blocked requests counters.
@@ -5101,7 +5094,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Flush any cookies to persistent storage.  `CookieManager` has become very lazy about flushing cookies in recent versions.
                 if (firstPartyCookiesEnabled && Build.VERSION.SDK_INT >= 21) {
-                    cookieManager.flush();
+                    CookieManager.getInstance().flush();
                 }
 
                 // Update the Refresh menu item if it has been created.
@@ -5131,11 +5124,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Manually delete cache folders.
                     try {
                         // Delete the main cache directory.
-                        privacyBrowserRuntime.exec("rm -rf " + privateDataDirectoryString + "/cache");
+                        Runtime.getRuntime().exec("rm -rf " + privateDataDirectoryString + "/cache");
 
                         // Delete the secondary `Service Worker` cache directory.
                         // A `String[]` must be used because the directory contains a space and `Runtime.exec` will not escape the string correctly otherwise.
-                        privacyBrowserRuntime.exec(new String[]{"rm", "-rf", privateDataDirectoryString + "/app_webview/Service Worker/"});
+                        Runtime.getRuntime().exec(new String[]{"rm", "-rf", privateDataDirectoryString + "/app_webview/Service Worker/"});
                     } catch (IOException e) {
                         // Do nothing if an error is thrown.
                     }

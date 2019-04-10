@@ -120,6 +120,9 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     // `closeActivityAfterDismissingSnackbar` is used in `onCreate()`, `onOptionsItemSelected()`, and `onBackPressed()`.
     private boolean closeActivityAfterDismissingSnackbar;
 
+    // The favorite icon byte array is populated in `onCreate()` and used in `onOptionsItemSelected()`.
+    private byte[] favoriteIconByteArray;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Disable screenshots if not allowed.
@@ -141,11 +144,17 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         Intent launchingIntent = getIntent();
 
         // Set the current folder variable.
-        if (launchingIntent.getStringExtra("Current Folder") != null) {  // Set the current folder from the intent.
-            currentFolder = launchingIntent.getStringExtra("Current Folder");
+        if (launchingIntent.getStringExtra("current_folder") != null) {  // Set the current folder from the intent.
+            currentFolder = launchingIntent.getStringExtra("current_folder");
         } else {  // Set the current folder to be `""`, which is the home folder.
             currentFolder = "";
         }
+
+        // Get the favorite icon byte array.
+        favoriteIconByteArray = launchingIntent.getByteArrayExtra("favorite_icon_byte_array");
+
+        // Convert the favorite icon byte array to a bitmap.
+        Bitmap favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.length);
 
         // Set the content view.
         setContentView(R.layout.bookmarks_coordinatorlayout);
@@ -425,11 +434,11 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                             oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
                             // Show the edit bookmark folder dialog.
-                            DialogFragment editFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId);
+                            DialogFragment editFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId, favoriteIconBitmap);
                             editFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_folder));
                         } else {
                             // Show the edit bookmark dialog.
-                            DialogFragment editBookmarkDialog = EditBookmarkDialog.bookmarkDatabaseId(databaseId);
+                            DialogFragment editBookmarkDialog = EditBookmarkDialog.bookmarkDatabaseId(databaseId, favoriteIconBitmap);
                             editBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.edit_bookmark));
                         }
                         break;
@@ -550,15 +559,17 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
         // Set the create new bookmark folder FAB to display the `AlertDialog`.
         createBookmarkFolderFab.setOnClickListener(v -> {
-            // Show the `CreateBookmarkFolderDialog` `AlertDialog` and name the instance `@string/create_folder`.
-            DialogFragment createBookmarkFolderDialog = new CreateBookmarkFolderDialog();
-            createBookmarkFolderDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_folder));
+            // Create a create bookmark folder dialog.
+            DialogFragment createBookmarkFolderDialog = CreateBookmarkFolderDialog.createBookmarkFolder(favoriteIconBitmap);
+
+            // Show the create bookmark folder dialog.
+            createBookmarkFolderDialog.show(getSupportFragmentManager(), getString(R.string.create_folder));
         });
 
         // Set the create new bookmark FAB to display the `AlertDialog`.
         createBookmarkFab.setOnClickListener(view -> {
             // Instantiate the create bookmark dialog.
-            DialogFragment createBookmarkDialog = CreateBookmarkDialog.createBookmark(currentWebViewUrl, currentWebViewTitle, MainWebViewActivity.favoriteIconBitmap);
+            DialogFragment createBookmarkDialog = CreateBookmarkDialog.createBookmark(currentWebViewUrl, currentWebViewTitle, favoriteIconBitmap);
 
             // Display the create bookmark dialog.
             createBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_bookmark));
@@ -616,8 +627,13 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                 break;
 
             case R.id.bookmarks_database_view:
-                // Launch `BookmarksDatabaseViewActivity`.
+                // Create an intent to launch the bookmarks database view activity.
                 Intent bookmarksDatabaseViewIntent = new Intent(this, BookmarksDatabaseViewActivity.class);
+
+                // Include the favorite icon byte array to the intent.
+                bookmarksDatabaseViewIntent.putExtra("favorite_icon_byte_array", favoriteIconByteArray);
+
+                // Make it so.
                 startActivity(bookmarksDatabaseViewIntent);
                 break;
         }
@@ -646,7 +662,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     }
 
     @Override
-    public void onCreateBookmark(DialogFragment dialogFragment) {
+    public void onCreateBookmark(DialogFragment dialogFragment, Bitmap favoriteIconBitmap) {
         // Get the views from the dialog fragment.
         EditText createBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.create_bookmark_name_edittext);
         EditText createBookmarkUrlEditText = dialogFragment.getDialog().findViewById(R.id.create_bookmark_url_edittext);
@@ -655,19 +671,11 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         String bookmarkNameString = createBookmarkNameEditText.getText().toString();
         String bookmarkUrlString = createBookmarkUrlEditText.getText().toString();
 
-        // Get a copy of the favorite icon bitmap.
-        Bitmap favoriteIcon = MainWebViewActivity.favoriteIconBitmap;
-
-        // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
-        if ((favoriteIcon.getHeight() > 256) || (favoriteIcon.getWidth() > 256)) {
-            favoriteIcon = Bitmap.createScaledBitmap(favoriteIcon, 256, 256, true);
-        }
-
         // Create a favorite icon byte array output stream.
         ByteArrayOutputStream favoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
 
         // Convert the favorite icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
-        favoriteIcon.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
+        favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
 
         // Convert the favorite icon byte array stream to a byte array.
         byte[] favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray();
@@ -689,7 +697,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     }
 
     @Override
-    public void onCreateBookmarkFolder(DialogFragment dialogFragment) {
+    public void onCreateBookmarkFolder(DialogFragment dialogFragment, Bitmap favoriteIconBitmap) {
         // Get handles for the views in the dialog fragment.
         EditText createFolderNameEditText = dialogFragment.getDialog().findViewById(R.id.create_folder_name_edittext);
         RadioButton defaultFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon_radiobutton);
@@ -712,13 +720,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             // Convert the folder icon bitmap drawable to a bitmap.
             folderIconBitmap = folderIconBitmapDrawable.getBitmap();
         } else {  // Use the WebView favorite icon.
-            // Get a copy of the favorite icon bitmap.
-            folderIconBitmap = MainWebViewActivity.favoriteIconBitmap;
-
-            // Scale the folder icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
-            if ((folderIconBitmap.getHeight() > 256) || (folderIconBitmap.getWidth() > 256)) {
-                folderIconBitmap = Bitmap.createScaledBitmap(folderIconBitmap, 256, 256, true);
-            }
+            // Copy the favorite icon bitmap to the folder icon bitmap.
+            folderIconBitmap = favoriteIconBitmap;
         }
 
         // Create a folder icon byte array output stream.
@@ -750,7 +753,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     }
 
     @Override
-    public void onSaveBookmark(DialogFragment dialogFragment, int selectedBookmarkDatabaseId) {
+    public void onSaveBookmark(DialogFragment dialogFragment, int selectedBookmarkDatabaseId, Bitmap favoriteIconBitmap) {
         // Get handles for the views from `dialogFragment`.
         EditText editBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_name_edittext);
         EditText editBookmarkUrlEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_url_edittext);
@@ -763,15 +766,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Update the bookmark.
         if (currentBookmarkIconRadioButton.isChecked()) {  // Update the bookmark without changing the favorite icon.
             bookmarksDatabaseHelper.updateBookmark(selectedBookmarkDatabaseId, bookmarkNameString, bookmarkUrlString);
-        } else {  // Update the bookmark using the `WebView` favorite icon.
-            // Get a copy of the favorite icon bitmap.
-            Bitmap favoriteIconBitmap = MainWebViewActivity.favoriteIconBitmap;
-
-            // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
-            if ((favoriteIconBitmap.getHeight() > 256) || (favoriteIconBitmap.getWidth() > 256)) {
-                favoriteIconBitmap = Bitmap.createScaledBitmap(favoriteIconBitmap, 256, 256, true);
-            }
-
+        } else {  // Update the bookmark using the WebView favorite icon.
             // Create a favorite icon byte array output stream.
             ByteArrayOutputStream newFavoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
 
@@ -796,7 +791,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     }
 
     @Override
-    public void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedFolderDatabaseId) {
+    public void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedFolderDatabaseId, Bitmap favoriteIconBitmap) {
         // Get handles for the views from `dialogFragment`.
         RadioButton currentFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_current_icon_radiobutton);
         RadioButton defaultFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_radiobutton);
@@ -825,13 +820,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                 // Convert the folder icon bitmap drawable to a bitmap.
                 folderIconBitmap = folderIconBitmapDrawable.getBitmap();
             } else {  // Use the WebView favorite icon.
-                // Get a copy of the favorite icon bitmap.
-                folderIconBitmap = MainWebViewActivity.favoriteIconBitmap;
-
-                // Scale the folder icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
-                if ((folderIconBitmap.getHeight() > 256) || (folderIconBitmap.getWidth() > 256)) {
-                    folderIconBitmap = Bitmap.createScaledBitmap(folderIconBitmap, 256, 256, true);
-                }
+                // Copy the favorite icon bitmap to the folder icon bitmap.
+                folderIconBitmap = favoriteIconBitmap;
             }
 
             // Create a folder icon byte array output stream.
@@ -860,13 +850,8 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                 // Convert the folder icon bitmap drawable to a bitmap.
                 folderIconBitmap = folderIconBitmapDrawable.getBitmap();
             } else {  // Use the WebView favorite icon.
-                // Get a copy of the favorite icon bitmap.
-                folderIconBitmap = MainWebViewActivity.favoriteIconBitmap;
-
-                // Scale the folder icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
-                if ((folderIconBitmap.getHeight() > 256) || (folderIconBitmap.getWidth() > 256)) {
-                    folderIconBitmap = Bitmap.createScaledBitmap(folderIconBitmap, 256, 256, true);
-                }
+                // Copy the favorite icon bitmap to the folder icon bitmap.
+                folderIconBitmap = favoriteIconBitmap;
             }
 
             // Create a folder icon byte array output stream.

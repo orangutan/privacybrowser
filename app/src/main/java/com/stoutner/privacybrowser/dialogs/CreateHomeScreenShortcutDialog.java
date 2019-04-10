@@ -56,14 +56,10 @@ import com.stoutner.privacybrowser.R;
 import java.io.ByteArrayOutputStream;
 
 public class CreateHomeScreenShortcutDialog extends DialogFragment {
-    // Create the class variables.
-    private String initialShortcutName;
-    private String initialUrlString;
-    private Bitmap favoriteIconBitmap;
+    // Define the class variables.
     private EditText shortcutNameEditText;
     private EditText urlEditText;
     private RadioButton openWithPrivacyBrowserRadioButton;
-    private Button createButton;
 
     public static CreateHomeScreenShortcutDialog createDialog(String shortcutName, String urlString, Bitmap favoriteIconBitmap) {
         // Create a favorite icon byte array output stream.
@@ -93,20 +89,20 @@ public class CreateHomeScreenShortcutDialog extends DialogFragment {
         return createHomeScreenShortcutDialog;
     }
 
+    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
+    @SuppressLint("InflateParams")
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        // Run the default commands.
-        super.onCreate(savedInstanceState);
-
+    @NonNull
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Get the arguments.
         Bundle arguments = getArguments();
 
         // Remove the incorrect lint warning below that the arguments might be null.
         assert arguments != null;
 
-        // Store the strings in class variables.
-        initialShortcutName = arguments.getString("shortcut_name");
-        initialUrlString = arguments.getString("url_string");
+        // Get the strings from the arguments.
+        String initialShortcutName = arguments.getString("shortcut_name");
+        String initialUrlString = arguments.getString("url_string");
 
         // Get the favorite icon byte array.
         byte[] favoriteIconByteArray = arguments.getByteArray("favorite_icon_byte_array");
@@ -115,14 +111,8 @@ public class CreateHomeScreenShortcutDialog extends DialogFragment {
         assert favoriteIconByteArray != null;
 
         // Convert the favorite icon byte array to a bitmap and store it in a class variable.
-        favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.length);
-    }
+        Bitmap favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.length);
 
-    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
-    @SuppressLint("InflateParams")
-    @Override
-    @NonNull
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
@@ -162,7 +152,7 @@ public class CreateHomeScreenShortcutDialog extends DialogFragment {
         // Set an `onClick` listener on the create button.
         dialogBuilder.setPositiveButton(R.string.create, (DialogInterface dialog, int which) -> {
             // Create the home screen shortcut.
-            createHomeScreenShortcut();
+            createHomeScreenShortcut(favoriteIconBitmap);
         });
 
         // Create an alert dialog from the alert dialog builder.
@@ -183,7 +173,7 @@ public class CreateHomeScreenShortcutDialog extends DialogFragment {
         shortcutNameEditText = alertDialog.findViewById(R.id.shortcut_name_edittext);
         urlEditText = alertDialog.findViewById(R.id.url_edittext);
         openWithPrivacyBrowserRadioButton = alertDialog.findViewById(R.id.open_with_privacy_browser_radiobutton);
-        createButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        Button createButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
         // Populate the edit texts.
         shortcutNameEditText.setText(initialShortcutName);
@@ -204,7 +194,7 @@ public class CreateHomeScreenShortcutDialog extends DialogFragment {
             @Override
             public void afterTextChanged(Editable s) {
                 // Update the create button.
-                updateCreateButton();
+                updateCreateButton(createButton);
             }
         });
 
@@ -223,7 +213,7 @@ public class CreateHomeScreenShortcutDialog extends DialogFragment {
             @Override
             public void afterTextChanged(Editable s) {
                 // Update the create button.
-                updateCreateButton();
+                updateCreateButton(createButton);
             }
         });
 
@@ -234,7 +224,7 @@ public class CreateHomeScreenShortcutDialog extends DialogFragment {
                 // Check the status of the create button.
                 if (createButton.isEnabled()) {  // The create button is enabled.
                     // Create the home screen shortcut.
-                    createHomeScreenShortcut();
+                    createHomeScreenShortcut(favoriteIconBitmap);
 
                     // Manually dismiss the alert dialog.
                     alertDialog.dismiss();
@@ -258,7 +248,7 @@ public class CreateHomeScreenShortcutDialog extends DialogFragment {
                 // Check the status of the create button.
                 if (createButton.isEnabled()) {  // The create button is enabled.
                     // Create the home screen shortcut.
-                    createHomeScreenShortcut();
+                    createHomeScreenShortcut(favoriteIconBitmap);
 
                     // Manually dismiss the alert dialog.
                     alertDialog.dismiss();
@@ -279,7 +269,7 @@ public class CreateHomeScreenShortcutDialog extends DialogFragment {
         return alertDialog;
     }
 
-    private void updateCreateButton() {
+    private void updateCreateButton(Button createButton) {
         // Get the contents of the edit texts.
         String shortcutName = shortcutNameEditText.getText().toString();
         String urlString = urlEditText.getText().toString();
@@ -288,7 +278,7 @@ public class CreateHomeScreenShortcutDialog extends DialogFragment {
         createButton.setEnabled(!shortcutName.isEmpty() && !urlString.isEmpty());
     }
 
-    private void createHomeScreenShortcut() {
+    private void createHomeScreenShortcut(Bitmap favoriteIconBitmap) {
         // Get a handle for the context.
         Context context = getContext();
 

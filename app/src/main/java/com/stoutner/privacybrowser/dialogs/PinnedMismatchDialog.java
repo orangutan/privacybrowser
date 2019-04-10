@@ -24,6 +24,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -46,11 +48,13 @@ import com.stoutner.privacybrowser.views.NestedScrollWebView;
 import com.stoutner.privacybrowser.views.WrapVerticalContentViewPager;
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 
+import java.io.ByteArrayOutputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
 import androidx.viewpager.widget.PagerAdapter;
 
@@ -83,12 +87,22 @@ public class PinnedMismatchDialog extends DialogFragment {
         pinnedMismatchListener = (PinnedMismatchListener) context;
     }
 
-    public static PinnedMismatchDialog displayDialog(long webViewFragmentId) {
+    public static PinnedMismatchDialog displayDialog(long webViewFragmentId, Bitmap favoriteIconBitmap) {
+        // Create a favorite icon byte array output stream.
+        ByteArrayOutputStream favoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
+
+        // Convert the favorite icon to a PNG and place it in the byte array output stream.  `0` is for lossless compression (the only option for a PNG).
+        favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
+
+        // Convert the byte array output stream to a byte array.
+        byte[] favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray();
+
         // Create an arguments bundle.
         Bundle argumentsBundle = new Bundle();
 
-        // Store the WebView position in the bundle.
+        // Store the variables in the bundle.
         argumentsBundle.putLong("webview_fragment_id", webViewFragmentId);
+        argumentsBundle.putByteArray("favorite_icon_byte_array", favoriteIconByteArray);
 
         // Create a new instance of the pinned mismatch dialog.
         PinnedMismatchDialog pinnedMismatchDialog = new PinnedMismatchDialog();
@@ -105,11 +119,23 @@ public class PinnedMismatchDialog extends DialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Get the arguments.
+        Bundle arguments = getArguments();
+
         // Remove the incorrect lint warning below that `.getArguments().getInt()` might be null.
-        assert getArguments() != null;
+        assert arguments != null;
 
         // Get the current position of this WebView fragment.
-        int webViewPosition = MainWebViewActivity.webViewPagerAdapter.getPositionForId(getArguments().getLong("webview_fragment_id"));
+        int webViewPosition = MainWebViewActivity.webViewPagerAdapter.getPositionForId(arguments.getLong("webview_fragment_id"));
+
+        // Get the favorite icon byte array.
+        byte[] favoriteIconByteArray = arguments.getByteArray("favorite_icon_byte_array");
+
+        // Remove the incorrect lint warning below that the favorite icon byte array might be null.
+        assert favoriteIconByteArray != null;
+
+        // Convert the favorite icon byte array to a bitmap.
+        Bitmap favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.length);
 
         // Get the WebView tab fragment.
         WebViewTabFragment webViewTabFragment = MainWebViewActivity.webViewPagerAdapter.getPageFragment(webViewPosition);
@@ -135,8 +161,26 @@ public class PinnedMismatchDialog extends DialogFragment {
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
         }
 
+        // Get the context.
+        Context context = getContext();
+
+        // Remove the incorrect lint warning below that the context might be null.
+        assert context != null;
+
+        // Get the default favorite icon drawable.  `ContextCompat` must be used until API >= 21.
+        Drawable defaultFavoriteIconDrawable = ContextCompat.getDrawable(context, R.drawable.world);
+
+        // Cast the favorite icon drawable to a bitmap drawable.
+        BitmapDrawable defaultFavoriteIconBitmapDrawable = (BitmapDrawable) defaultFavoriteIconDrawable;
+
+        // Remove the incorrect warning below that the favorite icon bitmap drawable might be null.
+        assert defaultFavoriteIconBitmapDrawable != null;
+
+        // Store the default icon bitmap.
+        Bitmap defaultFavoriteIconBitmap = defaultFavoriteIconBitmapDrawable.getBitmap();
+
         // Set the favorite icon as the dialog icon if it exists.
-        if (MainWebViewActivity.favoriteIconBitmap.equals(MainWebViewActivity.favoriteIconDefaultBitmap)) {  // There is no favorite icon.
+        if (favoriteIconBitmap.sameAs(defaultFavoriteIconBitmap)) {  // There is no website favorite icon.
             // Set the icon according to the theme.
             if (MainWebViewActivity.darkTheme) {
                 dialogBuilder.setIcon(R.drawable.ssl_certificate_enabled_dark);
@@ -145,7 +189,7 @@ public class PinnedMismatchDialog extends DialogFragment {
             }
         } else {  // There is a favorite icon.
             // Create a drawable version of the favorite icon.
-            Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), MainWebViewActivity.favoriteIconBitmap);
+            Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), favoriteIconBitmap);
 
             // Set the icon.
             dialogBuilder.setIcon(favoriteIconDrawable);

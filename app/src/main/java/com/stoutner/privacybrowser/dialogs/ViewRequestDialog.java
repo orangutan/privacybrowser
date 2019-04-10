@@ -62,9 +62,9 @@ public class ViewRequestDialog extends DialogFragment {
         Bundle bundle = new Bundle();
 
         // Store the request details.
-        bundle.putInt("ID", id);
-        bundle.putBoolean("Is Last Request", isLastRequest);
-        bundle.putStringArray("Request Details", requestDetails);
+        bundle.putInt("id", id);
+        bundle.putBoolean("is_last_request", isLastRequest);
+        bundle.putStringArray("request_details", requestDetails);
 
         // Add the bundle to the dialog.
         ViewRequestDialog viewRequestDialog = new ViewRequestDialog();
@@ -90,9 +90,9 @@ public class ViewRequestDialog extends DialogFragment {
         assert getArguments() != null;
 
         // Get the info from the bundle.
-        int id = getArguments().getInt("ID");
-        boolean isLastRequest = getArguments().getBoolean("Is Last Request");
-        String[] requestDetails = getArguments().getStringArray("Request Details");
+        int id = getArguments().getInt("id");
+        boolean isLastRequest = getArguments().getBoolean("is_last_request");
+        String[] requestDetails = getArguments().getStringArray("request_details");
 
         // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;

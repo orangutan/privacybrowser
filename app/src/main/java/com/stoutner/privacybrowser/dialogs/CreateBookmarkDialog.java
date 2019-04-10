@@ -44,14 +44,9 @@ import com.stoutner.privacybrowser.R;
 import java.io.ByteArrayOutputStream;
 
 public class CreateBookmarkDialog extends DialogFragment {
-    // Create the class variables.
-    String url;
-    String title;
-    Bitmap favoriteIconBitmap;
-
     // The public interface is used to send information back to the parent activity.
     public interface CreateBookmarkListener {
-        void onCreateBookmark(DialogFragment dialogFragment);
+        void onCreateBookmark(DialogFragment dialogFragment, Bitmap favoriteIconBitmap);
     }
 
     // The create bookmark listener is initialized in `onAttach()` and used in `onCreateDialog()`.
@@ -66,11 +61,6 @@ public class CreateBookmarkDialog extends DialogFragment {
     }
 
     public static CreateBookmarkDialog createBookmark(String url, String title, Bitmap favoriteIconBitmap) {
-        // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
-        if ((favoriteIconBitmap.getHeight() > 256) || (favoriteIconBitmap.getWidth() > 256)) {
-            favoriteIconBitmap = Bitmap.createScaledBitmap(favoriteIconBitmap, 256, 256, true);
-        }
-
         // Create a favorite icon byte array output stream.
         ByteArrayOutputStream favoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
 
@@ -80,47 +70,22 @@ public class CreateBookmarkDialog extends DialogFragment {
         // Convert the byte array output stream to a byte array.
         byte[] favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray();
 
-        // Create a bundle.
-        Bundle bundle = new Bundle();
+        // Create an arguments bundle.
+        Bundle argumentsBundle = new Bundle();
 
-        // Store the variables in the bundle
-        bundle.putString("url", url);
-        bundle.putString("title", title);
-        bundle.putByteArray("favorite_icon_byte_array", favoriteIconByteArray);
+        // Store the variables in the bundle.
+        argumentsBundle.putString("url", url);
+        argumentsBundle.putString("title", title);
+        argumentsBundle.putByteArray("favorite_icon_byte_array", favoriteIconByteArray);
 
         // Create a new instance of the dialog.
         CreateBookmarkDialog createBookmarkDialog = new CreateBookmarkDialog();
 
         // Add the bundle to the dialog.
-        createBookmarkDialog.setArguments(bundle);
+        createBookmarkDialog.setArguments(argumentsBundle);
 
         // Return the new dialog.
         return createBookmarkDialog;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        // Run the default commands.
-        super.onCreate(savedInstanceState);
-
-        // Get the arguments.
-        Bundle arguments = getArguments();
-
-        // Remove the incorrect lint warning below that the arguments might be null.
-        assert arguments != null;
-
-        // Store the contents of the arguments in class variables.
-        url = arguments.getString("url");
-        title = arguments.getString("title");
-
-        // Get the favorite icon byte array.
-        byte[] favoriteIconByteArray = arguments.getByteArray("favorite_icon_byte_array");
-
-        // Remove the incorrect lint warning below that the favorite icon byte array might be null.
-        assert favoriteIconByteArray != null;
-
-        // Convert the favorite icon byte array to a bitmap and store it in a class variable.
-        favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.length);
     }
 
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
@@ -128,6 +93,25 @@ public class CreateBookmarkDialog extends DialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Get the arguments.
+        Bundle arguments = getArguments();
+
+        // Remove the incorrect lint warning below that the arguments might be null.
+        assert arguments != null;
+
+        // Get the strings from the arguments.
+        String url = arguments.getString("url");
+        String title = arguments.getString("title");
+
+        // Get the favorite icon byte array.
+        byte[] favoriteIconByteArray = arguments.getByteArray("favorite_icon_byte_array");
+
+        // Remove the incorrect lint warning below that the favorite icon byte array might be null.
+        assert favoriteIconByteArray != null;
+
+        // Convert the favorite icon byte array to a bitmap.
+        Bitmap favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.length);
+
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
@@ -166,11 +150,11 @@ public class CreateBookmarkDialog extends DialogFragment {
         // Set an `onClick()` listener for the positive button.
         dialogBuilder.setPositiveButton(R.string.create, (DialogInterface dialog, int which) -> {
             // Return the `DialogFragment` to the parent activity.
-            createBookmarkListener.onCreateBookmark(CreateBookmarkDialog.this);
+            createBookmarkListener.onCreateBookmark(this, favoriteIconBitmap);
         });
 
         // Create an `AlertDialog` from the `AlertDialog.Builder`.
-        final AlertDialog alertDialog = dialogBuilder.create();
+        AlertDialog alertDialog = dialogBuilder.create();
 
         // Remove the warning below that `getWindow()` might be null.
         assert alertDialog.getWindow() != null;
@@ -197,7 +181,7 @@ public class CreateBookmarkDialog extends DialogFragment {
             // If the event is a key-down on the `enter` key, select the `PositiveButton` `Create`.
             if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)) {
                 // Trigger `createBookmarkListener` and return the `DialogFragment` to the parent activity.
-                createBookmarkListener.onCreateBookmark(CreateBookmarkDialog.this);
+                createBookmarkListener.onCreateBookmark(this, favoriteIconBitmap);
 
                 // Manually dismiss the `AlertDialog`.
                 alertDialog.dismiss();
@@ -218,7 +202,7 @@ public class CreateBookmarkDialog extends DialogFragment {
             // If the event is a key-down on the "enter" key, select the PositiveButton "Create".
             if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)) {
                 // Trigger `createBookmarkListener` and return the DialogFragment to the parent activity.
-                createBookmarkListener.onCreateBookmark(CreateBookmarkDialog.this);
+                createBookmarkListener.onCreateBookmark(this, favoriteIconBitmap);
 
                 // Manually dismiss the `AlertDialog`.
                 alertDialog.dismiss();
