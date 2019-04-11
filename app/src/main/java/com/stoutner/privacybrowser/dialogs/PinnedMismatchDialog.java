@@ -25,7 +25,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -48,7 +47,6 @@ import com.stoutner.privacybrowser.views.NestedScrollWebView;
 import com.stoutner.privacybrowser.views.WrapVerticalContentViewPager;
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 
-import java.io.ByteArrayOutputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -87,22 +85,12 @@ public class PinnedMismatchDialog extends DialogFragment {
         pinnedMismatchListener = (PinnedMismatchListener) context;
     }
 
-    public static PinnedMismatchDialog displayDialog(long webViewFragmentId, Bitmap favoriteIconBitmap) {
-        // Create a favorite icon byte array output stream.
-        ByteArrayOutputStream favoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
-
-        // Convert the favorite icon to a PNG and place it in the byte array output stream.  `0` is for lossless compression (the only option for a PNG).
-        favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
-
-        // Convert the byte array output stream to a byte array.
-        byte[] favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray();
-
+    public static PinnedMismatchDialog displayDialog(long webViewFragmentId) {
         // Create an arguments bundle.
         Bundle argumentsBundle = new Bundle();
 
-        // Store the variables in the bundle.
+        // Store the WebView fragment ID in the bundle.
         argumentsBundle.putLong("webview_fragment_id", webViewFragmentId);
-        argumentsBundle.putByteArray("favorite_icon_byte_array", favoriteIconByteArray);
 
         // Create a new instance of the pinned mismatch dialog.
         PinnedMismatchDialog pinnedMismatchDialog = new PinnedMismatchDialog();
@@ -127,15 +115,6 @@ public class PinnedMismatchDialog extends DialogFragment {
 
         // Get the current position of this WebView fragment.
         int webViewPosition = MainWebViewActivity.webViewPagerAdapter.getPositionForId(arguments.getLong("webview_fragment_id"));
-
-        // Get the favorite icon byte array.
-        byte[] favoriteIconByteArray = arguments.getByteArray("favorite_icon_byte_array");
-
-        // Remove the incorrect lint warning below that the favorite icon byte array might be null.
-        assert favoriteIconByteArray != null;
-
-        // Convert the favorite icon byte array to a bitmap.
-        Bitmap favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.length);
 
         // Get the WebView tab fragment.
         WebViewTabFragment webViewTabFragment = MainWebViewActivity.webViewPagerAdapter.getPageFragment(webViewPosition);
@@ -166,6 +145,9 @@ public class PinnedMismatchDialog extends DialogFragment {
 
         // Remove the incorrect lint warning below that the context might be null.
         assert context != null;
+
+        // Get the favorite icon.
+        Bitmap favoriteIconBitmap = nestedScrollWebView.getFavoriteOrDefaultIcon();
 
         // Get the default favorite icon drawable.  `ContextCompat` must be used until API >= 21.
         Drawable defaultFavoriteIconDrawable = ContextCompat.getDrawable(context, R.drawable.world);
@@ -211,7 +193,7 @@ public class PinnedMismatchDialog extends DialogFragment {
             }
 
             // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
-            DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(getContext(), null, null, 0);
+            DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(context, null, null, 0);
 
             // Update the SSL certificate if it is pinned.
             if (nestedScrollWebView.hasPinnedSslCertificate()) {
@@ -333,8 +315,8 @@ public class PinnedMismatchDialog extends DialogFragment {
             String startDateLabel = getString(R.string.start_date) + "  ";
             String endDateLabel = getString(R.string.end_date) + "  ";
 
-            // Get a URI for the URL.
-            Uri currentUri = Uri.parse(MainWebViewActivity.formattedUrlString);
+            // Convert the URL to a URI.
+            Uri currentUri = Uri.parse(nestedScrollWebView.getUrl());
 
             // Get the current host from the URI.
             String domainName = currentUri.getHost();

@@ -173,7 +173,6 @@
     <string name="stop">Parar</string>
 
     <!-- Context Menus. -->
-    <string name="load_url">Cargar URL</string>
     <string name="copy_url">Copiar URL</string>
     <string name="download_url">Descargar URL</string>
     <string name="email_address">Correo electrónico</string>

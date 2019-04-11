@@ -50,10 +50,35 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class UrlHistoryDialog extends DialogFragment{
-
-    // `historyArrayList`  and `currentPageId` pass information from `onCreate()` to `onCreateDialog()`.
+    // Declare the class variables.
     private final ArrayList<History> historyArrayList = new ArrayList<>();
     private int currentPageId;
+
+    // Create a URL history listener.
+    private UrlHistoryListener urlHistoryListener;
+
+
+    // The public interface is used to send information back to the parent activity.
+    public interface UrlHistoryListener {
+        // Send back the number of steps to move forward or back.
+        void onUrlHistoryEntrySelected(int moveBackOrForwardSteps);
+
+        // Clear the history.
+        void onClearHistory();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        // Check to make sure tha the parent activity implements the listener.
+        try {
+            urlHistoryListener = (UrlHistoryListener) context;
+        } catch (ClassCastException exception) {
+            throw new ClassCastException(context.toString() + " must implement UrlHistoryListener.");
+        }
+    }
+
 
     public static UrlHistoryDialog loadBackForwardList(Context context, WebBackForwardList webBackForwardList) {
         // Create an arguments bundle.
@@ -159,30 +184,6 @@ public class UrlHistoryDialog extends DialogFragment{
 
         // Subtract `originalCurrentPageId` from the array size because we reversed the order of the array so that the newest entries are at the top.  `-1` is needed because the array is zero-based.
         currentPageId = urlStringArrayList.size() - 1 - originalCurrentPageId;
-    }
-
-    // The public interface is used to send information back to the parent activity.
-    public interface UrlHistoryListener {
-        // Send back the number of steps to move forward or back.
-        void onUrlHistoryEntrySelected(int moveBackOrForwardSteps);
-
-        // Clear the history.
-        void onClearHistory();
-    }
-
-    // `urlHistoryListener` is used in `onAttach()` and `onCreateDialog()`.
-    private UrlHistoryListener urlHistoryListener;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        // Check to make sure tha the parent activity implements the listener.
-        try {
-            urlHistoryListener = (UrlHistoryListener) context;
-        } catch (ClassCastException exception) {
-            throw new ClassCastException(context.toString() + " must implement UrlHistoryListener.");
-        }
     }
 
     @Override

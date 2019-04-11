@@ -154,7 +154,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-// TODO.  The swipe refresh indicator needs to be enabled/disabled when switching tabs.
+// TODO.  Store up reloads for tabs that are not visible.
+// TODO.  New tabs are white in dark mode.
 
 // AppCompatActivity from android.support.v7.app.AppCompatActivity must be used to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
@@ -168,22 +169,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `allowScreenshots` is public static so it can be accessed from everywhere.  It is also used in `onCreate()`.
     public static boolean allowScreenshots;
 
-    // TODO Remove.
-    // `formattedUrlString` is public static so it can be accessed from `AddDomainDialog`, `BookmarksActivity`, `DomainSettingsFragment`, and `PinnedMismatchDialog`.
-    // It is also used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onCreateHomeScreenShortcutCreate()`, `loadUrlFromTextBox()`, and `applyProxyThroughOrbot()`.
-    public static String formattedUrlString;
-
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxyThroughOrbot()`.
     public static String orbotStatus;
 
     // The WebView pager adapter is accessed from `PinnedMismatchDialog`.  It is also used in `onCreate()`, `onResume()`, and `addTab()`.
     public static WebViewPagerAdapter webViewPagerAdapter;
 
-    // `reloadOnRestart` is public static so it can be accessed from `SettingsFragment`.  It is also used in `onRestart()`
+    // `reloadOnRestart` is public static so it can be accessed from `SettingsFragment`.  It is used in `onRestart()`
     public static boolean reloadOnRestart;
 
-    // `reloadUrlOnRestart` is public static so it can be accessed from `SettingsFragment` and `BookmarksActivity`.  It is also used in `onRestart()`.
+    // The load URL on restart variables are public static so they can be accessed from `BookmarksActivity`.  They are used in `onRestart()`.
     public static boolean loadUrlOnRestart;
+    public static String urlToLoadOnRestart;
 
     // `restartFromBookmarksActivity` is public static so it can be accessed from `BookmarksActivity`.  It is also used in `onRestart()`.
     public static boolean restartFromBookmarksActivity;
@@ -296,11 +293,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `privateDataDirectoryString` is used in `onCreate()`, `onOptionsItemSelected()`, and `onNavigationItemSelected()`.
     private String privateDataDirectoryString;  // TODO.
 
-    // `displayAdditionalAppBarIcons` is used in `onCreate()` and `onCreateOptionsMenu()`.
-    private boolean displayAdditionalAppBarIcons;  // TODO.
-
     // The action bar drawer toggle is initialized in `onCreate()` and used in `onResume()`.
-    private ActionBarDrawerToggle actionBarDrawerToggle;  // TODO.
+    private ActionBarDrawerToggle actionBarDrawerToggle;
 
     // The color spans are used in `onCreate()` and `highlightUrlText()`.
     private ForegroundColorSpan redColorSpan;
@@ -318,15 +312,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `httpAuthHandler` is used in `onCreate()`, `onHttpAuthenticationCancel()`, and `onHttpAuthenticationProceed()`.
     private static HttpAuthHandler httpAuthHandler;  // TODO.
 
-    // `inputMethodManager` is used in `onOptionsItemSelected()`, `loadUrlFromTextBox()`, and `closeFindOnPage()`.
-    private InputMethodManager inputMethodManager;  // TODO.
-
     // `bookmarksDatabaseHelper` is used in `onCreate()`, `onDestroy`, `onOptionsItemSelected()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`,
     // and `loadBookmarksFolder()`.
-    private BookmarksDatabaseHelper bookmarksDatabaseHelper;  // TODO.
-
-    // `bookmarksListView` is used in `onCreate()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, and `loadBookmarksFolder()`.
-    private ListView bookmarksListView;  // TODO.
+    private BookmarksDatabaseHelper bookmarksDatabaseHelper;
 
     // `bookmarksCursor` is used in `onDestroy()`, `onOptionsItemSelected()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `loadBookmarksFolder()`.
     private Cursor bookmarksCursor;
@@ -381,12 +369,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Set the content view.
         setContentView(R.layout.main_framelayout);
 
-        // Get handles for the input method manager and toolbar.
-        inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        // Get a handle for the input method.
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        // Remove the lint warning below that the input method manager might be null.
+        assert inputMethodManager != null;
+
+        // Get a handle for the toolbar.
         Toolbar toolbar = findViewById(R.id.toolbar);
 
         // Set the action bar.  `SupportActionBar` must be used until the minimum API is >= 21.
         setSupportActionBar(toolbar);
+
+        // Get a handle for the action bar.
         ActionBar actionBar = getSupportActionBar();
 
         // This is needed to get rid of the Android Studio warning that the action bar might be null.
@@ -451,11 +446,37 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // If Privacy Browser is waiting on Orbot, load the website now that Orbot is connected.
                 if (orbotStatus.equals("ON") && waitingForOrbot) {
-                    // Reset `waitingForOrbot`.
+                    // Reset the waiting for Orbot status.
                     waitingForOrbot = false;
 
-                    // Load `formattedUrlString
-                    loadUrl(formattedUrlString);
+                    // Get the intent that started the app.
+                    Intent launchingIntent = getIntent();
+
+                    // Get the information from the intent.
+                    String launchingIntentAction = launchingIntent.getAction();
+                    Uri launchingIntentUriData = launchingIntent.getData();
+
+                    // If the intent action is a web search, perform the search.
+                    if ((launchingIntentAction != null) && launchingIntentAction.equals(Intent.ACTION_WEB_SEARCH)) {
+                        // Create an encoded URL string.
+                        String encodedUrlString;
+
+                        // Sanitize the search input and convert it to a search.
+                        try {
+                            encodedUrlString = URLEncoder.encode(launchingIntent.getStringExtra(SearchManager.QUERY), "UTF-8");
+                        } catch (UnsupportedEncodingException exception) {
+                            encodedUrlString = "";
+                        }
+
+                        // Load the completed search URL.
+                        loadUrl(searchURL + encodedUrlString);
+                    } else if (launchingIntentUriData != null){  // Check to see if the intent contains a new URL.
+                        // Load the URL from the intent.
+                        loadUrl(launchingIntentUriData.toString());
+                    } else {  // The is no URL in the intent.
+                        // Load the homepage.
+                        loadUrl(homepage);
+                    }
                 }
             }
         };
@@ -486,7 +507,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         TabLayout tabLayout = findViewById(R.id.tablayout);
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
         ViewPager webViewPager = findViewById(R.id.webviewpager);
-        bookmarksListView = findViewById(R.id.bookmarks_drawer_listview);
+        ListView bookmarksListView = findViewById(R.id.bookmarks_drawer_listview);
         FloatingActionButton launchBookmarksActivityFab = findViewById(R.id.launch_bookmarks_activity_fab);
         FloatingActionButton createBookmarkFolderFab = findViewById(R.id.create_bookmark_folder_fab);
         FloatingActionButton createBookmarkFab = findViewById(R.id.create_bookmark_fab);
@@ -559,7 +580,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
                 // Instantiate the View SSL Certificate dialog.
-                DialogFragment viewSslCertificateDialogFragment = ViewSslCertificateDialog.displayDialog(currentWebView.getWebViewFragmentId(), currentWebView.getFavoriteOrDefaultIcon());
+                DialogFragment viewSslCertificateDialogFragment = ViewSslCertificateDialog.displayDialog(currentWebView.getWebViewFragmentId());
 
                 // Display the View SSL Certificate dialog.
                 viewSslCertificateDialogFragment.show(getSupportFragmentManager(), getString(R.string.view_ssl_certificate));
@@ -585,10 +606,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Set the launch bookmarks activity FAB to launch the bookmarks activity.
         launchBookmarksActivityFab.setOnClickListener(v -> {
-            // Store the current WebView url and title in the bookmarks activity.  // TODO.
-            BookmarksActivity.currentWebViewUrl = currentWebView.getUrl();
-            BookmarksActivity.currentWebViewTitle = currentWebView.getTitle();
-
             // Get a copy of the favorite icon bitmap.
             Bitmap favoriteIconBitmap = currentWebView.getFavoriteOrDefaultIcon();
 
@@ -605,6 +622,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             Intent bookmarksIntent = new Intent(getApplicationContext(), BookmarksActivity.class);
 
             // Add the extra information to the intent.
+            bookmarksIntent.putExtra("current_url", currentWebView.getUrl());
+            bookmarksIntent.putExtra("current_title", currentWebView.getTitle());
             bookmarksIntent.putExtra("current_folder", currentBookmarksFolder);
             bookmarksIntent.putExtra("favorite_icon_byte_array", favoriteIconByteArray);
 
@@ -831,32 +850,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Destroy the bare WebView.
         bareWebView.destroy();
-
-        // Get the intent that started the app.
-        Intent launchingIntent = getIntent();
-
-        // Get the information from the intent.
-        String launchingIntentAction = launchingIntent.getAction();
-        Uri launchingIntentUriData = launchingIntent.getData();
-
-        // If the intent action is a web search, perform the search.
-        if ((launchingIntentAction != null) && launchingIntentAction.equals(Intent.ACTION_WEB_SEARCH)) {
-            // Create an encoded URL string.
-            String encodedUrlString;
-
-            // Sanitize the search input and convert it to a search.
-            try {
-                encodedUrlString = URLEncoder.encode(launchingIntent.getStringExtra(SearchManager.QUERY), "UTF-8");
-            } catch (UnsupportedEncodingException exception) {
-                encodedUrlString = "";
-            }
-
-            // Add the base search URL.
-            formattedUrlString = searchURL + encodedUrlString;
-        } else if (launchingIntentUriData != null){  // Check to see if the intent contains a new URL.
-            // Set the formatted URL string.
-            formattedUrlString = launchingIntentUriData.toString();
-        }
     }
 
     @Override
@@ -873,6 +866,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Add a new tab.
             addTab(null);
 
+            // Create a URL string.
+            String url;
+
             // If the intent action is a web search, perform the search.
             if ((intentAction != null) && intentAction.equals(Intent.ACTION_WEB_SEARCH)) {
                 // Create an encoded URL string.
@@ -886,14 +882,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Add the base search URL.
-                formattedUrlString = searchURL + encodedUrlString;
+                url = searchURL + encodedUrlString;
             } else {  // The intent should contain a URL.
-                // Set the formatted URL string.
-                formattedUrlString = intentUriData.toString();
+                // Set the intent data as the URL.
+                url = intentUriData.toString();
             }
 
             // Load the URL.
-            loadUrl(formattedUrlString);
+            loadUrl(url);
 
             // Get a handle for the drawer layout.
             DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
@@ -935,7 +931,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Apply the app settings.
             applyAppSettings();
 
-            // Reload the webpage if displaying of images has been disabled in the Settings activity.
+            // Reload the webpage to handle changes to night mode and displaying of images.
             if (reloadOnRestart) {
                 // Reload the WebViews.
                 for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
@@ -966,19 +962,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // TODO apply to all the tabs.
         // Apply the domain settings if returning from the Domains activity.
         if (reapplyDomainSettingsOnRestart) {
-            // Reapply the domain settings.
-            applyDomainSettings(currentWebView, formattedUrlString, false, true);
+            // Reset the current domain name so the domain settings will be reapplied.
+            currentWebView.resetCurrentDomainName();
 
-            // Reset `reapplyDomainSettingsOnRestart`.
+            // Reapply the domain settings.
+            applyDomainSettings(currentWebView, currentWebView.getUrl(), false, true);  // TODO.
+
+            // Reset the reapply domain settings on restart tracker.
             reapplyDomainSettingsOnRestart = false;
         }
 
-        // Load the URL on restart to apply changes to night mode.
+        // Load the URL on restart (used when loading a bookmark.
         if (loadUrlOnRestart) {
-            // Load the current `formattedUrlString`.
-            loadUrl(formattedUrlString);
+            // Load the specified URL.
+            loadUrl(urlToLoadOnRestart);
 
-            // Reset `loadUrlOnRestart.
+            // Reset the load on restart tracker.
             loadUrlOnRestart = false;
         }
 
@@ -1146,7 +1145,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Get the status of the additional AppBar icons.
-        displayAdditionalAppBarIcons = sharedPreferences.getBoolean("display_additional_app_bar_icons", false);
+        boolean displayAdditionalAppBarIcons = sharedPreferences.getBoolean("display_additional_app_bar_icons", false);
 
         // Set the status of the additional app bar icons.  Setting the refresh menu item to `SHOW_AS_ACTION_ALWAYS` makes it appear even on small devices like phones.
         if (displayAdditionalAppBarIcons) {
@@ -1238,23 +1237,23 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             fanboysSocialBlockingListMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST) + " - " + getString(R.string.fanboys_social_blocking_list));
             ultraPrivacyMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.ULTRA_PRIVACY) + " - " + getString(R.string.ultraprivacy));
             blockAllThirdPartyRequestsMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.THIRD_PARTY_REQUESTS) + " - " + getString(R.string.block_all_third_party_requests));
+
+            // Only modify third-party cookies if the API >= 21.
+            if (Build.VERSION.SDK_INT >= 21) {
+                // Set the status of the third-party cookies checkbox.
+                thirdPartyCookiesMenuItem.setChecked(cookieManager.acceptThirdPartyCookies(currentWebView));
+
+                // Enable third-party cookies if first-party cookies are enabled.
+                thirdPartyCookiesMenuItem.setEnabled(firstPartyCookiesEnabled);
+            }
+
+            // Enable DOM Storage if JavaScript is enabled.
+            domStorageMenuItem.setEnabled(currentWebView.getSettings().getJavaScriptEnabled());
         }
 
         // Set the status of the menu item checkboxes.
         firstPartyCookiesMenuItem.setChecked(firstPartyCookiesEnabled);
         proxyThroughOrbotMenuItem.setChecked(proxyThroughOrbot);
-
-        // Only modify third-party cookies if the API >= 21.
-        if (Build.VERSION.SDK_INT >= 21) {
-            // Set the status of the third-party cookies checkbox.
-            thirdPartyCookiesMenuItem.setChecked(cookieManager.acceptThirdPartyCookies(currentWebView));
-
-            // Enable third-party cookies if first-party cookies are enabled.
-            thirdPartyCookiesMenuItem.setEnabled(firstPartyCookiesEnabled);
-        }
-
-        // Enable DOM Storage if JavaScript is enabled.
-        domStorageMenuItem.setEnabled(currentWebView.getSettings().getJavaScriptEnabled());
 
         // Enable Clear Cookies if there are any.
         clearCookiesMenuItem.setEnabled(cookieManager.hasCookies());
@@ -1441,7 +1440,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 if (currentWebView.getDomainSettingsApplied()) {  // Edit the current domain settings.
                     // Reapply the domain settings on returning to `MainWebViewActivity`.
                     reapplyDomainSettingsOnRestart = true;
-                    currentWebView.resetCurrentDomainName();
 
                     // TODO.  Move these to `putExtra`.  The certificate can be stored as strings.
                     // Store the current SSL certificate and IP addresses in the domains activity.
@@ -1451,19 +1449,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Create an intent to launch the domains activity.
                     Intent domainsIntent = new Intent(this, DomainsActivity.class);
 
-                    // Put extra information instructing the domains activity to directly load the current domain and close on back instead of returning to the domains list.
+                    // Add the extra information to the intent.
                     domainsIntent.putExtra("load_domain", currentWebView.getDomainSettingsDatabaseId());
                     domainsIntent.putExtra("close_on_back", true);
+                    domainsIntent.putExtra("current_url", currentWebView.getUrl());
 
                     // Make it so.
                     startActivity(domainsIntent);
                 } else {  // Add a new domain.
                     // Apply the new domain settings on returning to `MainWebViewActivity`.
                     reapplyDomainSettingsOnRestart = true;
-                    currentWebView.resetCurrentDomainName();
 
                     // Get the current domain
-                    Uri currentUri = Uri.parse(formattedUrlString);
+                    Uri currentUri = Uri.parse(currentWebView.getUrl());
                     String currentDomain = currentUri.getHost();
 
                     // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
@@ -1480,9 +1478,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Create an intent to launch the domains activity.
                     Intent domainsIntent = new Intent(this, DomainsActivity.class);
 
-                    // Put extra information instructing the domains activity to directly load the new domain and close on back instead of returning to the domains list.
+                    // Add the extra information to the intent.
                     domainsIntent.putExtra("load_domain", newDomainDatabaseId);
                     domainsIntent.putExtra("close_on_back", true);
+                    domainsIntent.putExtra("current_url", currentWebView.getUrl());
 
                     // Make it so.
                     startActivity(domainsIntent);
@@ -1974,6 +1973,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Set the focus on `findOnPageEditText`.
                     findOnPageEditText.requestFocus();
 
+                    // Get a handle for the input method manager.
+                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                    // Remove the lint warning below that the input method manager might be null.
+                    assert inputMethodManager != null;
+
                     // Display the keyboard.  `0` sets no input flags.
                     inputMethodManager.showSoftInput(findOnPageEditText, 0);
                 }, 200);
@@ -1983,8 +1988,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Create an intent to launch the view source activity.
                 Intent viewSourceIntent = new Intent(this, ViewSourceActivity.class);
 
-                // Add the user agent as an extra to the intent.
+                // Add the variables to the intent.
                 viewSourceIntent.putExtra("user_agent", currentWebView.getSettings().getUserAgentString());
+                viewSourceIntent.putExtra("current_url", currentWebView.getUrl());
 
                 // Make it so.
                 startActivity(viewSourceIntent);
@@ -1992,7 +1998,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.share_url:
                 // Setup the share string.
-                String shareString = currentWebView.getTitle() + " – " + formattedUrlString;
+                String shareString = currentWebView.getTitle() + " – " + currentWebView.getUrl();
 
                 // Create the share intent.
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
@@ -2018,16 +2024,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 return true;
 
             case R.id.open_with_app:
-                openWithApp(formattedUrlString);
+                openWithApp(currentWebView.getUrl());
                 return true;
 
             case R.id.open_with_browser:
-                openWithBrowser(formattedUrlString);
+                openWithBrowser(currentWebView.getUrl());
                 return true;
 
             case R.id.add_to_homescreen:
                 // Instantiate the create home screen shortcut dialog.
-                DialogFragment createHomeScreenShortcutDialogFragment = CreateHomeScreenShortcutDialog.createDialog(currentWebView.getTitle(), formattedUrlString, currentWebView.getFavoriteOrDefaultIcon());
+                DialogFragment createHomeScreenShortcutDialogFragment = CreateHomeScreenShortcutDialog.createDialog(currentWebView.getTitle(), currentWebView.getUrl(),
+                        currentWebView.getFavoriteOrDefaultIcon());
 
                 // Show the create home screen shortcut dialog.
                 createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getString(R.string.create_shortcut));
@@ -2234,9 +2241,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     }
                 }
 
-                // Clear the formatted URL string.
-                formattedUrlString = null;
-
                 // Clear the custom headers.
                 customHeaders.clear();
 
@@ -2271,8 +2275,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.back:
                 if (currentWebView.canGoBack()) {
-                    // Reset the formatted URL string so the page will load correctly if blocking of third-party requests is enabled.
-                    formattedUrlString = "";
+                    // Reset the current domain name so that navigation works if third-party requests are blocked.
+                    currentWebView.resetCurrentDomainName();
 
                     // Set `navigatingHistory` so that the domain settings are applied when the new URL is loaded.
                     navigatingHistory = true;
@@ -2284,8 +2288,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.forward:
                 if (currentWebView.canGoForward()) {
-                    // Reset the formatted URL string so the page will load correctly if blocking of third-party requests is enabled.
-                    formattedUrlString = "";
+                    // Reset the current domain name so that navigation works if third-party requests are blocked.
+                    currentWebView.resetCurrentDomainName();
 
                     // Set `navigatingHistory` so that the domain settings are applied when the new URL is loaded.
                     navigatingHistory = true;
@@ -2331,7 +2335,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             case R.id.domains:
                 // Set the flag to reapply the domain settings on restart when returning from Domain Settings.
                 reapplyDomainSettingsOnRestart = true;
-                currentWebView.resetCurrentDomainName();  // TODO.  Do this for all tabs.
 
                 // TODO.  Move these to `putExtra`.  The certificate can be stored as strings.
                 // Store the current SSL certificate and IP addresses in the domains activity.
@@ -2340,6 +2343,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Launch the domains activity.
                 Intent domainsIntent = new Intent(this, DomainsActivity.class);
+
+                // Add the extra information to the intent.
+                domainsIntent.putExtra("current_url", currentWebView.getUrl());
+
+                // Make it so.
                 startActivity(domainsIntent);
                 break;
 
@@ -2349,7 +2357,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Set the flag to reapply the domain settings on restart when returning from Settings.
                 reapplyDomainSettingsOnRestart = true;
-                currentWebView.resetCurrentDomainName();  // TODO.  Do this for all tabs.
 
                 // Launch the settings activity.
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);
@@ -2428,20 +2435,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
-        // Store the `HitTestResult`.
+        // Store the hit test result.
         final WebView.HitTestResult hitTestResult = currentWebView.getHitTestResult();
 
-        // Create strings.
+        // Create the URL strings.
         final String imageUrl;
         final String linkUrl;
 
-        // Get a handle for the the clipboard and fragment managers.
+        // Get handles for the the clipboard and fragment managers.
         final ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        // Remove the lint errors below that `clipboardManager` might be `null`.
+        // Remove the lint errors below that the clipboard manager might be null.
         assert clipboardManager != null;
 
+        // Process the link according to the type.
         switch (hitTestResult.getType()) {
             // `SRC_ANCHOR_TYPE` is a link.
             case WebView.HitTestResult.SRC_ANCHOR_TYPE:
@@ -2452,8 +2460,24 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 menu.setHeaderTitle(linkUrl);
 
                 // Add a Load URL entry.
-                menu.add(R.string.load_url).setOnMenuItemClickListener((MenuItem item) -> {
+                menu.add(R.string.open_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Add a new tab.
+                    addTab(null);
+
+                    // Load the URL.
                     loadUrl(linkUrl);
+                    return false;
+                });
+
+                // Add an Open with App entry.
+                menu.add(R.string.open_with_app).setOnMenuItemClickListener((MenuItem item) -> {
+                    openWithApp(linkUrl);
+                    return false;
+                });
+
+                // Add an Open with Browser entry.
+                menu.add(R.string.open_with_browser).setOnMenuItemClickListener((MenuItem item) -> {
+                    openWithBrowser(linkUrl);
                     return false;
                 });
 
@@ -2499,18 +2523,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             downloadFileDialogFragment.show(fragmentManager, getString(R.string.download));
                         }
                     }
-                    return false;
-                });
-
-                // Add an Open with App entry.
-                menu.add(R.string.open_with_app).setOnMenuItemClickListener((MenuItem item) -> {
-                    openWithApp(linkUrl);
-                    return false;
-                });
-
-                // Add an Open with Browser entry.
-                menu.add(R.string.open_with_browser).setOnMenuItemClickListener((MenuItem item) -> {
-                    openWithBrowser(linkUrl);
                     return false;
                 });
 
@@ -2706,6 +2718,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void onCreateBookmark(DialogFragment dialogFragment, Bitmap favoriteIconBitmap) {
+        // Get a handle for the bookmarks list view.
+        ListView bookmarksListView = findViewById(R.id.bookmarks_drawer_listview);
+
         // Get the views from the dialog fragment.
         EditText createBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.create_bookmark_name_edittext);
         EditText createBookmarkUrlEditText = dialogFragment.getDialog().findViewById(R.id.create_bookmark_url_edittext);
@@ -2741,6 +2756,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void onCreateBookmarkFolder(DialogFragment dialogFragment, Bitmap favoriteIconBitmap) {
+        // Get a handle for the bookmarks list view.
+        ListView bookmarksListView = findViewById(R.id.bookmarks_drawer_listview);
+
         // Get handles for the views in the dialog fragment.
         EditText createFolderNameEditText = dialogFragment.getDialog().findViewById(R.id.create_folder_name_edittext);
         RadioButton defaultFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon_radiobutton);
@@ -3100,8 +3118,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     @Override
     public void onPinnedMismatchBack() {  // TODO.  Move this logic to the dialog.
         if (currentWebView.canGoBack()) {  // There is a back page in the history.
-            // Reset the formatted URL string so the page will load correctly if blocking of third-party requests is enabled.
-            formattedUrlString = "";  // TODO.
+            // Reset the current domain name so that navigation works if third-party requests are blocked.
+            currentWebView.resetCurrentDomainName();
 
             // Set `navigatingHistory` so that the domain settings are applied when the new URL is loaded.
             navigatingHistory = true;  // TODO.
@@ -3122,8 +3140,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void onUrlHistoryEntrySelected(int moveBackOrForwardSteps) {
-        // Reset the formatted URL string so the page will load correctly if blocking of third-party requests is enabled.
-        formattedUrlString = "";
+        // Reset the current domain name so that navigation works if third-party requests are blocked.
+        currentWebView.resetCurrentDomainName();
 
         // Set `navigatingHistory` so that the domain settings are applied when the new URL is loaded.
         navigatingHistory = true;
@@ -3138,7 +3156,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         currentWebView.clearHistory();
     }
 
-    // Override `onBackPressed` to handle the navigation drawer and `mainWebView`.
+    // Override `onBackPressed` to handle the navigation drawer and and the WebView.
     @Override
     public void onBackPressed() {
         // Get a handle for the drawer layout.
@@ -3158,10 +3176,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Load the new folder.
                 loadBookmarksFolder();
             }
-
         } else if (currentWebView.canGoBack()) {  // There is at least one item in the current WebView history.
-            // Reset the formatted URL string so the page will load correctly if blocking of third-party requests is enabled.
-            formattedUrlString = "";
+            // Reset the current domain name so that navigation works if third-party requests are blocked.
+            currentWebView.resetCurrentDomainName();
 
             // Set `navigatingHistory` so that the domain settings are applied when the new URL is loaded.
             navigatingHistory = true;
@@ -3191,12 +3208,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get the text from urlTextBox and convert it to a string.  trim() removes white spaces from the beginning and end of the string.
         String unformattedUrlString = urlEditText.getText().toString().trim();
 
+        // Initialize the formatted URL string.
+        String url = "";
+
         // Check to see if `unformattedUrlString` is a valid URL.  Otherwise, convert it into a search.
-        if (unformattedUrlString.startsWith("content://")) {
+        if (unformattedUrlString.startsWith("content://")) {  // This is a Content URL.
             // Load the entire content URL.
-            formattedUrlString = unformattedUrlString;
-        } else if (Patterns.WEB_URL.matcher(unformattedUrlString).matches() || unformattedUrlString.startsWith("http://") || unformattedUrlString.startsWith("https://")
-                || unformattedUrlString.startsWith("file://")) {
+            url = unformattedUrlString;
+        } else if (Patterns.WEB_URL.matcher(unformattedUrlString).matches() || unformattedUrlString.startsWith("http://") || unformattedUrlString.startsWith("https://") ||
+                unformattedUrlString.startsWith("file://")) {  // This is a standard URL.
             // Add `https://` at the beginning if there is no protocol.  Otherwise the app will segfault.
             if (!unformattedUrlString.startsWith("http") && !unformattedUrlString.startsWith("file://") && !unformattedUrlString.startsWith("content://")) {
                 unformattedUrlString = "https://" + unformattedUrlString;
@@ -3220,20 +3240,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             String fragment = unformattedUrl != null ? unformattedUrl.getRef() : null;
 
             // Build the URI.
-            Uri.Builder formattedUri = new Uri.Builder();
-            formattedUri.scheme(scheme).authority(authority).path(path).query(query).fragment(fragment);
+            Uri.Builder uri = new Uri.Builder();
+            uri.scheme(scheme).authority(authority).path(path).query(query).fragment(fragment);
 
-            // Decode `formattedUri` as a `String` in `UTF-8`.
+            // Decode the URI as a UTF-8 string in.
             try {
-                formattedUrlString = URLDecoder.decode(formattedUri.build().toString(), "UTF-8");
+                url = URLDecoder.decode(uri.build().toString(), "UTF-8");
             } catch (UnsupportedEncodingException exception) {
-                // Load a blank string.
-                formattedUrlString = "";
+                // Do nothing.  The formatted URL string will remain blank.
             }
-        } else if (unformattedUrlString.isEmpty()){  // Load a blank web site.
-            // Load a blank string.
-            formattedUrlString = "";
-        } else {  // Search for the contents of the URL box.
+        } else if (!unformattedUrlString.isEmpty()){  // This is not a URL, but rather a search string.
             // Create an encoded URL String.
             String encodedUrlString;
 
@@ -3245,20 +3261,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
 
             // Add the base search URL.
-            formattedUrlString = searchURL + encodedUrlString;
+            url = searchURL + encodedUrlString;
         }
 
         // Clear the focus from the URL edit text.  Otherwise, proximate typing in the box will retain the colorized formatting instead of being reset during refocus.
         urlEditText.clearFocus();
 
         // Make it so.
-        loadUrl(formattedUrlString);
+        loadUrl(url);
     }
 
-    private void loadUrl(String url) {// Apply any custom domain settings.
-        // Set the URL as the formatted URL string so that checking third-party requests works correctly.
-        formattedUrlString = url;
-
+    private void loadUrl(String url) {
         // Apply the domain settings.
         applyDomainSettings(currentWebView, url, true, false);
 
@@ -3293,6 +3306,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Show the toolbar.
         toolbar.setVisibility(View.VISIBLE);
+
+        // Get a handle for the input method manager.
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        // Remove the lint warning below that the input method manager might be null.
+        assert inputMethodManager != null;
 
         // Hide the keyboard.
         inputMethodManager.hideSoftInputFromWindow(currentWebView.getWindowToken(), 0);
@@ -3864,11 +3883,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Set `torHomepageString` as `homepage`.
             homepage = torHomepageString;
 
-            // If formattedUrlString is null assign the homepage to it.
-            if (formattedUrlString == null) {
-                formattedUrlString = homepage;
-            }
-
             // Set the search URL.
             if (torSearchString.equals("Custom URL")) {  // Get the custom URL string.
                 searchURL = torSearchCustomUrlString;
@@ -3903,11 +3917,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         } else {  // Set the non-Tor options.
             // Set `homepageString` as `homepage`.
             homepage = homepageString;
-
-            // If formattedUrlString is null assign the homepage to it.
-            if (formattedUrlString == null) {
-                formattedUrlString = homepage;
-            }
 
             // Set the search URL.
             if (searchString.equals("Custom URL")) {  // Get the custom URL string.
@@ -3953,8 +3962,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void updatePrivacyIcons(boolean runInvalidateOptionsMenu) {
-        // Only update the privacy icons if the options menu has already been populated.
-        if (optionsMenu != null) {
+        // Only update the privacy icons if the options menu and the current WebView have already been populated.
+        if ((optionsMenu != null) && (currentWebView != null)) {
             // Get handles for the menu items.
             MenuItem privacyMenuItem = optionsMenu.findItem(R.id.toggle_javascript);
             MenuItem firstPartyCookiesMenuItem = optionsMenu.findItem(R.id.toggle_first_party_cookies);
@@ -4130,7 +4139,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
         };
 
-        // Populate the `ListView` with the adapter.
+        // Get a handle for the bookmarks list view.
+        ListView bookmarksListView = findViewById(R.id.bookmarks_drawer_listview);
+
+        // Populate the list view with the adapter.
         bookmarksListView.setAdapter(bookmarksCursorAdapter);
 
         // Get a handle for the bookmarks title text view.
@@ -4234,17 +4246,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Update the privacy icons.  `true` redraws the icons in the app bar.
         updatePrivacyIcons(true);
 
-        // Store the current formatted URL string.
-        formattedUrlString = currentWebView.getUrl();
-
         // Clear the focus from the URL text box.
         urlEditText.clearFocus();
+
+        // Get a handle for the input method manager.
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        // Remove the lint warning below that the input method manager might be null.
+        assert inputMethodManager != null;
 
         // Hide the soft keyboard.
         inputMethodManager.hideSoftInputFromWindow(currentWebView.getWindowToken(), 0);
 
         // Display the current URL in the URL text box.
-        urlEditText.setText(formattedUrlString);
+        urlEditText.setText(currentWebView.getUrl());
 
         // Highlight the URL text.
         highlightUrlText();
@@ -4278,6 +4293,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Get a handle for the activity
         Activity activity = this;
+
+        // Get a handle for the input method manager.
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        // Remove the lint warning below that the input method manager might be null.
+        assert inputMethodManager != null;
 
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -4698,10 +4719,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.startsWith("http")) {  // Load the URL in Privacy Browser.
-                    // Reset the formatted URL string so the page will load correctly if blocking of third-party requests is enabled.
-                    formattedUrlString = "";
-
-                    // Apply the domain settings for the new URL.  `applyDomainSettings` doesn't do anything if the domain has not changed.
+                    // Apply the domain settings for the new URL.  This doesn't do anything if the domain has not changed.
                     boolean userAgentChanged = applyDomainSettings(nestedScrollWebView, url, true, false);
 
                     // Check if the user agent has changed.
@@ -4792,24 +4810,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Initialize the third party request tracker.
                 boolean isThirdPartyRequest = false;
 
-                // Initialize the current domain string.
-                String currentDomain = "";
+                // Get the current URL.  `.getUrl()` throws an error because operations on the WebView cannot be made from this thread.
+                String currentBaseDomain = nestedScrollWebView.getCurrentDomainName();
+
+                // Store a copy of the current domain for use in later requests.
+                String currentDomain = currentBaseDomain;
 
                 // Nobody is happy when comparing null strings.
-                if (!(formattedUrlString == null) && !(url == null)) {
-                    // Get the domain strings to URIs.
-                    Uri currentDomainUri = Uri.parse(formattedUrlString);
-                    Uri requestDomainUri = Uri.parse(url);
+                if ((currentBaseDomain != null) && (url != null)) {
+                    // Convert the request URL to a URI.
+                    Uri requestUri = Uri.parse(url);
 
-                    // Get the domain host names.
-                    String currentBaseDomain = currentDomainUri.getHost();
-                    String requestBaseDomain = requestDomainUri.getHost();
+                    // Get the request host name.
+                    String requestBaseDomain = requestUri.getHost();
 
-                    // Update the current domain variable.
-                    currentDomain = currentBaseDomain;
-
-                    // Only compare the current base domain and the request base domain if neither is null.
-                    if (!(currentBaseDomain == null) && !(requestBaseDomain == null)) {
+                    // Only check for third-party requests if the current base domain is not empty and the request domain is not null.
+                    if (!currentBaseDomain.isEmpty() && (requestBaseDomain != null)) {
                         // Determine the current base domain.
                         while (currentBaseDomain.indexOf(".", currentBaseDomain.indexOf(".") + 1) > 0) {  // There is at least one subdomain.
                             // Remove the first subdomain.
@@ -5072,20 +5088,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Check to see if Privacy Browser is waiting on Orbot.
                 if (!waitingForOrbot) {  // Process the URL.
-                    // The formatted URL string must be updated at the beginning of the load, so that if the user toggles JavaScript during the load the new website is reloaded.
-                    formattedUrlString = url;
-
                     // Display the formatted URL text.
-                    urlEditText.setText(formattedUrlString);
+                    urlEditText.setText(url);
 
                     // Apply text highlighting to `urlTextBox`.
                     highlightUrlText();
 
-                    // Get a URI for the current URL.
-                    Uri currentUri = Uri.parse(formattedUrlString);
-
                     // Reset the list of host IP addresses.
                     nestedScrollWebView.clearCurrentIpAddresses();
+
+                    // Get a URI for the current URL.
+                    Uri currentUri = Uri.parse(url);
 
                     // Get the IP addresses for the host.
                     new GetHostIpAddresses(activity, getSupportFragmentManager(), nestedScrollWebView).execute(currentUri.getHost());
@@ -5100,7 +5113,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // Manually load the URL if the user agent has changed, which will have caused the previous URL to be reloaded.
                         if (userAgentChanged) {
-                            loadUrl(formattedUrlString);
+                            loadUrl(url);
                         }
                     }
 
@@ -5111,6 +5124,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // Set the title.
                         refreshMenuItem.setTitle(R.string.stop);
+
+                        // Get the status of the additional AppBar icons.
+                        boolean displayAdditionalAppBarIcons = sharedPreferences.getBoolean("display_additional_app_bar_icons", false);
 
                         // If the icon is displayed in the AppBar, set it according to the theme.
                         if (displayAdditionalAppBarIcons) {
@@ -5124,7 +5140,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
             }
 
-            // It is necessary to update `formattedUrlString` and `urlTextBox` after the page finishes loading because the final URL can change during load.
             @Override
             public void onPageFinished(WebView view, String url) {
                 // Reset the wide view port if it has been turned off by the waiting for Orbot message.
@@ -5145,6 +5160,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Reset the Refresh title.
                     refreshMenuItem.setTitle(R.string.refresh);
+
+                    // Get the status of the additional AppBar icons.
+                    boolean displayAdditionalAppBarIcons = sharedPreferences.getBoolean("display_additional_app_bar_icons", false);
 
                     // If the icon is displayed in the AppBar, reset it according to the theme.
                     if (displayAdditionalAppBarIcons) {
@@ -5181,10 +5199,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Update the URL text box and apply domain settings if not waiting on Orbot.
                 if (!waitingForOrbot) {
                     // Check to see if `WebView` has set `url` to be `about:blank`.
-                    if (url.equals("about:blank")) {  // `WebView` is blank, so `formattedUrlString` should be `""` and `urlTextBox` should display a hint.
-                        // Set `formattedUrlString` to `""`.
-                        formattedUrlString = "";
-
+                    if (url.equals("about:blank")) {  // The WebView is blank.
                         // Display the hint in the URL edit text.
                         urlEditText.setText("");
 
@@ -5198,15 +5213,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         nestedScrollWebView.setVisibility(View.GONE);
 
                         // Apply the domain settings.  This clears any settings from the previous domain.
-                        applyDomainSettings(nestedScrollWebView, formattedUrlString, true, false);
-                    } else {  // `WebView` has loaded a webpage.
-                        // Set the formatted URL string.  Getting the URL from the WebView instead of using the one provided by `onPageFinished` makes websites like YouTube function correctly.
-                        formattedUrlString = nestedScrollWebView.getUrl();
-
+                        applyDomainSettings(nestedScrollWebView, "", true, false);
+                    } else {  // The WebView has loaded a webpage.
                         // Only update the URL text box if the user is not typing in it.
                         if (!urlEditText.hasFocus()) {
-                            // Display the formatted URL text.
-                            urlEditText.setText(formattedUrlString);
+                            // Display the final URL.  Getting the URL from the WebView instead of using the one provided by `onPageFinished` makes websites like YouTube function correctly.
+                            urlEditText.setText(nestedScrollWebView.getUrl());
 
                             // Apply text highlighting to `urlTextBox`.
                             highlightUrlText();
@@ -5276,7 +5288,34 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Load the website if not waiting for Orbot to connect.
             if (!waitingForOrbot) {
-                loadUrl(formattedUrlString);
+                // Get the intent that started the app.
+                Intent launchingIntent = getIntent();
+
+                // Get the information from the intent.
+                String launchingIntentAction = launchingIntent.getAction();
+                Uri launchingIntentUriData = launchingIntent.getData();
+
+                // If the intent action is a web search, perform the search.
+                if ((launchingIntentAction != null) && launchingIntentAction.equals(Intent.ACTION_WEB_SEARCH)) {
+                    // Create an encoded URL string.
+                    String encodedUrlString;
+
+                    // Sanitize the search input and convert it to a search.
+                    try {
+                        encodedUrlString = URLEncoder.encode(launchingIntent.getStringExtra(SearchManager.QUERY), "UTF-8");
+                    } catch (UnsupportedEncodingException exception) {
+                        encodedUrlString = "";
+                    }
+
+                    // Load the completed search URL.
+                    loadUrl(searchURL + encodedUrlString);
+                } else if (launchingIntentUriData != null){  // Check to see if the intent contains a new URL.
+                    // Load the URL from the intent.
+                    loadUrl(launchingIntentUriData.toString());
+                } else {  // The is no URL in the intent.
+                    // Load the homepage.
+                    loadUrl(homepage);
+                }
             }
         }
     }

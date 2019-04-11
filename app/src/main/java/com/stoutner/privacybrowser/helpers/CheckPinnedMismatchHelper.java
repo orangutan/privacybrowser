@@ -121,7 +121,7 @@ public class CheckPinnedMismatchHelper {
                 !currentWebsiteSslEndDateString.equals(pinnedSslEndDateString)))) {
 
             // Get a handle for the pinned mismatch alert dialog.
-            DialogFragment pinnedMismatchDialogFragment = PinnedMismatchDialog.displayDialog(nestedScrollWebView.getWebViewFragmentId(), nestedScrollWebView.getFavoriteOrDefaultIcon());
+            DialogFragment pinnedMismatchDialogFragment = PinnedMismatchDialog.displayDialog(nestedScrollWebView.getWebViewFragmentId());
 
             // Show the pinned mismatch alert dialog.
             pinnedMismatchDialogFragment.show(fragmentManager, "Pinned Mismatch");

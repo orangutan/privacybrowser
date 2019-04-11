@@ -53,22 +53,12 @@ import java.util.Date;
 // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
 @SuppressLint("InflateParams")
 public class ViewSslCertificateDialog extends DialogFragment {
-    public static ViewSslCertificateDialog displayDialog(long webViewFragmentId, Bitmap favoriteIconBitmap) {
-        // Create a favorite icon byte array output stream.
-        ByteArrayOutputStream favoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
-
-        // Convert the favorite icon to a PNG and place it in the byte array output stream.  `0` is for lossless compression (the only option for a PNG).
-        favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
-
-        // Convert the byte array output stream to a byte array.
-        byte[] favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray();
-
+    public static ViewSslCertificateDialog displayDialog(long webViewFragmentId) {
         // Create an arguments bundle.
         Bundle argumentsBundle = new Bundle();
 
-        // Store the variables in the bundle.
+        // Store the WebView fragment ID in the bundle.
         argumentsBundle.putLong("webview_fragment_id", webViewFragmentId);
-        argumentsBundle.putByteArray("favorite_icon_byte_array", favoriteIconByteArray);
 
         // Create a new instance of the dialog.
         ViewSslCertificateDialog viewSslCertificateDialog = new ViewSslCertificateDialog();
@@ -93,15 +83,6 @@ public class ViewSslCertificateDialog extends DialogFragment {
 
         // Remove the incorrect lint warning below that `getArguments().getLong()` might be null.
         assert arguments != null;
-
-        // Get the favorite icon byte array.
-        byte[] favoriteIconByteArray = arguments.getByteArray("favorite_icon_byte_array");
-
-        // Remove the incorrect lint warning below that the favorite icon byte array might be null.
-        assert favoriteIconByteArray != null;
-
-        // Convert the favorite icon byte array to a bitmap.
-        Bitmap favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.length);
 
         // Get the current position of this WebView fragment.
         int webViewPosition = MainWebViewActivity.webViewPagerAdapter.getPositionForId(arguments.getLong("webview_fragment_id"));
@@ -129,7 +110,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
         }
 
         // Create a drawable version of the favorite icon.
-        Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), favoriteIconBitmap);
+        Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), nestedScrollWebView.getFavoriteOrDefaultIcon());
 
         // Set the icon.
         dialogBuilder.setIcon(favoriteIconDrawable);
@@ -207,7 +188,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
             String endDateLabel = getString(R.string.end_date) + "  ";
 
             // Convert the formatted URL string to a URI.
-            Uri uri = Uri.parse(MainWebViewActivity.formattedUrlString);
+            Uri uri = Uri.parse(nestedScrollWebView.getUrl());
 
             // Extract the domain name from the URI.
             String domainString = uri.getHost();

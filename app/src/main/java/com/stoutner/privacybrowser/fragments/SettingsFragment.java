@@ -1490,7 +1490,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                 case "night_mode":
                     // Set the URL to be reloaded on restart to apply the new night mode setting.
-                    MainWebViewActivity.loadUrlOnRestart = true;
+                    MainWebViewActivity.reloadOnRestart = true;
 
                     // Store the current night mode status.
                     boolean currentNightModeBoolean = sharedPreferences.getBoolean("night_mode", false);

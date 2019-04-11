@@ -180,7 +180,7 @@
     <string name="stop">Stop</string>
 
     <!-- Context Menus. -->
-    <string name="load_url">Load URL</string>
+    <string name="open_in_new_tab">Open in New Tab</string>
     <string name="copy_url">Copy URL</string>
     <string name="download_url">Download URL</string>
     <string name="email_address">Email Address</string>

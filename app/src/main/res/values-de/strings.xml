@@ -176,7 +176,6 @@
     <string name="stop">Stop</string>
 
     <!-- Context Menus. -->
-    <string name="load_url">URL laden</string>
     <string name="copy_url">URL kopieren</string>
     <string name="download_url">Download URL</string>
     <string name="email_address">E-Mail-Adresse</string>

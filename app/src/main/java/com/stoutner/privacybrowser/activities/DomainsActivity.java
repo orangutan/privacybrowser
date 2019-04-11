@@ -149,6 +149,9 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         // Get the status of close-on-back, which is true when the domains activity is called from the options menu.
         closeOnBack = intent.getBooleanExtra("close_on_back", false);
 
+        // Get the current URL.
+        String currentUrl = intent.getStringExtra("current_url");
+
         // Set the content view.
         setContentView(R.layout.domains_coordinatorlayout);
 
@@ -175,11 +178,15 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         // Determine if we are in two pane mode.  `domain_settings_fragment_container` does not exist on devices with a width less than 900dp.
         twoPanedMode = (findViewById(R.id.domain_settings_fragment_container) != null);
 
-        // Configure `addDomainFAB`.
+        // Get a handle for the add domain floating action button.
         addDomainFAB = findViewById(R.id.add_domain_fab);
+
+        // Configure the add domain floating action button.
         addDomainFAB.setOnClickListener((View view) -> {
-            // Show the add domain `AlertDialog`.
-            DialogFragment addDomainDialog = new AddDomainDialog();
+            // Create an add domain dialog.
+            DialogFragment addDomainDialog = AddDomainDialog.addDomain(currentUrl);
+
+            // Show the add domain dialog.
             addDomainDialog.show(getSupportFragmentManager(), resources.getString(R.string.add_domain));
         });
     }
@@ -229,7 +236,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                 // Show `deleteMenuItem`.
                 deleteMenuItem.setVisible(true);
 
-                // Hide `add_domain_fab`.
+                // Hide the add domain floating action button.
                 addDomainFAB.hide();
 
                 // Display `domainSettingsFragment`.
@@ -260,7 +267,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                     // Show `deleteMenuItem`.
                     deleteMenuItem.setVisible(true);
 
-                    // Hide `add_domain_fab`.
+                    // Hide the add domain floating action button.
                     addDomainFAB.hide();
 
                     // Display `domainSettingsFragment`.
@@ -326,7 +333,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                     // Populate the list of domains.  `-1` highlights the first domain if in two-paned mode.  It has no effect in single-paned mode.
                     populateDomainsListView(-1);
 
-                    // Show the add domain FAB.
+                    // Show the add domain floating action button.
                     addDomainFAB.show();
 
                     // Hide the delete menu item.
@@ -370,7 +377,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                     fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainsListFragment).commit();
                     fragmentManager.executePendingTransactions();
 
-                    // Show the add domain FAB.
+                    // Show the add domain floating action button.
                     addDomainFAB.show();
 
                     // Hide `deleteMenuItem`.
@@ -463,7 +470,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                                             // Display `domainSettingsFragment`.
                                             fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
 
-                                            // Hide the add domain FAB.
+                                            // Hide the add domain floating action button.
                                             addDomainFAB.hide();
 
                                             // Show and enable `deleteMenuItem`.
@@ -587,7 +594,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             // Populate the list of domains.  `-1` highlights the first domain if in two-paned mode.  It has no effect in single-paned mode.
             populateDomainsListView(-1);
 
-            // Show the add domain FAB.
+            // Show the add domain floating action button.
             addDomainFAB.show();
 
             // Hide the delete menu item.
@@ -625,7 +632,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         if (twoPanedMode) {  // The device in in two-paned mode.
             populateDomainsListView(currentDomainDatabaseId);
         } else {  // The device is in single-paned mode.
-            // Hide the add domain FAB.
+            // Hide the add domain floating action button.
             addDomainFAB.hide();
 
             // Show and enable `deleteMenuItem`.

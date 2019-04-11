@@ -79,10 +79,6 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     // `restartFromBookmarksDatabaseViewActivity` is public static so it can be accessed from `BookmarksDatabaseViewActivity`.  It is also used in `onRestart()`.
     public static boolean restartFromBookmarksDatabaseViewActivity;
 
-    //  The current WebView strings are public static so they can be updated from `MainWebViewActivity`.  They are use in `onCreate()`.
-    public static String currentWebViewUrl;
-    public static String currentWebViewTitle;
-
 
     // `bookmarksDatabaseHelper` is used in `onCreate()`, `onOptionsItemSelected()`, `onBackPressed()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveBookmark()`, `onSaveBookmarkFolder()`,
     // `onMoveToFolder()`, `deleteBookmarkFolderContents()`, `loadFolder()`, and `onDestroy()`.
@@ -143,6 +139,10 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Get the intent that launched the activity.
         Intent launchingIntent = getIntent();
 
+        // Store the current URL and title.
+        String currentUrl = launchingIntent.getStringExtra("current_url");
+        String currentTitle = launchingIntent.getStringExtra("current_title");
+
         // Set the current folder variable.
         if (launchingIntent.getStringExtra("current_folder") != null) {  // Set the current folder from the intent.
             currentFolder = launchingIntent.getStringExtra("current_folder");
@@ -199,7 +199,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                 loadFolder();
             } else {  // The selected bookmark is not a folder.
                 // Get the bookmark URL and assign it to `formattedUrlString`.
-                MainWebViewActivity.formattedUrlString = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL));
+                MainWebViewActivity.urlToLoadOnRestart = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL));
 
                 // Set `MainWebViewActivity` to load the new URL on restart.
                 MainWebViewActivity.loadUrlOnRestart = true;
@@ -569,7 +569,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
         // Set the create new bookmark FAB to display the `AlertDialog`.
         createBookmarkFab.setOnClickListener(view -> {
             // Instantiate the create bookmark dialog.
-            DialogFragment createBookmarkDialog = CreateBookmarkDialog.createBookmark(currentWebViewUrl, currentWebViewTitle, favoriteIconBitmap);
+            DialogFragment createBookmarkDialog = CreateBookmarkDialog.createBookmark(currentUrl, currentTitle, favoriteIconBitmap);
 
             // Display the create bookmark dialog.
             createBookmarkDialog.show(getSupportFragmentManager(), getResources().getString(R.string.create_bookmark));

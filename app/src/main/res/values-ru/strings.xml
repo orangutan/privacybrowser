@@ -170,7 +170,6 @@
     <string name="stop">Остановить</string>
 
     <!-- Context Menus. -->
-    <string name="load_url">Открыть URL</string>
     <string name="copy_url">Копировать URL</string>
     <string name="download_url">Загрузить URL</string>
     <string name="email_address">Адрес email</string>

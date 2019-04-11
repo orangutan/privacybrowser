@@ -21,24 +21,24 @@
 <resources>
     <attr name="appBarTheme" format="reference" />
     <attr name="appBarTextTheme" format="reference" />
+    <attr name="dialogTabLayoutTheme" format="reference" />
     <attr name="popupsTheme" format="reference" />
     <attr name="tabLayoutTheme" format="reference" />
-    <attr name="dialogTabLayoutTheme" format="reference" />
 
-    <attr name="mainStatusBarBackground" format="reference" />
+    <attr name="aboutBackground" format="reference" />
     <attr name="aboutTitle" format="reference" />
     <attr name="aboutText" format="reference" />
-    <attr name="aboutBackground" format="reference" />
+    <attr name="appbarSpinnerTextColorSelector" format="reference" />
+    <attr name="buttonBackgroundColorSelector" format="reference" />
+    <attr name="buttonTextColorSelector" format="reference" />
+    <attr name="mainStatusBarBackground" format="reference" />
+    <attr name="redText" format="reference" />
     <attr name="sslTitle" format="reference" />
     <attr name="sslHeader" format="reference" />
-    <attr name="urlHistoryText" format="reference" />
     <attr name="spinnerHeaderTextColor" format="reference" />
     <attr name="spinnerBackground" format="reference" />
     <attr name="spinnerTextColorSelector" format="reference" />
-    <attr name="appbarSpinnerTextColorSelector" format="reference" />
-    <attr name="buttonTextColorSelector" format="reference" />
-    <attr name="buttonBackgroundColorSelector" format="reference" />
-    <attr name="redText" format="reference" />
+    <attr name="urlHistoryText" format="reference" />
 
     <attr name="navigationHeaderBackground" format="reference" />
     <attr name="navigationHeaderTextColor" format="reference" />
@@ -47,7 +47,6 @@
     <attr name="domainSettingsIconTintColor" format="reference" />
     <attr name="findOnPageIconTintColor" format="reference" />
     <attr name="navigationIconTintColor" format="reference" />
-    <attr name="progressTintColor" format="reference" />
     <attr name="viewSourceIconTintColor" format="reference" />
 
     <attr name="listSelectorDrawable" format="reference" />

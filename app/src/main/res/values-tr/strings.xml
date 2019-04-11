@@ -170,7 +170,6 @@
     <string name="stop">Dur</string>
 
     <!-- Context Menus. -->
-    <string name="load_url">URL Yükle</string>
     <string name="copy_url">URL Kopyala</string>
     <string name="download_url">URL İndir</string>
     <string name="email_address">Eposta Adresi</string>

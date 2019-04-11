@@ -73,8 +73,9 @@ public class ViewSourceActivity extends AppCompatActivity {
         // Get the launching intent
         Intent intent = getIntent();
 
-        // Get the user agent.
+        // Get the information from the intent.
         String userAgent = intent.getStringExtra("user_agent");
+        String currentUrl = intent.getStringExtra("current_url");
 
         // Store a handle for the current activity.
         activity = this;
@@ -99,11 +100,8 @@ public class ViewSourceActivity extends AppCompatActivity {
         // Get a handle for the url text box.
         EditText urlEditText = findViewById(R.id.url_edittext);
 
-        // Get the formatted URL string from the main activity.
-        String formattedUrlString = MainWebViewActivity.formattedUrlString;
-
         // Populate the URL text box.
-        urlEditText.setText(formattedUrlString);
+        urlEditText.setText(currentUrl);
 
         // Initialize the foreground color spans for highlighting the URLs.  We have to use the deprecated `getColor()` until API >= 23.
         redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
@@ -164,8 +162,10 @@ public class ViewSourceActivity extends AppCompatActivity {
             }
         });
 
-        // Implement swipe to refresh.
+        // Get a handle for the swipe refresh layout.
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.view_source_swiperefreshlayout);
+
+        // Implement swipe to refresh.
         swipeRefreshLayout.setOnRefreshListener(() -> {
             // Get the URL.
             String url = urlEditText.getText().toString();
@@ -188,8 +188,8 @@ public class ViewSourceActivity extends AppCompatActivity {
         }
 
         // Get the source using an AsyncTask if the URL begins with `http`.
-        if (formattedUrlString.startsWith("http")) {
-            new GetSource(this, userAgent).execute(formattedUrlString);
+        if (currentUrl.startsWith("http")) {
+            new GetSource(this, userAgent).execute(currentUrl);
         }
     }
 

@@ -36,8 +36,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-// The AndroidX dialog fragment must be used or an error is produced on API <=22.
-import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
@@ -49,7 +48,7 @@ public class AddDomainDialog extends DialogFragment {
         void onAddDomain(DialogFragment dialogFragment);
     }
 
-    // `addDomainListener` is used in `onAttach()` and `onCreateDialog()`.
+    // The add domain listener is used in `onAttach()` and `onCreateDialog()`.
     private AddDomainListener addDomainListener;
 
     @Override
@@ -61,11 +60,37 @@ public class AddDomainDialog extends DialogFragment {
         addDomainListener = (AddDomainListener) context;
     }
 
+    public static AddDomainDialog addDomain(String url) {
+        // Create an arguments bundle.
+        Bundle argumentsBundle = new Bundle();
+
+        // Store the URL in the bundle.
+        argumentsBundle.putString("url", url);
+
+        // Create a new instance of the dialog.
+        AddDomainDialog addDomainDialog = new AddDomainDialog();
+
+        // Add the bundle to the dialog.
+        addDomainDialog.setArguments(argumentsBundle);
+
+        // Return the new dialog.
+        return addDomainDialog;
+    }
+
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Get the arguments.
+        Bundle arguments = getArguments();
+
+        // Remove the incorrect lint warning below that the arguments might be null.
+        assert arguments != null;
+
+        // Get the URL from the bundle.
+        String url = arguments.getString("url");
+
         // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
@@ -87,13 +112,13 @@ public class AddDomainDialog extends DialogFragment {
 
         // Set a listener for the negative button.
         dialogBuilder.setNegativeButton(R.string.cancel, (DialogInterface dialog, int which) -> {
-            // Do nothing.  The `AlertDialog` will close automatically.
+            // Do nothing.  The alert dialog will close automatically.
         });
 
         // Set a listener for the positive button.
         dialogBuilder.setPositiveButton(R.string.add, (DialogInterface dialog, int which) -> {
-            // Return the `DialogFragment` to the parent activity on add.
-            addDomainListener.onAddDomain(AddDomainDialog.this);
+            // Return the dialog fragment to the parent activity on add.
+            addDomainListener.onAddDomain(this);
         });
 
         // Create an alert dialog from the builder.
@@ -151,18 +176,22 @@ public class AddDomainDialog extends DialogFragment {
             }
         });
 
-        // Get the current domain from `formattedUrlString`.
-        Uri currentUri = Uri.parse(MainWebViewActivity.formattedUrlString);
+        // Convert the URL to a URI.
+        Uri currentUri = Uri.parse(url);
+
+        // Display the host in the add domain edit text.
         addDomainEditText.setText(currentUri.getHost());
 
-        // Allow the `enter` key on the keyboard to create the domain from `add_domain_edittext`.
+        // Allow the enter key on the keyboard to create the domain from the add domain edit text.
         addDomainEditText.setOnKeyListener((View view, int keyCode, KeyEvent event) -> {
-            // If the event is a key-down on the `enter` key, select the `PositiveButton` `Add`.
+            // If the event is a key-down on the enter key, select the `PositiveButton` `Add`.
             if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)) {
-                // Trigger `addDomainListener` and return the `DialogFragment` to the parent activity.
-                addDomainListener.onAddDomain(AddDomainDialog.this);
-                // Manually dismiss the `AlertDialog`.
+                // Trigger `addDomainListener` and return the dialog fragment to the parent activity.
+                addDomainListener.onAddDomain(this);
+
+                // Manually dismiss the alert dialog.
                 alertDialog.dismiss();
+
                 // Consume the event.
                 return true;
             } else { // If any other key was pressed, do not consume the event.
@@ -170,7 +199,7 @@ public class AddDomainDialog extends DialogFragment {
             }
         });
 
-        // `onCreateDialog()` requires the return of an `AlertDialog`.
+        // Return the alert dialog.
         return alertDialog;
     }
 }

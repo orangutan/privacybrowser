@@ -28,6 +28,7 @@
         android:id="@+id/toggle_javascript"
         android:title="@string/javascript"
         android:orderInCategory="100"
+        android:icon="@drawable/privacy_mode"
         app:showAsAction="ifRoom" />
 
     <item
@@ -41,6 +42,7 @@
         android:title="@string/first_party_cookies"
         android:orderInCategory="300"
         android:checkable="true"
+        android:icon="@drawable/cookies_disabled_light"
         app:showAsAction="never" />
 
     <item
@@ -55,6 +57,7 @@
         android:title="@string/dom_storage"
         android:orderInCategory="500"
         android:checkable="true"
+        android:icon="@drawable/dom_storage_disabled_light"
         app:showAsAction="never" />
 
     <item

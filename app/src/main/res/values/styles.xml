@@ -32,7 +32,6 @@
         <item name="navigationHeaderBackground">@color/blue_700</item>
         <item name="navigationHeaderTextColor">@color/white</item>
         <item name="appBarTheme">@style/PrivacyBrowserAppBarLight</item>
-        <item name="progressTintColor">@color/blue_500</item>
         <item name="navigationIconTintColor">@color/blue_800</item>
         <item name="findOnPageIconTintColor">@color/blue_800</item>
         <item name="viewSourceIconTintColor">@color/black</item>
@@ -132,7 +131,6 @@
         <item name="navigationHeaderBackground">@color/blue_800</item>
         <item name="navigationHeaderTextColor">@color/gray_300</item>
         <item name="appBarTheme">@style/PrivacyBrowserAppBarDark</item>
-        <item name="progressTintColor">@color/blue_800</item>
         <item name="navigationIconTintColor">@color/blue_600</item>
         <item name="findOnPageIconTintColor">@color/blue_600</item>
         <item name="viewSourceIconTintColor">@color/gray_300</item>
