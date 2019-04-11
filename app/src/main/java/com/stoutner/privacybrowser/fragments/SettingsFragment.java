@@ -819,6 +819,7 @@ public class SettingsFragment extends PreferenceFragment {
                             saveFormDataPreference.setIcon(R.drawable.form_data_disabled_light);
                         }
                     }
+                    break;
 
                 case "user_agent":
                     // Get the new user agent name.
@@ -940,7 +941,7 @@ public class SettingsFragment extends PreferenceFragment {
                     // Assert that the intent is not null to remove the lint error below.
                     assert allowScreenshotsRestartIntent != null;
 
-                    // `Intent.FLAG_ACTIVITY_CLEAR_TASK` removes all activities from the stack.  It requires `Intent.FLAG_ACTIVITY_NEW_TASK`.
+                    // `Intent.FLAG_ACTIVITY_CLEAR_TASK` removes all activities from the stack.  It requires `Intent.FLAG_ACTIVITY_NEW_TASK`.  TODO.
                     allowScreenshotsRestartIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
                     // Make it so.
@@ -1480,7 +1481,7 @@ public class SettingsFragment extends PreferenceFragment {
                     // Assert that the intent is not null to remove the lint error below.
                     assert changeThemeRestartIntent != null;
 
-                    // `Intent.FLAG_ACTIVITY_CLEAR_TASK` removes all activities from the stack.  It requires `Intent.FLAG_ACTIVITY_NEW_TASK`.
+                    // `Intent.FLAG_ACTIVITY_CLEAR_TASK` removes all activities from the stack.  It requires `Intent.FLAG_ACTIVITY_NEW_TASK`.  TODO.
                     changeThemeRestartIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
                     // Make it so.

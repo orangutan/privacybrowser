@@ -27,13 +27,13 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.webkit.WebView;
 
-import com.stoutner.privacybrowser.R;
-
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.NestedScrollingChild2;
 import androidx.core.view.NestedScrollingChildHelper;
 import androidx.core.view.ViewCompat;
+
+import com.stoutner.privacybrowser.R;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -99,6 +99,12 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
 
     // The default or favorite icon.
     Bitmap favoriteOrDefaultIcon;
+
+    // Track night mode.
+    private boolean nightMode;
+
+    // Track swipe to refresh.
+    private boolean swipeToRefresh;
 
     // The nested scrolling child helper is used throughout the class.
     private NestedScrollingChildHelper nestedScrollingChildHelper;
@@ -519,6 +525,30 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     }
 
 
+    // Night mode.
+    public void setNightMode(boolean status) {
+        // Store the night mode status.
+        nightMode = status;
+    }
+
+    public boolean getNightMode() {
+        // Return the night mode status.
+        return nightMode;
+    }
+
+
+    // Swipe to refresh.
+    public void setSwipeToRefresh(boolean status) {
+        // Store the swipe to refresh status.
+        swipeToRefresh = status;
+    }
+
+    public boolean getSwipeToRefresh() {
+        // Return the swipe to refresh status.
+        return swipeToRefresh;
+    }
+
+
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
@@ -560,12 +590,13 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
                 // Dispatch the nested pre-school.  This scrolls the app bar if it needs it.  `offsetInWindow` will be returned with an updated value.
                 if (dispatchNestedPreScroll(0, preScrollDeltaY, consumedScroll, offsetInWindow)) {
                     // Update the scroll delta Y if some of it was consumed.
+                    // There is currently a bug in Android where if scrolling up at a certain slow speed the input can lock the pre scroll and continue to consume it after the app bar is fully displayed.
                     scrollDeltaY = preScrollDeltaY - consumedScroll[1];
                 }
 
                 // Check to see if the WebView is at the top and and the scroll action is downward.
                 if ((webViewYPosition == 0) && (scrollDeltaY < 0)) {  // Swipe to refresh is being engaged.
-                    // Stop the nested scroll so that swipe to refresh has complete control.
+                    // Stop the nested scroll so that swipe to refresh has complete control.  This way releasing the scroll to refresh circle doesn't scroll the WebView at the same time.
                     stopNestedScroll();
                 } else {  // Swipe to refresh is not being engaged.
                     // Start the nested scroll so that the app bar can scroll off the screen.

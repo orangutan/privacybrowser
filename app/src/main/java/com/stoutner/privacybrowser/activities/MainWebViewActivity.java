@@ -222,25 +222,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `firstPartyCookiesEnabled` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onDownloadImage()`, `onDownloadFile()`, and `applyDomainSettings()`.
     private boolean firstPartyCookiesEnabled;
 
-    // `saveFormDataEnabled` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and `applyDomainSettings()`.  It can be removed once the minimum API >= 26.
-    private boolean saveFormDataEnabled;
-
-    // TODO Move to NestedScrollWebView.
-    // `nightMode` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, and  `applyDomainSettings()`.
-    private boolean nightMode;
-
     // 'homepage' is used in `onCreate()`, `onNavigationItemSelected()`, and `applyProxyThroughOrbot()`.
     private String homepage;  // TODO ?
 
     // `searchURL` is used in `loadURLFromTextBox()` and `applyProxyThroughOrbot()`.
     private String searchURL;  // TODO ?
 
-    // The options menu is set in `onCreateOptionsMenu()` and used in `onOptionsItemSelected()` and `updatePrivacyIcons()`.
+    // The options menu is set in `onCreateOptionsMenu()` and used in `onOptionsItemSelected()`, `updatePrivacyIcons()`, and `initializeWebView()`.
     private Menu optionsMenu;
-
-    // The refresh menu item is set in `onCreateOptionsMenu()` and accessed from `initializeWebView()`.
-    // It must be this way because `initializeWebView()` runs before the menu is created but doesn't actually modify the menu until later.
-    private MenuItem refreshMenuItem;  // TODO.  Create it from `optionsMenu`.
 
     // TODO.  This could probably be removed.
     // The blocklist helper is used in `onCreate()` and `WebViewPagerAdapter`.
@@ -307,9 +296,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `privateDataDirectoryString` is used in `onCreate()`, `onOptionsItemSelected()`, and `onNavigationItemSelected()`.
     private String privateDataDirectoryString;  // TODO.
 
-    // `findOnPageEditText` is used in `onCreate()`, `onOptionsItemSelected()`, and `closeFindOnPage()`.
-    private EditText findOnPageEditText;  // TODO.
-
     // `displayAdditionalAppBarIcons` is used in `onCreate()` and `onCreateOptionsMenu()`.
     private boolean displayAdditionalAppBarIcons;  // TODO.
 
@@ -342,9 +328,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `bookmarksListView` is used in `onCreate()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, and `loadBookmarksFolder()`.
     private ListView bookmarksListView;  // TODO.
 
-    // `bookmarksTitleTextView` is used in `onCreate()` and `loadBookmarksFolder()`.
-    private TextView bookmarksTitleTextView;  // TODO.
-
     // `bookmarksCursor` is used in `onDestroy()`, `onOptionsItemSelected()`, `onCreateBookmark()`, `onCreateBookmarkFolder()`, `onSaveEditBookmark()`, `onSaveEditBookmarkFolder()`, and `loadBookmarksFolder()`.
     private Cursor bookmarksCursor;
 
@@ -364,10 +347,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // `downloadImageUrl` is used in `onCreateContextMenu()` and `onRequestPermissionResult()`.
     private String downloadImageUrl;
-
-    // The user agent variables are used in `onCreate()` and `applyDomainSettings()`.
-    private ArrayAdapter<CharSequence> userAgentNamesArray;
-    private String[] userAgentDataArray;
 
     // The request codes are used in `onCreate()`, `onCreateContextMenu()`, `onCloseDownloadLocationPermissionDialog()`, `onRequestPermissionResult()`, and `initializeWebView()`.
     private final int DOWNLOAD_FILE_REQUEST_CODE = 1;
@@ -508,11 +487,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
         ViewPager webViewPager = findViewById(R.id.webviewpager);
         bookmarksListView = findViewById(R.id.bookmarks_drawer_listview);
-        bookmarksTitleTextView = findViewById(R.id.bookmarks_title_textview);
         FloatingActionButton launchBookmarksActivityFab = findViewById(R.id.launch_bookmarks_activity_fab);
         FloatingActionButton createBookmarkFolderFab = findViewById(R.id.create_bookmark_folder_fab);
         FloatingActionButton createBookmarkFab = findViewById(R.id.create_bookmark_fab);
-        findOnPageEditText = findViewById(R.id.find_on_page_edittext);
+        EditText findOnPageEditText = findViewById(R.id.find_on_page_edittext);
 
         // Listen for touches on the navigation menu.
         navigationView.setNavigationItemSelectedListener(this);
@@ -841,8 +819,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Initialize the privacy settings variables.
         firstPartyCookiesEnabled = false;
-        saveFormDataEnabled = false;  // Form data can be removed once the minimum API >= 26.
-        nightMode = false;
 
         // Inflate a bare WebView to get the default user agent.  It is not used to render content on the screen.
         @SuppressLint("InflateParams") View webViewLayout = getLayoutInflater().inflate(R.layout.bare_webview, null, false);
@@ -855,10 +831,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Destroy the bare WebView.
         bareWebView.destroy();
-
-        // Initialize the user agent array adapter and string array.
-        userAgentNamesArray = ArrayAdapter.createFromResource(this, R.array.user_agent_names, R.layout.spinner_item);
-        userAgentDataArray = getResources().getStringArray(R.array.user_agent_data);
 
         // Get the intent that started the app.
         Intent launchingIntent = getIntent();
@@ -1135,7 +1107,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Inflate the menu.  This adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.webview_options_menu, menu);
 
-        // Store a handle for the options menu so it can be used by `onOptionsItemSelected()` and `updatePrivacyIcons`.
+        // Store a handle for the options menu so it can be used by `onOptionsItemSelected()` and `updatePrivacyIcons()`.
         optionsMenu = menu;
 
         // Set the initial status of the privacy icons.  `false` does not call `invalidateOptionsMenu` as the last step.
@@ -1147,7 +1119,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem toggleDomStorageMenuItem = menu.findItem(R.id.toggle_dom_storage);
         MenuItem toggleSaveFormDataMenuItem = menu.findItem(R.id.toggle_save_form_data);  // Form data can be removed once the minimum API >= 26.
         MenuItem clearFormDataMenuItem = menu.findItem(R.id.clear_form_data);  // Form data can be removed once the minimum API >= 26.
-        refreshMenuItem = menu.findItem(R.id.refresh);
+        MenuItem refreshMenuItem = menu.findItem(R.id.refresh);
         blocklistsMenuItem = menu.findItem(R.id.blocklists);
         easyListMenuItem = menu.findItem(R.id.easylist);
         easyPrivacyMenuItem = menu.findItem(R.id.easyprivacy);
@@ -1163,6 +1135,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Only display the form data menu items if the API < 26.
         toggleSaveFormDataMenuItem.setVisible(Build.VERSION.SDK_INT < 26);
         clearFormDataMenuItem.setVisible(Build.VERSION.SDK_INT < 26);
+
+        // Disable the clear form data menu item if the API >= 26 so that the status of the main Clear Data is calculated correctly.
+        clearFormDataMenuItem.setEnabled(Build.VERSION.SDK_INT < 26);
 
         // Only show Ad Consent if this is the free flavor.
         adConsentMenuItem.setVisible(BuildConfig.FLAVOR.contentEquals("free"));
@@ -1204,15 +1179,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        // Get a handle for the swipe refresh layout.
-        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
-
         // Get handles for the menu items.
         MenuItem addOrEditDomain = menu.findItem(R.id.add_or_edit_domain);
-        MenuItem toggleFirstPartyCookiesMenuItem = menu.findItem(R.id.toggle_first_party_cookies);
-        MenuItem toggleThirdPartyCookiesMenuItem = menu.findItem(R.id.toggle_third_party_cookies);
-        MenuItem toggleDomStorageMenuItem = menu.findItem(R.id.toggle_dom_storage);
-        MenuItem toggleSaveFormDataMenuItem = menu.findItem(R.id.toggle_save_form_data);  // Form data can be removed once the minimum API >= 26.
+        MenuItem firstPartyCookiesMenuItem = menu.findItem(R.id.toggle_first_party_cookies);
+        MenuItem thirdPartyCookiesMenuItem = menu.findItem(R.id.toggle_third_party_cookies);
+        MenuItem domStorageMenuItem = menu.findItem(R.id.toggle_dom_storage);
+        MenuItem saveFormDataMenuItem = menu.findItem(R.id.toggle_save_form_data);  // Form data can be removed once the minimum API >= 26.
         MenuItem clearDataMenuItem = menu.findItem(R.id.clear_data);
         MenuItem clearCookiesMenuItem = menu.findItem(R.id.clear_cookies);
         MenuItem clearDOMStorageMenuItem = menu.findItem(R.id.clear_dom_storage);
@@ -1246,14 +1218,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             fontSize = currentWebView.getSettings().getTextZoom();
 
             // Set the status of the menu item checkboxes.
-            toggleDomStorageMenuItem.setChecked(currentWebView.getSettings().getDomStorageEnabled());
+            domStorageMenuItem.setChecked(currentWebView.getSettings().getDomStorageEnabled());
+            saveFormDataMenuItem.setChecked(currentWebView.getSettings().getSaveFormData());  // Form data can be removed once the minimum API >= 26.
             easyListMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASY_LIST));
             easyPrivacyMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASY_PRIVACY));
             fanboysAnnoyanceListMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST));
             fanboysSocialBlockingListMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST));
             ultraPrivacyMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRA_PRIVACY));
             blockAllThirdPartyRequestsMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.THIRD_PARTY_REQUESTS));
+            swipeToRefreshMenuItem.setChecked(currentWebView.getSwipeToRefresh());
             displayImagesMenuItem.setChecked(currentWebView.getSettings().getLoadsImagesAutomatically());
+            nightModeMenuItem.setChecked(currentWebView.getNightMode());
 
             // Initialize the display names for the blocklists with the number of blocked requests.
             blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + currentWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
@@ -1266,23 +1241,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
 
         // Set the status of the menu item checkboxes.
-        toggleFirstPartyCookiesMenuItem.setChecked(firstPartyCookiesEnabled);
-        toggleSaveFormDataMenuItem.setChecked(saveFormDataEnabled);  // Form data can be removed once the minimum API >= 26.
-        swipeToRefreshMenuItem.setChecked(swipeRefreshLayout.isEnabled());
-        nightModeMenuItem.setChecked(nightMode);
+        firstPartyCookiesMenuItem.setChecked(firstPartyCookiesEnabled);
         proxyThroughOrbotMenuItem.setChecked(proxyThroughOrbot);
 
         // Only modify third-party cookies if the API >= 21.
         if (Build.VERSION.SDK_INT >= 21) {
             // Set the status of the third-party cookies checkbox.
-            toggleThirdPartyCookiesMenuItem.setChecked(cookieManager.acceptThirdPartyCookies(currentWebView));
+            thirdPartyCookiesMenuItem.setChecked(cookieManager.acceptThirdPartyCookies(currentWebView));
 
             // Enable third-party cookies if first-party cookies are enabled.
-            toggleThirdPartyCookiesMenuItem.setEnabled(firstPartyCookiesEnabled);
+            thirdPartyCookiesMenuItem.setEnabled(firstPartyCookiesEnabled);
         }
 
         // Enable DOM Storage if JavaScript is enabled.
-        toggleDomStorageMenuItem.setEnabled(currentWebView.getSettings().getJavaScriptEnabled());
+        domStorageMenuItem.setEnabled(currentWebView.getSettings().getJavaScriptEnabled());
 
         // Enable Clear Cookies if there are any.
         clearCookiesMenuItem.setEnabled(cookieManager.hasCookies());
@@ -1306,11 +1278,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Enable Clear Form Data is there is any.  This can be removed once the minimum API >= 26.
         if (Build.VERSION.SDK_INT < 26) {
-            WebViewDatabase mainWebViewDatabase = WebViewDatabase.getInstance(this);
-            clearFormDataMenuItem.setEnabled(mainWebViewDatabase.hasFormData());
-        } else {
-            // Disable clear form data because it is not supported on current version of Android.
-            clearFormDataMenuItem.setEnabled(false);
+            // Get the WebView database.
+            WebViewDatabase webViewDatabase = WebViewDatabase.getInstance(this);
+
+            // Enable the clear form data menu item if there is anything to clear.
+            clearFormDataMenuItem.setEnabled(webViewDatabase.hasFormData());
         }
 
         // Enable Clear Data if any of the submenu items are enabled.
@@ -1587,16 +1559,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Form data can be removed once the minimum API >= 26.
             case R.id.toggle_save_form_data:
                 // Switch the status of saveFormDataEnabled.
-                saveFormDataEnabled = !saveFormDataEnabled;
+                currentWebView.getSettings().setSaveFormData(!currentWebView.getSettings().getSaveFormData());
 
                 // Update the menu checkbox.
-                menuItem.setChecked(saveFormDataEnabled);
+                menuItem.setChecked(currentWebView.getSettings().getSaveFormData());
 
-                // Apply the new form data status.
-                currentWebView.getSettings().setSaveFormData(saveFormDataEnabled);
-
-                // Display a `Snackbar`.
-                if (saveFormDataEnabled) {
+                // Display a snackbar.
+                if (currentWebView.getSettings().getSaveFormData()) {
                     Snackbar.make(findViewById(R.id.webviewpager), R.string.form_data_enabled, Snackbar.LENGTH_SHORT).show();
                 } else {
                     Snackbar.make(findViewById(R.id.webviewpager), R.string.form_data_disabled, Snackbar.LENGTH_SHORT).show();
@@ -1930,11 +1899,25 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 return true;
 
             case R.id.swipe_to_refresh:
+                // Toggle the stored status of swipe to refresh.
+                currentWebView.setSwipeToRefresh(!currentWebView.getSwipeToRefresh());
+
                 // Get a handle for the swipe refresh layout.
                 SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
 
-                // Toggle swipe to refresh.
-                swipeRefreshLayout.setEnabled(!swipeRefreshLayout.isEnabled());
+                // Update the swipe refresh layout.
+                if (currentWebView.getSwipeToRefresh()) {  // Swipe to refresh is enabled.
+                    if (Build.VERSION.SDK_INT >= 23) {  // For API >= 23, the status of the scroll refresh listener is continuously updated by the on scroll change listener.
+                        // Only enable the swipe refresh layout if the WebView is scrolled to the top.
+                        swipeRefreshLayout.setEnabled(currentWebView.getY() == 0);
+                    } else {  // For API < 23, the swipe refresh layout is always enabled.
+                        // Enable the swipe refresh layout.
+                        swipeRefreshLayout.setEnabled(true);
+                    }
+                } else {  // Swipe to refresh is disabled.
+                    // Disable the swipe refresh layout.
+                    swipeRefreshLayout.setEnabled(false);
+                }
                 return true;
 
             case R.id.display_images:
@@ -1952,15 +1935,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.night_mode:
                 // Toggle night mode.
-                nightMode = !nightMode;
+                currentWebView.setNightMode(!currentWebView.getNightMode());
 
                 // Enable or disable JavaScript according to night mode, the global preference, and any domain settings.
-                if (nightMode) {  // Night mode is enabled, which requires JavaScript.
+                if (currentWebView.getNightMode()) {  // Night mode is enabled, which requires JavaScript.
                     // Enable JavaScript.
                     currentWebView.getSettings().setJavaScriptEnabled(true);
                 } else if (currentWebView.getDomainSettingsApplied()) {  // Night mode is disabled and domain settings are applied.  Set JavaScript according to the domain settings.
                     // Apply the JavaScript preference that was stored the last time domain settings were loaded.
-                    currentWebView.getSettings().setJavaScriptEnabled(domainSettingsJavaScriptEnabled);
+                    currentWebView.getSettings().setJavaScriptEnabled(domainSettingsJavaScriptEnabled);  // TODO.
                 } else {  // Night mode is disabled and domain settings are not applied.  Set JavaScript according to the global preference.
                     // Apply the JavaScript preference.
                     currentWebView.getSettings().setJavaScriptEnabled(sharedPreferences.getBoolean("javascript", false));
@@ -1977,6 +1960,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Get a handle for the views.
                 Toolbar toolbar = findViewById(R.id.toolbar);
                 LinearLayout findOnPageLinearLayout = findViewById(R.id.find_on_page_linearlayout);
+                EditText findOnPageEditText = findViewById(R.id.find_on_page_edittext);
 
                 // Hide the toolbar.
                 toolbar.setVisibility(View.GONE);
@@ -3296,6 +3280,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get a handle for the views.
         Toolbar toolbar = findViewById(R.id.toolbar);
         LinearLayout findOnPageLinearLayout = findViewById(R.id.find_on_page_linearlayout);
+        EditText findOnPageEditText = findViewById(R.id.find_on_page_edittext);
 
         // Delete the contents of `find_on_page_edittext`.
         findOnPageEditText.setText(null);
@@ -3410,9 +3395,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `reloadWebsite` is used if returning from the Domains activity.  Otherwise JavaScript might not function correctly if it is newly enabled.
     @SuppressLint("SetJavaScriptEnabled")
     private boolean applyDomainSettings(NestedScrollWebView nestedScrollWebView, String url, boolean resetFavoriteIcon, boolean reloadWebsite) {
-        // Get a handle for the URL relative layout.
-        RelativeLayout urlRelativeLayout = findViewById(R.id.url_relativelayout);
-
         // Store a copy of the current user agent to track changes for the return boolean.
         String initialUserAgent = nestedScrollWebView.getSettings().getUserAgentString();
 
@@ -3442,7 +3424,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Reset the favorite icon if specified.
             if (resetFavoriteIcon) {
                 // Initialize the favorite icon.
-                currentWebView.initializeFavoriteIcon();
+                nestedScrollWebView.initializeFavoriteIcon();
 
                 // Get a handle for the tab layout.
                 TabLayout tabLayout = findViewById(R.id.tablayout);
@@ -3465,9 +3447,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Set the default favorite icon as the favorite icon for this tab.
                 currentTabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(nestedScrollWebView.getFavoriteOrDefaultIcon(), 64, 64, true));
             }
-
-            // Get a handle for the swipe refresh layout.
-            SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
 
             // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
             DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
@@ -3530,11 +3509,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             String defaultFontSizeString = sharedPreferences.getString("font_size", getString(R.string.font_size_default_value));
             String defaultUserAgentName = sharedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
             boolean defaultSwipeToRefresh = sharedPreferences.getBoolean("swipe_to_refresh", true);
-            nightMode = sharedPreferences.getBoolean("night_mode", false);  // TODO.
             boolean displayWebpageImages = sharedPreferences.getBoolean("display_webpage_images", true);
 
             // Get a handle for the cookie manager.
             CookieManager cookieManager = CookieManager.getInstance();
+
+            // Get handles for the views.
+            RelativeLayout urlRelativeLayout = findViewById(R.id.url_relativelayout);
+            SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
+
+            // Initialize the user agent array adapter and string array.
+            ArrayAdapter<CharSequence> userAgentNamesArray = ArrayAdapter.createFromResource(this, R.array.user_agent_names, R.layout.spinner_item);
+            String[] userAgentDataArray = getResources().getStringArray(R.array.user_agent_data);
 
             if (nestedScrollWebView.getDomainSettingsApplied()) {  // The url has custom domain settings.
                 // Get a cursor for the current host and move it to the first position.
@@ -3546,9 +3532,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 boolean domainJavaScriptEnabled = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)) == 1);
                 firstPartyCookiesEnabled = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES)) == 1);  // TODO.
                 boolean domainThirdPartyCookiesEnabled = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES)) == 1);
-                boolean domainDomStorageEnabled = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)) == 1);
+                nestedScrollWebView.getSettings().setDomStorageEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)) == 1);
                 // Form data can be removed once the minimum API >= 26.
-                saveFormDataEnabled = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA)) == 1);  // TODO.
+                boolean saveFormData = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA)) == 1);
                 nestedScrollWebView.enableBlocklist(NestedScrollWebView.EASY_LIST,
                         currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYLIST)) == 1);
                 nestedScrollWebView.enableBlocklist(NestedScrollWebView.EASY_PRIVACY,
@@ -3605,14 +3591,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     nestedScrollWebView.setPinnedIpAddresses(pinnedHostIpAddresses);
                 }
 
-                // Set `nightMode` according to `nightModeInt`.  If `nightModeInt` is `DomainsDatabaseHelper.NIGHT_MODE_SYSTEM_DEFAULT` the current setting from `sharedPreferences` will be used.
+                // Set night mode according to the night mode int.
                 switch (nightModeInt) {
+                    case DomainsDatabaseHelper.NIGHT_MODE_SYSTEM_DEFAULT:
+                        // Set night mode according to the current default.
+                        nestedScrollWebView.setNightMode(sharedPreferences.getBoolean("night_mode", false));
+                        break;
+
                     case DomainsDatabaseHelper.NIGHT_MODE_ENABLED:
-                        nightMode = true;  // TODO.
+                        // Enable night mode.
+                        nestedScrollWebView.setNightMode(true);
                         break;
 
                     case DomainsDatabaseHelper.NIGHT_MODE_DISABLED:
-                        nightMode = false;  // TODO.
+                        // Disable night mode.
+                        nestedScrollWebView.setNightMode(false);
                         break;
                 }
 
@@ -3621,7 +3614,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 domainSettingsJavaScriptEnabled = domainJavaScriptEnabled;
 
                 // Enable JavaScript if night mode is enabled.
-                if (nightMode) {
+                if (nestedScrollWebView.getNightMode()) {
                     // Enable JavaScript.
                     nestedScrollWebView.getSettings().setJavaScriptEnabled(true);
                 } else {
@@ -3634,11 +3627,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Apply the domain settings.
                 cookieManager.setAcceptCookie(firstPartyCookiesEnabled);  //TODO  This could be bad.
-                nestedScrollWebView.getSettings().setDomStorageEnabled(domainDomStorageEnabled);  // TODO.  Move up.
 
                 // Apply the form data setting if the API < 26.
                 if (Build.VERSION.SDK_INT < 26) {
-                    nestedScrollWebView.getSettings().setSaveFormData(saveFormDataEnabled);
+                    nestedScrollWebView.getSettings().setSaveFormData(saveFormData);
                 }
 
                 // Apply the font size.
@@ -3659,7 +3651,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Set the user agent.
                     if (userAgentName.equals(getString(R.string.system_default_user_agent))) {  // Use the system default user agent.
                         // Get the array position of the default user agent name.
-                        int defaultUserAgentArrayPosition = userAgentNamesArray.getPosition(defaultUserAgentName);  // TODO Could this be local.
+                        int defaultUserAgentArrayPosition = userAgentNamesArray.getPosition(defaultUserAgentName);
 
                         // Set the user agent according to the system default.
                         switch (defaultUserAgentArrayPosition) {
@@ -3704,19 +3696,28 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Set swipe to refresh.
-                switch (swipeToRefreshInt) {  // TODO.  This needs to be set and updated by tab.
+                switch (swipeToRefreshInt) {
                     case DomainsDatabaseHelper.SWIPE_TO_REFRESH_SYSTEM_DEFAULT:
-                        // Set swipe to refresh according to the default.
+                        // Store the swipe to refresh status in the nested scroll WebView.
+                        nestedScrollWebView.setSwipeToRefresh(defaultSwipeToRefresh);
+
+                        // Apply swipe to refresh according to the default.  This can be removed once the minimum API >= 23 because it is continuously set by an on scroll change listener.
                         swipeRefreshLayout.setEnabled(defaultSwipeToRefresh);
                         break;
 
                     case DomainsDatabaseHelper.SWIPE_TO_REFRESH_ENABLED:
-                        // Enable swipe to refresh.
+                        // Store the swipe to refresh status in the nested scroll WebView.
+                        nestedScrollWebView.setSwipeToRefresh(true);
+
+                        // Enable swipe to refresh.  This can be removed once the minimum API >= 23 because it is continuously set by an on scroll change listener.
                         swipeRefreshLayout.setEnabled(true);
                         break;
 
                     case DomainsDatabaseHelper.SWIPE_TO_REFRESH_DISABLED:
-                        // Disable swipe to refresh.
+                        // Store the swipe to refresh status in the nested scroll WebView.
+                        nestedScrollWebView.setSwipeToRefresh(false);
+
+                        // Disable swipe to refresh.  This can be removed once the minimum API >= 23 because it is continuously set by an on scroll change listener.
                         swipeRefreshLayout.setEnabled(false);
                 }
 
@@ -3747,16 +3748,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies", false);  // TODO.
                 boolean defaultThirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies", false);
                 nestedScrollWebView.getSettings().setDomStorageEnabled(sharedPreferences.getBoolean("dom_storage", false));
-                saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data", false);  // Form data can be removed once the minimum API >= 26.  // TODO.
+                boolean saveFormData = sharedPreferences.getBoolean("save_form_data", false);  // Form data can be removed once the minimum API >= 26.
                 nestedScrollWebView.enableBlocklist(NestedScrollWebView.EASY_LIST, sharedPreferences.getBoolean("easylist", true));
                 nestedScrollWebView.enableBlocklist(NestedScrollWebView.EASY_PRIVACY, sharedPreferences.getBoolean("easyprivacy", true));
                 nestedScrollWebView.enableBlocklist(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST, sharedPreferences.getBoolean("fanboys_annoyance_list", true));
                 nestedScrollWebView.enableBlocklist(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST, sharedPreferences.getBoolean("fanboys_social_blocking_list", true));
                 nestedScrollWebView.enableBlocklist(NestedScrollWebView.ULTRA_PRIVACY, sharedPreferences.getBoolean("ultraprivacy", true));
                 nestedScrollWebView.enableBlocklist(NestedScrollWebView.THIRD_PARTY_REQUESTS, sharedPreferences.getBoolean("block_all_third_party_requests", false));
+                nestedScrollWebView.setNightMode(sharedPreferences.getBoolean("night_mode", false));
 
                 // Enable JavaScript if night mode is enabled.
-                if (nightMode) {
+                if (nestedScrollWebView.getNightMode()) {
                     // Enable JavaScript.
                     nestedScrollWebView.getSettings().setJavaScriptEnabled(true);
                 } else {
@@ -3767,11 +3769,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Apply the default settings.
                 cookieManager.setAcceptCookie(firstPartyCookiesEnabled);  // TODO.
                 nestedScrollWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
+
+                // Store the swipe to refresh status in the nested scroll WebView.
+                nestedScrollWebView.setSwipeToRefresh(defaultSwipeToRefresh);
+
+                // Apply swipe to refresh according to the default.
                 swipeRefreshLayout.setEnabled(defaultSwipeToRefresh);
 
                 // Apply the form data setting if the API < 26.
                 if (Build.VERSION.SDK_INT < 26) {
-                    currentWebView.getSettings().setSaveFormData(saveFormDataEnabled);
+                    nestedScrollWebView.getSettings().setSaveFormData(saveFormData);
                 }
 
                 // Reset the pinned variables.
@@ -3872,7 +3879,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Set the proxy.  `this` refers to the current activity where an `AlertDialog` might be displayed.
             OrbotProxyHelper.setProxy(getApplicationContext(), this, "localhost", "8118");
 
-            // Set the `appBar` background to indicate proxying through Orbot is enabled.  `this` refers to the context.
+            // Set the `appBar` background to indicate proxying through Orbot is enabled.
             if (darkTheme) {
                 actionBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.dark_blue_30));
             } else {
@@ -3912,7 +3919,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Reset the proxy to default.  The host is `""` and the port is `"0"`.
             OrbotProxyHelper.setProxy(getApplicationContext(), this, "", "0");
 
-            // Set the default `appBar` background.  `this` refers to the context.
+            // Set the default `appBar` background.
             if (darkTheme) {
                 actionBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.gray_900));
             } else {
@@ -4126,6 +4133,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Populate the `ListView` with the adapter.
         bookmarksListView.setAdapter(bookmarksCursorAdapter);
 
+        // Get a handle for the bookmarks title text view.
+        TextView bookmarksTitleTextView = findViewById(R.id.bookmarks_title_textview);
+
         // Set the bookmarks drawer title.
         if (currentBookmarksFolder.isEmpty()) {
             bookmarksTitleTextView.setText(R.string.bookmarks);
@@ -4190,6 +4200,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get handles for the URL views.
         RelativeLayout urlRelativeLayout = findViewById(R.id.url_relativelayout);
         EditText urlEditText = findViewById(R.id.url_edittext);
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
+
+        //Stop the swipe to refresh indicator if it is running
+        swipeRefreshLayout.setRefreshing(false);
 
         // Get the WebView tab fragment.
         WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(pageNumber);
@@ -4202,6 +4216,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Store the current WebView.
         currentWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+
+        // Update the status of swipe to refresh.
+        if (currentWebView.getSwipeToRefresh()) {  // Swipe to refresh is enabled.
+            if (Build.VERSION.SDK_INT >= 23) {  // For API >= 23, swipe refresh layout is continuously updated with an on scroll change listener and only enabled if the WebView is scrolled to the top.
+                // Enable the swipe refresh layout if the WebView is scrolled all the way to the top.
+                swipeRefreshLayout.setEnabled(currentWebView.getY() == 0);
+            } else {
+                // Enable the swipe refresh layout.
+                swipeRefreshLayout.setEnabled(true);
+            }
+        } else {  // Swipe to refresh is disabled.
+            // Disable the swipe refresh layout.
+            swipeRefreshLayout.setEnabled(false);
+        }
 
         // Update the privacy icons.  `true` redraws the icons in the app bar.
         updatePrivacyIcons(true);
@@ -4421,13 +4449,23 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
         });
 
+        if (Build.VERSION.SDK_INT >= 23) {
+            nestedScrollWebView.setOnScrollChangeListener((View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) -> {
+                // Update the status of swipe to refresh if it is enabled.
+                if (nestedScrollWebView.getSwipeToRefresh()) {
+                    // Only enable swipe to refresh if the WebView is scrolled to the top.
+                    swipeRefreshLayout.setEnabled(scrollY == 0);
+                }
+            });
+        }
+
         // Set the web chrome client.
         nestedScrollWebView.setWebChromeClient(new WebChromeClient() {
             // Update the progress bar when a page is loading.
             @Override
             public void onProgressChanged(WebView view, int progress) {
                 // Inject the night mode CSS if night mode is enabled.
-                if (nightMode) {
+                if (nestedScrollWebView.getNightMode()) {
                     // `background-color: #212121` sets the background to be dark gray.  `color: #BDBDBD` sets the text color to be light gray.  `box-shadow: none` removes a lower underline on links
                     // used by WordPress.  `text-decoration: none` removes all text underlines.  `text-shadow: none` removes text shadows, which usually have a hard coded color.
                     // `border: none` removes all borders, which can also be used to underline text.  `a {color: #1565C0}` sets links to be a dark blue.
@@ -4462,10 +4500,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Hide the progress bar.
                     progressBar.setVisibility(View.GONE);
 
-                    // Display `mainWebView` if night mode is disabled.
-                    // Because of a race condition between `applyDomainSettings` and `onPageStarted`, when night mode is set by domain settings the `WebView` may be hidden even if night mode is not
-                    // currently enabled.
-                    if (!nightMode) {
+                    // Display the nested scroll WebView if night mode is disabled.
+                    // Because of a race condition between `applyDomainSettings` and `onPageStarted`,
+                    // when night mode is set by domain settings the WebView may be hidden even if night mode is not currently enabled.
+                    if (!nestedScrollWebView.getNightMode()) {
                         nestedScrollWebView.setVisibility(View.VISIBLE);
                     }
 
@@ -5025,7 +5063,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 nestedScrollWebView.resetRequestsCounters();
 
                 // If night mode is enabled, hide `mainWebView` until after the night mode CSS is applied.
-                if (nightMode) {
+                if (nestedScrollWebView.getNightMode()) {
                     nestedScrollWebView.setVisibility(View.INVISIBLE);
                 }
 
@@ -5066,8 +5104,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         }
                     }
 
-                    // Replace Refresh with Stop if the menu item has been created.  (The WebView typically begins loading before the menu items are instantiated.)
-                    if (refreshMenuItem != null) {
+                    // Replace Refresh with Stop if the options menu has been created.  (The WebView typically begins loading before the menu items are instantiated.)
+                    if (optionsMenu != null) {
+                        // Get a handle for the refresh menu item.
+                        MenuItem refreshMenuItem = optionsMenu.findItem(R.id.refresh);
+
                         // Set the title.
                         refreshMenuItem.setTitle(R.string.stop);
 
@@ -5097,8 +5138,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     CookieManager.getInstance().flush();
                 }
 
-                // Update the Refresh menu item if it has been created.
-                if (refreshMenuItem != null) {
+                // Update the Refresh menu item if the options menu has been created.
+                if (optionsMenu != null) {
+                    // Get a handle for the refresh menu item.
+                    MenuItem refreshMenuItem = optionsMenu.findItem(R.id.refresh);
+
                     // Reset the Refresh title.
                     refreshMenuItem.setTitle(R.string.refresh);
 
@@ -5141,13 +5185,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Set `formattedUrlString` to `""`.
                         formattedUrlString = "";
 
-                        urlEditText.setText(formattedUrlString);
+                        // Display the hint in the URL edit text.
+                        urlEditText.setText("");
 
                         // Request focus for `urlTextBox`.
                         urlEditText.requestFocus();
 
                         // Display the keyboard.
                         inputMethodManager.showSoftInput(urlEditText, 0);
+
+                        // Hide the WebView, which causes the default background color to be displayed according to the theme.
+                        nestedScrollWebView.setVisibility(View.GONE);
 
                         // Apply the domain settings.  This clears any settings from the previous domain.
                         applyDomainSettings(nestedScrollWebView, formattedUrlString, true, false);
