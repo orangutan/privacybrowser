@@ -20,10 +20,11 @@
 package com.stoutner.privacybrowser.activities;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.view.KeyEvent;
@@ -38,6 +39,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;  // The AndroidX toolbar must be used until the minimum API is >= 21.
 import androidx.core.app.NavUtils;
+import androidx.fragment.app.DialogFragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.stoutner.privacybrowser.R;
@@ -55,13 +57,20 @@ public class ViewSourceActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        // Get the screenshot and theme preferences.
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+
         // Disable screenshots if not allowed.
-        if (!MainWebViewActivity.allowScreenshots) {
+        if (!allowScreenshots) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
         // Set the theme.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             setTheme(R.style.PrivacyBrowserDark);
         } else {
             setTheme(R.style.PrivacyBrowserLight);
@@ -180,7 +189,7 @@ public class ViewSourceActivity extends AppCompatActivity {
         });
 
         // Set the swipe to refresh color according to the theme.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             swipeRefreshLayout.setColorSchemeResources(R.color.blue_600);
             swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.gray_800);
         } else {
@@ -208,7 +217,7 @@ public class ViewSourceActivity extends AppCompatActivity {
         DialogFragment aboutDialogFragment = new AboutViewSourceDialog();
 
         // Show the about alert dialog.
-        aboutDialogFragment.show(getFragmentManager(), getString(R.string.about));
+        aboutDialogFragment.show(getSupportFragmentManager(), getString(R.string.about));
 
         // Consume the event.
         return true;

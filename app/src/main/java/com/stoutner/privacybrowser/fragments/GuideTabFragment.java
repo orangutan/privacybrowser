@@ -20,7 +20,9 @@
 package com.stoutner.privacybrowser.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +32,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
 public class GuideTabFragment extends Fragment {
     // `tabNumber` is used in `onCreate()` and `onCreateView()`.
@@ -67,6 +68,12 @@ public class GuideTabFragment extends Fragment {
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the theme preference.
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+
         // Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.  The fragment will take care of attaching the root automatically.
         View tabLayout = inflater.inflate(R.layout.bare_webview, container, false);
 
@@ -74,7 +81,7 @@ public class GuideTabFragment extends Fragment {
         WebView tabWebView = (WebView) tabLayout;
 
         // Load the tabs according to the theme.
-        if (MainWebViewActivity.darkTheme) {  // The dark theme is applied.
+        if (darkTheme) {  // The dark theme is applied.
             // Set the background color.  The deprecated `.getColor()` must be used until API >= 23.
             //noinspection deprecation
             tabWebView.setBackgroundColor(getResources().getColor(R.color.gray_850));

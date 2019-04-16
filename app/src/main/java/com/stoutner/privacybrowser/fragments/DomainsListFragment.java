@@ -20,7 +20,9 @@
 package com.stoutner.privacybrowser.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +37,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.DomainsActivity;
-import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
 public class DomainsListFragment extends Fragment {
     // Instantiate the dismiss snackbar interface handle.
@@ -107,8 +108,14 @@ public class DomainsListFragment extends Fragment {
                     // Enable the delete menu item.
                     DomainsActivity.deleteMenuItem.setEnabled(true);
 
+                    // Get a handle for the shared preferences.
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+                    // Get the theme preferences.
+                    boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+
                     // Set the delete icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
+                    if (darkTheme) {
                         DomainsActivity.deleteMenuItem.setIcon(R.drawable.delete_dark);
                     } else {
                         DomainsActivity.deleteMenuItem.setIcon(R.drawable.delete_light);

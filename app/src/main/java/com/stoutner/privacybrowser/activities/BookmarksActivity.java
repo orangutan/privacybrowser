@@ -23,6 +23,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -30,6 +31,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -121,13 +123,20 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Get the theme and screenshot preferences.
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Disable screenshots if not allowed.
-        if (!MainWebViewActivity.allowScreenshots) {
+        if (!allowScreenshots) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
         // Set the activity theme.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             setTheme(R.style.PrivacyBrowserDark_SecondaryActivity);
         } else {
             setTheme(R.style.PrivacyBrowserLight_SecondaryActivity);
@@ -948,6 +957,12 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     }
 
     private void updateMoveIcons() {
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Get the theme and screenshot preferences.
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+
         // Get a long array of the selected bookmarks.
         long[] selectedBookmarksLongArray = bookmarksListView.getCheckedItemIds();
 
@@ -969,7 +984,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             moveBookmarkUpMenuItem.setEnabled(true);
 
             // Set the icon according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 moveBookmarkUpMenuItem.setIcon(R.drawable.move_up_enabled_dark);
             } else {
                 moveBookmarkUpMenuItem.setIcon(R.drawable.move_up_enabled_light);
@@ -988,7 +1003,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
             moveBookmarkDownMenuItem.setEnabled(true);
 
             // Set the icon according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 moveBookmarkDownMenuItem.setIcon(R.drawable.move_down_enabled_dark);
             } else {
                 moveBookmarkDownMenuItem.setIcon(R.drawable.move_down_enabled_light);

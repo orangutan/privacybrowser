@@ -59,6 +59,9 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     // Keep track of when the domain name changes so that domain settings can be reapplied.  This should never be null.
     private String currentDomainName = "";
 
+    // Track the status of first-party cookies.
+    private boolean acceptFirstPartyCookies;
+
     // Track the resource requests.
     private ArrayList<String[]> resourceRequests = new ArrayList<>();
     private boolean easyListEnabled;
@@ -190,6 +193,18 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     public String getCurrentDomainName() {
         // Return the current domain name.
         return currentDomainName;
+    }
+
+
+    // First-party cookies.
+    public void setAcceptFirstPartyCookies(boolean status) {
+        // Store the accept first-party cookies status.
+        acceptFirstPartyCookies = status;
+    }
+
+    public boolean getAcceptFirstPartyCookies() {
+        // Return the accept first-party cookies status.
+        return acceptFirstPartyCookies;
     }
 
 

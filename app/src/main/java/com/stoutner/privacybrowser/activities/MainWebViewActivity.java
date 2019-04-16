@@ -156,18 +156,13 @@ import java.util.Set;
 
 // TODO.  Store up reloads for tabs that are not visible.
 // TODO.  New tabs are white in dark mode.
+// TODO.  Hide the tabs in full screen mode.
 
 // AppCompatActivity from android.support.v7.app.AppCompatActivity must be used to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
         DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, DownloadLocationPermissionDialog.DownloadLocationPermissionDialogListener, EditBookmarkDialog.EditBookmarkListener,
         EditBookmarkFolderDialog.EditBookmarkFolderListener, HttpAuthenticationDialog.HttpAuthenticationListener, NavigationView.OnNavigationItemSelectedListener, WebViewTabFragment.NewTabListener,
         PinnedMismatchDialog.PinnedMismatchListener, SslCertificateErrorDialog.SslCertificateErrorListener, UrlHistoryDialog.UrlHistoryListener {
-
-    // `darkTheme` is public static so it can be accessed from everywhere.
-    public static boolean darkTheme;
-
-    // `allowScreenshots` is public static so it can be accessed from everywhere.  It is also used in `onCreate()`.
-    public static boolean allowScreenshots;
 
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxyThroughOrbot()`.
     public static String orbotStatus;
@@ -185,7 +180,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `restartFromBookmarksActivity` is public static so it can be accessed from `BookmarksActivity`.  It is also used in `onRestart()`.
     public static boolean restartFromBookmarksActivity;
 
-    // The blocklist versions are public static so they can be accessed from `AboutTabFragment`.  They are also used in `onCreate()`.
+    // The blocklist versions are public static so they can be accessed from `AboutTabFragment`.  They are also used in `onCreate()`.  // TODO.
     public static String easyListVersion;
     public static String easyPrivacyVersion;
     public static String fanboysAnnoyanceVersion;
@@ -216,14 +211,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `customHeader` is used in `onCreate()`, `onOptionsItemSelected()`, `onCreateContextMenu()`, and `loadUrl()`.
     private final Map<String, String> customHeaders = new HashMap<>();
 
-    // `firstPartyCookiesEnabled` is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onDownloadImage()`, `onDownloadFile()`, and `applyDomainSettings()`.
-    private boolean firstPartyCookiesEnabled;
-
-    // 'homepage' is used in `onCreate()`, `onNavigationItemSelected()`, and `applyProxyThroughOrbot()`.
-    private String homepage;  // TODO ?
-
-    // `searchURL` is used in `loadURLFromTextBox()` and `applyProxyThroughOrbot()`.
-    private String searchURL;  // TODO ?
+    // The search URL is set in `applyProxyThroughOrbot()` and used in `onCreate()`, `onNewIntent()`, `loadURLFromTextBox()`, and `initializeWebView()`.
+    private String searchURL;
 
     // The options menu is set in `onCreateOptionsMenu()` and used in `onOptionsItemSelected()`, `updatePrivacyIcons()`, and `initializeWebView()`.
     private Menu optionsMenu;
@@ -348,8 +337,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Get the theme and screenshot preferences.
-        darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-        allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
@@ -474,8 +463,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Load the URL from the intent.
                         loadUrl(launchingIntentUriData.toString());
                     } else {  // The is no URL in the intent.
-                        // Load the homepage.
-                        loadUrl(homepage);
+                        // Select the homepage based on the proxy through Orbot status.
+                        if (proxyThroughOrbot) {
+                            // Load the Tor homepage.
+                            loadUrl(sharedPreferences.getString("tor_homepage", getString(R.string.tor_homepage_default_value)));
+                        } else {
+                            // Load the normal homepage.
+                            loadUrl(sharedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
+                        }
                     }
                 }
             }
@@ -836,9 +831,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Initialize `inFullScreenBrowsingMode`, which is always false at this point because Privacy Browser never starts in full screen browsing mode.
         inFullScreenBrowsingMode = false;
 
-        // Initialize the privacy settings variables.
-        firstPartyCookiesEnabled = false;
-
         // Inflate a bare WebView to get the default user agent.  It is not used to render content on the screen.
         @SuppressLint("InflateParams") View webViewLayout = getLayoutInflater().inflate(R.layout.bare_webview, null, false);
 
@@ -1144,8 +1136,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get the shared preference values.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Get the status of the additional AppBar icons.
+        // Get the dark theme and app bar preferences..
         boolean displayAdditionalAppBarIcons = sharedPreferences.getBoolean("display_additional_app_bar_icons", false);
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
 
         // Set the status of the additional app bar icons.  Setting the refresh menu item to `SHOW_AS_ACTION_ALWAYS` makes it appear even on small devices like phones.
         if (displayAdditionalAppBarIcons) {
@@ -1244,7 +1237,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 thirdPartyCookiesMenuItem.setChecked(cookieManager.acceptThirdPartyCookies(currentWebView));
 
                 // Enable third-party cookies if first-party cookies are enabled.
-                thirdPartyCookiesMenuItem.setEnabled(firstPartyCookiesEnabled);
+                thirdPartyCookiesMenuItem.setEnabled(cookieManager.acceptCookie());
             }
 
             // Enable DOM Storage if JavaScript is enabled.
@@ -1252,7 +1245,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
 
         // Set the status of the menu item checkboxes.
-        firstPartyCookiesMenuItem.setChecked(firstPartyCookiesEnabled);
+        firstPartyCookiesMenuItem.setChecked(cookieManager.acceptCookie());
         proxyThroughOrbotMenuItem.setChecked(proxyThroughOrbot);
 
         // Enable Clear Cookies if there are any.
@@ -1385,8 +1378,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     @Override
     // Remove Android Studio's warning about the dangers of using SetJavaScriptEnabled.
     @SuppressLint("SetJavaScriptEnabled")
-    // removeAllCookies is deprecated, but it is required for API < 21.
-    @SuppressWarnings("deprecation")
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         // Reenter full screen browsing mode if it was interrupted by the options menu.  <https://redmine.stoutner.com/issues/389>
         if (inFullScreenBrowsingMode) {
@@ -1426,7 +1417,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Display a `Snackbar`.
                 if (currentWebView.getSettings().getJavaScriptEnabled()) {  // JavaScrip is enabled.
                     Snackbar.make(findViewById(R.id.webviewpager), R.string.javascript_enabled, Snackbar.LENGTH_SHORT).show();
-                } else if (firstPartyCookiesEnabled) {  // JavaScript is disabled, but first-party cookies are enabled.
+                } else if (cookieManager.acceptCookie()) {  // JavaScript is disabled, but first-party cookies are enabled.
                     Snackbar.make(findViewById(R.id.webviewpager), R.string.javascript_disabled, Snackbar.LENGTH_SHORT).show();
                 } else {  // Privacy mode.
                     Snackbar.make(findViewById(R.id.webviewpager), R.string.privacy_mode, Snackbar.LENGTH_SHORT).show();
@@ -1489,20 +1480,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 return true;
 
             case R.id.toggle_first_party_cookies:
-                // Switch the status of firstPartyCookiesEnabled.
-                firstPartyCookiesEnabled = !firstPartyCookiesEnabled;
+                // Switch the first-party cookie status.
+                cookieManager.setAcceptCookie(!cookieManager.acceptCookie());
+
+                // Store the first-party cookie status.
+                currentWebView.setAcceptFirstPartyCookies(cookieManager.acceptCookie());
 
                 // Update the menu checkbox.
-                menuItem.setChecked(firstPartyCookiesEnabled);
-
-                // Apply the new cookie status.
-                cookieManager.setAcceptCookie(firstPartyCookiesEnabled);
+                menuItem.setChecked(cookieManager.acceptCookie());
 
                 // Update the privacy icon.  `true` runs `invalidateOptionsMenu` as the last step.
                 updatePrivacyIcons(true);
 
-                // Display a `Snackbar`.
-                if (firstPartyCookiesEnabled) {  // First-party cookies are enabled.
+                // Display a snackbar.
+                if (cookieManager.acceptCookie()) {  // First-party cookies are enabled.
                     Snackbar.make(findViewById(R.id.webviewpager), R.string.first_party_cookies_enabled, Snackbar.LENGTH_SHORT).show();
                 } else if (currentWebView.getSettings().getJavaScriptEnabled()) {  // JavaScript is still enabled.
                     Snackbar.make(findViewById(R.id.webviewpager), R.string.first_party_cookies_disabled, Snackbar.LENGTH_SHORT).show();
@@ -2010,16 +2001,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 return true;
 
             case R.id.print:
-                // Get a `PrintManager` instance.
+                // Get a print manager instance.
                 PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
 
-                // Create a print document adapter form the current WebView.
-                PrintDocumentAdapter printDocumentAdapter = currentWebView.createPrintDocumentAdapter();
-
-                // Remove the lint error below that `printManager` might be `null`.
+                // Remove the lint error below that print manager might be null.
                 assert printManager != null;
 
-                // Print the document.  The print attributes are `null`.
+                // Create a print document adapter from the current WebView.
+                PrintDocumentAdapter printDocumentAdapter = currentWebView.createPrintDocumentAdapter();
+
+                // Print the document.
                 printManager.print(getString(R.string.privacy_browser_web_page), printDocumentAdapter, null);
                 return true;
 
@@ -2077,6 +2068,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get the menu item ID.
         int menuItemId = menuItem.getItemId();
 
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         // Run the commands that correspond to the selected menu item.
         switch (menuItemId) {
             case R.id.close_tab:
@@ -2100,9 +2094,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Close the bookmarks cursor and database.
                 bookmarksCursor.close();
                 bookmarksDatabaseHelper.close();
-
-                // Get a handle for the shared preferences.
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
                 // Get the status of the clear everything preference.
                 boolean clearEverything = sharedPreferences.getBoolean("clear_everything", true);
@@ -2270,7 +2261,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 break;
 
             case R.id.home:
-                loadUrl(homepage);
+                // Select the homepage based on the proxy through Orbot status.
+                if (proxyThroughOrbot) {
+                    // Load the Tor homepage.
+                    loadUrl(sharedPreferences.getString("tor_homepage", getString(R.string.tor_homepage_default_value)));
+                } else {
+                    // Load the normal homepage.
+                    loadUrl(sharedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
+                }
                 break;
 
             case R.id.back:
@@ -2995,11 +2993,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Parse `imageUrl`.
             DownloadManager.Request downloadRequest = new DownloadManager.Request(Uri.parse(imageUrl));
 
+            // Get a handle for the cookie manager.
+            CookieManager cookieManager = CookieManager.getInstance();
+
             // Pass cookies to download manager if cookies are enabled.  This is required to download images from websites that require a login.
             // Code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
-            if (firstPartyCookiesEnabled) {
+            if (cookieManager.acceptCookie()) {
                 // Get the cookies for `imageUrl`.
-                String cookies = CookieManager.getInstance().getCookie(imageUrl);
+                String cookies = cookieManager.getCookie(imageUrl);
 
                 // Add the cookies to `downloadRequest`.  In the HTTP request header, cookies are named `Cookie`.
                 downloadRequest.addRequestHeader("Cookie", cookies);
@@ -3047,11 +3048,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Parse `downloadUrl`.
             DownloadManager.Request downloadRequest = new DownloadManager.Request(Uri.parse(downloadUrl));
 
+            // Get a handle for the cookie manager.
+            CookieManager cookieManager = CookieManager.getInstance();
+
             // Pass cookies to download manager if cookies are enabled.  This is required to download files from websites that require a login.
             // Code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
-            if (firstPartyCookiesEnabled) {
+            if (cookieManager.acceptCookie()) {
                 // Get the cookies for `downloadUrl`.
-                String cookies = CookieManager.getInstance().getCookie(downloadUrl);
+                String cookies = cookieManager.getCookie(downloadUrl);
 
                 // Add the cookies to `downloadRequest`.  In the HTTP request header, cookies are named `Cookie`.
                 downloadRequest.addRequestHeader("Cookie", cookies);
@@ -3529,6 +3533,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             String defaultUserAgentName = sharedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
             boolean defaultSwipeToRefresh = sharedPreferences.getBoolean("swipe_to_refresh", true);
             boolean displayWebpageImages = sharedPreferences.getBoolean("display_webpage_images", true);
+            boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
 
             // Get a handle for the cookie manager.
             CookieManager cookieManager = CookieManager.getInstance();
@@ -3549,7 +3554,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Get the settings from the cursor.
                 nestedScrollWebView.setDomainSettingsDatabaseId(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper._ID)));
                 boolean domainJavaScriptEnabled = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT)) == 1);
-                firstPartyCookiesEnabled = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES)) == 1);  // TODO.
+                nestedScrollWebView.setAcceptFirstPartyCookies(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES)) == 1);
                 boolean domainThirdPartyCookiesEnabled = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES)) == 1);
                 nestedScrollWebView.getSettings().setDomStorageEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)) == 1);
                 // Form data can be removed once the minimum API >= 26.
@@ -3641,11 +3646,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     nestedScrollWebView.getSettings().setJavaScriptEnabled(domainJavaScriptEnabled);
                 }
 
-                // Close `currentHostDomainSettingsCursor`.
+                // Close the current host domain settings cursor.
                 currentDomainSettingsCursor.close();
 
                 // Apply the domain settings.
-                cookieManager.setAcceptCookie(firstPartyCookiesEnabled);  //TODO  This could be bad.
+                cookieManager.setAcceptCookie(nestedScrollWebView.getAcceptFirstPartyCookies());
+
+                // Set third-party cookies status if API >= 21.
+                if (Build.VERSION.SDK_INT >= 21) {
+                    cookieManager.setAcceptThirdPartyCookies(nestedScrollWebView, domainThirdPartyCookiesEnabled);
+                }
 
                 // Apply the form data setting if the API < 26.
                 if (Build.VERSION.SDK_INT < 26) {
@@ -3657,11 +3667,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     nestedScrollWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
                 } else {  // Apply the specified font size.
                     nestedScrollWebView.getSettings().setTextZoom(fontSize);
-                }
-
-                // Set third-party cookies status if API >= 21.
-                if (Build.VERSION.SDK_INT >= 21) {
-                    cookieManager.setAcceptThirdPartyCookies(nestedScrollWebView, domainThirdPartyCookiesEnabled);
                 }
 
                 // Only set the user agent if the webpage is not currently loading.  Otherwise, changing the user agent on redirects can cause the original website to reload.
@@ -3764,7 +3769,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             } else {  // The new URL does not have custom domain settings.  Load the defaults.
                 // Store the values from the shared preferences.
                 boolean defaultJavaScriptEnabled = sharedPreferences.getBoolean("javascript", false);
-                firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies", false);  // TODO.
+                nestedScrollWebView.setAcceptFirstPartyCookies(sharedPreferences.getBoolean("first_party_cookies", false));
                 boolean defaultThirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies", false);
                 nestedScrollWebView.getSettings().setDomStorageEnabled(sharedPreferences.getBoolean("dom_storage", false));
                 boolean saveFormData = sharedPreferences.getBoolean("save_form_data", false);  // Form data can be removed once the minimum API >= 26.
@@ -3786,19 +3791,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Apply the default settings.
-                cookieManager.setAcceptCookie(firstPartyCookiesEnabled);  // TODO.
+                cookieManager.setAcceptCookie(nestedScrollWebView.getAcceptFirstPartyCookies());
                 nestedScrollWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
+
+                // Apply the form data setting if the API < 26.
+                if (Build.VERSION.SDK_INT < 26) {
+                    nestedScrollWebView.getSettings().setSaveFormData(saveFormData);
+                }
 
                 // Store the swipe to refresh status in the nested scroll WebView.
                 nestedScrollWebView.setSwipeToRefresh(defaultSwipeToRefresh);
 
                 // Apply swipe to refresh according to the default.
                 swipeRefreshLayout.setEnabled(defaultSwipeToRefresh);
-
-                // Apply the form data setting if the API < 26.
-                if (Build.VERSION.SDK_INT < 26) {
-                    nestedScrollWebView.getSettings().setSaveFormData(saveFormData);
-                }
 
                 // Reset the pinned variables.
                 nestedScrollWebView.setDomainSettingsDatabaseId(-1);
@@ -3864,13 +3869,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Get the search preferences.
-        String homepageString = sharedPreferences.getString("homepage", getString(R.string.homepage_default_value));
-        String torHomepageString = sharedPreferences.getString("tor_homepage", getString(R.string.tor_homepage_default_value));
+        // Get the search and theme preferences.
         String torSearchString = sharedPreferences.getString("tor_search", getString(R.string.tor_search_default_value));
         String torSearchCustomUrlString = sharedPreferences.getString("tor_search_custom_url", getString(R.string.tor_search_custom_url_default_value));
         String searchString = sharedPreferences.getString("search", getString(R.string.search_default_value));
         String searchCustomUrlString = sharedPreferences.getString("search_custom_url", getString(R.string.search_custom_url_default_value));
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
 
         // Get a handle for the action bar.  `getSupportActionBar()` must be used until the minimum API >= 21.
         ActionBar actionBar = getSupportActionBar();
@@ -3880,9 +3884,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Set the homepage, search, and proxy options.
         if (proxyThroughOrbot) {  // Set the Tor options.
-            // Set `torHomepageString` as `homepage`.
-            homepage = torHomepageString;
-
             // Set the search URL.
             if (torSearchString.equals("Custom URL")) {  // Get the custom URL string.
                 searchURL = torSearchCustomUrlString;
@@ -3915,9 +3916,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 currentWebView.reload();
             }
         } else {  // Set the non-Tor options.
-            // Set `homepageString` as `homepage`.
-            homepage = homepageString;
-
             // Set the search URL.
             if (searchString.equals("Custom URL")) {  // Get the custom URL string.
                 searchURL = searchCustomUrlString;
@@ -3964,6 +3962,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private void updatePrivacyIcons(boolean runInvalidateOptionsMenu) {
         // Only update the privacy icons if the options menu and the current WebView have already been populated.
         if ((optionsMenu != null) && (currentWebView != null)) {
+            // Get a handle for the shared preferences.
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+            // Get the theme and screenshot preferences.
+            boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+
             // Get handles for the menu items.
             MenuItem privacyMenuItem = optionsMenu.findItem(R.id.toggle_javascript);
             MenuItem firstPartyCookiesMenuItem = optionsMenu.findItem(R.id.toggle_first_party_cookies);
@@ -3973,14 +3977,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Update the privacy icon.
             if (currentWebView.getSettings().getJavaScriptEnabled()) {  // JavaScript is enabled.
                 privacyMenuItem.setIcon(R.drawable.javascript_enabled);
-            } else if (firstPartyCookiesEnabled) {  // JavaScript is disabled but cookies are enabled.
+            } else if (currentWebView.getAcceptFirstPartyCookies()) {  // JavaScript is disabled but cookies are enabled.
                 privacyMenuItem.setIcon(R.drawable.warning);
             } else {  // All the dangerous features are disabled.
                 privacyMenuItem.setIcon(R.drawable.privacy_mode);
             }
 
             // Update the first-party cookies icon.
-            if (firstPartyCookiesEnabled) {  // First-party cookies are enabled.
+            if (currentWebView.getAcceptFirstPartyCookies()) {  // First-party cookies are enabled.
                 firstPartyCookiesMenuItem.setIcon(R.drawable.cookies_enabled);
             } else {  // First-party cookies are disabled.
                 if (darkTheme) {
@@ -4209,6 +4213,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void setCurrentWebView(int pageNumber) {
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Get the theme preference.
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+
         // Get handles for the URL views.
         RelativeLayout urlRelativeLayout = findViewById(R.id.url_relativelayout);
         EditText urlEditText = findViewById(R.id.url_edittext);
@@ -4242,6 +4252,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Disable the swipe refresh layout.
             swipeRefreshLayout.setEnabled(false);
         }
+
+        // Get a handle for the cookie manager.
+        CookieManager cookieManager = CookieManager.getInstance();
+
+        // Set the first-party cookie status.
+        cookieManager.setAcceptCookie(currentWebView.getAcceptFirstPartyCookies());
 
         // Update the privacy icons.  `true` redraws the icons in the app bar.
         updatePrivacyIcons(true);
@@ -5072,6 +5088,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                // Get the theme preference.
+                boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+
                 // Reset the list of resource requests.
                 nestedScrollWebView.clearResourceRequests();
 
@@ -5125,7 +5144,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Set the title.
                         refreshMenuItem.setTitle(R.string.stop);
 
-                        // Get the status of the additional AppBar icons.
+                        // Get the app bar and theme preferences.
                         boolean displayAdditionalAppBarIcons = sharedPreferences.getBoolean("display_additional_app_bar_icons", false);
 
                         // If the icon is displayed in the AppBar, set it according to the theme.
@@ -5148,8 +5167,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     nestedScrollWebView.getSettings().setUseWideViewPort(url.startsWith("http"));
                 }
 
-                // Flush any cookies to persistent storage.  `CookieManager` has become very lazy about flushing cookies in recent versions.
-                if (firstPartyCookiesEnabled && Build.VERSION.SDK_INT >= 21) {
+                // Flush any cookies to persistent storage.  The cookie manager has become very lazy about flushing cookies in recent versions.
+                if (nestedScrollWebView.getAcceptFirstPartyCookies() && Build.VERSION.SDK_INT >= 21) {
                     CookieManager.getInstance().flush();
                 }
 
@@ -5161,8 +5180,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Reset the Refresh title.
                     refreshMenuItem.setTitle(R.string.refresh);
 
-                    // Get the status of the additional AppBar icons.
+                    // Get the app bar and theme preferences.
                     boolean displayAdditionalAppBarIcons = sharedPreferences.getBoolean("display_additional_app_bar_icons", false);
+                    boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
 
                     // If the icon is displayed in the AppBar, reset it according to the theme.
                     if (displayAdditionalAppBarIcons) {
@@ -5173,7 +5193,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         }
                     }
                 }
-
 
                 // Clear the cache and history if Incognito Mode is enabled.
                 if (incognitoModeEnabled) {
@@ -5313,8 +5332,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Load the URL from the intent.
                     loadUrl(launchingIntentUriData.toString());
                 } else {  // The is no URL in the intent.
-                    // Load the homepage.
-                    loadUrl(homepage);
+                    // Select the homepage based on the proxy through Orbot status.
+                    if (proxyThroughOrbot) {
+                        // Load the Tor homepage.
+                        loadUrl(sharedPreferences.getString("tor_homepage", getString(R.string.tor_homepage_default_value)));
+                    } else {
+                        // Load the normal homepage.
+                        loadUrl(sharedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
+                    }
                 }
             }
         }

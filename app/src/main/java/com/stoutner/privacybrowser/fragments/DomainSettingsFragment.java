@@ -99,6 +99,7 @@ public class DomainSettingsFragment extends Fragment {
         boolean defaultSwipeToRefresh = sharedPreferences.getBoolean("swipe_to_refresh", true);
         final boolean defaultNightMode = sharedPreferences.getBoolean("night_mode", false);
         final boolean defaultDisplayWebpageImages = sharedPreferences.getBoolean("display_webpage_images", true);
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
 
         // Get handles for the views in the fragment.
         final EditText domainNameEditText = domainSettingsView.findViewById(R.id.domain_settings_name_edittext);
@@ -287,7 +288,7 @@ public class DomainSettingsFragment extends Fragment {
         final ForegroundColorSpan blueColorSpan;
 
         // Set the blue color span according to the theme.  The deprecated `resources.getColor` must be used until the minimum API >= 23.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             //noinspection deprecation
             blueColorSpan = new ForegroundColorSpan(resources.getColor(R.color.blue_400));
         } else {
@@ -387,7 +388,7 @@ public class DomainSettingsFragment extends Fragment {
             firstPartyCookiesEnabledSwitch.setChecked(false);
 
             // Set the icon according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 firstPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_disabled_dark));
             } else {
                 firstPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_disabled_light));
@@ -406,7 +407,7 @@ public class DomainSettingsFragment extends Fragment {
                     thirdPartyCookiesEnabledSwitch.setChecked(false);
 
                     // Set the icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
+                    if (darkTheme) {
                         thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_disabled_dark));
                     } else {
                         thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_disabled_light));
@@ -424,7 +425,7 @@ public class DomainSettingsFragment extends Fragment {
                 thirdPartyCookiesEnabledSwitch.setEnabled(false);
 
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_ghosted_dark));
                 } else {
                     thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_ghosted_light));
@@ -449,7 +450,7 @@ public class DomainSettingsFragment extends Fragment {
                 domStorageEnabledSwitch.setChecked(false);
 
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_disabled_dark));
                 } else {
                     domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_disabled_light));
@@ -467,7 +468,7 @@ public class DomainSettingsFragment extends Fragment {
             }
 
             // Set the icon according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_ghosted_dark));
             } else {
                 domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_ghosted_light));
@@ -487,7 +488,7 @@ public class DomainSettingsFragment extends Fragment {
                 formDataEnabledSwitch.setChecked(false);
 
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_disabled_dark));
                 } else {
                     formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_disabled_light));
@@ -501,7 +502,7 @@ public class DomainSettingsFragment extends Fragment {
             easyListSwitch.setChecked(true);
 
             // Set the icon according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 easyListImageView.setImageDrawable(resources.getDrawable(R.drawable.block_ads_enabled_dark));
             } else {
                 easyListImageView.setImageDrawable(resources.getDrawable(R.drawable.block_ads_enabled_light));
@@ -511,7 +512,7 @@ public class DomainSettingsFragment extends Fragment {
             easyListSwitch.setChecked(false);
 
             // Set the icon according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 easyListImageView.setImageDrawable(resources.getDrawable(R.drawable.block_ads_disabled_dark));
             } else {
                 easyListImageView.setImageDrawable(resources.getDrawable(R.drawable.block_ads_disabled_light));
@@ -524,7 +525,7 @@ public class DomainSettingsFragment extends Fragment {
             easyPrivacySwitch.setChecked(true);
 
             // Set the icon according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 easyPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_enabled_dark));
             } else {
                 easyPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_enabled_light));
@@ -534,7 +535,7 @@ public class DomainSettingsFragment extends Fragment {
             easyPrivacySwitch.setChecked(false);
 
             // Set the icon according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 easyPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_disabled_dark));
             } else {
                 easyPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_disabled_light));
@@ -547,7 +548,7 @@ public class DomainSettingsFragment extends Fragment {
             fanboysAnnoyanceListSwitch.setChecked(true);
 
             // Set the icon according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 fanboysAnnoyanceListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_enabled_dark));
             } else {
                 fanboysAnnoyanceListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_enabled_light));
@@ -557,7 +558,7 @@ public class DomainSettingsFragment extends Fragment {
             fanboysAnnoyanceListSwitch.setChecked(false);
 
             // Set the icon according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 fanboysAnnoyanceListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_dark));
             } else {
                 fanboysAnnoyanceListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_light));
@@ -573,7 +574,7 @@ public class DomainSettingsFragment extends Fragment {
                 fanboysSocialBlockingListSwitch.setChecked(true);
 
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_enabled_dark));
                 } else {
                     fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_enabled_light));
@@ -584,7 +585,7 @@ public class DomainSettingsFragment extends Fragment {
                 fanboysSocialBlockingListSwitch.setChecked(false);
 
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_dark));
                 } else {
                     fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_light));
@@ -603,7 +604,7 @@ public class DomainSettingsFragment extends Fragment {
             }
 
             // Set the icon according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_ghosted_dark));
             } else {
                 fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_ghosted_light));
@@ -616,7 +617,7 @@ public class DomainSettingsFragment extends Fragment {
             ultraPrivacySwitch.setChecked(true);
 
             // Set the icon according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 ultraPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_enabled_dark));
             } else {
                 ultraPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_enabled_light));
@@ -626,7 +627,7 @@ public class DomainSettingsFragment extends Fragment {
             ultraPrivacySwitch.setChecked(false);
 
             // Set the icon according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 ultraPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_disabled_dark));
             } else {
                 ultraPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_disabled_light));
@@ -639,7 +640,7 @@ public class DomainSettingsFragment extends Fragment {
             blockAllThirdPartyRequestsSwitch.setChecked(true);
 
             // Set the icon according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 blockAllThirdPartyRequestsImageView.setImageDrawable(resources.getDrawable(R.drawable.block_all_third_party_requests_enabled_dark));
             } else {
                 blockAllThirdPartyRequestsImageView.setImageDrawable(resources.getDrawable(R.drawable.block_all_third_party_requests_enabled_light));
@@ -649,7 +650,7 @@ public class DomainSettingsFragment extends Fragment {
             blockAllThirdPartyRequestsSwitch.setChecked(false);
 
             // Set the icon according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 blockAllThirdPartyRequestsImageView.setImageDrawable(resources.getDrawable(R.drawable.block_all_third_party_requests_disabled_dark));
             } else {
                 blockAllThirdPartyRequestsImageView.setImageDrawable(resources.getDrawable(R.drawable.block_all_third_party_requests_disabled_light));
@@ -770,14 +771,14 @@ public class DomainSettingsFragment extends Fragment {
             case DomainsDatabaseHelper.SWIPE_TO_REFRESH_SYSTEM_DEFAULT:
                 if (defaultSwipeToRefresh) {  // Swipe to refresh is enabled by default.
                     // Set the icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
+                    if (darkTheme) {
                         swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_enabled_dark));
                     } else {
                         swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_enabled_light));
                     }
                 } else {  // Swipe to refresh is disabled by default
                     // Set the icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
+                    if (darkTheme) {
                         swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_disabled_dark));
                     } else {
                         swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_disabled_light));
@@ -790,7 +791,7 @@ public class DomainSettingsFragment extends Fragment {
 
             case DomainsDatabaseHelper.SWIPE_TO_REFRESH_ENABLED:
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_enabled_dark));
                 } else {
                     swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_enabled_light));
@@ -802,7 +803,7 @@ public class DomainSettingsFragment extends Fragment {
 
             case DomainsDatabaseHelper.SWIPE_TO_REFRESH_DISABLED:
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_disabled_dark));
                 } else {
                     swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_disabled_light));
@@ -833,14 +834,14 @@ public class DomainSettingsFragment extends Fragment {
             case DomainsDatabaseHelper.NIGHT_MODE_SYSTEM_DEFAULT:
                 if (defaultNightMode) {  // Night mode enabled by default.
                     // Set the icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
+                    if (darkTheme) {
                         nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_dark));
                     } else {
                         nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_light));
                     }
                 } else {  // Night mode disabled by default.
                     // Set the icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
+                    if (darkTheme) {
                         nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_disabled_dark));
                     } else {
                         nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_disabled_light));
@@ -853,7 +854,7 @@ public class DomainSettingsFragment extends Fragment {
 
             case DomainsDatabaseHelper.NIGHT_MODE_ENABLED:
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_dark));
                 } else {
                     nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_light));
@@ -865,7 +866,7 @@ public class DomainSettingsFragment extends Fragment {
 
             case DomainsDatabaseHelper.NIGHT_MODE_DISABLED:
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_disabled_dark));
                 } else {
                     nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_disabled_light));
@@ -897,14 +898,14 @@ public class DomainSettingsFragment extends Fragment {
             case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT:
                 if (defaultDisplayWebpageImages) {  // Display webpage images enabled by default.
                     // Set the icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
+                    if (darkTheme) {
                         displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_enabled_dark));
                     } else {
                         displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_enabled_light));
                     }
                 } else {  // Display webpage images disabled by default.
                     // Set the icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
+                    if (darkTheme) {
                         displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_disabled_dark));
                     } else {
                         displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_disabled_light));
@@ -917,7 +918,7 @@ public class DomainSettingsFragment extends Fragment {
 
             case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_ENABLED:
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_enabled_dark));
                 } else {
                     displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_enabled_light));
@@ -929,7 +930,7 @@ public class DomainSettingsFragment extends Fragment {
 
             case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_DISABLED:
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_disabled_dark));
                 } else {
                     displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_disabled_light));
@@ -952,7 +953,7 @@ public class DomainSettingsFragment extends Fragment {
             pinnedSslCertificateSwitch.setChecked(true);
 
             // Set the icon according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 pinnedSslCertificateImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_enabled_dark));
             } else {
                 pinnedSslCertificateImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_enabled_light));
@@ -962,7 +963,7 @@ public class DomainSettingsFragment extends Fragment {
             pinnedSslCertificateSwitch.setChecked(false);
 
             // Set the icon according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 pinnedSslCertificateImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_disabled_dark));
             } else {
                 pinnedSslCertificateImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_disabled_light));
@@ -1112,7 +1113,7 @@ public class DomainSettingsFragment extends Fragment {
                 currentWebsiteCertificateRadioButton.setChecked(false);
 
                 // Darken the background of the current website SSL certificate linear layout according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_33);
                 } else {
                     currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_11);
@@ -1145,7 +1146,7 @@ public class DomainSettingsFragment extends Fragment {
             pinnedIpAddressesSwitch.setChecked(true);
 
             // Set the icon according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 pinnedIpAddressesImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_enabled_dark));
             } else {
                 pinnedIpAddressesImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_enabled_light));
@@ -1155,7 +1156,7 @@ public class DomainSettingsFragment extends Fragment {
             pinnedIpAddressesSwitch.setChecked(false);
 
             // Set the icon according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 pinnedIpAddressesImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_disabled_dark));
             } else {
                 pinnedIpAddressesImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_disabled_light));
@@ -1187,7 +1188,7 @@ public class DomainSettingsFragment extends Fragment {
                 currentIpAddressesRadioButton.setChecked(false);
 
                 // Darken the background of the current IP addresses linear layout according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     currentIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_33);
                 } else {
                     currentIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_11);
@@ -1224,7 +1225,7 @@ public class DomainSettingsFragment extends Fragment {
                     domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_enabled));
                 } else {  // DOM storage is disabled.
                     // Set the icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
+                    if (darkTheme) {
                         domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_disabled_dark));
                     } else {
                         domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_disabled_light));
@@ -1238,7 +1239,7 @@ public class DomainSettingsFragment extends Fragment {
                 domStorageEnabledSwitch.setEnabled(false);
 
                 // Set the DOM storage icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_ghosted_dark));
                 } else {
                     domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_ghosted_light));
@@ -1260,7 +1261,7 @@ public class DomainSettingsFragment extends Fragment {
                     thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_warning));
                 } else {  // Third-party cookies are disabled.
                     // Set the third-party cookies icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
+                    if (darkTheme) {
                         thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_disabled_dark));
                     } else {
                         thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_disabled_light));
@@ -1268,7 +1269,7 @@ public class DomainSettingsFragment extends Fragment {
                 }
             } else {  // First-party cookies are disabled.
                 // Update the first-party cookies icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     firstPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_disabled_dark));
                 } else {
                     firstPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_disabled_light));
@@ -1278,7 +1279,7 @@ public class DomainSettingsFragment extends Fragment {
                 thirdPartyCookiesEnabledSwitch.setEnabled(false);
 
                 // Set the third-party cookies icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_ghosted_dark));
                 } else {
                     thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_ghosted_light));
@@ -1293,7 +1294,7 @@ public class DomainSettingsFragment extends Fragment {
                 thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_warning));
             } else {
                 // Update the third-party cookies icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_disabled_dark));
                 } else {
                     thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_disabled_light));
@@ -1308,7 +1309,7 @@ public class DomainSettingsFragment extends Fragment {
                 domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_enabled));
             } else {
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_disabled_dark));
                 } else {
                     domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_disabled_light));
@@ -1324,7 +1325,7 @@ public class DomainSettingsFragment extends Fragment {
                     formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_enabled));
                 } else {
                     // Set the icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
+                    if (darkTheme) {
                         formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_disabled_dark));
                     } else {
                         formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_disabled_light));
@@ -1338,14 +1339,14 @@ public class DomainSettingsFragment extends Fragment {
             // Update the icon.
             if (isChecked) {  // EasyList is on.
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     easyListImageView.setImageDrawable(resources.getDrawable(R.drawable.block_ads_enabled_dark));
                 } else {
                     easyListImageView.setImageDrawable(resources.getDrawable(R.drawable.block_ads_enabled_light));
                 }
             } else {  // EasyList is off.
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     easyListImageView.setImageDrawable(resources.getDrawable(R.drawable.block_ads_disabled_dark));
                 } else {
                     easyListImageView.setImageDrawable(resources.getDrawable(R.drawable.block_ads_disabled_light));
@@ -1358,14 +1359,14 @@ public class DomainSettingsFragment extends Fragment {
             // Update the icon.
             if (isChecked) {  // EasyPrivacy is on.
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     easyPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_enabled_dark));
                 } else {
                     easyPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_enabled_light));
                 }
             } else {  // EasyPrivacy is off.
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     easyPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_disabled_dark));
                 } else {
                     easyPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_disabled_light));
@@ -1378,7 +1379,7 @@ public class DomainSettingsFragment extends Fragment {
             // Update the icon and Fanboy's Social Blocking List.
             if (isChecked) {  // Fanboy's Annoyance List is on.
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     fanboysAnnoyanceListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_enabled_dark));
                 } else {
                     fanboysAnnoyanceListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_enabled_light));
@@ -1388,14 +1389,14 @@ public class DomainSettingsFragment extends Fragment {
                 fanboysSocialBlockingListSwitch.setEnabled(false);
 
                 // Update the Fanboy's Social Blocking List icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_ghosted_dark));
                 } else {
                     fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_ghosted_light));
                 }
             } else {  // Fanboy's Annoyance List is off.
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     fanboysAnnoyanceListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_dark));
                 } else {
                     fanboysAnnoyanceListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_light));
@@ -1407,14 +1408,14 @@ public class DomainSettingsFragment extends Fragment {
                 // Update the Fanboy's Social Blocking List icon.
                 if (fanboysSocialBlockingListSwitch.isChecked()) {  // Fanboy's Social Blocking List is on.
                     // Update the icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
+                    if (darkTheme) {
                         fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_enabled_dark));
                     } else {
                         fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_enabled_light));
                     }
                 } else {  // Fanboy's Social Blocking List is off.
                     // Update the icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
+                    if (darkTheme) {
                         fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_dark));
                     } else {
                         fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_light));
@@ -1429,14 +1430,14 @@ public class DomainSettingsFragment extends Fragment {
             // Update the icon.
             if (isChecked) {  // Fanboy's Social Blocking List is on.
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_enabled_dark));
                 } else {
                     fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_enabled_light));
                 }
             } else {  // Fanboy's Social Blocking List is off.
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_dark));
                 } else {
                     fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_light));
@@ -1449,14 +1450,14 @@ public class DomainSettingsFragment extends Fragment {
             // Update the icon.
             if (isChecked) {  // UltraPrivacy is on.
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     ultraPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_enabled_dark));
                 } else {
                     ultraPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_enabled_light));
                 }
             } else {  // UltraPrivacy is off.
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     ultraPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_disabled_dark));
                 } else {
                     ultraPrivacyImageView.setImageDrawable(resources.getDrawable(R.drawable.block_tracking_disabled_light));
@@ -1469,14 +1470,14 @@ public class DomainSettingsFragment extends Fragment {
             // Update the icon.
             if (isChecked) {  // Blocking all third-party requests is on.
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     blockAllThirdPartyRequestsImageView.setImageDrawable(resources.getDrawable(R.drawable.block_all_third_party_requests_enabled_dark));
                 } else {
                     blockAllThirdPartyRequestsImageView.setImageDrawable(resources.getDrawable(R.drawable.block_all_third_party_requests_enabled_light));
                 }
             } else {  // Blocking all third-party requests is off.
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     blockAllThirdPartyRequestsImageView.setImageDrawable(resources.getDrawable(R.drawable.block_all_third_party_requests_disabled_dark));
                 } else {
                     blockAllThirdPartyRequestsImageView.setImageDrawable(resources.getDrawable(R.drawable.block_all_third_party_requests_disabled_light));
@@ -1581,14 +1582,14 @@ public class DomainSettingsFragment extends Fragment {
                     case DomainsDatabaseHelper.SWIPE_TO_REFRESH_SYSTEM_DEFAULT:
                         if (defaultSwipeToRefresh) {  // Swipe to refresh enabled by default.
                             // Set the icon according to the theme.
-                            if (MainWebViewActivity.darkTheme) {
+                            if (darkTheme) {
                                 swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_enabled_dark));
                             } else {
                                 swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_enabled_light));
                             }
                         } else {  // Swipe to refresh disabled by default.
                             // Set the icon according to the theme.
-                            if (MainWebViewActivity.darkTheme) {
+                            if (darkTheme) {
                                 swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_disabled_dark));
                             } else {
                                 swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_disabled_light));
@@ -1601,7 +1602,7 @@ public class DomainSettingsFragment extends Fragment {
 
                     case DomainsDatabaseHelper.SWIPE_TO_REFRESH_ENABLED:
                         // Set the icon according to the theme.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_enabled_dark));
                         } else {
                             swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_enabled_light));
@@ -1613,7 +1614,7 @@ public class DomainSettingsFragment extends Fragment {
 
                     case DomainsDatabaseHelper.SWIPE_TO_REFRESH_DISABLED:
                         // Set the icon according to the theme.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_disabled_dark));
                         } else {
                             swipeToRefreshImageView.setImageDrawable(resources.getDrawable(R.drawable.refresh_disabled_light));
@@ -1639,14 +1640,14 @@ public class DomainSettingsFragment extends Fragment {
                     case DomainsDatabaseHelper.NIGHT_MODE_SYSTEM_DEFAULT:
                         if (defaultNightMode) {  // Night mode enabled by default.
                             // Set the icon according to the theme.
-                            if (MainWebViewActivity.darkTheme) {
+                            if (darkTheme) {
                                 nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_dark));
                             } else {
                                 nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_light));
                             }
                         } else {  // Night mode disabled by default.
                             // Set the icon according to the theme.
-                            if (MainWebViewActivity.darkTheme) {
+                            if (darkTheme) {
                                 nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_disabled_dark));
                             } else {
                                 nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_disabled_light));
@@ -1659,7 +1660,7 @@ public class DomainSettingsFragment extends Fragment {
 
                     case DomainsDatabaseHelper.NIGHT_MODE_ENABLED:
                         // Set the icon according to the theme.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_dark));
                         } else {
                             nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_enabled_light));
@@ -1671,7 +1672,7 @@ public class DomainSettingsFragment extends Fragment {
 
                     case DomainsDatabaseHelper.NIGHT_MODE_DISABLED:
                         // Set the icon according to the theme.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_disabled_dark));
                         } else {
                             nightModeImageView.setImageDrawable(resources.getDrawable(R.drawable.night_mode_disabled_light));
@@ -1713,7 +1714,7 @@ public class DomainSettingsFragment extends Fragment {
                         domStorageEnabledSwitch.setChecked(false);
 
                         // Set the icon according to the theme.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_disabled_dark));
                         } else {
                             domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_disabled_light));
@@ -1731,7 +1732,7 @@ public class DomainSettingsFragment extends Fragment {
                     }
 
                     // Set the icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
+                    if (darkTheme) {
                         domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_ghosted_dark));
                     } else {
                         domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_ghosted_light));
@@ -1754,14 +1755,14 @@ public class DomainSettingsFragment extends Fragment {
                     case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT:
                         if (defaultDisplayWebpageImages) {
                             // Set the icon according to the theme.
-                            if (MainWebViewActivity.darkTheme) {
+                            if (darkTheme) {
                                 displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_enabled_dark));
                             } else {
                                 displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_enabled_light));
                             }
                         } else {
                             // Set the icon according to the theme.
-                            if (MainWebViewActivity.darkTheme) {
+                            if (darkTheme) {
                                 displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_disabled_dark));
                             } else {
                                 displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_disabled_light));
@@ -1774,7 +1775,7 @@ public class DomainSettingsFragment extends Fragment {
 
                     case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_ENABLED:
                         // Set the icon according to the theme.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_enabled_dark));
                         } else {
                             displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_enabled_light));
@@ -1786,7 +1787,7 @@ public class DomainSettingsFragment extends Fragment {
 
                     case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_DISABLED:
                         // Set the icon according to the theme.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_disabled_dark));
                         } else {
                             displayWebpageImagesImageView.setImageDrawable(resources.getDrawable(R.drawable.images_disabled_light));
@@ -1809,7 +1810,7 @@ public class DomainSettingsFragment extends Fragment {
             // Update the icon.
             if (isChecked) {  // SSL certificate pinning is enabled.
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     pinnedSslCertificateImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_enabled_dark));
                 } else {
                     pinnedSslCertificateImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_enabled_light));
@@ -1849,7 +1850,7 @@ public class DomainSettingsFragment extends Fragment {
                     savedSslCertificateLinearLayout.setBackgroundResource(R.color.transparent);
 
                     // Darken the background of the current website SSL certificate linear layout according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
+                    if (darkTheme) {
                         currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_33);
                     } else {
                         currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_11);
@@ -1868,7 +1869,7 @@ public class DomainSettingsFragment extends Fragment {
                     currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.transparent);
 
                     // Darken the background of the saved SSL certificate linear layout according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
+                    if (darkTheme) {
                         savedSslCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_33);
                     } else {
                         savedSslCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_11);
@@ -1886,7 +1887,7 @@ public class DomainSettingsFragment extends Fragment {
                 }
             } else {  // SSL certificate pinning is disabled.
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     pinnedSslCertificateImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_disabled_dark));
                 } else {
                     pinnedSslCertificateImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_disabled_light));
@@ -1914,7 +1915,7 @@ public class DomainSettingsFragment extends Fragment {
             savedSslCertificateLinearLayout.setBackgroundResource(R.color.transparent);
 
             // Darken the background of the current website SSL certificate linear layout according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_33);
             } else {
                 currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_11);
@@ -1932,7 +1933,7 @@ public class DomainSettingsFragment extends Fragment {
             savedSslCertificateLinearLayout.setBackgroundResource(R.color.transparent);
 
             // Darken the background of the current website SSL certificate linear layout according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_33);
             } else {
                 currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_11);
@@ -1950,7 +1951,7 @@ public class DomainSettingsFragment extends Fragment {
             currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.transparent);
 
             // Darken the background of the saved SSL certificate linear layout according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 savedSslCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_33);
             } else {
                 savedSslCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_11);
@@ -1968,7 +1969,7 @@ public class DomainSettingsFragment extends Fragment {
             currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.transparent);
 
             // Darken the background of the saved SSL certificate linear layout according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 savedSslCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_33);
             } else {
                 savedSslCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_11);
@@ -1980,7 +1981,7 @@ public class DomainSettingsFragment extends Fragment {
             // Update the icon.
             if (isChecked) {  // IP addresses pinning is enabled.
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     pinnedIpAddressesImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_enabled_dark));
                 } else {
                     pinnedIpAddressesImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_enabled_light));
@@ -2008,7 +2009,7 @@ public class DomainSettingsFragment extends Fragment {
                     savedSslCertificateLinearLayout.setBackgroundResource(R.color.transparent);
 
                     // Darken the background of the current IP addresses linear layout according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
+                    if (darkTheme) {
                         currentIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_33);
                     } else {
                         currentIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_11);
@@ -2024,7 +2025,7 @@ public class DomainSettingsFragment extends Fragment {
                     currentIpAddressesLinearLayout.setBackgroundResource(R.color.transparent);
 
                     // Darken the background of the saved IP addresses linear layout according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
+                    if (darkTheme) {
                         savedIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_33);
                     } else {
                         savedIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_11);
@@ -2035,7 +2036,7 @@ public class DomainSettingsFragment extends Fragment {
                 currentIpAddressesCardView.getParent().requestChildFocus(currentIpAddressesCardView, currentIpAddressesCardView);
             } else {  // IP addresses pinning is disabled.
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     pinnedIpAddressesImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_disabled_dark));
                 } else {
                     pinnedIpAddressesImageView.setImageDrawable(resources.getDrawable(R.drawable.ssl_certificate_disabled_light));
@@ -2062,7 +2063,7 @@ public class DomainSettingsFragment extends Fragment {
             savedIpAddressesLinearLayout.setBackgroundResource(R.color.transparent);
 
             // Darken the background of the current IP addresses linear layout according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 currentIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_33);
             } else {
                 currentIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_11);
@@ -2080,7 +2081,7 @@ public class DomainSettingsFragment extends Fragment {
             savedIpAddressesLinearLayout.setBackgroundResource(R.color.transparent);
 
             // Darken the background of the current IP addresses linear layout according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 currentIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_33);
             } else {
                 currentIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_11);
@@ -2098,7 +2099,7 @@ public class DomainSettingsFragment extends Fragment {
             currentIpAddressesLinearLayout.setBackgroundResource(R.color.transparent);
 
             // Darken the background of the saved IP addresses linear layout according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 savedIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_33);
             } else {
                 savedIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_11);
@@ -2116,7 +2117,7 @@ public class DomainSettingsFragment extends Fragment {
             currentIpAddressesLinearLayout.setBackgroundResource(R.color.transparent);
 
             // Darken the background of the saved IP addresses linear layout according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 savedIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_33);
             } else {
                 savedIpAddressesLinearLayout.setBackgroundResource(R.color.black_translucent_11);

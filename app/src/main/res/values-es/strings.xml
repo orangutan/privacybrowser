@@ -46,6 +46,8 @@
     <string name="no_title">Sin título</string>
     <string name="unrecognized_url">URL no reconocida:</string>
     <string name="open_with">Abrir con</string>
+    <string name="new_tab">Nueva pestaña</string>
+    <string name="add_tab">Añadir pestaña</string>
 
     <!-- Save As. -->
     <string name="save_as">Guardar como</string>
@@ -107,6 +109,7 @@
     <!-- MainWebViewActivity Navigation Menu. -->
     <string name="navigation_drawer">Caja de navegación</string>
     <string name="navigation">Navegación</string>
+    <string name="close_tab">Cerrar pestaña</string>
     <string name="clear_and_exit">Borrar y salir</string>
     <string name="home">Inicio</string>
     <string name="back">Atrás</string>
@@ -173,6 +176,7 @@
     <string name="stop">Parar</string>
 
     <!-- Context Menus. -->
+    <string name="open_in_new_tab">Abrir en nueva pestaña</string>
     <string name="copy_url">Copiar URL</string>
     <string name="download_url">Descargar URL</string>
     <string name="email_address">Correo electrónico</string>
@@ -413,8 +417,9 @@
         <string name="javascript_preference">Habilitar Javascript por defecto</string>
         <string name="javascript_preference_summary">Javascript permite a las webs ejecutar programas (scripts) en el dispositivo.</string>
         <string name="first_party_cookies_preference">Habilitar cookies de primera parte por defecto</string>
-        <string name="first_party_cookies_preference_summary">Dispositivos con versiones de Android más antiguas que Lollipop (versión 5.0)
-            también habilitarán las cookies de terceras partes con este ajuste.</string>
+        <string name="first_party_cookies_preference_summary">Ya que las cookies de primera parte son una configuración de nivel de aplicación, cuando la pestaña activa tiene habilitadas las cookies,
+            cualquier solicitud de red realizada en segundo plano por otras pestañas también incluirá las cookies almacenadas para sus dominios.
+            Android KitKat (versión 4.4.x) no distingue entre cookies de primera y de terceras partes y las habilitará ambas con esta configuración.</string>
         <string name="third_party_cookies_preference">Habilar cookies de terceras partes por defecto</string>
         <string name="third_party_cookies_summary">Este ajuste requiere Android Lollipop (versión 5.0) o mayor.  No tiene efecto si las cookies de primera parte están deshabilitadas.</string>
         <string name="dom_storage_preference">Habilitar almacenamiento DOM por defecto</string>

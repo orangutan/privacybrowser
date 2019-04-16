@@ -25,11 +25,13 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.net.http.SslCertificate;
 import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -41,7 +43,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
 
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
@@ -131,8 +132,15 @@ public class SslCertificateErrorDialog extends DialogFragment {
         // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the screenshot and theme preferences.
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Set the style and icon according to the theme.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             // Set the style.
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
 
@@ -163,7 +171,7 @@ public class SslCertificateErrorDialog extends DialogFragment {
         AlertDialog alertDialog = dialogBuilder.create();
 
         // Disable screenshots if not allowed.
-        if (!MainWebViewActivity.allowScreenshots) {
+        if (!allowScreenshots) {
             // Remove the warning below that `getWindow()` might be null.
             assert alertDialog.getWindow() != null;
 
@@ -220,7 +228,7 @@ public class SslCertificateErrorDialog extends DialogFragment {
         ForegroundColorSpan blueColorSpan;
 
         // Set a blue color span according to the theme.  The deprecated `getResources().getColor` must be used until the minimum API >= 23.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             //noinspection deprecation
             blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
         } else {
@@ -372,11 +380,17 @@ public class SslCertificateErrorDialog extends DialogFragment {
             // Create a spannable string builder.
             SpannableStringBuilder ipAddressesStringBuilder = new SpannableStringBuilder(ipAddressesLabel + ipAddresses);
 
+            // Get a handle for the shared preferences.
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
+
+            // Get the screenshot and theme preferences.
+            boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+
             // Create a blue foreground color span.
             ForegroundColorSpan blueColorSpan;
 
             // Set the blue color span according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 //noinspection deprecation
                 blueColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.blue_400));
             } else {

@@ -413,8 +413,6 @@
         <string name="javascript_preference">JavaScript standardmäßig aktivieren</string>
         <string name="javascript_preference_summary">JavaScript ermöglicht es Websites, Programme (Scripts) auf Ihrem Gerät auszuführen.</string>
         <string name="first_party_cookies_preference">Erstanbieter-Cookies standardmäßig aktivieren</string>
-        <string name="first_party_cookies_preference_summary">Auf Geräten mit älterer Android-Version als Lollipop (Version 5.0)
-            wird zusammen mit dieser auch die Option für Drittanbieter-Cookies aktiviert.</string>
         <string name="third_party_cookies_preference">Drittanbieter-Cookies standardmäßig aktivieren</string>
         <string name="third_party_cookies_summary">Diese Option benötigt Android Lollipop (Version 5.0) oder höher. Sie hat keine Auswirkungen, wenn Erstanbieter-Cookies deaktiviert sind.</string>
         <string name="dom_storage_preference">DOM-Speicher standardmäßig aktivieren</string>

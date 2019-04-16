@@ -24,8 +24,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Proxy;
+import android.preference.PreferenceManager;
 import android.util.ArrayMap;
 import android.util.Log;
 
@@ -116,8 +118,14 @@ public class OrbotProxyHelper {
                 // Use `AlertDialog.Builder` to create the `AlertDialog`.
                 AlertDialog.Builder dialogBuilder;
 
+                // Get a handle for the shared preferences.
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(privacyBrowserContext);
+
+                // Get the theme preference.
+                boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+
                 // Set the style according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     dialogBuilder = new AlertDialog.Builder(parentActivity, R.style.PrivacyBrowserAlertDialogDark);
                 } else {
                     dialogBuilder = new AlertDialog.Builder(parentActivity, R.style.PrivacyBrowserAlertDialogLight);

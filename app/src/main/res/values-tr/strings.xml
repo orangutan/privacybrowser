@@ -406,7 +406,6 @@
         <string name="javascript_preference">JavaScript\'i varsayılan olarak etkinleştir</string>
         <string name="javascript_preference_summary">JavaScript web sitelerin cihazdaki programları(scriptler) çalıştırmasına izin verir.</string>
         <string name="first_party_cookies_preference">Birinci taraf çerezleri varsayılan olarak etkinleştir</string>
-        <string name="first_party_cookies_preference_summary">Bu ayar, Android Lollipop sürümünden(5.0) eski sürümlere sahip cihazlarda üçüncü taraf çerezleri de etkinleştirir.</string>
         <string name="third_party_cookies_preference">Üçüncü taraf çerezleri varsayılan olarak etkinleştir</string>
         <string name="third_party_cookies_summary">Bu ayarı etkinleştirmek için Android Lollipop sürümüne(5.0) ya da daha üst sürümlere sahip olmak gerekir.
             Birinci taraf çerezler devre dışı olduğu takdirde etkisi yoktur.</string>

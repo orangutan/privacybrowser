@@ -412,7 +412,6 @@
         <string name="javascript_preference">Abilita JavaScript</string>
         <string name="javascript_preference_summary">Permetti a JavaScript di eseguire programmi (script) sul dispositivo.</string>
         <string name="first_party_cookies_preference">Abilita cookies proprietari</string>
-        <string name="first_party_cookies_preference_summary">Questa impostazione abilita anche cookies di terze parti con dispositivi con versioni di Android precedenti a Lollipop (versione 5.0).</string>
         <string name="third_party_cookies_preference">Abilita cookies di terze parti</string>
         <string name="third_party_cookies_summary">Questa impostazione richiede Android Lollipop (version 5.0) o successivo.  Non ha effetti se i cookies proprietari sono disabilitati.</string>
         <string name="dom_storage_preference">Abilita DOM Storage</string>

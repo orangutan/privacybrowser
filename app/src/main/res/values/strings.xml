@@ -418,7 +418,9 @@
         <string name="javascript_preference">Enable JavaScript by default</string>
         <string name="javascript_preference_summary">JavaScript allows websites to run programs (scripts) on the device.</string>
         <string name="first_party_cookies_preference">Enable first-party cookies by default</string>
-        <string name="first_party_cookies_preference_summary">Devices with versions of Android older than Lollipop (version 5.0) will also enable third-party cookies with this setting.</string>
+        <string name="first_party_cookies_preference_summary">Because first-party cookies are an app level setting, when the active tab has cookies enabled,
+            any network requests made in the background by other tabs will also include any stored cookies for their domains.
+            Android KitKat (version 4.4.x) does not differentiate between first and third-party cookies and will enable them both with this setting.</string>
         <string name="third_party_cookies_preference">Enable third-party cookies by default</string>
         <string name="third_party_cookies_summary">This setting requires Android Lollipop (version 5.0) or higher.  It has no effect if first-party cookies are disabled.</string>
         <string name="dom_storage_preference">Enable DOM storage by default</string>

@@ -22,13 +22,13 @@ package com.stoutner.privacybrowser.dialogs;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.http.SslCertificate;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -45,7 +45,6 @@ import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.fragments.WebViewTabFragment;
 import com.stoutner.privacybrowser.views.NestedScrollWebView;
 
-import java.io.ByteArrayOutputStream;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -102,8 +101,15 @@ public class ViewSslCertificateDialog extends DialogFragment {
         // Use a builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the screenshot and theme preferences.
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Set the style according to the theme.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
         } else {
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
@@ -133,7 +139,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
             final AlertDialog alertDialog = dialogBuilder.create();
 
             // Disable screenshots if not allowed.
-            if (!MainWebViewActivity.allowScreenshots) {
+            if (!allowScreenshots) {
                 // Remove the warning below that `getWindow()` might be null.
                 assert alertDialog.getWindow() != null;
 
@@ -155,7 +161,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
             final AlertDialog alertDialog = dialogBuilder.create();
 
             // Disable screenshots if not allowed.
-            if (!MainWebViewActivity.allowScreenshots) {
+            if (!allowScreenshots) {
                 // Remove the warning below that `getWindow()` might be null.
                 assert alertDialog.getWindow() != null;
 
@@ -222,7 +228,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
             ForegroundColorSpan blueColorSpan;
 
             // Set the blue color span according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 //noinspection deprecation
                 blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
             } else {

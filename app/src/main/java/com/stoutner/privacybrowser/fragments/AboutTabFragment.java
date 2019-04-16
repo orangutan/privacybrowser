@@ -21,10 +21,12 @@ package com.stoutner.privacybrowser.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -91,6 +93,12 @@ public class AboutTabFragment extends Fragment {
         // Get a handle for the context and assert that it isn't null.
         Context context = getContext();
         assert context != null;
+
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        // Get the theme preference.
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
 
         // Load the tabs.  Tab numbers start at 0.
         if (tabNumber == 0) {  // Load the about tab.
@@ -201,7 +209,7 @@ public class AboutTabFragment extends Fragment {
             ForegroundColorSpan blueColorSpan;
 
             // Set `blueColorSpan` according to the theme.  We have to use the deprecated `getColor()` until API >= 23.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 //noinspection deprecation
                 blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
             } else {
@@ -346,7 +354,7 @@ public class AboutTabFragment extends Fragment {
             WebView tabWebView = (WebView) tabLayout;
 
             // Load the tabs according to the theme.
-            if (MainWebViewActivity.darkTheme) {  // The dark theme is applied.
+            if (darkTheme) {  // The dark theme is applied.
                 // Set the background color.  The deprecated `.getColor()` must be used until the minimum API >= 23.
                 //noinspection deprecation
                 tabWebView.setBackgroundColor(getResources().getColor(R.color.gray_850));

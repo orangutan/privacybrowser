@@ -23,11 +23,13 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.http.SslCertificate;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -118,13 +120,20 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Get the theme and screenshot preferences.
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Disable screenshots if not allowed.
-        if (!MainWebViewActivity.allowScreenshots) {
+        if (!allowScreenshots) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
         // Set the activity theme.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             setTheme(R.style.PrivacyBrowserDark_SecondaryActivity);
         } else {
             setTheme(R.style.PrivacyBrowserLight_SecondaryActivity);
@@ -492,11 +501,17 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                                             Runnable enableDeleteMenuItemRunnable = () -> {
                                                 // Enable `deleteMenuItem` according to the display mode.
                                                 if (twoPanedMode) {  // Two-paned mode.
-                                                    // Enable `deleteMenuItem`.
+                                                    // Enable the delete menu item.
                                                     deleteMenuItem.setEnabled(true);
 
+                                                    // Get a handle for the shared preferences.
+                                                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+                                                    // Get the theme preferences.
+                                                    boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+
                                                     // Set the delete icon according to the theme.
-                                                    if (MainWebViewActivity.darkTheme) {
+                                                    if (darkTheme) {
                                                         deleteMenuItem.setIcon(R.drawable.delete_dark);
                                                     } else {
                                                         deleteMenuItem.setIcon(R.drawable.delete_light);
@@ -823,8 +838,14 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             // Enable the delete options menu items.
             deleteMenuItem.setEnabled(true);
 
+            // Get a handle for the shared preferences.
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+            // Get the theme and screenshot preferences.
+            boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+
             // Set the delete icon according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 deleteMenuItem.setIcon(R.drawable.delete_dark);
             } else {
                 deleteMenuItem.setIcon(R.drawable.delete_light);

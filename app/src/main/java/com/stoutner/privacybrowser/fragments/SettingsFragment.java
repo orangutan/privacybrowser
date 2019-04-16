@@ -112,6 +112,7 @@ public class SettingsFragment extends PreferenceFragment {
         boolean proxyThroughOrbot = savedPreferences.getBoolean("proxy_through_orbot", false);
         boolean fullScreenBrowsingMode = savedPreferences.getBoolean("full_screen_browsing_mode", false);
         boolean clearEverything = savedPreferences.getBoolean("clear_everything", true);
+        boolean darkTheme = savedPreferences.getBoolean("dark_theme", false);
         final boolean nightMode = savedPreferences.getBoolean("night_mode", false);
 
         // Only enable the third-party cookies preference if first-party cookies are enabled and API >= 21.
@@ -237,7 +238,7 @@ public class SettingsFragment extends PreferenceFragment {
         if (firstPartyCookiesEnabled) {
             firstPartyCookiesPreference.setIcon(R.drawable.cookies_enabled);
         } else {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_dark);
             } else {
                 firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_light);
@@ -249,14 +250,14 @@ public class SettingsFragment extends PreferenceFragment {
             if (thirdPartyCookiesEnabled) {
                 thirdPartyCookiesPreference.setIcon(R.drawable.cookies_warning);
             } else {
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_dark);
                 } else {
                     thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_light);
                 }
             }
         } else {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_dark);
             } else {
                 thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_light);
@@ -268,14 +269,14 @@ public class SettingsFragment extends PreferenceFragment {
             if (savedPreferences.getBoolean("dom_storage", false)) {  // DOM storage is enabled.
                 domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
             } else {  // DOM storage is disabled.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     domStoragePreference.setIcon(R.drawable.dom_storage_disabled_dark);
                 } else {
                     domStoragePreference.setIcon(R.drawable.dom_storage_disabled_light);
                 }
             }
         } else {  // The preference is disabled.  The icon should be ghosted.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_dark);
             } else {
                 domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_light);
@@ -287,7 +288,7 @@ public class SettingsFragment extends PreferenceFragment {
             if (savedPreferences.getBoolean("save_form_data", false)) {
                 saveFormDataPreference.setIcon(R.drawable.form_data_enabled);
             } else {
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     saveFormDataPreference.setIcon(R.drawable.form_data_disabled_dark);
                 } else {
                     saveFormDataPreference.setIcon(R.drawable.form_data_disabled_light);
@@ -297,13 +298,13 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the custom user agent icon.
         if (customUserAgentPreference.isEnabled()) {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled_dark);
             } else {
                 customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled_light);
             }
         } else {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_dark);
             } else {
                 customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_light);
@@ -312,13 +313,13 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the incognito mode icon.
         if (savedPreferences.getBoolean("incognito_mode", false)) {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 incognitoModePreference.setIcon(R.drawable.incognito_mode_enabled_dark);
             } else {
                 incognitoModePreference.setIcon(R.drawable.incognito_mode_enabled_light);
             }
         } else {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled_dark);
             } else {
                 incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled_light);
@@ -327,13 +328,13 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the Do Not Track icon.
         if (savedPreferences.getBoolean("do_not_track", false)) {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 doNotTrackPreference.setIcon(R.drawable.block_tracking_enabled_dark);
             } else {
                 doNotTrackPreference.setIcon(R.drawable.block_tracking_enabled_light);
             }
         } else {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 doNotTrackPreference.setIcon(R.drawable.block_tracking_disabled_dark);
             } else {
                 doNotTrackPreference.setIcon(R.drawable.block_tracking_disabled_light);
@@ -342,13 +343,13 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the allow screenshots icon.
         if (savedPreferences.getBoolean("allow_screenshots", false)) {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled_dark);
             } else {
                 allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled_light);
             }
         } else {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled_dark);
             } else {
                 allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled_light);
@@ -357,13 +358,13 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the EasyList icon.
         if (savedPreferences.getBoolean("easylist", true)) {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 easyListPreference.setIcon(R.drawable.block_ads_enabled_dark);
             } else {
                 easyListPreference.setIcon(R.drawable.block_ads_enabled_light);
             }
         } else {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 easyListPreference.setIcon(R.drawable.block_ads_disabled_dark);
             } else {
                 easyListPreference.setIcon(R.drawable.block_ads_disabled_light);
@@ -372,13 +373,13 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the EasyPrivacy icon.
         if (savedPreferences.getBoolean("easyprivacy", true)) {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 easyPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_dark);
             } else {
                 easyPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_light);
             }
         } else {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 easyPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_dark);
             } else {
                 easyPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_light);
@@ -387,7 +388,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the Fanboy lists icons.
         if (fanboyAnnoyanceListEnabled) {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 // Set the Fanboy annoyance list icon.
                 fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_enabled_dark);
 
@@ -401,7 +402,7 @@ public class SettingsFragment extends PreferenceFragment {
                 fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_ghosted_light);
             }
         } else {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 // Set the Fanboy annoyance list icon.
                 fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_disabled_dark);
 
@@ -426,13 +427,13 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the UltraPrivacy icon.
         if (savedPreferences.getBoolean("ultraprivacy", true)) {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 ultraPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_dark);
             } else {
                 ultraPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_light);
             }
         } else {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 ultraPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_dark);
             } else {
                 ultraPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_light);
@@ -441,13 +442,13 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the block all third-party requests icon.
         if (savedPreferences.getBoolean("block_all_third_party_requests", false)) {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_enabled_dark);
             } else {
                 blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_enabled_light);
             }
         } else {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_disabled_dark);
             } else {
                 blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_disabled_light);
@@ -456,7 +457,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the Tor icons according to the theme.
         if (proxyThroughOrbot) {  // Proxying is enabled.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 proxyThroughOrbotPreference.setIcon(R.drawable.orbot_enabled_dark);
                 torHomepagePreference.setIcon(R.drawable.home_enabled_dark);
                 torSearchPreference.setIcon(R.drawable.search_enabled_dark);
@@ -480,7 +481,7 @@ public class SettingsFragment extends PreferenceFragment {
                 }
             }
         } else {  // Proxying is disabled.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 proxyThroughOrbotPreference.setIcon(R.drawable.orbot_disabled_dark);
                 torHomepagePreference.setIcon(R.drawable.home_ghosted_dark);
                 torSearchPreference.setIcon(R.drawable.search_ghosted_dark);
@@ -495,13 +496,13 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the search custom URL icon.
         if (searchCustomURLPreference.isEnabled()) {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 searchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_dark);
             } else {
                 searchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_light);
             }
         } else {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 searchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_dark);
             } else {
                 searchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_light);
@@ -511,7 +512,7 @@ public class SettingsFragment extends PreferenceFragment {
         // Set the full screen browsing mode icons.
         if (fullScreenBrowsingMode) {  // Full screen browsing mode is enabled.
             // Set the `fullScreenBrowsingModePreference` icon according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled_dark);
             } else {
                 fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled_light);
@@ -520,14 +521,14 @@ public class SettingsFragment extends PreferenceFragment {
             // Set the hide app bar icon.
             if (savedPreferences.getBoolean("hide_app_bar", true)) {  // Hide app bar is enabled.
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_dark);
                 } else {
                     hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_light);
                 }
             } else {  // Hide app bar is disabled.
                 // Set the icon according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_dark);
                 } else {
                     hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_light);
@@ -535,7 +536,7 @@ public class SettingsFragment extends PreferenceFragment {
             }
         } else {  // Full screen browsing mode is disabled.
             // Set the icons according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled_dark);
                 hideAppBarPreference.setIcon(R.drawable.app_bar_ghosted_dark);
             } else {
@@ -546,7 +547,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the clear everything preference icon.
         if (clearEverything) {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled_dark);
             } else {
                 clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled_light);
@@ -557,7 +558,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the clear cookies preference icon.
         if (clearEverything || savedPreferences.getBoolean("clear_cookies", true)) {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 clearCookiesPreference.setIcon(R.drawable.cookies_cleared_dark);
             } else {
                 clearCookiesPreference.setIcon(R.drawable.cookies_cleared_light);
@@ -568,7 +569,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the clear DOM storage preference icon.
         if (clearEverything || savedPreferences.getBoolean("clear_dom_storage", true)) {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_dark);
             } else {
                 clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_light);
@@ -580,7 +581,7 @@ public class SettingsFragment extends PreferenceFragment {
         // Set the clear form data preference icon if the API < 26.  It has no effect on newer versions of Android.
         if (Build.VERSION.SDK_INT < 26) {
             if (clearEverything || savedPreferences.getBoolean("clear_form_data", true)) {
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     clearFormDataPreference.setIcon(R.drawable.form_data_cleared_dark);
                 } else {
                     clearFormDataPreference.setIcon(R.drawable.form_data_cleared_light);
@@ -592,7 +593,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the clear cache preference icon.
         if (clearEverything || savedPreferences.getBoolean("clear_cache", true)) {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 clearCachePreference.setIcon(R.drawable.cache_cleared_dark);
             } else {
                 clearCachePreference.setIcon(R.drawable.cache_cleared_light);
@@ -603,13 +604,13 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the swipe to refresh preference icon.
         if (savedPreferences.getBoolean("swipe_to_refresh", true)) {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled_dark);
             } else {
                 swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled_light);
             }
         } else {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled_dark);
             } else {
                 swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled_light);
@@ -618,13 +619,13 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the scroll app bar preference icon.
         if (savedPreferences.getBoolean("scroll_app_bar", true)) {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_dark);
             } else {
                 scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_light);
             }
         } else {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_dark);
             } else {
                 scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_light);
@@ -633,13 +634,13 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the display additional app bar icons preference icon.
         if (savedPreferences.getBoolean("display_additional_app_bar_icons", false)) {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled_dark);
             } else {
                 displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled_light);
             }
         } else {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_dark);
             } else {
                 displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_light);
@@ -648,13 +649,13 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the download with external app preference icon.
         if (savedPreferences.getBoolean("download_with_external_app", false)) {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_dark);
             } else {
                 downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_light);
             }
         } else {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_dark);
             } else {
                 downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_light);
@@ -670,13 +671,13 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the night mode preference icon.
         if (nightMode) {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 nightModePreference.setIcon(R.drawable.night_mode_enabled_dark);
             } else {
                 nightModePreference.setIcon(R.drawable.night_mode_enabled_light);
             }
         } else {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 nightModePreference.setIcon(R.drawable.night_mode_disabled_dark);
             } else {
                 nightModePreference.setIcon(R.drawable.night_mode_disabled_light);
@@ -685,13 +686,13 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Set the display webpage images preference icon.
         if (savedPreferences.getBoolean("display_webpage_images", true)) {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 displayWebpageImagesPreference.setIcon(R.drawable.images_enabled_dark);
             } else {
                 displayWebpageImagesPreference.setIcon(R.drawable.images_enabled_light);
             }
         } else {
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 displayWebpageImagesPreference.setIcon(R.drawable.images_disabled_dark);
             } else {
                 displayWebpageImagesPreference.setIcon(R.drawable.images_disabled_light);
@@ -715,7 +716,7 @@ public class SettingsFragment extends PreferenceFragment {
                         if (sharedPreferences.getBoolean("dom_storage", false)) {
                             domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
                         } else {
-                            if (MainWebViewActivity.darkTheme) {
+                            if (darkTheme) {
                                 domStoragePreference.setIcon(R.drawable.dom_storage_disabled_dark);
                             } else {
                                 domStoragePreference.setIcon(R.drawable.dom_storage_disabled_light);
@@ -729,7 +730,7 @@ public class SettingsFragment extends PreferenceFragment {
                         domStoragePreference.setEnabled(false);
 
                         // Set the icon for DOM storage preference to be ghosted.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_dark);
                         } else {
                             domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_light);
@@ -748,14 +749,14 @@ public class SettingsFragment extends PreferenceFragment {
                             if (sharedPreferences.getBoolean("third_party_cookies", false)) {
                                 thirdPartyCookiesPreference.setIcon(R.drawable.cookies_warning);
                             } else {
-                                if (MainWebViewActivity.darkTheme) {
+                                if (darkTheme) {
                                     thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_dark);
                                 } else {
                                     thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_light);
                                 }
                             }
                         } else {
-                            if (MainWebViewActivity.darkTheme) {
+                            if (darkTheme) {
                                 thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_dark);
                             } else {
                                 thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_light);
@@ -763,14 +764,14 @@ public class SettingsFragment extends PreferenceFragment {
                         }
                     } else {  // `first_party_cookies` is `false`.
                         // Update the icon for `first_party_cookies`.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_dark);
                         } else {
                             firstPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_light);
                         }
 
                         // Set the icon for `third_party_cookies` to be ghosted.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_dark);
                         } else {
                             thirdPartyCookiesPreference.setIcon(R.drawable.cookies_ghosted_light);
@@ -786,7 +787,7 @@ public class SettingsFragment extends PreferenceFragment {
                     if (sharedPreferences.getBoolean("third_party_cookies", false)) {
                         thirdPartyCookiesPreference.setIcon(R.drawable.cookies_warning);
                     } else {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_dark);
                         } else {
                             thirdPartyCookiesPreference.setIcon(R.drawable.cookies_disabled_light);
@@ -799,7 +800,7 @@ public class SettingsFragment extends PreferenceFragment {
                     if (sharedPreferences.getBoolean("dom_storage", false)) {
                         domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
                     } else {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             domStoragePreference.setIcon(R.drawable.dom_storage_disabled_dark);
                         } else {
                             domStoragePreference.setIcon(R.drawable.dom_storage_disabled_light);
@@ -813,7 +814,7 @@ public class SettingsFragment extends PreferenceFragment {
                     if (sharedPreferences.getBoolean("save_form_data", false)) {
                         saveFormDataPreference.setIcon(R.drawable.form_data_enabled);
                     } else {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             saveFormDataPreference.setIcon(R.drawable.form_data_disabled_dark);
                         } else {
                             saveFormDataPreference.setIcon(R.drawable.form_data_disabled_light);
@@ -841,7 +842,7 @@ public class SettingsFragment extends PreferenceFragment {
                             customUserAgentPreference.setEnabled(false);
 
                             // Set the custom user agent preference icon according to the theme.
-                            if (MainWebViewActivity.darkTheme) {
+                            if (darkTheme) {
                                 customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_dark);
                             } else {
                                 customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_light);
@@ -856,7 +857,7 @@ public class SettingsFragment extends PreferenceFragment {
                             customUserAgentPreference.setEnabled(true);
 
                             // Set the custom user agent preference icon according to the theme.
-                            if (MainWebViewActivity.darkTheme) {
+                            if (darkTheme) {
                                 customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled_dark);
                             } else {
                                 customUserAgentPreference.setIcon(R.drawable.custom_user_agent_enabled_light);
@@ -871,7 +872,7 @@ public class SettingsFragment extends PreferenceFragment {
                             customUserAgentPreference.setEnabled(false);
 
                             // Set the custom user agent preference icon according to the theme.
-                            if (MainWebViewActivity.darkTheme) {
+                            if (darkTheme) {
                                 customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_dark);
                             } else {
                                 customUserAgentPreference.setIcon(R.drawable.custom_user_agent_ghosted_light);
@@ -887,13 +888,13 @@ public class SettingsFragment extends PreferenceFragment {
                 case "incognito_mode":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("incognito_mode", false)) {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             incognitoModePreference.setIcon(R.drawable.incognito_mode_enabled_dark);
                         } else {
                             incognitoModePreference.setIcon(R.drawable.incognito_mode_enabled_light);
                         }
                     } else {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled_dark);
                         } else {
                             incognitoModePreference.setIcon(R.drawable.incognito_mode_disabled_light);
@@ -904,13 +905,13 @@ public class SettingsFragment extends PreferenceFragment {
                 case "do_not_track":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("do_not_track", false)) {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             doNotTrackPreference.setIcon(R.drawable.block_tracking_enabled_dark);
                         } else {
                             doNotTrackPreference.setIcon(R.drawable.block_tracking_enabled_light);
                         }
                     } else {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             doNotTrackPreference.setIcon(R.drawable.block_tracking_disabled_dark);
                         } else {
                             doNotTrackPreference.setIcon(R.drawable.block_tracking_disabled_light);
@@ -922,13 +923,13 @@ public class SettingsFragment extends PreferenceFragment {
                 case "allow_screenshots":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("allow_screenshots", false)) {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled_dark);
                         } else {
                             allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_enabled_light);
                         }
                     } else {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled_dark);
                         } else {
                             allowScreenshotsPreference.setIcon(R.drawable.allow_screenshots_disabled_light);
@@ -951,13 +952,13 @@ public class SettingsFragment extends PreferenceFragment {
                 case "easylist":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("easylist", true)) {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             easyListPreference.setIcon(R.drawable.block_ads_enabled_dark);
                         } else {
                             easyListPreference.setIcon(R.drawable.block_ads_enabled_light);
                         }
                     } else {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             easyListPreference.setIcon(R.drawable.block_ads_disabled_dark);
                         } else {
                             easyListPreference.setIcon(R.drawable.block_ads_disabled_light);
@@ -968,13 +969,13 @@ public class SettingsFragment extends PreferenceFragment {
                 case "easyprivacy":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("easyprivacy", true)) {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             easyPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_dark);
                         } else {
                             easyPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_light);
                         }
                     } else {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             easyPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_dark);
                         } else {
                             easyPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_light);
@@ -988,7 +989,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                     // Update the Fanboy icons.
                     if (currentFanboyAnnoyanceList) {  // Fanboy's annoyance list is enabled.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             // Update the Fanboy's annoyance list icon.
                             fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_enabled_dark);
 
@@ -1002,7 +1003,7 @@ public class SettingsFragment extends PreferenceFragment {
                             fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_ghosted_light);
                         }
                     } else {  // Fanboy's annoyance list is disabled.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             // Update the Fanboy's annoyance list icon.
                             fanboyAnnoyanceListPreference.setIcon(R.drawable.social_media_disabled_dark);
 
@@ -1032,13 +1033,13 @@ public class SettingsFragment extends PreferenceFragment {
                 case "fanboys_social_blocking_list":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("fanboys_social_blocking_list", true)) {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_enabled_dark);
                         } else {
                             fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_enabled_light);
                         }
                     } else {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_dark);
                         } else {
                             fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_light);
@@ -1049,13 +1050,13 @@ public class SettingsFragment extends PreferenceFragment {
                 case "ultraprivacy":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("ultraprivacy", true)) {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             ultraPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_dark);
                         } else {
                             ultraPrivacyPreference.setIcon(R.drawable.block_tracking_enabled_light);
                         }
                     } else {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             ultraPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_dark);
                         } else {
                             ultraPrivacyPreference.setIcon(R.drawable.block_tracking_disabled_light);
@@ -1066,13 +1067,13 @@ public class SettingsFragment extends PreferenceFragment {
                 case "block_all_third_party_requests":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("block_all_third_party_requests", false)) {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_enabled_dark);
                         } else {
                             blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_enabled_light);
                         }
                     } else {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_disabled_dark);
                         } else {
                             blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_disabled_light);
@@ -1091,7 +1092,7 @@ public class SettingsFragment extends PreferenceFragment {
                     // Update the icons.
                     if (currentProxyThroughOrbot) {
                         // Set the Tor icons according to the theme.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             proxyThroughOrbotPreference.setIcon(R.drawable.orbot_enabled_dark);
                             torHomepagePreference.setIcon(R.drawable.home_enabled_dark);
                             torSearchPreference.setIcon(R.drawable.search_enabled_dark);
@@ -1115,7 +1116,7 @@ public class SettingsFragment extends PreferenceFragment {
                             }
                         }
                     } else {  // Proxy through Orbot is disabled.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             proxyThroughOrbotPreference.setIcon(R.drawable.orbot_disabled_dark);
                             torHomepagePreference.setIcon(R.drawable.home_ghosted_dark);
                             torSearchPreference.setIcon(R.drawable.search_ghosted_dark);
@@ -1147,7 +1148,7 @@ public class SettingsFragment extends PreferenceFragment {
                         torSearchCustomURLPreference.setEnabled(true);
 
                         // Update the `torSearchCustomURLPreference` icon.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_dark);
                         } else {
                             torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_light);
@@ -1160,7 +1161,7 @@ public class SettingsFragment extends PreferenceFragment {
                         torSearchCustomURLPreference.setEnabled(false);
 
                         // Update the `torSearchCustomURLPreference` icon.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_dark);
                         } else {
                             torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_light);
@@ -1186,7 +1187,7 @@ public class SettingsFragment extends PreferenceFragment {
                         searchCustomURLPreference.setEnabled(true);
 
                         // Set the `searchCustomURLPreference` according to the theme.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             searchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_dark);
                         } else {
                             searchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_light);
@@ -1199,7 +1200,7 @@ public class SettingsFragment extends PreferenceFragment {
                         searchCustomURLPreference.setEnabled(false);
 
                         // Set the `searchCustomURLPreference` according to the theme.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             searchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_dark);
                         } else {
                             searchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_light);
@@ -1215,7 +1216,7 @@ public class SettingsFragment extends PreferenceFragment {
                 case "full_screen_browsing_mode":
                     if (sharedPreferences.getBoolean("full_screen_browsing_mode", false)) {  // Full screen browsing is enabled.
                         // Set the full screen browsing mode preference icon according to the theme.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled_dark);
                         } else {
                             fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_enabled_light);
@@ -1224,14 +1225,14 @@ public class SettingsFragment extends PreferenceFragment {
                         // Set the hide app bar preference icon.
                         if (sharedPreferences.getBoolean("hide_app_bar", true)) {  //  Hide app bar is enabled.
                             // Set the icon according to the theme.
-                            if (MainWebViewActivity.darkTheme) {
+                            if (darkTheme) {
                                 hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_dark);
                             } else {
                                 hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_light);
                             }
                         } else {  // Hide app bar is disabled.
                             // Set the icon according to the theme.
-                            if (MainWebViewActivity.darkTheme) {
+                            if (darkTheme) {
                                 hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_dark);
                             } else {
                                 hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_light);
@@ -1239,7 +1240,7 @@ public class SettingsFragment extends PreferenceFragment {
                         }
                     } else {  // Full screen browsing is disabled.
                         // Update the icons according to the theme.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             fullScreenBrowsingModePreference.setIcon(R.drawable.full_screen_disabled_dark);
                             hideAppBarPreference.setIcon(R.drawable.app_bar_ghosted_dark);
                         } else {
@@ -1253,14 +1254,14 @@ public class SettingsFragment extends PreferenceFragment {
                     // Update the icon.
                     if (sharedPreferences.getBoolean("hide_app_bar", true)) {  // Hide app bar is enabled.
                         // Set the icon according to the theme.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_dark);
                         } else {
                             hideAppBarPreference.setIcon(R.drawable.app_bar_enabled_light);
                         }
                     } else {  // Hide app bar is disabled.
                         // Set the icon according to the theme.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_dark);
                         } else {
                             hideAppBarPreference.setIcon(R.drawable.app_bar_disabled_light);
@@ -1280,7 +1281,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                     // Update the `clearEverythingPreference` icon.
                     if (newClearEverythingBoolean) {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled_dark);
                         } else {
                             clearEverythingPreference.setIcon(R.drawable.clear_everything_enabled_light);
@@ -1291,7 +1292,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                     // Update the `clearCookiesPreference` icon.
                     if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_cookies", true)) {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             clearCookiesPreference.setIcon(R.drawable.cookies_cleared_dark);
                         } else {
                             clearCookiesPreference.setIcon(R.drawable.cookies_cleared_light);
@@ -1302,7 +1303,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                     // Update the `clearDomStoragePreference` icon.
                     if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_dom_storage", true)) {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_dark);
                         } else {
                             clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_light);
@@ -1314,7 +1315,7 @@ public class SettingsFragment extends PreferenceFragment {
                     // Update the clear form data preference icon if the API < 26.
                     if (Build.VERSION.SDK_INT < 26) {
                         if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_form_data", true)) {
-                            if (MainWebViewActivity.darkTheme) {
+                            if (darkTheme) {
                                 clearFormDataPreference.setIcon(R.drawable.form_data_cleared_dark);
                             } else {
                                 clearFormDataPreference.setIcon(R.drawable.form_data_cleared_light);
@@ -1326,7 +1327,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                     // Update the `clearCachePreference` icon.
                     if (newClearEverythingBoolean || sharedPreferences.getBoolean("clear_cache", true)) {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             clearCachePreference.setIcon(R.drawable.cache_cleared_dark);
                         } else {
                             clearCachePreference.setIcon(R.drawable.cache_cleared_light);
@@ -1339,7 +1340,7 @@ public class SettingsFragment extends PreferenceFragment {
                 case "clear_cookies":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("clear_cookies", true)) {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             clearCookiesPreference.setIcon(R.drawable.cookies_cleared_dark);
                         } else {
                             clearCookiesPreference.setIcon(R.drawable.cookies_cleared_light);
@@ -1352,7 +1353,7 @@ public class SettingsFragment extends PreferenceFragment {
                 case "clear_dom_storage":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("clear_dom_storage", true)) {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_dark);
                         } else {
                             clearDomStoragePreference.setIcon(R.drawable.dom_storage_cleared_light);
@@ -1366,7 +1367,7 @@ public class SettingsFragment extends PreferenceFragment {
                 case "clear_form_data":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("clear_form_data", true)) {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             clearFormDataPreference.setIcon(R.drawable.form_data_cleared_dark);
                         } else {
                             clearFormDataPreference.setIcon(R.drawable.form_data_cleared_light);
@@ -1379,7 +1380,7 @@ public class SettingsFragment extends PreferenceFragment {
                 case "clear_cache":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("clear_cache", true)) {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             clearCachePreference.setIcon(R.drawable.cache_cleared_dark);
                         } else {
                             clearCachePreference.setIcon(R.drawable.cache_cleared_light);
@@ -1402,13 +1403,13 @@ public class SettingsFragment extends PreferenceFragment {
                 case "swipe_to_refresh":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("swipe_to_refresh", true)) {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled_dark);
                         } else {
                             swipeToRefreshPreference.setIcon(R.drawable.refresh_enabled_light);
                         }
                     } else {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled_dark);
                         } else {
                             swipeToRefreshPreference.setIcon(R.drawable.refresh_disabled_light);
@@ -1419,13 +1420,13 @@ public class SettingsFragment extends PreferenceFragment {
                 case "scroll_app_bar":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("scroll_app_bar", true)) {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_dark);
                         } else {
                             scrollAppBarPreference.setIcon(R.drawable.app_bar_enabled_light);
                         }
                     } else {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_dark);
                         } else {
                             scrollAppBarPreference.setIcon(R.drawable.app_bar_disabled_light);
@@ -1436,13 +1437,13 @@ public class SettingsFragment extends PreferenceFragment {
                 case "display_additional_app_bar_icons":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("display_additional_app_bar_icons", false)) {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled_dark);
                         } else {
                             displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_enabled_light);
                         }
                     } else {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_dark);
                         } else {
                             displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_light);
@@ -1453,13 +1454,13 @@ public class SettingsFragment extends PreferenceFragment {
                 case "download_with_external_app":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("download_with_external_app", false)) {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_dark);
                         } else {
                             downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_light);
                         }
                     } else {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_dark);
                         } else {
                             downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_light);
@@ -1498,13 +1499,13 @@ public class SettingsFragment extends PreferenceFragment {
 
                     // Update the icon.
                     if (currentNightModeBoolean) {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             nightModePreference.setIcon(R.drawable.night_mode_enabled_dark);
                         } else {
                             nightModePreference.setIcon(R.drawable.night_mode_enabled_light);
                         }
                     } else {
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             nightModePreference.setIcon(R.drawable.night_mode_disabled_dark);
                         } else {
                             nightModePreference.setIcon(R.drawable.night_mode_disabled_light);
@@ -1527,14 +1528,14 @@ public class SettingsFragment extends PreferenceFragment {
                         if (sharedPreferences.getBoolean("dom_storage", false)) {  // DOM storage is enabled.
                             domStoragePreference.setIcon(R.drawable.dom_storage_enabled);
                         } else {  // DOM storage is disabled.
-                            if (MainWebViewActivity.darkTheme) {
+                            if (darkTheme) {
                                 domStoragePreference.setIcon(R.drawable.dom_storage_disabled_dark);
                             } else {
                                 domStoragePreference.setIcon(R.drawable.dom_storage_disabled_light);
                             }
                         }
                     } else {  // The preference is disabled.  The icon should be ghosted.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_dark);
                         } else {
                             domStoragePreference.setIcon(R.drawable.dom_storage_ghosted_light);
@@ -1545,7 +1546,7 @@ public class SettingsFragment extends PreferenceFragment {
                 case "display_webpage_images":
                     if (sharedPreferences.getBoolean("display_webpage_images", true)) {
                         // Update the icon.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             displayWebpageImagesPreference.setIcon(R.drawable.images_enabled_dark);
                         } else {
                             displayWebpageImagesPreference.setIcon(R.drawable.images_enabled_light);
@@ -1555,7 +1556,7 @@ public class SettingsFragment extends PreferenceFragment {
                         MainWebViewActivity.reloadOnRestart = false;
                     } else {
                         // Update the icon.
-                        if (MainWebViewActivity.darkTheme) {
+                        if (darkTheme) {
                             displayWebpageImagesPreference.setIcon(R.drawable.images_disabled_dark);
                         } else {
                             displayWebpageImagesPreference.setIcon(R.drawable.images_disabled_light);

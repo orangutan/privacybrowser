@@ -24,7 +24,9 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -35,11 +37,10 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.activities.MainWebViewActivity;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
+
+import com.stoutner.privacybrowser.R;
 
 public class HttpAuthenticationDialog extends DialogFragment{
     // `httpAuthenticationListener` is used in `onAttach()` and `onCreateDialog()`
@@ -92,8 +93,15 @@ public class HttpAuthenticationDialog extends DialogFragment{
         // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the screenshot and theme preferences.
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Set the style according to the theme.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             // Set the dialog theme.
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
 
@@ -132,7 +140,7 @@ public class HttpAuthenticationDialog extends DialogFragment{
         assert alertDialog.getWindow() != null;
 
         // Disable screenshots if not allowed.
-        if (!MainWebViewActivity.allowScreenshots) {
+        if (!allowScreenshots) {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
@@ -152,7 +160,7 @@ public class HttpAuthenticationDialog extends DialogFragment{
         realmTextView.setText(httpAuthRealm);
 
         // Set the realm text color according to the theme.  The deprecated `.getColor()` must be used until API >= 23.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             //noinspection deprecation
             realmTextView.setTextColor(getResources().getColor(R.color.gray_300));
         } else {
@@ -168,7 +176,7 @@ public class HttpAuthenticationDialog extends DialogFragment{
         ForegroundColorSpan blueColorSpan;
 
         // Set `blueColorSpan` according to the theme.  The deprecated `getColor()` must be used until API >= 23.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             //noinspection deprecation
             blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
         } else {

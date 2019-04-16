@@ -24,12 +24,14 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.http.SslCertificate;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -131,8 +133,15 @@ public class PinnedMismatchDialog extends DialogFragment {
         // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the screenshot and theme preferences.
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Set the style according to the theme.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             // Set the dialog theme.
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
         } else {
@@ -164,7 +173,7 @@ public class PinnedMismatchDialog extends DialogFragment {
         // Set the favorite icon as the dialog icon if it exists.
         if (favoriteIconBitmap.sameAs(defaultFavoriteIconBitmap)) {  // There is no website favorite icon.
             // Set the icon according to the theme.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 dialogBuilder.setIcon(R.drawable.ssl_certificate_enabled_dark);
             } else {
                 dialogBuilder.setIcon(R.drawable.ssl_certificate_enabled_light);
@@ -242,7 +251,7 @@ public class PinnedMismatchDialog extends DialogFragment {
         final AlertDialog alertDialog = dialogBuilder.create();
 
         // Disable screenshots if not allowed.
-        if (!MainWebViewActivity.allowScreenshots) {
+        if (!allowScreenshots) {
             // Remove the warning below that `getWindow()` might be null.
             assert alertDialog.getWindow() != null;
 
@@ -412,6 +421,12 @@ public class PinnedMismatchDialog extends DialogFragment {
                 }
             }
 
+            // Get a handle for the shared preferences.
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+            // Get the screenshot and theme preferences.
+            boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+
             // Create a red foreground color span.  The deprecated `getResources().getColor` must be used until the minimum API >= 23.
             @SuppressWarnings("deprecation") ForegroundColorSpan redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
 
@@ -419,7 +434,7 @@ public class PinnedMismatchDialog extends DialogFragment {
             ForegroundColorSpan blueColorSpan;
 
             // Set the blue color span according to the theme.  The deprecated `getResources().getColor` must be used until the minimum API >= 23.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 //noinspection deprecation
                 blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
             } else {

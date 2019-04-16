@@ -22,6 +22,7 @@ package com.stoutner.privacybrowser.activities;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.MergeCursor;
@@ -31,6 +32,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -100,13 +102,20 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Get the theme and screenshot preferences.
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Disable screenshots if not allowed.
-        if (!MainWebViewActivity.allowScreenshots) {
+        if (!allowScreenshots) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
         // Set the activity theme.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             setTheme(R.style.PrivacyBrowserDark_SecondaryActivity);
         } else {
             setTheme(R.style.PrivacyBrowserLight_SecondaryActivity);
@@ -324,7 +333,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                     bookmarkParentFolderTextView.setText(bookmarkParentFolder);
 
                     // Set the text color according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
+                    if (darkTheme) {
                         bookmarkParentFolderTextView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.gray_300));
                     } else {
                         bookmarkParentFolderTextView.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
@@ -584,9 +593,16 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Get the theme preferences.
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+
         // Get the ID of the menu item that was selected.
         int menuItemId = menuItem.getItemId();
 
+        // Run the command that corresponds to the selected menu item.
         switch (menuItemId) {
             case android.R.id.home:  // The home arrow is identified as `android.R.id.home`, not just `R.id.home`.
                 // Exit the activity.
@@ -603,7 +619,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                 // Update the icon and display a snackbar.
                 if (sortByDisplayOrder) {  // Sort by display order.
                     // Update the icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
+                    if (darkTheme) {
                         menuItem.setIcon(R.drawable.sort_selected_dark);
                     } else {
                         menuItem.setIcon(R.drawable.sort_selected_light);
@@ -613,7 +629,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
                     Snackbar.make(bookmarksListView, R.string.sorted_by_display_order, Snackbar.LENGTH_SHORT).show();
                 } else {  // Sort by database id.
                     // Update the icon according to the theme.
-                    if (MainWebViewActivity.darkTheme) {
+                    if (darkTheme) {
                         menuItem.setIcon(R.drawable.sort_dark);
                     } else {
                         menuItem.setIcon(R.drawable.sort_light);

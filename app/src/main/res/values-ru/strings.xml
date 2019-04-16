@@ -44,6 +44,8 @@
     <string name="no_title">Без названия</string>
     <string name="unrecognized_url">Нераспознанный URL:</string>
     <string name="open_with">Открыть в</string>
+    <string name="new_tab">Новая вкладка</string>
+    <string name="add_tab">Добавить вкладку</string>
 
     <!-- Save As. -->
     <string name="save_as">Сохранить как</string>
@@ -104,6 +106,7 @@
     <!-- MainWebViewActivity Navigation Menu. -->
     <string name="navigation_drawer">Навигационная панель</string>
     <string name="navigation">Навигация</string>
+    <string name="close_tab">Закрыть вкладку</string>
     <string name="clear_and_exit">Очистить и выйти</string>
     <string name="home">Домой</string>
     <string name="back">Назад</string>
@@ -170,6 +173,7 @@
     <string name="stop">Остановить</string>
 
     <!-- Context Menus. -->
+    <string name="open_in_new_tab">Открыть в новой вкладке</string>
     <string name="copy_url">Копировать URL</string>
     <string name="download_url">Загрузить URL</string>
     <string name="email_address">Адрес email</string>
@@ -407,7 +411,9 @@
         <string name="javascript_preference">Включить JavaScript по умолчанию</string>
         <string name="javascript_preference_summary">JavaScript позволяет веб-сайтам запускать программы (скрипты) на устройстве.</string>
         <string name="first_party_cookies_preference">Включить первичные файлы cookie по умолчанию</string>
-        <string name="first_party_cookies_preference_summary">На устройствах с версией Android старше Lollipop (версия 5.0) этим параметром также активируются сторонние файлы cookie.</string>
+        <string name="first_party_cookies_preference_summary">Поскольку первичные файлы cookie являются настройкой уровня приложения, при включении файлов cookie на активной вкладке, любые сетевые запросы,
+            сделанные в фоновом режиме другими вкладками, также будут содержать любые сохраненные файлы cookie для их доменов.
+            Android KitKat (версия 4.4.x) не различает первичные и сторонние файлы cookie и включает их одновременно этой настройкой.</string>
         <string name="third_party_cookies_preference">Включить сторонние файлы cookie по умолчанию</string>
         <string name="third_party_cookies_summary">Этот параметр требует Android Lollipop (версия 5.0) или выше. Он не действует, если первичные файлы cookie отключены.</string>
         <string name="dom_storage_preference">Включить DOM-хранилище по умолчанию</string>
