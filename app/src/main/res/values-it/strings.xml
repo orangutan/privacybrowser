@@ -46,6 +46,8 @@
     <string name="no_title">Nessun titolo</string>
     <string name="unrecognized_url">URL non riconosciuta:</string>
     <string name="open_with">Apri con</string>
+    <string name="new_tab">Nuova Scheda</string>
+    <string name="add_tab">Aggiungi Scheda</string>
 
     <!-- Save As. -->
     <string name="save_as">Salva come</string>
@@ -107,6 +109,7 @@
     <!-- MainWebViewActivity Navigation Menu. -->
     <string name="navigation_drawer">Menù di navigazione</string>
     <string name="navigation">Navigazione</string>
+    <string name="close_tab">Chiudi Scheda</string>
     <string name="clear_and_exit">Elimina dati ed esci</string>
     <string name="home">Home</string>
     <string name="back">Indietro</string>
@@ -173,6 +176,7 @@
     <string name="stop">Stop</string>
 
     <!-- Context Menus. -->
+    <string name="open_in_new_tab">Apri in una nuova Scheda</string>
     <string name="copy_url">Copia URL</string>
     <string name="download_url">Scarica URL</string>
     <string name="email_address">Indirizzo Email</string>
@@ -412,6 +416,9 @@
         <string name="javascript_preference">Abilita JavaScript</string>
         <string name="javascript_preference_summary">Permetti a JavaScript di eseguire programmi (script) sul dispositivo.</string>
         <string name="first_party_cookies_preference">Abilita cookies proprietari</string>
+        <string name="first_party_cookies_preference_summary">Dal momento che i cookie proprietari sono un\'impostazione a livello di applicazione,
+            quando la scheda attiva ha i cookie proprietari attivati anche ogni richiesta di rete in background da parte delle altre schede includerà i cookie per i relativi domini.
+            Android KitKat (versione 4.4.x) inoltre non distingue tra cookie proprietari e cookie di terze parti e pertanto li abiliterà entrambi con questa impostazione.</string>
         <string name="third_party_cookies_preference">Abilita cookies di terze parti</string>
         <string name="third_party_cookies_summary">Questa impostazione richiede Android Lollipop (version 5.0) o successivo.  Non ha effetti se i cookies proprietari sono disabilitati.</string>
         <string name="dom_storage_preference">Abilita DOM Storage</string>

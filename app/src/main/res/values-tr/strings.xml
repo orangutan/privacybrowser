@@ -44,6 +44,8 @@
     <string name="no_title">Başlıksız</string>
     <string name="unrecognized_url">Onaylanmayan URL:</string>
     <string name="open_with">Bununla aç</string>
+    <string name="new_tab">Yeni Sekme</string>
+    <string name="add_tab">Sekme Ekle</string>
 
     <!-- Save As. -->
     <string name="save_as">Farklı Kaydet</string>
@@ -104,6 +106,7 @@
     <!-- MainWebViewActivity Navigation Menu. -->
     <string name="navigation_drawer">Açılır Menü</string>
     <string name="navigation">Gezinti</string>
+    <string name="close_tab">Sekmeyi Kapa</string>
     <string name="clear_and_exit">Temizle ve Çık</string>
     <string name="home">Anasayfa</string>
     <string name="back">Geri</string>
@@ -170,6 +173,7 @@
     <string name="stop">Dur</string>
 
     <!-- Context Menus. -->
+    <string name="open_in_new_tab">Yeni Sekmede Aç</string>
     <string name="copy_url">URL Kopyala</string>
     <string name="download_url">URL İndir</string>
     <string name="email_address">Eposta Adresi</string>
@@ -406,6 +410,9 @@
         <string name="javascript_preference">JavaScript\'i varsayılan olarak etkinleştir</string>
         <string name="javascript_preference_summary">JavaScript web sitelerin cihazdaki programları(scriptler) çalıştırmasına izin verir.</string>
         <string name="first_party_cookies_preference">Birinci taraf çerezleri varsayılan olarak etkinleştir</string>
+        <string name="first_party_cookies_preference_summary">Birinci taraf çerezleri uygulama düzeyinde bir ayar olduğundan, aktif sekmede çerezler etkinleştirildiğinde,
+            arka plandaki diğer sekmeler tarafından yapılan herhangi ağ istekleri, domainler için kayıtlı çerezleri de içerecektir.
+            Android KitKat (sürüm 4.4.x), birinci ve üçüncü taraf çerezleri arasında ayrım yapmaz ve bu ayarda ikisini de etkinleştirir.</string>
         <string name="third_party_cookies_preference">Üçüncü taraf çerezleri varsayılan olarak etkinleştir</string>
         <string name="third_party_cookies_summary">Bu ayarı etkinleştirmek için Android Lollipop sürümüne(5.0) ya da daha üst sürümlere sahip olmak gerekir.
             Birinci taraf çerezler devre dışı olduğu takdirde etkisi yoktur.</string>

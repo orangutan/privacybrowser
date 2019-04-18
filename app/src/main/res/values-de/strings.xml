@@ -50,6 +50,8 @@
     <string name="no_title">Kein Titel</string>
     <string name="unrecognized_url">Unbekannte URL:</string>
     <string name="open_with">Öffnen mit</string>
+    <string name="new_tab">Neuer Tab</string>
+    <string name="add_tab">Tab hinzufügen</string>
 
     <!-- Save As. -->
     <string name="save_as">Speichern Unter</string>
@@ -110,6 +112,7 @@
     <!-- MainWebViewActivity Navigation Menu. -->
     <string name="navigation_drawer">Navigationspanel</string>
     <string name="navigation">Navigation</string>
+    <string name="close_tab">Tab schließen</string>
     <string name="clear_and_exit">Leeren und verlassen</string>
     <string name="home">Startseite</string>
     <string name="back">Zurück</string>
@@ -176,6 +179,7 @@
     <string name="stop">Stop</string>
 
     <!-- Context Menus. -->
+    <string name="open_in_new_tab">In neuem Tab öffnen</string>
     <string name="copy_url">URL kopieren</string>
     <string name="download_url">Download URL</string>
     <string name="email_address">E-Mail-Adresse</string>
@@ -413,6 +417,10 @@
         <string name="javascript_preference">JavaScript standardmäßig aktivieren</string>
         <string name="javascript_preference_summary">JavaScript ermöglicht es Websites, Programme (Scripts) auf Ihrem Gerät auszuführen.</string>
         <string name="first_party_cookies_preference">Erstanbieter-Cookies standardmäßig aktivieren</string>
+        <string name="first_party_cookies_preference_summary">Da die Cookie-Einstellungen App-weit gelten, werden, wenn im aktiven Tab Cookies erlaubt sind,
+            auch in den Hintergrund-Tabs Cookies der dort angezeigten Seiten und deren Domains angenommen.
+            Unter Android KitKat (version 4.4.x) wird nicht zwischen Cookies und Drittanbieter-Cookies unterschieden,
+            sodass in dieser Version mit dieser Einstellung beide Cookie-Varianten aktiviert werden.</string>
         <string name="third_party_cookies_preference">Drittanbieter-Cookies standardmäßig aktivieren</string>
         <string name="third_party_cookies_summary">Diese Option benötigt Android Lollipop (Version 5.0) oder höher. Sie hat keine Auswirkungen, wenn Erstanbieter-Cookies deaktiviert sind.</string>
         <string name="dom_storage_preference">DOM-Speicher standardmäßig aktivieren</string>

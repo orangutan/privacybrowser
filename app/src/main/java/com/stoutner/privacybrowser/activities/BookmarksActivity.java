@@ -478,50 +478,45 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                                     @SuppressLint("SwitchIntDef")  // Ignore the lint warning about not handling the other possible events as they are covered by `default:`.
                                     @Override
                                     public void onDismissed(Snackbar snackbar, int event) {
-                                        switch (event) {
-                                            // The user pushed the `Undo` button.
-                                            case Snackbar.Callback.DISMISS_EVENT_ACTION:
-                                                // Update the bookmarks cursor with the current contents of the bookmarks database, including the "deleted" bookmarks.
-                                                bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
+                                        if (event == Snackbar.Callback.DISMISS_EVENT_ACTION) {  // The user pushed the undo button.
+                                            // Update the bookmarks cursor with the current contents of the bookmarks database, including the "deleted" bookmarks.
+                                            bookmarksCursor = bookmarksDatabaseHelper.getBookmarksByDisplayOrder(currentFolder);
 
-                                                // Update the list view.
-                                                bookmarksCursorAdapter.changeCursor(bookmarksCursor);
+                                            // Update the list view.
+                                            bookmarksCursorAdapter.changeCursor(bookmarksCursor);
 
-                                                // Re-select the previously selected bookmarks.
-                                                for (int i = 0; i < selectedBookmarksPositionsSparseBooleanArray.size(); i++) {
-                                                    bookmarksListView.setItemChecked(selectedBookmarksPositionsSparseBooleanArray.keyAt(i), true);
-                                                }
-                                                break;
+                                            // Re-select the previously selected bookmarks.
+                                            for (int i = 0; i < selectedBookmarksPositionsSparseBooleanArray.size(); i++) {
+                                                bookmarksListView.setItemChecked(selectedBookmarksPositionsSparseBooleanArray.keyAt(i), true);
+                                            }
+                                        } else {  // The snackbar was dismissed without the undo button being pushed.
+                                            // Delete each selected bookmark.
+                                            for (long databaseIdLong : selectedBookmarksIdsLongArray) {
+                                                // Convert `databaseIdLong` to an int.
+                                                int databaseIdInt = (int) databaseIdLong;
 
-                                            // The Snackbar was dismissed without the `Undo` button being pushed.
-                                            default:
-                                                // Delete each selected bookmark.
-                                                for (long databaseIdLong : selectedBookmarksIdsLongArray) {
-                                                    // Convert `databaseIdLong` to an int.
-                                                    int databaseIdInt = (int) databaseIdLong;
-
-                                                    // Delete the contents of the folder if the selected bookmark is a folder.
-                                                    if (bookmarksDatabaseHelper.isFolder(databaseIdInt)) {
-                                                        deleteBookmarkFolderContents(databaseIdInt);
-                                                    }
-
-                                                    // Delete the selected bookmark.
-                                                    bookmarksDatabaseHelper.deleteBookmark(databaseIdInt);
+                                                // Delete the contents of the folder if the selected bookmark is a folder.
+                                                if (bookmarksDatabaseHelper.isFolder(databaseIdInt)) {
+                                                    deleteBookmarkFolderContents(databaseIdInt);
                                                 }
 
-                                                // Update the display order.
-                                                for (int i = 0; i < bookmarksListView.getCount(); i++) {
-                                                    // Get the database ID for the current bookmark.
-                                                    int currentBookmarkDatabaseId = (int) bookmarksListView.getItemIdAtPosition(i);
+                                                // Delete the selected bookmark.
+                                                bookmarksDatabaseHelper.deleteBookmark(databaseIdInt);
+                                            }
 
-                                                    // Move `bookmarksCursor` to the current bookmark position.
-                                                    bookmarksCursor.moveToPosition(i);
+                                            // Update the display order.
+                                            for (int i = 0; i < bookmarksListView.getCount(); i++) {
+                                                // Get the database ID for the current bookmark.
+                                                int currentBookmarkDatabaseId = (int) bookmarksListView.getItemIdAtPosition(i);
 
-                                                    // Update the display order only if it is not correct in the database.
-                                                    if (bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER)) != i) {
-                                                        bookmarksDatabaseHelper.updateDisplayOrder(currentBookmarkDatabaseId, i);
-                                                    }
+                                                // Move `bookmarksCursor` to the current bookmark position.
+                                                bookmarksCursor.moveToPosition(i);
+
+                                                // Update the display order only if it is not correct in the database.
+                                                if (bookmarksCursor.getInt(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER)) != i) {
+                                                    bookmarksDatabaseHelper.updateDisplayOrder(currentBookmarkDatabaseId, i);
                                                 }
+                                            }
                                         }
 
                                         // Reset the deleting bookmarks flag.

@@ -19,6 +19,7 @@
 
 package com.stoutner.privacybrowser.activities;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -27,14 +28,11 @@ import android.view.WindowManager;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
-import com.stoutner.privacybrowser.fragments.AboutTabFragment;
+import com.stoutner.privacybrowser.adapters.AboutPagerAdapter;
 import com.stoutner.privacybrowser.R;
 
 public class AboutActivity extends AppCompatActivity {
@@ -62,6 +60,12 @@ public class AboutActivity extends AppCompatActivity {
         // Run the default commands.
         super.onCreate(savedInstanceState);
 
+        // Get the intent that launched the activity.
+        Intent launchingIntent = getIntent();
+
+        // Store the blocklist versions.
+        String[] blocklistVersions = launchingIntent.getStringArrayExtra("blocklist_versions");
+
         // Set the content view.
         setContentView(R.layout.about_coordinatorlayout);
 
@@ -83,58 +87,9 @@ public class AboutActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         //  Setup the ViewPager.
-        aboutViewPager.setAdapter(new AboutPagerAdapter(getSupportFragmentManager()));
+        aboutViewPager.setAdapter(new AboutPagerAdapter(getSupportFragmentManager(), getApplicationContext(), blocklistVersions));
 
         // Connect the tab layout to the view pager.
         aboutTabLayout.setupWithViewPager(aboutViewPager);
-    }
-
-    private class AboutPagerAdapter extends FragmentPagerAdapter {
-        private AboutPagerAdapter(FragmentManager fragmentManager) {
-            // Run the default commands.
-            super(fragmentManager);
-        }
-
-        @Override
-        // Get the count of the number of tabs.
-        public int getCount() {
-            return 7;
-        }
-
-        @Override
-        // Get the name of each tab.  Tab numbers start at 0.
-        public CharSequence getPageTitle(int tab) {
-            switch (tab) {
-                case 0:
-                    return getString(R.string.version);
-
-                case 1:
-                    return getString(R.string.permissions);
-
-                case 2:
-                    return getString(R.string.privacy_policy);
-
-                case 3:
-                    return getString(R.string.changelog);
-
-                case 4:
-                    return getString(R.string.licenses);
-
-                case 5:
-                    return getString(R.string.contributors);
-
-                case 6:
-                    return getString(R.string.links);
-
-                default:
-                    return "";
-            }
-        }
-
-        @Override
-        // Setup each tab.
-        public Fragment getItem(int tab) {
-            return AboutTabFragment.createTab(tab);
-        }
     }
 }

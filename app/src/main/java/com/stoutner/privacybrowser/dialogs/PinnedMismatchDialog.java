@@ -428,17 +428,15 @@ public class PinnedMismatchDialog extends DialogFragment {
             boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
 
             // Create a red foreground color span.  The deprecated `getResources().getColor` must be used until the minimum API >= 23.
-            @SuppressWarnings("deprecation") ForegroundColorSpan redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
+            ForegroundColorSpan redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
 
             // Create a blue foreground color span.
             ForegroundColorSpan blueColorSpan;
 
             // Set the blue color span according to the theme.  The deprecated `getResources().getColor` must be used until the minimum API >= 23.
             if (darkTheme) {
-                //noinspection deprecation
                 blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
             } else {
-                //noinspection deprecation
                 blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
             }
 

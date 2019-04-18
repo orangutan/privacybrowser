@@ -23,7 +23,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -36,13 +35,18 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.WindowManager;
+import android.webkit.SslErrorHandler;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
 
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.activities.MainWebViewActivity;
+import com.stoutner.privacybrowser.fragments.WebViewTabFragment;
+import com.stoutner.privacybrowser.views.NestedScrollWebView;
 
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
@@ -51,25 +55,7 @@ import java.text.DateFormat;
 import java.util.Date;
 
 public class SslCertificateErrorDialog extends DialogFragment {
-    // `sslCertificateErrorListener` is used in `onAttach` and `onCreateDialog`.
-    private SslCertificateErrorListener sslCertificateErrorListener;
-
-    // The public interface is used to send information back to the parent activity.
-    public interface SslCertificateErrorListener {
-        void onSslErrorCancel();
-
-        void onSslErrorProceed();
-    }
-
-    public void onAttach(Context context) {
-        // Run the default commands.
-        super.onAttach(context);
-
-        // Get a handle for `SslCertificateErrorListener` from the launching context.
-        sslCertificateErrorListener = (SslCertificateErrorListener) context;
-    }
-
-    public static SslCertificateErrorDialog displayDialog(SslError error) {
+    public static SslCertificateErrorDialog displayDialog(SslError error, long webViewFragmentId) {
         // Get the various components of the SSL error message.
         int primaryErrorIntForBundle = error.getPrimaryError();
         String urlWithErrorForBundle = error.getUrl();
@@ -83,45 +69,73 @@ public class SslCertificateErrorDialog extends DialogFragment {
         Date startDateForBundle = sslCertificate.getValidNotBeforeDate();
         Date endDateForBundle = sslCertificate.getValidNotAfterDate();
 
-        // Store the SSL error message components in a `Bundle`.
+        // Create an arguments bundle.
         Bundle argumentsBundle = new Bundle();
-        argumentsBundle.putInt("PrimaryErrorInt", primaryErrorIntForBundle);
-        argumentsBundle.putString("UrlWithError", urlWithErrorForBundle);
-        argumentsBundle.putString("IssuedToCName", issuedToCNameForBundle);
-        argumentsBundle.putString("IssuedToOName", issuedToONameForBundle);
-        argumentsBundle.putString("IssuedToUName", issuedToUNameForBundle);
-        argumentsBundle.putString("IssuedByCName", issuedByCNameForBundle);
-        argumentsBundle.putString("IssuedByOName", issuedByONameForBundle);
-        argumentsBundle.putString("IssuedByUName", issuedByUNameForBundle);
-        argumentsBundle.putString("StartDate", DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(startDateForBundle));
-        argumentsBundle.putString("EndDate", DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(endDateForBundle));
 
-        // Add `argumentsBundle` to this instance of `SslCertificateErrorDialog`.
+        // Store the SSL error message components in a `Bundle`.
+        argumentsBundle.putInt("primary_error_int", primaryErrorIntForBundle);
+        argumentsBundle.putString("url_with_error", urlWithErrorForBundle);
+        argumentsBundle.putString("issued_to_cname", issuedToCNameForBundle);
+        argumentsBundle.putString("issued_to_oname", issuedToONameForBundle);
+        argumentsBundle.putString("issued_to_uname", issuedToUNameForBundle);
+        argumentsBundle.putString("issued_by_cname", issuedByCNameForBundle);
+        argumentsBundle.putString("issued_by_oname", issuedByONameForBundle);
+        argumentsBundle.putString("issued_by_uname", issuedByUNameForBundle);
+        argumentsBundle.putString("start_date", DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(startDateForBundle));
+        argumentsBundle.putString("end_date", DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(endDateForBundle));
+        argumentsBundle.putLong("webview_fragment_id", webViewFragmentId);
+
+        // Create a new instance of the SSL certificate error dialog.
         SslCertificateErrorDialog thisSslCertificateErrorDialog = new SslCertificateErrorDialog();
+
+        // Add the arguments bundle to the new dialog.
         thisSslCertificateErrorDialog.setArguments(argumentsBundle);
+
+        // Return the new dialog.
         return thisSslCertificateErrorDialog;
     }
 
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
-    @SuppressWarnings("deprecation")
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Remove the incorrect lint warning that `getArguments()` might be null.
-        assert getArguments() != null;
+        // Get a handle for the arguments.
+        Bundle arguments = getArguments();
 
-        // Get the components of the SSL error message from the bundle.
-        int primaryErrorInt = getArguments().getInt("PrimaryErrorInt");
-        String urlWithErrors = getArguments().getString("UrlWithError");
-        String issuedToCName = getArguments().getString("IssuedToCName");
-        String issuedToOName = getArguments().getString("IssuedToOName");
-        String issuedToUName = getArguments().getString("IssuedToUName");
-        String issuedByCName = getArguments().getString("IssuedByCName");
-        String issuedByOName = getArguments().getString("IssuedByOName");
-        String issuedByUName = getArguments().getString("IssuedByUName");
-        String startDate = getArguments().getString("StartDate");
-        String endDate = getArguments().getString("EndDate");
+        // Remove the incorrect lint warning that the arguments might be null.
+        assert arguments != null;
+
+        // Get the variables from the bundle.
+        int primaryErrorInt = arguments.getInt("primary_error_int");
+        String urlWithErrors = arguments.getString("url_with_error");
+        String issuedToCName = arguments.getString("issued_to_cname");
+        String issuedToOName = arguments.getString("issued_to_oname");
+        String issuedToUName = arguments.getString("issued_to_uname");
+        String issuedByCName = arguments.getString("issued_by_cname");
+        String issuedByOName = arguments.getString("issued_by_oname");
+        String issuedByUName = arguments.getString("issued_by_uname");
+        String startDate = arguments.getString("start_date");
+        String endDate = arguments.getString("end_date");
+        long webViewFragmentId = arguments.getLong("webview_fragment_id");
+
+        // Get the current position of this WebView fragment.
+        int webViewPosition = MainWebViewActivity.webViewPagerAdapter.getPositionForId(webViewFragmentId);
+
+        // Get the WebView tab fragment.
+        WebViewTabFragment webViewTabFragment = MainWebViewActivity.webViewPagerAdapter.getPageFragment(webViewPosition);
+
+        // Get the fragment view.
+        View fragmentView = webViewTabFragment.getView();
+
+        // Remove the incorrect lint warning below that the fragment view might be null.
+        assert fragmentView != null;
+
+        // Get a handle for the current WebView.
+        NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+
+        // Get a handle for the SSL error handler.
+        SslErrorHandler sslErrorHandler = nestedScrollWebView.getSslErrorHandler();
 
         // Remove the incorrect lint warning that `getActivity()` might be null.
         assert getActivity() != null;
@@ -160,11 +174,29 @@ public class SslCertificateErrorDialog extends DialogFragment {
         // Set the view.  The parent view is `null` because it will be assigned by `AlertDialog`.
         dialogBuilder.setView(layoutInflater.inflate(R.layout.ssl_certificate_error, null));
 
-        // Set a listener on the negative button.
-        dialogBuilder.setNegativeButton(R.string.cancel, (DialogInterface dialog, int which) -> sslCertificateErrorListener.onSslErrorCancel());
+        // Set a listener on the cancel button.
+        dialogBuilder.setNegativeButton(R.string.cancel, (DialogInterface dialog, int which) -> {
+            // Check to make sure the SSL error handler is not null.  This might happen if multiple dialogs are displayed at once.
+            if (sslErrorHandler != null) {
+                // Cancel the request.
+                sslErrorHandler.cancel();
 
-        // Set a listener on the positive button.
-        dialogBuilder.setPositiveButton(R.string.proceed, (DialogInterface dialog, int which) -> sslCertificateErrorListener.onSslErrorProceed());
+                // Reset the SSL error handler.
+                nestedScrollWebView.resetSslErrorHandler();
+            }
+        });
+
+        // Set a listener on the proceed button.
+        dialogBuilder.setPositiveButton(R.string.proceed, (DialogInterface dialog, int which) -> {
+            // Check to make sure the SSL error handler is not null.  This might happen if multiple dialogs are displayed at once.
+            if (sslErrorHandler != null) {
+                // Cancel the request.
+                sslErrorHandler.proceed();
+
+                // Reset the SSL error handler.
+                nestedScrollWebView.resetSslErrorHandler();
+            }
+        });
 
 
         // Create an alert dialog from the alert dialog builder.
@@ -222,17 +254,15 @@ public class SslCertificateErrorDialog extends DialogFragment {
         SpannableStringBuilder endDateStringBuilder = new SpannableStringBuilder((endDateLabel + endDate));
 
         // Create a red foreground color span.  The deprecated `getResources().getColor` must be used until the minimum API >= 23.
-        @SuppressWarnings("deprecation") ForegroundColorSpan redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
+        ForegroundColorSpan redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
 
         // Create a blue `ForegroundColorSpan`.
         ForegroundColorSpan blueColorSpan;
 
         // Set a blue color span according to the theme.  The deprecated `getResources().getColor` must be used until the minimum API >= 23.
         if (darkTheme) {
-            //noinspection deprecation
             blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
         } else {
-            //noinspection deprecation
             blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
         }
 
@@ -391,10 +421,8 @@ public class SslCertificateErrorDialog extends DialogFragment {
 
             // Set the blue color span according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
             if (darkTheme) {
-                //noinspection deprecation
                 blueColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.blue_400));
             } else {
-                //noinspection deprecation
                 blueColorSpan = new ForegroundColorSpan(activity.getResources().getColor(R.color.blue_700));
             }
 

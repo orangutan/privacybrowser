@@ -41,7 +41,6 @@ import androidx.fragment.app.Fragment;
 
 import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -54,20 +53,23 @@ import java.text.DateFormat;
 import java.util.Date;
 
 public class AboutTabFragment extends Fragment {
-    // Track the current tab number.
+    // Declare the class variables.
     private int tabNumber;
+    private String[] blocklistVersions;
 
-    // Store the tab number in the arguments bundle.
-    public static AboutTabFragment createTab(int tab) {
+    public static AboutTabFragment createTab(int tabNumber, String[] blocklistVersions) {
         // Create a bundle.
-        Bundle bundle = new Bundle();
+        Bundle argumentsBundle = new Bundle();
 
         // Store the tab number in the bundle.
-        bundle.putInt("Tab", tab);
+        argumentsBundle.putInt("tab_number", tabNumber);
+        argumentsBundle.putStringArray("blocklist_versions", blocklistVersions);
 
-        // Add the bundle to the fragment.
+        // Create a new instance of the tab fragment.
         AboutTabFragment aboutTabFragment = new AboutTabFragment();
-        aboutTabFragment.setArguments(bundle);
+
+        // Add the arguments bundle to the fragment.
+        aboutTabFragment.setArguments(argumentsBundle);
 
         // Return the new fragment.
         return aboutTabFragment;
@@ -78,11 +80,15 @@ public class AboutTabFragment extends Fragment {
         // Run the default commands.
         super.onCreate(savedInstanceState);
 
-        // Remove the lint warning that `getArguments()` might be null.
-        assert getArguments() != null;
+        // Get a handle for the arguments.
+        Bundle arguments = getArguments();
 
-        // Store the tab number in a class variable.
-        tabNumber = getArguments().getInt("Tab");
+        // Remove the incorrect lint warning below that arguments might be null.
+        assert arguments != null;
+
+        // Store the arguments in class variables.
+        tabNumber = getArguments().getInt("tab_number");
+        blocklistVersions = getArguments().getStringArray("blocklist_versions");
     }
 
     @Override
@@ -133,7 +139,7 @@ public class AboutTabFragment extends Fragment {
             TextView certificateSignatureAlgorithmTextView = tabLayout.findViewById(R.id.certificate_signature_algorithm);
 
             // Setup the labels.
-            String version = getString(R.string.version) + " " + BuildConfig.VERSION_NAME + " (" + getString(R.string.version_code) + " " + Integer.toString(BuildConfig.VERSION_CODE) + ")";
+            String version = getString(R.string.version) + " " + BuildConfig.VERSION_NAME + " (" + getString(R.string.version_code) + " " + BuildConfig.VERSION_CODE + ")";
             String brandLabel = getString(R.string.brand) + "  ";
             String manufacturerLabel = getString(R.string.manufacturer) + "  ";
             String modelLabel = getString(R.string.model) + "  ";
@@ -167,7 +173,7 @@ public class AboutTabFragment extends Fragment {
             String device = Build.DEVICE;
             String bootloader = Build.BOOTLOADER;
             String radio = Build.getRadioVersion();
-            String android = Build.VERSION.RELEASE + " (" + getString(R.string.api) + " " + Integer.toString(Build.VERSION.SDK_INT) + ")";
+            String android = Build.VERSION.RELEASE + " (" + getString(R.string.api) + " " + Build.VERSION.SDK_INT + ")";
             String build = Build.DISPLAY;
             // Select the substring that begins after `Chrome/` and goes until the next ` `.
             String webView = userAgentString.substring(userAgentString.indexOf("Chrome/") + 7, userAgentString.indexOf(" ", userAgentString.indexOf("Chrome/")));
@@ -199,21 +205,19 @@ public class AboutTabFragment extends Fragment {
             SpannableStringBuilder androidStringBuilder = new SpannableStringBuilder(androidLabel + android);
             SpannableStringBuilder buildStringBuilder = new SpannableStringBuilder(buildLabel + build);
             SpannableStringBuilder webViewStringBuilder = new SpannableStringBuilder(webViewLabel + webView);
-            SpannableStringBuilder easyListStringBuilder = new SpannableStringBuilder(easyListLabel + MainWebViewActivity.easyListVersion);
-            SpannableStringBuilder easyPrivacyStringBuilder = new SpannableStringBuilder(easyPrivacyLabel + MainWebViewActivity.easyPrivacyVersion);
-            SpannableStringBuilder fanboyAnnoyanceStringBuilder = new SpannableStringBuilder(fanboyAnnoyanceLabel + MainWebViewActivity.fanboysAnnoyanceVersion);
-            SpannableStringBuilder fanboySocialStringBuilder = new SpannableStringBuilder(fanboySocialLabel + MainWebViewActivity.fanboysSocialVersion);
-            SpannableStringBuilder ultraPrivacyStringBuilder = new SpannableStringBuilder(ultraPrivacyLabel + MainWebViewActivity.ultraPrivacyVersion);
+            SpannableStringBuilder easyListStringBuilder = new SpannableStringBuilder(easyListLabel + blocklistVersions[0]);
+            SpannableStringBuilder easyPrivacyStringBuilder = new SpannableStringBuilder(easyPrivacyLabel + blocklistVersions[1]);
+            SpannableStringBuilder fanboyAnnoyanceStringBuilder = new SpannableStringBuilder(fanboyAnnoyanceLabel + blocklistVersions[2]);
+            SpannableStringBuilder fanboySocialStringBuilder = new SpannableStringBuilder(fanboySocialLabel + blocklistVersions[3]);
+            SpannableStringBuilder ultraPrivacyStringBuilder = new SpannableStringBuilder(ultraPrivacyLabel + blocklistVersions[4]);
 
             // Create the `blueColorSpan` variable.
             ForegroundColorSpan blueColorSpan;
 
             // Set `blueColorSpan` according to the theme.  We have to use the deprecated `getColor()` until API >= 23.
             if (darkTheme) {
-                //noinspection deprecation
                 blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
             } else {
-                //noinspection deprecation
                 blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
             }
 
@@ -356,7 +360,6 @@ public class AboutTabFragment extends Fragment {
             // Load the tabs according to the theme.
             if (darkTheme) {  // The dark theme is applied.
                 // Set the background color.  The deprecated `.getColor()` must be used until the minimum API >= 23.
-                //noinspection deprecation
                 tabWebView.setBackgroundColor(getResources().getColor(R.color.gray_850));
 
                 switch (tabNumber) {

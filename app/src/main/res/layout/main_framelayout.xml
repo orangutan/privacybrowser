@@ -77,6 +77,7 @@
                                 android:id="@+id/tablayout"
                                 android:layout_height="wrap_content"
                                 android:layout_width="wrap_content"
+                                app:tabIndicatorGravity="top"
                                 app:tabMode="scrollable" />
 
                             <!-- `style="?android:borderlessButtonStyle"` shows a visual indication when the image view is tapped. -->

@@ -25,6 +25,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.webkit.HttpAuthHandler;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
@@ -52,6 +54,10 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     // Keep a copy of the WebView fragment ID.
     private long webViewFragmentId;
 
+    // Store the handlers.
+    private SslErrorHandler sslErrorHandler;
+    private HttpAuthHandler httpAuthHandler;
+
     // Track if domain settings are applied to this nested scroll WebView and, if so, the database ID.
     private boolean domainSettingsApplied;
     private int domainSettingsDatabaseId;
@@ -61,6 +67,9 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
 
     // Track the status of first-party cookies.
     private boolean acceptFirstPartyCookies;
+
+    // Track the domain settings JavaScript status.  This can be removed once night mode does not require JavaScript.
+    private boolean domainSettingsJavaScriptEnabled;
 
     // Track the resource requests.
     private ArrayList<String[]> resourceRequests = new ArrayList<>();
@@ -100,8 +109,11 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     // The ignore pinned domain information tracker.  This is set when a user proceeds past a pinned mismatch dialog to prevent the dialog from showing again until after the domain changes.
     private boolean ignorePinnedDomainInformation;
 
+    // Track navigation of history.
+    private boolean navigatingHistory;
+
     // The default or favorite icon.
-    Bitmap favoriteOrDefaultIcon;
+    private Bitmap favoriteOrDefaultIcon;
 
     // Track night mode.
     private boolean nightMode;
@@ -155,6 +167,40 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     }
 
 
+    // SSL error handler.
+    public void setSslErrorHandler(SslErrorHandler sslErrorHandler) {
+        // Store the current SSL error handler.
+        this.sslErrorHandler = sslErrorHandler;
+    }
+
+    public SslErrorHandler getSslErrorHandler() {
+        // Return the current SSL error handler.
+        return sslErrorHandler;
+    }
+
+    public void resetSslErrorHandler() {
+        // Reset the current SSL error handler.
+        sslErrorHandler = null;
+    }
+
+
+    // HTTP authentication handler.
+    public void setHttpAuthHandler(HttpAuthHandler httpAuthHandler) {
+        // Store the current HTTP authentication handler.
+        this.httpAuthHandler = httpAuthHandler;
+    }
+
+    public HttpAuthHandler getHttpAuthHandler() {
+        // Return the current HTTP authentication handler.
+        return httpAuthHandler;
+    }
+
+    public void resetHttpAuthHandler() {
+        // Reset the current HTTP authentication handler.
+        httpAuthHandler = null;
+    }
+
+
     // Domain settings.
     public void setDomainSettingsApplied(boolean applied) {
         // Store the domain settings applied status.
@@ -205,6 +251,18 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     public boolean getAcceptFirstPartyCookies() {
         // Return the accept first-party cookies status.
         return acceptFirstPartyCookies;
+    }
+
+
+    // Domain settings JavaScript enabled.  This can be removed once night mode does not require JavaScript.
+    public void setDomainSettingsJavaScriptEnabled(boolean status) {
+        // Store the domain settings JavaScript status.
+        domainSettingsJavaScriptEnabled = status;
+    }
+
+    public boolean getDomainSettingsJavaScriptEnabled() {
+        // Return the domain settings JavaScript status.
+        return domainSettingsJavaScriptEnabled;
     }
 
 
@@ -496,16 +554,29 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     }
 
 
-    // Ignore pinned information.  The syntax looks better as written, even if it is always inverted.
+    // Ignore pinned information.
+    public void setIgnorePinnedDomainInformation(boolean status) {
+        // Set the status of the ignore pinned domain information tracker.
+        ignorePinnedDomainInformation = status;
+    }
+
+    // The syntax looks better as written, even if it is always inverted.
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean ignorePinnedDomainInformation() {
         // Return the status of the ignore pinned domain information tracker.
         return ignorePinnedDomainInformation;
     }
 
-    public void setIgnorePinnedDomainInformation(boolean status) {
-        // Set the status of the ignore pinned domain information tracker.
-        ignorePinnedDomainInformation = status;
+
+    // Navigating history.
+    public void setNavigatingHistory(boolean status) {
+        // Set the status of navigating history.
+        navigatingHistory = status;
+    }
+
+    public boolean getNavigatingHistory() {
+        // Return the status of navigating history.
+        return navigatingHistory;
     }
 
 

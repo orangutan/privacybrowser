@@ -64,7 +64,7 @@ public class AboutViewSourceDialog extends DialogFragment {
         dialogBuilder.setMessage(R.string.about_view_source_message);
 
         // Create an alert dialog from the alert dialog builder.
-        final AlertDialog alertDialog = dialogBuilder.create();
+        AlertDialog alertDialog = dialogBuilder.create();
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
@@ -75,7 +75,7 @@ public class AboutViewSourceDialog extends DialogFragment {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
-        // `onCreateDialog` requires the return of an `AlertDialog`.
+        // Return the alert dialog.
         return alertDialog;
     }
 }
