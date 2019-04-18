@@ -4730,15 +4730,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Get a handle for the navigation requests menu item.  The menu is 0 based.
                 MenuItem navigationRequestsMenuItem = navigationMenu.getItem(6);
 
-                // Get handles for the options menu items.
-                MenuItem blocklistsMenuItem = optionsMenu.findItem(R.id.blocklists);
-                MenuItem easyListMenuItem = optionsMenu.findItem(R.id.easylist);
-                MenuItem easyPrivacyMenuItem = optionsMenu.findItem(R.id.easyprivacy);
-                MenuItem fanboysAnnoyanceListMenuItem = optionsMenu.findItem(R.id.fanboys_annoyance_list);
-                MenuItem fanboysSocialBlockingListMenuItem = optionsMenu.findItem(R.id.fanboys_social_blocking_list);
-                MenuItem ultraPrivacyMenuItem = optionsMenu.findItem(R.id.ultraprivacy);
-                MenuItem blockAllThirdPartyRequestsMenuItem = optionsMenu.findItem(R.id.block_all_third_party_requests);
-
                 // Create an empty web resource response to be used if the resource request is blocked.
                 WebResourceResponse emptyWebResourceResponse = new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
 
@@ -4802,9 +4793,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         activity.runOnUiThread(() -> {
                             // Update the menu item titles.
                             navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                            blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                            blockAllThirdPartyRequestsMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.THIRD_PARTY_REQUESTS) + " - " +
-                                    getString(R.string.block_all_third_party_requests));
+
+                            // Update the options menu if it has been populated.
+                            if (optionsMenu != null) {
+                                optionsMenu.findItem(R.id.blocklists).setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                                optionsMenu.findItem(R.id.block_all_third_party_requests).setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.THIRD_PARTY_REQUESTS) + " - " +
+                                        getString(R.string.block_all_third_party_requests));
+                            }
                         });
                     }
 
@@ -4833,8 +4828,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             activity.runOnUiThread(() -> {
                                 // Update the menu item titles.
                                 navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                ultraPrivacyMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.ULTRA_PRIVACY) + " - " + getString(R.string.ultraprivacy));
+
+                                // Update the options menu if it has been populated.
+                                if (optionsMenu != null) {
+                                    optionsMenu.findItem(R.id.blocklists).setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                                    optionsMenu.findItem(R.id.ultraprivacy).setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.ULTRA_PRIVACY) + " - " + getString(R.string.ultraprivacy));
+                                }
                             });
                         }
 
@@ -4870,8 +4869,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             activity.runOnUiThread(() -> {
                                 // Update the menu item titles.
                                 navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                easyListMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.EASY_LIST) + " - " + getString(R.string.easylist));
+
+                                // Update the options menu if it has been populated.
+                                if (optionsMenu != null) {
+                                    optionsMenu.findItem(R.id.blocklists).setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                                    optionsMenu.findItem(R.id.easylist).setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.EASY_LIST) + " - " + getString(R.string.easylist));
+                                }
                             });
                         }
 
@@ -4904,8 +4907,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             activity.runOnUiThread(() -> {
                                 // Update the menu item titles.
                                 navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                easyPrivacyMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.EASY_PRIVACY) + " - " + getString(R.string.easyprivacy));
+
+                                // Update the options menu if it has been populated.
+                                if (optionsMenu != null) {
+                                    optionsMenu.findItem(R.id.blocklists).setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                                    optionsMenu.findItem(R.id.easyprivacy).setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.EASY_PRIVACY) + " - " + getString(R.string.easyprivacy));
+                                }
                             });
                         }
 
@@ -4938,9 +4945,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             activity.runOnUiThread(() -> {
                                 // Update the menu item titles.
                                 navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                fanboysAnnoyanceListMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST) + " - " +
-                                        getString(R.string.fanboys_annoyance_list));
+
+                                // Update the options menu if it has been populated.
+                                if (optionsMenu != null) {
+                                    optionsMenu.findItem(R.id.blocklists).setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                                    optionsMenu.findItem(R.id.fanboys_annoyance_list).setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST) + " - " +
+                                            getString(R.string.fanboys_annoyance_list));
+                                }
                             });
                         }
 
@@ -4971,9 +4982,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             activity.runOnUiThread(() -> {
                                 // Update the menu item titles.
                                 navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                fanboysSocialBlockingListMenuItem.setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST) + " - " +
-                                        getString(R.string.fanboys_social_blocking_list));
+
+                                // Update the options menu if it has been populated.
+                                if (optionsMenu != null) {
+                                    optionsMenu.findItem(R.id.blocklists).setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                                    optionsMenu.findItem(R.id.fanboys_social_blocking_list).setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST) + " - " +
+                                            getString(R.string.fanboys_social_blocking_list));
+                                }
                             });
                         }
 
