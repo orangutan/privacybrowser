@@ -19,14 +19,12 @@
 
 package com.stoutner.privacybrowser.activities;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.net.http.SslCertificate;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -74,8 +72,15 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
     // `dismissingSnackbar` is public static so it can be accessed from `DomainsListFragment`.  It is also used in `onOptionsItemSelected()`.
     public static boolean dismissingSnackbar;
 
-    // The SSL certificate and current IP addresses are used to update pinned settings.
-    public static SslCertificate currentSslCertificate;
+    // The SSL certificate and IP address information are accessed from `DomainSettingsFragment` and `saveDomainSettings()`.
+    public static String sslIssuedToCName;
+    public static String sslIssuedToOName;
+    public static String sslIssuedToUName;
+    public static String sslIssuedByCName;
+    public static String sslIssuedByOName;
+    public static String sslIssuedByUName;
+    public static long sslStartDateLong;
+    public static long sslEndDateLong;
     public static String currentIpAddresses;
 
 
@@ -160,6 +165,17 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
         // Get the current URL.
         String currentUrl = intent.getStringExtra("current_url");
+
+        // Store the current SSL certificate information in class variables.
+        sslIssuedToCName = intent.getStringExtra("ssl_issued_to_cname");
+        sslIssuedToOName = intent.getStringExtra("ssl_issued_to_oname");
+        sslIssuedToUName = intent.getStringExtra("ssl_issued_to_uname");
+        sslIssuedByCName = intent.getStringExtra("ssl_issued_by_cname");
+        sslIssuedByOName = intent.getStringExtra("ssl_issued_by_oname");
+        sslIssuedByUName = intent.getStringExtra("ssl_issued_by_uname");
+        sslStartDateLong = intent.getLongExtra("ssl_start_date", 0);
+        sslEndDateLong = intent.getLongExtra("ssl_end_date", 0);
+        currentIpAddresses = intent.getStringExtra("current_ip_addresses");
 
         // Set the content view.
         setContentView(R.layout.domains_coordinatorlayout);
@@ -428,115 +444,108 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                             // Do nothing because everything will be handled by `onDismissed()` below.
                         })
                         .addCallback(new Snackbar.Callback() {
-                            @SuppressLint("SwitchIntDef")  // Ignore the lint warning about not handling the other possible events as they are covered by `default:`.
                             @Override
                             public void onDismissed(Snackbar snackbar, int event) {
-                                switch (event) {
-                                    // The user pushed the `Undo` button.
-                                    case Snackbar.Callback.DISMISS_EVENT_ACTION:
-                                        // Store `databaseId` in `argumentsBundle`.
-                                        Bundle argumentsBundle = new Bundle();
-                                        argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, databaseIdToDelete);
+                                // Run commands based on the event.
+                                if (event == Snackbar.Callback.DISMISS_EVENT_ACTION) {  // The user pushed the `Undo` button.
+                                    // Store the database ID in arguments bundle.
+                                    Bundle argumentsBundle = new Bundle();
+                                    argumentsBundle.putInt(DomainSettingsFragment.DATABASE_ID, databaseIdToDelete);
 
-                                        // Add `argumentsBundle` to `domainSettingsFragment`.
-                                        DomainSettingsFragment domainSettingsFragment = new DomainSettingsFragment();
-                                        domainSettingsFragment.setArguments(argumentsBundle);
+                                    // Add the arguments bundle to the domain settings fragment.
+                                    DomainSettingsFragment domainSettingsFragment = new DomainSettingsFragment();
+                                    domainSettingsFragment.setArguments(argumentsBundle);
 
-                                        // Display the correct fragments.
-                                        if (twoPanedMode) {  // The device in in two-paned mode.
-                                            // Get a `Cursor` with the current contents of the domains database.
-                                            Cursor undoDeleteDomainsCursor = domainsDatabaseHelper.getDomainNameCursorOrderedByDomain();
+                                    // Display the correct fragments.
+                                    if (twoPanedMode) {  // The device in in two-paned mode.
+                                        // Get a `Cursor` with the current contents of the domains database.
+                                        Cursor undoDeleteDomainsCursor = domainsDatabaseHelper.getDomainNameCursorOrderedByDomain();
 
-                                            // Setup `domainsCursorAdapter` with `this` context.  `false` disables `autoRequery`.
-                                            CursorAdapter undoDeleteDomainsCursorAdapter = new CursorAdapter(getApplicationContext(), undoDeleteDomainsCursor, false) {
-                                                @Override
-                                                public View newView(Context context, Cursor cursor, ViewGroup parent) {
-                                                    // Inflate the individual item layout.  `false` does not attach it to the root.
-                                                    return getLayoutInflater().inflate(R.layout.domain_name_linearlayout, parent, false);
+                                        // Setup `domainsCursorAdapter` with `this` context.  `false` disables `autoRequery`.
+                                        CursorAdapter undoDeleteDomainsCursorAdapter = new CursorAdapter(getApplicationContext(), undoDeleteDomainsCursor, false) {
+                                            @Override
+                                            public View newView(Context context, Cursor cursor, ViewGroup parent) {
+                                                // Inflate the individual item layout.  `false` does not attach it to the root.
+                                                return getLayoutInflater().inflate(R.layout.domain_name_linearlayout, parent, false);
+                                            }
+
+                                            @Override
+                                            public void bindView(View view, Context context, Cursor cursor) {
+                                                // Set the domain name.
+                                                String domainNameString = cursor.getString(cursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME));
+                                                TextView domainNameTextView = view.findViewById(R.id.domain_name_textview);
+                                                domainNameTextView.setText(domainNameString);
+                                            }
+                                        };
+
+                                        // Update the `ListView`.
+                                        domainsListView.setAdapter(undoDeleteDomainsCursorAdapter);
+                                        // Select the previously deleted domain in `domainsListView`.
+                                        domainsListView.setItemChecked(deletedDomainPosition, true);
+
+                                        // Display `domainSettingsFragment`.
+                                        fragmentManager.beginTransaction().replace(R.id.domain_settings_fragment_container, domainSettingsFragment).commit();
+
+                                        // Enable the options `MenuItems`.
+                                        deleteMenuItem.setEnabled(true);
+                                        deleteMenuItem.setIcon(R.drawable.delete_light);
+                                    } else {  // The device in in one-paned mode.
+                                        // Display `domainSettingsFragment`.
+                                        fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
+
+                                        // Hide the add domain floating action button.
+                                        addDomainFAB.hide();
+
+                                        // Show and enable `deleteMenuItem`.
+                                        deleteMenuItem.setVisible(true);
+
+                                        // Display `domainSettingsFragment`.
+                                        fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
+                                    }
+                                } else {  // The snackbar was dismissed without the undo button being pushed.
+                                    // Delete the selected domain.
+                                    domainsDatabaseHelper.deleteDomain(databaseIdToDelete);
+
+                                    // Enable the delete menu item if the system was waiting for a snackbar to be dismissed.
+                                    if (dismissingSnackbar) {
+                                        // Create a `Runnable` to enable the delete menu item.
+                                        Runnable enableDeleteMenuItemRunnable = () -> {
+                                            // Enable `deleteMenuItem` according to the display mode.
+                                            if (twoPanedMode) {  // Two-paned mode.
+                                                // Enable the delete menu item.
+                                                deleteMenuItem.setEnabled(true);
+
+                                                // Get a handle for the shared preferences.
+                                                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+                                                // Get the theme preferences.
+                                                boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+
+                                                // Set the delete icon according to the theme.
+                                                if (darkTheme) {
+                                                    deleteMenuItem.setIcon(R.drawable.delete_dark);
+                                                } else {
+                                                    deleteMenuItem.setIcon(R.drawable.delete_light);
                                                 }
+                                            } else {  // Single-paned mode.
+                                                // Show `deleteMenuItem`.
+                                                deleteMenuItem.setVisible(true);
+                                            }
 
-                                                @Override
-                                                public void bindView(View view, Context context, Cursor cursor) {
-                                                    // Set the domain name.
-                                                    String domainNameString = cursor.getString(cursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME));
-                                                    TextView domainNameTextView = view.findViewById(R.id.domain_name_textview);
-                                                    domainNameTextView.setText(domainNameString);
-                                                }
-                                            };
+                                            // Reset `dismissingSnackbar`.
+                                            dismissingSnackbar = false;
+                                        };
 
-                                            // Update the `ListView`.
-                                            domainsListView.setAdapter(undoDeleteDomainsCursorAdapter);
-                                            // Select the previously deleted domain in `domainsListView`.
-                                            domainsListView.setItemChecked(deletedDomainPosition, true);
+                                        // Enable the delete menu icon after 100 milliseconds to make sure that the previous domain has been deleted from the database.
+                                        Handler handler = new Handler();
+                                        handler.postDelayed(enableDeleteMenuItemRunnable, 100);
+                                    }
 
-                                            // Display `domainSettingsFragment`.
-                                            fragmentManager.beginTransaction().replace(R.id.domain_settings_fragment_container, domainSettingsFragment).commit();
-
-                                            // Enable the options `MenuItems`.
-                                            deleteMenuItem.setEnabled(true);
-                                            deleteMenuItem.setIcon(R.drawable.delete_light);
-                                        } else {  // The device in in one-paned mode.
-                                            // Display `domainSettingsFragment`.
-                                            fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
-
-                                            // Hide the add domain floating action button.
-                                            addDomainFAB.hide();
-
-                                            // Show and enable `deleteMenuItem`.
-                                            deleteMenuItem.setVisible(true);
-
-                                            // Display `domainSettingsFragment`.
-                                            fragmentManager.beginTransaction().replace(R.id.domains_listview_fragment_container, domainSettingsFragment).commit();
-                                        }
-                                        break;
-
-                                    // The `Snackbar` was dismissed without the `Undo` button being pushed.
-                                    default:
-                                        // Delete the selected domain.
-                                        domainsDatabaseHelper.deleteDomain(databaseIdToDelete);
-
-                                        // Enable the delete menu item if the system was waiting for a snackbar to be dismissed.
-                                        if (dismissingSnackbar) {
-                                            // Create a `Runnable` to enable the delete menu item.
-                                            Runnable enableDeleteMenuItemRunnable = () -> {
-                                                // Enable `deleteMenuItem` according to the display mode.
-                                                if (twoPanedMode) {  // Two-paned mode.
-                                                    // Enable the delete menu item.
-                                                    deleteMenuItem.setEnabled(true);
-
-                                                    // Get a handle for the shared preferences.
-                                                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
-                                                    // Get the theme preferences.
-                                                    boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
-
-                                                    // Set the delete icon according to the theme.
-                                                    if (darkTheme) {
-                                                        deleteMenuItem.setIcon(R.drawable.delete_dark);
-                                                    } else {
-                                                        deleteMenuItem.setIcon(R.drawable.delete_light);
-                                                    }
-                                                } else {  // Single-paned mode.
-                                                    // Show `deleteMenuItem`.
-                                                    deleteMenuItem.setVisible(true);
-                                                }
-
-                                                // Reset `dismissingSnackbar`.
-                                                dismissingSnackbar = false;
-                                            };
-
-                                            // Enable the delete menu icon after 100 milliseconds to make sure that the previous domain has been deleted from the database.
-                                            Handler handler = new Handler();
-                                            handler.postDelayed(enableDeleteMenuItemRunnable, 100);
-                                        }
-
-                                        // Close the activity if back was pressed.
-                                        if (closeActivityAfterDismissingSnackbar) {
-                                            // Go home.
-                                            NavUtils.navigateUpFromSameTask(activity);
-                                        }
-
-                                        break;
+                                    // Close the activity if back was pressed.
+                                    if (closeActivityAfterDismissingSnackbar) {
+                                        // Go home.
+                                        NavUtils.navigateUpFromSameTask(activity);
+                                    }
                                 }
                             }
                         });
@@ -690,7 +699,6 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         RadioButton currentWebsiteCertificateRadioButton = view.findViewById(R.id.current_website_certificate_radiobutton);
         Switch pinnedIpAddressesSwitch = view.findViewById(R.id.pinned_ip_addresses_switch);
         RadioButton currentIpAddressesRadioButton = view.findViewById(R.id.current_ip_addresses_radiobutton);
-        TextView currentIpAddressesTextView = view.findViewById(R.id.current_ip_addresses_textview);
 
         // Extract the data for the domain settings.
         String domainNameString = domainNameEditText.getText().toString();
@@ -746,26 +754,13 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
         // Update the pinned SSL certificate if a new one is checked.
         if (currentWebsiteCertificateRadioButton.isChecked()) {
-            // Store the values from the SSL certificate.
-            String issuedToCommonName = currentSslCertificate.getIssuedTo().getCName();
-            String issuedToOrganization = currentSslCertificate.getIssuedTo().getOName();
-            String issuedToOrganizationalUnit = currentSslCertificate.getIssuedTo().getUName();
-            String issuedByCommonName = currentSslCertificate.getIssuedBy().getCName();
-            String issuedByOrganization = currentSslCertificate.getIssuedBy().getOName();
-            String issuedByOrganizationalUnit = currentSslCertificate.getIssuedBy().getUName();
-            long startDateLong = currentSslCertificate.getValidNotBeforeDate().getTime();
-            long endDateLong = currentSslCertificate.getValidNotAfterDate().getTime();
-
             // Update the database.
-            domainsDatabaseHelper.updatePinnedSslCertificate(currentDomainDatabaseId, issuedToCommonName, issuedToOrganization, issuedToOrganizationalUnit, issuedByCommonName, issuedByOrganization,
-                    issuedByOrganizationalUnit, startDateLong, endDateLong);
+            domainsDatabaseHelper.updatePinnedSslCertificate(currentDomainDatabaseId, sslIssuedToCName, sslIssuedToOName, sslIssuedToUName, sslIssuedToCName, sslIssuedToOName, sslIssuedToUName,
+                    sslStartDateLong, sslEndDateLong);
         }
 
         // Update the pinned IP addresses if new ones are checked.
         if (currentIpAddressesRadioButton.isChecked()) {
-            // Get the current IP addresses.
-            String currentIpAddresses = currentIpAddressesTextView.getText().toString();
-
             // Update the database.
             domainsDatabaseHelper.updatePinnedIpAddresses(currentDomainDatabaseId, currentIpAddresses);
         }

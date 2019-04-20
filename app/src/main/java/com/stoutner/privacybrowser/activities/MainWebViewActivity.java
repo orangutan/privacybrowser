@@ -172,9 +172,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // The WebView pager adapter is accessed from `HttpAuthenticationDialog`, `PinnedMismatchDialog`, and `SslCertificateErrorDialog`.  It is also used in `onCreate()`, `onResume()`, and `addTab()`.
     public static WebViewPagerAdapter webViewPagerAdapter;
 
-    // `reloadOnRestart` is public static so it can be accessed from `SettingsFragment`.  It is used in `onRestart()`
-    public static boolean reloadOnRestart;
-
     // The load URL on restart variables are public static so they can be accessed from `BookmarksActivity`.  They are used in `onRestart()`.
     public static boolean loadUrlOnRestart;
     public static String urlToLoadOnRestart;
@@ -864,51 +861,41 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Apply the app settings if returning from the Settings activity.
         if (reapplyAppSettingsOnRestart) {
+            // Reset the reapply app settings on restart tracker.
+            reapplyAppSettingsOnRestart = false;
+
             // Apply the app settings.
             applyAppSettings();
-
-            // Reload the webpage to handle changes to night mode and displaying of images.
-            if (reloadOnRestart) {
-                // Reload the WebViews.
-                for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
-                    // Get the WebView tab fragment.
-                    WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
-
-                    // Get the fragment view.
-                    View fragmentView = webViewTabFragment.getView();
-
-                    // Only reload the WebViews if they exist.
-                    if (fragmentView != null) {
-                        // Get the nested scroll WebView from the tab fragment.
-                        NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
-
-                        // Reload the WebView.  This doesn't seem to work if for WebViews that aren't visible.
-                        nestedScrollWebView.reload();
-                    }
-                }
-
-                // Reset `reloadOnRestartBoolean`.
-                reloadOnRestart = false;
-            }
-
-            // Reset the return from settings flag.
-            reapplyAppSettingsOnRestart = false;
         }
 
-        // TODO apply to all the tabs.
-        // Apply the domain settings if returning from the Domains activity.
+        // Apply the domain settings if returning from the settings or domains activity.
         if (reapplyDomainSettingsOnRestart) {
-            // Reset the current domain name so the domain settings will be reapplied.
-            currentWebView.resetCurrentDomainName();
-
-            // Reapply the domain settings.
-            applyDomainSettings(currentWebView, currentWebView.getUrl(), false, true);  // TODO.
-
             // Reset the reapply domain settings on restart tracker.
             reapplyDomainSettingsOnRestart = false;
+
+            // Reapply the domain settings for each tab.
+            for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
+                // Get the WebView tab fragment.
+                WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
+
+                // Get the fragment view.
+                View fragmentView = webViewTabFragment.getView();
+
+                // Only reload the WebViews if they exist.
+                if (fragmentView != null) {
+                    // Get the nested scroll WebView from the tab fragment.
+                    NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+
+                    // Reset the current domain name so the domain settings will be reapplied.
+                    nestedScrollWebView.resetCurrentDomainName();
+
+                    // Reapply the domain settings.
+                    applyDomainSettings(nestedScrollWebView, nestedScrollWebView.getUrl(), false, true);
+                }
+            }
         }
 
-        // Load the URL on restart (used when loading a bookmark.
+        // Load the URL on restart (used when loading a bookmark).
         if (loadUrlOnRestart) {
             // Load the specified URL.
             loadUrl(urlToLoadOnRestart);
@@ -1379,11 +1366,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Reapply the domain settings on returning to `MainWebViewActivity`.
                     reapplyDomainSettingsOnRestart = true;
 
-                    // TODO.  Move these to `putExtra`.  The certificate can be stored as strings.
-                    // Store the current SSL certificate and IP addresses in the domains activity.
-                    DomainsActivity.currentSslCertificate = currentWebView.getCertificate();
-                    DomainsActivity.currentIpAddresses = currentWebView.getCurrentIpAddresses();
-
                     // Create an intent to launch the domains activity.
                     Intent domainsIntent = new Intent(this, DomainsActivity.class);
 
@@ -1391,6 +1373,38 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     domainsIntent.putExtra("load_domain", currentWebView.getDomainSettingsDatabaseId());
                     domainsIntent.putExtra("close_on_back", true);
                     domainsIntent.putExtra("current_url", currentWebView.getUrl());
+
+                    // Get the current certificate.
+                    SslCertificate sslCertificate = currentWebView.getCertificate();
+
+                    // Check to see if the SSL certificate is populated.
+                    if (sslCertificate != null) {
+                        // Extract the certificate to strings.
+                        String issuedToCName = sslCertificate.getIssuedTo().getCName();
+                        String issuedToOName = sslCertificate.getIssuedTo().getOName();
+                        String issuedToUName = sslCertificate.getIssuedTo().getUName();
+                        String issuedByCName = sslCertificate.getIssuedBy().getCName();
+                        String issuedByOName = sslCertificate.getIssuedBy().getOName();
+                        String issuedByUName = sslCertificate.getIssuedBy().getUName();
+                        long startDateLong = sslCertificate.getValidNotBeforeDate().getTime();
+                        long endDateLong = sslCertificate.getValidNotAfterDate().getTime();
+
+                        // Add the certificate to the intent.
+                        domainsIntent.putExtra("ssl_issued_to_cname", issuedToCName);
+                        domainsIntent.putExtra("ssl_issued_to_oname", issuedToOName);
+                        domainsIntent.putExtra("ssl_issued_to_uname", issuedToUName);
+                        domainsIntent.putExtra("ssl_issued_by_cname", issuedByCName);
+                        domainsIntent.putExtra("ssl_issued_by_oname", issuedByOName);
+                        domainsIntent.putExtra("ssl_issued_by_uname", issuedByUName);
+                        domainsIntent.putExtra("ssl_start_date", startDateLong);
+                        domainsIntent.putExtra("ssl_end_date", endDateLong);
+                    }
+
+                    // Check to see if the current IP addresses have been received.
+                    if (currentWebView.hasCurrentIpAddresses()) {
+                        // Add the current IP addresses to the intent.
+                        domainsIntent.putExtra("current_ip_addresses", currentWebView.getCurrentIpAddresses());
+                    }
 
                     // Make it so.
                     startActivity(domainsIntent);
@@ -1408,11 +1422,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Create the domain and store the database ID.
                     int newDomainDatabaseId = domainsDatabaseHelper.addDomain(currentDomain);
 
-                    // TODO.  Move these to `putExtra`.  The certificate can be stored as strings.
-                    // Store the current SSL certificate and IP addresses in the domains activity.
-                    DomainsActivity.currentSslCertificate = currentWebView.getCertificate();
-                    DomainsActivity.currentIpAddresses = currentWebView.getCurrentIpAddresses();
-
                     // Create an intent to launch the domains activity.
                     Intent domainsIntent = new Intent(this, DomainsActivity.class);
 
@@ -1420,6 +1429,38 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     domainsIntent.putExtra("load_domain", newDomainDatabaseId);
                     domainsIntent.putExtra("close_on_back", true);
                     domainsIntent.putExtra("current_url", currentWebView.getUrl());
+
+                    // Get the current certificate.
+                    SslCertificate sslCertificate = currentWebView.getCertificate();
+
+                    // Check to see if the SSL certificate is populated.
+                    if (sslCertificate != null) {
+                        // Extract the certificate to strings.
+                        String issuedToCName = sslCertificate.getIssuedTo().getCName();
+                        String issuedToOName = sslCertificate.getIssuedTo().getOName();
+                        String issuedToUName = sslCertificate.getIssuedTo().getUName();
+                        String issuedByCName = sslCertificate.getIssuedBy().getCName();
+                        String issuedByOName = sslCertificate.getIssuedBy().getOName();
+                        String issuedByUName = sslCertificate.getIssuedBy().getUName();
+                        long startDateLong = sslCertificate.getValidNotBeforeDate().getTime();
+                        long endDateLong = sslCertificate.getValidNotAfterDate().getTime();
+
+                        // Add the certificate to the intent.
+                        domainsIntent.putExtra("ssl_issued_to_cname", issuedToCName);
+                        domainsIntent.putExtra("ssl_issued_to_oname", issuedToOName);
+                        domainsIntent.putExtra("ssl_issued_to_uname", issuedToUName);
+                        domainsIntent.putExtra("ssl_issued_by_cname", issuedByCName);
+                        domainsIntent.putExtra("ssl_issued_by_oname", issuedByOName);
+                        domainsIntent.putExtra("ssl_issued_by_uname", issuedByUName);
+                        domainsIntent.putExtra("ssl_start_date", startDateLong);
+                        domainsIntent.putExtra("ssl_end_date", endDateLong);
+                    }
+
+                    // Check to see if the current IP addresses have been received.
+                    if (currentWebView.hasCurrentIpAddresses()) {
+                        // Add the current IP addresses to the intent.
+                        domainsIntent.putExtra("current_ip_addresses", currentWebView.getCurrentIpAddresses());
+                    }
 
                     // Make it so.
                     startActivity(domainsIntent);
@@ -2267,16 +2308,43 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Set the flag to reapply the domain settings on restart when returning from Domain Settings.
                 reapplyDomainSettingsOnRestart = true;
 
-                // TODO.  Move these to `putExtra`.  The certificate can be stored as strings.
-                // Store the current SSL certificate and IP addresses in the domains activity.
-                DomainsActivity.currentSslCertificate = currentWebView.getCertificate();
-                DomainsActivity.currentIpAddresses = currentWebView.getCurrentIpAddresses();
-
                 // Launch the domains activity.
                 Intent domainsIntent = new Intent(this, DomainsActivity.class);
 
                 // Add the extra information to the intent.
                 domainsIntent.putExtra("current_url", currentWebView.getUrl());
+
+                // Get the current certificate.
+                SslCertificate sslCertificate = currentWebView.getCertificate();
+
+                // Check to see if the SSL certificate is populated.
+                if (sslCertificate != null) {
+                    // Extract the certificate to strings.
+                    String issuedToCName = sslCertificate.getIssuedTo().getCName();
+                    String issuedToOName = sslCertificate.getIssuedTo().getOName();
+                    String issuedToUName = sslCertificate.getIssuedTo().getUName();
+                    String issuedByCName = sslCertificate.getIssuedBy().getCName();
+                    String issuedByOName = sslCertificate.getIssuedBy().getOName();
+                    String issuedByUName = sslCertificate.getIssuedBy().getUName();
+                    long startDateLong = sslCertificate.getValidNotBeforeDate().getTime();
+                    long endDateLong = sslCertificate.getValidNotAfterDate().getTime();
+
+                    // Add the certificate to the intent.
+                    domainsIntent.putExtra("ssl_issued_to_cname", issuedToCName);
+                    domainsIntent.putExtra("ssl_issued_to_oname", issuedToOName);
+                    domainsIntent.putExtra("ssl_issued_to_uname", issuedToUName);
+                    domainsIntent.putExtra("ssl_issued_by_cname", issuedByCName);
+                    domainsIntent.putExtra("ssl_issued_by_oname", issuedByOName);
+                    domainsIntent.putExtra("ssl_issued_by_uname", issuedByUName);
+                    domainsIntent.putExtra("ssl_start_date", startDateLong);
+                    domainsIntent.putExtra("ssl_end_date", endDateLong);
+                }
+
+                // Check to see if the current IP addresses have been received.
+                if (currentWebView.hasCurrentIpAddresses()) {
+                    // Add the current IP addresses to the intent.
+                    domainsIntent.putExtra("current_ip_addresses", currentWebView.getCurrentIpAddresses());
+                }
 
                 // Make it so.
                 startActivity(domainsIntent);
@@ -5046,11 +5114,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Check to see if Privacy Browser is waiting on Orbot.
                 if (!waitingForOrbot) {  // Process the URL.
-                    // Display the formatted URL text.
-                    urlEditText.setText(url);
+                    // Get the current page position.
+                    int currentPagePosition = webViewPagerAdapter.getPositionForId(nestedScrollWebView.getWebViewFragmentId());
 
-                    // Apply text highlighting to `urlTextBox`.
-                    highlightUrlText();
+                    // Update the URL text bar if the page is currently selected.
+                    if (tabLayout.getSelectedTabPosition() == currentPagePosition) {
+                        // Display the formatted URL text.
+                        urlEditText.setText(url);
+
+                        // Apply text highlighting to `urlTextBox`.
+                        highlightUrlText();
+                    }
 
                     // Reset the list of host IP addresses.
                     nestedScrollWebView.clearCurrentIpAddresses();
@@ -5160,30 +5234,36 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Update the URL text box and apply domain settings if not waiting on Orbot.
                 if (!waitingForOrbot) {
-                    // Check to see if `WebView` has set `url` to be `about:blank`.
-                    if (url.equals("about:blank")) {  // The WebView is blank.
-                        // Display the hint in the URL edit text.
-                        urlEditText.setText("");
+                    // Get the current page position.
+                    int currentPagePosition = webViewPagerAdapter.getPositionForId(nestedScrollWebView.getWebViewFragmentId());
 
-                        // Request focus for `urlTextBox`.
-                        urlEditText.requestFocus();
+                    // Update the URL text bar if the page is currently selected.
+                    if (tabLayout.getSelectedTabPosition() == currentPagePosition) {
+                        // Check to see if the URL is `about:blank`.
+                        if (url.equals("about:blank")) {  // The WebView is blank.
+                            // Display the hint in the URL edit text.
+                            urlEditText.setText("");
 
-                        // Display the keyboard.
-                        inputMethodManager.showSoftInput(urlEditText, 0);
+                            // Request focus for the URL text box.
+                            urlEditText.requestFocus();
 
-                        // Hide the WebView, which causes the default background color to be displayed according to the theme.
-                        nestedScrollWebView.setVisibility(View.GONE);
+                            // Display the keyboard.
+                            inputMethodManager.showSoftInput(urlEditText, 0);
 
-                        // Apply the domain settings.  This clears any settings from the previous domain.
-                        applyDomainSettings(nestedScrollWebView, "", true, false);
-                    } else {  // The WebView has loaded a webpage.
-                        // Only update the URL text box if the user is not typing in it.
-                        if (!urlEditText.hasFocus()) {
-                            // Display the final URL.  Getting the URL from the WebView instead of using the one provided by `onPageFinished` makes websites like YouTube function correctly.
-                            urlEditText.setText(nestedScrollWebView.getUrl());
+                            // Hide the WebView, which causes the default background color to be displayed according to the theme.  // TODO
+                            nestedScrollWebView.setVisibility(View.GONE);
 
-                            // Apply text highlighting to `urlTextBox`.
-                            highlightUrlText();
+                            // Apply the domain settings.  This clears any settings from the previous domain.
+                            applyDomainSettings(nestedScrollWebView, "", true, false);
+                        } else {  // The WebView has loaded a webpage.
+                            // Only update the URL text box if the user is not typing in it.
+                            if (!urlEditText.hasFocus()) {
+                                // Display the final URL.  Getting the URL from the WebView instead of using the one provided by `onPageFinished()` makes websites like YouTube function correctly.
+                                urlEditText.setText(nestedScrollWebView.getUrl());
+
+                                // Apply text highlighting to the URL.
+                                highlightUrlText();
+                            }
                         }
                     }
 

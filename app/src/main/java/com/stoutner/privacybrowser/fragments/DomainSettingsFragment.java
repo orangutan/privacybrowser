@@ -24,7 +24,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.net.http.SslCertificate;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -70,6 +69,7 @@ public class DomainSettingsFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // Run the default commands.
         super.onCreate(savedInstanceState);
 
         // Remove the lint warning that `getArguments` might be null.
@@ -87,33 +87,33 @@ public class DomainSettingsFragment extends Fragment {
 
         // Get a handle for the context and the resources.
         Context context = getContext();
-        final Resources resources = getResources();
+        Resources resources = getResources();
 
         // Get a handle for the shared preference.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         // Store the default settings.
-        final String defaultUserAgentName = sharedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
-        final String defaultCustomUserAgentString = sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value));
+        String defaultUserAgentName = sharedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
+        String defaultCustomUserAgentString = sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value));
         String defaultFontSizeString = sharedPreferences.getString("font_size", getString(R.string.font_size_default_value));
         boolean defaultSwipeToRefresh = sharedPreferences.getBoolean("swipe_to_refresh", true);
-        final boolean defaultNightMode = sharedPreferences.getBoolean("night_mode", false);
-        final boolean defaultDisplayWebpageImages = sharedPreferences.getBoolean("display_webpage_images", true);
+        boolean defaultNightMode = sharedPreferences.getBoolean("night_mode", false);
+        boolean defaultDisplayWebpageImages = sharedPreferences.getBoolean("display_webpage_images", true);
         boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
 
         // Get handles for the views in the fragment.
-        final EditText domainNameEditText = domainSettingsView.findViewById(R.id.domain_settings_name_edittext);
-        final Switch javaScriptEnabledSwitch = domainSettingsView.findViewById(R.id.javascript_switch);
-        final ImageView javaScriptImageView = domainSettingsView.findViewById(R.id.javascript_imageview);
+        EditText domainNameEditText = domainSettingsView.findViewById(R.id.domain_settings_name_edittext);
+        Switch javaScriptEnabledSwitch = domainSettingsView.findViewById(R.id.javascript_switch);
+        ImageView javaScriptImageView = domainSettingsView.findViewById(R.id.javascript_imageview);
         Switch firstPartyCookiesEnabledSwitch = domainSettingsView.findViewById(R.id.first_party_cookies_switch);
-        final ImageView firstPartyCookiesImageView = domainSettingsView.findViewById(R.id.first_party_cookies_imageview);
+        ImageView firstPartyCookiesImageView = domainSettingsView.findViewById(R.id.first_party_cookies_imageview);
         LinearLayout thirdPartyCookiesLinearLayout = domainSettingsView.findViewById(R.id.third_party_cookies_linearlayout);
-        final Switch thirdPartyCookiesEnabledSwitch = domainSettingsView.findViewById(R.id.third_party_cookies_switch);
-        final ImageView thirdPartyCookiesImageView = domainSettingsView.findViewById(R.id.third_party_cookies_imageview);
-        final Switch domStorageEnabledSwitch = domainSettingsView.findViewById(R.id.dom_storage_switch);
-        final ImageView domStorageImageView = domainSettingsView.findViewById(R.id.dom_storage_imageview);
+        Switch thirdPartyCookiesEnabledSwitch = domainSettingsView.findViewById(R.id.third_party_cookies_switch);
+        ImageView thirdPartyCookiesImageView = domainSettingsView.findViewById(R.id.third_party_cookies_imageview);
+        Switch domStorageEnabledSwitch = domainSettingsView.findViewById(R.id.dom_storage_switch);
+        ImageView domStorageImageView = domainSettingsView.findViewById(R.id.dom_storage_imageview);
         Switch formDataEnabledSwitch = domainSettingsView.findViewById(R.id.form_data_switch);  // The form data views can be remove once the minimum API >= 26.
-        final ImageView formDataImageView = domainSettingsView.findViewById(R.id.form_data_imageview);  // The form data views can be remove once the minimum API >= 26.
+        ImageView formDataImageView = domainSettingsView.findViewById(R.id.form_data_imageview);  // The form data views can be remove once the minimum API >= 26.
         Switch easyListSwitch = domainSettingsView.findViewById(R.id.easylist_switch);
         ImageView easyListImageView = domainSettingsView.findViewById(R.id.easylist_imageview);
         Switch easyPrivacySwitch = domainSettingsView.findViewById(R.id.easyprivacy_switch);
@@ -126,45 +126,45 @@ public class DomainSettingsFragment extends Fragment {
         ImageView ultraPrivacyImageView = domainSettingsView.findViewById(R.id.ultraprivacy_imageview);
         Switch blockAllThirdPartyRequestsSwitch = domainSettingsView.findViewById(R.id.block_all_third_party_requests_switch);
         ImageView blockAllThirdPartyRequestsImageView = domainSettingsView.findViewById(R.id.block_all_third_party_requests_imageview);
-        final Spinner userAgentSpinner = domainSettingsView.findViewById(R.id.user_agent_spinner);
-        final TextView userAgentTextView = domainSettingsView.findViewById(R.id.user_agent_textview);
-        final EditText customUserAgentEditText = domainSettingsView.findViewById(R.id.custom_user_agent_edittext);
-        final Spinner fontSizeSpinner = domainSettingsView.findViewById(R.id.font_size_spinner);
-        final TextView fontSizeTextView = domainSettingsView.findViewById(R.id.font_size_textview);
-        final ImageView swipeToRefreshImageView = domainSettingsView.findViewById(R.id.swipe_to_refresh_imageview);
-        final Spinner swipeToRefreshSpinner = domainSettingsView.findViewById(R.id.swipe_to_refresh_spinner);
-        final TextView swipeToRefreshTextView = domainSettingsView.findViewById(R.id.swipe_to_refresh_textview);
-        final ImageView nightModeImageView = domainSettingsView.findViewById(R.id.night_mode_imageview);
-        final Spinner nightModeSpinner = domainSettingsView.findViewById(R.id.night_mode_spinner);
-        final TextView nightModeTextView = domainSettingsView.findViewById(R.id.night_mode_textview);
-        final ImageView displayWebpageImagesImageView = domainSettingsView.findViewById(R.id.display_webpage_images_imageview);
-        final Spinner displayWebpageImagesSpinner = domainSettingsView.findViewById(R.id.display_webpage_images_spinner);
-        final TextView displayImagesTextView = domainSettingsView.findViewById(R.id.display_webpage_images_textview);
-        final ImageView pinnedSslCertificateImageView = domainSettingsView.findViewById(R.id.pinned_ssl_certificate_imageview);
+        Spinner userAgentSpinner = domainSettingsView.findViewById(R.id.user_agent_spinner);
+        TextView userAgentTextView = domainSettingsView.findViewById(R.id.user_agent_textview);
+        EditText customUserAgentEditText = domainSettingsView.findViewById(R.id.custom_user_agent_edittext);
+        Spinner fontSizeSpinner = domainSettingsView.findViewById(R.id.font_size_spinner);
+        TextView fontSizeTextView = domainSettingsView.findViewById(R.id.font_size_textview);
+        ImageView swipeToRefreshImageView = domainSettingsView.findViewById(R.id.swipe_to_refresh_imageview);
+        Spinner swipeToRefreshSpinner = domainSettingsView.findViewById(R.id.swipe_to_refresh_spinner);
+        TextView swipeToRefreshTextView = domainSettingsView.findViewById(R.id.swipe_to_refresh_textview);
+        ImageView nightModeImageView = domainSettingsView.findViewById(R.id.night_mode_imageview);
+        Spinner nightModeSpinner = domainSettingsView.findViewById(R.id.night_mode_spinner);
+        TextView nightModeTextView = domainSettingsView.findViewById(R.id.night_mode_textview);
+        ImageView displayWebpageImagesImageView = domainSettingsView.findViewById(R.id.display_webpage_images_imageview);
+        Spinner displayWebpageImagesSpinner = domainSettingsView.findViewById(R.id.display_webpage_images_spinner);
+        TextView displayImagesTextView = domainSettingsView.findViewById(R.id.display_webpage_images_textview);
+        ImageView pinnedSslCertificateImageView = domainSettingsView.findViewById(R.id.pinned_ssl_certificate_imageview);
         Switch pinnedSslCertificateSwitch = domainSettingsView.findViewById(R.id.pinned_ssl_certificate_switch);
-        final CardView savedSslCertificateCardView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_cardview);
+        CardView savedSslCardView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_cardview);
         LinearLayout savedSslCertificateLinearLayout = domainSettingsView.findViewById(R.id.saved_ssl_certificate_linearlayout);
-        final RadioButton savedSslCertificateRadioButton = domainSettingsView.findViewById(R.id.saved_ssl_certificate_radiobutton);
-        final TextView savedSslCertificateIssuedToCNameTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_to_cname);
-        TextView savedSslCertificateIssuedToONameTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_to_oname);
-        TextView savedSslCertificateIssuedToUNameTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_to_uname);
-        TextView savedSslCertificateIssuedByCNameTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_by_cname);
-        TextView savedSslCertificateIssuedByONameTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_by_oname);
-        TextView savedSslCertificateIssuedByUNameTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_by_uname);
-        TextView savedSslCertificateStartDateTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_start_date);
-        TextView savedSslCertificateEndDateTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_end_date);
-        final CardView currentWebsiteCertificateCardView = domainSettingsView.findViewById(R.id.current_website_certificate_cardview);
+        RadioButton savedSslCertificateRadioButton = domainSettingsView.findViewById(R.id.saved_ssl_certificate_radiobutton);
+        TextView savedSslIssuedToCNameTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_to_cname);
+        TextView savedSslIssuedToONameTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_to_oname);
+        TextView savedSslIssuedToUNameTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_to_uname);
+        TextView savedSslIssuedByCNameTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_by_cname);
+        TextView savedSslIssuedByONameTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_by_oname);
+        TextView savedSslIssuedByUNameTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_issued_by_uname);
+        TextView savedSslStartDateTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_start_date);
+        TextView savedSslEndDateTextView = domainSettingsView.findViewById(R.id.saved_ssl_certificate_end_date);
+        CardView currentSslCardView = domainSettingsView.findViewById(R.id.current_website_certificate_cardview);
         LinearLayout currentWebsiteCertificateLinearLayout = domainSettingsView.findViewById(R.id.current_website_certificate_linearlayout);
-        final RadioButton currentWebsiteCertificateRadioButton = domainSettingsView.findViewById(R.id.current_website_certificate_radiobutton);
-        final TextView currentWebsiteCertificateIssuedToCNameTextView = domainSettingsView.findViewById(R.id.current_website_certificate_issued_to_cname);
-        TextView currentWebsiteCertificateIssuedToONameTextView = domainSettingsView.findViewById(R.id.current_website_certificate_issued_to_oname);
-        TextView currentWebsiteCertificateIssuedToUNameTextView = domainSettingsView.findViewById(R.id.current_website_certificate_issued_to_uname);
-        TextView currentWebsiteCertificateIssuedByCNameTextView = domainSettingsView.findViewById(R.id.current_website_certificate_issued_by_cname);
-        TextView currentWebsiteCertificateIssuedByONameTextView = domainSettingsView.findViewById(R.id.current_website_certificate_issued_by_oname);
-        TextView currentWebsiteCertificateIssuedByUNameTextView = domainSettingsView.findViewById(R.id.current_website_certificate_issued_by_uname);
-        TextView currentWebsiteCertificateStartDateTextView = domainSettingsView.findViewById(R.id.current_website_certificate_start_date);
-        TextView currentWebsiteCertificateEndDateTextView = domainSettingsView.findViewById(R.id.current_website_certificate_end_date);
-        final TextView noCurrentWebsiteCertificateTextView = domainSettingsView.findViewById(R.id.no_current_website_certificate);
+        RadioButton currentWebsiteCertificateRadioButton = domainSettingsView.findViewById(R.id.current_website_certificate_radiobutton);
+        TextView currentSslIssuedToCNameTextView = domainSettingsView.findViewById(R.id.current_website_certificate_issued_to_cname);
+        TextView currentSslIssuedToONameTextView = domainSettingsView.findViewById(R.id.current_website_certificate_issued_to_oname);
+        TextView currentSslIssuedToUNameTextView = domainSettingsView.findViewById(R.id.current_website_certificate_issued_to_uname);
+        TextView currentSslIssuedByCNameTextView = domainSettingsView.findViewById(R.id.current_website_certificate_issued_by_cname);
+        TextView currentSslIssuedByONameTextView = domainSettingsView.findViewById(R.id.current_website_certificate_issued_by_oname);
+        TextView currentSslIssuedByUNameTextView = domainSettingsView.findViewById(R.id.current_website_certificate_issued_by_uname);
+        TextView currentSslStartDateTextView = domainSettingsView.findViewById(R.id.current_website_certificate_start_date);
+        TextView currentSslEndDateTextView = domainSettingsView.findViewById(R.id.current_website_certificate_end_date);
+        TextView noCurrentWebsiteCertificateTextView = domainSettingsView.findViewById(R.id.no_current_website_certificate);
         ImageView pinnedIpAddressesImageView = domainSettingsView.findViewById(R.id.pinned_ip_addresses_imageview);
         Switch pinnedIpAddressesSwitch = domainSettingsView.findViewById(R.id.pinned_ip_addresses_switch);
         CardView savedIpAddressesCardView = domainSettingsView.findViewById(R.id.saved_ip_addresses_cardview);
@@ -183,9 +183,6 @@ public class DomainSettingsFragment extends Fragment {
         String startDateLabel = getString(R.string.start_date) + "  ";
         String endDateLabel = getString(R.string.end_date) + "  ";
 
-        // Get the current website SSL certificate
-        final SslCertificate currentWebsiteSslCertificate = DomainsActivity.currentSslCertificate;
-
         // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
         DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(context, null, null, 0);
 
@@ -195,10 +192,10 @@ public class DomainSettingsFragment extends Fragment {
 
         // Save the cursor entries as variables.
         String domainNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME));
-        final int javaScriptEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT));
+        int javaScriptEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT));
         int firstPartyCookiesEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES));
         int thirdPartyCookiesEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES));
-        final int domStorageEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE));
+        int domStorageEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE));
         int formDataEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA));  // Form data can be remove once the minimum API >= 26.
         int easyListEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYLIST));
         int easyPrivacyEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY));
@@ -206,32 +203,32 @@ public class DomainSettingsFragment extends Fragment {
         int fanboysSocialBlockingListInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST));
         int ultraPrivacyEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY));
         int blockAllThirdPartyRequestsInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS));
-        final String currentUserAgentName = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
+        String currentUserAgentName = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
         int fontSizeInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
         int swipeToRefreshInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.SWIPE_TO_REFRESH));
         int nightModeInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.NIGHT_MODE));
         int displayImagesInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
         int pinnedSslCertificateInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE));
-        String savedSslCertificateIssuedToCNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME));
-        String savedSslCertificateIssuedToONameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION));
-        String savedSslCertificateIssuedToUNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT));
-        String savedSslCertificateIssuedByCNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME));
-        String savedSslCertificateIssuedByONameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION));
-        String savedSslCertificateIssuedByUNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT));
+        String savedSslIssuedToCNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME));
+        String savedSslIssuedToONameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATION));
+        String savedSslIssuedToUNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_ORGANIZATIONAL_UNIT));
+        String savedSslIssuedByCNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_COMMON_NAME));
+        String savedSslIssuedByONameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATION));
+        String savedSslIssuedByUNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_BY_ORGANIZATIONAL_UNIT));
         int pinnedIpAddressesInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_IP_ADDRESSES));
         String savedIpAddresses = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.IP_ADDRESSES));
 
         // Initialize the saved SSL certificate date variables.
-        Date savedSslCertificateStartDate = null;
-        Date savedSslCertificateEndDate = null;
+        Date savedSslStartDate = null;
+        Date savedSslEndDate = null;
 
         // Only get the saved SSL certificate dates from the cursor if they are not set to `0`.
         if (domainCursor.getLong(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)) != 0) {
-            savedSslCertificateStartDate = new Date(domainCursor.getLong(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)));
+            savedSslStartDate = new Date(domainCursor.getLong(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_START_DATE)));
         }
 
         if (domainCursor.getLong(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)) != 0) {
-            savedSslCertificateEndDate = new Date(domainCursor.getLong(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)));
+            savedSslEndDate = new Date(domainCursor.getLong(domainCursor.getColumnIndex(DomainsDatabaseHelper.SSL_END_DATE)));
         }
 
         // Create array adapters for the spinners.
@@ -257,28 +254,28 @@ public class DomainSettingsFragment extends Fragment {
         displayWebpageImagesSpinner.setAdapter(displayImagesArrayAdapter);
 
         // Create a spannable string builder for each TextView that needs multiple colors of text.
-        SpannableStringBuilder savedSslCertificateIssuedToCNameStringBuilder = new SpannableStringBuilder(cNameLabel + savedSslCertificateIssuedToCNameString);
-        SpannableStringBuilder savedSslCertificateIssuedToONameStringBuilder = new SpannableStringBuilder(oNameLabel + savedSslCertificateIssuedToONameString);
-        SpannableStringBuilder savedSslCertificateIssuedToUNameStringBuilder = new SpannableStringBuilder(uNameLabel + savedSslCertificateIssuedToUNameString);
-        SpannableStringBuilder savedSslCertificateIssuedByCNameStringBuilder = new SpannableStringBuilder(cNameLabel + savedSslCertificateIssuedByCNameString);
-        SpannableStringBuilder savedSslCertificateIssuedByONameStringBuilder = new SpannableStringBuilder(oNameLabel + savedSslCertificateIssuedByONameString);
-        SpannableStringBuilder savedSslCertificateIssuedByUNameStringBuilder = new SpannableStringBuilder(uNameLabel + savedSslCertificateIssuedByUNameString);
+        SpannableStringBuilder savedSslIssuedToCNameStringBuilder = new SpannableStringBuilder(cNameLabel + savedSslIssuedToCNameString);
+        SpannableStringBuilder savedSslIssuedToONameStringBuilder = new SpannableStringBuilder(oNameLabel + savedSslIssuedToONameString);
+        SpannableStringBuilder savedSslIssuedToUNameStringBuilder = new SpannableStringBuilder(uNameLabel + savedSslIssuedToUNameString);
+        SpannableStringBuilder savedSslIssuedByCNameStringBuilder = new SpannableStringBuilder(cNameLabel + savedSslIssuedByCNameString);
+        SpannableStringBuilder savedSslIssuedByONameStringBuilder = new SpannableStringBuilder(oNameLabel + savedSslIssuedByONameString);
+        SpannableStringBuilder savedSslIssuedByUNameStringBuilder = new SpannableStringBuilder(uNameLabel + savedSslIssuedByUNameString);
 
-        // Initialize the spannable string builders for the SSL certificate dates.
-        SpannableStringBuilder savedSslCertificateStartDateStringBuilder;
-        SpannableStringBuilder savedSslCertificateEndDateStringBuilder;
+        // Initialize the spannable string builders for the saved SSL certificate dates.
+        SpannableStringBuilder savedSslStartDateStringBuilder;
+        SpannableStringBuilder savedSslEndDateStringBuilder;
 
         // Leave the SSL certificate dates empty if they are `null`.
-        if (savedSslCertificateStartDate == null) {
-            savedSslCertificateStartDateStringBuilder = new SpannableStringBuilder(startDateLabel);
+        if (savedSslStartDate == null) {
+            savedSslStartDateStringBuilder = new SpannableStringBuilder(startDateLabel);
         } else {
-            savedSslCertificateStartDateStringBuilder = new SpannableStringBuilder(startDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(savedSslCertificateStartDate));
+            savedSslStartDateStringBuilder = new SpannableStringBuilder(startDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(savedSslStartDate));
         }
 
-        if (savedSslCertificateEndDate == null) {
-            savedSslCertificateEndDateStringBuilder = new SpannableStringBuilder(endDateLabel);
+        if (savedSslEndDate == null) {
+            savedSslEndDateStringBuilder = new SpannableStringBuilder(endDateLabel);
         } else {
-            savedSslCertificateEndDateStringBuilder = new SpannableStringBuilder(endDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(savedSslCertificateEndDate));
+            savedSslEndDateStringBuilder = new SpannableStringBuilder(endDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(savedSslEndDate));
         }
 
         // Create a red foreground color span.  The deprecated `resources.getColor` must be used until the minimum API >= 23.
@@ -289,10 +286,8 @@ public class DomainSettingsFragment extends Fragment {
 
         // Set the blue color span according to the theme.  The deprecated `resources.getColor` must be used until the minimum API >= 23.
         if (darkTheme) {
-            //noinspection deprecation
             blueColorSpan = new ForegroundColorSpan(resources.getColor(R.color.blue_400));
         } else {
-            //noinspection deprecation
             blueColorSpan = new ForegroundColorSpan(resources.getColor(R.color.blue_700));
         }
 
@@ -317,41 +312,38 @@ public class DomainSettingsFragment extends Fragment {
                 String newDomainName = domainNameEditText.getText().toString();
 
                 // Check the saved SSL certificate against the new domain name.
-                boolean savedSslCertificateMatchesNewDomainName = checkDomainNameAgainstCertificate(newDomainName, savedSslCertificateIssuedToCNameString);
+                boolean savedSslMatchesNewDomainName = checkDomainNameAgainstCertificate(newDomainName, savedSslIssuedToCNameString);
 
                 // Create a `SpannableStringBuilder` for the saved certificate `Common Name`.
-                SpannableStringBuilder savedSslCertificateCommonNameStringBuilder = new SpannableStringBuilder(cNameLabel + savedSslCertificateIssuedToCNameString);
+                SpannableStringBuilder savedSslCNameStringBuilder = new SpannableStringBuilder(cNameLabel + savedSslIssuedToCNameString);
 
                 // Format the saved certificate `Common Name` color.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
-                if (savedSslCertificateMatchesNewDomainName) {
-                    savedSslCertificateCommonNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), savedSslCertificateCommonNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                if (savedSslMatchesNewDomainName) {
+                    savedSslCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), savedSslCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 } else {
-                    savedSslCertificateCommonNameStringBuilder.setSpan(redColorSpan, cNameLabel.length(), savedSslCertificateCommonNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    savedSslCNameStringBuilder.setSpan(redColorSpan, cNameLabel.length(), savedSslCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                 }
 
-                // Update `savedSslCertificateIssuedToCNameTextView`.
-                savedSslCertificateIssuedToCNameTextView.setText(savedSslCertificateCommonNameStringBuilder);
+                // Update the saved SSL issued to CName text view.
+                savedSslIssuedToCNameTextView.setText(savedSslCNameStringBuilder);
 
                 // Update the current website certificate if it exists.
-                if (currentWebsiteSslCertificate != null) {
-                    // Get the current website certificate `Common Name`.
-                    String currentWebsiteCertificateCommonName = currentWebsiteSslCertificate.getIssuedTo().getCName();
-
+                if (DomainsActivity.sslIssuedToCName != null) {
                     // Check the current website certificate against the new domain name.
-                    boolean currentWebsiteCertificateMatchesNewDomainName = checkDomainNameAgainstCertificate(newDomainName, currentWebsiteCertificateCommonName);
+                    boolean currentSslMatchesNewDomainName = checkDomainNameAgainstCertificate(newDomainName, DomainsActivity.sslIssuedToCName);
 
                     // Create a `SpannableStringBuilder` for the current website certificate `Common Name`.
-                    SpannableStringBuilder currentWebsiteCertificateCommonNameStringBuilder = new SpannableStringBuilder(cNameLabel + currentWebsiteCertificateCommonName);
+                    SpannableStringBuilder currentSslCNameStringBuilder = new SpannableStringBuilder(cNameLabel + DomainsActivity.sslIssuedToCName);
 
                     // Format the current certificate `Common Name` color.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
-                    if (currentWebsiteCertificateMatchesNewDomainName) {
-                        currentWebsiteCertificateCommonNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), currentWebsiteCertificateCommonNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    if (currentSslMatchesNewDomainName) {
+                        currentSslCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), currentSslCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                     } else {
-                        currentWebsiteCertificateCommonNameStringBuilder.setSpan(redColorSpan, cNameLabel.length(), currentWebsiteCertificateCommonNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                        currentSslCNameStringBuilder.setSpan(redColorSpan, cNameLabel.length(), currentSslCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
                     }
 
-                    // Update `currentWebsiteCertificateIssuedToCNameTextView`.
-                    currentWebsiteCertificateIssuedToCNameTextView.setText(currentWebsiteCertificateCommonNameStringBuilder);
+                    // Update the current SSL issued to CName text view.
+                    currentSslIssuedToCNameTextView.setText(currentSslCNameStringBuilder);
                 }
             }
         });
@@ -717,15 +709,12 @@ public class DomainSettingsFragment extends Fragment {
             customUserAgentEditText.setVisibility(View.GONE);
 
             // Set the user agent text.
-            switch (userAgentArrayPosition) {
-                case MainWebViewActivity.DOMAINS_WEBVIEW_DEFAULT_USER_AGENT:
-                    // Display the WebView default user agent.
-                    userAgentTextView.setText(webViewDefaultUserAgentString);
-                    break;
-
-                default:
-                    // Get the user agent string from the user agent data array.  The spinner has one more entry at the beginning than the user agent data array, so the position must be incremented.
-                    userAgentTextView.setText(userAgentDataArray[userAgentArrayPosition + 1]);
+            if (userAgentArrayPosition == MainWebViewActivity.DOMAINS_WEBVIEW_DEFAULT_USER_AGENT) {  // The WebView default user agent is selected.
+                // Display the WebView default user agent.
+                userAgentTextView.setText(webViewDefaultUserAgentString);
+            } else {  // A user agent besides the default is selected.
+                // Get the user agent string from the user agent data array.  The spinner has one more entry at the beginning than the user agent data array, so the position must be incremented.
+                userAgentTextView.setText(userAgentDataArray[userAgentArrayPosition + 1]);
             }
         }
 
@@ -974,138 +963,132 @@ public class DomainSettingsFragment extends Fragment {
         Date currentDate = Calendar.getInstance().getTime();
 
         // Setup the string builders to display the general certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
-        savedSslCertificateIssuedToONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length(), savedSslCertificateIssuedToONameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        savedSslCertificateIssuedToUNameStringBuilder.setSpan(blueColorSpan, uNameLabel.length(), savedSslCertificateIssuedToUNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        savedSslCertificateIssuedByCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), savedSslCertificateIssuedByCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        savedSslCertificateIssuedByONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length(), savedSslCertificateIssuedByONameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        savedSslCertificateIssuedByUNameStringBuilder.setSpan(blueColorSpan, uNameLabel.length(), savedSslCertificateIssuedByUNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        savedSslIssuedToONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length(), savedSslIssuedToONameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        savedSslIssuedToUNameStringBuilder.setSpan(blueColorSpan, uNameLabel.length(), savedSslIssuedToUNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        savedSslIssuedByCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), savedSslIssuedByCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        savedSslIssuedByONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length(), savedSslIssuedByONameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        savedSslIssuedByUNameStringBuilder.setSpan(blueColorSpan, uNameLabel.length(), savedSslIssuedByUNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
         // Check the certificate Common Name against the domain name.
-        boolean savedSSlCertificateCommonNameMatchesDomainName = checkDomainNameAgainstCertificate(domainNameString, savedSslCertificateIssuedToCNameString);
+        boolean savedSslCommonNameMatchesDomainName = checkDomainNameAgainstCertificate(domainNameString, savedSslIssuedToCNameString);
 
         // Format the issued to Common Name color.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
-        if (savedSSlCertificateCommonNameMatchesDomainName) {
-            savedSslCertificateIssuedToCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), savedSslCertificateIssuedToCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        if (savedSslCommonNameMatchesDomainName) {
+            savedSslIssuedToCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), savedSslIssuedToCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         } else {
-            savedSslCertificateIssuedToCNameStringBuilder.setSpan(redColorSpan, cNameLabel.length(), savedSslCertificateIssuedToCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            savedSslIssuedToCNameStringBuilder.setSpan(redColorSpan, cNameLabel.length(), savedSslIssuedToCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         }
 
         //  Format the start date color.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
-        if ((savedSslCertificateStartDate != null) && savedSslCertificateStartDate.after(currentDate)) {  // The certificate start date is in the future.
-            savedSslCertificateStartDateStringBuilder.setSpan(redColorSpan, startDateLabel.length(), savedSslCertificateStartDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        if ((savedSslStartDate != null) && savedSslStartDate.after(currentDate)) {  // The certificate start date is in the future.
+            savedSslStartDateStringBuilder.setSpan(redColorSpan, startDateLabel.length(), savedSslStartDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         } else {  // The certificate start date is in the past.
-            savedSslCertificateStartDateStringBuilder.setSpan(blueColorSpan, startDateLabel.length(), savedSslCertificateStartDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            savedSslStartDateStringBuilder.setSpan(blueColorSpan, startDateLabel.length(), savedSslStartDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         }
 
         // Format the end date color.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
-        if ((savedSslCertificateEndDate != null) && savedSslCertificateEndDate.before(currentDate)) {  // The certificate end date is in the past.
-            savedSslCertificateEndDateStringBuilder.setSpan(redColorSpan, endDateLabel.length(), savedSslCertificateEndDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        if ((savedSslEndDate != null) && savedSslEndDate.before(currentDate)) {  // The certificate end date is in the past.
+            savedSslEndDateStringBuilder.setSpan(redColorSpan, endDateLabel.length(), savedSslEndDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         } else {  // The certificate end date is in the future.
-            savedSslCertificateEndDateStringBuilder.setSpan(blueColorSpan, endDateLabel.length(), savedSslCertificateEndDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            savedSslEndDateStringBuilder.setSpan(blueColorSpan, endDateLabel.length(), savedSslEndDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         }
 
         // Display the saved website SSL certificate strings.
-        savedSslCertificateIssuedToCNameTextView.setText(savedSslCertificateIssuedToCNameStringBuilder);
-        savedSslCertificateIssuedToONameTextView.setText(savedSslCertificateIssuedToONameStringBuilder);
-        savedSslCertificateIssuedToUNameTextView.setText(savedSslCertificateIssuedToUNameStringBuilder);
-        savedSslCertificateIssuedByCNameTextView.setText(savedSslCertificateIssuedByCNameStringBuilder);
-        savedSslCertificateIssuedByONameTextView.setText(savedSslCertificateIssuedByONameStringBuilder);
-        savedSslCertificateIssuedByUNameTextView.setText(savedSslCertificateIssuedByUNameStringBuilder);
-        savedSslCertificateStartDateTextView.setText(savedSslCertificateStartDateStringBuilder);
-        savedSslCertificateEndDateTextView.setText(savedSslCertificateEndDateStringBuilder);
+        savedSslIssuedToCNameTextView.setText(savedSslIssuedToCNameStringBuilder);
+        savedSslIssuedToONameTextView.setText(savedSslIssuedToONameStringBuilder);
+        savedSslIssuedToUNameTextView.setText(savedSslIssuedToUNameStringBuilder);
+        savedSslIssuedByCNameTextView.setText(savedSslIssuedByCNameStringBuilder);
+        savedSslIssuedByONameTextView.setText(savedSslIssuedByONameStringBuilder);
+        savedSslIssuedByUNameTextView.setText(savedSslIssuedByUNameStringBuilder);
+        savedSslStartDateTextView.setText(savedSslStartDateStringBuilder);
+        savedSslEndDateTextView.setText(savedSslEndDateStringBuilder);
 
         // Populate the current website SSL certificate if there is one.
-        if (currentWebsiteSslCertificate != null) {
-            // Get the strings from the SSL certificate.
-            String currentWebsiteCertificateIssuedToCNameString = currentWebsiteSslCertificate.getIssuedTo().getCName();
-            String currentWebsiteCertificateIssuedToONameString = currentWebsiteSslCertificate.getIssuedTo().getOName();
-            String currentWebsiteCertificateIssuedToUNameString = currentWebsiteSslCertificate.getIssuedTo().getUName();
-            String currentWebsiteCertificateIssuedByCNameString = currentWebsiteSslCertificate.getIssuedBy().getCName();
-            String currentWebsiteCertificateIssuedByONameString = currentWebsiteSslCertificate.getIssuedBy().getOName();
-            String currentWebsiteCertificateIssuedByUNameString = currentWebsiteSslCertificate.getIssuedBy().getUName();
-            Date currentWebsiteCertificateStartDate = currentWebsiteSslCertificate.getValidNotBeforeDate();
-            Date currentWebsiteCertificateEndDate = currentWebsiteSslCertificate.getValidNotAfterDate();
+        if (DomainsActivity.sslIssuedToCName != null) {
+            // Get dates from the raw long values.
+            Date currentSslStartDate = new Date(DomainsActivity.sslStartDateLong);
+            Date currentSslEndDate = new Date(DomainsActivity.sslEndDateLong);
 
             // Create a spannable string builder for each text view that needs multiple colors of text.
-            SpannableStringBuilder currentWebsiteCertificateIssuedToCNameStringBuilder = new SpannableStringBuilder(cNameLabel + currentWebsiteCertificateIssuedToCNameString);
-            SpannableStringBuilder currentWebsiteCertificateIssuedToONameStringBuilder = new SpannableStringBuilder(oNameLabel + currentWebsiteCertificateIssuedToONameString);
-            SpannableStringBuilder currentWebsiteCertificateIssuedToUNameStringBuilder = new SpannableStringBuilder(uNameLabel + currentWebsiteCertificateIssuedToUNameString);
-            SpannableStringBuilder currentWebsiteCertificateIssuedByCNameStringBuilder = new SpannableStringBuilder(cNameLabel + currentWebsiteCertificateIssuedByCNameString);
-            SpannableStringBuilder currentWebsiteCertificateIssuedByONameStringBuilder = new SpannableStringBuilder(oNameLabel + currentWebsiteCertificateIssuedByONameString);
-            SpannableStringBuilder currentWebsiteCertificateIssuedByUNameStringBuilder = new SpannableStringBuilder(uNameLabel + currentWebsiteCertificateIssuedByUNameString);
-            SpannableStringBuilder currentWebsiteCertificateStartDateStringBuilder = new SpannableStringBuilder(startDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG)
-                    .format(currentWebsiteCertificateStartDate));
-            SpannableStringBuilder currentWebsiteCertificateEndDateStringBuilder = new SpannableStringBuilder(endDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG)
-                    .format(currentWebsiteCertificateEndDate));
+            SpannableStringBuilder currentSslIssuedToCNameStringBuilder = new SpannableStringBuilder(cNameLabel + DomainsActivity.sslIssuedToCName);
+            SpannableStringBuilder currentSslIssuedToONameStringBuilder = new SpannableStringBuilder(oNameLabel + DomainsActivity.sslIssuedToOName);
+            SpannableStringBuilder currentSslIssuedToUNameStringBuilder = new SpannableStringBuilder(uNameLabel + DomainsActivity.sslIssuedToUName);
+            SpannableStringBuilder currentSslIssuedByCNameStringBuilder = new SpannableStringBuilder(cNameLabel + DomainsActivity.sslIssuedByCName);
+            SpannableStringBuilder currentSslIssuedByONameStringBuilder = new SpannableStringBuilder(oNameLabel + DomainsActivity.sslIssuedByOName);
+            SpannableStringBuilder currentSslIssuedByUNameStringBuilder = new SpannableStringBuilder(uNameLabel + DomainsActivity.sslIssuedByUName);
+            SpannableStringBuilder currentSslStartDateStringBuilder = new SpannableStringBuilder(startDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG)
+                    .format(currentSslStartDate));
+            SpannableStringBuilder currentSslEndDateStringBuilder = new SpannableStringBuilder(endDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG)
+                    .format(currentSslEndDate));
 
             // Setup the string builders to display the general certificate information in blue.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
-            currentWebsiteCertificateIssuedToONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length(), currentWebsiteCertificateIssuedToONameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            currentWebsiteCertificateIssuedToUNameStringBuilder.setSpan(blueColorSpan, uNameLabel.length(), currentWebsiteCertificateIssuedToUNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            currentWebsiteCertificateIssuedByCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), currentWebsiteCertificateIssuedByCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            currentWebsiteCertificateIssuedByONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length(), currentWebsiteCertificateIssuedByONameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            currentWebsiteCertificateIssuedByUNameStringBuilder.setSpan(blueColorSpan, uNameLabel.length(), currentWebsiteCertificateIssuedByUNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            currentSslIssuedToONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length(), currentSslIssuedToONameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            currentSslIssuedToUNameStringBuilder.setSpan(blueColorSpan, uNameLabel.length(), currentSslIssuedToUNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            currentSslIssuedByCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), currentSslIssuedByCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            currentSslIssuedByONameStringBuilder.setSpan(blueColorSpan, oNameLabel.length(), currentSslIssuedByONameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            currentSslIssuedByUNameStringBuilder.setSpan(blueColorSpan, uNameLabel.length(), currentSslIssuedByUNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
             // Check the certificate Common Name against the domain name.
-            boolean currentWebsiteCertificateCommonNameMatchesDomainName = checkDomainNameAgainstCertificate(domainNameString, currentWebsiteCertificateIssuedToCNameString);
+            boolean currentSslCommonNameMatchesDomainName = checkDomainNameAgainstCertificate(domainNameString, DomainsActivity.sslIssuedToCName);
 
             // Format the issued to Common Name color.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
-            if (currentWebsiteCertificateCommonNameMatchesDomainName) {
-                currentWebsiteCertificateIssuedToCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), currentWebsiteCertificateIssuedToCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            if (currentSslCommonNameMatchesDomainName) {
+                currentSslIssuedToCNameStringBuilder.setSpan(blueColorSpan, cNameLabel.length(), currentSslIssuedToCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             } else {
-                currentWebsiteCertificateIssuedToCNameStringBuilder.setSpan(redColorSpan, cNameLabel.length(), currentWebsiteCertificateIssuedToCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                currentSslIssuedToCNameStringBuilder.setSpan(redColorSpan, cNameLabel.length(), currentSslIssuedToCNameStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             }
 
             //  Format the start date color.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
-            if (currentWebsiteCertificateStartDate.after(currentDate)) {  // The certificate start date is in the future.
-                currentWebsiteCertificateStartDateStringBuilder.setSpan(redColorSpan, startDateLabel.length(), currentWebsiteCertificateStartDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            if (currentSslStartDate.after(currentDate)) {  // The certificate start date is in the future.
+                currentSslStartDateStringBuilder.setSpan(redColorSpan, startDateLabel.length(), currentSslStartDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             } else {  // The certificate start date is in the past.
-                currentWebsiteCertificateStartDateStringBuilder.setSpan(blueColorSpan, startDateLabel.length(), currentWebsiteCertificateStartDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                currentSslStartDateStringBuilder.setSpan(blueColorSpan, startDateLabel.length(), currentSslStartDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             }
 
             // Format the end date color.  `SPAN_INCLUSIVE_INCLUSIVE` allows the span to grow in either direction.
-            if (currentWebsiteCertificateEndDate.before(currentDate)) {  // The certificate end date is in the past.
-                currentWebsiteCertificateEndDateStringBuilder.setSpan(redColorSpan, endDateLabel.length(), currentWebsiteCertificateEndDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            if (currentSslEndDate.before(currentDate)) {  // The certificate end date is in the past.
+                currentSslEndDateStringBuilder.setSpan(redColorSpan, endDateLabel.length(), currentSslEndDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             } else {  // The certificate end date is in the future.
-                currentWebsiteCertificateEndDateStringBuilder.setSpan(blueColorSpan, endDateLabel.length(), currentWebsiteCertificateEndDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                currentSslEndDateStringBuilder.setSpan(blueColorSpan, endDateLabel.length(), currentSslEndDateStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             }
 
             // Display the current website SSL certificate strings.
-            currentWebsiteCertificateIssuedToCNameTextView.setText(currentWebsiteCertificateIssuedToCNameStringBuilder);
-            currentWebsiteCertificateIssuedToONameTextView.setText(currentWebsiteCertificateIssuedToONameStringBuilder);
-            currentWebsiteCertificateIssuedToUNameTextView.setText(currentWebsiteCertificateIssuedToUNameStringBuilder);
-            currentWebsiteCertificateIssuedByCNameTextView.setText(currentWebsiteCertificateIssuedByCNameStringBuilder);
-            currentWebsiteCertificateIssuedByONameTextView.setText(currentWebsiteCertificateIssuedByONameStringBuilder);
-            currentWebsiteCertificateIssuedByUNameTextView.setText(currentWebsiteCertificateIssuedByUNameStringBuilder);
-            currentWebsiteCertificateStartDateTextView.setText(currentWebsiteCertificateStartDateStringBuilder);
-            currentWebsiteCertificateEndDateTextView.setText(currentWebsiteCertificateEndDateStringBuilder);
+            currentSslIssuedToCNameTextView.setText(currentSslIssuedToCNameStringBuilder);
+            currentSslIssuedToONameTextView.setText(currentSslIssuedToONameStringBuilder);
+            currentSslIssuedToUNameTextView.setText(currentSslIssuedToUNameStringBuilder);
+            currentSslIssuedByCNameTextView.setText(currentSslIssuedByCNameStringBuilder);
+            currentSslIssuedByONameTextView.setText(currentSslIssuedByONameStringBuilder);
+            currentSslIssuedByUNameTextView.setText(currentSslIssuedByUNameStringBuilder);
+            currentSslStartDateTextView.setText(currentSslStartDateStringBuilder);
+            currentSslEndDateTextView.setText(currentSslEndDateStringBuilder);
         }
 
         // Set the initial display status of the SSL certificates card views.
         if (pinnedSslCertificateSwitch.isChecked()) {  // An SSL certificate is pinned.
             // Set the visibility of the saved SSL certificate.
-            if (savedSslCertificateIssuedToCNameString == null) {
-                savedSslCertificateCardView.setVisibility(View.GONE);
+            if (savedSslIssuedToCNameString == null) {
+                savedSslCardView.setVisibility(View.GONE);
             } else {
-                savedSslCertificateCardView.setVisibility(View.VISIBLE);
+                savedSslCardView.setVisibility(View.VISIBLE);
             }
 
             // Set the visibility of the current website SSL certificate.
-            if (currentWebsiteSslCertificate == null) {  // There is no current SSL certificate.
+            if (DomainsActivity.sslIssuedToCName == null) {  // There is no current SSL certificate.
                 // Hide the SSL certificate.
-                currentWebsiteCertificateCardView.setVisibility(View.GONE);
+                currentSslCardView.setVisibility(View.GONE);
 
                 // Show the instruction.
                 noCurrentWebsiteCertificateTextView.setVisibility(View.VISIBLE);
             } else {  // There is a current SSL certificate.
                 // Show the SSL certificate.
-                currentWebsiteCertificateCardView.setVisibility(View.VISIBLE);
+                currentSslCardView.setVisibility(View.VISIBLE);
 
                 // Hide the instruction.
                 noCurrentWebsiteCertificateTextView.setVisibility(View.GONE);
             }
 
             // Set the status of the radio buttons and the card view backgrounds.
-            if (savedSslCertificateCardView.getVisibility() == View.VISIBLE) {  // The saved SSL certificate is displayed.
+            if (savedSslCardView.getVisibility() == View.VISIBLE) {  // The saved SSL certificate is displayed.
                 // Check the saved SSL certificate radio button.
                 savedSslCertificateRadioButton.setChecked(true);
 
@@ -1118,7 +1101,7 @@ public class DomainSettingsFragment extends Fragment {
                 } else {
                     currentWebsiteCertificateLinearLayout.setBackgroundResource(R.color.black_translucent_11);
                 }
-            } else if (currentWebsiteCertificateCardView.getVisibility() == View.VISIBLE) {  // The saved SSL certificate is hidden but the current website SSL certificate is visible.
+            } else if (currentSslCardView.getVisibility() == View.VISIBLE) {  // The saved SSL certificate is hidden but the current website SSL certificate is visible.
                 // Check the current website SSL certificate radio button.
                 currentWebsiteCertificateRadioButton.setChecked(true);
 
@@ -1131,8 +1114,8 @@ public class DomainSettingsFragment extends Fragment {
             }
         } else {  // An SSL certificate is not pinned.
             // Hide the SSl certificates and instructions.
-            savedSslCertificateCardView.setVisibility(View.GONE);
-            currentWebsiteCertificateCardView.setVisibility(View.GONE);
+            savedSslCardView.setVisibility(View.GONE);
+            currentSslCardView.setVisibility(View.GONE);
             noCurrentWebsiteCertificateTextView.setVisibility(View.GONE);
 
             // Uncheck the radio buttons.
@@ -1817,29 +1800,29 @@ public class DomainSettingsFragment extends Fragment {
                 }
 
                 // Update the visibility of the saved SSL certificate.
-                if (savedSslCertificateIssuedToCNameString == null) {
-                    savedSslCertificateCardView.setVisibility(View.GONE);
+                if (savedSslIssuedToCNameString == null) {
+                    savedSslCardView.setVisibility(View.GONE);
                 } else {
-                    savedSslCertificateCardView.setVisibility(View.VISIBLE);
+                    savedSslCardView.setVisibility(View.VISIBLE);
                 }
 
                 // Update the visibility of the current website SSL certificate.
-                if (currentWebsiteSslCertificate == null) {
+                if (DomainsActivity.sslIssuedToCName == null) {
                     // Hide the SSL certificate.
-                    currentWebsiteCertificateCardView.setVisibility(View.GONE);
+                    currentSslCardView.setVisibility(View.GONE);
 
                     // Show the instruction.
                     noCurrentWebsiteCertificateTextView.setVisibility(View.VISIBLE);
                 } else {
                     // Show the SSL certificate.
-                    currentWebsiteCertificateCardView.setVisibility(View.VISIBLE);
+                    currentSslCardView.setVisibility(View.VISIBLE);
 
                     // Hide the instruction.
                     noCurrentWebsiteCertificateTextView.setVisibility(View.GONE);
                 }
 
                 // Set the status of the radio buttons.
-                if (savedSslCertificateCardView.getVisibility() == View.VISIBLE) {  // The saved SSL certificate is displayed.
+                if (savedSslCardView.getVisibility() == View.VISIBLE) {  // The saved SSL certificate is displayed.
                     // Check the saved SSL certificate radio button.
                     savedSslCertificateRadioButton.setChecked(true);
 
@@ -1857,8 +1840,8 @@ public class DomainSettingsFragment extends Fragment {
                     }
 
                     // Scroll to the current website SSL certificate card.
-                    savedSslCertificateCardView.getParent().requestChildFocus(savedSslCertificateCardView, savedSslCertificateCardView);
-                } else if (currentWebsiteCertificateCardView.getVisibility() == View.VISIBLE) {  // The saved SSL certificate is hidden but the current website SSL certificate is visible.
+                    savedSslCardView.getParent().requestChildFocus(savedSslCardView, savedSslCardView);
+                } else if (currentSslCardView.getVisibility() == View.VISIBLE) {  // The saved SSL certificate is hidden but the current website SSL certificate is visible.
                     // Check the current website SSL certificate radio button.
                     currentWebsiteCertificateRadioButton.setChecked(true);
 
@@ -1876,7 +1859,7 @@ public class DomainSettingsFragment extends Fragment {
                     }
 
                     // Scroll to the current website SSL certificate card.
-                    currentWebsiteCertificateCardView.getParent().requestChildFocus(currentWebsiteCertificateCardView, currentWebsiteCertificateCardView);
+                    currentSslCardView.getParent().requestChildFocus(currentSslCardView, currentSslCardView);
                 } else {  // Neither SSL certificate is visible.
                     // Uncheck both radio buttons.
                     savedSslCertificateRadioButton.setChecked(false);
@@ -1894,8 +1877,8 @@ public class DomainSettingsFragment extends Fragment {
                 }
 
                 // Hide the SSl certificates and instructions.
-                savedSslCertificateCardView.setVisibility(View.GONE);
-                currentWebsiteCertificateCardView.setVisibility(View.GONE);
+                savedSslCardView.setVisibility(View.GONE);
+                currentSslCardView.setVisibility(View.GONE);
                 noCurrentWebsiteCertificateTextView.setVisibility(View.GONE);
 
                 // Uncheck the radio buttons.
@@ -1904,7 +1887,7 @@ public class DomainSettingsFragment extends Fragment {
             }
         });
 
-        savedSslCertificateCardView.setOnClickListener((View view) -> {
+        savedSslCardView.setOnClickListener((View view) -> {
             // Check the saved SSL certificate radio button.
             savedSslCertificateRadioButton.setChecked(true);
 
@@ -1940,7 +1923,7 @@ public class DomainSettingsFragment extends Fragment {
             }
         });
 
-        currentWebsiteCertificateCardView.setOnClickListener((View view) -> {
+        currentSslCardView.setOnClickListener((View view) -> {
             // Check the current website SSL certificate radio button.
             currentWebsiteCertificateRadioButton.setChecked(true);
 
@@ -2133,7 +2116,6 @@ public class DomainSettingsFragment extends Fragment {
 
         // Check various wildcard permutations if `domainName` and `certificateCommonName` are not empty.
         // `noinspection ConstantCondition` removes Android Studio's incorrect lint warning that `domainName` can never be `null`.
-        //noinspection ConstantConditions
         if ((domainName != null) && (certificateCommonName != null)) {
             // Check if the domains match.
             if (domainName.equals(certificateCommonName)) {

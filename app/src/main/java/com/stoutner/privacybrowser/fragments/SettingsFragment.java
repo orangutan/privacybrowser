@@ -1490,9 +1490,6 @@ public class SettingsFragment extends PreferenceFragment {
                     break;
 
                 case "night_mode":
-                    // Set the URL to be reloaded on restart to apply the new night mode setting.
-                    MainWebViewActivity.reloadOnRestart = true;
-
                     // Store the current night mode status.
                     boolean currentNightModeBoolean = sharedPreferences.getBoolean("night_mode", false);
                     boolean currentJavaScriptBoolean = sharedPreferences.getBoolean("javascript", false);
@@ -1551,9 +1548,6 @@ public class SettingsFragment extends PreferenceFragment {
                         } else {
                             displayWebpageImagesPreference.setIcon(R.drawable.images_enabled_light);
                         }
-
-                        // `mainWebView` does not need to be reloaded because unloaded images will load automatically.
-                        MainWebViewActivity.reloadOnRestart = false;
                     } else {
                         // Update the icon.
                         if (darkTheme) {
@@ -1561,9 +1555,6 @@ public class SettingsFragment extends PreferenceFragment {
                         } else {
                             displayWebpageImagesPreference.setIcon(R.drawable.images_disabled_light);
                         }
-
-                        // Set `mainWebView` to reload on restart to remove the current images.
-                        MainWebViewActivity.reloadOnRestart = true;
                     }
                     break;
             }
