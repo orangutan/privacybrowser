@@ -64,6 +64,7 @@
                         android.support.design:layout_scrollFlags="scroll|enterAlways|snap" />
 
                     <LinearLayout
+                        android:id="@+id/tabs_linearlayout"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:orientation="horizontal"

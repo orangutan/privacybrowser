@@ -153,7 +153,6 @@ import java.util.Map;
 import java.util.Set;
 
 // TODO.  New tabs are white in dark mode.
-// TODO.  Hide the tabs in full screen mode.
 // TODO.  Find on page.
 
 // AppCompatActivity from android.support.v7.app.AppCompatActivity must be used to have access to the SupportActionBar until the minimum API is >= 21.
@@ -223,7 +222,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `inFullScreenBrowsingMode` is used in `onCreate()`, `onConfigurationChanged()`, and `applyAppSettings()`.
     private boolean inFullScreenBrowsingMode;
 
-    // Hide app bar is used in `applyAppSettings()` and `initializeWebView()`.
+    // The hide app bar tracker is used in `applyAppSettings()` and `initializeWebView()`.
     private boolean hideAppBar;
 
     // `reapplyDomainSettingsOnRestart` is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, and `onAddDomain()`, .
@@ -3279,11 +3278,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("full_screen_browsing_mode", false);
         hideAppBar = sharedPreferences.getBoolean("hide_app_bar", true);
 
-        // Get handles for the views that need to be modified.  `getSupportActionBar()` must be used until the minimum API >= 21.
+        // Get handles for the views that need to be modified.
         FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
         ActionBar actionBar = getSupportActionBar();
+        LinearLayout tabsLinearLayout = findViewById(R.id.tabs_linearlayout);
 
-        // Remove the incorrect lint warnings below that the action bar might be null.
+        // Remove the incorrect lint warning below that the action bar might be null.
         assert actionBar != null;
 
         // Apply the proxy through Orbot settings.
@@ -3318,8 +3318,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
             // Update the visibility of the app bar, which might have changed in the settings.
             if (hideAppBar) {
+                // Hide the tab linear layout.
+                tabsLinearLayout.setVisibility(View.GONE);
+
+                // Hide the action bar.
                 actionBar.hide();
             } else {
+                // Show the tab linear layout.
+                tabsLinearLayout.setVisibility(View.VISIBLE);
+
+                // Show the action bar.
                 actionBar.show();
             }
 
@@ -3343,7 +3351,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Reset the full screen tracker, which could be true if Privacy Browser was in full screen mode before entering settings and full screen browsing was disabled.
             inFullScreenBrowsingMode = false;
 
-            // Show the app bar.
+            // Show the tab linear layout.
+            tabsLinearLayout.setVisibility(View.VISIBLE);
+
+            // Show the action bar.
             actionBar.show();
 
             // Show the banner ad in the free flavor.
@@ -4249,11 +4260,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
         RelativeLayout mainContentRelativeLayout = findViewById(R.id.main_content_relativelayout);
         ActionBar actionBar = getSupportActionBar();
+        LinearLayout tabsLinearLayout = findViewById(R.id.tabs_linearlayout);
         EditText urlEditText = findViewById(R.id.url_edittext);
         TabLayout tabLayout = findViewById(R.id.tablayout);
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
 
-        // Remove the incorrect lint warnings below that the some of the views might be null.
+        // Remove the incorrect lint warning below that the action bar might be null.
         assert actionBar != null;
 
         // Get a handle for the activity
@@ -4313,6 +4325,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     if (inFullScreenBrowsingMode) {  // Switch to full screen mode.
                         // Hide the app bar if specified.
                         if (hideAppBar) {
+                            // Hide the tab linear layout.
+                            tabsLinearLayout.setVisibility(View.GONE);
+
+                            // Hide the action bar.
                             actionBar.hide();
                         }
 
@@ -4333,7 +4349,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
                                 View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
                     } else {  // Switch to normal viewing mode.
-                        // Show the app bar.
+                        // Show the tab linear layout.
+                        tabsLinearLayout.setVisibility(View.VISIBLE);
+
+                        // Show the action bar.
                         actionBar.show();
 
                         // Show the banner ad in the free flavor.
@@ -4628,6 +4647,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
                     // Hide the app bar if specified.
                     if (hideAppBar) {
+                        // Hide the tab linear layout.
+                        tabsLinearLayout.setVisibility(View.GONE);
+
+                        // Hide the action bar.
                         actionBar.hide();
                     }
 
