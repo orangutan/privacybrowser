@@ -153,7 +153,6 @@ import java.util.Map;
 import java.util.Set;
 
 // TODO.  New tabs are white in dark mode.
-// TODO.  Find on page.
 
 // AppCompatActivity from android.support.v7.app.AppCompatActivity must be used to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
@@ -479,6 +478,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             @Override
             public void onPageSelected(int position) {
+                // Close the find on page bar if it is open.
+                closeFindOnPage(null);
+
                 // Set the current WebView.
                 setCurrentWebView(position);
 
@@ -1925,6 +1927,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 Toolbar toolbar = findViewById(R.id.toolbar);
                 LinearLayout findOnPageLinearLayout = findViewById(R.id.find_on_page_linearlayout);
                 EditText findOnPageEditText = findViewById(R.id.find_on_page_edittext);
+
+                // Set the minimum height of the find on page linear layout to match the toolbar.
+                findOnPageLinearLayout.setMinimumHeight(toolbar.getHeight());
 
                 // Hide the toolbar.
                 toolbar.setVisibility(View.GONE);
@@ -4325,6 +4330,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     if (inFullScreenBrowsingMode) {  // Switch to full screen mode.
                         // Hide the app bar if specified.
                         if (hideAppBar) {
+                            // Close the find on page bar if it is visible.
+                            closeFindOnPage(null);
+
                             // Hide the tab linear layout.
                             tabsLinearLayout.setVisibility(View.GONE);
 

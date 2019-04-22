@@ -63,40 +63,14 @@
                         android:layout_width="match_parent"
                         android.support.design:layout_scrollFlags="scroll|enterAlways|snap" />
 
-                    <LinearLayout
-                        android:id="@+id/tabs_linearlayout"
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:orientation="horizontal"
-                        android.support.design:layout_scrollFlags="scroll|enterAlways|snap" >
-
-                        <com.google.android.material.tabs.TabLayout
-                            android:id="@+id/tablayout"
-                            android:layout_height="wrap_content"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android.support.design:tabIndicatorGravity="top"
-                            android.support.design:tabMode="scrollable" />
-
-                        <ImageView
-                            android:layout_height="wrap_content"
-                            android:layout_width="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:paddingStart="10dp"
-                            android:paddingEnd="10dp"
-                            android:src="@drawable/add_light"
-                            android:tint="?attr/addTabIconTintColor"
-                            android:onClick="addTab"
-                            android:contentDescription="@string/add_tab" />
-                    </LinearLayout>
-
                     <!-- The find on page linear layout.  It is initially `visibility="gone"`. -->
                     <LinearLayout
                         android:id="@+id/find_on_page_linearlayout"
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
                         android:orientation="horizontal"
-                        android:visibility="gone" >
+                        android:visibility="gone"
+                        android.support.design:layout_scrollFlags="scroll|enterAlways|snap" >
 
                         <!-- `android:imeOptions="actionDone"` sets the keyboard to have a `check mark` key instead of a `new line` key. -->
                         <EditText
@@ -155,6 +129,33 @@
                             android:tint="?attr/findOnPageIconTintColor"
                             android:contentDescription="@string/close"
                             android:onClick="closeFindOnPage" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/tabs_linearlayout"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:orientation="horizontal"
+                        android.support.design:layout_scrollFlags="scroll|enterAlways|snap" >
+
+                        <com.google.android.material.tabs.TabLayout
+                            android:id="@+id/tablayout"
+                            android:layout_height="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android.support.design:tabIndicatorGravity="top"
+                            android.support.design:tabMode="scrollable" />
+
+                        <ImageView
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:paddingStart="10dp"
+                            android:paddingEnd="10dp"
+                            android:src="@drawable/add_light"
+                            android:tint="?attr/addTabIconTintColor"
+                            android:onClick="addTab"
+                            android:contentDescription="@string/add_tab" />
                     </LinearLayout>
                 </com.google.android.material.appbar.AppBarLayout>
 
