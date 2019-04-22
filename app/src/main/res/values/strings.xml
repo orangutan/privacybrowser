@@ -53,6 +53,7 @@
     <string name="open_with">Open with</string>
     <string name="new_tab">New tab</string>
     <string name="add_tab">Add tab</string>
+    <string name="loading">Loading…</string>
 
     <!-- Save As. -->
     <string name="save_as">Save As</string>

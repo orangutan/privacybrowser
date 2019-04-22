@@ -71,7 +71,6 @@ import android.webkit.CookieManager;
 import android.webkit.HttpAuthHandler;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
-import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
@@ -124,7 +123,6 @@ import com.stoutner.privacybrowser.dialogs.DownloadLocationPermissionDialog;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkFolderDialog;
 import com.stoutner.privacybrowser.dialogs.HttpAuthenticationDialog;
-import com.stoutner.privacybrowser.dialogs.PinnedMismatchDialog;
 import com.stoutner.privacybrowser.dialogs.SslCertificateErrorDialog;
 import com.stoutner.privacybrowser.dialogs.UrlHistoryDialog;
 import com.stoutner.privacybrowser.dialogs.ViewSslCertificateDialog;
@@ -154,17 +152,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-// TODO.  Store up reloads for tabs that are not visible.
 // TODO.  New tabs are white in dark mode.
 // TODO.  Hide the tabs in full screen mode.
 // TODO.  Find on page.
-// TODO.  Use TabLayout.setScrollPosition to scroll to new tabs.
 
 // AppCompatActivity from android.support.v7.app.AppCompatActivity must be used to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
         DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, DownloadLocationPermissionDialog.DownloadLocationPermissionDialogListener, EditBookmarkDialog.EditBookmarkListener,
-        EditBookmarkFolderDialog.EditBookmarkFolderListener, NavigationView.OnNavigationItemSelectedListener, WebViewTabFragment.NewTabListener, PinnedMismatchDialog.PinnedMismatchListener,
-        UrlHistoryDialog.UrlHistoryListener {
+        EditBookmarkFolderDialog.EditBookmarkFolderListener, NavigationView.OnNavigationItemSelectedListener, WebViewTabFragment.NewTabListener {
 
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxyThroughOrbot()`.
     public static String orbotStatus;
@@ -488,16 +483,25 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Set the current WebView.
                 setCurrentWebView(position);
 
-                // Select the corresponding tab if it does not match the currently selected page.  This will happen if the page was scrolled via swiping in the view pager.
+                // Select the corresponding tab if it does not match the currently selected page.  This will happen if the page was scrolled via swiping in the view pager or by creating a new tab.
                 if (tabLayout.getSelectedTabPosition() != position) {
-                    // Get a handle for the corresponding tab.
-                    TabLayout.Tab correspondingTab = tabLayout.getTabAt(position);
+                    // Create a handler to select the tab.
+                    Handler selectTabHandler = new Handler();
 
-                    // Assert that the corresponding tab is not null.
-                    assert correspondingTab != null;
+                    // Create a runnable select the new tab.
+                    Runnable selectTabRunnable = () -> {
+                        // Get a handle for the tab.
+                        TabLayout.Tab tab = tabLayout.getTabAt(position);
 
-                    // Select the corresponding tab.
-                    correspondingTab.select();
+                        // Assert that the tab is not null.
+                        assert tab != null;
+
+                        // Select the tab.
+                        tab.select();
+                    };
+
+                    // Select the tab layout after 100 milliseconds, which leaves enough time for a new tab to be created.
+                    selectTabHandler.postDelayed(selectTabRunnable, 100);
                 }
             }
 
@@ -2272,11 +2276,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 break;
 
             case R.id.history:
-                // Get the `WebBackForwardList`.
-                WebBackForwardList webBackForwardList = currentWebView.copyBackForwardList();
+                // Instantiate the URL history dialog.
+                DialogFragment urlHistoryDialogFragment = UrlHistoryDialog.loadBackForwardList(currentWebView.getWebViewFragmentId());
 
-                // Show the URL history dialog and name this instance `R.string.history`.
-                DialogFragment urlHistoryDialogFragment = UrlHistoryDialog.loadBackForwardList(this, webBackForwardList);
+                // Show the URL history dialog.
                 urlHistoryDialogFragment.show(getSupportFragmentManager(), getString(R.string.history));
                 break;
 
@@ -3104,47 +3107,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
     }
 
-    @Override
-    public void onPinnedMismatchBack() {  // TODO.  Move this logic to the dialog.
-        if (currentWebView.canGoBack()) {  // There is a back page in the history.
-            // Reset the current domain name so that navigation works if third-party requests are blocked.
-            currentWebView.resetCurrentDomainName();
-
-            // Set navigating history so that the domain settings are applied when the new URL is loaded.
-            currentWebView.setNavigatingHistory(true);
-
-            // Go back.
-            currentWebView.goBack();
-        } else {  // There are no pages to go back to.
-            // Load a blank page
-            loadUrl("");
-        }
-    }
-
-    @Override
-    public void onPinnedMismatchProceed() {  // TODO.  Move this logic to the dialog.
-        // Do not check the pinned information for this domain again until the domain changes.
-        currentWebView.setIgnorePinnedDomainInformation(true);
-    }
-
-    @Override
-    public void onUrlHistoryEntrySelected(int moveBackOrForwardSteps) {  // TODO.  Move this logic to the dialog.
-        // Reset the current domain name so that navigation works if third-party requests are blocked.
-        currentWebView.resetCurrentDomainName();
-
-        // Set navigating history so that the domain settings are applied when the new URL is loaded.
-        currentWebView.setNavigatingHistory(true);
-
-        // Load the history entry.
-        currentWebView.goBackOrForward(moveBackOrForwardSteps);
-    }
-
-    @Override
-    public void onClearHistory() {  // TODO.  Move this logic to the dialog.
-        // Clear the history.
-        currentWebView.clearHistory();
-    }
-
     // Override `onBackPressed` to handle the navigation drawer and and the WebView.
     @Override
     public void onBackPressed() {
@@ -3174,9 +3136,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Go back.
             currentWebView.goBack();
-        } else {  // There isn't anything to do in Privacy Browser.
-            // Pass `onBackPressed()` to the system.
-            super.onBackPressed();
+        } else {  // There is nothing else to do.
+            // Load a blank website.
+            loadUrl("");
         }
     }
 
@@ -3401,7 +3363,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // `reloadWebsite` is used if returning from the Domains activity.  Otherwise JavaScript might not function correctly if it is newly enabled.
     @SuppressLint("SetJavaScriptEnabled")
-    private boolean applyDomainSettings(NestedScrollWebView nestedScrollWebView, String url, boolean resetFavoriteIcon, boolean reloadWebsite) {
+    private boolean applyDomainSettings(NestedScrollWebView nestedScrollWebView, String url, boolean resetTab, boolean reloadWebsite) {
         // Store a copy of the current user agent to track changes for the return boolean.
         String initialUserAgent = nestedScrollWebView.getSettings().getUserAgentString();
 
@@ -3429,30 +3391,37 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             nestedScrollWebView.clearPinnedIpAddresses();
 
             // Reset the favorite icon if specified.
-            if (resetFavoriteIcon) {
+            if (resetTab) {
                 // Initialize the favorite icon.
                 nestedScrollWebView.initializeFavoriteIcon();
+
+                // Get the current page position.
+                int currentPagePosition = webViewPagerAdapter.getPositionForId(nestedScrollWebView.getWebViewFragmentId());
 
                 // Get a handle for the tab layout.
                 TabLayout tabLayout = findViewById(R.id.tablayout);
 
-                // Get the current tab.
-                TabLayout.Tab currentTab = tabLayout.getTabAt(tabLayout.getSelectedTabPosition());  // TODO.  We need to get the tab for this WebView, which might not be the current tab.
+                // Get the corresponding tab.
+                TabLayout.Tab tab = tabLayout.getTabAt(currentPagePosition);
 
-                // Remove the warning below that the current tab might be null.
-                assert currentTab != null;
+                // Remove the warning below that the tab might be null.
+                assert tab != null;
 
-                // Get the current tab custom view.
-                View currentTabCustomView = currentTab.getCustomView();
+                // Get the tab custom view.
+                View tabCustomView = tab.getCustomView();
 
-                // Remove the warning below that the current tab custom view might be null.
-                assert currentTabCustomView != null;
+                // Remove the warning below that the tab custom view might be null.
+                assert tabCustomView != null;
 
-                // Get the current tab favorite icon image view.
-                ImageView currentTabFavoriteIconImageView = currentTabCustomView.findViewById(R.id.favorite_icon_imageview);
+                // Get the tab views.
+                ImageView tabFavoriteIconImageView = tabCustomView.findViewById(R.id.favorite_icon_imageview);
+                TextView tabTitleTextView = tabCustomView.findViewById(R.id.title_textview);
 
                 // Set the default favorite icon as the favorite icon for this tab.
-                currentTabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(nestedScrollWebView.getFavoriteOrDefaultIcon(), 64, 64, true));
+                tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(nestedScrollWebView.getFavoriteOrDefaultIcon(), 64, 64, true));
+
+                // Set the loading title text.
+                tabTitleTextView.setText(R.string.loading);
             }
 
             // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
@@ -4186,7 +4155,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         assert newTab != null;
 
         // Set a custom view on the new tab.
-        newTab.setCustomView(R.layout.custom_tab_view);
+        newTab.setCustomView(R.layout.tab_custom_view);
 
         // Add the new WebView page.
         webViewPagerAdapter.addPage(newTabNumber, webViewPager);
@@ -4504,7 +4473,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             }
                         };
 
-                        // Displaying of `mainWebView` after 500 milliseconds.
+                        // Display the WebView after 500 milliseconds.
                         displayWebViewHandler.postDelayed(displayWebViewRunnable, 500);
                     });
                 }

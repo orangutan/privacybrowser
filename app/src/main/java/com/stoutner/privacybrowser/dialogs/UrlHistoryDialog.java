@@ -22,16 +22,13 @@ package com.stoutner.privacybrowser.dialogs;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -44,147 +41,30 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
 
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.adapters.HistoryArrayAdapter;
 import com.stoutner.privacybrowser.definitions.History;
+import com.stoutner.privacybrowser.fragments.WebViewTabFragment;
+import com.stoutner.privacybrowser.views.NestedScrollWebView;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class UrlHistoryDialog extends DialogFragment{
-    // Declare the class variables.
-    private final ArrayList<History> historyArrayList = new ArrayList<>();
-    private int currentPageId;
-
-    // Create a URL history listener.
-    private UrlHistoryListener urlHistoryListener;
-
-
-    // The public interface is used to send information back to the parent activity.
-    public interface UrlHistoryListener {
-        // Send back the number of steps to move forward or back.
-        void onUrlHistoryEntrySelected(int moveBackOrForwardSteps);
-
-        // Clear the history.
-        void onClearHistory();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        // Check to make sure tha the parent activity implements the listener.
-        try {
-            urlHistoryListener = (UrlHistoryListener) context;
-        } catch (ClassCastException exception) {
-            throw new ClassCastException(context.toString() + " must implement UrlHistoryListener.");
-        }
-    }
-
-
-    public static UrlHistoryDialog loadBackForwardList(Context context, WebBackForwardList webBackForwardList) {
+    public static UrlHistoryDialog loadBackForwardList(long webViewFragmentId) {
         // Create an arguments bundle.
         Bundle argumentsBundle = new Bundle();
 
-        // Store the current page index.
-        int currentPageIndex = webBackForwardList.getCurrentIndex();
+        // Store the WebView fragment ID in the bundle.
+        argumentsBundle.putLong("webview_fragment_id", webViewFragmentId);
 
-        // Setup the URL array list and the icon array list.
-        ArrayList<String> urlArrayList = new ArrayList<>();
-        ArrayList<String> iconBase64StringArrayList = new ArrayList<>();
+        // Create a new instance of the URL history dialog.
+        UrlHistoryDialog urlHistoryDialog = new UrlHistoryDialog();
 
-        // Get the default favorite icon drawable.  `ContextCompat` must be used until the minimum API >= 21.
-        Drawable defaultFavoriteIconDrawable = ContextCompat.getDrawable(context, R.drawable.world);
+        // Add the arguments bundle to this instance.
+        urlHistoryDialog.setArguments(argumentsBundle);
 
-        // Convert the default favorite icon drawable to a `BitmapDrawable`.
-        BitmapDrawable defaultFavoriteIconBitmapDrawable = (BitmapDrawable) defaultFavoriteIconDrawable;
-
-        // Remove the incorrect lint error that `getBitmap()` might be null.
-        assert defaultFavoriteIconBitmapDrawable != null;
-
-        // Extract a `Bitmap` from the default favorite icon `BitmapDrawable`.
-        Bitmap defaultFavoriteIcon = defaultFavoriteIconBitmapDrawable.getBitmap();
-
-        // Populate the URL array list and the icon array list from `webBackForwardList`.
-        for (int i=0; i < webBackForwardList.getSize(); i++) {
-            // Store the URL.
-            urlArrayList.add(webBackForwardList.getItemAtIndex(i).getUrl());
-
-            // Create a variable to store the icon bitmap.
-            Bitmap iconBitmap;
-
-            // Store the icon bitmap.
-            if (webBackForwardList.getItemAtIndex(i).getFavicon() == null) {
-                // If `webBackForwardList` does not have a favorite icon, use Privacy Browser's default world icon.
-                iconBitmap = defaultFavoriteIcon;
-            } else {  // Get the icon from `webBackForwardList`.
-                iconBitmap = webBackForwardList.getItemAtIndex(i).getFavicon();
-            }
-
-            // Create a `ByteArrayOutputStream`.
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-            // Remove the incorrect lint error that `compress()` might be null;
-            assert iconBitmap != null;
-
-            // Convert the favorite icon `Bitmap` to a `ByteArrayOutputStream`.  `100` is the compression quality, which is ignored by `PNG`.
-            iconBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-
-            // Convert the favorite icon `ByteArrayOutputStream` to a `byte[]`.
-            byte[] byteArray = byteArrayOutputStream.toByteArray();
-
-            // Encode the favorite icon `byte[]` as a Base64 `String`.
-            String iconBase64String = Base64.encodeToString(byteArray, Base64.DEFAULT);
-
-            // Store the favorite icon Base64 `String` in `iconBase64StringArrayList`.
-            iconBase64StringArrayList.add(iconBase64String);
-        }
-
-        // Store the variables in the `Bundle`.
-        argumentsBundle.putInt("Current_Page", currentPageIndex);
-        argumentsBundle.putStringArrayList("URL_History", urlArrayList);
-        argumentsBundle.putStringArrayList("Favorite_Icons", iconBase64StringArrayList);
-
-        // Add the arguments bundle to this instance of `UrlHistoryDialog`.
-        UrlHistoryDialog thisUrlHistoryDialog = new UrlHistoryDialog();
-        thisUrlHistoryDialog.setArguments(argumentsBundle);
-        return thisUrlHistoryDialog;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // Remove the incorrect lint error that `getArguments()` might be null.
-        assert getArguments() != null;
-
-        // Get the `ArrayLists` from the `Arguments`.
-        ArrayList<String> urlStringArrayList = getArguments().getStringArrayList("URL_History");
-        ArrayList<String> favoriteIconBase64StringArrayList = getArguments().getStringArrayList("Favorite_Icons");
-
-        // Remove the lint warning below that the `ArrayLists` might be `null`.
-        assert urlStringArrayList != null;
-        assert favoriteIconBase64StringArrayList != null;
-
-        // Populate `historyArrayList`.  We go down from `urlStringArrayList.size()` so that the newest entries are at the top.  `-1` is needed because `historyArrayList` is zero-based.
-        for (int i=urlStringArrayList.size() -1; i >= 0; i--) {
-            // Decode the favorite icon Base64 `String` to a `byte[]`.
-            byte[] favoriteIconByteArray = Base64.decode(favoriteIconBase64StringArrayList.get(i), Base64.DEFAULT);
-
-            // Convert the favorite icon `byte[]` to a `Bitmap`.  `0` is the starting offset.
-            Bitmap favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.length);
-
-            // Store the favorite icon and the URL in `historyEntry`.
-            History historyEntry = new History(favoriteIconBitmap, urlStringArrayList.get(i));
-
-            // Add this history entry to `historyArrayList`.
-            historyArrayList.add(historyEntry);
-        }
-
-        // Get the original current page ID.
-        int originalCurrentPageId = getArguments().getInt("Current_Page");
-
-        // Subtract `originalCurrentPageId` from the array size because we reversed the order of the array so that the newest entries are at the top.  `-1` is needed because the array is zero-based.
-        currentPageId = urlStringArrayList.size() - 1 - originalCurrentPageId;
+        // Return the new URL history dialog.
+        return urlHistoryDialog;
     }
 
     @Override
@@ -197,6 +77,77 @@ public class UrlHistoryDialog extends DialogFragment{
 
         // Get the activity's layout inflater.
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+
+        // Get the arguments.
+        Bundle arguments = getArguments();
+
+        // Remove the incorrect lint error that arguments might be null.
+        assert arguments != null;
+
+        // Get the WebView fragment ID from the arguments.
+        long webViewFragmentId = arguments.getLong("webview_fragment_id");
+
+        // Get the current position of this WebView fragment.
+        int webViewPosition = MainWebViewActivity.webViewPagerAdapter.getPositionForId(webViewFragmentId);
+
+        // Get the WebView tab fragment.
+        WebViewTabFragment webViewTabFragment = MainWebViewActivity.webViewPagerAdapter.getPageFragment(webViewPosition);
+
+        // Get the fragment view.
+        View fragmentView = webViewTabFragment.getView();
+
+        // Remove the incorrect lint warning below that the fragment view might be null.
+        assert fragmentView != null;
+
+        // Get a handle for the current WebView.
+        NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+
+        // Get the web back forward list from the WebView.
+        WebBackForwardList webBackForwardList = nestedScrollWebView.copyBackForwardList();
+
+        // Store the current page index.
+        int currentPageIndex = webBackForwardList.getCurrentIndex();
+
+        // Remove the lint warning below that `getContext()` might be null.
+        assert getContext() != null;
+
+        // Get the default favorite icon drawable.  `ContextCompat` must be used until the minimum API >= 21.
+        Drawable defaultFavoriteIconDrawable = ContextCompat.getDrawable(getContext(), R.drawable.world);
+
+        // Convert the default favorite icon drawable to a `BitmapDrawable`.
+        BitmapDrawable defaultFavoriteIconBitmapDrawable = (BitmapDrawable) defaultFavoriteIconDrawable;
+
+        // Remove the incorrect lint error that `getBitmap()` might be null.
+        assert defaultFavoriteIconBitmapDrawable != null;
+
+        // Extract a bitmap from the default favorite icon bitmap drawable.
+        Bitmap defaultFavoriteIcon = defaultFavoriteIconBitmapDrawable.getBitmap();
+
+        // Create a history array list.
+        ArrayList<History> historyArrayList = new ArrayList<>();
+
+        // Populate the history array list, descending from `urlStringArrayList.size()` so that the newest entries are at the top.  `-1` is needed because the history array list is zero-based.
+        for (int i=webBackForwardList.getSize() -1; i >= 0; i--) {
+            // Create a variable to store the favorite icon bitmap.
+            Bitmap favoriteIconBitmap;
+
+            // Determine the favorite icon bitmap
+            if (webBackForwardList.getItemAtIndex(i).getFavicon() == null) {
+                // If the web back forward list does not have a favorite icon, use Privacy Browser's default world icon.
+                favoriteIconBitmap = defaultFavoriteIcon;
+            } else {  // Use the icon from the web back forward list.
+                favoriteIconBitmap = webBackForwardList.getItemAtIndex(i).getFavicon();
+            }
+
+            // Store the favorite icon and the URL in history entry.
+            History historyEntry = new History(favoriteIconBitmap, webBackForwardList.getItemAtIndex(i).getUrl());
+
+            // Add this history entry to the history array list.
+            historyArrayList.add(historyEntry);
+        }
+
+        // Subtract the original current page ID from the array size because the order of the array is reversed so that the newest entries are at the top.  `-1` is needed because the array is zero-based.
+        int currentPageId = webBackForwardList.getSize() - 1 - currentPageIndex;
 
         // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
@@ -221,10 +172,10 @@ public class UrlHistoryDialog extends DialogFragment{
         // Set the view.  The parent view is `null` because it will be assigned by `AlertDialog`.
         dialogBuilder.setView(layoutInflater.inflate(R.layout.url_history_dialog, null));
 
-        // Set an `onClick()` listener on the negative button.
+        // Setup the clear history button.
         dialogBuilder.setNegativeButton(R.string.clear_history, (DialogInterface dialog, int which) -> {
             // Clear the history.
-            urlHistoryListener.onClearHistory();
+            nestedScrollWebView.clearHistory();
         });
 
         // Set an `onClick()` listener on the positive button.
@@ -247,7 +198,7 @@ public class UrlHistoryDialog extends DialogFragment{
         //The alert dialog must be shown before the contents can be modified.
         alertDialog.show();
 
-        // Instantiate a `HistoryArrayAdapter`.
+        // Instantiate a history array adapter.
         HistoryArrayAdapter historyArrayAdapter = new HistoryArrayAdapter(getContext(), historyArrayList, currentPageId);
 
         // Get a handle for the list view.
@@ -263,15 +214,21 @@ public class UrlHistoryDialog extends DialogFragment{
 
             // Only consume the click if it is not on the `currentPageId`.
             if (itemId != currentPageId) {
-                // Go forward or back to `itemId`.
-                urlHistoryListener.onUrlHistoryEntrySelected(currentPageId - itemId);
+                // Reset the current domain name so that navigation works if third-party requests are blocked.
+                nestedScrollWebView.resetCurrentDomainName();
 
-                // Dismiss the `Dialog`.
+                // Set navigating history so that the domain settings are applied when the new URL is loaded.
+                nestedScrollWebView.setNavigatingHistory(true);
+
+                // Load the history entry.
+                nestedScrollWebView.goBackOrForward(currentPageId - itemId);
+
+                // Dismiss the alert dialog.
                 alertDialog.dismiss();
             }
         });
 
-        // `onCreateDialog` requires the return of an `AlertDialog`.
+        // Return the alert dialog.
         return alertDialog;
     }
 }

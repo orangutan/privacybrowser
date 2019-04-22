@@ -20,7 +20,7 @@
 
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android.support.design="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_framelayout"
     android:layout_height="match_parent"
@@ -61,37 +61,33 @@
                         android:id="@+id/toolbar"
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
-                        app:layout_scrollFlags="scroll|enterAlways|snap" />
+                        android.support.design:layout_scrollFlags="scroll|enterAlways|snap" />
 
-                    <HorizontalScrollView
+                    <LinearLayout
                         android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        app:layout_scrollFlags="scroll|enterAlways|snap" >
+                        android:layout_width="wrap_content"
+                        android:orientation="horizontal"
+                        android.support.design:layout_scrollFlags="scroll|enterAlways|snap" >
 
-                        <LinearLayout
+                        <com.google.android.material.tabs.TabLayout
+                            android:id="@+id/tablayout"
+                            android:layout_height="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android.support.design:tabIndicatorGravity="top"
+                            android.support.design:tabMode="scrollable" />
+
+                        <ImageView
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
-                            android:orientation="horizontal" >
-
-                            <com.google.android.material.tabs.TabLayout
-                                android:id="@+id/tablayout"
-                                android:layout_height="wrap_content"
-                                android:layout_width="wrap_content"
-                                app:tabIndicatorGravity="top"
-                                app:tabMode="scrollable" />
-
-                            <!-- `style="?android:borderlessButtonStyle"` shows a visual indication when the image view is tapped. -->
-                            <ImageView
-                                android:layout_height="wrap_content"
-                                android:layout_width="wrap_content"
-                                android:layout_gravity="center_vertical"
-                                android:src="@drawable/add_light"
-                                android:tint="?attr/addTabIconTintColor"
-                                android:onClick="addTab"
-                                android:contentDescription="@string/add_tab"
-                                style="?android:attr/borderlessButtonStyle" />
-                        </LinearLayout>
-                    </HorizontalScrollView>
+                            android:layout_gravity="center_vertical"
+                            android:paddingStart="10dp"
+                            android:paddingEnd="10dp"
+                            android:src="@drawable/add_light"
+                            android:tint="?attr/addTabIconTintColor"
+                            android:onClick="addTab"
+                            android:contentDescription="@string/add_tab" />
+                    </LinearLayout>
 
                     <!-- The find on page linear layout.  It is initially `visibility="gone"`. -->
                     <LinearLayout
@@ -166,7 +162,7 @@
                     android:id="@+id/swiperefreshlayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+                    android.support.design:layout_behavior="@string/appbar_scrolling_view_behavior" >
 
                         <androidx.viewpager.widget.ViewPager
                             android:id="@+id/webviewpager"
@@ -182,9 +178,9 @@
             android:layout_height="match_parent"
             android:layout_width="wrap_content"
             android:layout_gravity="start"
-            app:headerLayout="@layout/navigation_header"
-            app:menu="@menu/webview_navigation_menu"
-            app:itemIconTint="?attr/navigationIconTintColor" />
+            android.support.design:headerLayout="@layout/navigation_header"
+            android.support.design:menu="@menu/webview_navigation_menu"
+            android.support.design:itemIconTint="?attr/navigationIconTintColor" />
 
         <!-- Include the bookmarks drawer, which varies based on screen width. -->
         <include layout="@layout/bookmarks_drawer" />

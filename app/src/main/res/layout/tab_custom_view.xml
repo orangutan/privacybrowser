@@ -20,12 +20,11 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="wrap_content"
     android:orientation="horizontal"
-    tools:ignore="UseCompoundDrawables" >
+    tools:ignore="UseCompoundDrawables">
 
     <ImageView
         android:id="@+id/favorite_icon_imageview"
@@ -39,12 +38,9 @@
     <TextView
         android:id="@+id/title_textview"
         android:layout_height="match_parent"
-        android:layout_width="wrap_content"
+        android:layout_width="120dp"
         android:gravity="center_vertical"
-        android:textSize="16sp"
         android:text="@string/new_tab"
-        app:autoSizeTextType="uniform"
-        android:maxWidth="150dp"
         android:maxLines="2"
         android:ellipsize="end" />
 </LinearLayout>

@@ -76,8 +76,8 @@
         <item name="sortIcon">@drawable/sort_light</item>
         <item name="actionBarPopupTheme">@style/PrivacyBrowserPopupsLight</item>
         <item name="appBarTextTheme">@style/PrivacyBrowserAppBarWhiteText</item>
-        <item name="tabLayoutTheme">@style/PrivacyBrowserTabLayoutLight</item>
         <item name="popupsTheme">@style/PrivacyBrowserPopupsLight</item>
+        <item name="tabLayoutTheme">@style/PrivacyBrowserTabLayoutLight</item>
     </style>
 
     <!-- `colorPrimaryDark` is the color of the status bar. -->
@@ -174,10 +174,10 @@
         <item name="moveToFolderIcon">@drawable/move_to_folder_dark</item>
         <item name="saveIcon">@drawable/save_dark</item>
         <item name="sortIcon">@drawable/sort_dark</item>
-        <item name="appBarTextTheme">@style/PrivacyBrowserAppBarDark</item>
-        <item name="tabLayoutTheme">@style/PrivacyBrowserTabLayoutDark</item>
-        <item name="popupsTheme">@style/PrivacyBrowserPopupsDark</item>
         <item name="android:spinnerDropDownItemStyle">@style/PrivacyBrowserSpinnerDropDownItemStyleDark</item>
+        <item name="appBarTextTheme">@style/PrivacyBrowserAppBarDark</item>
+        <item name="popupsTheme">@style/PrivacyBrowserPopupsDark</item>
+        <item name="tabLayoutTheme">@style/PrivacyBrowserTabLayoutDark</item>
     </style>
 
     <style name="PrivacyBrowserSettingsDark" parent="Theme.AppCompat" >

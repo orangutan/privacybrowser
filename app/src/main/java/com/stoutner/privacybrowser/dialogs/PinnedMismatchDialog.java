@@ -60,7 +60,6 @@ import androidx.viewpager.widget.PagerAdapter;
 
 public class PinnedMismatchDialog extends DialogFragment {
     // Declare the class variables.
-    private PinnedMismatchListener pinnedMismatchListener;
     private NestedScrollWebView nestedScrollWebView;
     private String currentSslIssuedToCName;
     private String currentSslIssuedToOName;
@@ -70,22 +69,6 @@ public class PinnedMismatchDialog extends DialogFragment {
     private String currentSslIssuedByUName;
     private Date currentSslStartDate;
     private Date currentSslEndDate;
-
-    // The public interface is used to send information back to the parent activity.
-    public interface PinnedMismatchListener {
-        void onPinnedMismatchBack();
-
-        void onPinnedMismatchProceed();
-    }
-
-    // Check to make sure that the parent activity implements the listener.
-    public void onAttach(Context context) {
-        // Run the default commands.
-        super.onAttach(context);
-
-        // Get a handle for `PinnedSslCertificateMismatchListener` from the launching context.
-        pinnedMismatchListener = (PinnedMismatchListener) context;
-    }
 
     public static PinnedMismatchDialog displayDialog(long webViewFragmentId) {
         // Create an arguments bundle.
@@ -225,16 +208,27 @@ public class PinnedMismatchDialog extends DialogFragment {
             }
         });
 
-        // Setup the negative button.
+        // Setup the back button.
         dialogBuilder.setNegativeButton(R.string.back, (DialogInterface dialog, int which) -> {
-            // Call the `onSslMismatchBack` public interface to send the `WebView` back one page.
-            pinnedMismatchListener.onPinnedMismatchBack();
+            if (nestedScrollWebView.canGoBack()) {  // There is a back page in the history.
+                // Reset the current domain name so that navigation works if third-party requests are blocked.
+                nestedScrollWebView.resetCurrentDomainName();
+
+                // Set navigating history so that the domain settings are applied when the new URL is loaded.
+                nestedScrollWebView.setNavigatingHistory(true);
+
+                // Go back.
+                nestedScrollWebView.goBack();
+            } else {  // There are no pages to go back to.
+                // Load a blank page
+                nestedScrollWebView.loadUrl("");
+            }
         });
 
-        // Setup the positive button.
+        // Setup the proceed button.
         dialogBuilder.setPositiveButton(R.string.proceed, (DialogInterface dialog, int which) -> {
-            // Call the `onSslMismatchProceed` public interface.
-            pinnedMismatchListener.onPinnedMismatchProceed();
+            // Do not check the pinned information for this domain again until the domain changes.
+            nestedScrollWebView.setIgnorePinnedDomainInformation(true);
         });
 
         // Set the title.
