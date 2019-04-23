@@ -24,7 +24,7 @@
     <item
         android:id="@+id/close_tab"
         android:title="@string/close_tab"
-        android:icon="@drawable/tab"
+        android:icon="@drawable/tab_enabled_light"
         android:orderInCategory="10" />
 
     <item

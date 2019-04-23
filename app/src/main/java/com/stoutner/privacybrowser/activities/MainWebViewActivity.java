@@ -812,8 +812,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Sets the new intent as the activity intent, which replaces the one that originally started the app.
             setIntent(intent);
 
-            // Add a new tab.
-            addTab(null);
+            // Get the shared preferences.
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+            if (sharedPreferences.getBoolean("open_intents_in_new_tab", true)) {
+                // Add a new tab.
+                addTab(null);
+            }
 
             // Create a URL string.
             String url;
@@ -1075,7 +1080,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Only show Ad Consent if this is the free flavor.
         adConsentMenuItem.setVisible(BuildConfig.FLAVOR.contentEquals("free"));
 
-        // Get the shared preference values.
+        // Get the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Get the dark theme and app bar preferences..

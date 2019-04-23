@@ -56,44 +56,45 @@ public class SettingsFragment extends PreferenceFragment {
         savedPreferences = getPreferenceScreen().getSharedPreferences();
 
         // Get handles for the preferences.
-        final Preference javaScriptPreference = findPreference("javascript");
-        final Preference firstPartyCookiesPreference = findPreference("first_party_cookies");
-        final Preference thirdPartyCookiesPreference = findPreference("third_party_cookies");
-        final Preference domStoragePreference = findPreference("dom_storage");
-        final Preference saveFormDataPreference = findPreference("save_form_data");  // The form data preference can be removed once the minimum API >= 26.
-        final Preference userAgentPreference = findPreference("user_agent");
-        final Preference customUserAgentPreference = findPreference("custom_user_agent");
-        final Preference incognitoModePreference = findPreference("incognito_mode");
-        final Preference doNotTrackPreference = findPreference("do_not_track");
-        final Preference allowScreenshotsPreference = findPreference("allow_screenshots");
-        final Preference easyListPreference = findPreference("easylist");
-        final Preference easyPrivacyPreference = findPreference("easyprivacy");
-        final Preference fanboyAnnoyanceListPreference = findPreference("fanboys_annoyance_list");
-        final Preference fanboySocialBlockingListPreference = findPreference("fanboys_social_blocking_list");
-        final Preference ultraPrivacyPreference = findPreference("ultraprivacy");
-        final Preference blockAllThirdPartyRequestsPreference = findPreference("block_all_third_party_requests");
-        final Preference proxyThroughOrbotPreference = findPreference("proxy_through_orbot");
-        final Preference torHomepagePreference = findPreference("tor_homepage");
-        final Preference torSearchPreference = findPreference("tor_search");
-        final Preference torSearchCustomURLPreference = findPreference("tor_search_custom_url");
-        final Preference searchPreference = findPreference("search");
-        final Preference searchCustomURLPreference = findPreference("search_custom_url");
-        final Preference fullScreenBrowsingModePreference = findPreference("full_screen_browsing_mode");
-        final Preference hideAppBarPreference = findPreference("hide_app_bar");
-        final Preference clearEverythingPreference = findPreference("clear_everything");
-        final Preference clearCookiesPreference = findPreference("clear_cookies");
-        final Preference clearDomStoragePreference = findPreference("clear_dom_storage");
-        final Preference clearFormDataPreference = findPreference("clear_form_data");  // The clear form data preference can be removed once the minimum API >= 26.
-        final Preference clearCachePreference = findPreference("clear_cache");
-        final Preference homepagePreference = findPreference("homepage");
-        final Preference fontSizePreference = findPreference("font_size");
-        final Preference swipeToRefreshPreference = findPreference("swipe_to_refresh");
-        final Preference scrollAppBarPreference = findPreference("scroll_app_bar");
-        final Preference displayAdditionalAppBarIconsPreference = findPreference("display_additional_app_bar_icons");
-        final Preference downloadWithExternalAppPreference = findPreference("download_with_external_app");
-        final Preference darkThemePreference = findPreference("dark_theme");
-        final Preference nightModePreference = findPreference("night_mode");
-        final Preference displayWebpageImagesPreference = findPreference("display_webpage_images");
+        Preference javaScriptPreference = findPreference("javascript");
+        Preference firstPartyCookiesPreference = findPreference("first_party_cookies");
+        Preference thirdPartyCookiesPreference = findPreference("third_party_cookies");
+        Preference domStoragePreference = findPreference("dom_storage");
+        Preference saveFormDataPreference = findPreference("save_form_data");  // The form data preference can be removed once the minimum API >= 26.
+        Preference userAgentPreference = findPreference("user_agent");
+        Preference customUserAgentPreference = findPreference("custom_user_agent");
+        Preference incognitoModePreference = findPreference("incognito_mode");
+        Preference doNotTrackPreference = findPreference("do_not_track");
+        Preference allowScreenshotsPreference = findPreference("allow_screenshots");
+        Preference easyListPreference = findPreference("easylist");
+        Preference easyPrivacyPreference = findPreference("easyprivacy");
+        Preference fanboyAnnoyanceListPreference = findPreference("fanboys_annoyance_list");
+        Preference fanboySocialBlockingListPreference = findPreference("fanboys_social_blocking_list");
+        Preference ultraPrivacyPreference = findPreference("ultraprivacy");
+        Preference blockAllThirdPartyRequestsPreference = findPreference("block_all_third_party_requests");
+        Preference proxyThroughOrbotPreference = findPreference("proxy_through_orbot");
+        Preference torHomepagePreference = findPreference("tor_homepage");
+        Preference torSearchPreference = findPreference("tor_search");
+        Preference torSearchCustomURLPreference = findPreference("tor_search_custom_url");
+        Preference searchPreference = findPreference("search");
+        Preference searchCustomURLPreference = findPreference("search_custom_url");
+        Preference fullScreenBrowsingModePreference = findPreference("full_screen_browsing_mode");
+        Preference hideAppBarPreference = findPreference("hide_app_bar");
+        Preference clearEverythingPreference = findPreference("clear_everything");
+        Preference clearCookiesPreference = findPreference("clear_cookies");
+        Preference clearDomStoragePreference = findPreference("clear_dom_storage");
+        Preference clearFormDataPreference = findPreference("clear_form_data");  // The clear form data preference can be removed once the minimum API >= 26.
+        Preference clearCachePreference = findPreference("clear_cache");
+        Preference homepagePreference = findPreference("homepage");
+        Preference fontSizePreference = findPreference("font_size");
+        Preference openIntentsInNewTabPreference = findPreference("open_intents_in_new_tab");
+        Preference swipeToRefreshPreference = findPreference("swipe_to_refresh");
+        Preference scrollAppBarPreference = findPreference("scroll_app_bar");
+        Preference displayAdditionalAppBarIconsPreference = findPreference("display_additional_app_bar_icons");
+        Preference downloadWithExternalAppPreference = findPreference("download_with_external_app");
+        Preference darkThemePreference = findPreference("dark_theme");
+        Preference nightModePreference = findPreference("night_mode");
+        Preference displayWebpageImagesPreference = findPreference("display_webpage_images");
 
         // Set dependencies.
         torHomepagePreference.setDependency("proxy_through_orbot");
@@ -105,7 +106,7 @@ public class SettingsFragment extends PreferenceFragment {
         String searchString = savedPreferences.getString("search", getString(R.string.search_default_value));
 
         // Get booleans that are used in multiple places from the preferences.
-        final boolean javaScriptEnabled = savedPreferences.getBoolean("javascript", false);
+        boolean javaScriptEnabled = savedPreferences.getBoolean("javascript", false);
         boolean firstPartyCookiesEnabled = savedPreferences.getBoolean("first_party_cookies", false);
         boolean thirdPartyCookiesEnabled = savedPreferences.getBoolean("third_party_cookies", false);
         boolean fanboyAnnoyanceListEnabled = savedPreferences.getBoolean("fanboys_annoyance_list", true);
@@ -114,7 +115,7 @@ public class SettingsFragment extends PreferenceFragment {
         boolean fullScreenBrowsingMode = savedPreferences.getBoolean("full_screen_browsing_mode", false);
         boolean clearEverything = savedPreferences.getBoolean("clear_everything", true);
         boolean darkTheme = savedPreferences.getBoolean("dark_theme", false);
-        final boolean nightMode = savedPreferences.getBoolean("night_mode", false);
+        boolean nightMode = savedPreferences.getBoolean("night_mode", false);
 
         // Only enable the third-party cookies preference if first-party cookies are enabled and API >= 21.
         thirdPartyCookiesPreference.setEnabled(firstPartyCookiesEnabled && (Build.VERSION.SDK_INT >= 21));
@@ -140,7 +141,7 @@ public class SettingsFragment extends PreferenceFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         // `@SuppressLint("InflateParams")` removes the warning about using `null` as the `ViewGroup`, which in this case makes sense because the `bare_webview` will not be displayed.
         @SuppressLint("InflateParams") View bareWebViewLayout = inflater.inflate(R.layout.bare_webview, null, false);
-        final WebView bareWebView = bareWebViewLayout.findViewById(R.id.bare_webview);
+        WebView bareWebView = bareWebViewLayout.findViewById(R.id.bare_webview);
 
         // Get the user agent arrays.
         ArrayAdapter<CharSequence> userAgentNamesArray = ArrayAdapter.createFromResource(context, R.array.user_agent_names, R.layout.spinner_item);
@@ -601,6 +602,21 @@ public class SettingsFragment extends PreferenceFragment {
             }
         } else {
             clearCachePreference.setIcon(R.drawable.cache_warning);
+        }
+
+        // Set the open intents in new tab preference icon.
+        if (savedPreferences.getBoolean("open_intents_in_new_tab", true)) {
+            if (darkTheme) {
+                openIntentsInNewTabPreference.setIcon(R.drawable.tab_enabled_dark);
+            } else {
+                openIntentsInNewTabPreference.setIcon(R.drawable.tab_enabled_light);
+            }
+        } else {
+            if (darkTheme) {
+                openIntentsInNewTabPreference.setIcon(R.drawable.tab_disabled_dark);
+            } else {
+                openIntentsInNewTabPreference.setIcon(R.drawable.tab_disabled_light);
+            }
         }
 
         // Set the swipe to refresh preference icon.
@@ -1413,6 +1429,23 @@ public class SettingsFragment extends PreferenceFragment {
                     fontSizePreference.setSummary(sharedPreferences.getString("font_size", getString(R.string.font_size_default_value)) + "%%");
                     break;
 
+                case "open_intents_in_new_tab":
+                    // Update the icon.
+                    if (sharedPreferences.getBoolean("open_intents_in_new_tab", true)) {
+                        if (darkTheme) {
+                            openIntentsInNewTabPreference.setIcon(R.drawable.tab_enabled_dark);
+                        } else {
+                            openIntentsInNewTabPreference.setIcon(R.drawable.tab_enabled_light);
+                        }
+                    } else {
+                        if (darkTheme) {
+                            openIntentsInNewTabPreference.setIcon(R.drawable.tab_disabled_dark);
+                        } else {
+                            openIntentsInNewTabPreference.setIcon(R.drawable.tab_disabled_light);
+                        }
+                    }
+                    break;
+
                 case "swipe_to_refresh":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("swipe_to_refresh", true)) {
@@ -1510,7 +1543,7 @@ public class SettingsFragment extends PreferenceFragment {
                         System.exit(0);
                     };
 
-                    // Restart the activity after 100 milliseconds, so that the app has enought time to save the change to the preference.
+                    // Restart the activity after 100 milliseconds, so that the app has enough time to save the change to the preference.
                     changeThemeRestartHandler.postDelayed(changeThemeRestartRunnable, 100);
                     break;
 

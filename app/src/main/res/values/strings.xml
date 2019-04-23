@@ -619,6 +619,8 @@
                 <item>175</item>
                 <item>200</item>
             </string-array>
+        <string name="open_intents_in_new_tab">Open intents in new tab</string>
+        <string name="open_intents_in_new_tab_summary">Intents are links sent from other apps.</string>
         <string name="swipe_to_refresh">Swipe to refresh</string>
         <string name="swipe_to_refresh_summary">Some websites don’t work well if swipe to refresh is enabled.</string>
         <string name="scroll_app_bar">Scroll the app bar</string>

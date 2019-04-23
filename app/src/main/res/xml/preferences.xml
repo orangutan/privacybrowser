@@ -251,6 +251,12 @@
             android:icon="?attr/fontSizeIcon" />
 
         <SwitchPreference
+            android:key="open_intents_in_new_tab"
+            android:title="@string/open_intents_in_new_tab"
+            android:summary="@string/open_intents_in_new_tab_summary"
+            android:defaultValue="true" />
+
+        <SwitchPreference
             android:key="swipe_to_refresh"
             android:title="@string/swipe_to_refresh"
             android:summary="@string/swipe_to_refresh_summary"
