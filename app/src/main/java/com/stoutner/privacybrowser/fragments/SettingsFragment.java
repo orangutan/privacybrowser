@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
@@ -942,11 +943,23 @@ public class SettingsFragment extends PreferenceFragment {
                     // Assert that the intent is not null to remove the lint error below.
                     assert allowScreenshotsRestartIntent != null;
 
-                    // `Intent.FLAG_ACTIVITY_CLEAR_TASK` removes all activities from the stack.  It requires `Intent.FLAG_ACTIVITY_NEW_TASK`.  TODO.
+                    // `Intent.FLAG_ACTIVITY_CLEAR_TASK` removes all activities from the stack.  It requires `Intent.FLAG_ACTIVITY_NEW_TASK`.
                     allowScreenshotsRestartIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-                    // Make it so.
-                    startActivity(allowScreenshotsRestartIntent);
+                    // Create a handler to restart the activity.
+                    Handler allowScreenshotsRestartHandler = new Handler();
+
+                    // Create a runnable to restart the activity.
+                    Runnable allowScreenshotsRestartRunnable = () -> {
+                        // Restart the activity.
+                        startActivity(allowScreenshotsRestartIntent);
+
+                        // Kill this instance of Privacy Browser.  Otherwise, the app exhibits sporadic behavior after the restart.
+                        System.exit(0);
+                    };
+
+                    // Restart the activity after 100 milliseconds, so that the app has enough time to save the change to the preference.
+                    allowScreenshotsRestartHandler.postDelayed(allowScreenshotsRestartRunnable, 100);
                     break;
 
                 case "easylist":
@@ -1482,11 +1495,23 @@ public class SettingsFragment extends PreferenceFragment {
                     // Assert that the intent is not null to remove the lint error below.
                     assert changeThemeRestartIntent != null;
 
-                    // `Intent.FLAG_ACTIVITY_CLEAR_TASK` removes all activities from the stack.  It requires `Intent.FLAG_ACTIVITY_NEW_TASK`.  TODO.
+                    // `Intent.FLAG_ACTIVITY_CLEAR_TASK` removes all activities from the stack.  It requires `Intent.FLAG_ACTIVITY_NEW_TASK`.
                     changeThemeRestartIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-                    // Make it so.
-                    startActivity(changeThemeRestartIntent);
+                    // Create a handler to restart the activity.
+                    Handler changeThemeRestartHandler = new Handler();
+
+                    // Create a runnable to restart the activity.
+                    Runnable changeThemeRestartRunnable = () -> {
+                        // Restart the activity.
+                        startActivity(changeThemeRestartIntent);
+
+                        // Kill this instance of Privacy Browser.  Otherwise, the app exhibits sporadic behavior after the restart.
+                        System.exit(0);
+                    };
+
+                    // Restart the activity after 100 milliseconds, so that the app has enought time to save the change to the preference.
+                    changeThemeRestartHandler.postDelayed(changeThemeRestartRunnable, 100);
                     break;
 
                 case "night_mode":

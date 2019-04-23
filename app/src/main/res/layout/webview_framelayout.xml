@@ -23,14 +23,17 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="?attr/webViewBackground" >
 
+    <!-- The WebView is initially `visibility="invisible"` so that the background color matches the theme. -->
     <com.stoutner.privacybrowser.views.NestedScrollWebView
         android:id="@+id/nestedscroll_webview"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:focusable="true"
-        android:focusableInTouchMode="true" />
+        android:focusableInTouchMode="true"
+        android:visibility="invisible" />
 
     <!-- `android:max` changes the maximum `ProgressBar` value from 10000 to 100 to match progress percentage.
         `android:layout_height="2dp"` works best for API >= 23, but `3dp` is required for visibility on API <= 22.

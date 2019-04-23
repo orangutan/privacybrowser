@@ -152,8 +152,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-// TODO.  New tabs are white in dark mode.
-
 // AppCompatActivity from android.support.v7.app.AppCompatActivity must be used to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
         DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, DownloadLocationPermissionDialog.DownloadLocationPermissionDialogListener, EditBookmarkDialog.EditBookmarkListener,
@@ -611,8 +609,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             @Override
             public void afterTextChanged(Editable s) {
-                // Search for the text in `mainWebView`.
-                currentWebView.findAllAsync(findOnPageEditText.getText().toString());
+                // Search for the text in the WebView if it is not null.  Sometimes on resume after a period of non-use the WebView will be null.
+                if (currentWebView != null) {
+                    currentWebView.findAllAsync(findOnPageEditText.getText().toString());
+                }
             }
         });
 
@@ -894,8 +894,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Reset the current domain name so the domain settings will be reapplied.
                     nestedScrollWebView.resetCurrentDomainName();
 
-                    // Reapply the domain settings.
-                    applyDomainSettings(nestedScrollWebView, nestedScrollWebView.getUrl(), false, true);
+                    // Reapply the domain settings if the URL is not null, which can happen if an empty tab is active when returning from settings.
+                    if (nestedScrollWebView.getUrl() != null) {
+                        applyDomainSettings(nestedScrollWebView, nestedScrollWebView.getUrl(), false, true);
+                    }
                 }
             }
         }
@@ -4226,23 +4228,37 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Update the privacy icons.  `true` redraws the icons in the app bar.
             updatePrivacyIcons(true);
 
-            // Clear the focus from the URL text box.
-            urlEditText.clearFocus();
-
             // Get a handle for the input method manager.
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
             // Remove the lint warning below that the input method manager might be null.
             assert inputMethodManager != null;
 
-            // Hide the soft keyboard.
-            inputMethodManager.hideSoftInputFromWindow(currentWebView.getWindowToken(), 0);
+            // Get the current URL.
+            String url = currentWebView.getUrl();
 
-            // Display the current URL in the URL text box.
-            urlEditText.setText(currentWebView.getUrl());
+            if ((url == null) || url.equals("about:blank")) {  // The WebView is blank.
+                // Display the hint in the URL edit text.
+                urlEditText.setText("");
 
-            // Highlight the URL text.
-            highlightUrlText();
+                // Request focus for the URL text box.
+                urlEditText.requestFocus();
+
+                // Display the keyboard.
+                inputMethodManager.showSoftInput(urlEditText, 0);
+            } else {  // The WebView has a loaded URL.
+                // Clear the focus from the URL text box.
+                urlEditText.clearFocus();
+
+                // Hide the soft keyboard.
+                inputMethodManager.hideSoftInputFromWindow(currentWebView.getWindowToken(), 0);
+
+                // Display the current URL in the URL text box.
+                urlEditText.setText(url);
+
+                // Highlight the URL text.
+                highlightUrlText();
+            }
 
             // Set the background to indicate the domain settings status.
             if (currentWebView.getDomainSettingsApplied()) {
@@ -4481,7 +4497,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             @Override
             public void onProgressChanged(WebView view, int progress) {
                 // Inject the night mode CSS if night mode is enabled.
-                if (nestedScrollWebView.getNightMode()) {
+                if (nestedScrollWebView.getNightMode()) {  // Night mode is enabled.
                     // `background-color: #212121` sets the background to be dark gray.  `color: #BDBDBD` sets the text color to be light gray.  `box-shadow: none` removes a lower underline on links
                     // used by WordPress.  `text-decoration: none` removes all text underlines.  `text-shadow: none` removes text shadows, which usually have a hard coded color.
                     // `border: none` removes all borders, which can also be used to underline text.  `a {color: #1565C0}` sets links to be a dark blue.
@@ -4503,6 +4519,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Display the WebView after 500 milliseconds.
                         displayWebViewHandler.postDelayed(displayWebViewRunnable, 500);
                     });
+                } else {  // Night mode is disabled.
+                    // Display the nested scroll WebView if night mode is disabled.
+                    // Because of a race condition between `applyDomainSettings` and `onPageStarted`,
+                    // when night mode is set by domain settings the WebView may be hidden even if night mode is not currently enabled.
+                    nestedScrollWebView.setVisibility(View.VISIBLE);
                 }
 
                 // Update the progress bar.
@@ -4515,13 +4536,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 } else {
                     // Hide the progress bar.
                     progressBar.setVisibility(View.GONE);
-
-                    // Display the nested scroll WebView if night mode is disabled.
-                    // Because of a race condition between `applyDomainSettings` and `onPageStarted`,
-                    // when night mode is set by domain settings the WebView may be hidden even if night mode is not currently enabled.
-                    if (!nestedScrollWebView.getNightMode()) {
-                        nestedScrollWebView.setVisibility(View.VISIBLE);
-                    }
 
                     //Stop the swipe to refresh indicator if it is running
                     swipeRefreshLayout.setRefreshing(false);
@@ -5107,6 +5121,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // If night mode is enabled, hide `mainWebView` until after the night mode CSS is applied.
                 if (nestedScrollWebView.getNightMode()) {
                     nestedScrollWebView.setVisibility(View.INVISIBLE);
+                } else {
+                    nestedScrollWebView.setVisibility(View.VISIBLE);
                 }
 
                 // Hide the keyboard.
@@ -5250,8 +5266,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             // Display the keyboard.
                             inputMethodManager.showSoftInput(urlEditText, 0);
 
-                            // Hide the WebView, which causes the default background color to be displayed according to the theme.  // TODO
-                            nestedScrollWebView.setVisibility(View.GONE);
+                            // Hide the WebView, which causes the default background color to be displayed according to the theme.
+                            nestedScrollWebView.setVisibility(View.INVISIBLE);
 
                             // Apply the domain settings.  This clears any settings from the previous domain.
                             applyDomainSettings(nestedScrollWebView, "", true, false);

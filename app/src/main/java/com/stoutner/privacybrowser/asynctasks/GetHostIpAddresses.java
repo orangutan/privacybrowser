@@ -24,7 +24,6 @@ import android.os.AsyncTask;
 
 import androidx.fragment.app.FragmentManager;
 
-import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.helpers.CheckPinnedMismatchHelper;
 import com.stoutner.privacybrowser.views.NestedScrollWebView;
 

@@ -24,16 +24,16 @@
     <!-- `android:windowTranslucentStatus` makes the system status bar translucent.  When it is specified the root layout should include `android:fitsSystemWindows="true"`. -->
     <style name="PrivacyBrowserLight" parent="Theme.AppCompat.Light.NoActionBar" >
         <item name="aboutIcon">@drawable/about_light</item>
-        <item name="android:windowTranslucentStatus">true</item>
         <item name="addTabIconTintColor">@color/gray_700</item>
+        <item name="android:textColorHighlight">@color/blue_200</item>
         <item name="android:textColorPrimary">@color/primary_text_color_selector_light</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="appBarTheme">@style/PrivacyBrowserAppBarLight</item>
         <item name="colorAccent">@color/blue_700</item>
         <item name="dialogTabLayoutTheme">@style/PrivacyBrowserTabLayoutDialogLight</item>
-        <item name="android:textColorHighlight">@color/blue_200</item>
         <item name="mainStatusBarBackground">@color/gray_500</item>
         <item name="navigationHeaderBackground">@color/blue_700</item>
         <item name="navigationHeaderTextColor">@color/white</item>
-        <item name="appBarTheme">@style/PrivacyBrowserAppBarLight</item>
         <item name="navigationIconTintColor">@color/blue_800</item>
         <item name="findOnPageIconTintColor">@color/blue_800</item>
         <item name="progressTintColor">@color/blue_700</item>
@@ -42,6 +42,7 @@
         <item name="sslTitle">@color/blue_900</item>
         <item name="urlHistoryText">@color/black</item>
         <item name="viewSourceIconTintColor">@color/black</item>
+        <item name="webViewBackground">@color/gray_50</item>
     </style>
 
     <!-- `windowActionModeOverlay` makes the contextual app bar cover the support app bar. -->
@@ -124,15 +125,15 @@
     <!-- `android:windowTranslucentStatus` makes the system status bar translucent.  When it is specified the root layout should include `android:fitsSystemWindows="true"`. -->
     <style name="PrivacyBrowserDark" parent="Theme.AppCompat.NoActionBar" >
         <item name="aboutIcon">@drawable/about_dark</item>
-        <item name="android:windowTranslucentStatus">true</item>
         <item name="addTabIconTintColor">@color/gray_400</item>
-        <item name="android:textColorPrimary">@color/primary_text_color_selector_dark</item>
-        <item name="colorAccent">@color/blue_600</item>
         <item name="android:textColorHighlight">@color/blue_800</item>
+        <item name="android:textColorPrimary">@color/primary_text_color_selector_dark</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="appBarTheme">@style/PrivacyBrowserAppBarDark</item>
+        <item name="colorAccent">@color/blue_600</item>
         <item name="mainStatusBarBackground">@color/black</item>
         <item name="navigationHeaderBackground">@color/blue_800</item>
         <item name="navigationHeaderTextColor">@color/gray_300</item>
-        <item name="appBarTheme">@style/PrivacyBrowserAppBarDark</item>
         <item name="findOnPageIconTintColor">@color/blue_600</item>
         <item name="navigationIconTintColor">@color/blue_600</item>
         <item name="progressTintColor">@color/blue_600</item>
@@ -141,6 +142,7 @@
         <item name="sslTitle">@color/blue_700</item>
         <item name="urlHistoryText">@color/gray_200</item>
         <item name="viewSourceIconTintColor">@color/gray_300</item>
+        <item name="webViewBackground">@color/gray_900</item>
     </style>
 
     <!-- `windowActionModeOverlay` makes the contextual app bar cover the support app bar.  `colorPrimaryDark` goes behind the status bar, which is then darkened by the overlay.-->
