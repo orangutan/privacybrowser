@@ -53,6 +53,7 @@
 
                 <!-- The theme has to be defined here because the activity uses a `NoActionBar` theme. -->
                 <com.google.android.material.appbar.AppBarLayout
+                    android:id="@+id/appbar_layout"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
                     android:theme="@style/PrivacyBrowserAppBarLight" >
