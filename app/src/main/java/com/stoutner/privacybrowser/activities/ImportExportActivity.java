@@ -29,6 +29,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.DocumentsContract;
 import android.text.Editable;
@@ -952,8 +953,21 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
             // `Intent.FLAG_ACTIVITY_CLEAR_TASK` removes all activities from the stack.  It requires `Intent.FLAG_ACTIVITY_NEW_TASK`.
             restartIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-            // Make it so.
-            startActivity(restartIntent);
+            // Create a restart handler.
+            Handler restartHandler = new Handler();
+
+            // Create a restart runnable.
+            Runnable restartRunnable =  () -> {
+                // Restart Privacy Browser.
+                startActivity(restartIntent);
+
+                // Kill this instance of Privacy Browser.  Otherwise, the app exhibits sporadic behavior after the restart.
+                System.exit(0);
+            };
+
+            // Restart Privacy Browser after 100 milliseconds to allow enough time for the preferences to be saved.
+            restartHandler.postDelayed(restartRunnable, 100);
+
         } else if (!(encryptionSpinner.getSelectedItemPosition() == OPENPGP_ENCRYPTION)){  // The import was not successful.
             // Display a snack bar with the import error.
             Snackbar.make(fileNameEditText, getString(R.string.import_failed) + "  " + importStatus, Snackbar.LENGTH_INDEFINITE).show();

@@ -48,6 +48,7 @@
     <string name="open_with">Apri con</string>
     <string name="new_tab">Nuova Scheda</string>
     <string name="add_tab">Aggiungi Scheda</string>
+    <string name="loading">Caricamento…</string>
 
     <!-- Save As. -->
     <string name="save_as">Salva come</string>
@@ -545,6 +546,8 @@
                 <item>175%</item>
                 <item>200%</item>
             </string-array>
+        <string name="open_intents_in_new_tab">Apri gli intenti in una nuova scheda</string>
+        <string name="open_intents_in_new_tab_summary">Gli intenti sono link inviati da altre app.</string>
         <string name="swipe_to_refresh">Swipe per aggiornare</string>
         <string name="swipe_to_refresh_summary">Alcuni siti non funzionano correttamente se questa opzione è abilitata.</string>
         <string name="scroll_app_bar">Permetti lo scrolling della barra dell\'applicazione</string>

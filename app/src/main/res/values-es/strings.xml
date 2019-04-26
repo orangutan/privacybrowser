@@ -48,6 +48,7 @@
     <string name="open_with">Abrir con</string>
     <string name="new_tab">Nueva pestaña</string>
     <string name="add_tab">Añadir pestaña</string>
+    <string name="loading">Cargando…</string>
 
     <!-- Save As. -->
     <string name="save_as">Guardar como</string>
@@ -546,6 +547,8 @@
                 <item>175%</item>
                 <item>200%</item>
             </string-array>
+        <string name="open_intents_in_new_tab">Abrir contenido en nueva pestaña</string>
+        <string name="open_intents_in_new_tab_summary">Los contenidos son enlaces enviados desde otras apps.</string>
         <string name="swipe_to_refresh">Deslizar para actualizar</string>
         <string name="swipe_to_refresh_summary">Algunas webs no funcionan bien si la opción deslizar para actualizar está habilitada.</string>
         <string name="scroll_app_bar">Desplazar la barra de aplicaciones</string>

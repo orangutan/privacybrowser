@@ -46,6 +46,7 @@
     <string name="open_with">Bununla aç</string>
     <string name="new_tab">Yeni Sekme</string>
     <string name="add_tab">Sekme Ekle</string>
+    <string name="loading">Yükleniyor…</string>
 
     <!-- Save As. -->
     <string name="save_as">Farklı Kaydet</string>
@@ -541,6 +542,8 @@
                 <item>%175</item>
                 <item>%200</item>
             </string-array>
+        <string name="open_intents_in_new_tab">Intentleri yeni sekmede aç</string>
+        <string name="open_intents_in_new_tab_summary">Intentler diğer uygulamalardan gönderilen linklerdir.</string>
         <string name="swipe_to_refresh">Yenilemek için kaydır</string>
         <string name="swipe_to_refresh_summary">Bazı web siteleri, yenilemek için kaydır seçeneği etkin olduğunda iyi çalışmayabilir.</string>
         <string name="scroll_app_bar">Uygulama çubuğunu kaydır</string>

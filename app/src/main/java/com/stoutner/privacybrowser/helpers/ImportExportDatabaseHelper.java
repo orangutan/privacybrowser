@@ -38,7 +38,7 @@ public class ImportExportDatabaseHelper {
     public static final String EXPORT_SUCCESSFUL = "Export Successful";
     public static final String IMPORT_SUCCESSFUL = "Import Successful";
 
-    private static final int SCHEMA_VERSION = 5;
+    private static final int SCHEMA_VERSION = 6;
     private static final String PREFERENCES_TABLE = "preferences";
 
     // The preferences constants.
@@ -74,6 +74,7 @@ public class ImportExportDatabaseHelper {
     private static final String CLEAR_CACHE = "clear_cache";
     private static final String HOMEPAGE = "homepage";
     private static final String FONT_SIZE = "font_size";
+    private static final String OPEN_INTENTS_IN_NEW_TAB = "open_intents_in_new_tab";
     private static final String SWIPE_TO_REFRESH = "swipe_to_refresh";
     private static final String SCROLL_APP_BAR = "scroll_app_bar";
     private static final String DISPLAY_ADDITIONAL_APP_BAR_ICONS = "display_additional_app_bar_icons";
@@ -222,6 +223,7 @@ public class ImportExportDatabaseHelper {
                     CLEAR_CACHE + " BOOLEAN, " +
                     HOMEPAGE + " TEXT, " +
                     FONT_SIZE + " TEXT, " +
+                    OPEN_INTENTS_IN_NEW_TAB + " BOOLEAN, " +
                     SWIPE_TO_REFRESH + " BOOLEAN, " +
                     SCROLL_APP_BAR + " BOOLEAN, " +
                     DISPLAY_ADDITIONAL_APP_BAR_ICONS + " BOOLEAN, " +
@@ -269,6 +271,7 @@ public class ImportExportDatabaseHelper {
             preferencesContentValues.put(CLEAR_CACHE, sharedPreferences.getBoolean(CLEAR_CACHE, true));
             preferencesContentValues.put(HOMEPAGE, sharedPreferences.getString(HOMEPAGE, context.getString(R.string.homepage_default_value)));
             preferencesContentValues.put(FONT_SIZE, sharedPreferences.getString(FONT_SIZE, context.getString(R.string.font_size_default_value)));
+            preferencesContentValues.put(OPEN_INTENTS_IN_NEW_TAB, sharedPreferences.getBoolean(OPEN_INTENTS_IN_NEW_TAB, true));
             preferencesContentValues.put(SWIPE_TO_REFRESH, sharedPreferences.getBoolean(SWIPE_TO_REFRESH, true));
             preferencesContentValues.put(SCROLL_APP_BAR, sharedPreferences.getBoolean(SCROLL_APP_BAR, true));
             preferencesContentValues.put(DISPLAY_ADDITIONAL_APP_BAR_ICONS, sharedPreferences.getBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, false));
@@ -358,7 +361,7 @@ public class ImportExportDatabaseHelper {
                         importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + DOWNLOAD_WITH_EXTERNAL_APP + " BOOLEAN");
 
                         // Get the current setting for downloading with an external app.
-                        boolean downloadWithExternalApp = sharedPreferences.getBoolean("download_with_external_app", false);
+                        boolean downloadWithExternalApp = sharedPreferences.getBoolean(DOWNLOAD_WITH_EXTERNAL_APP, false);
 
                         // Set the download with external app preference to the current value.
                         if (downloadWithExternalApp) {
@@ -404,8 +407,8 @@ public class ImportExportDatabaseHelper {
                         importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + SCROLL_APP_BAR + " BOOLEAN");
 
                         // Get the current hide and scroll app bar settings.
-                        boolean hideAppBar = sharedPreferences.getBoolean("hide_app_bar", true);
-                        boolean scrollAppBar = sharedPreferences.getBoolean("scroll_app_bar", true);
+                        boolean hideAppBar = sharedPreferences.getBoolean(HIDE_APP_BAR, true);
+                        boolean scrollAppBar = sharedPreferences.getBoolean(SCROLL_APP_BAR, true);
 
                         // Populate the database with the current values.
                         if (hideAppBar) {
@@ -418,6 +421,21 @@ public class ImportExportDatabaseHelper {
                             importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + SCROLL_APP_BAR + " = " + 1);
                         } else {
                             importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + SCROLL_APP_BAR + " = " + 0);
+                        }
+
+                    // Upgrade from schema version 5.
+                    case 5:
+                        // Add the open intents in new tab preference.
+                        importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + OPEN_INTENTS_IN_NEW_TAB + " BOOLEAN");
+
+                        // Get the current open intents in new tab setting.
+                        boolean openIntentsInNewTab = sharedPreferences.getBoolean(OPEN_INTENTS_IN_NEW_TAB, true);
+
+                        // Populate the database with the current value.
+                        if (openIntentsInNewTab) {
+                            importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + OPEN_INTENTS_IN_NEW_TAB + " = " + 1);
+                        } else {
+                            importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + OPEN_INTENTS_IN_NEW_TAB + " = " + 0);
                         }
                 }
             }
@@ -564,6 +582,7 @@ public class ImportExportDatabaseHelper {
                     .putBoolean(CLEAR_CACHE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_CACHE)) == 1)
                     .putString(HOMEPAGE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(HOMEPAGE)))
                     .putString(FONT_SIZE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(FONT_SIZE)))
+                    .putBoolean(OPEN_INTENTS_IN_NEW_TAB, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(OPEN_INTENTS_IN_NEW_TAB)) == 1)
                     .putBoolean(SWIPE_TO_REFRESH, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(SWIPE_TO_REFRESH)) == 1)
                     .putBoolean(SCROLL_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(SCROLL_APP_BAR)) == 1)
                     .putBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DISPLAY_ADDITIONAL_APP_BAR_ICONS)) == 1)

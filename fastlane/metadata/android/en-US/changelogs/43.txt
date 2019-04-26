@@ -1,0 +1,8 @@
+• Add tabbed browsing.
+• Fix a bug that caused the bottom of the WebView to be cut off when scrolling the app bar was disabled.
+• Fix a bug that caused Privacy Browser to restart whenever a Bluetooth keyboard was connected/disconnected.
+• Updated German translation provided by Bernhard G. Keller.
+• Updated Italian translation provided by Francesco Buratti.
+• Updated Russian translation.
+• Updated Spanish translation provided by Jose A. León.
+• Partial Turkish translation.

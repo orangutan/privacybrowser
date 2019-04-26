@@ -1,0 +1,8 @@
+• Tabbed Browsing hinzugefügt.
+• Bug behoben, der dazu führte, dass die Webview-Anzeige unten abgeschnitten wurde, wenn das Scrollen der App-Leiste deaktiviert wurde.
+• Bug behoben, der dazu führte, dass Privacy Browser neu startete wenn eine Bluetooth-Tastatur verbunden oder getrennt wurde.
+• Aktualisierte deutsche Übersetzung von Bernhard G. Keller.
+• Aktualisierte italienische Übersetzung von Francesco Buratti.
+• Aktualisierte russische Übersetzung.
+• Aktualisierte spanische Übersetzung von Jose A. León.
+• Teilweise türkische Übersetzung.

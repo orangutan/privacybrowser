@@ -225,6 +225,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private boolean hideAppBar;
     private boolean scrollAppBar;
 
+    // The loading new intent tracker is set in `onNewIntent()` and used in `setCurrentWebView()`.
+    private boolean loadingNewIntent;
+
     // `reapplyDomainSettingsOnRestart` is used in `onCreate()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, and `onAddDomain()`, .
     private boolean reapplyDomainSettingsOnRestart;
 
@@ -815,7 +818,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Get the shared preferences.
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
+            // Add a new tab if specified in the preferences.
             if (sharedPreferences.getBoolean("open_intents_in_new_tab", true)) {
+                // Set the loading new intent flag.
+                loadingNewIntent = true;
+
                 // Add a new tab.
                 addTab(null);
             }
@@ -3271,8 +3278,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Delete the contents of `find_on_page_edittext`.
         findOnPageEditText.setText(null);
 
-        // Clear the highlighted phrases.
-        currentWebView.clearMatches();
+        // Clear the highlighted phrases if the WebView is not null.
+        if (currentWebView != null) {
+            currentWebView.clearMatches();
+        }
 
         // Hide the find on page linear layout.
         findOnPageLinearLayout.setVisibility(View.GONE);
@@ -3459,24 +3468,24 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Get the corresponding tab.
                 TabLayout.Tab tab = tabLayout.getTabAt(currentPagePosition);
 
-                // Remove the warning below that the tab might be null.
-                assert tab != null;
+                // Update the tab if it isn't null, which sometimes happens when restarting from the background.
+                if (tab != null) {
+                    // Get the tab custom view.
+                    View tabCustomView = tab.getCustomView();
 
-                // Get the tab custom view.
-                View tabCustomView = tab.getCustomView();
+                    // Remove the warning below that the tab custom view might be null.
+                    assert tabCustomView != null;
 
-                // Remove the warning below that the tab custom view might be null.
-                assert tabCustomView != null;
+                    // Get the tab views.
+                    ImageView tabFavoriteIconImageView = tabCustomView.findViewById(R.id.favorite_icon_imageview);
+                    TextView tabTitleTextView = tabCustomView.findViewById(R.id.title_textview);
 
-                // Get the tab views.
-                ImageView tabFavoriteIconImageView = tabCustomView.findViewById(R.id.favorite_icon_imageview);
-                TextView tabTitleTextView = tabCustomView.findViewById(R.id.title_textview);
+                    // Set the default favorite icon as the favorite icon for this tab.
+                    tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(nestedScrollWebView.getFavoriteOrDefaultIcon(), 64, 64, true));
 
-                // Set the default favorite icon as the favorite icon for this tab.
-                tabFavoriteIconImageView.setImageBitmap(Bitmap.createScaledBitmap(nestedScrollWebView.getFavoriteOrDefaultIcon(), 64, 64, true));
-
-                // Set the loading title text.
-                tabTitleTextView.setText(R.string.loading);
+                    // Set the loading title text.
+                    tabTitleTextView.setText(R.string.loading);
+                }
             }
 
             // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
@@ -3880,11 +3889,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         String searchCustomUrlString = sharedPreferences.getString("search_custom_url", getString(R.string.search_custom_url_default_value));
         boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
 
-        // Get a handle for the action bar.  `getSupportActionBar()` must be used until the minimum API >= 21.
-        ActionBar actionBar = getSupportActionBar();
-
-        // Remove the incorrect lint warning later that the action bar might be null.
-        assert actionBar != null;
+        // Get a handle for the app bar layout.
+        AppBarLayout appBarLayout = findViewById(R.id.appbar_layout);
 
         // Set the homepage, search, and proxy options.
         if (proxyThroughOrbot) {  // Set the Tor options.
@@ -3898,11 +3904,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Set the proxy.  `this` refers to the current activity where an `AlertDialog` might be displayed.
             OrbotProxyHelper.setProxy(getApplicationContext(), this, "localhost", "8118");
 
-            // Set the `appBar` background to indicate proxying through Orbot is enabled.
+            // Set the app bar background to indicate proxying through Orbot is enabled.
             if (darkTheme) {
-                actionBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.dark_blue_30));
+                appBarLayout.setBackgroundResource(R.color.dark_blue_30);
             } else {
-                actionBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.blue_50));
+                appBarLayout.setBackgroundResource(R.color.blue_50);
             }
 
             // Check to see if Orbot is ready.
@@ -3930,11 +3936,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Reset the proxy to default.  The host is `""` and the port is `"0"`.
             OrbotProxyHelper.setProxy(getApplicationContext(), this, "", "0");
 
-            // Set the default `appBar` background.
+            // Set the default app bar layout background.
             if (darkTheme) {
-                actionBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.gray_900));
+                appBarLayout.setBackgroundResource(R.color.gray_900);
             } else {
-                actionBar.setBackgroundDrawable(ContextCompat.getDrawable(this, R.color.gray_100));
+                appBarLayout.setBackgroundResource(R.color.gray_100);
             }
 
             // Reset `waitingForOrbot.
@@ -4274,27 +4280,33 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Get the current URL.
             String url = currentWebView.getUrl();
 
-            if ((url == null) || url.equals("about:blank")) {  // The WebView is blank.
-                // Display the hint in the URL edit text.
-                urlEditText.setText("");
+            // Update the URL edit text if not loading a new intent.  Otherwise, this will be handled by `onPageStarted()` (if called) and `onPageFinished()`.
+            if (!loadingNewIntent) {  // A new intent is not being loaded.
+                if ((url == null) || url.equals("about:blank")) {  // The WebView is blank.
+                    // Display the hint in the URL edit text.
+                    urlEditText.setText("");
 
-                // Request focus for the URL text box.
-                urlEditText.requestFocus();
+                    // Request focus for the URL text box.
+                    urlEditText.requestFocus();
 
-                // Display the keyboard.
-                inputMethodManager.showSoftInput(urlEditText, 0);
-            } else {  // The WebView has a loaded URL.
-                // Clear the focus from the URL text box.
-                urlEditText.clearFocus();
+                    // Display the keyboard.
+                    inputMethodManager.showSoftInput(urlEditText, 0);
+                } else {  // The WebView has a loaded URL.
+                    // Clear the focus from the URL text box.
+                    urlEditText.clearFocus();
 
-                // Hide the soft keyboard.
-                inputMethodManager.hideSoftInputFromWindow(currentWebView.getWindowToken(), 0);
+                    // Hide the soft keyboard.
+                    inputMethodManager.hideSoftInputFromWindow(currentWebView.getWindowToken(), 0);
 
-                // Display the current URL in the URL text box.
-                urlEditText.setText(url);
+                    // Display the current URL in the URL text box.
+                    urlEditText.setText(url);
 
-                // Highlight the URL text.
-                highlightUrlText();
+                    // Highlight the URL text.
+                    highlightUrlText();
+                }
+            } else {  // A new intent is being loaded.
+                // Reset the loading new intent tracker.
+                loadingNewIntent = false;
             }
 
             // Set the background to indicate the domain settings status.
@@ -5208,6 +5220,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Update the URL text bar if the page is currently selected.
                     if (tabLayout.getSelectedTabPosition() == currentPagePosition) {
+                        // Clear the focus from the URL edit text.
+                        urlEditText.clearFocus();
+
                         // Display the formatted URL text.
                         urlEditText.setText(url);
 
@@ -5326,10 +5341,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Get the current page position.
                     int currentPagePosition = webViewPagerAdapter.getPositionForId(nestedScrollWebView.getWebViewFragmentId());
 
-                    // Update the URL text bar if the page is currently selected.
-                    if (tabLayout.getSelectedTabPosition() == currentPagePosition) {
+                    // Check the current website information against any pinned domain information if the current IP addresses have been loaded.
+                    if ((nestedScrollWebView.hasPinnedSslCertificate() || nestedScrollWebView.hasPinnedIpAddresses()) && nestedScrollWebView.hasCurrentIpAddresses() &&
+                            !nestedScrollWebView.ignorePinnedDomainInformation()) {
+                        CheckPinnedMismatchHelper.checkPinnedMismatch(getSupportFragmentManager(), nestedScrollWebView);
+                    }
+
+                    // Update the URL text bar if the page is currently selected and the user is not currently typing in the URL edit text.
+                    if ((tabLayout.getSelectedTabPosition() == currentPagePosition) && !urlEditText.hasFocus()) {
                         // Check to see if the URL is `about:blank`.
-                        if (url.equals("about:blank")) {  // The WebView is blank.
+                        if (nestedScrollWebView.getUrl().equals("about:blank")) {  // The WebView is blank.
                             // Display the hint in the URL edit text.
                             urlEditText.setText("");
 
@@ -5345,21 +5366,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             // Apply the domain settings.  This clears any settings from the previous domain.
                             applyDomainSettings(nestedScrollWebView, "", true, false);
                         } else {  // The WebView has loaded a webpage.
-                            // Only update the URL text box if the user is not typing in it.
-                            if (!urlEditText.hasFocus()) {
-                                // Display the final URL.  Getting the URL from the WebView instead of using the one provided by `onPageFinished()` makes websites like YouTube function correctly.
-                                urlEditText.setText(nestedScrollWebView.getUrl());
+                            // Display the final URL.  Getting the URL from the WebView instead of using the one provided by `onPageFinished()` makes websites like YouTube function correctly.
+                            urlEditText.setText(nestedScrollWebView.getUrl());
 
-                                // Apply text highlighting to the URL.
-                                highlightUrlText();
-                            }
+                            // Apply text highlighting to the URL.
+                            highlightUrlText();
                         }
-                    }
-
-                    // Check the current website information against any pinned domain information if the current IP addresses have been loaded.
-                    if ((nestedScrollWebView.hasPinnedSslCertificate() || nestedScrollWebView.hasPinnedIpAddresses()) && nestedScrollWebView.hasCurrentIpAddresses() &&
-                            !nestedScrollWebView.ignorePinnedDomainInformation()) {
-                        CheckPinnedMismatchHelper.checkPinnedMismatch(getSupportFragmentManager(), nestedScrollWebView);
                     }
                 }
             }

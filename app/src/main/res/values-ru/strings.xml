@@ -46,6 +46,7 @@
     <string name="open_with">Открыть в</string>
     <string name="new_tab">Новая вкладка</string>
     <string name="add_tab">Добавить вкладку</string>
+    <string name="loading">Загрузка…</string>
 
     <!-- Save As. -->
     <string name="save_as">Сохранить как</string>
@@ -539,6 +540,8 @@
                 <item>175%</item>
                 <item>200%</item>
             </string-array>
+        <string name="open_intents_in_new_tab">Открывать цели в новой вкладке</string>
+        <string name="open_intents_in_new_tab_summary">Цели - это ссылки, отправленные из других приложений.</string>
         <string name="swipe_to_refresh">Потянуть для обновления</string>
         <string name="swipe_to_refresh_summary">Некоторые веб-сайты могут работать некорректно при включении данной опции.</string>
         <string name="scroll_app_bar">Прокручивать панель приложения</string>

@@ -52,6 +52,7 @@
     <string name="open_with">Öffnen mit</string>
     <string name="new_tab">Neuer Tab</string>
     <string name="add_tab">Tab hinzufügen</string>
+    <string name="loading">Laden…</string>
 
     <!-- Save As. -->
     <string name="save_as">Speichern Unter</string>
@@ -547,6 +548,8 @@
                 <item>175%</item>
                 <item>200%</item>
             </string-array>
+        <string name="open_intents_in_new_tab">Intents in neuem Tab öffnen</string>
+        <string name="open_intents_in_new_tab_summary">Intents sind Links, die von anderen Apps übergeben werden.</string>
         <string name="swipe_to_refresh">Herunterziehen zum Aktualisieren</string>
         <string name="swipe_to_refresh_summary">Einige Websites funktionieren nicht, wenn "Herunterziehen zum Aktualisieren" eingeschaltet ist.</string>
         <string name="scroll_app_bar">App-Leiste scrollen</string>

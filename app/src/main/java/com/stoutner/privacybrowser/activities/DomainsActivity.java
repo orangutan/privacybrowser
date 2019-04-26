@@ -755,7 +755,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         // Update the pinned SSL certificate if a new one is checked.
         if (currentWebsiteCertificateRadioButton.isChecked()) {
             // Update the database.
-            domainsDatabaseHelper.updatePinnedSslCertificate(currentDomainDatabaseId, sslIssuedToCName, sslIssuedToOName, sslIssuedToUName, sslIssuedToCName, sslIssuedToOName, sslIssuedToUName,
+            domainsDatabaseHelper.updatePinnedSslCertificate(currentDomainDatabaseId, sslIssuedToCName, sslIssuedToOName, sslIssuedToUName, sslIssuedByCName, sslIssuedByOName, sslIssuedByUName,
                     sslStartDateLong, sslEndDateLong);
         }
 

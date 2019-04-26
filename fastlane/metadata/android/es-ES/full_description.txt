@@ -7,7 +7,7 @@ Navegador Privado utiliza actualmente el WebView incorporado de Android para ren
 Advertencia: Android KitKat (versión 4.4.x, API 19) incluye una versión anterior de OpenSSL que es susceptible a ataques MITM (Man In The Middle) cuando se navega por sitios web que utilizan protocolos y suites de cifrado anticuados. Más información sobre este tema está disponible en https://www.stoutner.com/kitkat-security-problems/.
 
 Características:
-- Bloqueo de anuncios EasyList integrado.
-- Soporte para proxy de Tor Orbot.
-- Fijación de certificados SSL.
-- Importar/Exportar la configuración y los marcadores.
+• Bloqueo de anuncios EasyList integrado.
+• Soporte para proxy de Tor Orbot.
+• Fijación de certificados SSL.
+• Importar/Exportar la configuración y los marcadores.
