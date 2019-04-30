@@ -2077,7 +2077,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Run the commands that correspond to the selected menu item.
         switch (menuItemId) {
             case R.id.close_tab:
-                // Get a handle for the tab layout and the view pager.
+                // Get handles for the views.
+                AppBarLayout appBarLayout = findViewById(R.id.appbar_layout);
                 TabLayout tabLayout = findViewById(R.id.tablayout);
                 ViewPager webViewPager = findViewById(R.id.webviewpager);
 
@@ -2091,6 +2092,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 if (webViewPagerAdapter.deletePage(currentTabNumber, webViewPager)) {
                     setCurrentWebView(currentTabNumber);
                 }
+
+                // Expand the app bar if it is currently collapsed.
+                appBarLayout.setExpanded(true);
                 break;
 
             case R.id.clear_and_exit:
