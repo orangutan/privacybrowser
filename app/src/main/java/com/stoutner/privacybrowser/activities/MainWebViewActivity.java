@@ -3315,6 +3315,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
         AppBarLayout appBarLayout = findViewById(R.id.appbar_layout);
         ActionBar actionBar = getSupportActionBar();
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        LinearLayout findOnPageLinearLayout = findViewById(R.id.find_on_page_linearlayout);
         LinearLayout tabsLinearLayout = findViewById(R.id.tabs_linearlayout);
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
 
@@ -3331,23 +3333,35 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             customHeaders.remove("DNT");
         }
 
-        // Get the current layout parameters.  Using coordinator layout parameters allows the `setBehavior()` command.
-        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
+        // Get the current layout parameters.  Using coordinator layout parameters allows the `setBehavior()` command and using app bar layout parameters allows the `setScrollFlags()` command.
+        CoordinatorLayout.LayoutParams swipeRefreshLayoutParams = (CoordinatorLayout.LayoutParams) swipeRefreshLayout.getLayoutParams();
+        AppBarLayout.LayoutParams toolbarLayoutParams = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+        AppBarLayout.LayoutParams findOnPageLayoutParams = (AppBarLayout.LayoutParams) findOnPageLinearLayout.getLayoutParams();
+        AppBarLayout.LayoutParams tabsLayoutParams = (AppBarLayout.LayoutParams) tabsLinearLayout.getLayoutParams();
 
         // Add the scrolling behavior to the layout parameters.
         if (scrollAppBar) {
             // Enable scrolling of the app bar.
-            layoutParams.setBehavior(new AppBarLayout.ScrollingViewBehavior());
+            swipeRefreshLayoutParams.setBehavior(new AppBarLayout.ScrollingViewBehavior());
+            toolbarLayoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
+            findOnPageLayoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
+            tabsLayoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
         } else {
             // Disable scrolling of the app bar.
-            layoutParams.setBehavior(null);
+            swipeRefreshLayoutParams.setBehavior(null);
+            toolbarLayoutParams.setScrollFlags(0);
+            findOnPageLayoutParams.setScrollFlags(0);
+            tabsLayoutParams.setScrollFlags(0);
 
             // Expand the app bar if it is currently collapsed.
             appBarLayout.setExpanded(true);
         }
 
-        // Apply the modified layout parameters to the swipe refresh layout.
-        swipeRefreshLayout.setLayoutParams(layoutParams);
+        // Apply the modified layout parameters.
+        swipeRefreshLayout.setLayoutParams(swipeRefreshLayoutParams);
+        toolbar.setLayoutParams(toolbarLayoutParams);
+        findOnPageLinearLayout.setLayoutParams(findOnPageLayoutParams);
+        tabsLinearLayout.setLayoutParams(tabsLayoutParams);
 
         // Set the app bar scrolling for each WebView.
         for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
