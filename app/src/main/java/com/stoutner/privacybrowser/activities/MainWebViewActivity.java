@@ -2077,24 +2077,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Run the commands that correspond to the selected menu item.
         switch (menuItemId) {
             case R.id.close_tab:
-                // Get handles for the views.
-                AppBarLayout appBarLayout = findViewById(R.id.appbar_layout);
-                TabLayout tabLayout = findViewById(R.id.tablayout);
-                ViewPager webViewPager = findViewById(R.id.webviewpager);
-
-                // Get the current tab number.
-                int currentTabNumber = tabLayout.getSelectedTabPosition();
-
-                // Delete the current tab.
-                tabLayout.removeTabAt(currentTabNumber);
-
-                // Delete the current page.  If the selected page number did not change during the delete, it will return true, meaning that the current WebView must be reset.
-                if (webViewPagerAdapter.deletePage(currentTabNumber, webViewPager)) {
-                    setCurrentWebView(currentTabNumber);
-                }
-
-                // Expand the app bar if it is currently collapsed.
-                appBarLayout.setExpanded(true);
+                // Close the current tab.
+                closeCurrentTab();
                 break;
 
             case R.id.clear_and_exit:
@@ -3143,8 +3127,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // Override `onBackPressed` to handle the navigation drawer and and the WebView.
     @Override
     public void onBackPressed() {
-        // Get a handle for the drawer layout.
+        // Get a handle for the drawer layout and the tab layout.
         DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
+        TabLayout tabLayout = findViewById(R.id.tablayout);
 
         if (drawerLayout.isDrawerVisible(GravityCompat.START)) {  // The navigation drawer is open.
             // Close the navigation drawer.
@@ -3169,9 +3154,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Go back.
             currentWebView.goBack();
-        } else {  // There is nothing else to do.
-            // Load a blank website.
-            loadUrl("");
+        } else if (tabLayout.getTabCount() > 1) {  // There are at least two tabs.
+            // Close the current tab.
+            closeCurrentTab();
+        } else {  // There isn't anything to do in Privacy Browser.
+            // Run the default commands.
+            super.onBackPressed();
         }
     }
 
@@ -4238,6 +4226,27 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Add the new WebView page.
         webViewPagerAdapter.addPage(newTabNumber, webViewPager);
+    }
+
+    private void closeCurrentTab() {
+        // Get handles for the views.
+        AppBarLayout appBarLayout = findViewById(R.id.appbar_layout);
+        TabLayout tabLayout = findViewById(R.id.tablayout);
+        ViewPager webViewPager = findViewById(R.id.webviewpager);
+
+        // Get the current tab number.
+        int currentTabNumber = tabLayout.getSelectedTabPosition();
+
+        // Delete the current tab.
+        tabLayout.removeTabAt(currentTabNumber);
+
+        // Delete the current page.  If the selected page number did not change during the delete, it will return true, meaning that the current WebView must be reset.
+        if (webViewPagerAdapter.deletePage(currentTabNumber, webViewPager)) {
+            setCurrentWebView(currentTabNumber);
+        }
+
+        // Expand the app bar if it is currently collapsed.
+        appBarLayout.setExpanded(true);
     }
 
     private void setCurrentWebView(int pageNumber) {
@@ -5390,6 +5399,24 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             // Apply text highlighting to the URL.
                             highlightUrlText();
                         }
+                    }
+
+                    // Get the current tab.
+                    TabLayout.Tab tab = tabLayout.getTabAt(currentPagePosition);
+
+                    // Only populate the title text view if the tab has been fully created.
+                    if (tab != null) {
+                        // Get the custom view from the tab.
+                        View tabView = tab.getCustomView();
+
+                        // Remove the incorrect warning below that the current tab view might be null.
+                        assert tabView != null;
+
+                        // Get the title text view from the tab.
+                        TextView tabTitleTextView = tabView.findViewById(R.id.title_textview);
+
+                        // Set the title as the tab text.  Sometimes `onReceivedTitle()` is not called, especially when navigating history.
+                        tabTitleTextView.setText(nestedScrollWebView.getTitle());
                     }
                 }
             }
