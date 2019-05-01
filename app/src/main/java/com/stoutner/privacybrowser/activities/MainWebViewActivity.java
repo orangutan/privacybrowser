@@ -3160,6 +3160,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         } else {  // There isn't anything to do in Privacy Browser.
             // Run the default commands.
             super.onBackPressed();
+
+            // Manually kill Privacy Browser.  Otherwise, it is glitchy when restarted.
+            System.exit(0);
         }
     }
 
@@ -5374,10 +5377,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         CheckPinnedMismatchHelper.checkPinnedMismatch(getSupportFragmentManager(), nestedScrollWebView);
                     }
 
+                    // Get the current URL from the nested scroll WebView.  This is more accurate than using the URL passed into the method, which is sometimes not the final one.
+                    String currentUrl = nestedScrollWebView.getUrl();
+
                     // Update the URL text bar if the page is currently selected and the user is not currently typing in the URL edit text.
-                    if ((tabLayout.getSelectedTabPosition() == currentPagePosition) && !urlEditText.hasFocus()) {
+                    // Crash records show that, in some crazy way, it is possible for the current URL to be blank at this point.
+                    // Probably some sort of race condition when Privacy Browser is being resumed.
+                    if ((tabLayout.getSelectedTabPosition() == currentPagePosition) && !urlEditText.hasFocus() && (currentUrl != null)) {
                         // Check to see if the URL is `about:blank`.
-                        if (nestedScrollWebView.getUrl().equals("about:blank")) {  // The WebView is blank.
+                        if (currentUrl.equals("about:blank")) {  // The WebView is blank.
                             // Display the hint in the URL edit text.
                             urlEditText.setText("");
 
@@ -5394,7 +5402,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             applyDomainSettings(nestedScrollWebView, "", true, false);
                         } else {  // The WebView has loaded a webpage.
                             // Display the final URL.  Getting the URL from the WebView instead of using the one provided by `onPageFinished()` makes websites like YouTube function correctly.
-                            urlEditText.setText(nestedScrollWebView.getUrl());
+                            urlEditText.setText(currentUrl);
 
                             // Apply text highlighting to the URL.
                             highlightUrlText();
