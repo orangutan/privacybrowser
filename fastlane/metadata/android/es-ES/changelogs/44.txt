@@ -1,0 +1,4 @@
+• Corregir un error que permitía que la barra de aplicaciones se desplazara fuera de la pantalla cuando el desplazamiento de la barra de aplicaciones estaba desactivado, sin posibilidad de hacerla retroceder.
+• Corregir un error que impedía que se mostrara la barra de aplicaciones después de eliminar una pestaña si la nueva pestaña activa estaba vacía.
+• Corregir un fallo extraño cuando algunas páginas terminan de cargarse.
+• Hacer que el botón de Atrás cierre una pestaña si el WebView se encuentra al principio de la lista del historial.

@@ -812,9 +812,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Only process the URI if it contains data.  If the user pressed the desktop icon after the app was already running the URI will be null.
         if (intentUriData != null) {
-            // Sets the new intent as the activity intent, which replaces the one that originally started the app.
-            setIntent(intent);
-
             // Get the shared preferences.
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 

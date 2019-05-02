@@ -1,0 +1,4 @@
+• Uygulama çubuğu kaydırması devre dışı bırakıldığında, uygulama çubuğunun ekrandan kaydırılmasını sağlayan hata bir daha geri kaydırma yapmaması şeklinde düzeltildi.
+• Yeni etkin sekme boşsa, bir sekmenin silinmesinden sonra uygulama çubuğunun görüntülenmesini engelleyen bir hata düzeltildi.
+• Bazı sayfaların yüklemeyi bitirmesine sebep olan nadir hata düzeltildi.
+• Web Görüntüleme geçmiş listesinin başındaysa geri düğmesinin sekme kapatması sağlandı.

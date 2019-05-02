@@ -25,11 +25,13 @@
 
     <body>
         <h3>3.0.1 (код версии 44)</h3>
-        <p>1 мая 2019 года - minimum API 19, target API 28</p>
+        <p>2 мая 2019 года - minimum API 19, target API 28</p>
         <ul>
-            <li>Fix a bug that allowed the app bar to be scrolled off the screen when app bar scrolling was disabled, with <a href="https://redmine.stoutner.com/issues/418">no way to scroll it back</a>.
-            <li>Fix a bug that <a href="https://redmine.stoutner.com/issues/419">prevented the app bar from being displayed</a> after a tab was deleted if the new active tab was blank.</li>
-            <li>Make the <a href="https://redmine.stoutner.com/issues/421">back button close a tab</a> if the WebView is at the beginning of the history list.</li>
+            <li>Исправлена ​​ошибка, которая позволяла прокручивать панель приложения за пределы экрана, при отключенной прокрутке панели приложения,
+                <a href="https://redmine.stoutner.com/issues/418">без возможности прокрутки назад.</a>.</li>
+            <li>Исправлена ​​ошибка, <a href="https://redmine.stoutner.com/issues/419">из-за которой панель приложения не отображалась после удаления вкладки,</a> если новая активная вкладка была пустой.</li>
+            <li>Исправлены редкие падения браузера, возникавшие по окончании <a href="https://redmine.stoutner.com/issues/424">загрузки некоторых страниц</a>.</li>
+            <li>Если WebView находится в начале списка истории <a href="https://redmine.stoutner.com/issues/421">то, нажатие кнопки Назад </a>приведет к закрытию вкладки.</li>
         </ul>
 
         <h3><a href="https://www.stoutner.com/privacy-browser-3-0/">3.0</a> (код версии 43)</h3>
