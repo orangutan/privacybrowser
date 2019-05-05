@@ -810,8 +810,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         String intentAction = intent.getAction();
         Uri intentUriData = intent.getData();
 
-        // Only process the URI if it contains data.  If the user pressed the desktop icon after the app was already running the URI will be null.
-        if (intentUriData != null) {
+        // Determine if this is a web search.
+        boolean isWebSearch = ((intentAction != null) && intentAction.equals(Intent.ACTION_WEB_SEARCH));
+
+        // Only process the URI if it contains data or it is a web search.  If the user pressed the desktop icon after the app was already running the URI will be null.
+        if (intentUriData != null || isWebSearch) {
             // Get the shared preferences.
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -828,7 +831,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             String url;
 
             // If the intent action is a web search, perform the search.
-            if ((intentAction != null) && intentAction.equals(Intent.ACTION_WEB_SEARCH)) {
+            if (isWebSearch) {
                 // Create an encoded URL string.
                 String encodedUrlString;
 
