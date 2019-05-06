@@ -317,65 +317,71 @@ public class LogcatActivity extends AppCompatActivity implements SaveLogcatDialo
             // Get a handle for the save dialog fragment.
             DialogFragment saveDialogFragment = (DialogFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.save_logcat));
 
-            // Remove the incorrect lint error that the save dialog fragment might be null.
-            assert saveDialogFragment != null;
+            // Only update the file name if the dialog still exists.
+            if (saveDialogFragment != null) {
+                // Get a handle for the save dialog.
+                Dialog saveDialog = saveDialogFragment.getDialog();
 
-            // Get a handle for the save dialog.
-            Dialog saveDialog = saveDialogFragment.getDialog();
+                // Get a handle for the file name edit text.
+                EditText fileNameEditText = saveDialog.findViewById(R.id.file_name_edittext);
 
-            // Get a handle for the file name edit text.
-            EditText fileNameEditText = saveDialog.findViewById(R.id.file_name_edittext);
+                // Get the file name URI.
+                Uri fileNameUri = data.getData();
 
-            // Get the file name URI.
-            Uri fileNameUri = data.getData();
+                // Remove the incorrect lint warning that the file name URI might be null.
+                assert fileNameUri != null;
 
-            // Remove the incorrect lint warning that the file name URI might be null.
-            assert fileNameUri != null;
+                // Get the raw file name path.
+                String rawFileNamePath = fileNameUri.getPath();
 
-            // Get the raw file name path.
-            String rawFileNamePath = fileNameUri.getPath();
+                // Remove the incorrect lint warning that the file name path might be null.
+                assert rawFileNamePath != null;
 
-            // Remove the incorrect lint warning that the file name path might be null.
-            assert rawFileNamePath != null;
+                // Check to see if the file name Path includes a valid storage location.
+                if (rawFileNamePath.contains(":")) {  // The path is valid.
+                    // Split the path into the initial content uri and the final path information.
+                    String fileNameContentPath = rawFileNamePath.substring(0, rawFileNamePath.indexOf(":"));
+                    String fileNameFinalPath = rawFileNamePath.substring(rawFileNamePath.indexOf(":") + 1);
 
-            // Check to see if the file name Path includes a valid storage location.
-            if (rawFileNamePath.contains(":")) {  // The path is valid.
-                // Split the path into the initial content uri and the final path information.
-                String fileNameContentPath = rawFileNamePath.substring(0, rawFileNamePath.indexOf(":"));
-                String fileNameFinalPath = rawFileNamePath.substring(rawFileNamePath.indexOf(":") + 1);
+                    // Create the file name path string.
+                    String fileNamePath;
 
-                // Create the file name path string.
-                String fileNamePath;
+                    // Check to see if the current file name final patch is a complete, valid path
+                    if (fileNameFinalPath.startsWith("/storage/emulated/")) {  // The existing file name final path is a complete, valid path.
+                        // Use the provided file name path as is.
+                        fileNamePath = fileNameFinalPath;
+                    } else { // The existing file name final path is not a complete, valid path.
+                        // Construct the file name path.
+                        switch (fileNameContentPath) {
+                            // The documents home has a special content path.
+                            case "/document/home":
+                                fileNamePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" + fileNameFinalPath;
+                                break;
 
-                // Construct the file name path.
-                switch (fileNameContentPath) {
-                    // The documents home has a special content path.
-                    case "/document/home":
-                        fileNamePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" + fileNameFinalPath;
-                        break;
+                            // Everything else for the primary user should be in `/document/primary`.
+                            case "/document/primary":
+                                fileNamePath = Environment.getExternalStorageDirectory() + "/" + fileNameFinalPath;
+                                break;
 
-                    // Everything else for the primary user should be in `/document/primary`.
-                    case "/document/primary":
-                        fileNamePath = Environment.getExternalStorageDirectory() + "/" + fileNameFinalPath;
-                        break;
+                            // Just in case, catch everything else and place it in the external storage directory.
+                            default:
+                                fileNamePath = Environment.getExternalStorageDirectory() + "/" + fileNameFinalPath;
+                                break;
+                        }
+                    }
 
-                    // Just in case, catch everything else and place it in the external storage directory.
-                    default:
-                        fileNamePath = Environment.getExternalStorageDirectory() + "/" + fileNameFinalPath;
-                        break;
+                    // Set the file name path as the text of the file name edit text.
+                    fileNameEditText.setText(fileNamePath);
+                } else {  // The path is invalid.
+                    // Close the alert dialog.
+                    saveDialog.dismiss();
+
+                    // Get a handle for the logcat text view.
+                    TextView logcatTextView = findViewById(R.id.logcat_textview);
+
+                    // Display a snackbar with the error message.
+                    Snackbar.make(logcatTextView, rawFileNamePath + " " + getString(R.string.invalid_location), Snackbar.LENGTH_INDEFINITE).show();
                 }
-
-                // Set the file name path as the text of the file name edit text.
-                fileNameEditText.setText(fileNamePath);
-            } else {  // The path is invalid.
-                // Close the alert dialog.
-                saveDialog.dismiss();
-
-                // Get a handle for the logcat text view.
-                TextView logcatTextView = findViewById(R.id.logcat_textview);
-
-                // Display a snackbar with the error message.
-                Snackbar.make(logcatTextView, rawFileNamePath + " " + getString(R.string.invalid_location), Snackbar.LENGTH_INDEFINITE).show();
             }
         }
     }

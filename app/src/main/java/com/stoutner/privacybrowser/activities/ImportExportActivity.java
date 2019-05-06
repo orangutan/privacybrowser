@@ -587,25 +587,31 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
                         // Create the file name path string.
                         String fileNamePath;
 
-                        // Construct the file name path.
-                        switch (fileNameContentPath) {
-                            // The documents home has a special content path.
-                            case "/document/home":
-                                fileNamePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" + fileNameFinalPath;
-                                break;
+                        // Check to see if the current file name final patch is a complete, valid path
+                        if (fileNameFinalPath.startsWith("/storage/emulated/")) {  // The existing file name final path is a complete, valid path.
+                            // Use the provided file name path as is.
+                            fileNamePath = fileNameFinalPath;
+                        } else {  // The existing file name final path is not a complete, valid path.
+                            // Construct the file name path.
+                            switch (fileNameContentPath) {
+                                // The documents home has a special content path.
+                                case "/document/home":
+                                    fileNamePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" + fileNameFinalPath;
+                                    break;
 
-                            // Everything else for the primary user should be in `/document/primary`.
-                            case "/document/primary":
-                                fileNamePath = Environment.getExternalStorageDirectory() + "/" + fileNameFinalPath;
-                                break;
+                                // Everything else for the primary user should be in `/document/primary`.
+                                case "/document/primary":
+                                    fileNamePath = Environment.getExternalStorageDirectory() + "/" + fileNameFinalPath;
+                                    break;
 
-                            // Just in case, catch everything else and place it in the external storage directory.
-                            default:
-                                fileNamePath = Environment.getExternalStorageDirectory() + "/" + fileNameFinalPath;
-                                break;
+                                // Just in case, catch everything else and place it in the external storage directory.
+                                default:
+                                    fileNamePath = Environment.getExternalStorageDirectory() + "/" + fileNameFinalPath;
+                                    break;
+                            }
                         }
 
-                        // Set the file name path as the text of the file name EditText.
+                        // Set the file name path as the text of the file name edit text.
                         fileNameEditText.setText(fileNamePath);
                     } else {  // The path is invalid.
                         Snackbar.make(fileNameEditText, rawFileNamePath + " " + getString(R.string.invalid_location), Snackbar.LENGTH_INDEFINITE).show();
