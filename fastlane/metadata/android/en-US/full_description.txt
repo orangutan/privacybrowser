@@ -1,6 +1,6 @@
 Privacy Browser has two primary goals.
 
-1. Minimize the amount of information that is sent to web servers.
+1. Minimize the amount of information that is sent to the internet.
 
 2. Minimize the amount of information that is stored on the device.
 

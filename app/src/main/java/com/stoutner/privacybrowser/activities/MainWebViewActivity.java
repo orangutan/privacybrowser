@@ -2488,7 +2488,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Set the target URL as the title of the `ContextMenu`.
                 menu.setHeaderTitle(linkUrl);
 
-                // Add a Load URL entry.
+                // Add an Open in New Tab entry.
                 menu.add(R.string.open_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
                     // Add a new tab.
                     addTab(null);
@@ -2596,89 +2596,26 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 menu.add(R.string.cancel);
                 break;
 
-            // `IMAGE_TYPE` is an image.
+            // `IMAGE_TYPE` is an image. `SRC_IMAGE_ANCHOR_TYPE` is an image that is also a link.  Privacy Browser processes them the same.
             case WebView.HitTestResult.IMAGE_TYPE:
-                // Get the image URL.
-                imageUrl = hitTestResult.getExtra();
-
-                // Set the image URL as the title of the `ContextMenu`.
-                menu.setHeaderTitle(imageUrl);
-
-                // Add a View Image entry.
-                menu.add(R.string.view_image).setOnMenuItemClickListener(item -> {
-                    loadUrl(imageUrl);
-                    return false;
-                });
-
-                // Add a Download Image entry.
-                menu.add(R.string.download_image).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Check if the download should be processed by an external app.
-                    if (sharedPreferences.getBoolean("download_with_external_app", false)) {  // Download with an external app.
-                        openUrlWithExternalApp(imageUrl);
-                    } else {  // Download with Android's download manager.
-                        // Check to see if the storage permission has already been granted.
-                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {  // The storage permission needs to be requested.
-                            // Store the image URL for use by `onRequestPermissionResult()`.
-                            downloadImageUrl = imageUrl;
-
-                            // Show a dialog if the user has previously denied the permission.
-                            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
-                                // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_IMAGE.
-                                DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_IMAGE);
-
-                                // Show the download location permission alert dialog.  The permission will be requested when the dialog is closed.
-                                downloadLocationPermissionDialogFragment.show(fragmentManager, getString(R.string.download_location));
-                            } else {  // Show the permission request directly.
-                                // Request the permission.  The download dialog will be launched by `onRequestPermissionResult().
-                                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_IMAGE_REQUEST_CODE);
-                            }
-                        } else {  // The storage permission has already been granted.
-                            // Get a handle for the download image alert dialog.
-                            DialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
-
-                            // Show the download image alert dialog.
-                            downloadImageDialogFragment.show(fragmentManager, getString(R.string.download));
-                        }
-                    }
-                    return false;
-                });
-
-                // Add a Copy URL entry.
-                menu.add(R.string.copy_url).setOnMenuItemClickListener(item -> {
-                    // Save the image URL in a `ClipData`.
-                    ClipData srcImageTypeClipData = ClipData.newPlainText(getString(R.string.url), imageUrl);
-
-                    // Set the `ClipData` as the clipboard's primary clip.
-                    clipboardManager.setPrimaryClip(srcImageTypeClipData);
-                    return false;
-                });
-
-                // Add an Open with App entry.
-                menu.add(R.string.open_with_app).setOnMenuItemClickListener((MenuItem item) -> {
-                    openWithApp(imageUrl);
-                    return false;
-                });
-
-                // Add an Open with Browser entry.
-                menu.add(R.string.open_with_browser).setOnMenuItemClickListener((MenuItem item) -> {
-                    openWithBrowser(imageUrl);
-                    return false;
-                });
-
-                // Add a `Cancel` entry, which by default closes the `ContextMenu`.
-                menu.add(R.string.cancel);
-                break;
-
-
-            // `SRC_IMAGE_ANCHOR_TYPE` is an image that is also a link.
             case WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE:
                 // Get the image URL.
                 imageUrl = hitTestResult.getExtra();
 
-                // Set the image URL as the title of the `ContextMenu`.
+                // Set the image URL as the title of the context menu.
                 menu.setHeaderTitle(imageUrl);
 
-                // Add a `View Image` entry.
+                // Add an Open in New Tab entry.
+                menu.add(R.string.open_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Add a new tab.
+                    addTab(null);
+
+                    // Load the URL.
+                    loadUrl(imageUrl);
+                    return false;
+                });
+
+                // Add a View Image entry.
                 menu.add(R.string.view_image).setOnMenuItemClickListener(item -> {
                     loadUrl(imageUrl);
                     return false;
