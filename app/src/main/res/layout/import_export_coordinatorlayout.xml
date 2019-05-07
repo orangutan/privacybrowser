@@ -184,7 +184,7 @@
                                 android:onClick="onClickRadioButton" />
                         </RadioGroup>
 
-                        <!-- Align the EditText and the select file button horizontally. -->
+                        <!-- Align the edit text and the select file button horizontally. -->
                         <LinearLayout
                             android:id="@+id/file_name_linearlayout"
                             android:layout_height="wrap_content"
@@ -192,7 +192,7 @@
                             android:orientation="horizontal"
                             android:layout_marginTop="10dp">
 
-                            <!-- `android.support.design.widget.TextInputLayout` makes the `android:hint` float above the `EditText`. -->
+                            <!-- The text input layout makes the hint float above the edit text. -->
                             <com.google.android.material.textfield.TextInputLayout
                                 android:layout_height="wrap_content"
                                 android:layout_width="0dp"

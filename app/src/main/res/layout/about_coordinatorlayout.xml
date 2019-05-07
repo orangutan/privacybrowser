@@ -23,7 +23,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     android:id="@+id/about_coordinatorlayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:android.support.design="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:fitsSystemWindows="true">
@@ -54,8 +54,8 @@
                 android:id="@+id/about_tablayout"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android.support.design:tabMode="scrollable"
-                android.support.design:tabIndicatorColor="?attr/tabIndicatorColor"
+                app:tabMode="scrollable"
+                app:tabIndicatorColor="?attr/tabIndicatorColor"
                 android:theme="?attr/tabLayoutTheme" />
         </com.google.android.material.appbar.AppBarLayout>
 

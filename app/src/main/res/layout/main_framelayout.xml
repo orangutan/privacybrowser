@@ -20,7 +20,7 @@
 
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:android.support.design="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_framelayout"
     android:layout_height="match_parent"
@@ -62,7 +62,7 @@
                         android:id="@+id/toolbar"
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
-                        android.support.design:layout_scrollFlags="scroll|enterAlways|snap" />
+                        app:layout_scrollFlags="scroll|enterAlways|snap" />
 
                     <!-- The find on page linear layout.  It is initially `visibility="gone"`. -->
                     <LinearLayout
@@ -71,7 +71,7 @@
                         android:layout_width="match_parent"
                         android:orientation="horizontal"
                         android:visibility="gone"
-                        android.support.design:layout_scrollFlags="scroll|enterAlways|snap" >
+                        app:layout_scrollFlags="scroll|enterAlways|snap" >
 
                         <!-- `android:imeOptions="actionDone"` sets the keyboard to have a `check mark` key instead of a `new line` key. -->
                         <EditText
@@ -137,15 +137,15 @@
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:orientation="horizontal"
-                        android.support.design:layout_scrollFlags="scroll|enterAlways|snap" >
+                        app:layout_scrollFlags="scroll|enterAlways|snap" >
 
                         <com.google.android.material.tabs.TabLayout
                             android:id="@+id/tablayout"
                             android:layout_height="wrap_content"
                             android:layout_width="0dp"
                             android:layout_weight="1"
-                            android.support.design:tabIndicatorGravity="top"
-                            android.support.design:tabMode="scrollable" />
+                            app:tabIndicatorGravity="top"
+                            app:tabMode="scrollable" />
 
                         <ImageView
                             android:layout_height="wrap_content"
@@ -165,9 +165,9 @@
                     android:id="@+id/swiperefreshlayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android.support.design:layout_behavior="@string/appbar_scrolling_view_behavior" >
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior" >
 
-                        <androidx.viewpager.widget.ViewPager
+                        <com.stoutner.privacybrowser.views.NoSwipeViewPager
                             android:id="@+id/webviewpager"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
@@ -181,9 +181,9 @@
             android:layout_height="match_parent"
             android:layout_width="wrap_content"
             android:layout_gravity="start"
-            android.support.design:headerLayout="@layout/navigation_header"
-            android.support.design:menu="@menu/webview_navigation_menu"
-            android.support.design:itemIconTint="?attr/navigationIconTintColor" />
+            app:headerLayout="@layout/navigation_header"
+            app:menu="@menu/webview_navigation_menu"
+            app:itemIconTint="?attr/navigationIconTintColor" />
 
         <!-- Include the bookmarks drawer, which varies based on screen width. -->
         <include layout="@layout/bookmarks_drawer" />
