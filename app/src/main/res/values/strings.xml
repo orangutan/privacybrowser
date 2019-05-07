@@ -395,7 +395,8 @@
     <string name="api">API</string>
     <string name="build">Build:</string>
     <string name="security_patch">Security Patch:</string>
-    <string name="webview">WebView:</string>
+    <string name="webview_provider">WebView Provider:</string>
+    <string name="webview_version">WebView Version:</string>
     <string name="orbot">Orbot:</string>
     <string name="openkeychain">OpenKeychain:</string>
     <string name="easylist_label">EasyList:</string>

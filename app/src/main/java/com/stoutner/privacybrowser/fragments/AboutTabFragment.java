@@ -22,6 +22,7 @@ package com.stoutner.privacybrowser.fragments;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Build;
@@ -122,7 +123,8 @@ public class AboutTabFragment extends Fragment {
             TextView androidTextView = tabLayout.findViewById(R.id.android);
             TextView securityPatchTextView = tabLayout.findViewById(R.id.security_patch);
             TextView buildTextView = tabLayout.findViewById(R.id.build);
-            TextView webViewTextView = tabLayout.findViewById(R.id.webview);
+            TextView webViewProviderTextView = tabLayout.findViewById(R.id.webview_provider);
+            TextView webViewVersionTextView = tabLayout.findViewById(R.id.webview_version);
             TextView orbotTextView = tabLayout.findViewById(R.id.orbot);
             TextView openKeychainTextView = tabLayout.findViewById(R.id.open_keychain);
             TextView easyListTextView = tabLayout.findViewById(R.id.easylist);
@@ -147,7 +149,7 @@ public class AboutTabFragment extends Fragment {
             String bootloaderLabel = getString(R.string.bootloader) + "  ";
             String androidLabel = getString(R.string.android) + "  ";
             String buildLabel = getString(R.string.build) + "  ";
-            String webViewLabel = getString(R.string.webview) + "  ";
+            String webViewVersionLabel = getString(R.string.webview_version) + "  ";
             String easyListLabel = getString(R.string.easylist_label) + "  ";
             String easyPrivacyLabel = getString(R.string.easyprivacy_label) + "  ";
             String fanboyAnnoyanceLabel = getString(R.string.fanboy_annoyance_label) + "  ";
@@ -162,6 +164,7 @@ public class AboutTabFragment extends Fragment {
             String signatureAlgorithmLabel = getString(R.string.signature_algorithm) + "  ";
 
             // `webViewLayout` is only used to get the default user agent from `bare_webview`.  It is not used to render content on the screen.
+            // Once the minimum API >= 26 this can be accomplished with the WebView package info.
             View webViewLayout = layoutInflater.inflate(R.layout.bare_webview, container, false);
             WebView tabLayoutWebView = webViewLayout.findViewById(R.id.bare_webview);
             String userAgentString =  tabLayoutWebView.getSettings().getUserAgentString();
@@ -204,7 +207,7 @@ public class AboutTabFragment extends Fragment {
             SpannableStringBuilder bootloaderStringBuilder = new SpannableStringBuilder(bootloaderLabel + bootloader);
             SpannableStringBuilder androidStringBuilder = new SpannableStringBuilder(androidLabel + android);
             SpannableStringBuilder buildStringBuilder = new SpannableStringBuilder(buildLabel + build);
-            SpannableStringBuilder webViewStringBuilder = new SpannableStringBuilder(webViewLabel + webView);
+            SpannableStringBuilder webViewVersionStringBuilder = new SpannableStringBuilder(webViewVersionLabel + webView);
             SpannableStringBuilder easyListStringBuilder = new SpannableStringBuilder(easyListLabel + blocklistVersions[0]);
             SpannableStringBuilder easyPrivacyStringBuilder = new SpannableStringBuilder(easyPrivacyLabel + blocklistVersions[1]);
             SpannableStringBuilder fanboyAnnoyanceStringBuilder = new SpannableStringBuilder(fanboyAnnoyanceLabel + blocklistVersions[2]);
@@ -229,7 +232,7 @@ public class AboutTabFragment extends Fragment {
             bootloaderStringBuilder.setSpan(blueColorSpan, bootloaderLabel.length(), bootloaderStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             androidStringBuilder.setSpan(blueColorSpan, androidLabel.length(), androidStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             buildStringBuilder.setSpan(blueColorSpan, buildLabel.length(), buildStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            webViewStringBuilder.setSpan(blueColorSpan, webViewLabel.length(), webViewStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            webViewVersionStringBuilder.setSpan(blueColorSpan, webViewVersionLabel.length(), webViewVersionStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             easyListStringBuilder.setSpan(blueColorSpan, easyListLabel.length(), easyListStringBuilder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
             easyPrivacyStringBuilder.setSpan(blueColorSpan, easyPrivacyLabel.length(), easyPrivacyStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             fanboyAnnoyanceStringBuilder.setSpan(blueColorSpan, fanboyAnnoyanceLabel.length(), fanboyAnnoyanceStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
@@ -245,23 +248,12 @@ public class AboutTabFragment extends Fragment {
             bootloaderTextView.setText(bootloaderStringBuilder);
             androidTextView.setText(androidStringBuilder);
             buildTextView.setText(buildStringBuilder);
-            webViewTextView.setText(webViewStringBuilder);
+            webViewVersionTextView.setText(webViewVersionStringBuilder);
             easyListTextView.setText(easyListStringBuilder);
             easyPrivacyTextView.setText(easyPrivacyStringBuilder);
             fanboyAnnoyanceTextView.setText(fanboyAnnoyanceStringBuilder);
             fanboySocialTextView.setText(fanboySocialStringBuilder);
             ultraPrivacyTextView.setText(ultraPrivacyStringBuilder);
-
-            // Build.VERSION.SECURITY_PATCH is only available for SDK_INT >= 23.
-            if (Build.VERSION.SDK_INT >= 23) {
-                String securityPatchLabel = getString(R.string.security_patch) + "  ";
-                String securityPatch = Build.VERSION.SECURITY_PATCH;
-                SpannableStringBuilder securityPatchStringBuilder = new SpannableStringBuilder(securityPatchLabel + securityPatch);
-                securityPatchStringBuilder.setSpan(blueColorSpan, securityPatchLabel.length(), securityPatchStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                securityPatchTextView.setText(securityPatchStringBuilder);
-            } else {  // SDK_INT < 23.
-                securityPatchTextView.setVisibility(View.GONE);
-            }
 
             // Only populate the radio text view if there is a radio in the device.
             if (!radio.isEmpty()) {
@@ -271,6 +263,45 @@ public class AboutTabFragment extends Fragment {
                 radioTextView.setText(radioStringBuilder);
             } else {  // This device does not have a radio.
                 radioTextView.setVisibility(View.GONE);
+            }
+
+            // Build.VERSION.SECURITY_PATCH is only available for SDK_INT >= 23.
+            if (Build.VERSION.SDK_INT >= 23) {
+                String securityPatchLabel = getString(R.string.security_patch) + "  ";
+                String securityPatch = Build.VERSION.SECURITY_PATCH;
+                SpannableStringBuilder securityPatchStringBuilder = new SpannableStringBuilder(securityPatchLabel + securityPatch);
+                securityPatchStringBuilder.setSpan(blueColorSpan, securityPatchLabel.length(), securityPatchStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                securityPatchTextView.setText(securityPatchStringBuilder);
+            } else {  // The API < 23.
+                // Hide the security patch text view.
+                securityPatchTextView.setVisibility(View.GONE);
+            }
+
+            // Only populate the WebView provider if the SDK >= 26.
+            if (Build.VERSION.SDK_INT >= 26) {
+                // Create the WebView provider label.
+                String webViewProviderLabel = getString(R.string.webview_provider) + "  ";
+
+                // Get the current WebView package info.
+                PackageInfo webViewPackageInfo = WebView.getCurrentWebViewPackage();
+
+                // Remove the warning below that the package info might be null.
+                assert webViewPackageInfo != null;
+
+                // Get the WebView provider name.
+                String webViewPackageName = webViewPackageInfo.packageName;
+
+                // Create the spannable string builder.
+                SpannableStringBuilder webViewProviderStringBuilder = new SpannableStringBuilder(webViewProviderLabel + webViewPackageName);
+
+                // Apply the coloration.
+                webViewProviderStringBuilder.setSpan(blueColorSpan, webViewProviderLabel.length(), webViewProviderStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                // Display the WebView provider.
+                webViewProviderTextView.setText(webViewProviderStringBuilder);
+            } else {  // The API < 26.
+                // Hide the WebView provider text view.
+                webViewProviderTextView.setVisibility(View.GONE);
             }
 
             // Only populate the Orbot text view if it is installed.

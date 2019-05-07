@@ -42,15 +42,21 @@ import java.lang.reflect.Method;
 
 public class OrbotProxyHelper {
     public static void setProxy(Context privacyBrowserContext, Activity parentActivity, String proxyHost, String proxyPort) {
-        // Set the proxy values
-        System.setProperty("proxyHost", proxyHost);
-        System.setProperty("proxyPort", proxyPort);
+        if (proxyPort.equals("0")) {
+            // Clear the proxy values.
+            System.clearProperty("proxyHost");
+            System.clearProperty("proxyPort");
+        } else {
+            // Set the proxy values
+            System.setProperty("proxyHost", proxyHost);
+            System.setProperty("proxyPort", proxyPort);
+        }
 
         // These entries shouldn't be needed if the above general settings are applied.  They are here for troubleshooting just in case.
-        //System.setProperty("http.proxyHost", proxyHost);
-        //System.setProperty("http.proxyPort", proxyPort);
-        //System.setProperty("https.proxyHost", proxyHost);
-        //System.setProperty("https.proxyPort", proxyPort);
+        // System.setProperty("http.proxyHost", proxyHost);
+        // System.setProperty("http.proxyPort", proxyPort);
+        // System.setProperty("https.proxyHost", proxyHost);
+        // System.setProperty("https.proxyPort", proxyPort);
 
         // Use reflection to apply the new proxy values.
         try {
