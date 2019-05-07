@@ -22,16 +22,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/close_tab"
-        android:title="@string/close_tab"
-        android:icon="@drawable/tab_enabled_light"
-        android:orderInCategory="10" />
-
-    <item
         android:id="@+id/clear_and_exit"
         android:title="@string/clear_and_exit"
         android:icon="@drawable/open_with_external_app_enabled_light"
-        android:orderInCategory="20" />
+        android:orderInCategory="10" />
 
     <!-- If a group has an id, a line is drawn above it in the navigation view. -->
     <group
@@ -41,25 +35,25 @@
             android:id="@+id/home"
             android:title="@string/home"
             android:icon="@drawable/home_enabled_light"
-            android:orderInCategory="30" />
+            android:orderInCategory="20" />
 
         <item
             android:id="@+id/back"
             android:title="@string/back"
             android:icon="@drawable/back"
-            android:orderInCategory="40" />
+            android:orderInCategory="30" />
 
         <item
             android:id="@+id/forward"
             android:title="@string/forward"
             android:icon="@drawable/forward"
-            android:orderInCategory="50" />
+            android:orderInCategory="40" />
 
         <item
             android:id="@+id/history"
             android:title="@string/history"
             android:icon="@drawable/history"
-            android:orderInCategory="60" />
+            android:orderInCategory="50" />
     </group>
 
     <!-- If a group has an id, a line is drawn above it in the navigation view. -->
@@ -70,13 +64,13 @@
             android:id="@+id/requests"
             android:title="@string/requests"
             android:icon="@drawable/block_ads_enabled_light"
-            android:orderInCategory="70" />
+            android:orderInCategory="60" />
 
         <item
             android:id="@+id/downloads"
             android:title="@string/downloads"
             android:icon="@drawable/downloads_light"
-            android:orderInCategory="80" />
+            android:orderInCategory="70" />
     </group>
 
     <!-- If a group has an id, a line is drawn above it in the navigation view. -->
@@ -87,25 +81,25 @@
             android:id="@+id/domains"
             android:title="@string/domains"
             android:icon="@drawable/domains"
-            android:orderInCategory="90" />
+            android:orderInCategory="80" />
 
         <item
             android:id="@+id/settings"
             android:title="@string/settings"
             android:icon="@drawable/settings"
-            android:orderInCategory="100" />
+            android:orderInCategory="90" />
 
         <item
             android:id="@+id/import_export"
             android:title="@string/import_export"
             android:icon="@drawable/import_export_light"
-            android:orderInCategory="110" />
+            android:orderInCategory="100" />
 
         <item
             android:id="@+id/logcat"
             android:title="@string/logcat"
             android:icon="@drawable/bug"
-            android:orderInCategory="120" />
+            android:orderInCategory="110" />
     </group>
 
     <!-- If a group has an id, a line is drawn above it in the navigation view. -->
@@ -116,12 +110,12 @@
             android:id="@+id/guide"
             android:title="@string/guide"
             android:icon="@drawable/guide"
-            android:orderInCategory="130" />
+            android:orderInCategory="120" />
 
         <item
             android:id="@+id/about"
             android:title="@string/about"
             android:icon="@drawable/about_light"
-            android:orderInCategory="140" />
+            android:orderInCategory="130" />
     </group>
 </menu>

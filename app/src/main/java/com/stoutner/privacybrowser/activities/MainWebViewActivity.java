@@ -465,11 +465,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Get handles for the navigation menu and the back and forward menu items.  The menu is zero-based.
         Menu navigationMenu = navigationView.getMenu();
-        MenuItem navigationCloseTabMenuItem = navigationMenu.getItem(0);
-        MenuItem navigationBackMenuItem = navigationMenu.getItem(3);
-        MenuItem navigationForwardMenuItem = navigationMenu.getItem(4);
-        MenuItem navigationHistoryMenuItem = navigationMenu.getItem(5);
-        MenuItem navigationRequestsMenuItem = navigationMenu.getItem(6);
+        MenuItem navigationBackMenuItem = navigationMenu.getItem(2);
+        MenuItem navigationForwardMenuItem = navigationMenu.getItem(3);
+        MenuItem navigationHistoryMenuItem = navigationMenu.getItem(4);
+        MenuItem navigationRequestsMenuItem = navigationMenu.getItem(5);
 
         // Initialize the web view pager adapter.
         webViewPagerAdapter = new WebViewPagerAdapter(getSupportFragmentManager());
@@ -766,7 +765,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     }
 
                     // Update the navigation menu items.
-                    navigationCloseTabMenuItem.setEnabled(tabLayout.getTabCount() > 1);
                     navigationBackMenuItem.setEnabled(currentWebView.canGoBack());
                     navigationForwardMenuItem.setEnabled(currentWebView.canGoForward());
                     navigationHistoryMenuItem.setEnabled((currentWebView.canGoBack() || currentWebView.canGoForward()));
@@ -2076,183 +2074,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Run the commands that correspond to the selected menu item.
         switch (menuItemId) {
-            case R.id.close_tab:
-                // Close the current tab.
-                closeCurrentTab();
-                break;
-
             case R.id.clear_and_exit:
-                // Close the bookmarks cursor and database.
-                bookmarksCursor.close();
-                bookmarksDatabaseHelper.close();
-
-                // Get the status of the clear everything preference.
-                boolean clearEverything = sharedPreferences.getBoolean("clear_everything", true);
-
-                // Get a handle for the runtime.
-                Runtime runtime = Runtime.getRuntime();
-
-                // Get the application's private data directory, which will be something like `/data/user/0/com.stoutner.privacybrowser.standard`,
-                // which links to `/data/data/com.stoutner.privacybrowser.standard`.
-                String privateDataDirectoryString = getApplicationInfo().dataDir;
-
-                // Clear cookies.
-                if (clearEverything || sharedPreferences.getBoolean("clear_cookies", true)) {
-                    // The command to remove cookies changed slightly in API 21.
-                    if (Build.VERSION.SDK_INT >= 21) {
-                        CookieManager.getInstance().removeAllCookies(null);
-                    } else {
-                        CookieManager.getInstance().removeAllCookie();
-                    }
-
-                    // Manually delete the cookies database, as `CookieManager` sometimes will not flush its changes to disk before `System.exit(0)` is run.
-                    try {
-                        // Two commands must be used because `Runtime.exec()` does not like `*`.
-                        Process deleteCookiesProcess = runtime.exec("rm -f " + privateDataDirectoryString + "/app_webview/Cookies");
-                        Process deleteCookiesJournalProcess = runtime.exec("rm -f " + privateDataDirectoryString + "/app_webview/Cookies-journal");
-
-                        // Wait until the processes have finished.
-                        deleteCookiesProcess.waitFor();
-                        deleteCookiesJournalProcess.waitFor();
-                    } catch (Exception exception) {
-                        // Do nothing if an error is thrown.
-                    }
-                }
-
-                // Clear DOM storage.
-                if (clearEverything || sharedPreferences.getBoolean("clear_dom_storage", true)) {
-                    // Ask `WebStorage` to clear the DOM storage.
-                    WebStorage webStorage = WebStorage.getInstance();
-                    webStorage.deleteAllData();
-
-                    // Manually delete the DOM storage files and directories, as `WebStorage` sometimes will not flush its changes to disk before `System.exit(0)` is run.
-                    try {
-                        // A `String[]` must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
-                        Process deleteLocalStorageProcess = runtime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Local Storage/"});
-
-                        // Multiple commands must be used because `Runtime.exec()` does not like `*`.
-                        Process deleteIndexProcess = runtime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/IndexedDB");
-                        Process deleteQuotaManagerProcess = runtime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager");
-                        Process deleteQuotaManagerJournalProcess = runtime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager-journal");
-                        Process deleteDatabaseProcess = runtime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/databases");
-
-                        // Wait until the processes have finished.
-                        deleteLocalStorageProcess.waitFor();
-                        deleteIndexProcess.waitFor();
-                        deleteQuotaManagerProcess.waitFor();
-                        deleteQuotaManagerJournalProcess.waitFor();
-                        deleteDatabaseProcess.waitFor();
-                    } catch (Exception exception) {
-                        // Do nothing if an error is thrown.
-                    }
-                }
-
-                // Clear form data if the API < 26.
-                if ((Build.VERSION.SDK_INT < 26) && (clearEverything || sharedPreferences.getBoolean("clear_form_data", true))) {
-                    WebViewDatabase webViewDatabase = WebViewDatabase.getInstance(this);
-                    webViewDatabase.clearFormData();
-
-                    // Manually delete the form data database, as `WebViewDatabase` sometimes will not flush its changes to disk before `System.exit(0)` is run.
-                    try {
-                        // A string array must be used because the database contains a space and `Runtime.exec` will not otherwise escape the string correctly.
-                        Process deleteWebDataProcess = runtime.exec(new String[] {"rm", "-f", privateDataDirectoryString + "/app_webview/Web Data"});
-                        Process deleteWebDataJournalProcess = runtime.exec(new String[] {"rm", "-f", privateDataDirectoryString + "/app_webview/Web Data-journal"});
-
-                        // Wait until the processes have finished.
-                        deleteWebDataProcess.waitFor();
-                        deleteWebDataJournalProcess.waitFor();
-                    } catch (Exception exception) {
-                        // Do nothing if an error is thrown.
-                    }
-                }
-
-                // Clear the cache.
-                if (clearEverything || sharedPreferences.getBoolean("clear_cache", true)) {
-                    // Clear the cache from each WebView.
-                    for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
-                        // Get the WebView tab fragment.
-                        WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
-
-                        // Get the fragment view.
-                        View fragmentView = webViewTabFragment.getView();
-
-                        // Only clear the cache if the WebView exists.
-                        if (fragmentView != null) {
-                            // Get the nested scroll WebView from the tab fragment.
-                            NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
-
-                            // Clear the cache for this WebView.
-                            nestedScrollWebView.clearCache(true);
-                        }
-                    }
-
-                    // Manually delete the cache directories.
-                    try {
-                        // Delete the main cache directory.
-                        Process deleteCacheProcess = runtime.exec("rm -rf " + privateDataDirectoryString + "/cache");
-
-                        // Delete the secondary `Service Worker` cache directory.
-                        // A string array must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
-                        Process deleteServiceWorkerProcess = runtime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Service Worker/"});
-
-                        // Wait until the processes have finished.
-                        deleteCacheProcess.waitFor();
-                        deleteServiceWorkerProcess.waitFor();
-                    } catch (Exception exception) {
-                        // Do nothing if an error is thrown.
-                    }
-                }
-
-                // Wipe out each WebView.
-                for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
-                    // Get the WebView tab fragment.
-                    WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
-
-                    // Get the fragment view.
-                    View fragmentView = webViewTabFragment.getView();
-
-                    // Only wipe out the WebView if it exists.
-                    if (fragmentView != null) {
-                        // Get the nested scroll WebView from the tab fragment.
-                        NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
-
-                        // Clear SSL certificate preferences for this WebView.
-                        nestedScrollWebView.clearSslPreferences();
-
-                        // Clear the back/forward history for this WebView.
-                        nestedScrollWebView.clearHistory();
-
-                        // Destroy the internal state of `mainWebView`.
-                        nestedScrollWebView.destroy();
-                    }
-                }
-
-                // Clear the custom headers.
-                customHeaders.clear();
-
-                // Manually delete the `app_webview` folder, which contains the cookies, DOM storage, form data, and `Service Worker` cache.
-                // See `https://code.google.com/p/android/issues/detail?id=233826&thanks=233826&ts=1486670530`.
-                if (clearEverything) {
-                    try {
-                        // Delete the folder.
-                        Process deleteAppWebviewProcess = runtime.exec("rm -rf " + privateDataDirectoryString + "/app_webview");
-
-                        // Wait until the process has finished.
-                        deleteAppWebviewProcess.waitFor();
-                    } catch (Exception exception) {
-                        // Do nothing if an error is thrown.
-                    }
-                }
-
-                // Close Privacy Browser.  `finishAndRemoveTask` also removes Privacy Browser from the recent app list.
-                if (Build.VERSION.SDK_INT >= 21) {
-                    finishAndRemoveTask();
-                } else {
-                    finish();
-                }
-
-                // Remove the terminated program from RAM.  The status code is `0`.
-                System.exit(0);
+                // Clear and exit Privacy Browser.
+                clearAndExit();
                 break;
 
             case R.id.home:
@@ -4168,6 +3992,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         webViewPagerAdapter.addPage(newTabNumber, webViewPager);
     }
 
+    public void closeTab(View view) {
+        // Get a handle for the tab layout.
+        TabLayout tabLayout = findViewById(R.id.tablayout);
+
+        // Run the command according to the number of tabs.
+        if (tabLayout.getTabCount() > 1) {  // There is more than one tab open.
+            // Close the current tab.
+            closeCurrentTab();
+        } else {  // There is only one tab open.
+            clearAndExit();
+        }
+    }
+
     private void closeCurrentTab() {
         // Get handles for the views.
         AppBarLayout appBarLayout = findViewById(R.id.appbar_layout);
@@ -4187,6 +4024,183 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Expand the app bar if it is currently collapsed.
         appBarLayout.setExpanded(true);
+    }
+
+    private void clearAndExit() {
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Close the bookmarks cursor and database.
+        bookmarksCursor.close();
+        bookmarksDatabaseHelper.close();
+
+        // Get the status of the clear everything preference.
+        boolean clearEverything = sharedPreferences.getBoolean("clear_everything", true);
+
+        // Get a handle for the runtime.
+        Runtime runtime = Runtime.getRuntime();
+
+        // Get the application's private data directory, which will be something like `/data/user/0/com.stoutner.privacybrowser.standard`,
+        // which links to `/data/data/com.stoutner.privacybrowser.standard`.
+        String privateDataDirectoryString = getApplicationInfo().dataDir;
+
+        // Clear cookies.
+        if (clearEverything || sharedPreferences.getBoolean("clear_cookies", true)) {
+            // The command to remove cookies changed slightly in API 21.
+            if (Build.VERSION.SDK_INT >= 21) {
+                CookieManager.getInstance().removeAllCookies(null);
+            } else {
+                CookieManager.getInstance().removeAllCookie();
+            }
+
+            // Manually delete the cookies database, as `CookieManager` sometimes will not flush its changes to disk before `System.exit(0)` is run.
+            try {
+                // Two commands must be used because `Runtime.exec()` does not like `*`.
+                Process deleteCookiesProcess = runtime.exec("rm -f " + privateDataDirectoryString + "/app_webview/Cookies");
+                Process deleteCookiesJournalProcess = runtime.exec("rm -f " + privateDataDirectoryString + "/app_webview/Cookies-journal");
+
+                // Wait until the processes have finished.
+                deleteCookiesProcess.waitFor();
+                deleteCookiesJournalProcess.waitFor();
+            } catch (Exception exception) {
+                // Do nothing if an error is thrown.
+            }
+        }
+
+        // Clear DOM storage.
+        if (clearEverything || sharedPreferences.getBoolean("clear_dom_storage", true)) {
+            // Ask `WebStorage` to clear the DOM storage.
+            WebStorage webStorage = WebStorage.getInstance();
+            webStorage.deleteAllData();
+
+            // Manually delete the DOM storage files and directories, as `WebStorage` sometimes will not flush its changes to disk before `System.exit(0)` is run.
+            try {
+                // A `String[]` must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
+                Process deleteLocalStorageProcess = runtime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Local Storage/"});
+
+                // Multiple commands must be used because `Runtime.exec()` does not like `*`.
+                Process deleteIndexProcess = runtime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/IndexedDB");
+                Process deleteQuotaManagerProcess = runtime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager");
+                Process deleteQuotaManagerJournalProcess = runtime.exec("rm -f " + privateDataDirectoryString + "/app_webview/QuotaManager-journal");
+                Process deleteDatabaseProcess = runtime.exec("rm -rf " + privateDataDirectoryString + "/app_webview/databases");
+
+                // Wait until the processes have finished.
+                deleteLocalStorageProcess.waitFor();
+                deleteIndexProcess.waitFor();
+                deleteQuotaManagerProcess.waitFor();
+                deleteQuotaManagerJournalProcess.waitFor();
+                deleteDatabaseProcess.waitFor();
+            } catch (Exception exception) {
+                // Do nothing if an error is thrown.
+            }
+        }
+
+        // Clear form data if the API < 26.
+        if ((Build.VERSION.SDK_INT < 26) && (clearEverything || sharedPreferences.getBoolean("clear_form_data", true))) {
+            WebViewDatabase webViewDatabase = WebViewDatabase.getInstance(this);
+            webViewDatabase.clearFormData();
+
+            // Manually delete the form data database, as `WebViewDatabase` sometimes will not flush its changes to disk before `System.exit(0)` is run.
+            try {
+                // A string array must be used because the database contains a space and `Runtime.exec` will not otherwise escape the string correctly.
+                Process deleteWebDataProcess = runtime.exec(new String[] {"rm", "-f", privateDataDirectoryString + "/app_webview/Web Data"});
+                Process deleteWebDataJournalProcess = runtime.exec(new String[] {"rm", "-f", privateDataDirectoryString + "/app_webview/Web Data-journal"});
+
+                // Wait until the processes have finished.
+                deleteWebDataProcess.waitFor();
+                deleteWebDataJournalProcess.waitFor();
+            } catch (Exception exception) {
+                // Do nothing if an error is thrown.
+            }
+        }
+
+        // Clear the cache.
+        if (clearEverything || sharedPreferences.getBoolean("clear_cache", true)) {
+            // Clear the cache from each WebView.
+            for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
+                // Get the WebView tab fragment.
+                WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
+
+                // Get the fragment view.
+                View fragmentView = webViewTabFragment.getView();
+
+                // Only clear the cache if the WebView exists.
+                if (fragmentView != null) {
+                    // Get the nested scroll WebView from the tab fragment.
+                    NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+
+                    // Clear the cache for this WebView.
+                    nestedScrollWebView.clearCache(true);
+                }
+            }
+
+            // Manually delete the cache directories.
+            try {
+                // Delete the main cache directory.
+                Process deleteCacheProcess = runtime.exec("rm -rf " + privateDataDirectoryString + "/cache");
+
+                // Delete the secondary `Service Worker` cache directory.
+                // A string array must be used because the directory contains a space and `Runtime.exec` will otherwise not escape the string correctly.
+                Process deleteServiceWorkerProcess = runtime.exec(new String[] {"rm", "-rf", privateDataDirectoryString + "/app_webview/Service Worker/"});
+
+                // Wait until the processes have finished.
+                deleteCacheProcess.waitFor();
+                deleteServiceWorkerProcess.waitFor();
+            } catch (Exception exception) {
+                // Do nothing if an error is thrown.
+            }
+        }
+
+        // Wipe out each WebView.
+        for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
+            // Get the WebView tab fragment.
+            WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
+
+            // Get the fragment view.
+            View fragmentView = webViewTabFragment.getView();
+
+            // Only wipe out the WebView if it exists.
+            if (fragmentView != null) {
+                // Get the nested scroll WebView from the tab fragment.
+                NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+
+                // Clear SSL certificate preferences for this WebView.
+                nestedScrollWebView.clearSslPreferences();
+
+                // Clear the back/forward history for this WebView.
+                nestedScrollWebView.clearHistory();
+
+                // Destroy the internal state of `mainWebView`.
+                nestedScrollWebView.destroy();
+            }
+        }
+
+        // Clear the custom headers.
+        customHeaders.clear();
+
+        // Manually delete the `app_webview` folder, which contains the cookies, DOM storage, form data, and `Service Worker` cache.
+        // See `https://code.google.com/p/android/issues/detail?id=233826&thanks=233826&ts=1486670530`.
+        if (clearEverything) {
+            try {
+                // Delete the folder.
+                Process deleteAppWebviewProcess = runtime.exec("rm -rf " + privateDataDirectoryString + "/app_webview");
+
+                // Wait until the process has finished.
+                deleteAppWebviewProcess.waitFor();
+            } catch (Exception exception) {
+                // Do nothing if an error is thrown.
+            }
+        }
+
+        // Close Privacy Browser.  `finishAndRemoveTask` also removes Privacy Browser from the recent app list.
+        if (Build.VERSION.SDK_INT >= 21) {
+            finishAndRemoveTask();
+        } else {
+            finish();
+        }
+
+        // Remove the terminated program from RAM.  The status code is `0`.
+        System.exit(0);
     }
 
     private void setCurrentWebView(int pageNumber) {
@@ -4840,7 +4854,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 Menu navigationMenu = navigationView.getMenu();
 
                 // Get a handle for the navigation requests menu item.  The menu is 0 based.
-                MenuItem navigationRequestsMenuItem = navigationMenu.getItem(6);
+                MenuItem navigationRequestsMenuItem = navigationMenu.getItem(5);
 
                 // Create an empty web resource response to be used if the resource request is blocked.
                 WebResourceResponse emptyWebResourceResponse = new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));

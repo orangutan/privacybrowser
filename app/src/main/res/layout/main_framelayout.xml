@@ -139,6 +139,17 @@
                         android:orientation="horizontal"
                         app:layout_scrollFlags="scroll|enterAlways|snap" >
 
+                        <ImageView
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:paddingStart="10dp"
+                            android:paddingEnd="10dp"
+                            android:src="@drawable/close_light"
+                            android:tint="?attr/addTabIconTintColor"
+                            android:onClick="closeTab"
+                            android:contentDescription="@string/close_tab" />
+
                         <com.google.android.material.tabs.TabLayout
                             android:id="@+id/tablayout"
                             android:layout_height="wrap_content"
