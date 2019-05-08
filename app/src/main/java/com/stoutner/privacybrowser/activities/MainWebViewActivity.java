@@ -281,6 +281,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // The URL sanitizers are set in `applyAppSettings()` and used in `sanitizeUrl()`.
     private boolean sanitizeGoogleAnalytics;
+    private boolean sanitizeFacebookClickIds;
 
     // The download strings are used in `onCreate()`, `onRequestPermissionResult()` and `initializeWebView()`.
     private String downloadUrl;
@@ -3060,6 +3061,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         incognitoModeEnabled = sharedPreferences.getBoolean("incognito_mode", false);
         boolean doNotTrackEnabled = sharedPreferences.getBoolean("do_not_track", false);
         sanitizeGoogleAnalytics = sharedPreferences.getBoolean("google_analytics", true);
+        sanitizeFacebookClickIds = sharedPreferences.getBoolean("facebook_click_ids", true);
         proxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
         fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("full_screen_browsing_mode", false);
         hideAppBar = sharedPreferences.getBoolean("hide_app_bar", true);
@@ -3977,6 +3979,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Remove `&utm_`.
             if (url.contains("&utm_")) {
                 url = url.substring(0, url.indexOf("&utm_"));
+            }
+        }
+
+        // Sanitize Facebook Click IDs.
+        if (sanitizeFacebookClickIds) {
+            // Remove `?fbclid=`.
+            if (url.contains("?fbclid=")) {
+                url = url.substring(0, url.indexOf("?fbclid="));
+            }
+
+            // Remove &fbclid=`.
+            if (url.contains("&fbclid=")) {
+                url = url.substring(0, url.indexOf("&fbclid="));
             }
         }
 

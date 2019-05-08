@@ -138,6 +138,12 @@
             android:title="@string/google_analytics"
             android:summary="@string/google_analytics_summary"
             android:defaultValue="true" />
+
+        <SwitchPreference
+            android:key="facebook_click_ids"
+            android:title="@string/facebook_click_ids"
+            android:summary="@string/facebook_click_ids_summary"
+            android:defaultValue="true" />
     </PreferenceCategory>
 
     <PreferenceCategory

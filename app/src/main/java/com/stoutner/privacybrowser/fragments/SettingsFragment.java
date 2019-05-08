@@ -73,6 +73,7 @@ public class SettingsFragment extends PreferenceFragment {
         Preference ultraPrivacyPreference = findPreference("ultraprivacy");
         Preference blockAllThirdPartyRequestsPreference = findPreference("block_all_third_party_requests");
         Preference googleAnalyticsPreference = findPreference("google_analytics");
+        Preference facebookClickIdsPreference = findPreference("facebook_click_ids");
         Preference proxyThroughOrbotPreference = findPreference("proxy_through_orbot");
         Preference torHomepagePreference = findPreference("tor_homepage");
         Preference torSearchPreference = findPreference("tor_search");
@@ -458,7 +459,7 @@ public class SettingsFragment extends PreferenceFragment {
             }
         }
 
-        // Set the Google Analytics icons according to the theme.
+        // Set the Google Analytics icon according to the theme.
         if (savedPreferences.getBoolean("google_analytics", true)) {
             if (darkTheme) {
                 googleAnalyticsPreference.setIcon(R.drawable.modify_url_enabled_dark);
@@ -470,6 +471,21 @@ public class SettingsFragment extends PreferenceFragment {
                 googleAnalyticsPreference.setIcon(R.drawable.modify_url_disabled_dark);
             } else {
                 googleAnalyticsPreference.setIcon(R.drawable.modify_url_disabled_light);
+            }
+        }
+
+        // Set the Facebook Click IDs icon according to the theme.
+        if (savedPreferences.getBoolean("facebook_click_ids", true)) {
+            if (darkTheme) {
+                facebookClickIdsPreference.setIcon(R.drawable.modify_url_enabled_dark);
+            } else {
+                facebookClickIdsPreference.setIcon(R.drawable.modify_url_enabled_light);
+            }
+        } else {
+            if (darkTheme) {
+                facebookClickIdsPreference.setIcon(R.drawable.modify_url_disabled_dark);
+            } else {
+                facebookClickIdsPreference.setIcon(R.drawable.modify_url_disabled_light);
             }
         }
 
@@ -1139,6 +1155,23 @@ public class SettingsFragment extends PreferenceFragment {
                             googleAnalyticsPreference.setIcon(R.drawable.modify_url_disabled_dark);
                         } else {
                             googleAnalyticsPreference.setIcon(R.drawable.modify_url_disabled_light);
+                        }
+                    }
+                    break;
+
+                case "facebook_click_ids":
+                    // Update the icon.
+                    if (sharedPreferences.getBoolean("facebook_click_ids", true)) {
+                        if (darkTheme) {
+                            facebookClickIdsPreference.setIcon(R.drawable.modify_url_enabled_dark);
+                        } else {
+                            facebookClickIdsPreference.setIcon(R.drawable.modify_url_enabled_light);
+                        }
+                    } else {
+                        if (darkTheme) {
+                            facebookClickIdsPreference.setIcon(R.drawable.modify_url_disabled_dark);
+                        } else {
+                            facebookClickIdsPreference.setIcon(R.drawable.modify_url_disabled_light);
                         }
                     }
                     break;
