@@ -388,7 +388,8 @@
     <string name="api">API</string>
     <string name="build">Сборка:</string>
     <string name="security_patch">Патч безопасности:</string>
-    <string name="webview">WebView:</string>
+    <string name="webview_provider">Провайдер WebView:</string>
+    <string name="webview_version">Версия WebView:</string>
     <string name="orbot">Orbot:</string>
     <string name="openkeychain">OpenKeychain:</string>
     <string name="easylist_label">EasyList:</string>

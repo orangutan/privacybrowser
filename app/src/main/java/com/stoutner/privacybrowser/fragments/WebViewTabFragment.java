@@ -40,7 +40,7 @@ public class WebViewTabFragment extends Fragment {
 
     // The public interface is used to send information back to the parent activity.
     public interface NewTabListener {
-        void initializeWebView(NestedScrollWebView nestedScrollWebView, int pageNumber, ProgressBar progressBar);
+        void initializeWebView(NestedScrollWebView nestedScrollWebView, int pageNumber, ProgressBar progressBar, String url);
     }
 
     // The new tab listener is used in `onAttach()` and `onCreateView()`.
@@ -55,12 +55,13 @@ public class WebViewTabFragment extends Fragment {
         newTabListener = (NewTabListener) context;
     }
 
-    public static WebViewTabFragment createPage(int pageNumber) {
+    public static WebViewTabFragment createPage(int pageNumber, String url) {
         // Create a bundle.
         Bundle bundle = new Bundle();
 
-        // Store the page number in the bundle.
+        // Store the page number and URL in the bundle.
         bundle.putInt("page_number", pageNumber);
+        bundle.putString("url", url);
 
         // Create a new instance of the WebView tab fragment.
         WebViewTabFragment webViewTabFragment = new WebViewTabFragment();
@@ -82,6 +83,7 @@ public class WebViewTabFragment extends Fragment {
 
         // Get the variables from the arguments
         int pageNumber = arguments.getInt("page_number");
+        String url = arguments.getString("url");
 
         // Inflate the tab's WebView.  Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.  The fragment will take care of attaching the root automatically.
         View newPageView = layoutInflater.inflate(R.layout.webview_framelayout, container, false);
@@ -94,7 +96,7 @@ public class WebViewTabFragment extends Fragment {
         nestedScrollWebView.setWebViewFragmentId(fragmentId);
 
         // Request the main activity initialize the WebView.
-        newTabListener.initializeWebView(nestedScrollWebView, pageNumber, progressBar);
+        newTabListener.initializeWebView(nestedScrollWebView, pageNumber, progressBar, url);
 
         // Return the new page view.
         return newPageView;

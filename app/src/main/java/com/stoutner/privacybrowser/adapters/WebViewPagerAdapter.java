@@ -93,9 +93,9 @@ public class WebViewPagerAdapter extends FragmentPagerAdapter {
         return position;
     }
 
-    public void addPage(int pageNumber, ViewPager webViewPager) {
+    public void addPage(int pageNumber, ViewPager webViewPager, String url) {
         // Add a new page.
-        webViewFragmentsList.add(WebViewTabFragment.createPage(pageNumber));
+        webViewFragmentsList.add(WebViewTabFragment.createPage(pageNumber, url));
 
         // Update the view pager.
         notifyDataSetChanged();

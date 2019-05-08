@@ -816,15 +816,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Get the shared preferences.
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-            // Add a new tab if specified in the preferences.
-            if (sharedPreferences.getBoolean("open_intents_in_new_tab", true)) {
-                // Set the loading new intent flag.
-                loadingNewIntent = true;
-
-                // Add a new tab.
-                addTab(null);
-            }
-
             // Create a URL string.
             String url;
 
@@ -847,8 +838,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 url = intentUriData.toString();
             }
 
-            // Load the URL.
-            loadUrl(url);
+            // Add a new tab if specified in the preferences.
+            if (sharedPreferences.getBoolean("open_intents_in_new_tab", true)) {  // Load the URL in a new tab.
+                // Set the loading new intent flag.
+                loadingNewIntent = true;
+
+                // Add a new tab.
+                addNewTab(url);
+            } else {  // Load the URL in the current tab.
+                // Make it so.
+                loadUrl(url);
+            }
 
             // Get a handle for the drawer layout.
             DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
@@ -862,9 +862,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             if (drawerLayout.isDrawerVisible(GravityCompat.END)) {
                 drawerLayout.closeDrawer(GravityCompat.END);
             }
-
-            // Clear the keyboard if displayed and remove the focus on the urlTextBar if it has it.
-            currentWebView.requestFocus();
         }
     }
 
@@ -2314,11 +2311,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Add an Open in New Tab entry.
                 menu.add(R.string.open_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Add a new tab.
-                    addTab(null);
-
-                    // Load the URL.
-                    loadUrl(linkUrl);
+                    // Load the link URL in a new tab.
+                    addNewTab(linkUrl);
                     return false;
                 });
 
@@ -2431,11 +2425,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Add an Open in New Tab entry.
                 menu.add(R.string.open_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Add a new tab.
-                    addTab(null);
-
-                    // Load the URL.
-                    loadUrl(imageUrl);
+                    // Load the image URL in a new tab.
+                    addNewTab(imageUrl);
                     return false;
                 });
 
@@ -3969,6 +3960,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     public void addTab(View view) {
+        // Add a new tab with a blank URL.
+        addNewTab("");
+    }
+
+    private void addNewTab(String url) {
         // Get a handle for the tab layout and the view pager.
         TabLayout tabLayout = findViewById(R.id.tablayout);
         ViewPager webViewPager = findViewById(R.id.webviewpager);
@@ -3989,7 +3985,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         newTab.setCustomView(R.layout.tab_custom_view);
 
         // Add the new WebView page.
-        webViewPagerAdapter.addPage(newTabNumber, webViewPager);
+        webViewPagerAdapter.addPage(newTabNumber, webViewPager, url);
     }
 
     public void closeTab(View view) {
@@ -4305,7 +4301,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void initializeWebView(NestedScrollWebView nestedScrollWebView, int pageNumber, ProgressBar progressBar) {
+    public void initializeWebView(NestedScrollWebView nestedScrollWebView, int pageNumber, ProgressBar progressBar, String url) {
         // Get handles for the activity views.
         FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
         DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
@@ -4458,14 +4454,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         registerForContextMenu(nestedScrollWebView);
 
         // Allow the downloading of files.
-        nestedScrollWebView.setDownloadListener((String url, String userAgent, String contentDisposition, String mimetype, long contentLength) -> {
+        nestedScrollWebView.setDownloadListener((String downloadUrl, String userAgent, String contentDisposition, String mimetype, long contentLength) -> {
             // Check if the download should be processed by an external app.
             if (downloadWithExternalApp) {  // Download with an external app.
                 // Create a download intent.  Not specifying the action type will display the maximum number of options.
                 Intent downloadIntent = new Intent();
 
                 // Set the URI and the MIME type.  Specifying `text/html` displays a good number of options.
-                downloadIntent.setDataAndType(Uri.parse(url), "text/html");
+                downloadIntent.setDataAndType(Uri.parse(downloadUrl), "text/html");
 
                 // Flag the intent to open in a new task.
                 downloadIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -4478,7 +4474,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // The WRITE_EXTERNAL_STORAGE permission needs to be requested.
 
                     // Store the variables for future use by `onRequestPermissionsResult()`.
-                    downloadUrl = url;
+                    this.downloadUrl = downloadUrl;
                     downloadContentDisposition = contentDisposition;
                     downloadContentLength = contentLength;
 
@@ -4495,7 +4491,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     }
                 } else {  // The storage permission has already been granted.
                     // Get a handle for the download file alert dialog.
-                    DialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(url, contentDisposition, contentLength);
+                    DialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(downloadUrl, contentDisposition, contentLength);
 
                     // Show the download file alert dialog.
                     downloadFileDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
@@ -5471,6 +5467,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         loadUrl(sharedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
                     }
                 }
+            }
+        } else {  // This is not the first tab.
+            // Apply the domain settings.
+            applyDomainSettings(nestedScrollWebView, url, false, false);
+
+            // Load the URL.
+            nestedScrollWebView.loadUrl(url, customHeaders);
+
+            // Display the keyboard if the URL is blank.
+            if (url.equals("")) {
+                inputMethodManager.showSoftInput(urlEditText, 0);
             }
         }
     }

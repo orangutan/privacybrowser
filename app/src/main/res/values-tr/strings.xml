@@ -387,7 +387,6 @@
     <string name="api">API</string>
     <string name="build">Derleme:</string>
     <string name="security_patch">Güvenlik Yaması:</string>
-    <string name="webview">Web Görünümü:</string>
     <string name="orbot">Orbot:</string>
     <string name="openkeychain">OpenKeychain:</string>
     <string name="easylist_label">EasyList:</string>
