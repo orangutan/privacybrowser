@@ -419,17 +419,17 @@
 
     <!-- Preferences. -->
     <string name="privacy">Privacy</string>
-        <string name="javascript_preference">Enable JavaScript by default</string>
+        <string name="javascript_preference">JavaScript</string>
         <string name="javascript_preference_summary">JavaScript allows websites to run programs (scripts) on the device.</string>
-        <string name="first_party_cookies_preference">Enable first-party cookies by default</string>
+        <string name="first_party_cookies_preference">First-party cookies</string>
         <string name="first_party_cookies_preference_summary">Because first-party cookies are an app level setting, when the active tab has cookies enabled,
             any network requests made in the background by other tabs will also include any stored cookies for their domains.
             Android KitKat (version 4.4.x) does not differentiate between first and third-party cookies and will enable them both with this setting.</string>
-        <string name="third_party_cookies_preference">Enable third-party cookies by default</string>
+        <string name="third_party_cookies_preference">Third-party cookies</string>
         <string name="third_party_cookies_summary">This setting requires Android Lollipop (version 5.0) or higher.  It has no effect if first-party cookies are disabled.</string>
-        <string name="dom_storage_preference">Enable DOM storage by default</string>
+        <string name="dom_storage_preference">DOM storage</string>
         <string name="dom_storage_preference_summary">JavaScript must be enabled for DOM storage to function.</string>
-        <string name="save_form_data_preference">Enable saving of form data by default</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
+        <string name="save_form_data_preference">Form data</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="save_form_data_preference_summary">Saved form data can auto-populate fields on websites.</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="user_agent">User agent</string>
         <string-array name="translated_user_agent_names">

@@ -409,18 +409,18 @@
 
     <!-- Preferences. -->
     <string name="privacy">Gizlilik</string>
-        <string name="javascript_preference">JavaScript\'i varsayılan olarak etkinleştir</string>
+        <string name="javascript_preference">JavaScript</string>
         <string name="javascript_preference_summary">JavaScript web sitelerin cihazdaki programları(scriptler) çalıştırmasına izin verir.</string>
-        <string name="first_party_cookies_preference">Birinci taraf çerezleri varsayılan olarak etkinleştir</string>
+        <string name="first_party_cookies_preference">Birinci taraf çerezleri</string>
         <string name="first_party_cookies_preference_summary">Birinci taraf çerezleri uygulama düzeyinde bir ayar olduğundan, aktif sekmede çerezler etkinleştirildiğinde,
             arka plandaki diğer sekmeler tarafından yapılan herhangi ağ istekleri, domainler için kayıtlı çerezleri de içerecektir.
             Android KitKat (sürüm 4.4.x), birinci ve üçüncü taraf çerezleri arasında ayrım yapmaz ve bu ayarda ikisini de etkinleştirir.</string>
-        <string name="third_party_cookies_preference">Üçüncü taraf çerezleri varsayılan olarak etkinleştir</string>
+        <string name="third_party_cookies_preference">Üçüncü taraf çerezleri</string>
         <string name="third_party_cookies_summary">Bu ayarı etkinleştirmek için Android Lollipop sürümüne(5.0) ya da daha üst sürümlere sahip olmak gerekir.
             Birinci taraf çerezler devre dışı olduğu takdirde etkisi yoktur.</string>
-        <string name="dom_storage_preference">DOM depolama alanını varsayılan olarak etkinleştir</string>
+        <string name="dom_storage_preference">DOM depolama alanını</string>
         <string name="dom_storage_preference_summary">DOM depolama alanının çalışması için JavaScript\'in etkin olması gerekir.</string>
-        <string name="save_form_data_preference">Form verisini kaydetmeyi varsayılan olarak etkinleştir</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
+        <string name="save_form_data_preference">Form verisini kaydetmeyi</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
         <string name="save_form_data_preference_summary">Kaydedilen form verisi web sitelerdeki boşlukları otomatik dolduracaktır.</string>
         <string name="user_agent">Kullanıcı aracısı</string>
         <string-array name="translated_user_agent_names">

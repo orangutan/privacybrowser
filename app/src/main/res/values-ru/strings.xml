@@ -412,17 +412,17 @@
 
     <!-- Preferences. -->
     <string name="privacy">Конфиденциальность</string>
-        <string name="javascript_preference">Включить JavaScript по умолчанию</string>
+        <string name="javascript_preference">JavaScript</string>
         <string name="javascript_preference_summary">JavaScript позволяет веб-сайтам запускать программы (скрипты) на устройстве.</string>
-        <string name="first_party_cookies_preference">Включить первичные файлы cookie по умолчанию</string>
+        <string name="first_party_cookies_preference">Первичные файлы cookie</string>
         <string name="first_party_cookies_preference_summary">Поскольку первичные файлы cookie являются настройкой уровня приложения, при включении файлов cookie на активной вкладке, любые сетевые запросы,
             сделанные в фоновом режиме другими вкладками, также будут содержать любые сохраненные файлы cookie для их доменов.
             Android KitKat (версия 4.4.x) не различает первичные и сторонние файлы cookie и включает их одновременно этой настройкой.</string>
-        <string name="third_party_cookies_preference">Включить сторонние файлы cookie по умолчанию</string>
+        <string name="third_party_cookies_preference">Сторонние файлы cookie</string>
         <string name="third_party_cookies_summary">Этот параметр требует Android Lollipop (версия 5.0) или выше. Он не действует, если первичные файлы cookie отключены.</string>
-        <string name="dom_storage_preference">Включить DOM-хранилище по умолчанию</string>
+        <string name="dom_storage_preference">DOM-хранилище</string>
         <string name="dom_storage_preference_summary">Для работы хранилища DOM должен быть включен JavaScript.</string>
-        <string name="save_form_data_preference">Разрешить сохранение данных формы по умолчанию</string>
+        <string name="save_form_data_preference">Сохранение данных формы</string>
         <string name="save_form_data_preference_summary">Сохраненные данные формы могут автоматически заполнять поля на веб-сайтах.</string>
         <string name="user_agent">User agent</string>
         <string-array name="translated_user_agent_names">

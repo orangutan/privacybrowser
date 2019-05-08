@@ -417,17 +417,17 @@
 
     <!-- Preferences. -->
     <string name="privacy">Privacy</string>
-        <string name="javascript_preference">Abilita JavaScript</string>
+        <string name="javascript_preference">JavaScript</string>
         <string name="javascript_preference_summary">Permetti a JavaScript di eseguire programmi (script) sul dispositivo.</string>
-        <string name="first_party_cookies_preference">Abilita cookies proprietari</string>
+        <string name="first_party_cookies_preference">Cookies proprietari</string>
         <string name="first_party_cookies_preference_summary">Dal momento che i cookie proprietari sono un\'impostazione a livello di applicazione,
             quando la scheda attiva ha i cookie proprietari attivati anche ogni richiesta di rete in background da parte delle altre schede includerà i cookie per i relativi domini.
             Android KitKat (versione 4.4.x) inoltre non distingue tra cookie proprietari e cookie di terze parti e pertanto li abiliterà entrambi con questa impostazione.</string>
-        <string name="third_party_cookies_preference">Abilita cookies di terze parti</string>
+        <string name="third_party_cookies_preference">Cookies di terze parti</string>
         <string name="third_party_cookies_summary">Questa impostazione richiede Android Lollipop (version 5.0) o successivo.  Non ha effetti se i cookies proprietari sono disabilitati.</string>
-        <string name="dom_storage_preference">Abilita DOM Storage</string>
+        <string name="dom_storage_preference">DOM Storage</string>
         <string name="dom_storage_preference_summary">JavaScript deve essere abilitato per il DOM storage.</string>
-        <string name="save_form_data_preference">Abilita il salvataggio dei dati dei moduli</string>
+        <string name="save_form_data_preference">Dati dei moduli</string>
         <string name="save_form_data_preference_summary">I dati dei moduli salvati permettono di auto-compilare i campi dei moduli nei siti web.</string>
         <string name="user_agent">User agent</string>
         <string-array name="translated_user_agent_names">

@@ -418,17 +418,17 @@
 
     <!-- Preferences. -->
     <string name="privacy">Privacidad</string>
-        <string name="javascript_preference">Habilitar Javascript por defecto</string>
+        <string name="javascript_preference">Javascript</string>
         <string name="javascript_preference_summary">Javascript permite a las webs ejecutar programas (scripts) en el dispositivo.</string>
-        <string name="first_party_cookies_preference">Habilitar cookies de primera parte por defecto</string>
+        <string name="first_party_cookies_preference">Cookies de primera parte</string>
         <string name="first_party_cookies_preference_summary">Ya que las cookies de primera parte son una configuración de nivel de aplicación, cuando la pestaña activa tiene habilitadas las cookies,
             cualquier solicitud de red realizada en segundo plano por otras pestañas también incluirá las cookies almacenadas para sus dominios.
             Android KitKat (versión 4.4.x) no distingue entre cookies de primera y de terceras partes y las habilitará ambas con esta configuración.</string>
-        <string name="third_party_cookies_preference">Habilar cookies de terceras partes por defecto</string>
+        <string name="third_party_cookies_preference">Cookies de terceras partes</string>
         <string name="third_party_cookies_summary">Este ajuste requiere Android Lollipop (versión 5.0) o mayor.  No tiene efecto si las cookies de primera parte están deshabilitadas.</string>
-        <string name="dom_storage_preference">Habilitar almacenamiento DOM por defecto</string>
+        <string name="dom_storage_preference">Almacenamiento DOM</string>
         <string name="dom_storage_preference_summary">Javascript debe estar habilitado para que funcione el almacenamiento DOM.</string>
-        <string name="save_form_data_preference">Habilitar el guardar los datos de formulario por defecto</string>
+        <string name="save_form_data_preference">Datos de formulario</string>
         <string name="save_form_data_preference_summary">Los datos de formularios guardados pueden rellenar automáticamente las casillas o campos de las webs.</string>
         <string name="user_agent">Agente de usuario</string>
         <string-array name="translated_user_agent_names">

@@ -418,18 +418,18 @@
 
     <!-- Preferences. -->
     <string name="privacy">Privatsphäre</string>
-        <string name="javascript_preference">JavaScript standardmäßig aktivieren</string>
+        <string name="javascript_preference">JavaScript</string>
         <string name="javascript_preference_summary">JavaScript ermöglicht es Websites, Programme (Scripts) auf Ihrem Gerät auszuführen.</string>
-        <string name="first_party_cookies_preference">Erstanbieter-Cookies standardmäßig aktivieren</string>
+        <string name="first_party_cookies_preference">Erstanbieter-Cookies</string>
         <string name="first_party_cookies_preference_summary">Da die Cookie-Einstellungen App-weit gelten, werden, wenn im aktiven Tab Cookies erlaubt sind,
             auch in den Hintergrund-Tabs Cookies der dort angezeigten Seiten und deren Domains angenommen.
             Unter Android KitKat (version 4.4.x) wird nicht zwischen Cookies und Drittanbieter-Cookies unterschieden,
             sodass in dieser Version mit dieser Einstellung beide Cookie-Varianten aktiviert werden.</string>
-        <string name="third_party_cookies_preference">Drittanbieter-Cookies standardmäßig aktivieren</string>
+        <string name="third_party_cookies_preference">Drittanbieter-Cookies</string>
         <string name="third_party_cookies_summary">Diese Option benötigt Android Lollipop (Version 5.0) oder höher. Sie hat keine Auswirkungen, wenn Erstanbieter-Cookies deaktiviert sind.</string>
-        <string name="dom_storage_preference">DOM-Speicher standardmäßig aktivieren</string>
+        <string name="dom_storage_preference">DOM-Speicher</string>
         <string name="dom_storage_preference_summary">JavaScript muss für die Funktionalität des DOM-Speichers aktiviert sein.</string>
-        <string name="save_form_data_preference">Formulardaten standardmäßig speichern</string>
+        <string name="save_form_data_preference">Formulardaten</string>
         <string name="save_form_data_preference_summary">Mit gespeicherten Formulardaten können Formularfelder auf Websites automatisch ausgefüllt werden.</string>
         <string name="user_agent">User Agent</string>
         <string-array name="translated_user_agent_names">
