@@ -279,6 +279,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // The swipe refresh layout top padding is used when exiting full screen browsing mode.  It is used in an inner class in `initializeWebView()`.
     private int swipeRefreshLayoutPaddingTop;
 
+    // The URL sanitizers are set in `applyAppSettings()` and used in `sanitizeUrl()`.
+    private boolean sanitizeGoogleAnalytics;
+
     // The download strings are used in `onCreate()`, `onRequestPermissionResult()` and `initializeWebView()`.
     private String downloadUrl;
     private String downloadContentDisposition;
@@ -2999,6 +3002,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void loadUrl(String url) {
+        // Sanitize the URL.
+        url = sanitizeUrl(url);
+
         // Apply the domain settings.
         applyDomainSettings(currentWebView, url, true, false);
 
@@ -3053,6 +3059,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Store the values from the shared preferences in variables.
         incognitoModeEnabled = sharedPreferences.getBoolean("incognito_mode", false);
         boolean doNotTrackEnabled = sharedPreferences.getBoolean("do_not_track", false);
+        sanitizeGoogleAnalytics = sharedPreferences.getBoolean("google_analytics", true);
         proxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
         fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("full_screen_browsing_mode", false);
         hideAppBar = sharedPreferences.getBoolean("hide_app_bar", true);
@@ -3959,12 +3966,33 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         startActivity(openWithBrowserIntent);
     }
 
+    private String sanitizeUrl(String url) {
+        // Sanitize Google Analytics.
+        if (sanitizeGoogleAnalytics) {
+            // Remove `?utm_`.
+            if (url.contains("?utm_")) {
+                url = url.substring(0, url.indexOf("?utm_"));
+            }
+
+            // Remove `&utm_`.
+            if (url.contains("&utm_")) {
+                url = url.substring(0, url.indexOf("&utm_"));
+            }
+        }
+
+        // Return the sanitized URL.
+        return url;
+    }
+
     public void addTab(View view) {
         // Add a new tab with a blank URL.
         addNewTab("");
     }
 
     private void addNewTab(String url) {
+        // Sanitize the URL.
+        url = sanitizeUrl(url);
+
         // Get a handle for the tab layout and the view pager.
         TabLayout tabLayout = findViewById(R.id.tablayout);
         ViewPager webViewPager = findViewById(R.id.webviewpager);
@@ -4770,6 +4798,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // The deprecated `shouldOverrideUrlLoading` must be used until API >= 24.
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                // Sanitize the url.
+                url = sanitizeUrl(url);
+
                 if (url.startsWith("http")) {  // Load the URL in Privacy Browser.
                     // Apply the domain settings for the new URL.  This doesn't do anything if the domain has not changed.
                     boolean userAgentChanged = applyDomainSettings(nestedScrollWebView, url, true, false);

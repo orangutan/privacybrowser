@@ -130,6 +130,17 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:key="url_modification"
+        android:title="@string/url_modification" >
+
+        <SwitchPreference
+            android:key="google_analytics"
+            android:title="@string/google_analytics"
+            android:summary="@string/google_analytics_summary"
+            android:defaultValue="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:key="tor"
         android:title="@string/tor" >
 

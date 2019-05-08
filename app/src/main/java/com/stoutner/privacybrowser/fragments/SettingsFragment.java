@@ -60,7 +60,7 @@ public class SettingsFragment extends PreferenceFragment {
         Preference firstPartyCookiesPreference = findPreference("first_party_cookies");
         Preference thirdPartyCookiesPreference = findPreference("third_party_cookies");
         Preference domStoragePreference = findPreference("dom_storage");
-        Preference saveFormDataPreference = findPreference("save_form_data");  // The form data preference can be removed once the minimum API >= 26.
+        Preference formDataPreference = findPreference("save_form_data");  // The form data preference can be removed once the minimum API >= 26.
         Preference userAgentPreference = findPreference("user_agent");
         Preference customUserAgentPreference = findPreference("custom_user_agent");
         Preference incognitoModePreference = findPreference("incognito_mode");
@@ -72,6 +72,7 @@ public class SettingsFragment extends PreferenceFragment {
         Preference fanboySocialBlockingListPreference = findPreference("fanboys_social_blocking_list");
         Preference ultraPrivacyPreference = findPreference("ultraprivacy");
         Preference blockAllThirdPartyRequestsPreference = findPreference("block_all_third_party_requests");
+        Preference googleAnalyticsPreference = findPreference("google_analytics");
         Preference proxyThroughOrbotPreference = findPreference("proxy_through_orbot");
         Preference torHomepagePreference = findPreference("tor_homepage");
         Preference torSearchPreference = findPreference("tor_search");
@@ -130,7 +131,7 @@ public class SettingsFragment extends PreferenceFragment {
             PreferenceCategory clearAndExitCategory = (PreferenceCategory) findPreference("clear_and_exit");
 
             // Remove the form data preferences.
-            privacyCategory.removePreference(saveFormDataPreference);
+            privacyCategory.removePreference(formDataPreference);
             clearAndExitCategory.removePreference(clearFormDataPreference);
         }
 
@@ -288,12 +289,12 @@ public class SettingsFragment extends PreferenceFragment {
         // Set the save form data icon if API < 26.  Save form data has no effect on API >= 26.
         if (Build.VERSION.SDK_INT < 26) {
             if (savedPreferences.getBoolean("save_form_data", false)) {
-                saveFormDataPreference.setIcon(R.drawable.form_data_enabled);
+                formDataPreference.setIcon(R.drawable.form_data_enabled);
             } else {
                 if (darkTheme) {
-                    saveFormDataPreference.setIcon(R.drawable.form_data_disabled_dark);
+                    formDataPreference.setIcon(R.drawable.form_data_disabled_dark);
                 } else {
-                    saveFormDataPreference.setIcon(R.drawable.form_data_disabled_light);
+                    formDataPreference.setIcon(R.drawable.form_data_disabled_light);
                 }
             }
         }
@@ -454,6 +455,21 @@ public class SettingsFragment extends PreferenceFragment {
                 blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_disabled_dark);
             } else {
                 blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_disabled_light);
+            }
+        }
+
+        // Set the Google Analytics icons according to the theme.
+        if (savedPreferences.getBoolean("google_analytics", true)) {
+            if (darkTheme) {
+                googleAnalyticsPreference.setIcon(R.drawable.modify_url_enabled_dark);
+            } else {
+                googleAnalyticsPreference.setIcon(R.drawable.modify_url_enabled_light);
+            }
+        } else {
+            if (darkTheme) {
+                googleAnalyticsPreference.setIcon(R.drawable.modify_url_disabled_dark);
+            } else {
+                googleAnalyticsPreference.setIcon(R.drawable.modify_url_disabled_light);
             }
         }
 
@@ -829,12 +845,12 @@ public class SettingsFragment extends PreferenceFragment {
                 case "save_form_data":
                     // Update the icon.
                     if (sharedPreferences.getBoolean("save_form_data", false)) {
-                        saveFormDataPreference.setIcon(R.drawable.form_data_enabled);
+                        formDataPreference.setIcon(R.drawable.form_data_enabled);
                     } else {
                         if (darkTheme) {
-                            saveFormDataPreference.setIcon(R.drawable.form_data_disabled_dark);
+                            formDataPreference.setIcon(R.drawable.form_data_disabled_dark);
                         } else {
-                            saveFormDataPreference.setIcon(R.drawable.form_data_disabled_light);
+                            formDataPreference.setIcon(R.drawable.form_data_disabled_light);
                         }
                     }
                     break;
@@ -1106,6 +1122,23 @@ public class SettingsFragment extends PreferenceFragment {
                             blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_disabled_dark);
                         } else {
                             blockAllThirdPartyRequestsPreference.setIcon(R.drawable.block_all_third_party_requests_disabled_light);
+                        }
+                    }
+                    break;
+
+                case "google_analytics":
+                    // Update the icon.
+                    if (sharedPreferences.getBoolean("google_analytics", true)) {
+                        if (darkTheme) {
+                            googleAnalyticsPreference.setIcon(R.drawable.modify_url_enabled_dark);
+                        } else {
+                            googleAnalyticsPreference.setIcon(R.drawable.modify_url_enabled_light);
+                        }
+                    } else {
+                        if (darkTheme) {
+                            googleAnalyticsPreference.setIcon(R.drawable.modify_url_disabled_dark);
+                        } else {
+                            googleAnalyticsPreference.setIcon(R.drawable.modify_url_disabled_light);
                         }
                     }
                     break;
