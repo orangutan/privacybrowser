@@ -74,6 +74,7 @@ public class SettingsFragment extends PreferenceFragment {
         Preference blockAllThirdPartyRequestsPreference = findPreference("block_all_third_party_requests");
         Preference googleAnalyticsPreference = findPreference("google_analytics");
         Preference facebookClickIdsPreference = findPreference("facebook_click_ids");
+        Preference twitterAmpRedirectsPreference = findPreference("twitter_amp_redirects");
         Preference proxyThroughOrbotPreference = findPreference("proxy_through_orbot");
         Preference torHomepagePreference = findPreference("tor_homepage");
         Preference torSearchPreference = findPreference("tor_search");
@@ -486,6 +487,21 @@ public class SettingsFragment extends PreferenceFragment {
                 facebookClickIdsPreference.setIcon(R.drawable.modify_url_disabled_dark);
             } else {
                 facebookClickIdsPreference.setIcon(R.drawable.modify_url_disabled_light);
+            }
+        }
+
+        // Set the Twitter AMP redirects icon according to the theme.
+        if (savedPreferences.getBoolean("twitter_amp_redirects", true)) {
+            if (darkTheme) {
+                twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_enabled_dark);
+            } else {
+                twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_enabled_light);
+            }
+        } else {
+            if (darkTheme) {
+                twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_disabled_dark);
+            } else {
+                twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_disabled_light);
             }
         }
 
@@ -1172,6 +1188,23 @@ public class SettingsFragment extends PreferenceFragment {
                             facebookClickIdsPreference.setIcon(R.drawable.modify_url_disabled_dark);
                         } else {
                             facebookClickIdsPreference.setIcon(R.drawable.modify_url_disabled_light);
+                        }
+                    }
+                    break;
+
+                case "twitter_amp_redirects":
+                    // Update the icon.
+                    if (sharedPreferences.getBoolean("twitter_amp_redirects", true)) {
+                        if (darkTheme) {
+                            twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_enabled_dark);
+                        } else {
+                            twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_enabled_light);
+                        }
+                    } else {
+                        if (darkTheme) {
+                            twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_disabled_dark);
+                        } else {
+                            twitterAmpRedirectsPreference.setIcon(R.drawable.modify_url_disabled_light);
                         }
                     }
                     break;

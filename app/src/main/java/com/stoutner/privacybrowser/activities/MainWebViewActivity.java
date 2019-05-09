@@ -282,6 +282,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // The URL sanitizers are set in `applyAppSettings()` and used in `sanitizeUrl()`.
     private boolean sanitizeGoogleAnalytics;
     private boolean sanitizeFacebookClickIds;
+    private boolean sanitizeTwitterAmpRedirects;
 
     // The download strings are used in `onCreate()`, `onRequestPermissionResult()` and `initializeWebView()`.
     private String downloadUrl;
@@ -3062,6 +3063,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         boolean doNotTrackEnabled = sharedPreferences.getBoolean("do_not_track", false);
         sanitizeGoogleAnalytics = sharedPreferences.getBoolean("google_analytics", true);
         sanitizeFacebookClickIds = sharedPreferences.getBoolean("facebook_click_ids", true);
+        sanitizeTwitterAmpRedirects = sharedPreferences.getBoolean("twitter_amp_redirects", true);
         proxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
         fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("full_screen_browsing_mode", false);
         hideAppBar = sharedPreferences.getBoolean("hide_app_bar", true);
@@ -3452,53 +3454,49 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     nestedScrollWebView.getSettings().setTextZoom(fontSize);
                 }
 
-                // Only set the user agent if the webpage is not currently loading.  Otherwise, changing the user agent on redirects can cause the original website to reload.
-                // <https://redmine.stoutner.com/issues/160>
-                if (nestedScrollWebView.getProgress() == 100) {  // A URL is not loading.
-                    // Set the user agent.
-                    if (userAgentName.equals(getString(R.string.system_default_user_agent))) {  // Use the system default user agent.
-                        // Get the array position of the default user agent name.
-                        int defaultUserAgentArrayPosition = userAgentNamesArray.getPosition(defaultUserAgentName);
+                // Set the user agent.
+                if (userAgentName.equals(getString(R.string.system_default_user_agent))) {  // Use the system default user agent.
+                    // Get the array position of the default user agent name.
+                    int defaultUserAgentArrayPosition = userAgentNamesArray.getPosition(defaultUserAgentName);
 
-                        // Set the user agent according to the system default.
-                        switch (defaultUserAgentArrayPosition) {
-                            case UNRECOGNIZED_USER_AGENT:  // The default user agent name is not on the canonical list.
-                                // This is probably because it was set in an older version of Privacy Browser before the switch to persistent user agent names.
-                                nestedScrollWebView.getSettings().setUserAgentString(defaultUserAgentName);
-                                break;
+                    // Set the user agent according to the system default.
+                    switch (defaultUserAgentArrayPosition) {
+                        case UNRECOGNIZED_USER_AGENT:  // The default user agent name is not on the canonical list.
+                            // This is probably because it was set in an older version of Privacy Browser before the switch to persistent user agent names.
+                            nestedScrollWebView.getSettings().setUserAgentString(defaultUserAgentName);
+                            break;
 
-                            case SETTINGS_WEBVIEW_DEFAULT_USER_AGENT:
-                                // Set the user agent to `""`, which uses the default value.
-                                nestedScrollWebView.getSettings().setUserAgentString("");
-                                break;
+                        case SETTINGS_WEBVIEW_DEFAULT_USER_AGENT:
+                            // Set the user agent to `""`, which uses the default value.
+                            nestedScrollWebView.getSettings().setUserAgentString("");
+                            break;
 
-                            case SETTINGS_CUSTOM_USER_AGENT:
-                                // Set the default custom user agent.
-                                nestedScrollWebView.getSettings().setUserAgentString(sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value)));
-                                break;
+                        case SETTINGS_CUSTOM_USER_AGENT:
+                            // Set the default custom user agent.
+                            nestedScrollWebView.getSettings().setUserAgentString(sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value)));
+                            break;
 
-                            default:
-                                // Get the user agent string from the user agent data array
-                                nestedScrollWebView.getSettings().setUserAgentString(userAgentDataArray[defaultUserAgentArrayPosition]);
-                        }
-                    } else {  // Set the user agent according to the stored name.
-                        // Get the array position of the user agent name.
-                        int userAgentArrayPosition = userAgentNamesArray.getPosition(userAgentName);
+                        default:
+                            // Get the user agent string from the user agent data array
+                            nestedScrollWebView.getSettings().setUserAgentString(userAgentDataArray[defaultUserAgentArrayPosition]);
+                    }
+                } else {  // Set the user agent according to the stored name.
+                    // Get the array position of the user agent name.
+                    int userAgentArrayPosition = userAgentNamesArray.getPosition(userAgentName);
 
-                        switch (userAgentArrayPosition) {
-                            case UNRECOGNIZED_USER_AGENT:  // The user agent name contains a custom user agent.
-                                nestedScrollWebView.getSettings().setUserAgentString(userAgentName);
-                                break;
+                    switch (userAgentArrayPosition) {
+                        case UNRECOGNIZED_USER_AGENT:  // The user agent name contains a custom user agent.
+                            nestedScrollWebView.getSettings().setUserAgentString(userAgentName);
+                            break;
 
-                            case SETTINGS_WEBVIEW_DEFAULT_USER_AGENT:
-                                // Set the user agent to `""`, which uses the default value.
-                                nestedScrollWebView.getSettings().setUserAgentString("");
-                                break;
+                        case SETTINGS_WEBVIEW_DEFAULT_USER_AGENT:
+                            // Set the user agent to `""`, which uses the default value.
+                            nestedScrollWebView.getSettings().setUserAgentString("");
+                            break;
 
-                            default:
-                                // Get the user agent string from the user agent data array.
-                                nestedScrollWebView.getSettings().setUserAgentString(userAgentDataArray[userAgentArrayPosition]);
-                        }
+                        default:
+                            // Get the user agent string from the user agent data array.
+                            nestedScrollWebView.getSettings().setUserAgentString(userAgentDataArray[userAgentArrayPosition]);
                     }
                 }
 
@@ -3596,33 +3594,29 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     cookieManager.setAcceptThirdPartyCookies(nestedScrollWebView, defaultThirdPartyCookiesEnabled);
                 }
 
-                // Only set the user agent if the webpage is not currently loading.  Otherwise, changing the user agent on redirects can cause the original website to reload.
-                // <https://redmine.stoutner.com/issues/160>
-                if (nestedScrollWebView.getProgress() == 100) {  // A URL is not loading.
-                    // Get the array position of the user agent name.
-                    int userAgentArrayPosition = userAgentNamesArray.getPosition(defaultUserAgentName);
+                // Get the array position of the user agent name.
+                int userAgentArrayPosition = userAgentNamesArray.getPosition(defaultUserAgentName);
 
-                    // Set the user agent.
-                    switch (userAgentArrayPosition) {
-                        case UNRECOGNIZED_USER_AGENT:  // The default user agent name is not on the canonical list.
-                            // This is probably because it was set in an older version of Privacy Browser before the switch to persistent user agent names.
-                            nestedScrollWebView.getSettings().setUserAgentString(defaultUserAgentName);
-                            break;
+                // Set the user agent.
+                switch (userAgentArrayPosition) {
+                    case UNRECOGNIZED_USER_AGENT:  // The default user agent name is not on the canonical list.
+                        // This is probably because it was set in an older version of Privacy Browser before the switch to persistent user agent names.
+                        nestedScrollWebView.getSettings().setUserAgentString(defaultUserAgentName);
+                        break;
 
-                        case SETTINGS_WEBVIEW_DEFAULT_USER_AGENT:
-                            // Set the user agent to `""`, which uses the default value.
-                            nestedScrollWebView.getSettings().setUserAgentString("");
-                            break;
+                    case SETTINGS_WEBVIEW_DEFAULT_USER_AGENT:
+                        // Set the user agent to `""`, which uses the default value.
+                        nestedScrollWebView.getSettings().setUserAgentString("");
+                        break;
 
-                        case SETTINGS_CUSTOM_USER_AGENT:
-                            // Set the default custom user agent.
-                            nestedScrollWebView.getSettings().setUserAgentString(sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value)));
-                            break;
+                    case SETTINGS_CUSTOM_USER_AGENT:
+                        // Set the default custom user agent.
+                        nestedScrollWebView.getSettings().setUserAgentString(sharedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value)));
+                        break;
 
-                        default:
-                            // Get the user agent string from the user agent data array
-                            nestedScrollWebView.getSettings().setUserAgentString(userAgentDataArray[userAgentArrayPosition]);
-                    }
+                    default:
+                        // Get the user agent string from the user agent data array
+                        nestedScrollWebView.getSettings().setUserAgentString(userAgentDataArray[userAgentArrayPosition]);
                 }
 
                 // Set the loading of webpage images.
@@ -3989,9 +3983,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 url = url.substring(0, url.indexOf("?fbclid="));
             }
 
-            // Remove &fbclid=`.
+            // Remove `&fbclid=`.
             if (url.contains("&fbclid=")) {
                 url = url.substring(0, url.indexOf("&fbclid="));
+            }
+        }
+
+        // Sanitize Twitter AMP redirects.
+        if (sanitizeTwitterAmpRedirects) {
+            // Remove `?amp=1`.
+            if (url.contains("?amp=1")) {
+                url = url.substring(0, url.indexOf("?amp=1"));
             }
         }
 
@@ -4889,6 +4891,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Check requests against the block lists.  The deprecated `shouldInterceptRequest()` must be used until minimum API >= 21.
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+                // Sanitize the URL.
+                url = sanitizeUrl(url);
+
                 // Get a handle for the navigation view.
                 NavigationView navigationView = findViewById(R.id.navigationview);
 

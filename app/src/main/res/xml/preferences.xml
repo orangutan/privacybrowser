@@ -144,6 +144,12 @@
             android:title="@string/facebook_click_ids"
             android:summary="@string/facebook_click_ids_summary"
             android:defaultValue="true" />
+
+        <SwitchPreference
+            android:key="twitter_amp_redirects"
+            android:title="@string/twitter_amp_redirects"
+            android:summary="@string/twitter_amp_redirects_summary"
+            android:defaultValue="true" />
     </PreferenceCategory>
 
     <PreferenceCategory
