@@ -44,8 +44,9 @@
     <string name="no_title">Без названия</string>
     <string name="unrecognized_url">Нераспознанный URL:</string>
     <string name="open_with">Открыть в</string>
-    <string name="new_tab">Новая вкладка</string>
     <string name="add_tab">Добавить вкладку</string>
+    <string name="close_tab">Закрыть вкладку</string>
+    <string name="new_tab">Новая вкладка</string>
     <string name="loading">Загрузка…</string>
 
     <!-- Save As. -->
@@ -107,7 +108,6 @@
     <!-- MainWebViewActivity Navigation Menu. -->
     <string name="navigation_drawer">Навигационная панель</string>
     <string name="navigation">Навигация</string>
-    <string name="close_tab">Закрыть вкладку</string>
     <string name="clear_and_exit">Очистить и выйти</string>
     <string name="home">Домой</string>
     <string name="back">Назад</string>

@@ -3221,8 +3221,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             newHostName = "";
         }
 
-        // Only apply the domain settings if a new domain is being loaded.  This allows the user to set temporary settings for JavaScript, cookies, DOM storage, etc.
-        if (!nestedScrollWebView.getCurrentDomainName().equals(newHostName)) {
+        // Apply the domain settings if a new domain is being loaded or if the new domain is blank.  This allows the user to set temporary settings for JavaScript, cookies, DOM storage, etc.
+        if (!nestedScrollWebView.getCurrentDomainName().equals(newHostName) || newHostName.equals("")) {
             // Set the new host name as the current domain name.
             nestedScrollWebView.setCurrentDomainName(newHostName);
 
@@ -4702,8 +4702,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Get the title text view from the tab.
                     TextView tabTitleTextView = tabView.findViewById(R.id.title_textview);
 
-                    // Set the title as the tab text.
-                    tabTitleTextView.setText(title);
+                    // Set the title according to the URL.
+                    if (title.equals("about:blank")) {
+                        // Set the title to indicate a new tab.
+                        tabTitleTextView.setText(R.string.new_tab);
+                    } else {
+                        // Set the title as the tab text.
+                        tabTitleTextView.setText(title);
+                    }
                 }
             }
 
@@ -5305,7 +5311,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         }
                     }
 
-                    // Replace Refresh with Stop if the options menu has been created.  (The WebView typically begins loading before the menu items are instantiated.)
+                    // Replace Refresh with Stop if the options menu has been created.  (The first WebView typically begins loading before the menu items are instantiated.)
                     if (optionsMenu != null) {
                         // Get a handle for the refresh menu item.
                         MenuItem refreshMenuItem = optionsMenu.findItem(R.id.refresh);
@@ -5396,6 +5402,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Get the current URL from the nested scroll WebView.  This is more accurate than using the URL passed into the method, which is sometimes not the final one.
                     String currentUrl = nestedScrollWebView.getUrl();
 
+                    // Get the current tab.
+                    TabLayout.Tab tab = tabLayout.getTabAt(currentPagePosition);
+
                     // Update the URL text bar if the page is currently selected and the user is not currently typing in the URL edit text.
                     // Crash records show that, in some crazy way, it is possible for the current URL to be blank at this point.
                     // Probably some sort of race condition when Privacy Browser is being resumed.
@@ -5411,36 +5420,45 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             // Display the keyboard.
                             inputMethodManager.showSoftInput(urlEditText, 0);
 
-                            // Hide the WebView, which causes the default background color to be displayed according to the theme.
-                            nestedScrollWebView.setVisibility(View.INVISIBLE);
-
                             // Apply the domain settings.  This clears any settings from the previous domain.
                             applyDomainSettings(nestedScrollWebView, "", true, false);
+
+                            // Only populate the title text view if the tab has been fully created.
+                            if (tab != null) {
+                                // Get the custom view from the tab.
+                                View tabView = tab.getCustomView();
+
+                                // Remove the incorrect warning below that the current tab view might be null.
+                                assert tabView != null;
+
+                                // Get the title text view from the tab.
+                                TextView tabTitleTextView = tabView.findViewById(R.id.title_textview);
+
+                                // Set the title as the tab text.
+                                tabTitleTextView.setText(R.string.new_tab);
+                            }
                         } else {  // The WebView has loaded a webpage.
                             // Display the final URL.  Getting the URL from the WebView instead of using the one provided by `onPageFinished()` makes websites like YouTube function correctly.
                             urlEditText.setText(currentUrl);
 
                             // Apply text highlighting to the URL.
                             highlightUrlText();
+
+                            // Only populate the title text view if the tab has been fully created.
+                            if (tab != null) {
+                                // Get the custom view from the tab.
+                                View tabView = tab.getCustomView();
+
+                                // Remove the incorrect warning below that the current tab view might be null.
+                                assert tabView != null;
+
+                                // Get the title text view from the tab.
+                                TextView tabTitleTextView = tabView.findViewById(R.id.title_textview);
+
+                                // Set the title as the tab text.  Sometimes `onReceivedTitle()` is not called, especially when navigating history.
+                                tabTitleTextView.setText(nestedScrollWebView.getTitle());
+                            }
                         }
-                    }
-
-                    // Get the current tab.
-                    TabLayout.Tab tab = tabLayout.getTabAt(currentPagePosition);
-
-                    // Only populate the title text view if the tab has been fully created.
-                    if (tab != null) {
-                        // Get the custom view from the tab.
-                        View tabView = tab.getCustomView();
-
-                        // Remove the incorrect warning below that the current tab view might be null.
-                        assert tabView != null;
-
-                        // Get the title text view from the tab.
-                        TextView tabTitleTextView = tabView.findViewById(R.id.title_textview);
-
-                        // Set the title as the tab text.  Sometimes `onReceivedTitle()` is not called, especially when navigating history.
-                        tabTitleTextView.setText(nestedScrollWebView.getTitle());
                     }
                 }
             }
@@ -5544,9 +5562,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Load the URL.
             nestedScrollWebView.loadUrl(url, customHeaders);
 
-            // Display the keyboard if the URL is blank.
+            // Set the focus and display the keyboard if the URL is blank.
             if (url.equals("")) {
-                inputMethodManager.showSoftInput(urlEditText, 0);
+                // Request focus for the URL text box.
+                urlEditText.requestFocus();
+
+                // Create a display keyboard handler.
+                Handler displayKeyboardHandler = new Handler();
+
+                // Create a display keyboard runnable.
+                Runnable displayKeyboardRunnable = () -> {
+                    // Display the keyboard.
+                    inputMethodManager.showSoftInput(urlEditText, 0);
+                };
+
+                // Display the keyboard after 100 milliseconds, which leaves enough time for the tab to transition.
+                displayKeyboardHandler.postDelayed(displayKeyboardRunnable, 100);
             }
         }
     }

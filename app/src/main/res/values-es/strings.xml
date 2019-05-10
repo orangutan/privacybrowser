@@ -46,8 +46,9 @@
     <string name="no_title">Sin título</string>
     <string name="unrecognized_url">URL no reconocida:</string>
     <string name="open_with">Abrir con</string>
-    <string name="new_tab">Nueva pestaña</string>
     <string name="add_tab">Añadir pestaña</string>
+    <string name="close_tab">Cerrar pestaña</string>
+    <string name="new_tab">Nueva pestaña</string>
     <string name="loading">Cargando…</string>
 
     <!-- Save As. -->
@@ -110,7 +111,6 @@
     <!-- MainWebViewActivity Navigation Menu. -->
     <string name="navigation_drawer">Caja de navegación</string>
     <string name="navigation">Navegación</string>
-    <string name="close_tab">Cerrar pestaña</string>
     <string name="clear_and_exit">Borrar y salir</string>
     <string name="home">Inicio</string>
     <string name="back">Atrás</string>

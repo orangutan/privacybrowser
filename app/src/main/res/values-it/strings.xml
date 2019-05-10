@@ -46,8 +46,9 @@
     <string name="no_title">Nessun titolo</string>
     <string name="unrecognized_url">URL non riconosciuta:</string>
     <string name="open_with">Apri con</string>
-    <string name="new_tab">Nuova Scheda</string>
     <string name="add_tab">Aggiungi Scheda</string>
+    <string name="close_tab">Chiudi Scheda</string>
+    <string name="new_tab">Nuova Scheda</string>
     <string name="loading">Caricamento…</string>
 
     <!-- Save As. -->
@@ -110,7 +111,6 @@
     <!-- MainWebViewActivity Navigation Menu. -->
     <string name="navigation_drawer">Menù di navigazione</string>
     <string name="navigation">Navigazione</string>
-    <string name="close_tab">Chiudi Scheda</string>
     <string name="clear_and_exit">Elimina dati ed esci</string>
     <string name="home">Home</string>
     <string name="back">Indietro</string>

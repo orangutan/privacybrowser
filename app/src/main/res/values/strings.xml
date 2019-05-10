@@ -51,8 +51,9 @@
     <string name="no_title">No title</string>
     <string name="unrecognized_url">Unrecognized URL:</string>
     <string name="open_with">Open with</string>
-    <string name="new_tab">New tab</string>
     <string name="add_tab">Add tab</string>
+    <string name="close_tab">Close Tab</string>
+    <string name="new_tab">New tab</string>
     <string name="loading">Loading…</string>
 
     <!-- Save As. -->
@@ -114,7 +115,6 @@
     <!-- MainWebViewActivity Navigation Menu. -->
     <string name="navigation_drawer">Navigation Drawer</string>
     <string name="navigation">Navigation</string>
-    <string name="close_tab">Close Tab</string>
     <string name="clear_and_exit">Clear and Exit</string>
     <string name="home">Home</string>
     <string name="back">Back</string>

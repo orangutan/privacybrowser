@@ -50,8 +50,9 @@
     <string name="no_title">Kein Titel</string>
     <string name="unrecognized_url">Unbekannte URL:</string>
     <string name="open_with">Öffnen mit</string>
-    <string name="new_tab">Neuer Tab</string>
     <string name="add_tab">Tab hinzufügen</string>
+    <string name="close_tab">Tab schließen</string>
+    <string name="new_tab">Neuer Tab</string>
     <string name="loading">Laden…</string>
 
     <!-- Save As. -->
@@ -113,7 +114,6 @@
     <!-- MainWebViewActivity Navigation Menu. -->
     <string name="navigation_drawer">Navigationspanel</string>
     <string name="navigation">Navigation</string>
-    <string name="close_tab">Tab schließen</string>
     <string name="clear_and_exit">Leeren und verlassen</string>
     <string name="home">Startseite</string>
     <string name="back">Zurück</string>
