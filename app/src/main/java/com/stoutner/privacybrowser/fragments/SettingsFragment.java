@@ -97,6 +97,7 @@ public class SettingsFragment extends PreferenceFragment {
         Preference downloadWithExternalAppPreference = findPreference("download_with_external_app");
         Preference darkThemePreference = findPreference("dark_theme");
         Preference nightModePreference = findPreference("night_mode");
+        Preference wideViewportPreference = findPreference("wide_viewport");
         Preference displayWebpageImagesPreference = findPreference("display_webpage_images");
 
         // Set dependencies.
@@ -746,6 +747,21 @@ public class SettingsFragment extends PreferenceFragment {
                 nightModePreference.setIcon(R.drawable.night_mode_disabled_dark);
             } else {
                 nightModePreference.setIcon(R.drawable.night_mode_disabled_light);
+            }
+        }
+
+        // Set the wide viewport preference icon.
+        if (savedPreferences.getBoolean("wide_viewport", true)) {
+            if (darkTheme) {
+                wideViewportPreference.setIcon(R.drawable.wide_viewport_enabled_dark);
+            } else {
+                wideViewportPreference.setIcon(R.drawable.wide_viewport_enabled_light);
+            }
+        } else {
+            if (darkTheme) {
+                wideViewportPreference.setIcon(R.drawable.wide_viewport_disabled_dark);
+            } else {
+                wideViewportPreference.setIcon(R.drawable.wide_viewport_disabled_light);
             }
         }
 
@@ -1697,16 +1713,32 @@ public class SettingsFragment extends PreferenceFragment {
                     }
                     break;
 
+                case "wide_viewport":
+                    // Update the icon.
+                    if (sharedPreferences.getBoolean("wide_viewport", true)) {
+                        if (darkTheme) {
+                            wideViewportPreference.setIcon(R.drawable.wide_viewport_enabled_dark);
+                        } else {
+                            wideViewportPreference.setIcon(R.drawable.wide_viewport_enabled_light);
+                        }
+                    } else {
+                        if (darkTheme) {
+                            wideViewportPreference.setIcon(R.drawable.wide_viewport_disabled_dark);
+                        } else {
+                            wideViewportPreference.setIcon(R.drawable.wide_viewport_disabled_light);
+                        }
+                    }
+                    break;
+
                 case "display_webpage_images":
+                    // Update the icon.
                     if (sharedPreferences.getBoolean("display_webpage_images", true)) {
-                        // Update the icon.
                         if (darkTheme) {
                             displayWebpageImagesPreference.setIcon(R.drawable.images_enabled_dark);
                         } else {
                             displayWebpageImagesPreference.setIcon(R.drawable.images_enabled_light);
                         }
                     } else {
-                        // Update the icon.
                         if (darkTheme) {
                             displayWebpageImagesPreference.setIcon(R.drawable.images_disabled_dark);
                         } else {

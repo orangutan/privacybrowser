@@ -308,29 +308,36 @@
                 app:showAsAction="never" />
 
             <item
+                android:id="@+id/wide_viewport"
+                android:title="@string/wide_viewport"
+                android:orderInCategory="950"
+                android:checkable="true"
+                app:showAsAction="never" />
+
+            <item
                 android:id="@+id/display_images"
                 android:title="@string/display_images"
-                android:orderInCategory="950"
+                android:orderInCategory="960"
                 android:checkable="true"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/night_mode"
                 android:title="@string/options_night_mode"
-                android:orderInCategory="960"
+                android:orderInCategory="970"
                 android:checkable="true"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/find_on_page"
                 android:title="@string/find_on_page"
-                android:orderInCategory="970"
+                android:orderInCategory="980"
                 app:showAsAction="never|collapseActionView" />
 
             <item
                 android:id="@+id/view_source"
                 android:title="@string/view_source"
-                android:orderInCategory="980"
+                android:orderInCategory="990"
                 app:showAsAction="never" />
         </menu>
     </item>

@@ -168,6 +168,7 @@
             <string name="one_hundred_seventy_five_percent">175%</string>
             <string name="two_hundred_percent">200%</string>
         <string name="swipe_to_refresh_options_menu">Swipe to Refresh</string>
+        <string name="wide_viewport">Wide Viewport</string>
         <string name="display_images">Display Images</string>
         <string name="options_night_mode">Night Mode</string>
         <string name="view_source">View Source</string>
@@ -316,6 +317,11 @@
         <item>System default</item>
         <item>Night mode enabled</item>
         <item>Night mode disabled</item>
+    </string-array>
+    <string-array name="wide_viewport_array">
+        <item>System default</item>
+        <item>Wide viewport enabled</item>
+        <item>Wide viewport disabled</item>
     </string-array>
     <string-array name="display_webpage_images_array">
         <item>System default</item>
@@ -643,6 +649,8 @@
         <string name="dark_theme_summary">Changing the theme will restart Privacy Browser.</string>
         <string name="night_mode">Night mode</string>
         <string name="night_mode_summary">Enabling night mode will also enable JavaScript for all web pages.</string>
+        <string name="wide_viewport_preference">Wide viewport</string>
+        <string name="wide_viewport_summary">Using a wide viewport makes some webpages layout more like the desktop site.</string>
         <string name="display_webpage_images">Display webpage images</string>
         <string name="display_webpage_images_summary">Disable to conserve bandwidth.</string>
 

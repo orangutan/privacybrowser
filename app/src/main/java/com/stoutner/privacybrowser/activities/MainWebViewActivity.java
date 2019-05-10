@@ -1144,6 +1144,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem blockAllThirdPartyRequestsMenuItem = menu.findItem(R.id.block_all_third_party_requests);
         MenuItem fontSizeMenuItem = menu.findItem(R.id.font_size);
         MenuItem swipeToRefreshMenuItem = menu.findItem(R.id.swipe_to_refresh);
+        MenuItem wideViewportMenuItem = menu.findItem(R.id.wide_viewport);
         MenuItem displayImagesMenuItem = menu.findItem(R.id.display_images);
         MenuItem nightModeMenuItem = menu.findItem(R.id.night_mode);
         MenuItem proxyThroughOrbotMenuItem = menu.findItem(R.id.proxy_through_orbot);
@@ -1180,6 +1181,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             ultraPrivacyMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRA_PRIVACY));
             blockAllThirdPartyRequestsMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.THIRD_PARTY_REQUESTS));
             swipeToRefreshMenuItem.setChecked(currentWebView.getSwipeToRefresh());
+            wideViewportMenuItem.setChecked(currentWebView.getSettings().getUseWideViewPort());
             displayImagesMenuItem.setChecked(currentWebView.getSettings().getLoadsImagesAutomatically());
             nightModeMenuItem.setChecked(currentWebView.getNightMode());
 
@@ -1909,6 +1911,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Disable the swipe refresh layout.
                     swipeRefreshLayout.setEnabled(false);
                 }
+                return true;
+
+            case R.id.wide_viewport:
+                // Toggle the viewport.
+                currentWebView.getSettings().setUseWideViewPort(!currentWebView.getSettings().getUseWideViewPort());
                 return true;
 
             case R.id.display_images:
@@ -3321,8 +3328,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             String defaultFontSizeString = sharedPreferences.getString("font_size", getString(R.string.font_size_default_value));
             String defaultUserAgentName = sharedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
             boolean defaultSwipeToRefresh = sharedPreferences.getBoolean("swipe_to_refresh", true);
-            boolean displayWebpageImages = sharedPreferences.getBoolean("display_webpage_images", true);
             boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+            boolean wideViewport = sharedPreferences.getBoolean("wide_viewport", true);
+            boolean displayWebpageImages = sharedPreferences.getBoolean("display_webpage_images", true);
 
             // Get a handle for the cookie manager.
             CookieManager cookieManager = CookieManager.getInstance();
@@ -3364,6 +3372,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 int fontSize = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
                 int swipeToRefreshInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SWIPE_TO_REFRESH));
                 int nightModeInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.NIGHT_MODE));
+                int wideViewportInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.WIDE_VIEWPORT));
                 int displayWebpageImagesInt = currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.DISPLAY_IMAGES));
                 boolean pinnedSslCertificate = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.PINNED_SSL_CERTIFICATE)) == 1);
                 String pinnedSslIssuedToCName = currentDomainSettingsCursor.getString(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.SSL_ISSUED_TO_COMMON_NAME));
@@ -3406,17 +3415,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Set night mode according to the night mode int.
                 switch (nightModeInt) {
-                    case DomainsDatabaseHelper.NIGHT_MODE_SYSTEM_DEFAULT:
+                    case DomainsDatabaseHelper.SYSTEM_DEFAULT:
                         // Set night mode according to the current default.
                         nestedScrollWebView.setNightMode(sharedPreferences.getBoolean("night_mode", false));
                         break;
 
-                    case DomainsDatabaseHelper.NIGHT_MODE_ENABLED:
+                    case DomainsDatabaseHelper.ENABLED:
                         // Enable night mode.
                         nestedScrollWebView.setNightMode(true);
                         break;
 
-                    case DomainsDatabaseHelper.NIGHT_MODE_DISABLED:
+                    case DomainsDatabaseHelper.DISABLED:
                         // Disable night mode.
                         nestedScrollWebView.setNightMode(false);
                         break;
@@ -3502,7 +3511,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Set swipe to refresh.
                 switch (swipeToRefreshInt) {
-                    case DomainsDatabaseHelper.SWIPE_TO_REFRESH_SYSTEM_DEFAULT:
+                    case DomainsDatabaseHelper.SYSTEM_DEFAULT:
                         // Store the swipe to refresh status in the nested scroll WebView.
                         nestedScrollWebView.setSwipeToRefresh(defaultSwipeToRefresh);
 
@@ -3510,7 +3519,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         swipeRefreshLayout.setEnabled(defaultSwipeToRefresh);
                         break;
 
-                    case DomainsDatabaseHelper.SWIPE_TO_REFRESH_ENABLED:
+                    case DomainsDatabaseHelper.ENABLED:
                         // Store the swipe to refresh status in the nested scroll WebView.
                         nestedScrollWebView.setSwipeToRefresh(true);
 
@@ -3518,7 +3527,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         swipeRefreshLayout.setEnabled(true);
                         break;
 
-                    case DomainsDatabaseHelper.SWIPE_TO_REFRESH_DISABLED:
+                    case DomainsDatabaseHelper.DISABLED:
                         // Store the swipe to refresh status in the nested scroll WebView.
                         nestedScrollWebView.setSwipeToRefresh(false);
 
@@ -3526,17 +3535,32 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         swipeRefreshLayout.setEnabled(false);
                 }
 
+                // Set the viewport.
+                switch (wideViewportInt) {
+                    case DomainsDatabaseHelper.SYSTEM_DEFAULT:
+                        nestedScrollWebView.getSettings().setUseWideViewPort(wideViewport);
+                        break;
+
+                    case DomainsDatabaseHelper.ENABLED:
+                        nestedScrollWebView.getSettings().setUseWideViewPort(true);
+                        break;
+
+                    case DomainsDatabaseHelper.DISABLED:
+                        nestedScrollWebView.getSettings().setUseWideViewPort(false);
+                        break;
+                }
+
                 // Set the loading of webpage images.
                 switch (displayWebpageImagesInt) {
-                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT:
+                    case DomainsDatabaseHelper.SYSTEM_DEFAULT:
                         nestedScrollWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImages);
                         break;
 
-                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_ENABLED:
+                    case DomainsDatabaseHelper.ENABLED:
                         nestedScrollWebView.getSettings().setLoadsImagesAutomatically(true);
                         break;
 
-                    case DomainsDatabaseHelper.DISPLAY_WEBPAGE_IMAGES_DISABLED:
+                    case DomainsDatabaseHelper.DISABLED:
                         nestedScrollWebView.getSettings().setLoadsImagesAutomatically(false);
                         break;
                 }
@@ -3618,6 +3642,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Get the user agent string from the user agent data array
                         nestedScrollWebView.getSettings().setUserAgentString(userAgentDataArray[userAgentArrayPosition]);
                 }
+
+                // Set the viewport.
+                nestedScrollWebView.getSettings().setUseWideViewPort(wideViewport);
 
                 // Set the loading of webpage images.
                 nestedScrollWebView.getSettings().setLoadsImagesAutomatically(displayWebpageImages);
@@ -4394,9 +4421,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         if (Build.VERSION.SDK_INT >= 21) {
             nestedScrollWebView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         }
-
-        // Set the WebView to use a wide viewport.  Otherwise, some web pages will be scrunched and some content will render outside the screen.
-        nestedScrollWebView.getSettings().setUseWideViewPort(true);
 
         // Set the WebView to load in overview mode (zoomed out to the maximum width).
         nestedScrollWebView.getSettings().setLoadWithOverviewMode(true);
@@ -5306,12 +5330,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                // Reset the wide view port if it has been turned off by the waiting for Orbot message.
-                if (!waitingForOrbot) {
-                    // Only use a wide view port if the URL starts with `http`, not for `file://` and `content://`.
-                    nestedScrollWebView.getSettings().setUseWideViewPort(url.startsWith("http"));
-                }
-
                 // Flush any cookies to persistent storage.  The cookie manager has become very lazy about flushing cookies in recent versions.
                 if (nestedScrollWebView.getAcceptFirstPartyCookies() && Build.VERSION.SDK_INT >= 21) {
                     CookieManager.getInstance().flush();

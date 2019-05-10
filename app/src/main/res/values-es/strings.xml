@@ -482,6 +482,13 @@
         <string name="ultraprivacy_summary">Ultra Privacidad bloquea los rastreadores que no bloquea EasyPrivacy, porque al hacerlo puede romper páginas web.</string>
         <string name="block_all_third_party_requests">Bloquear todas las solicitudes de terceras partes</string>
         <string name="block_all_third_party_requests_summary">Bloquear todas las solicitudes de terceras  partes aumenta la privacidad, pero rompe muchas páginas web.</string>
+    <string name="url_modification">Modificación de URL</string>
+        <string name="google_analytics">Google Analytics</string>
+        <string name="google_analytics_summary">Eliminar “?utm_” o “&amp;utm_” y cualquier cosa después de esto de las URLs.</string>
+        <string name="facebook_click_ids">IDs de clics en Facebook</string>
+        <string name="facebook_click_ids_summary">Eliminar “?fbclid=” o “&amp;fbclid=” y cualquier cosa después de esto de las URLs.</string>
+        <string name="twitter_amp_redirects">Redirecciones de Twitter AMP</string>
+        <string name="twitter_amp_redirects_summary">Eliminar “?amp=1” y cualquier cosa después de esto de las URLs.</string>
     <string name="tor">Tor</string>
         <string name="proxy_through_orbot">Enviar a través de Orbot</string>
         <string name="proxy_through_orbot_summary">Enviar todo el tráfico web a través de Orbot en localhost:8118.</string>

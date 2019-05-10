@@ -316,6 +316,12 @@
             android:defaultValue="false" />
 
         <SwitchPreference
+            android:key="wide_viewport"
+            android:title="@string/wide_viewport_preference"
+            android:summary="@string/wide_viewport_summary"
+            android:defaultValue="true" />
+
+        <SwitchPreference
             android:key="display_webpage_images"
             android:title="@string/display_webpage_images"
             android:summary="@string/display_webpage_images_summary"

@@ -482,6 +482,13 @@
         <string name="ultraprivacy_summary">L\'UltraPrivacy blocca i tracciamenti che EasyPrivacy ignora perché potrebbero impedire la visualizzazione dei siti web.</string>
         <string name="block_all_third_party_requests">Blocca tutte le richieste di Terze Parti</string>
         <string name="block_all_third_party_requests_summary">Il blocco di tutte le richieste di Terze Parti aumenta privacy, ma impedisce la visualizzazione di molti siti web.</string>
+    <string name="url_modification">Modifica delle URL</string>
+        <string name="google_analytics">Google Analytics</string>
+        <string name="google_analytics_summary">Rimuovi “?utm_” o “&amp;utm_” e tutto quello che segue dalle URL.</string>
+        <string name="facebook_click_ids">Facebook Click ID</string>
+        <string name="facebook_click_ids_summary">Rimuovi “?fbclid=” o “&amp;fbclid=”  e tutto quello che segue dalle URL.</string>
+        <string name="twitter_amp_redirects">Reindirizzamenti Twitter AMP</string>
+        <string name="twitter_amp_redirects_summary">Rimuovi “?amp=1”  e tutto quello che segue dalle URL.</string>
     <string name="tor">Tor</string>
         <string name="proxy_through_orbot">Utilizza Proxy con Orbot</string>
         <string name="proxy_through_orbot_summary">Utilizza Proxy attraverso Orbot su localhost:8118.</string>

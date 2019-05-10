@@ -693,8 +693,9 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         EditText customUserAgentEditText = view.findViewById(R.id.custom_user_agent_edittext);
         Spinner fontSizeSpinner = view.findViewById(R.id.font_size_spinner);
         Spinner swipeToRefreshSpinner = view.findViewById(R.id.swipe_to_refresh_spinner);
-        Spinner displayWebpageImagesSpinner = view.findViewById(R.id.display_webpage_images_spinner);
         Spinner nightModeSpinner = view.findViewById(R.id.night_mode_spinner);
+        Spinner wideViewportSpinner = view.findViewById(R.id.wide_viewport_spinner);
+        Spinner displayWebpageImagesSpinner = view.findViewById(R.id.display_webpage_images_spinner);
         Switch pinnedSslCertificateSwitch = view.findViewById(R.id.pinned_ssl_certificate_switch);
         RadioButton currentWebsiteCertificateRadioButton = view.findViewById(R.id.current_website_certificate_radiobutton);
         Switch pinnedIpAddressesSwitch = view.findViewById(R.id.pinned_ip_addresses_switch);
@@ -716,8 +717,9 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         int userAgentPosition = userAgentSpinner.getSelectedItemPosition();
         int fontSizePosition = fontSizeSpinner.getSelectedItemPosition();
         int swipeToRefreshInt = swipeToRefreshSpinner.getSelectedItemPosition();
-        int displayWebpageImagesInt = displayWebpageImagesSpinner.getSelectedItemPosition();
         int nightModeInt = nightModeSpinner.getSelectedItemPosition();
+        int wideViewportInt = wideViewportSpinner.getSelectedItemPosition();
+        int displayWebpageImagesInt = displayWebpageImagesSpinner.getSelectedItemPosition();
         boolean pinnedSslCertificate = pinnedSslCertificateSwitch.isChecked();
         boolean pinnedIpAddress = pinnedIpAddressesSwitch.isChecked();
 
@@ -750,7 +752,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         // Save the domain settings.
         domainsDatabaseHelper.updateDomain(DomainsActivity.currentDomainDatabaseId, domainNameString, javaScriptEnabled, firstPartyCookiesEnabled, thirdPartyCookiesEnabled,
                     domStorageEnabled, formDataEnabled, easyListEnabled, easyPrivacyEnabled, fanboysAnnoyanceEnabled, fanboysSocialBlockingEnabled, ultraPrivacyEnabled, blockAllThirdPartyRequests,
-                    userAgentName, fontSizeInt, swipeToRefreshInt, nightModeInt, displayWebpageImagesInt, pinnedSslCertificate, pinnedIpAddress);
+                    userAgentName, fontSizeInt, swipeToRefreshInt, nightModeInt, wideViewportInt, displayWebpageImagesInt, pinnedSslCertificate, pinnedIpAddress);
 
         // Update the pinned SSL certificate if a new one is checked.
         if (currentWebsiteCertificateRadioButton.isChecked()) {
