@@ -136,7 +136,6 @@
     <string name="options_fanboys_annoyance_list">Fanboy’s Annoyance List</string>
     <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking List</string>
     <string name="options_block_all_third_party_requests">Tüm Üçüncü Taraf İstekleri Engelle</string>
-    <string name="layout">Düzen</string>
         <string name="options_user_agent">Kullanıcı aracısı</string>
             <string name="user_agent_privacy_browser">Privacy Browser</string>
             <string name="user_agent_webview_default">Varsayılan WebView</string>
@@ -161,17 +160,18 @@
             <string name="one_hundred_seventy_five_percent">%175</string>
             <string name="two_hundred_percent">%200</string>
         <string name="swipe_to_refresh_options_menu">Yenilemek için kaydır</string>
+        <string name="wide_viewport">Geniş Ekran</string>
         <string name="display_images">Resimleri Göster</string>
         <string name="options_night_mode">Gece modu</string>
+        <string name="find_on_page">Sayfada Bul</string>
+        <string name="print">Yazdır</string>
+            <string name="privacy_browser_web_page">Privacy Browser Web Sayfası</string>
+        <string name="add_to_home_screen">Ana Ekrana Ekle</string>
         <string name="view_source">Kaynağı Görüntüle</string>
     <string name="share">Paylaş</string>
         <string name="share_url">URL Paylaş</string>
         <string name="open_with_app">Uygulamayla Aç</string>
         <string name="open_with_browser">Tarayıcıyla Aç</string>
-    <string name="find_on_page">Sayfada Bul</string>
-    <string name="print">Yazdır</string>
-        <string name="privacy_browser_web_page">Privacy Browser Web Sayfası</string>
-    <string name="add_to_home_screen">Ana Ekrana Ekle</string>
     <string name="refresh">Yenile</string>
     <string name="stop">Dur</string>
 
@@ -307,6 +307,11 @@
         <item>Sistem varsayılanı</item>
         <item>Gece modu etkin</item>
         <item>Gece modu devre dışı</item>
+    </string-array>
+    <string-array name="wide_viewport_array">
+        <item>Sistem varsayılanı</item>
+        <item>Geniş ekran etkin</item>
+        <item>Geniş ekran devre dışı</item>
     </string-array>
     <string-array name="display_webpage_images_array">
         <item>Sistem varsayılanı</item>
@@ -565,6 +570,8 @@
         <string name="dark_theme_summary">Temayı değiştirmek Privacy Browser\'i yeniden başlatır.</string>
         <string name="night_mode">Gece modu</string>
         <string name="night_mode_summary">Gece modunu etkinleştirmek, aynı zamanda tüm sitelerde JavaScript\'i etkinleştirir.</string>
+        <string name="wide_viewport_preference">Geniş ekran</string>
+        <string name="wide_viewport_summary">Geniş ekran kullanmak, bazı web sayfalarının düzenini masaüstü sitesi gibi yapar.</string>
         <string name="display_webpage_images">Web sayfasının görsellerini göster</string>
         <string name="display_webpage_images_summary">Bant genişliği korumasını devre dışı bırakır.</string>
 

@@ -1986,6 +1986,29 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }, 200);
                 return true;
 
+            case R.id.print:
+                // Get a print manager instance.
+                PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
+
+                // Remove the lint error below that print manager might be null.
+                assert printManager != null;
+
+                // Create a print document adapter from the current WebView.
+                PrintDocumentAdapter printDocumentAdapter = currentWebView.createPrintDocumentAdapter();
+
+                // Print the document.
+                printManager.print(getString(R.string.privacy_browser_web_page), printDocumentAdapter, null);
+                return true;
+
+            case R.id.add_to_homescreen:
+                // Instantiate the create home screen shortcut dialog.
+                DialogFragment createHomeScreenShortcutDialogFragment = CreateHomeScreenShortcutDialog.createDialog(currentWebView.getTitle(), currentWebView.getUrl(),
+                        currentWebView.getFavoriteOrDefaultIcon());
+
+                // Show the create home screen shortcut dialog.
+                createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getString(R.string.create_shortcut));
+                return true;
+
             case R.id.view_source:
                 // Create an intent to launch the view source activity.
                 Intent viewSourceIntent = new Intent(this, ViewSourceActivity.class);
@@ -2011,35 +2034,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 startActivity(Intent.createChooser(shareIntent, getString(R.string.share_url)));
                 return true;
 
-            case R.id.print:
-                // Get a print manager instance.
-                PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
-
-                // Remove the lint error below that print manager might be null.
-                assert printManager != null;
-
-                // Create a print document adapter from the current WebView.
-                PrintDocumentAdapter printDocumentAdapter = currentWebView.createPrintDocumentAdapter();
-
-                // Print the document.
-                printManager.print(getString(R.string.privacy_browser_web_page), printDocumentAdapter, null);
-                return true;
-
             case R.id.open_with_app:
                 openWithApp(currentWebView.getUrl());
                 return true;
 
             case R.id.open_with_browser:
                 openWithBrowser(currentWebView.getUrl());
-                return true;
-
-            case R.id.add_to_homescreen:
-                // Instantiate the create home screen shortcut dialog.
-                DialogFragment createHomeScreenShortcutDialogFragment = CreateHomeScreenShortcutDialog.createDialog(currentWebView.getTitle(), currentWebView.getUrl(),
-                        currentWebView.getFavoriteOrDefaultIcon());
-
-                // Show the create home screen shortcut dialog.
-                createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getString(R.string.create_shortcut));
                 return true;
 
             case R.id.proxy_through_orbot:

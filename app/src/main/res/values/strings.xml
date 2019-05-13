@@ -143,7 +143,7 @@
     <string name="options_fanboys_annoyance_list">Fanboy’s Annoyance List</string>
     <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking List</string>
     <string name="options_block_all_third_party_requests">Block All Third-Party Requests</string>
-    <string name="layout">Layout</string>
+    <string name="page">Page</string>
         <string name="options_user_agent">User Agent</string>
             <string name="user_agent_privacy_browser">Privacy Browser</string>
             <string name="user_agent_webview_default">WebView Default</string>
@@ -171,15 +171,15 @@
         <string name="wide_viewport">Wide Viewport</string>
         <string name="display_images">Display Images</string>
         <string name="options_night_mode">Night Mode</string>
+        <string name="find_on_page">Find on Page</string>
+        <string name="print">Print</string>
+            <string name="privacy_browser_web_page">Privacy Browser Web Page</string>
+        <string name="add_to_home_screen">Add to Home Screen</string>
         <string name="view_source">View Source</string>
     <string name="share">Share</string>
         <string name="share_url">Share URL</string>
         <string name="open_with_app">Open with App</string>
         <string name="open_with_browser">Open with Browser</string>
-    <string name="find_on_page">Find on Page</string>
-    <string name="print">Print</string>
-        <string name="privacy_browser_web_page">Privacy Browser Web Page</string>
-    <string name="add_to_home_screen">Add to Home Screen</string>
     <string name="refresh">Refresh</string>
     <string name="stop">Stop</string>
 

@@ -24,37 +24,38 @@
     </head>
 
     <body>
-        <h3><img class="title" src="../shared_images/devices_other_blue_dark.png"> Browser Identification</h3>
+        <h3><img class="title" src="../shared_images/devices_other_blue_dark.png"> Tarayıcı Kimliği</h3>
 
-        <p>When web browsers connect to websites, they send a user agent, which identifies the browser and the rendering capabilities it possesses.
-            The web server can use this information to decide which version of the website to send to the browser.
-            For example, many websites have different versions for desktop and mobile browsers.</p>
+        <p>Web tarayıcıları web sitelerine bağlandığında, sitelere, tarayıcıyı ve sahip olduğu oluşturma (render) özelliklerini belirten bir kullanıcı aracısı gönderir.
+            Web sunucusu, bu bilgiyi web sitesinin hangi versiyonunun tarayıcıya gönderileceğini karar vermek için kullanabilir.
+            Örneğin, birçok web sitesinin masaüstü ve mobil tarayıcılar için farklı versiyonları vardır.</p>
 
-        <p>By default, Privacy Browser uses its own user agent, which is <code>PrivacyBrowser/1.0</code>. This sends a minimum of information to the web server.
-            Because web servers do not recognize this to be a mobile user agent, they typically display the desktop version of the site.</p>
+        <p>Privacy Browser, varsayılan olarak, kendi özel kullanıcı aracısı olan <code>PrivacyBrowser/1.0</code> kullanır. Bu, web sunucusuna minimum düzeyde bilgi gönderir.
+            Çünkü web sunucuları bunu bir mobil kullanıcı aracısı olarak tanımlayamadıkları için genellikle sitenin masaüstü versiyonunu gösterir.</p>
 
-        <p>By comparison, WebView’s default user agent divulges a large amount of information about the hardware and software of the device.
-            On the <strong>Settings</strong> screen, selecting <strong>WebView Default</strong> as the <strong>User agent</strong> displays the user agent that will be sent.
-            The screenshot below shows a Pixel 2 XL running Android 8.1.0 with Android System WebView 67.0.3396.87 installed.
-            Most web servers will recognize this as a mobile browser and will display the mobile version of the site if they have one.</p>
+        <p>Buna kıyasla, WebView’ın varsayılan kullanıcı aracısı cihazın donanımı ve yazılımı hakkında büyük miktarda bilgiyi ortaya döker.
+            <strong>Ayarlar</strong> ekranında, <strong>Kullanıcı Aracısı</strong> olarak <strong>Varsayılan WebView</strong> seçmek gönderilecek kullanıcı aracısını gösterir.
+            Aşağıdaki ekran görüntüsü, Android 8.1.0 çalıştıran ve Android System WebView 67.0.3396.87 sürümüne sahip bir Pixel 2 XL cihazına aittir.
+            Çoğu web sunucusu, bunu bir mobil tarayıcı olarak tanıyacak ve eğer varsa, sitenin mobil versiyonunu gösterecektir.</p>
 
         <img class="center21" src="images/user_agent.png">
 
-        <p>There is enough information in the user agent that sometimes only a few visitors to a website will be the same.
-            If the user agent is combined with another piece of non-unique identifying information, often it results in a unique fingerprint.
-            The Electronic Frontier Foundation created a tool called <a href="https://panopticlick.eff.org/">Panopticlick</a> to demonstrate how much information can be gleaned from these sources.
-            If this test is run with JavaScript enabled the amount of information that is disclosed increases greatly.
-            <a href="https://www.browserleaks.com">Browser Leaks</a> and <a href="https://amiunique.org/">Am I Unique</a> are also good sources of information on this topic.</p>
+        <p>Kullanıcı aracısında, bir web sitesini ziyaret eden birkaç kişinin aynı olacağı hakkında yeterli bilgi bazen vardır.
+            Eğer kullanıcı aracısı başka bir özgün olmayan tanımlayıcı bilgi ile birleştirilirse, genellikle özgün fingerprint (tanı) oluşturulur.
+            The Electronic Frontier Foundation, bu kaynaklardan ne kadar bilgi toplandığını göstermek için <a href="https://panopticlick.eff.org/">Panopticlick</a> adlı bir araç geliştirdi.
+            Bu test JavaScript etkinken çalıştırıldığında, ortaya çıkarılan bilgi miktarı büyük ölçüde artar.
+            Ayrıca <a href="https://www.browserleaks.com">Browser Leaks</a> ve <a href="https://amiunique.org/">Am I Unique</a> bu konuda iyi bilgi kaynaklarıdır.</p>
 
         <img class="center" src="../en/images/panopticlick.png">
 
-        <p>There are several preset user agents that match common browsers and operating systems. For browser fingerprinting purposes, anything that is rare is easier to track.
-            If Privacy Browser becomes common and many people use <code>PrivacyBrowser/1.0</code> as their user agent, it will be a good choice for privacy.
-            Firefox or Chrome are the most common user agents, but they auto-update and their version numbers change so quickly that it is likely the user agents included in Privacy Browser
-            will often be out of step with the majority of user agents in the server logs.</p>
+        <p>Ortak tarayıcılar ve işletim sistemleriyle eşleşen önayarlı birkaç kullanıcı aracısı vardır.
+            Browser Fingerprinting (Tarayıcı Tanılama) amaçları doğrultusunda, nadir olan herhangi bir şeyin takibi kolaylaşır.
+            Eğer Privacy Browser yaygınlaşırsa ve birçok insan kullanıcı aracısı olarak <code>PrivacyBrowser/1.0</code> kullanırsa, gizlilik için iyi bir seçim olacaktır.
+            Firefox ve Chrome en yaygın kullanıcı aracılarıdır, ancak çok sık otomatik güncelleme aldıkları ve versiyon numaraları çok hızlı değiştiği için Privacy Browser’a dahil olan kullanıcı aracıları,
+            sunucu günlüklerinde yer alan kullanıcı aracılarının büyük çoğunluğu içinde gözden kaçacaktır.</p>
 
-        <p>Some websites <a href="https://www.stoutner.com/user-agent-problems/">do not function correctly</a> if they do not recognize the user agent.
-            Using domain settings to set the user agent to <strong>WebView Default</strong>, or another user agent that is commonly recognized, usually resolves the problem.
-            Android’s WebView does not allow the user agent to be blank. If it is, WebView simply sends the default user agent to the server.</p>
+        <p>Bazı web siteleri, kullanıcı aracısını tanımazlarsa <a href="https://www.stoutner.com/user-agent-problems/">düzgün çalışmaz.</a>
+            Kullanıcı aracısı olarak <strong>Varsayılan WebView</strong> ayarlamak veya genel olarak tanınan bir kullanıcı aracısı ayarlamak için domain ayarlarını kullanmak genellikle problemi çözer.
+            Android WebView’ı kullanıcı aracısının boş olmasına izin vermez. Eğer öyleyse, WebView, sunucuya varsayılan kullanıcı aracısını gönderir.</p>
     </body>
 </html>

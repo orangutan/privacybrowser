@@ -146,8 +146,8 @@
     </item>
 
     <item
-        android:id="@+id/layout"
-        android:title="@string/layout"
+        android:id="@+id/page"
+        android:title="@string/page"
         android:orderInCategory="900"
         app:showAsAction="never" >
 
@@ -335,9 +335,21 @@
                 app:showAsAction="never|collapseActionView" />
 
             <item
+                android:id="@+id/print"
+                android:title="@string/print"
+                android:orderInCategory="990"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/add_to_homescreen"
+                android:title="@string/add_to_home_screen"
+                android:orderInCategory="1000"
+                app:showAsAction="never" />
+
+            <item
                 android:id="@+id/view_source"
                 android:title="@string/view_source"
-                android:orderInCategory="990"
+                android:orderInCategory="1010"
                 app:showAsAction="never" />
         </menu>
     </item>
@@ -345,38 +357,26 @@
     <item
         android:id="@+id/share"
         android:title="@string/share"
-        android:orderInCategory="1000"
+        android:orderInCategory="1100"
         app:showAsAction="never" >
 
         <menu>
             <item
                 android:id="@+id/share_url"
                 android:title="@string/share_url"
-                android:orderInCategory="1010"
-                app:showAsAction="never" />
-
-            <item
-                android:id="@+id/print"
-                android:title="@string/print"
-                android:orderInCategory="1020"
+                android:orderInCategory="1110"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/open_with_app"
                 android:title="@string/open_with_app"
-                android:orderInCategory="1030"
+                android:orderInCategory="1120"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/open_with_browser"
                 android:title="@string/open_with_browser"
-                android:orderInCategory="1040"
-                app:showAsAction="never" />
-
-            <item
-                android:id="@+id/add_to_homescreen"
-                android:title="@string/add_to_home_screen"
-                android:orderInCategory="1050"
+                android:orderInCategory="1130"
                 app:showAsAction="never" />
         </menu>
     </item>
@@ -384,19 +384,19 @@
     <item
         android:id="@+id/proxy_through_orbot"
         android:title="@string/proxy_through_orbot"
-        android:orderInCategory="1100"
+        android:orderInCategory="1200"
         android:checkable="true"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/refresh"
         android:title="@string/refresh"
-        android:orderInCategory="1200"
+        android:orderInCategory="1300"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/ad_consent"
         android:title="@string/ad_consent"
-        android:orderInCategory="1600"
+        android:orderInCategory="1400"
         app:showAsAction="never" />
 </menu>

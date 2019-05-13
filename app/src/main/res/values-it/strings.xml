@@ -139,7 +139,6 @@
     <string name="options_fanboys_annoyance_list">Fanboy’s annoyance list</string>
     <string name="options_fanboys_social_blocking_list">Fanboy’s social blocking list</string>
     <string name="options_block_all_third_party_requests">Blocca tutte le richieste di Terze Parti</string>
-    <string name="layout">Layout</string>
         <string name="options_user_agent">User agent</string>
             <string name="user_agent_privacy_browser">Privacy Browser</string>
             <string name="user_agent_webview_default">WebView Default</string>
@@ -166,15 +165,15 @@
         <string name="swipe_to_refresh_options_menu">Swipe per aggiornare</string>
         <string name="display_images">Mostra immagini</string>
         <string name="options_night_mode">Modalità Notte</string>
+        <string name="find_on_page">Cerca nella pagina</string>
+        <string name="print">Stampa</string>
+            <string name="privacy_browser_web_page">Pagina web di Privacy Browser</string>
+        <string name="add_to_home_screen">Aggiungi collegamento</string>
         <string name="view_source">Visualizza sorgente</string>
     <string name="share">Condividi</string>
         <string name="share_url">Condividi URL</string>
         <string name="open_with_app">Apri con App</string>
         <string name="open_with_browser">Apri con il Browser</string>
-    <string name="find_on_page">Cerca nella pagina</string>
-    <string name="print">Stampa</string>
-        <string name="privacy_browser_web_page">Pagina web di Privacy Browser</string>
-    <string name="add_to_home_screen">Aggiungi collegamento</string>
     <string name="refresh">Aggiorna</string>
     <string name="stop">Stop</string>
 
@@ -311,6 +310,11 @@
         <item>Impostazioni di default</item>
         <item>Modalità Notte abilitata</item>
         <item>Modalità Notte disabilitata</item>
+    </string-array>
+    <string-array name="wide_viewport_array">
+        <item>Impostazioni di default</item>
+        <item>Wide viewport enabled</item>
+        <item>Wide viewport disabled</item>
     </string-array>
     <string-array name="display_webpage_images_array">
         <item>Impostazioni di default</item>

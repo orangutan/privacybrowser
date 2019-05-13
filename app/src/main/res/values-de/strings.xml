@@ -142,7 +142,6 @@
     <string name="options_fanboys_annoyance_list">Fanboy’s Annoyance Sperrliste</string>
     <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking Sperrliste</string>
     <string name="options_block_all_third_party_requests">Alle Zugriffe auf Dritt-Anbieter-Inhalte blockieren</string>
-    <string name="layout">Ansicht</string>
         <string name="options_user_agent">User Agent</string>
             <string name="user_agent_privacy_browser">Privacy Browser</string>
             <string name="user_agent_webview_default">WebView-Standard</string>
@@ -167,17 +166,18 @@
             <string name="one_hundred_seventy_five_percent">175%</string>
             <string name="two_hundred_percent">200%</string>
         <string name="swipe_to_refresh_options_menu">Herunterziehen zum aktualisieren</string>
+        <string name="wide_viewport">Breiter Anzeigebereich</string>
         <string name="display_images">Bilder anzeigen</string>
         <string name="options_night_mode">Nacht-Modus</string>
+        <string name="find_on_page">Auf Seite finden</string>
+        <string name="print">Drucken</string>
+            <string name="privacy_browser_web_page">Privacy Browser-Website</string>
         <string name="view_source">Quelltext anzeigen</string>
+        <string name="add_to_home_screen">Zur Startseite hinzufügen</string>
     <string name="share">Teilen</string>
         <string name="share_url">URL teilen</string>
         <string name="open_with_app">Mit App öffnen</string>
         <string name="open_with_browser">Mit Browser öffnen</string>
-    <string name="find_on_page">Auf Seite finden</string>
-    <string name="print">Drucken</string>
-        <string name="privacy_browser_web_page">Privacy Browser-Website</string>
-    <string name="add_to_home_screen">Zur Startseite hinzufügen</string>
     <string name="refresh">Aktualisieren</string>
     <string name="stop">Stop</string>
 
@@ -314,6 +314,11 @@
         <item>Standardeinstellung</item>
         <item>Nachtmodus aktiviert</item>
         <item>Nachtmodus deaktiviert</item>
+    </string-array>
+    <string-array name="wide_viewport_array">
+        <item>Standardeinstellung</item>
+        <item>Breiter Anzeigebereich aktiviert</item>
+        <item>Breiter Anzeigebereich deaktiviert</item>
     </string-array>
     <string-array name="display_webpage_images_array">
         <item>Standardeinstellung</item>
@@ -573,6 +578,8 @@
         <string name="dark_theme_summary">Wechseln des Themas startet Privacy Browser neu.</string>
         <string name="night_mode">Nacht-Modus</string>
         <string name="night_mode_summary">Aktivieren des Nacht-Modus aktiviert JavaScript für alle Webseiten.</string>
+        <string name="wide_viewport_preference">Breiter Anzeigebereich</string>
+        <string name="wide_viewport_summary">Wird der breite Anzeigebereich verwendet, werden manche Webseiten eher wie am Desktop (Standrechner, Laptop) angezeigt.</string>
         <string name="display_webpage_images">Webseiten-Bilder anzeigen</string>
         <string name="display_webpage_images_summary">Bilder deaktivieren, um Bandbreite zu sparen.</string>
 

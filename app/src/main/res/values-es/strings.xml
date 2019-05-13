@@ -139,7 +139,6 @@
     <string name="options_fanboys_annoyance_list">Lista molesta de Fanboy</string>
     <string name="options_fanboys_social_blocking_list">Lista de bloqueo social de Fanboy</string>
     <string name="options_block_all_third_party_requests">Bloquear todas las solicitudes de terceros</string>
-    <string name="layout">Diseño</string>
         <string name="options_user_agent">Agente de usuario</string>
             <string name="user_agent_privacy_browser">Navegador Privado</string>
             <string name="user_agent_webview_default">WebView por defecto</string>
@@ -164,17 +163,18 @@
             <string name="one_hundred_seventy_five_percent">175%</string>
             <string name="two_hundred_percent">200%</string>
         <string name="swipe_to_refresh_options_menu">Deslizar para actualizar</string>
+        <string name="wide_viewport">Vista amplia</string>
         <string name="display_images">Mostrar imágenes</string>
+        <string name="print">Imprimir</string>
+            <string name="privacy_browser_web_page">Página web de Navegador Privado</string>
+        <string name="add_to_home_screen">Añadir a la ventana de inicio</string>
         <string name="options_night_mode">Modo noche</string>
+    <string name="find_on_page">Buscar en página</string>
         <string name="view_source">Ver la fuente</string>
     <string name="share">Compartir</string>
         <string name="share_url">Compartir URL</string>
         <string name="open_with_app">Abrir con App</string>
         <string name="open_with_browser">Abrir con Navegador</string>
-    <string name="find_on_page">Buscar en página</string>
-    <string name="print">Imprimir</string>
-        <string name="privacy_browser_web_page">Página web de Navegador Privado</string>
-    <string name="add_to_home_screen">Añadir a la ventana de inicio</string>
     <string name="refresh">Actualizar</string>
     <string name="stop">Parar</string>
 
@@ -312,6 +312,11 @@
         <item>Por defecto del sistema</item>
         <item>Modo noche habilitado</item>
         <item>Modo noche deshabilitado</item>
+    </string-array>
+    <string-array name="wide_viewport_array">
+        <item>Por defecto del sistema</item>
+        <item>Vista amplia habilitada</item>
+        <item>Vista amplia deshabilitada</item>
     </string-array>
     <string-array name="display_webpage_images_array">
         <item>Por defecto del sistema</item>
@@ -571,6 +576,8 @@
         <string name="dark_theme_summary">Cambiar el tema reiniciará Navegador Privado.</string>
         <string name="night_mode">Modo noche</string>
         <string name="night_mode_summary">Activar el modo noche también activará javascript para todas las páginas web.</string>
+        <string name="wide_viewport_preference">Vista amplia</string>
+        <string name="wide_viewport_summary">El uso de una vista amplia hace que el diseño de algunas páginas web se parezca más al sitio de escritorio.</string>
         <string name="display_webpage_images">Mostrar imágenes de la página web</string>
         <string name="display_webpage_images_summary">Deshabilitar para conservar ancho de banda.</string>
 

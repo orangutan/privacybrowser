@@ -136,7 +136,6 @@
     <string name="options_fanboys_annoyance_list">Fanboy’s annoyance list</string>
     <string name="options_fanboys_social_blocking_list">Fanboy’s social blocking list</string>
     <string name="options_block_all_third_party_requests">Блокировать все сторонние запросы</string>
-    <string name="layout">Внешний вид</string>
         <string name="options_user_agent">User agent</string>
             <string name="user_agent_privacy_browser">Privacy Browser</string>
             <string name="user_agent_webview_default">WebView по умолчанию</string>
@@ -161,17 +160,18 @@
             <string name="one_hundred_seventy_five_percent">175%</string>
             <string name="two_hundred_percent">200%</string>
         <string name="swipe_to_refresh_options_menu">Потянуть для обновления</string>
+        <string name="wide_viewport">Широкий вид просмотра</string>
         <string name="display_images">Показывать изображения</string>
         <string name="options_night_mode">Ночной режим</string>
+        <string name="find_on_page">Найти на странице</string>
+        <string name="print">Печать</string>
+            <string name="privacy_browser_web_page">Privacy Browser веб-страница</string>
+        <string name="add_to_home_screen">Добавить на главный экран</string>
         <string name="view_source">Просмотр исходного кода</string>
     <string name="share">Поделиться</string>
         <string name="share_url">Поделиться URL</string>
         <string name="open_with_app">Открыть в приложении</string>
         <string name="open_with_browser">Открыть в браузере</string>
-    <string name="find_on_page">Найти на странице</string>
-    <string name="print">Печать</string>
-        <string name="privacy_browser_web_page">Privacy Browser веб-страница</string>
-    <string name="add_to_home_screen">Добавить на главный экран</string>
     <string name="refresh">Обновить</string>
     <string name="stop">Остановить</string>
 
@@ -308,6 +308,11 @@
         <item>Настройки по умолчанию</item>
         <item>Ночной режим включен</item>
         <item>Ночной режим выключен</item>
+    </string-array>
+    <string-array name="wide_viewport_array">
+        <item>Настройки по умолчанию</item>
+        <item>Широкий вид просмотра включен</item>
+        <item>Широкий вид просмотра выключен</item>
     </string-array>
     <string-array name="display_webpage_images_array">
         <item>Настройки по умолчанию</item>
@@ -476,6 +481,13 @@
         <string name="ultraprivacy_summary">UltraPrivacy блокирует трекеры, которые пропускает EasyPrivacy, чтобы не ломать веб-сайты.</string>
         <string name="block_all_third_party_requests">Блокировать все сторонние запросы</string>
         <string name="block_all_third_party_requests_summary">Блокировка всех сторонних запросов повышает конфиденциальность, но ломает многие веб-сайты.</string>
+    <string name="url_modification">Модификация URL</string>
+        <string name="google_analytics">Google Analytics</string>
+        <string name="google_analytics_summary">Удалять из URL “?utm_” или “&amp;utm_” и все что будет после.</string>
+        <string name="facebook_click_ids">Идентификаторы кликов в Facebook</string>
+        <string name="facebook_click_ids_summary">Удалять из URL “?fbclid=” или “&amp;fbclid=” и все что будет после.</string>
+        <string name="twitter_amp_redirects">AMP-перенаправления в Twitter</string>
+        <string name="twitter_amp_redirects_summary">Удалять из URL “?amp=1” и все что будет после.</string>
     <string name="tor">Tor</string>
         <string name="proxy_through_orbot">Прокси через Orbot</string>
         <string name="proxy_through_orbot_summary">Проксировать весь веб-трафик через Orbot на localhost:8118.</string>
@@ -557,6 +569,8 @@
         <string name="dark_theme_summary">Изменение темы перезапускает Privacy Browser.</string>
         <string name="night_mode">Ночной режим</string>
         <string name="night_mode_summary">Включение ночного режима также включает JavaScript для всех веб-страниц.</string>
+        <string name="wide_viewport_preference">Широкий вид просмотра</string>
+        <string name="wide_viewport_summary">Использование широкого вида просмотра делает стиль некоторых веб-страниц более похожим на сайт для компьютера.</string>
         <string name="display_webpage_images">Показывать изображения веб-страницы</string>
         <string name="display_webpage_images_summary">Отключите для экономии трафика.</string>
 
