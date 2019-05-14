@@ -139,9 +139,10 @@
         <string name="clear_cookies">Cookies löschen</string>
         <string name="clear_dom_storage">DOM-Speicher löschen</string>
         <string name="clear_form_data">Formulardaten löschen</string>
-    <string name="options_fanboys_annoyance_list">Fanboy’s Annoyance Sperrliste</string>
-    <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking Sperrliste</string>
-    <string name="options_block_all_third_party_requests">Alle Zugriffe auf Dritt-Anbieter-Inhalte blockieren</string>
+        <string name="options_fanboys_annoyance_list">Fanboy’s Annoyance Sperrliste</string>
+        <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking Sperrliste</string>
+        <string name="options_block_all_third_party_requests">Alle Zugriffe auf Dritt-Anbieter-Inhalte blockieren</string>
+    <string name="page">Seite</string>
         <string name="options_user_agent">User Agent</string>
             <string name="user_agent_privacy_browser">Privacy Browser</string>
             <string name="user_agent_webview_default">WebView-Standard</string>

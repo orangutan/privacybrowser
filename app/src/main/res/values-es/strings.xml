@@ -136,9 +136,10 @@
         <string name="clear_cookies">Borrar cookies</string>
         <string name="clear_dom_storage">Borrar almacenamiento DOM</string>
         <string name="clear_form_data">Borrar datos de formulario</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-    <string name="options_fanboys_annoyance_list">Lista molesta de Fanboy</string>
-    <string name="options_fanboys_social_blocking_list">Lista de bloqueo social de Fanboy</string>
-    <string name="options_block_all_third_party_requests">Bloquear todas las solicitudes de terceros</string>
+        <string name="options_fanboys_annoyance_list">Lista molesta de Fanboy</string>
+        <string name="options_fanboys_social_blocking_list">Lista de bloqueo social de Fanboy</string>
+        <string name="options_block_all_third_party_requests">Bloquear todas las solicitudes de terceros</string>
+    <string name="page">Página</string>
         <string name="options_user_agent">Agente de usuario</string>
             <string name="user_agent_privacy_browser">Navegador Privado</string>
             <string name="user_agent_webview_default">WebView por defecto</string>

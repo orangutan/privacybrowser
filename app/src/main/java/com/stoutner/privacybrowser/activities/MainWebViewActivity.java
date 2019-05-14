@@ -1900,13 +1900,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Update the swipe refresh layout.
                 if (currentWebView.getSwipeToRefresh()) {  // Swipe to refresh is enabled.
-                    if (Build.VERSION.SDK_INT >= 23) {  // For API >= 23, the status of the scroll refresh listener is continuously updated by the on scroll change listener.
-                        // Only enable the swipe refresh layout if the WebView is scrolled to the top.
-                        swipeRefreshLayout.setEnabled(currentWebView.getY() == 0);
-                    } else {  // For API < 23, the swipe refresh layout is always enabled.
-                        // Enable the swipe refresh layout.
-                        swipeRefreshLayout.setEnabled(true);
-                    }
+                    // Only enable the swipe refresh layout if the WebView is scrolled to the top.  It is updated every time the scroll changes.
+                    swipeRefreshLayout.setEnabled(currentWebView.getY() == 0);
                 } else {  // Swipe to refresh is disabled.
                     // Disable the swipe refresh layout.
                     swipeRefreshLayout.setEnabled(false);
@@ -4283,7 +4278,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         EditText urlEditText = findViewById(R.id.url_edittext);
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
 
-        //Stop the swipe to refresh indicator if it is running
+        // Stop the swipe to refresh indicator if it is running
         swipeRefreshLayout.setRefreshing(false);
 
         // Get the WebView tab fragment.
@@ -4293,19 +4288,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         View fragmentView = webViewTabFragment.getView();
 
         // Set the current WebView if the fragment view is not null.
-        if (fragmentView != null) {
+        if (fragmentView != null) {  // The fragment has been populated.
             // Store the current WebView.
             currentWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
 
             // Update the status of swipe to refresh.
             if (currentWebView.getSwipeToRefresh()) {  // Swipe to refresh is enabled.
-                if (Build.VERSION.SDK_INT >= 23) {  // For API >= 23, swipe refresh layout is continuously updated with an on scroll change listener and only enabled if the WebView is scrolled to the top.
-                    // Enable the swipe refresh layout if the WebView is scrolled all the way to the top.
-                    swipeRefreshLayout.setEnabled(currentWebView.getY() == 0);
-                } else {
-                    // Enable the swipe refresh layout.
-                    swipeRefreshLayout.setEnabled(true);
-                }
+                // Enable the swipe refresh layout if the WebView is scrolled all the way to the top.  It is updated every time the scroll changes.
+                swipeRefreshLayout.setEnabled(currentWebView.getY() == 0);
             } else {  // Swipe to refresh is disabled.
                 // Disable the swipe refresh layout.
                 swipeRefreshLayout.setEnabled(false);
@@ -4369,6 +4359,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             } else {
                 urlRelativeLayout.setBackground(getResources().getDrawable(R.color.transparent));
             }
+        } else {  // The fragment has not been populated.  Try again in 100 milliseconds.
+            // Create a handler to set the current WebView.
+            Handler setCurrentWebViewHandler = new Handler();
+
+            // Create a runnable to set the current WebView.
+            Runnable setCurrentWebWebRunnable = () -> {
+                // Set the current WebView.
+                setCurrentWebView(pageNumber);
+            };
+
+            // Try setting the current WebView again after 100 milliseconds.
+            setCurrentWebViewHandler.postDelayed(setCurrentWebWebRunnable, 100);
         }
     }
 

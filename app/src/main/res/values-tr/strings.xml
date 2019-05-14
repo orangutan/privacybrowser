@@ -133,9 +133,10 @@
         <string name="clear_cookies">Çerezleri Temizle</string>
         <string name="clear_dom_storage">DOM Depolamasını Temizle</string>
         <string name="clear_form_data">Form Verisini Temizle</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-    <string name="options_fanboys_annoyance_list">Fanboy’s Annoyance List</string>
-    <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking List</string>
-    <string name="options_block_all_third_party_requests">Tüm Üçüncü Taraf İstekleri Engelle</string>
+        <string name="options_fanboys_annoyance_list">Fanboy’s Annoyance List</string>
+        <string name="options_fanboys_social_blocking_list">Fanboy’s Social Blocking List</string>
+        <string name="options_block_all_third_party_requests">Tüm Üçüncü Taraf İstekleri Engelle</string>
+    <string name="page">Sayfa</string>
         <string name="options_user_agent">Kullanıcı aracısı</string>
             <string name="user_agent_privacy_browser">Privacy Browser</string>
             <string name="user_agent_webview_default">Varsayılan WebView</string>

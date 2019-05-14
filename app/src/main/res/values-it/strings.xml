@@ -136,9 +136,10 @@
         <string name="clear_cookies">Elimina cookies</string>
         <string name="clear_dom_storage">Elimina DOM storage</string>
         <string name="clear_form_data">Elimina dati dei moduli</string>
-    <string name="options_fanboys_annoyance_list">Fanboy’s annoyance list</string>
-    <string name="options_fanboys_social_blocking_list">Fanboy’s social blocking list</string>
-    <string name="options_block_all_third_party_requests">Blocca tutte le richieste di Terze Parti</string>
+        <string name="options_fanboys_annoyance_list">Fanboy’s annoyance list</string>
+        <string name="options_fanboys_social_blocking_list">Fanboy’s social blocking list</string>
+        <string name="options_block_all_third_party_requests">Blocca tutte le richieste di Terze Parti</string>
+    <string name="page">Pagina</string>
         <string name="options_user_agent">User agent</string>
             <string name="user_agent_privacy_browser">Privacy Browser</string>
             <string name="user_agent_webview_default">WebView Default</string>
@@ -163,6 +164,7 @@
             <string name="one_hundred_seventy_five_percent">175%</string>
             <string name="two_hundred_percent">200%</string>
         <string name="swipe_to_refresh_options_menu">Swipe per aggiornare</string>
+        <string name="wide_viewport">Finestra grande</string>
         <string name="display_images">Mostra immagini</string>
         <string name="options_night_mode">Modalità Notte</string>
         <string name="find_on_page">Cerca nella pagina</string>
@@ -313,8 +315,8 @@
     </string-array>
     <string-array name="wide_viewport_array">
         <item>Impostazioni di default</item>
-        <item>Wide viewport enabled</item>
-        <item>Wide viewport disabled</item>
+        <item>Finestra grande abilitata</item>
+        <item>Finestra grande disabilitata</item>
     </string-array>
     <string-array name="display_webpage_images_array">
         <item>Impostazioni di default</item>
@@ -575,6 +577,8 @@
         <string name="dark_theme_summary">La modifica del tema provocherà il riavvio di Privacy Browser.</string>
         <string name="night_mode">Modalità Notte</string>
         <string name="night_mode_summary">L\'abilitazione della modalità notte attiva anche JavaScript per tutte le pagine web.</string>
+        <string name="wide_viewport_preference">Finestra grande</string>
+        <string name="wide_viewport_summary">L\'utilizzo di una finestra grande permette la visualizzazione di alcune pagine web come in modalità desktop.</string>
         <string name="display_webpage_images">Mostra immagini delle pagine web</string>
         <string name="display_webpage_images_summary">Disabilita per ridurre il consumo di dati.</string>
 
