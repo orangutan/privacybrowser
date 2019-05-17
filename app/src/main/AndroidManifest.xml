@@ -68,6 +68,11 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/google_app_id" />
 
+        <!-- Don't initialize the ad system in the free flavor until it is explicitly called. -->
+        <meta-data
+            android:name="com.google.android.gms.ads.DELAY_APP_MEASUREMENT_INIT"
+            android:value="true"/>
+
         <!-- The file provider is required to encrypt files with OpenKeychain. -->
         <provider
             android:name="androidx.core.content.FileProvider"
