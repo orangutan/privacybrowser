@@ -971,8 +971,8 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
                 System.exit(0);
             };
 
-            // Restart Privacy Browser after 100 milliseconds to allow enough time for the preferences to be saved.
-            restartHandler.postDelayed(restartRunnable, 100);
+            // Restart Privacy Browser after 150 milliseconds to allow enough time for the preferences to be saved.
+            restartHandler.postDelayed(restartRunnable, 150);
 
         } else if (!(encryptionSpinner.getSelectedItemPosition() == OPENPGP_ENCRYPTION)){  // The import was not successful.
             // Display a snack bar with the import error.

@@ -86,8 +86,9 @@
         </provider>
         
         <!-- The theme has to be defined here or an ugly title bar is displayed when the app launches.
-             `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes, which preserves scroll location in the WebView.
-             `android:configChanges="keyboard|keyboardHidden"` makes the activity not reload when a bluetooth keyboard is activated/goes to sleep.
+             `android:configChanges="orientation|screenSize"` makes the activity not restart when the orientation changes, which preserves scroll location in the WebView.
+             `android:configChanges="screenLayout"` makes the activity not restart when entering or exiting split screen mode.
+             `android:configChanges="keyboard|keyboardHidden"` makes the activity not restart when a bluetooth keyboard is activated/goes to sleep.
              `android:launchMode="singleTask"` makes the app launch in a new task instead of inside the task of the program that sends it an intent.
              It also makes it reuse an existing Privacy Browser activity if available instead of launching a new one.
              `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
@@ -96,7 +97,7 @@
             android:name=".activities.MainWebViewActivity"
             android:label="@string/privacy_browser"
             android:theme="@style/PrivacyBrowserLight"
-            android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+            android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
             android:launchMode="singleTask"
             android:screenOrientation="fullUser"
             android:persistableMode="persistNever"
@@ -139,46 +140,50 @@
         </activity>
 
 
-        <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
-            `android:configChanges="keyboard|keyboardHidden"` makes the activity not reload when a bluetooth keyboard is activated/goes to sleep.
+        <!-- `android:configChanges="orientation|screenSize"` makes the activity not restart when the orientation changes, which preserves scroll location in the WebView.
+            `android:configChanges="screenLayout"` makes the activity not restart when entering or exiting split screen mode.
+            `android:configChanges="keyboard|keyboardHidden"` makes the activity not restart when a bluetooth keyboard is activated/goes to sleep.
             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
             `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
             android:name=".activities.BookmarksActivity"
             android:label="@string/bookmarks"
             android:parentActivityName=".activities.MainWebViewActivity"
-            android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+            android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
             android:screenOrientation="fullUser"
             android:persistableMode="persistNever"
             tools:ignore="UnusedAttribute" />
 
-        <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
-            `android:configChanges="keyboard|keyboardHidden"` makes the activity not reload when a bluetooth keyboard is activated/goes to sleep.
+        <!-- `android:configChanges="orientation|screenSize"` makes the activity not restart when the orientation changes, which preserves scroll location in the WebView.
+            `android:configChanges="screenLayout"` makes the activity not restart when entering or exiting split screen mode.
+            `android:configChanges="keyboard|keyboardHidden"` makes the activity not restart when a bluetooth keyboard is activated/goes to sleep.
             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
             `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
             android:name=".activities.BookmarksDatabaseViewActivity"
             android:label="@string/bookmarks_database_view"
             android:parentActivityName=".activities.BookmarksActivity"
-            android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+            android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
             android:screenOrientation="fullUser"
             android:persistableMode="persistNever"
             tools:ignore="UnusedAttribute" />
 
-        <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
-            `android:configChanges="keyboard|keyboardHidden"` makes the activity not reload when a bluetooth keyboard is activated/goes to sleep.
+        <!-- `android:configChanges="orientation|screenSize"` makes the activity not restart when the orientation changes, which preserves scroll location in the WebView.
+            `android:configChanges="screenLayout"` makes the activity not restart when entering or exiting split screen mode.
+            `android:configChanges="keyboard|keyboardHidden"` makes the activity not restart when a bluetooth keyboard is activated/goes to sleep.
             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
             `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
             android:name=".activities.RequestsActivity"
             android:label="@string/requests"
             android:parentActivityName=".activities.MainWebViewActivity"
-            android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+            android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
             android:screenOrientation="fullUser"
             android:persistableMode="persistNever"
             tools:ignore="UnusedAttribute" />
 
-        <!-- `android:configChanges="keyboard|keyboardHidden"` makes the activity not reload when a bluetooth keyboard is activated/goes to sleep.
+        <!-- `android:configChanges="screenLayout"` makes the activity not restart when entering or exiting split screen mode.
+            `android:configChanges="keyboard|keyboardHidden"` makes the activity not reload when a bluetooth keyboard is activated/goes to sleep.
             `android:windowSoftInputMode="stateAlwaysHidden"` keeps the keyboard from displaying when the screen is rotated and after the `AddDomainDialog` is dismissed.
             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
             `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
@@ -186,86 +191,92 @@
             android:name=".activities.DomainsActivity"
             android:label="@string/domains"
             android:parentActivityName=".activities.MainWebViewActivity"
-            android:configChanges="keyboard|keyboardHidden"
+            android:configChanges="screenLayout|keyboard|keyboardHidden"
             android:screenOrientation="fullUser"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:persistableMode="persistNever"
             tools:ignore="UnusedAttribute" />
 
-        <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
-            `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
+        <!-- `android:configChanges="orientation|screenSize"` makes the activity not restart when the orientation changes, which preserves scroll location in the WebView.
+            `android:configChanges="screenLayout"` makes the activity not restart when entering or exiting split screen mode.
+            `android:configChanges="keyboard|keyboardHidden"` makes the activity not restart when a bluetooth keyboard is activated/goes to sleep.
             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
             `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/settings"
             android:parentActivityName=".activities.MainWebViewActivity"
-            android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+            android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
             android:screenOrientation="fullUser"
             android:persistableMode="persistNever"
             tools:ignore="UnusedAttribute" />
 
-        <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
-            `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
+        <!-- `android:configChanges="orientation|screenSize"` makes the activity not restart when the orientation changes, which preserves scroll location in the WebView.
+            `android:configChanges="screenLayout"` makes the activity not restart when entering or exiting split screen mode.
+            `android:configChanges="keyboard|keyboardHidden"` makes the activity not restart when a bluetooth keyboard is activated/goes to sleep.
             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
             `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
             android:name=".activities.ImportExportActivity"
             android:label="@string/import_export"
             android:parentActivityName=".activities.MainWebViewActivity"
-            android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+            android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
             android:screenOrientation="fullUser"
             android:persistableMode="persistNever"
             tools:ignore="UnusedAttribute" />
 
-        <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
-            `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
+        <!-- `android:configChanges="orientation|screenSize"` makes the activity not restart when the orientation changes, which preserves scroll location in the WebView.
+            `android:configChanges="screenLayout"` makes the activity not restart when entering or exiting split screen mode.
+            `android:configChanges="keyboard|keyboardHidden"` makes the activity not restart when a bluetooth keyboard is activated/goes to sleep.
             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
             `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
             android:name=".activities.LogcatActivity"
             android:label="@string/logcat"
             android:parentActivityName=".activities.MainWebViewActivity"
-            android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+            android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
             android:screenOrientation="fullUser"
             android:persistableMode="persistNever"
             tools:ignore="UnusedAttribute" />
 
-        <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
-            `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
+        <!-- `android:configChanges="orientation|screenSize"` makes the activity not restart when the orientation changes, which preserves scroll location in the WebView.
+            `android:configChanges="screenLayout"` makes the activity not restart when entering or exiting split screen mode.
+            `android:configChanges="keyboard|keyboardHidden"` makes the activity not restart when a bluetooth keyboard is activated/goes to sleep.
             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
             `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
             android:name=".activities.GuideActivity"
             android:label="@string/guide"
             android:parentActivityName=".activities.MainWebViewActivity"
-            android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+            android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
             android:screenOrientation="fullUser"
             android:persistableMode="persistNever"
             tools:ignore="UnusedAttribute" />
 
-        <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
-            `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
+        <!-- `android:configChanges="orientation|screenSize"` makes the activity not restart when the orientation changes, which preserves scroll location in the WebView.
+            `android:configChanges="screenLayout"` makes the activity not restart when entering or exiting split screen mode.
+            `android:configChanges="keyboard|keyboardHidden"` makes the activity not restart when a bluetooth keyboard is activated/goes to sleep.
             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
             `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
             android:name=".activities.AboutActivity"
             android:label="@string/about_privacy_browser"
             android:parentActivityName=".activities.MainWebViewActivity"
-            android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+            android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
             android:screenOrientation="fullUser"
             android:persistableMode="persistNever"
             tools:ignore="UnusedAttribute" />
 
-        <!-- `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
-            `android:configChanges="orientation|screenSize"` makes the activity not reload when the orientation changes.
+        <!-- `android:configChanges="orientation|screenSize"` makes the activity not restart when the orientation changes, which preserves scroll location in the WebView.
+            `android:configChanges="screenLayout"` makes the activity not restart when entering or exiting split screen mode.
+            `android:configChanges="keyboard|keyboardHidden"` makes the activity not restart when a bluetooth keyboard is activated/goes to sleep.
             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
             `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
             android:name=".activities.ViewSourceActivity"
             android:label="@string/view_source"
             android:parentActivityName=".activities.MainWebViewActivity"
-            android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+            android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
             android:screenOrientation="fullUser"
             android:persistableMode="persistNever"
             tools:ignore="UnusedAttribute" />

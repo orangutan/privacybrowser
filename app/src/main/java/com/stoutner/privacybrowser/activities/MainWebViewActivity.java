@@ -504,7 +504,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Create a handler to select the tab.
                     Handler selectTabHandler = new Handler();
 
-                    // Create a runnable select the new tab.
+                    // Create a runnable to select the tab.
                     Runnable selectTabRunnable = () -> {
                         // Get a handle for the tab.
                         TabLayout.Tab tab = tabLayout.getTabAt(position);
@@ -516,8 +516,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         tab.select();
                     };
 
-                    // Select the tab layout after 100 milliseconds, which leaves enough time for a new tab to be created.
-                    selectTabHandler.postDelayed(selectTabRunnable, 100);
+                    // Select the tab layout after 150 milliseconds, which leaves enough time for a new tab to be inflated.
+                    selectTabHandler.postDelayed(selectTabRunnable, 150);
                 }
             }
 

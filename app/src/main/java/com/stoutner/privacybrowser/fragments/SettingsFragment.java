@@ -1038,8 +1038,8 @@ public class SettingsFragment extends PreferenceFragment {
                         System.exit(0);
                     };
 
-                    // Restart the activity after 100 milliseconds, so that the app has enough time to save the change to the preference.
-                    allowScreenshotsRestartHandler.postDelayed(allowScreenshotsRestartRunnable, 100);
+                    // Restart the activity after 150 milliseconds, so that the app has enough time to save the change to the preference.
+                    allowScreenshotsRestartHandler.postDelayed(allowScreenshotsRestartRunnable, 150);
                     break;
 
                 case "easylist":
@@ -1658,8 +1658,8 @@ public class SettingsFragment extends PreferenceFragment {
                         System.exit(0);
                     };
 
-                    // Restart the activity after 100 milliseconds, so that the app has enough time to save the change to the preference.
-                    changeThemeRestartHandler.postDelayed(changeThemeRestartRunnable, 100);
+                    // Restart the activity after 150 milliseconds, so that the app has enough time to save the change to the preference.
+                    changeThemeRestartHandler.postDelayed(changeThemeRestartRunnable, 150);
                     break;
 
                 case "night_mode":
