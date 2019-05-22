@@ -115,6 +115,7 @@ import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.adapters.WebViewPagerAdapter;
 import com.stoutner.privacybrowser.asynctasks.GetHostIpAddresses;
+import com.stoutner.privacybrowser.asynctasks.PopulateBlocklists;
 import com.stoutner.privacybrowser.dialogs.AdConsentDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkFolderDialog;
@@ -157,7 +158,7 @@ import java.util.Set;
 // AppCompatActivity from android.support.v7.app.AppCompatActivity must be used to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
         DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, DownloadLocationPermissionDialog.DownloadLocationPermissionDialogListener, EditBookmarkDialog.EditBookmarkListener,
-        EditBookmarkFolderDialog.EditBookmarkFolderListener, NavigationView.OnNavigationItemSelectedListener, WebViewTabFragment.NewTabListener {
+        EditBookmarkFolderDialog.EditBookmarkFolderListener, NavigationView.OnNavigationItemSelectedListener, PopulateBlocklists.PopulateBlocklistsListener, WebViewTabFragment.NewTabListener {
 
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxyThroughOrbot()`.
     public static String orbotStatus;
@@ -199,7 +200,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // The options menu is set in `onCreateOptionsMenu()` and used in `onOptionsItemSelected()`, `updatePrivacyIcons()`, and `initializeWebView()`.
     private Menu optionsMenu;
 
-    // The blocklists are populated in `onCreate()` and accessed from `initializeWebView()`.
+    // The blocklists are populated in `finishedPopulatingBlocklists()` and accessed from `initializeWebView()`.
     private ArrayList<List<String[]>> easyList;
     private ArrayList<List<String[]>> easyPrivacy;
     private ArrayList<List<String[]>> fanboysAnnoyanceList;
@@ -443,16 +444,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Register `orbotStatusBroadcastReceiver` on `this` context.
         this.registerReceiver(orbotStatusBroadcastReceiver, new IntentFilter("org.torproject.android.intent.action.STATUS"));
 
-        // Instantiate the blocklist helper.
-        BlockListHelper blockListHelper = new BlockListHelper();
-
-        // Parse the block lists.
-        easyList = blockListHelper.parseBlockList(getAssets(), "blocklists/easylist.txt");
-        easyPrivacy = blockListHelper.parseBlockList(getAssets(), "blocklists/easyprivacy.txt");
-        fanboysAnnoyanceList = blockListHelper.parseBlockList(getAssets(), "blocklists/fanboy-annoyance.txt");
-        fanboysSocialList = blockListHelper.parseBlockList(getAssets(), "blocklists/fanboy-social.txt");
-        ultraPrivacy = blockListHelper.parseBlockList(getAssets(), "blocklists/ultraprivacy.txt");
-
         // Get handles for views that need to be modified.
         DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
         NavigationView navigationView = findViewById(R.id.navigationview);
@@ -549,9 +540,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 viewSslCertificateDialogFragment.show(getSupportFragmentManager(), getString(R.string.view_ssl_certificate));
             }
         });
-
-        // Add the first tab.
-        addTab(null);
 
         // Set the bookmarks drawer resources according to the theme.  This can't be done in the layout due to compatibility issues with the `DrawerLayout` support widget.
         // The deprecated `getResources().getDrawable()` must be used until the minimum API >= 21 and and `getResources().getColor()` must be used until the minimum API >= 23.
@@ -805,6 +793,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Destroy the bare WebView.
         bareWebView.destroy();
+
+        // Populate the blocklists.
+        new PopulateBlocklists(this, this).execute();
     }
 
     @Override
@@ -3053,7 +3044,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         assert inputMethodManager != null;
 
         // Hide the keyboard.
-        inputMethodManager.hideSoftInputFromWindow(currentWebView.getWindowToken(), 0);
+        inputMethodManager.hideSoftInputFromWindow(toolbar.getWindowToken(), 0);
     }
 
     private void applyAppSettings() {
@@ -4023,6 +4014,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         return url;
     }
 
+    public void finishedPopulatingBlocklists(ArrayList<ArrayList<List<String[]>>> combinedBlocklists) {
+        // Store the blocklists.
+        easyList = combinedBlocklists.get(0);
+        easyPrivacy = combinedBlocklists.get(1);
+        fanboysAnnoyanceList = combinedBlocklists.get(2);
+        fanboysSocialList = combinedBlocklists.get(3);
+        ultraPrivacy = combinedBlocklists.get(4);
+
+        // Add the first tab.
+        addNewTab("");
+    }
+
     public void addTab(View view) {
         // Add a new tab with a blank URL.
         addNewTab("");
@@ -4404,9 +4407,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Get the relevant preferences.
-        boolean downloadWithExternalApp = sharedPreferences.getBoolean("download_with_external_app", false);
-
         // Initialize the favorite icon.
         nestedScrollWebView.initializeFavoriteIcon();
 
@@ -4527,7 +4527,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Allow the downloading of files.
         nestedScrollWebView.setDownloadListener((String downloadUrl, String userAgent, String contentDisposition, String mimetype, long contentLength) -> {
             // Check if the download should be processed by an external app.
-            if (downloadWithExternalApp) {  // Download with an external app.
+            if (sharedPreferences.getBoolean("download_with_external_app", false)) {  // Download with an external app.
                 // Create a download intent.  Not specifying the action type will display the maximum number of options.
                 Intent downloadIntent = new Intent();
 

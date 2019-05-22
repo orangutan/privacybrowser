@@ -56,7 +56,7 @@ public class CreateBookmarkDialog extends DialogFragment {
         // Run the default commands.
         super.onAttach(context);
 
-        // Get a handle for `CreateBookmarkListener` from the launching context.
+        // Get a handle for the create bookmark listener from the launching context.
         createBookmarkListener = (CreateBookmarkListener) context;
     }
 

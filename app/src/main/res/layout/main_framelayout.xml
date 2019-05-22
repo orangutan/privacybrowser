@@ -62,7 +62,8 @@
                         android:id="@+id/toolbar"
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
-                        app:layout_scrollFlags="scroll|enterAlways|snap" />
+                        app:layout_scrollFlags="scroll|enterAlways|snap"
+                        android:visibility="gone" />
 
                     <!-- The find on page linear layout.  It is initially `visibility="gone"`. -->
                     <LinearLayout
@@ -137,7 +138,8 @@
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:orientation="horizontal"
-                        app:layout_scrollFlags="scroll|enterAlways|snap" >
+                        app:layout_scrollFlags="scroll|enterAlways|snap"
+                        android:visibility="gone" >
 
                         <ImageView
                             android:layout_height="wrap_content"
@@ -200,10 +202,32 @@
         <include layout="@layout/bookmarks_drawer" />
     </androidx.drawerlayout.widget.DrawerLayout>
 
-    <!-- `The full screen video frame layout is used to display full screen videos.  It is initially `android:visibility="gone"` to hide it from view. -->
+    <!-- The full screen video frame layout is used to display full screen videos.  It is initially `android:visibility="gone"` to hide it from view. -->
     <FrameLayout
         android:id="@+id/full_screen_video_framelayout"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:visibility="gone" />
+
+    <!-- The loading blocklists relative layout displays when the app first starts.  It is hidden once the blocklists are populated. -->
+    <RelativeLayout
+        android:id="@+id/loading_blocklists_relativelayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/privacy_browser_logo"
+            android:layout_height="256dp"
+            android:layout_width="256dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/privacy_browser_foreground"
+            tools:ignore="contentDescription" />
+
+        <TextView
+            android:id="@+id/loading_blocklist_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/privacy_browser_logo"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
 </FrameLayout>
