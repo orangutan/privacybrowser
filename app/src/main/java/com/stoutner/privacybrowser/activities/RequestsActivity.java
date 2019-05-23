@@ -43,7 +43,7 @@ import androidx.fragment.app.DialogFragment;
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.adapters.RequestsArrayAdapter;
 import com.stoutner.privacybrowser.dialogs.ViewRequestDialog;
-import com.stoutner.privacybrowser.helpers.BlockListHelper;
+import com.stoutner.privacybrowser.helpers.BlocklistHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,8 +112,8 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
 
         // Populate the resource array lists.
         for (String[] request : resourceRequests) {
-            switch (request[BlockListHelper.REQUEST_DISPOSITION]) {
-                case BlockListHelper.REQUEST_DEFAULT:
+            switch (request[BlocklistHelper.REQUEST_DISPOSITION]) {
+                case BlocklistHelper.REQUEST_DEFAULT:
                     // Add the request to the list of all requests.
                     allResourceRequests.add(request);
 
@@ -121,7 +121,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
                     defaultResourceRequests.add(request);
                     break;
 
-                case BlockListHelper.REQUEST_ALLOWED:
+                case BlocklistHelper.REQUEST_ALLOWED:
                     // Add the request to the list of all requests.
                     allResourceRequests.add(request);
 
@@ -129,7 +129,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
                     allowedResourceRequests.add(request);
                     break;
 
-                case BlockListHelper.REQUEST_THIRD_PARTY:
+                case BlocklistHelper.REQUEST_THIRD_PARTY:
                     // Add the request to the list of all requests.
                     allResourceRequests.add(request);
 
@@ -137,7 +137,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
                     thirdPartyResourceRequests.add(request);
                     break;
 
-                case BlockListHelper.REQUEST_BLOCKED:
+                case BlocklistHelper.REQUEST_BLOCKED:
                     // Add the request to the list of all requests.
                     allResourceRequests.add(request);
 

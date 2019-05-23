@@ -131,7 +131,7 @@ import com.stoutner.privacybrowser.dialogs.UrlHistoryDialog;
 import com.stoutner.privacybrowser.dialogs.ViewSslCertificateDialog;
 import com.stoutner.privacybrowser.fragments.WebViewTabFragment;
 import com.stoutner.privacybrowser.helpers.AdHelper;
-import com.stoutner.privacybrowser.helpers.BlockListHelper;
+import com.stoutner.privacybrowser.helpers.BlocklistHelper;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 import com.stoutner.privacybrowser.helpers.CheckPinnedMismatchHelper;
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
@@ -456,6 +456,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         FloatingActionButton createBookmarkFab = findViewById(R.id.create_bookmark_fab);
         EditText findOnPageEditText = findViewById(R.id.find_on_page_edittext);
 
+        // Initially disable the sliding drawers.  They will be enabled once the blocklists are loaded.
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
         // Listen for touches on the navigation menu.
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -757,14 +760,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         bookmarksHeaderTextView.setPadding(drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingTop, drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingBottom);
                     }
 
-                    // Update the navigation menu items.
-                    navigationBackMenuItem.setEnabled(currentWebView.canGoBack());
-                    navigationForwardMenuItem.setEnabled(currentWebView.canGoForward());
-                    navigationHistoryMenuItem.setEnabled((currentWebView.canGoBack() || currentWebView.canGoForward()));
-                    navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + currentWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                    // Update the navigation menu items if the WebView is not null.
+                    if (currentWebView != null) {
+                        navigationBackMenuItem.setEnabled(currentWebView.canGoBack());
+                        navigationForwardMenuItem.setEnabled(currentWebView.canGoForward());
+                        navigationHistoryMenuItem.setEnabled((currentWebView.canGoBack() || currentWebView.canGoForward()));
+                        navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + currentWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
 
-                    // Hide the keyboard (if displayed).
-                    inputMethodManager.hideSoftInputFromWindow(currentWebView.getWindowToken(), 0);
+                        // Hide the keyboard (if displayed).
+                        inputMethodManager.hideSoftInputFromWindow(currentWebView.getWindowToken(), 0);
+                    }
 
                     // Clear the focus from from the URL text box and the WebView.  This removes any text selection markers and context menus, which otherwise draw above the open drawers.
                     urlEditText.clearFocus();
@@ -4399,7 +4404,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         // Instantiate the blocklist helper.
-        BlockListHelper blockListHelper = new BlockListHelper();
+        BlocklistHelper blocklistHelper = new BlocklistHelper();
 
         // Remove the lint warning below that the input method manager might be null.
         assert inputMethodManager != null;
@@ -4986,7 +4991,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Block third-party requests if enabled.
                 if (isThirdPartyRequest && nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.THIRD_PARTY_REQUESTS)) {
                     // Add the result to the resource requests.
-                    nestedScrollWebView.addResourceRequest(new String[]{BlockListHelper.REQUEST_THIRD_PARTY, url});
+                    nestedScrollWebView.addResourceRequest(new String[]{BlocklistHelper.REQUEST_THIRD_PARTY, url});
 
                     // Increment the blocked requests counters.
                     nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS);
@@ -5015,10 +5020,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Check UltraPrivacy if it is enabled.
                 if (nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.ULTRA_PRIVACY)) {
                     // Check the URL against UltraPrivacy.
-                    String[] ultraPrivacyResults = blockListHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, ultraPrivacy);
+                    String[] ultraPrivacyResults = blocklistHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, ultraPrivacy);
 
                     // Process the UltraPrivacy results.
-                    if (ultraPrivacyResults[0].equals(BlockListHelper.REQUEST_BLOCKED)) {  // The resource request matched UltraPrivacy's blacklist.
+                    if (ultraPrivacyResults[0].equals(BlocklistHelper.REQUEST_BLOCKED)) {  // The resource request matched UltraPrivacy's blacklist.
                         // Add the result to the resource requests.
                         nestedScrollWebView.addResourceRequest(new String[] {ultraPrivacyResults[0], ultraPrivacyResults[1], ultraPrivacyResults[2], ultraPrivacyResults[3], ultraPrivacyResults[4],
                                 ultraPrivacyResults[5]});
@@ -5044,7 +5049,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse;
-                    } else if (ultraPrivacyResults[0].equals(BlockListHelper.REQUEST_ALLOWED)) {  // The resource request matched UltraPrivacy's whitelist.
+                    } else if (ultraPrivacyResults[0].equals(BlocklistHelper.REQUEST_ALLOWED)) {  // The resource request matched UltraPrivacy's whitelist.
                         // Add a whitelist entry to the resource requests array.
                         nestedScrollWebView.addResourceRequest(new String[] {ultraPrivacyResults[0], ultraPrivacyResults[1], ultraPrivacyResults[2], ultraPrivacyResults[3], ultraPrivacyResults[4],
                                 ultraPrivacyResults[5]});
@@ -5057,10 +5062,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Check EasyList if it is enabled.
                 if (nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.EASY_LIST)) {
                     // Check the URL against EasyList.
-                    String[] easyListResults = blockListHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, easyList);
+                    String[] easyListResults = blocklistHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, easyList);
 
                     // Process the EasyList results.
-                    if (easyListResults[0].equals(BlockListHelper.REQUEST_BLOCKED)) {  // The resource request matched EasyList's blacklist.
+                    if (easyListResults[0].equals(BlocklistHelper.REQUEST_BLOCKED)) {  // The resource request matched EasyList's blacklist.
                         // Add the result to the resource requests.
                         nestedScrollWebView.addResourceRequest(new String[] {easyListResults[0], easyListResults[1], easyListResults[2], easyListResults[3], easyListResults[4], easyListResults[5]});
 
@@ -5085,7 +5090,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse;
-                    } else if (easyListResults[0].equals(BlockListHelper.REQUEST_ALLOWED)) {  // The resource request matched EasyList's whitelist.
+                    } else if (easyListResults[0].equals(BlocklistHelper.REQUEST_ALLOWED)) {  // The resource request matched EasyList's whitelist.
                         // Update the whitelist result string array tracker.
                         whitelistResultStringArray = new String[] {easyListResults[0], easyListResults[1], easyListResults[2], easyListResults[3], easyListResults[4], easyListResults[5]};
                     }
@@ -5094,10 +5099,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Check EasyPrivacy if it is enabled.
                 if (nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.EASY_PRIVACY)) {
                     // Check the URL against EasyPrivacy.
-                    String[] easyPrivacyResults = blockListHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, easyPrivacy);
+                    String[] easyPrivacyResults = blocklistHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, easyPrivacy);
 
                     // Process the EasyPrivacy results.
-                    if (easyPrivacyResults[0].equals(BlockListHelper.REQUEST_BLOCKED)) {  // The resource request matched EasyPrivacy's blacklist.
+                    if (easyPrivacyResults[0].equals(BlocklistHelper.REQUEST_BLOCKED)) {  // The resource request matched EasyPrivacy's blacklist.
                         // Add the result to the resource requests.
                         nestedScrollWebView.addResourceRequest(new String[] {easyPrivacyResults[0], easyPrivacyResults[1], easyPrivacyResults[2], easyPrivacyResults[3], easyPrivacyResults[4],
                                 easyPrivacyResults[5]});
@@ -5123,7 +5128,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse;
-                    } else if (easyPrivacyResults[0].equals(BlockListHelper.REQUEST_ALLOWED)) {  // The resource request matched EasyPrivacy's whitelist.
+                    } else if (easyPrivacyResults[0].equals(BlocklistHelper.REQUEST_ALLOWED)) {  // The resource request matched EasyPrivacy's whitelist.
                         // Update the whitelist result string array tracker.
                         whitelistResultStringArray = new String[] {easyPrivacyResults[0], easyPrivacyResults[1], easyPrivacyResults[2], easyPrivacyResults[3], easyPrivacyResults[4], easyPrivacyResults[5]};
                     }
@@ -5132,10 +5137,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Check Fanboy’s Annoyance List if it is enabled.
                 if (nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST)) {
                     // Check the URL against Fanboy's Annoyance List.
-                    String[] fanboysAnnoyanceListResults = blockListHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, fanboysAnnoyanceList);
+                    String[] fanboysAnnoyanceListResults = blocklistHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, fanboysAnnoyanceList);
 
                     // Process the Fanboy's Annoyance List results.
-                    if (fanboysAnnoyanceListResults[0].equals(BlockListHelper.REQUEST_BLOCKED)) {  // The resource request matched Fanboy's Annoyance List's blacklist.
+                    if (fanboysAnnoyanceListResults[0].equals(BlocklistHelper.REQUEST_BLOCKED)) {  // The resource request matched Fanboy's Annoyance List's blacklist.
                         // Add the result to the resource requests.
                         nestedScrollWebView.addResourceRequest(new String[] {fanboysAnnoyanceListResults[0], fanboysAnnoyanceListResults[1], fanboysAnnoyanceListResults[2], fanboysAnnoyanceListResults[3],
                                 fanboysAnnoyanceListResults[4], fanboysAnnoyanceListResults[5]});
@@ -5162,17 +5167,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse;
-                    } else if (fanboysAnnoyanceListResults[0].equals(BlockListHelper.REQUEST_ALLOWED)){  // The resource request matched Fanboy's Annoyance List's whitelist.
+                    } else if (fanboysAnnoyanceListResults[0].equals(BlocklistHelper.REQUEST_ALLOWED)){  // The resource request matched Fanboy's Annoyance List's whitelist.
                         // Update the whitelist result string array tracker.
                         whitelistResultStringArray = new String[] {fanboysAnnoyanceListResults[0], fanboysAnnoyanceListResults[1], fanboysAnnoyanceListResults[2], fanboysAnnoyanceListResults[3],
                                 fanboysAnnoyanceListResults[4], fanboysAnnoyanceListResults[5]};
                     }
                 } else if (nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST)) {  // Only check Fanboy’s Social Blocking List if Fanboy’s Annoyance List is disabled.
                     // Check the URL against Fanboy's Annoyance List.
-                    String[] fanboysSocialListResults = blockListHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, fanboysSocialList);
+                    String[] fanboysSocialListResults = blocklistHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, fanboysSocialList);
 
                     // Process the Fanboy's Social Blocking List results.
-                    if (fanboysSocialListResults[0].equals(BlockListHelper.REQUEST_BLOCKED)) {  // The resource request matched Fanboy's Social Blocking List's blacklist.
+                    if (fanboysSocialListResults[0].equals(BlocklistHelper.REQUEST_BLOCKED)) {  // The resource request matched Fanboy's Social Blocking List's blacklist.
                         // Add the result to the resource requests.
                         nestedScrollWebView.addResourceRequest(new String[] {fanboysSocialListResults[0], fanboysSocialListResults[1], fanboysSocialListResults[2], fanboysSocialListResults[3],
                                 fanboysSocialListResults[4], fanboysSocialListResults[5]});
@@ -5199,7 +5204,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // The resource request was blocked.  Return an empty web resource response.
                         return emptyWebResourceResponse;
-                    } else if (fanboysSocialListResults[0].equals(BlockListHelper.REQUEST_ALLOWED)) {  // The resource request matched Fanboy's Social Blocking List's whitelist.
+                    } else if (fanboysSocialListResults[0].equals(BlocklistHelper.REQUEST_ALLOWED)) {  // The resource request matched Fanboy's Social Blocking List's whitelist.
                         // Update the whitelist result string array tracker.
                         whitelistResultStringArray = new String[] {fanboysSocialListResults[0], fanboysSocialListResults[1], fanboysSocialListResults[2], fanboysSocialListResults[3],
                                 fanboysSocialListResults[4], fanboysSocialListResults[5]};
@@ -5210,7 +5215,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 if (whitelistResultStringArray != null) {  // The request was processed by a whitelist.
                     nestedScrollWebView.addResourceRequest(whitelistResultStringArray);
                 } else {  // The request didn't match any blocklist entry.  Log it as a default request.
-                    nestedScrollWebView.addResourceRequest(new String[]{BlockListHelper.REQUEST_DEFAULT, url});
+                    nestedScrollWebView.addResourceRequest(new String[]{BlocklistHelper.REQUEST_DEFAULT, url});
                 }
 
                 // The resource request has not been blocked.  `return null` loads the requested resource.

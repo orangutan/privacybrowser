@@ -36,7 +36,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.helpers.BlockListHelper;
+import com.stoutner.privacybrowser.helpers.BlocklistHelper;
 
 public class ViewRequestDialog extends DialogFragment {
     // The public interface is used to send information back to the parent activity.
@@ -172,8 +172,8 @@ public class ViewRequestDialog extends DialogFragment {
         nextButton.setEnabled(!isLastRequest);
 
         // Set the request action text.
-        switch (requestDetails[BlockListHelper.REQUEST_DISPOSITION]) {
-            case BlockListHelper.REQUEST_DEFAULT:
+        switch (requestDetails[BlocklistHelper.REQUEST_DISPOSITION]) {
+            case BlocklistHelper.REQUEST_DEFAULT:
                 // Set the text.
                 requestDisposition.setText(R.string.default_allowed);
 
@@ -181,7 +181,7 @@ public class ViewRequestDialog extends DialogFragment {
                 requestDisposition.setBackgroundColor(getResources().getColor(R.color.transparent));
                 break;
 
-            case BlockListHelper.REQUEST_ALLOWED:
+            case BlocklistHelper.REQUEST_ALLOWED:
                 // Set the text.
                 requestDisposition.setText(R.string.allowed);
 
@@ -193,7 +193,7 @@ public class ViewRequestDialog extends DialogFragment {
                 }
                 break;
 
-            case BlockListHelper.REQUEST_THIRD_PARTY:
+            case BlocklistHelper.REQUEST_THIRD_PARTY:
                 // Set the text.
                 requestDisposition.setText(R.string.third_party_blocked);
 
@@ -205,7 +205,7 @@ public class ViewRequestDialog extends DialogFragment {
                 }
                 break;
 
-            case BlockListHelper.REQUEST_BLOCKED:
+            case BlocklistHelper.REQUEST_BLOCKED:
                 // Set the text.
                 requestDisposition.setText(R.string.blocked);
 
@@ -219,7 +219,7 @@ public class ViewRequestDialog extends DialogFragment {
         }
 
         // Display the request URL.
-        requestUrl.setText(requestDetails[BlockListHelper.REQUEST_URL]);
+        requestUrl.setText(requestDetails[BlocklistHelper.REQUEST_URL]);
 
         // Modify the dialog based on the request action.
         if (requestDetails.length == 2) {  // A default request.
@@ -234,97 +234,97 @@ public class ViewRequestDialog extends DialogFragment {
             requestBlockListOriginalEntry.setVisibility(View.GONE);
         } else {  // A blocked or allowed request.
             // Set the text on the text views.
-            requestBlockList.setText(requestDetails[BlockListHelper.REQUEST_BLOCKLIST]);
-            requestBlockListEntries.setText(requestDetails[BlockListHelper.REQUEST_BLOCKLIST_ENTRIES]);
-            requestBlockListOriginalEntry.setText(requestDetails[BlockListHelper.REQUEST_BLOCKLIST_ORIGINAL_ENTRY]);
+            requestBlockList.setText(requestDetails[BlocklistHelper.REQUEST_BLOCKLIST]);
+            requestBlockListEntries.setText(requestDetails[BlocklistHelper.REQUEST_BLOCKLIST_ENTRIES]);
+            requestBlockListOriginalEntry.setText(requestDetails[BlocklistHelper.REQUEST_BLOCKLIST_ORIGINAL_ENTRY]);
 
             // Set the sublist text.
-            switch (requestDetails[BlockListHelper.REQUEST_SUBLIST]) {
-                case BlockListHelper.MAIN_WHITELIST:
+            switch (requestDetails[BlocklistHelper.REQUEST_SUBLIST]) {
+                case BlocklistHelper.MAIN_WHITELIST:
                     requestSubList.setText(R.string.main_whitelist);
                     break;
 
-                case BlockListHelper.FINAL_WHITELIST:
+                case BlocklistHelper.FINAL_WHITELIST:
                     requestSubList.setText(R.string.final_whitelist);
                     break;
 
-                case BlockListHelper.DOMAIN_WHITELIST:
+                case BlocklistHelper.DOMAIN_WHITELIST:
                     requestSubList.setText(R.string.domain_whitelist);
                     break;
 
-                case BlockListHelper.DOMAIN_INITIAL_WHITELIST:
+                case BlocklistHelper.DOMAIN_INITIAL_WHITELIST:
                     requestSubList.setText(R.string.domain_initial_whitelist);
                     break;
 
-                case BlockListHelper.DOMAIN_FINAL_WHITELIST:
+                case BlocklistHelper.DOMAIN_FINAL_WHITELIST:
                     requestSubList.setText(R.string.domain_final_whitelist);
                     break;
 
-                case BlockListHelper.THIRD_PARTY_WHITELIST:
+                case BlocklistHelper.THIRD_PARTY_WHITELIST:
                     requestSubList.setText(R.string.third_party_whitelist);
                     break;
 
-                case BlockListHelper.THIRD_PARTY_DOMAIN_WHITELIST:
+                case BlocklistHelper.THIRD_PARTY_DOMAIN_WHITELIST:
                     requestSubList.setText(R.string.third_party_domain_whitelist);
                     break;
 
-                case BlockListHelper.THIRD_PARTY_DOMAIN_INITIAL_WHITELIST:
+                case BlocklistHelper.THIRD_PARTY_DOMAIN_INITIAL_WHITELIST:
                     requestSubList.setText(R.string.third_party_domain_initial_whitelist);
                     break;
 
-                case BlockListHelper.MAIN_BLACKLIST:
+                case BlocklistHelper.MAIN_BLACKLIST:
                     requestSubList.setText(R.string.main_blacklist);
                     break;
 
-                case BlockListHelper.INITIAL_BLACKLIST:
+                case BlocklistHelper.INITIAL_BLACKLIST:
                     requestSubList.setText(R.string.initial_blacklist);
                     break;
 
-                case BlockListHelper.FINAL_BLACKLIST:
+                case BlocklistHelper.FINAL_BLACKLIST:
                     requestSubList.setText(R.string.final_blacklist);
                     break;
 
-                case BlockListHelper.DOMAIN_BLACKLIST:
+                case BlocklistHelper.DOMAIN_BLACKLIST:
                     requestSubList.setText(R.string.domain_blacklist);
                     break;
 
-                case BlockListHelper.DOMAIN_INITIAL_BLACKLIST:
+                case BlocklistHelper.DOMAIN_INITIAL_BLACKLIST:
                     requestSubList.setText(R.string.domain_initial_blacklist);
                     break;
 
-                case BlockListHelper.DOMAIN_FINAL_BLACKLIST:
+                case BlocklistHelper.DOMAIN_FINAL_BLACKLIST:
                     requestSubList.setText(R.string.domain_final_blacklist);
                     break;
 
-                case BlockListHelper.DOMAIN_REGULAR_EXPRESSION_BLACKLIST:
+                case BlocklistHelper.DOMAIN_REGULAR_EXPRESSION_BLACKLIST:
                     requestSubList.setText(R.string.domain_regular_expression_blacklist);
                     break;
 
-                case BlockListHelper.THIRD_PARTY_BLACKLIST:
+                case BlocklistHelper.THIRD_PARTY_BLACKLIST:
                     requestSubList.setText(R.string.third_party_blacklist);
                     break;
 
-                case BlockListHelper.THIRD_PARTY_INITIAL_BLACKLIST:
+                case BlocklistHelper.THIRD_PARTY_INITIAL_BLACKLIST:
                     requestSubList.setText(R.string.third_party_initial_blacklist);
                     break;
 
-                case BlockListHelper.THIRD_PARTY_DOMAIN_BLACKLIST:
+                case BlocklistHelper.THIRD_PARTY_DOMAIN_BLACKLIST:
                     requestSubList.setText(R.string.third_party_domain_blacklist);
                     break;
 
-                case BlockListHelper.THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST:
+                case BlocklistHelper.THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST:
                     requestSubList.setText(R.string.third_party_domain_initial_blacklist);
                     break;
 
-                case BlockListHelper.THIRD_PARTY_REGULAR_EXPRESSION_BLACKLIST:
+                case BlocklistHelper.THIRD_PARTY_REGULAR_EXPRESSION_BLACKLIST:
                     requestSubList.setText(R.string.third_party_regular_expression_blacklist);
                     break;
 
-                case BlockListHelper.THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLACKLIST:
+                case BlocklistHelper.THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLACKLIST:
                     requestSubList.setText(R.string.third_party_domain_regular_expression_blacklist);
                     break;
 
-                case BlockListHelper.REGULAR_EXPRESSION_BLACKLIST:
+                case BlocklistHelper.REGULAR_EXPRESSION_BLACKLIST:
                     requestSubList.setText(R.string.regular_expression_blacklist);
                     break;
             }

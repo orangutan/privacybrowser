@@ -32,7 +32,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.helpers.BlockListHelper;
+import com.stoutner.privacybrowser.helpers.BlocklistHelper;
 
 import java.util.List;
 
@@ -75,7 +75,7 @@ public class RequestsArrayAdapter extends ArrayAdapter<String[]> {
 
         // Set the action text and the background color.
         switch (entryStringArray[0]) {
-            case BlockListHelper.REQUEST_DEFAULT:
+            case BlocklistHelper.REQUEST_DEFAULT:
                 // Create the disposition string.
                 String requestDefault = id + ". " + context.getResources().getString(R.string.allowed);
 
@@ -86,7 +86,7 @@ public class RequestsArrayAdapter extends ArrayAdapter<String[]> {
                 linearLayout.setBackgroundColor(context.getResources().getColor(R.color.transparent));
                 break;
 
-            case BlockListHelper.REQUEST_ALLOWED:
+            case BlocklistHelper.REQUEST_ALLOWED:
                 // Create the disposition string.
                 String requestAllowed = id + ". " + context.getResources().getString(R.string.allowed);
 
@@ -101,7 +101,7 @@ public class RequestsArrayAdapter extends ArrayAdapter<String[]> {
                 }
                 break;
 
-            case BlockListHelper.REQUEST_THIRD_PARTY:
+            case BlocklistHelper.REQUEST_THIRD_PARTY:
                 // Create the disposition string.
                 String requestThirdParty = id + ". " + context.getResources().getString(R.string.blocked);
 
@@ -117,7 +117,7 @@ public class RequestsArrayAdapter extends ArrayAdapter<String[]> {
                 break;
 
 
-            case BlockListHelper.REQUEST_BLOCKED:
+            case BlocklistHelper.REQUEST_BLOCKED:
                 // Create the disposition string.
                 String requestBlocked = id + ". " + context.getResources().getString(R.string.blocked);
 

@@ -27,14 +27,15 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.helpers.BlockListHelper;
+import com.stoutner.privacybrowser.helpers.BlocklistHelper;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.appcompat.widget.Toolbar;
 
 public class PopulateBlocklists extends AsyncTask<Void, String, ArrayList<ArrayList<List<String[]>>>> {
     // The public interface is used to send information back to the parent activity.
@@ -66,7 +67,7 @@ public class PopulateBlocklists extends AsyncTask<Void, String, ArrayList<ArrayL
         Context context = contextWeakReference.get();
 
         // Instantiate the blocklist helper.
-        BlockListHelper blockListHelper = new BlockListHelper();
+        BlocklistHelper blocklistHelper = new BlocklistHelper();
 
         // Create a combined array list.
         ArrayList<ArrayList<List<String[]>>> combinedBlocklists = new ArrayList<>();
@@ -77,35 +78,35 @@ public class PopulateBlocklists extends AsyncTask<Void, String, ArrayList<ArrayL
             publishProgress(context.getString(R.string.loading_easylist));
 
             // Populate EasyList.
-            ArrayList<List<String[]>> easyList = blockListHelper.parseBlockList(context.getAssets(), "blocklists/easylist.txt");
+            ArrayList<List<String[]>> easyList = blocklistHelper.parseBlocklist(context.getAssets(), "blocklists/easylist.txt");
 
 
             // Update the progress.
             publishProgress(context.getString(R.string.loading_easyprivacy));
 
             // Populate EasyPrivacy.
-            ArrayList<List<String[]>> easyPrivacy = blockListHelper.parseBlockList(context.getAssets(), "blocklists/easyprivacy.txt");
+            ArrayList<List<String[]>> easyPrivacy = blocklistHelper.parseBlocklist(context.getAssets(), "blocklists/easyprivacy.txt");
 
 
             // Update the progress.
             publishProgress(context.getString(R.string.loading_fanboys_annoyance_list));
 
             // Populate Fanboy's Annoyance List.
-            ArrayList<List<String[]>> fanboysAnnoyanceList = blockListHelper.parseBlockList(context.getAssets(), "blocklists/fanboy-annoyance.txt");
+            ArrayList<List<String[]>> fanboysAnnoyanceList = blocklistHelper.parseBlocklist(context.getAssets(), "blocklists/fanboy-annoyance.txt");
 
 
             // Update the progress.
             publishProgress(context.getString(R.string.loading_fanboys_social_blocking_list));
 
             // Populate Fanboy's Social Blocking List.
-            ArrayList<List<String[]>> fanboysSocialList = blockListHelper.parseBlockList(context.getAssets(), "blocklists/fanboy-social.txt");
+            ArrayList<List<String[]>> fanboysSocialList = blocklistHelper.parseBlocklist(context.getAssets(), "blocklists/fanboy-social.txt");
 
 
             // Update the progress.
             publishProgress(context.getString(R.string.loading_ultraprivacy));
 
             // Populate UltraPrivacy.
-            ArrayList<List<String[]>> ultraPrivacy = blockListHelper.parseBlockList(context.getAssets(), "blocklists/ultraprivacy.txt");
+            ArrayList<List<String[]>> ultraPrivacy = blocklistHelper.parseBlocklist(context.getAssets(), "blocklists/ultraprivacy.txt");
 
 
             // Populate the combined array list.
@@ -149,6 +150,7 @@ public class PopulateBlocklists extends AsyncTask<Void, String, ArrayList<ArrayL
 
         // Get handles for the views.
         Toolbar toolbar = activity.findViewById(R.id.toolbar);
+        DrawerLayout drawerLayout = activity.findViewById(R.id.drawerlayout);
         LinearLayout tabsLinearLayout = activity.findViewById(R.id.tabs_linearlayout);
         RelativeLayout loadingBlocklistsRelativeLayout = activity.findViewById(R.id.loading_blocklists_relativelayout);
 
@@ -158,6 +160,9 @@ public class PopulateBlocklists extends AsyncTask<Void, String, ArrayList<ArrayL
 
         // Hide the loading blocklists screen.
         loadingBlocklistsRelativeLayout.setVisibility(View.GONE);
+
+        // Enable the sliding drawers.
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 
         // Add the first tab.
         populateBlocklistsListener.finishedPopulatingBlocklists(combinedBlocklists);

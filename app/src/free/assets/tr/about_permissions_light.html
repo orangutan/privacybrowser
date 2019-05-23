@@ -47,29 +47,29 @@
         <hr/>
         <br/>
 
-        <p>In addition, Privacy Browser Free displays ads from Google’s AdMob network using the Firebase backend.
-            For the free flavor, Firebase adds the following permissions even though they are not listed in the source code
-            <a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=blob;f=app/src/main/AndroidManifest.xml;hb=HEAD">manifest file</a>.</p>
+        <p>Ek olarak, Privacy Browser Ücretsiz, Firebase backend kullanarak Google'ın AdMob ağından reklamlar görüntüler.
+            Ücretsiz sürüm için Firebase, kaynak kod <a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=blob;f=app/src/main/AndroidManifest.xml;hb=HEAD">bildirim dosyası</a>nda
+            listelenmemiş olsalar bile aşağıdaki izinleri ilave eder.</p>
 
-        <h3>View network connections</h3>
+        <h3>Ağ bağlantılarını görüntüle</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#ACCESS_NETWORK_STATE">android.permission.ACCESS_NETWORK_STATE</a></p>
-        <p>Allows the ads to tell when you are connected to the internet and when you aren’t (presumably so they don’t try to reload an ad when you are disconnected).
-            They can also tell if you are connected via Wi-Fi, 2G, 3G, 4G, etc.</p>
+        <p>Reklamların, internet erişimine ne zaman sahip olup olmadığınızı bilmesine izin verir (internet erişiminiz yoksa muhtemelen reklamı tekrar yüklemeyi denemezler).
+            Ayrıca internete Wi-Fi, 2g, 3g, 4g vs. bağlantı şekillerinden hangisiyle bağlandığınızı da anlayabilirler.</p>
 
-        <h3>Prevent phone from sleeping</h3>
+        <h3>Telefonun uyku moduna geçmesini engelleme</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WAKE_LOCK">android.permission.WAKE_LOCK</a></p>
-        <p>Allows the ads to keep the processor from sleeping and the screen from dimming, although in my testing I don’t think the ads actually do this.</p>
+        <p>Reklamların, işlemcinin uyku moduna geçmesini ve ekranın kararmasını engellemesine izin verir. Kişisel deneyimime göre reklamların bunu yapabileceğini sanmıyorum.</p>
 
         <h3>Play Install Referrer API</h3>
         <p><a href="https://android-developers.googleblog.com/2017/11/google-play-referrer-api-track-and.html">com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE</a></p>
-        <p>Allows other apps to tell if their installation was launched from an ad in Privacy Browser Free.</p>
+        <p>Diğer uygulamaların, kurulumlarının Privacy Browser Ücretsizde görüntülenen bir reklamdan başlatılıp başlatılmadığını anlamasına izin verir.</p>
 
-        <h3>Receive data from Internet</h3>
+        <h3>İnternetten veri alma</h3>
         <p><a href="http://androidpermissions.com/permission/com.google.android.c2dm.permission.RECEIVE">com.google.android.c2dm.permission.RECEIVE</a></p>
-        <p>Allows Google to send information directly to the AdView without having to receive a request first (cloud-to-device messaging).</p>
+        <p>Google'ın, öncesinde bir istek almasına gerek duymadan, AdView'e doğrudan bilgi göndermesine izin verir (buluttan cihaza iletişim).</p>
 
-        <h3>Receive data from Internet</h3>
+        <h3>İnternetten veri alma</h3>
         <p><a href="https://developers.google.com/cloud-messaging/android/client">com.stoutner.privacybrowser.free.permission.C2D_MESSAGE</a></p>
-        <p>Secures the cloud-to-device messages so that only Privacy Browser Free can receive them.</p>
+        <p>Buluttan cihaza iletişimi güvence altına alır, böylece sadece Privacy Browser Ücretsiz onları alabilir.</p>
     </body>
 </html>
