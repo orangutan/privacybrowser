@@ -301,6 +301,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // Remove the warning about needing to override `performClick()` when using an `OnTouchListener` with `WebView`.
     @SuppressLint("ClickableViewAccessibility")
     protected void onCreate(Bundle savedInstanceState) {
+        // Initialize the default preference values the first time the program is run.  `false` keeps this command from resetting any current preferences back to default.
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -325,15 +328,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Set the content view.
         setContentView(R.layout.main_framelayout);
-
-        // Get a handle for the input method.
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        // Remove the lint warning below that the input method manager might be null.
-        assert inputMethodManager != null;
-
-        // Get a handle for the toolbar.
+        // Get handles for the views that need to be modified.
+        DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        ViewPager webViewPager = findViewById(R.id.webviewpager);
 
         // Set the action bar.  `SupportActionBar` must be used until the minimum API is >= 21.
         setSupportActionBar(toolbar);
@@ -348,126 +346,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         actionBar.setCustomView(R.layout.url_app_bar);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 
-        // Initialize the foreground color spans for highlighting the URLs.  We have to use the deprecated `getColor()` until API >= 23.
-        redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
-        initialGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
-        finalGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
-
-        // Get handles for the URL views.
-        EditText urlEditText = findViewById(R.id.url_edittext);
-
-        // Remove the formatting from `urlTextBar` when the user is editing the text.
-        urlEditText.setOnFocusChangeListener((View v, boolean hasFocus) -> {
-            if (hasFocus) {  // The user is editing the URL text box.
-                // Remove the highlighting.
-                urlEditText.getText().removeSpan(redColorSpan);
-                urlEditText.getText().removeSpan(initialGrayColorSpan);
-                urlEditText.getText().removeSpan(finalGrayColorSpan);
-            } else {  // The user has stopped editing the URL text box.
-                // Move to the beginning of the string.
-                urlEditText.setSelection(0);
-
-                // Reapply the highlighting.
-                highlightUrlText();
-            }
-        });
-
-        // Set the go button on the keyboard to load the URL in `urlTextBox`.
-        urlEditText.setOnKeyListener((View v, int keyCode, KeyEvent event) -> {
-            // If the event is a key-down event on the `enter` button, load the URL.
-            if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                // Load the URL into the mainWebView and consume the event.
-                loadUrlFromTextBox();
-
-                // If the enter key was pressed, consume the event.
-                return true;
-            } else {
-                // If any other key was pressed, do not consume the event.
-                return false;
-            }
-        });
-
-        // Initialize the Orbot status and the waiting for Orbot trackers.
-        orbotStatus = "unknown";
-        waitingForOrbot = false;
-
-        // Create an Orbot status `BroadcastReceiver`.
-        orbotStatusBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                // Store the content of the status message in `orbotStatus`.
-                orbotStatus = intent.getStringExtra("org.torproject.android.intent.extra.STATUS");
-
-                // If Privacy Browser is waiting on Orbot, load the website now that Orbot is connected.
-                if (orbotStatus.equals("ON") && waitingForOrbot) {
-                    // Reset the waiting for Orbot status.
-                    waitingForOrbot = false;
-
-                    // Get the intent that started the app.
-                    Intent launchingIntent = getIntent();
-
-                    // Get the information from the intent.
-                    String launchingIntentAction = launchingIntent.getAction();
-                    Uri launchingIntentUriData = launchingIntent.getData();
-
-                    // If the intent action is a web search, perform the search.
-                    if ((launchingIntentAction != null) && launchingIntentAction.equals(Intent.ACTION_WEB_SEARCH)) {
-                        // Create an encoded URL string.
-                        String encodedUrlString;
-
-                        // Sanitize the search input and convert it to a search.
-                        try {
-                            encodedUrlString = URLEncoder.encode(launchingIntent.getStringExtra(SearchManager.QUERY), "UTF-8");
-                        } catch (UnsupportedEncodingException exception) {
-                            encodedUrlString = "";
-                        }
-
-                        // Load the completed search URL.
-                        loadUrl(searchURL + encodedUrlString);
-                    } else if (launchingIntentUriData != null){  // Check to see if the intent contains a new URL.
-                        // Load the URL from the intent.
-                        loadUrl(launchingIntentUriData.toString());
-                    } else {  // The is no URL in the intent.
-                        // Select the homepage based on the proxy through Orbot status.
-                        if (proxyThroughOrbot) {
-                            // Load the Tor homepage.
-                            loadUrl(sharedPreferences.getString("tor_homepage", getString(R.string.tor_homepage_default_value)));
-                        } else {
-                            // Load the normal homepage.
-                            loadUrl(sharedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
-                        }
-                    }
-                }
-            }
-        };
-
-        // Register `orbotStatusBroadcastReceiver` on `this` context.
-        this.registerReceiver(orbotStatusBroadcastReceiver, new IntentFilter("org.torproject.android.intent.action.STATUS"));
-
-        // Get handles for views that need to be modified.
-        DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
-        NavigationView navigationView = findViewById(R.id.navigationview);
-        TabLayout tabLayout = findViewById(R.id.tablayout);
-        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
-        ViewPager webViewPager = findViewById(R.id.webviewpager);
-        ListView bookmarksListView = findViewById(R.id.bookmarks_drawer_listview);
-        FloatingActionButton launchBookmarksActivityFab = findViewById(R.id.launch_bookmarks_activity_fab);
-        FloatingActionButton createBookmarkFolderFab = findViewById(R.id.create_bookmark_folder_fab);
-        FloatingActionButton createBookmarkFab = findViewById(R.id.create_bookmark_fab);
-        EditText findOnPageEditText = findViewById(R.id.find_on_page_edittext);
-
         // Initially disable the sliding drawers.  They will be enabled once the blocklists are loaded.
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
-        // Listen for touches on the navigation menu.
-        navigationView.setNavigationItemSelectedListener(this);
-
-        // Get handles for the navigation menu and the back and forward menu items.  The menu is zero-based.
-        Menu navigationMenu = navigationView.getMenu();
-        MenuItem navigationBackMenuItem = navigationMenu.getItem(2);
-        MenuItem navigationForwardMenuItem = navigationMenu.getItem(3);
-        MenuItem navigationHistoryMenuItem = navigationMenu.getItem(4);
-        MenuItem navigationRequestsMenuItem = navigationMenu.getItem(5);
+        // Create the hamburger icon at the start of the AppBar.
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_navigation_drawer, R.string.close_navigation_drawer);
 
         // Initialize the web view pager adapter.
         webViewPagerAdapter = new WebViewPagerAdapter(getSupportFragmentManager());
@@ -477,327 +360,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Store up to 100 tabs in memory.
         webViewPager.setOffscreenPageLimit(100);
-
-        // Update the web view pager every time a tab is modified.
-        webViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                // Do nothing.
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                // Close the find on page bar if it is open.
-                closeFindOnPage(null);
-
-                // Set the current WebView.
-                setCurrentWebView(position);
-
-                // Select the corresponding tab if it does not match the currently selected page.  This will happen if the page was scrolled via swiping in the view pager or by creating a new tab.
-                if (tabLayout.getSelectedTabPosition() != position) {
-                    // Create a handler to select the tab.
-                    Handler selectTabHandler = new Handler();
-
-                    // Create a runnable to select the tab.
-                    Runnable selectTabRunnable = () -> {
-                        // Get a handle for the tab.
-                        TabLayout.Tab tab = tabLayout.getTabAt(position);
-
-                        // Assert that the tab is not null.
-                        assert tab != null;
-
-                        // Select the tab.
-                        tab.select();
-                    };
-
-                    // Select the tab layout after 150 milliseconds, which leaves enough time for a new tab to be inflated.
-                    selectTabHandler.postDelayed(selectTabRunnable, 150);
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                // Do nothing.
-            }
-        });
-
-        // Display the View SSL Certificate dialog when the currently selected tab is reselected.
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                // Select the same page in the view pager.
-                webViewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                // Do nothing.
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                // Instantiate the View SSL Certificate dialog.
-                DialogFragment viewSslCertificateDialogFragment = ViewSslCertificateDialog.displayDialog(currentWebView.getWebViewFragmentId());
-
-                // Display the View SSL Certificate dialog.
-                viewSslCertificateDialogFragment.show(getSupportFragmentManager(), getString(R.string.view_ssl_certificate));
-            }
-        });
-
-        // Set the bookmarks drawer resources according to the theme.  This can't be done in the layout due to compatibility issues with the `DrawerLayout` support widget.
-        // The deprecated `getResources().getDrawable()` must be used until the minimum API >= 21 and and `getResources().getColor()` must be used until the minimum API >= 23.
-        if (darkTheme) {
-            launchBookmarksActivityFab.setImageDrawable(getResources().getDrawable(R.drawable.bookmarks_dark));
-            createBookmarkFolderFab.setImageDrawable(getResources().getDrawable(R.drawable.create_folder_dark));
-            createBookmarkFab.setImageDrawable(getResources().getDrawable(R.drawable.create_bookmark_dark));
-            bookmarksListView.setBackgroundColor(getResources().getColor(R.color.gray_850));
-        } else {
-            launchBookmarksActivityFab.setImageDrawable(getResources().getDrawable(R.drawable.bookmarks_light));
-            createBookmarkFolderFab.setImageDrawable(getResources().getDrawable(R.drawable.create_folder_light));
-            createBookmarkFab.setImageDrawable(getResources().getDrawable(R.drawable.create_bookmark_light));
-            bookmarksListView.setBackgroundColor(getResources().getColor(R.color.white));
-        }
-
-        // Set the launch bookmarks activity FAB to launch the bookmarks activity.
-        launchBookmarksActivityFab.setOnClickListener(v -> {
-            // Get a copy of the favorite icon bitmap.
-            Bitmap favoriteIconBitmap = currentWebView.getFavoriteOrDefaultIcon();
-
-            // Create a favorite icon byte array output stream.
-            ByteArrayOutputStream favoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
-
-            // Convert the favorite icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
-            favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
-
-            // Convert the favorite icon byte array stream to a byte array.
-            byte[] favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray();
-
-            // Create an intent to launch the bookmarks activity.
-            Intent bookmarksIntent = new Intent(getApplicationContext(), BookmarksActivity.class);
-
-            // Add the extra information to the intent.
-            bookmarksIntent.putExtra("current_url", currentWebView.getUrl());
-            bookmarksIntent.putExtra("current_title", currentWebView.getTitle());
-            bookmarksIntent.putExtra("current_folder", currentBookmarksFolder);
-            bookmarksIntent.putExtra("favorite_icon_byte_array", favoriteIconByteArray);
-
-            // Make it so.
-            startActivity(bookmarksIntent);
-        });
-
-        // Set the create new bookmark folder FAB to display an alert dialog.
-        createBookmarkFolderFab.setOnClickListener(v -> {
-            // Create a create bookmark folder dialog.
-            DialogFragment createBookmarkFolderDialog = CreateBookmarkFolderDialog.createBookmarkFolder(currentWebView.getFavoriteOrDefaultIcon());
-
-            // Show the create bookmark folder dialog.
-            createBookmarkFolderDialog.show(getSupportFragmentManager(), getString(R.string.create_folder));
-        });
-
-        // Set the create new bookmark FAB to display an alert dialog.
-        createBookmarkFab.setOnClickListener(view -> {
-            // Instantiate the create bookmark dialog.
-            DialogFragment createBookmarkDialog = CreateBookmarkDialog.createBookmark(currentWebView.getUrl(), currentWebView.getTitle(), currentWebView.getFavoriteOrDefaultIcon());
-
-            // Display the create bookmark dialog.
-            createBookmarkDialog.show(getSupportFragmentManager(), getString(R.string.create_bookmark));
-        });
-
-        // Search for the string on the page whenever a character changes in the `findOnPageEditText`.
-        findOnPageEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Do nothing.
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Do nothing.
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                // Search for the text in the WebView if it is not null.  Sometimes on resume after a period of non-use the WebView will be null.
-                if (currentWebView != null) {
-                    currentWebView.findAllAsync(findOnPageEditText.getText().toString());
-                }
-            }
-        });
-
-        // Set the `check mark` button for the `findOnPageEditText` keyboard to close the soft keyboard.
-        findOnPageEditText.setOnKeyListener((v, keyCode, event) -> {
-            if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {  // The `enter` key was pressed.
-                // Hide the soft keyboard.
-                inputMethodManager.hideSoftInputFromWindow(currentWebView.getWindowToken(), 0);
-
-                // Consume the event.
-                return true;
-            } else {  // A different key was pressed.
-                // Do not consume the event.
-                return false;
-            }
-        });
-
-        // Implement swipe to refresh.
-        swipeRefreshLayout.setOnRefreshListener(() -> currentWebView.reload());
-
-        // Store the default progress view offsets for use later in `initializeWebView()`.
-        defaultProgressViewStartOffset = swipeRefreshLayout.getProgressViewStartOffset();
-        defaultProgressViewEndOffset = swipeRefreshLayout.getProgressViewEndOffset();
-
-        // Set the swipe to refresh color according to the theme.
-        if (darkTheme) {
-            swipeRefreshLayout.setColorSchemeResources(R.color.blue_800);
-            swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.gray_850);
-        } else {
-            swipeRefreshLayout.setColorSchemeResources(R.color.blue_500);
-        }
-
-        // `DrawerTitle` identifies the `DrawerLayouts` in accessibility mode.
-        drawerLayout.setDrawerTitle(GravityCompat.START, getString(R.string.navigation_drawer));
-        drawerLayout.setDrawerTitle(GravityCompat.END, getString(R.string.bookmarks));
-
-        // Initialize the bookmarks database helper.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
-        bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this, null, null, 0);
-
-        // Initialize `currentBookmarksFolder`.  `""` is the home folder in the database.
-        currentBookmarksFolder = "";
-
-        // Load the home folder, which is `""` in the database.
-        loadBookmarksFolder();
-
-        bookmarksListView.setOnItemClickListener((parent, view, position, id) -> {
-            // Convert the id from long to int to match the format of the bookmarks database.
-            int databaseID = (int) id;
-
-            // Get the bookmark cursor for this ID and move it to the first row.
-            Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmark(databaseID);
-            bookmarkCursor.moveToFirst();
-
-            // Act upon the bookmark according to the type.
-            if (bookmarkCursor.getInt(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.IS_FOLDER)) == 1) {  // The selected bookmark is a folder.
-                // Store the new folder name in `currentBookmarksFolder`.
-                currentBookmarksFolder = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
-
-                // Load the new folder.
-                loadBookmarksFolder();
-            } else {  // The selected bookmark is not a folder.
-                // Load the bookmark URL.
-                loadUrl(bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL)));
-
-                // Close the bookmarks drawer.
-                drawerLayout.closeDrawer(GravityCompat.END);
-            }
-
-            // Close the `Cursor`.
-            bookmarkCursor.close();
-        });
-
-        bookmarksListView.setOnItemLongClickListener((parent, view, position, id) -> {
-            // Convert the database ID from `long` to `int`.
-            int databaseId = (int) id;
-
-            // Find out if the selected bookmark is a folder.
-            boolean isFolder = bookmarksDatabaseHelper.isFolder(databaseId);
-
-            if (isFolder) {
-                // Save the current folder name, which is used in `onSaveEditBookmarkFolder()`.
-                oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
-
-                // Show the edit bookmark folder `AlertDialog` and name the instance `@string/edit_folder`.
-                DialogFragment editBookmarkFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId, currentWebView.getFavoriteOrDefaultIcon());
-                editBookmarkFolderDialog.show(getSupportFragmentManager(), getString(R.string.edit_folder));
-            } else {
-                // Show the edit bookmark `AlertDialog` and name the instance `@string/edit_bookmark`.
-                DialogFragment editBookmarkDialog = EditBookmarkDialog.bookmarkDatabaseId(databaseId, currentWebView.getFavoriteOrDefaultIcon());
-                editBookmarkDialog.show(getSupportFragmentManager(), getString(R.string.edit_bookmark));
-            }
-
-            // Consume the event.
-            return true;
-        });
-
-        // Get the status bar pixel size.
-        int statusBarResourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        int statusBarPixelSize = getResources().getDimensionPixelSize(statusBarResourceId);
-
-        // Get the resource density.
-        float screenDensity = getResources().getDisplayMetrics().density;
-
-        // Calculate the drawer header padding.  This is used to move the text in the drawer headers below any cutouts.
-        drawerHeaderPaddingLeftAndRight = (int) (15 * screenDensity);
-        drawerHeaderPaddingTop = statusBarPixelSize + (int) (4 * screenDensity);
-        drawerHeaderPaddingBottom = (int) (8 * screenDensity);
-
-        // The drawer listener is used to update the navigation menu.`
-        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
-            @Override
-            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
-            }
-
-            @Override
-            public void onDrawerOpened(@NonNull View drawerView) {
-            }
-
-            @Override
-            public void onDrawerClosed(@NonNull View drawerView) {
-            }
-
-            @Override
-            public void onDrawerStateChanged(int newState) {
-                if ((newState == DrawerLayout.STATE_SETTLING) || (newState == DrawerLayout.STATE_DRAGGING)) {  // A drawer is opening or closing.
-                    // Get handles for the drawer headers.
-                    TextView navigationHeaderTextView = findViewById(R.id.navigationText);
-                    TextView bookmarksHeaderTextView = findViewById(R.id.bookmarks_title_textview);
-
-                    // Apply the navigation header paddings if the view is not null (sometimes it is null if another activity has already started).  This moves the text in the header below any cutouts.
-                    if (navigationHeaderTextView != null) {
-                        navigationHeaderTextView.setPadding(drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingTop, drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingBottom);
-                    }
-
-                    // Apply the bookmarks header paddings if the view is not null (sometimes it is null if another activity has already started).  This moves the text in the header below any cutouts.
-                    if (bookmarksHeaderTextView != null) {
-                        bookmarksHeaderTextView.setPadding(drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingTop, drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingBottom);
-                    }
-
-                    // Update the navigation menu items if the WebView is not null.
-                    if (currentWebView != null) {
-                        navigationBackMenuItem.setEnabled(currentWebView.canGoBack());
-                        navigationForwardMenuItem.setEnabled(currentWebView.canGoForward());
-                        navigationHistoryMenuItem.setEnabled((currentWebView.canGoBack() || currentWebView.canGoForward()));
-                        navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + currentWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-
-                        // Hide the keyboard (if displayed).
-                        inputMethodManager.hideSoftInputFromWindow(currentWebView.getWindowToken(), 0);
-                    }
-
-                    // Clear the focus from from the URL text box and the WebView.  This removes any text selection markers and context menus, which otherwise draw above the open drawers.
-                    urlEditText.clearFocus();
-                    currentWebView.clearFocus();
-                }
-            }
-        });
-
-        // Create the hamburger icon at the start of the AppBar.
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_navigation_drawer, R.string.close_navigation_drawer);
-
-        // Replace the header that `WebView` creates for `X-Requested-With` with a null value.  The default value is the application ID (com.stoutner.privacybrowser.standard).
-        customHeaders.put("X-Requested-With", "");
-
-        // Initialize the default preference values the first time the program is run.  `false` keeps this command from resetting any current preferences back to default.
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-
-        // Inflate a bare WebView to get the default user agent.  It is not used to render content on the screen.
-        @SuppressLint("InflateParams") View webViewLayout = getLayoutInflater().inflate(R.layout.bare_webview, null, false);
-
-        // Get a handle for the WebView.
-        WebView bareWebView = webViewLayout.findViewById(R.id.bare_webview);
-
-        // Store the default user agent.
-        webViewDefaultUserAgent = bareWebView.getSettings().getUserAgentString();
-
-        // Destroy the bare WebView.
-        bareWebView.destroy();
 
         // Populate the blocklists.
         new PopulateBlocklists(this, this).execute();
@@ -1116,6 +678,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
         }
 
+        // Done.
         return true;
     }
 
@@ -3053,6 +2616,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void applyAppSettings() {
+        // Initialize the app if this is the first run.  This is done here instead of in `onCreate()` to shorten the time that an unthemed background is displayed on app startup.
+        if (webViewDefaultUserAgent == null) {
+            initializeApp();
+        }
+
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -3194,6 +2762,452 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
     }
 
+    private void initializeApp() {
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Get the theme preference.
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+
+        // Get a handle for the input method.
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        // Remove the lint warning below that the input method manager might be null.
+        assert inputMethodManager != null;
+
+        // Initialize the foreground color spans for highlighting the URLs.  We have to use the deprecated `getColor()` until API >= 23.
+        redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
+        initialGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
+        finalGrayColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.gray_500));
+
+        // Get handles for the URL views.
+        EditText urlEditText = findViewById(R.id.url_edittext);
+
+        // Remove the formatting from the URL edit text when the user is editing the text.
+        urlEditText.setOnFocusChangeListener((View v, boolean hasFocus) -> {
+            if (hasFocus) {  // The user is editing the URL text box.
+                // Remove the highlighting.
+                urlEditText.getText().removeSpan(redColorSpan);
+                urlEditText.getText().removeSpan(initialGrayColorSpan);
+                urlEditText.getText().removeSpan(finalGrayColorSpan);
+            } else {  // The user has stopped editing the URL text box.
+                // Move to the beginning of the string.
+                urlEditText.setSelection(0);
+
+                // Reapply the highlighting.
+                highlightUrlText();
+            }
+        });
+
+        // Set the go button on the keyboard to load the URL in `urlTextBox`.
+        urlEditText.setOnKeyListener((View v, int keyCode, KeyEvent event) -> {
+            // If the event is a key-down event on the `enter` button, load the URL.
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                // Load the URL into the mainWebView and consume the event.
+                loadUrlFromTextBox();
+
+                // If the enter key was pressed, consume the event.
+                return true;
+            } else {
+                // If any other key was pressed, do not consume the event.
+                return false;
+            }
+        });
+
+        // Initialize the Orbot status and the waiting for Orbot trackers.
+        orbotStatus = "unknown";
+        waitingForOrbot = false;
+
+        // Create an Orbot status `BroadcastReceiver`.
+        orbotStatusBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Store the content of the status message in `orbotStatus`.
+                orbotStatus = intent.getStringExtra("org.torproject.android.intent.extra.STATUS");
+
+                // If Privacy Browser is waiting on Orbot, load the website now that Orbot is connected.
+                if (orbotStatus.equals("ON") && waitingForOrbot) {
+                    // Reset the waiting for Orbot status.
+                    waitingForOrbot = false;
+
+                    // Get the intent that started the app.
+                    Intent launchingIntent = getIntent();
+
+                    // Get the information from the intent.
+                    String launchingIntentAction = launchingIntent.getAction();
+                    Uri launchingIntentUriData = launchingIntent.getData();
+
+                    // If the intent action is a web search, perform the search.
+                    if ((launchingIntentAction != null) && launchingIntentAction.equals(Intent.ACTION_WEB_SEARCH)) {
+                        // Create an encoded URL string.
+                        String encodedUrlString;
+
+                        // Sanitize the search input and convert it to a search.
+                        try {
+                            encodedUrlString = URLEncoder.encode(launchingIntent.getStringExtra(SearchManager.QUERY), "UTF-8");
+                        } catch (UnsupportedEncodingException exception) {
+                            encodedUrlString = "";
+                        }
+
+                        // Load the completed search URL.
+                        loadUrl(searchURL + encodedUrlString);
+                    } else if (launchingIntentUriData != null){  // Check to see if the intent contains a new URL.
+                        // Load the URL from the intent.
+                        loadUrl(launchingIntentUriData.toString());
+                    } else {  // The is no URL in the intent.
+                        // Select the homepage based on the proxy through Orbot status.
+                        if (proxyThroughOrbot) {
+                            // Load the Tor homepage.
+                            loadUrl(sharedPreferences.getString("tor_homepage", getString(R.string.tor_homepage_default_value)));
+                        } else {
+                            // Load the normal homepage.
+                            loadUrl(sharedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
+                        }
+                    }
+                }
+            }
+        };
+
+        // Register `orbotStatusBroadcastReceiver` on `this` context.
+        this.registerReceiver(orbotStatusBroadcastReceiver, new IntentFilter("org.torproject.android.intent.action.STATUS"));
+
+        // Get handles for views that need to be modified.
+        DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
+        NavigationView navigationView = findViewById(R.id.navigationview);
+        TabLayout tabLayout = findViewById(R.id.tablayout);
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swiperefreshlayout);
+        ViewPager webViewPager = findViewById(R.id.webviewpager);
+        ListView bookmarksListView = findViewById(R.id.bookmarks_drawer_listview);
+        FloatingActionButton launchBookmarksActivityFab = findViewById(R.id.launch_bookmarks_activity_fab);
+        FloatingActionButton createBookmarkFolderFab = findViewById(R.id.create_bookmark_folder_fab);
+        FloatingActionButton createBookmarkFab = findViewById(R.id.create_bookmark_fab);
+        EditText findOnPageEditText = findViewById(R.id.find_on_page_edittext);
+
+        // Listen for touches on the navigation menu.
+        navigationView.setNavigationItemSelectedListener(this);
+
+        // Get handles for the navigation menu and the back and forward menu items.  The menu is zero-based.
+        Menu navigationMenu = navigationView.getMenu();
+        MenuItem navigationBackMenuItem = navigationMenu.getItem(2);
+        MenuItem navigationForwardMenuItem = navigationMenu.getItem(3);
+        MenuItem navigationHistoryMenuItem = navigationMenu.getItem(4);
+        MenuItem navigationRequestsMenuItem = navigationMenu.getItem(5);
+
+        // Update the web view pager every time a tab is modified.
+        webViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                // Do nothing.
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                // Close the find on page bar if it is open.
+                closeFindOnPage(null);
+
+                // Set the current WebView.
+                setCurrentWebView(position);
+
+                // Select the corresponding tab if it does not match the currently selected page.  This will happen if the page was scrolled via swiping in the view pager or by creating a new tab.
+                if (tabLayout.getSelectedTabPosition() != position) {
+                    // Create a handler to select the tab.
+                    Handler selectTabHandler = new Handler();
+
+                    // Create a runnable to select the tab.
+                    Runnable selectTabRunnable = () -> {
+                        // Get a handle for the tab.
+                        TabLayout.Tab tab = tabLayout.getTabAt(position);
+
+                        // Assert that the tab is not null.
+                        assert tab != null;
+
+                        // Select the tab.
+                        tab.select();
+                    };
+
+                    // Select the tab layout after 150 milliseconds, which leaves enough time for a new tab to be inflated.
+                    selectTabHandler.postDelayed(selectTabRunnable, 150);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                // Do nothing.
+            }
+        });
+
+        // Display the View SSL Certificate dialog when the currently selected tab is reselected.
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                // Select the same page in the view pager.
+                webViewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                // Do nothing.
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                // Instantiate the View SSL Certificate dialog.
+                DialogFragment viewSslCertificateDialogFragment = ViewSslCertificateDialog.displayDialog(currentWebView.getWebViewFragmentId());
+
+                // Display the View SSL Certificate dialog.
+                viewSslCertificateDialogFragment.show(getSupportFragmentManager(), getString(R.string.view_ssl_certificate));
+            }
+        });
+
+        // Set the bookmarks drawer resources according to the theme.  This can't be done in the layout due to compatibility issues with the `DrawerLayout` support widget.
+        // The deprecated `getResources().getDrawable()` must be used until the minimum API >= 21 and and `getResources().getColor()` must be used until the minimum API >= 23.
+        if (darkTheme) {
+            launchBookmarksActivityFab.setImageDrawable(getResources().getDrawable(R.drawable.bookmarks_dark));
+            createBookmarkFolderFab.setImageDrawable(getResources().getDrawable(R.drawable.create_folder_dark));
+            createBookmarkFab.setImageDrawable(getResources().getDrawable(R.drawable.create_bookmark_dark));
+            bookmarksListView.setBackgroundColor(getResources().getColor(R.color.gray_850));
+        } else {
+            launchBookmarksActivityFab.setImageDrawable(getResources().getDrawable(R.drawable.bookmarks_light));
+            createBookmarkFolderFab.setImageDrawable(getResources().getDrawable(R.drawable.create_folder_light));
+            createBookmarkFab.setImageDrawable(getResources().getDrawable(R.drawable.create_bookmark_light));
+            bookmarksListView.setBackgroundColor(getResources().getColor(R.color.white));
+        }
+
+        // Set the launch bookmarks activity FAB to launch the bookmarks activity.
+        launchBookmarksActivityFab.setOnClickListener(v -> {
+            // Get a copy of the favorite icon bitmap.
+            Bitmap favoriteIconBitmap = currentWebView.getFavoriteOrDefaultIcon();
+
+            // Create a favorite icon byte array output stream.
+            ByteArrayOutputStream favoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
+
+            // Convert the favorite icon bitmap to a byte array.  `0` is for lossless compression (the only option for a PNG).
+            favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
+
+            // Convert the favorite icon byte array stream to a byte array.
+            byte[] favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray();
+
+            // Create an intent to launch the bookmarks activity.
+            Intent bookmarksIntent = new Intent(getApplicationContext(), BookmarksActivity.class);
+
+            // Add the extra information to the intent.
+            bookmarksIntent.putExtra("current_url", currentWebView.getUrl());
+            bookmarksIntent.putExtra("current_title", currentWebView.getTitle());
+            bookmarksIntent.putExtra("current_folder", currentBookmarksFolder);
+            bookmarksIntent.putExtra("favorite_icon_byte_array", favoriteIconByteArray);
+
+            // Make it so.
+            startActivity(bookmarksIntent);
+        });
+
+        // Set the create new bookmark folder FAB to display an alert dialog.
+        createBookmarkFolderFab.setOnClickListener(v -> {
+            // Create a create bookmark folder dialog.
+            DialogFragment createBookmarkFolderDialog = CreateBookmarkFolderDialog.createBookmarkFolder(currentWebView.getFavoriteOrDefaultIcon());
+
+            // Show the create bookmark folder dialog.
+            createBookmarkFolderDialog.show(getSupportFragmentManager(), getString(R.string.create_folder));
+        });
+
+        // Set the create new bookmark FAB to display an alert dialog.
+        createBookmarkFab.setOnClickListener(view -> {
+            // Instantiate the create bookmark dialog.
+            DialogFragment createBookmarkDialog = CreateBookmarkDialog.createBookmark(currentWebView.getUrl(), currentWebView.getTitle(), currentWebView.getFavoriteOrDefaultIcon());
+
+            // Display the create bookmark dialog.
+            createBookmarkDialog.show(getSupportFragmentManager(), getString(R.string.create_bookmark));
+        });
+
+        // Search for the string on the page whenever a character changes in the `findOnPageEditText`.
+        findOnPageEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing.
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Do nothing.
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Search for the text in the WebView if it is not null.  Sometimes on resume after a period of non-use the WebView will be null.
+                if (currentWebView != null) {
+                    currentWebView.findAllAsync(findOnPageEditText.getText().toString());
+                }
+            }
+        });
+
+        // Set the `check mark` button for the `findOnPageEditText` keyboard to close the soft keyboard.
+        findOnPageEditText.setOnKeyListener((v, keyCode, event) -> {
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {  // The `enter` key was pressed.
+                // Hide the soft keyboard.
+                inputMethodManager.hideSoftInputFromWindow(currentWebView.getWindowToken(), 0);
+
+                // Consume the event.
+                return true;
+            } else {  // A different key was pressed.
+                // Do not consume the event.
+                return false;
+            }
+        });
+
+        // Implement swipe to refresh.
+        swipeRefreshLayout.setOnRefreshListener(() -> currentWebView.reload());
+
+        // Store the default progress view offsets for use later in `initializeWebView()`.
+        defaultProgressViewStartOffset = swipeRefreshLayout.getProgressViewStartOffset();
+        defaultProgressViewEndOffset = swipeRefreshLayout.getProgressViewEndOffset();
+
+        // Set the swipe to refresh color according to the theme.
+        if (darkTheme) {
+            swipeRefreshLayout.setColorSchemeResources(R.color.blue_800);
+            swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.gray_850);
+        } else {
+            swipeRefreshLayout.setColorSchemeResources(R.color.blue_500);
+        }
+
+        // `DrawerTitle` identifies the `DrawerLayouts` in accessibility mode.
+        drawerLayout.setDrawerTitle(GravityCompat.START, getString(R.string.navigation_drawer));
+        drawerLayout.setDrawerTitle(GravityCompat.END, getString(R.string.bookmarks));
+
+        // Initialize the bookmarks database helper.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
+        bookmarksDatabaseHelper = new BookmarksDatabaseHelper(this, null, null, 0);
+
+        // Initialize `currentBookmarksFolder`.  `""` is the home folder in the database.
+        currentBookmarksFolder = "";
+
+        // Load the home folder, which is `""` in the database.
+        loadBookmarksFolder();
+
+        bookmarksListView.setOnItemClickListener((parent, view, position, id) -> {
+            // Convert the id from long to int to match the format of the bookmarks database.
+            int databaseID = (int) id;
+
+            // Get the bookmark cursor for this ID and move it to the first row.
+            Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmark(databaseID);
+            bookmarkCursor.moveToFirst();
+
+            // Act upon the bookmark according to the type.
+            if (bookmarkCursor.getInt(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.IS_FOLDER)) == 1) {  // The selected bookmark is a folder.
+                // Store the new folder name in `currentBookmarksFolder`.
+                currentBookmarksFolder = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
+
+                // Load the new folder.
+                loadBookmarksFolder();
+            } else {  // The selected bookmark is not a folder.
+                // Load the bookmark URL.
+                loadUrl(bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL)));
+
+                // Close the bookmarks drawer.
+                drawerLayout.closeDrawer(GravityCompat.END);
+            }
+
+            // Close the `Cursor`.
+            bookmarkCursor.close();
+        });
+
+        bookmarksListView.setOnItemLongClickListener((parent, view, position, id) -> {
+            // Convert the database ID from `long` to `int`.
+            int databaseId = (int) id;
+
+            // Find out if the selected bookmark is a folder.
+            boolean isFolder = bookmarksDatabaseHelper.isFolder(databaseId);
+
+            if (isFolder) {
+                // Save the current folder name, which is used in `onSaveEditBookmarkFolder()`.
+                oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
+
+                // Show the edit bookmark folder `AlertDialog` and name the instance `@string/edit_folder`.
+                DialogFragment editBookmarkFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId, currentWebView.getFavoriteOrDefaultIcon());
+                editBookmarkFolderDialog.show(getSupportFragmentManager(), getString(R.string.edit_folder));
+            } else {
+                // Show the edit bookmark `AlertDialog` and name the instance `@string/edit_bookmark`.
+                DialogFragment editBookmarkDialog = EditBookmarkDialog.bookmarkDatabaseId(databaseId, currentWebView.getFavoriteOrDefaultIcon());
+                editBookmarkDialog.show(getSupportFragmentManager(), getString(R.string.edit_bookmark));
+            }
+
+            // Consume the event.
+            return true;
+        });
+
+        // Get the status bar pixel size.
+        int statusBarResourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        int statusBarPixelSize = getResources().getDimensionPixelSize(statusBarResourceId);
+
+        // Get the resource density.
+        float screenDensity = getResources().getDisplayMetrics().density;
+
+        // Calculate the drawer header padding.  This is used to move the text in the drawer headers below any cutouts.
+        drawerHeaderPaddingLeftAndRight = (int) (15 * screenDensity);
+        drawerHeaderPaddingTop = statusBarPixelSize + (int) (4 * screenDensity);
+        drawerHeaderPaddingBottom = (int) (8 * screenDensity);
+
+        // The drawer listener is used to update the navigation menu.`
+        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+            }
+
+            @Override
+            public void onDrawerOpened(@NonNull View drawerView) {
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View drawerView) {
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+                if ((newState == DrawerLayout.STATE_SETTLING) || (newState == DrawerLayout.STATE_DRAGGING)) {  // A drawer is opening or closing.
+                    // Get handles for the drawer headers.
+                    TextView navigationHeaderTextView = findViewById(R.id.navigationText);
+                    TextView bookmarksHeaderTextView = findViewById(R.id.bookmarks_title_textview);
+
+                    // Apply the navigation header paddings if the view is not null (sometimes it is null if another activity has already started).  This moves the text in the header below any cutouts.
+                    if (navigationHeaderTextView != null) {
+                        navigationHeaderTextView.setPadding(drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingTop, drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingBottom);
+                    }
+
+                    // Apply the bookmarks header paddings if the view is not null (sometimes it is null if another activity has already started).  This moves the text in the header below any cutouts.
+                    if (bookmarksHeaderTextView != null) {
+                        bookmarksHeaderTextView.setPadding(drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingTop, drawerHeaderPaddingLeftAndRight, drawerHeaderPaddingBottom);
+                    }
+
+                    // Update the navigation menu items if the WebView is not null.
+                    if (currentWebView != null) {
+                        navigationBackMenuItem.setEnabled(currentWebView.canGoBack());
+                        navigationForwardMenuItem.setEnabled(currentWebView.canGoForward());
+                        navigationHistoryMenuItem.setEnabled((currentWebView.canGoBack() || currentWebView.canGoForward()));
+                        navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + currentWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+
+                        // Hide the keyboard (if displayed).
+                        inputMethodManager.hideSoftInputFromWindow(currentWebView.getWindowToken(), 0);
+                    }
+
+                    // Clear the focus from from the URL text box and the WebView.  This removes any text selection markers and context menus, which otherwise draw above the open drawers.
+                    urlEditText.clearFocus();
+                    currentWebView.clearFocus();
+                }
+            }
+        });
+
+        // Replace the header that `WebView` creates for `X-Requested-With` with a null value.  The default value is the application ID (com.stoutner.privacybrowser.standard).
+        customHeaders.put("X-Requested-With", "");
+
+        // Inflate a bare WebView to get the default user agent.  It is not used to render content on the screen.
+        @SuppressLint("InflateParams") View webViewLayout = getLayoutInflater().inflate(R.layout.bare_webview, null, false);
+
+        // Get a handle for the WebView.
+        WebView bareWebView = webViewLayout.findViewById(R.id.bare_webview);
+
+        // Store the default user agent.
+        webViewDefaultUserAgent = bareWebView.getSettings().getUserAgentString();
+
+        // Destroy the bare WebView.
+        bareWebView.destroy();
+    }
 
     // `reloadWebsite` is used if returning from the Domains activity.  Otherwise JavaScript might not function correctly if it is newly enabled.
     @SuppressLint("SetJavaScriptEnabled")
