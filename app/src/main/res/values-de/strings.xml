@@ -55,6 +55,13 @@
     <string name="new_tab">Neuer Tab</string>
     <string name="loading">Laden…</string>
 
+    <!-- Loading Blocklists. -->
+    <string name="loading_easylist">Lade EasyList</string>
+    <string name="loading_easyprivacy">Lade EasyPrivacy</string>
+    <string name="loading_fanboys_annoyance_list">Lade Fanboy’s Annoyance Filterliste</string>
+    <string name="loading_fanboys_social_blocking_list">Fanboy’s Social Blocking Filterliste</string>
+    <string name="loading_ultraprivacy">Lade UltraPrivacy</string>
+
     <!-- Save As. -->
     <string name="save_as">Speichern Unter</string>
     <string name="save_image_as">Bild Speichern Unter</string>

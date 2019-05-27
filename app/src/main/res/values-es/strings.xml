@@ -51,6 +51,13 @@
     <string name="new_tab">Nueva pestaña</string>
     <string name="loading">Cargando…</string>
 
+    <!-- Loading Blocklists. -->
+    <string name="loading_easylist">Cargando EasyList</string>
+    <string name="loading_easyprivacy">Cargando EasyPrivacy</string>
+    <string name="loading_fanboys_annoyance_list">Cargando la lista molesta de Fanboy</string>
+    <string name="loading_fanboys_social_blocking_list">Cargando la lista de bloqueo social de Fanboy</string>
+    <string name="loading_ultraprivacy">Cargando Ultra Privacidad</string>
+
     <!-- Save As. -->
     <string name="save_as">Guardar como</string>
     <string name="save_image_as">Guardar imagen como</string>

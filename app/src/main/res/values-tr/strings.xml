@@ -49,6 +49,13 @@
     <string name="new_tab">Yeni Sekme</string>
     <string name="loading">Yükleniyor…</string>
 
+    <!-- Loading Blocklists. -->
+    <string name="loading_easylist">EasyList yükleniyor</string>
+    <string name="loading_easyprivacy">EasyPrivacy yükleniyor</string>
+    <string name="loading_fanboys_annoyance_list">Fanboy’s Annoyance List yükleniyor</string>
+    <string name="loading_fanboys_social_blocking_list">Fanboy’s Social Blocking List yükleniyor</string>
+    <string name="loading_ultraprivacy">UltraPrivacy yükleniyor</string>
+
     <!-- Save As. -->
     <string name="save_as">Farklı Kaydet</string>
     <string name="save_image_as">Resmi Farklı Kaydet</string>

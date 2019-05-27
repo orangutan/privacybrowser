@@ -49,6 +49,13 @@
     <string name="new_tab">Новая вкладка</string>
     <string name="loading">Загрузка…</string>
 
+    <!-- Loading Blocklists. -->
+    <string name="loading_easylist">Загрузка EasyList</string>
+    <string name="loading_easyprivacy">Загрузка EasyPrivacy</string>
+    <string name="loading_fanboys_annoyance_list">Загрузка Fanboy’s Annoyance List</string>
+    <string name="loading_fanboys_social_blocking_list">Загрузка Fanboy’s Social Blocking List</string>
+    <string name="loading_ultraprivacy">Загрузка UltraPrivacy</string>
+
     <!-- Save As. -->
     <string name="save_as">Сохранить как</string>
     <string name="save_image_as">Сохранить изображение как</string>

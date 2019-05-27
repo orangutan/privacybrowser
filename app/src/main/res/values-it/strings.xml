@@ -51,6 +51,13 @@
     <string name="new_tab">Nuova Scheda</string>
     <string name="loading">Caricamento…</string>
 
+    <!-- Loading Blocklists. -->
+    <string name="loading_easylist">Caricamento EasyList</string>
+    <string name="loading_easyprivacy">Caricamento EasyPrivacy</string>
+    <string name="loading_fanboys_annoyance_list">Caricamento Fanboy’s Annoyance List</string>
+    <string name="loading_fanboys_social_blocking_list">Caricamento Fanboy’s Social Blocking List</string>
+    <string name="loading_ultraprivacy">Caricamento UltraPrivacy</string>
+
     <!-- Save As. -->
     <string name="save_as">Salva come</string>
     <string name="save_image_as">Salva l\'immagine come</string>

@@ -1,0 +1,17 @@
+• Schliessen-Button zur App-Leiste hinzugefügt.
+• Problem mit rechts- und links-Scrollen von Webseiten-Elementen behoben, das auch das Scrollen der App-Leiste geschmeidiger macht.
+• Filterlisten-Startbildschirm hinzugefügt und App-Start beschleunigt.
+• URL-Bereinigungen für Google Analytics, Facebook, und Twitter hinzugefügt.
+• Möglichkeit hinzugefügt, Bilder in neuen Tabs zu öffnen.
+• Problem mit Kontext-Menü der Web-Suche behoben.
+• Problem mit unerwünschten Neustarts beim Wechsel von und zum Split-Screen-Modus behoben.
+• Problem mit Download mit externer App behoben, welche bis zu einem Neustart der App nicht funktionierte.
+• Problem mit Dateinauswahl mit verschiedenen Datei-Managern behoben.
+• Option zum Abschalten des breiten Anzeigebereichs hinzugefügt.
+• Laden und Umschalten von Tabs verbessert.
+• Anzeige des WebView-Anbieters in Über > Version unter Android Oreo und neuer hinzugefügt.
+• Erste komplette türkische Übersetzung.
+• Aktualisierte deutsche Übersetzung von Bernhard G. Keller.
+• Aktualisierte italienische Übersetzung von Francesco Buratti.
+• Aktualisierte russische Übersetzung.
+• Aktualisierte spanische Übersetzung von Jose A. León.

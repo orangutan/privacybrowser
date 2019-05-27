@@ -24,6 +24,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -59,6 +60,30 @@ public class PopulateBlocklists extends AsyncTask<Void, String, ArrayList<ArrayL
 
         // Get a handle for the populate blocklists listener from the launching activity.
         populateBlocklistsListener = (PopulateBlocklistsListener) context;
+    }
+
+    // `onPreExecute()` operates on the UI thread.
+    @Override
+    protected void onPreExecute() {
+        // Get a handle for the activity.
+        Activity activity = activityWeakReference.get();
+
+        // Abort if the activity is gone.
+        if ((activity == null) || activity.isFinishing()) {
+            return;
+        }
+
+        // Get handles for the views.
+        Toolbar toolbar = activity.findViewById(R.id.toolbar);
+        LinearLayout tabsLinearLayout = activity.findViewById(R.id.tabs_linearlayout);
+        RelativeLayout loadingBlocklistsRelativeLayout = activity.findViewById(R.id.loading_blocklists_relativelayout);
+
+        // Hide the toolbar and tabs linear layout, which will be visible if this is being run after the app process has been killed in the background.
+        toolbar.setVisibility(View.GONE);
+        tabsLinearLayout.setVisibility(View.GONE);
+
+        // Show the loading blocklists screen.
+        loadingBlocklistsRelativeLayout.setVisibility(View.VISIBLE);
     }
 
     @Override

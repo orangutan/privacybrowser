@@ -1,0 +1,17 @@
+• Aggiunta del pulsante di chiusura delle schede nella barra dell'applicazione.
+• Sistemazione dello scorrimento a destra e sinistra degli elementi dei siti web, che consente anche un miglioramento dello scorrimento della barra dell'applicazione.
+• Aggiunta di una splash screen di caricamento delle liste di blocco e riduzione del tempo di caricamento dell'app.
+• Aggiunta della modifica delle URL per Google Analytics, Facebook, e Twitter.
+• Aggiunta la possibilità di aprire un'immagine in una nuova scheda.
+• Sistemazione del menù contestuale per la ricerca sul web.
+• Sistemazione dei riavvii indesiderati che avvenivano nel momento in cui si entrava o usciva dalla modalità a schermo diviso.
+• Sistemazione dei cambiamenti al Download con applicazione esterna che non erano applicati fino al riavvio.
+• Correzione della navigazione con alcuni file manager.
+• Aggiunta dell'opzione per disabilitare la vista con finestra grande.
+• Miglioramento del caricamento e del cambiamento delle schede.
+• Visualizzazione del provider di WebView in Informazioni > Versione su Android Oreo e successivi.
+• Prima traduzione completa in lingua Turca.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
+• Aggiornamento della traduzione in Russo.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León.
+• Aggiornamento della traduzione Tedesco fornita da Bernhard G. Keller.

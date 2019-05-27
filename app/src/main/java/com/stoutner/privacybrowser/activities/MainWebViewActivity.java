@@ -328,6 +328,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Set the content view.
         setContentView(R.layout.main_framelayout);
+
         // Get handles for the views that need to be modified.
         DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -367,63 +368,69 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     protected void onNewIntent(Intent intent) {
-        // Get the information from the intent.
-        String intentAction = intent.getAction();
-        Uri intentUriData = intent.getData();
+        // Replace the intent that started the app with this one.
+        setIntent(intent);
 
-        // Determine if this is a web search.
-        boolean isWebSearch = ((intentAction != null) && intentAction.equals(Intent.ACTION_WEB_SEARCH));
+        // Process the intent here if Privacy Browser is fully initialized.  If the process has been killed by the system while sitting in the background, this will be handled in `initializeWebView()`.
+        if (ultraPrivacy != null) {
+            // Get the information from the intent.
+            String intentAction = intent.getAction();
+            Uri intentUriData = intent.getData();
 
-        // Only process the URI if it contains data or it is a web search.  If the user pressed the desktop icon after the app was already running the URI will be null.
-        if (intentUriData != null || isWebSearch) {
-            // Get the shared preferences.
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            // Determine if this is a web search.
+            boolean isWebSearch = ((intentAction != null) && intentAction.equals(Intent.ACTION_WEB_SEARCH));
 
-            // Create a URL string.
-            String url;
+            // Only process the URI if it contains data or it is a web search.  If the user pressed the desktop icon after the app was already running the URI will be null.
+            if (intentUriData != null || isWebSearch) {
+                // Get the shared preferences.
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-            // If the intent action is a web search, perform the search.
-            if (isWebSearch) {
-                // Create an encoded URL string.
-                String encodedUrlString;
+                // Create a URL string.
+                String url;
 
-                // Sanitize the search input and convert it to a search.
-                try {
-                    encodedUrlString = URLEncoder.encode(intent.getStringExtra(SearchManager.QUERY), "UTF-8");
-                } catch (UnsupportedEncodingException exception) {
-                    encodedUrlString = "";
+                // If the intent action is a web search, perform the search.
+                if (isWebSearch) {
+                    // Create an encoded URL string.
+                    String encodedUrlString;
+
+                    // Sanitize the search input and convert it to a search.
+                    try {
+                        encodedUrlString = URLEncoder.encode(intent.getStringExtra(SearchManager.QUERY), "UTF-8");
+                    } catch (UnsupportedEncodingException exception) {
+                        encodedUrlString = "";
+                    }
+
+                    // Add the base search URL.
+                    url = searchURL + encodedUrlString;
+                } else {  // The intent should contain a URL.
+                    // Set the intent data as the URL.
+                    url = intentUriData.toString();
                 }
 
-                // Add the base search URL.
-                url = searchURL + encodedUrlString;
-            } else {  // The intent should contain a URL.
-                // Set the intent data as the URL.
-                url = intentUriData.toString();
-            }
+                // Add a new tab if specified in the preferences.
+                if (sharedPreferences.getBoolean("open_intents_in_new_tab", true)) {  // Load the URL in a new tab.
+                    // Set the loading new intent flag.
+                    loadingNewIntent = true;
 
-            // Add a new tab if specified in the preferences.
-            if (sharedPreferences.getBoolean("open_intents_in_new_tab", true)) {  // Load the URL in a new tab.
-                // Set the loading new intent flag.
-                loadingNewIntent = true;
+                    // Add a new tab.
+                    addNewTab(url);
+                } else {  // Load the URL in the current tab.
+                    // Make it so.
+                    loadUrl(url);
+                }
 
-                // Add a new tab.
-                addNewTab(url);
-            } else {  // Load the URL in the current tab.
-                // Make it so.
-                loadUrl(url);
-            }
+                // Get a handle for the drawer layout.
+                DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
 
-            // Get a handle for the drawer layout.
-            DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
+                // Close the navigation drawer if it is open.
+                if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                }
 
-            // Close the navigation drawer if it is open.
-            if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
-                drawerLayout.closeDrawer(GravityCompat.START);
-            }
-
-            // Close the bookmarks drawer if it is open.
-            if (drawerLayout.isDrawerVisible(GravityCompat.END)) {
-                drawerLayout.closeDrawer(GravityCompat.END);
+                // Close the bookmarks drawer if it is open.
+                if (drawerLayout.isDrawerVisible(GravityCompat.END)) {
+                    drawerLayout.closeDrawer(GravityCompat.END);
+                }
             }
         }
     }
@@ -4942,6 +4949,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Check requests against the block lists.  The deprecated `shouldInterceptRequest()` must be used until minimum API >= 21.
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+                // Wait until the blocklists have been populated.  When Privacy Browser is being resumed after having the process killed in the background it will try to load the URLs immediately.
+                while (ultraPrivacy == null) {
+                    // The wait must be synchronized, which only lets one thread run on it at a time, or `java.lang.IllegalMonitorStateException` is thrown.
+                    synchronized (this) {
+                        try {
+                            // Check to see if the blocklists have been populated after 100 ms.
+                            wait(100);
+                        } catch (InterruptedException exception) {
+                            // Do nothing.
+                        }
+                    }
+                }
+
                 // Sanitize the URL.
                 url = sanitizeUrl(url);
 
