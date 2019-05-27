@@ -1,14 +1,19 @@
-Privacy Browser protegge la privacy perchè disabilita funzionalità come JavaScript, DOM storage e i cookie, che sono utilizzati dai siti web per tracciare gli utenti.  Quando è necessario, le impostazioni possono però essere modificate per i singoli domini oppure globalmente in modo da abilitare queste funzionalità. In aggiunta, Privacy Browser include le block list di Easylist, che sono in grado di bloccare molte tecnologie di tracking anche con Javascript abilitato.
+Privacy Browser ha due obiettivi primari.
 
-Privacy Browser non permette ancora la navigazione con tab. Questa funzionalità è prevista per le release della serie 3.x.
+1. Minimizzzare la quantità di informazioni inviate verso  internet.
 
-Privacy Browser utilizza, per la visualizzazione delle pagine web, WebView nativo di Android. Per questo motivo il funzionamento è ottimale se Webview è aggiornato all'ultima versione. Nella futura serie 4.x Privacy Browser utilizzerà una versione modificata di Webview denominata Privacy WebView che introdurrà funzionalità avanzate per la privacy.
+2. Minimizzare la quantità di informazioni salvate sul dispositivo.
 
-Attenzione: Privacy Browser è vulnerabile agli attacchi MITM (Man In The Middle) quando si accede a siti non sicuri con dispositivi su cui è installato Android KitKat (versione 4.4.x, API 19).
-Per maggiori informazioni sul problema è possibile consultare: https://www.stoutner.com/kitkat-security-problems/
+La maggioranza dei browser fornisce silenziosamente ai siti web un'enorme quantità di informazioni per permettere loro di tracciare l'utente e compromettere la sua privacy. I siti web e le reti pubblicitarie utilizzano diverse tecnologie, come JavaScript, i cookie, il DOM storage, gli user agent e molte altre, con lo scopo di identificare in modo univoco ogni utente e di tracciare la sua navigazione attraverso la rete.
+
+Per migliorare la sicurezza le funzionalità sensibili al problema della privacy sono disabilitate di default in Privacy Browser. Se però una di queste tecnologie è necessaria per il corretto funzionamento di un sito web l'utente può abilitarla anche per un accesso momentaneo. In alternativa è possibile utilizzare le impostazioni dei domini per abilitare in modo automatico determinate funzionalità nel momento in cui si accede ad un determinato sito web, così che siano poi disabilitate nel momento in cui si abbandona il sito.
+
+Privacy Browser utilizza attualmente la WebView nativa di Android per la visualizzazione delle pagine web. Per questo motivo si ha un funzionamento ottimale solo se è installata la versione più recente di WebView (si veda in proposito https://www.stoutner.com/privacy-browser/common-settings/webview/). A partire dalle release della serie 4.x, Privacy Browser passerà ad una versione modificata della WebView di Android chiamata Privacy WebView che permetterà l'utilizzo di funzionalità di privacy più avanzate.
+
+Attenzione: Android KitKat (versione 4.4.x, API 19) incorpora una versione più vecchia di OpenSSL, suscettibile agli attacchi MITM (Man In The Middle) quando si naviga su siti web che utilizzano protocolli e suite di cifratura superati. Maggiori informazioni al riguardo sono disponibili visitando la pagina web: https://www.stoutner.com/kitkat-security-problems/.
 
 Funzionalità:
-• Supporto per Tor Orbot proxy.
-• Possibilità di appuntare i certificati SSL.
-• Navigazione a schermo intero.
-• Modalità notte.
+• Blocco degli annunci EasyList integrato.
+• Possibilità di utilizzare il proxy Tor Orbot.
+• Salvataggio dei certificati SSL.
+• Import/export delle impostazioni e dei segnalibri.

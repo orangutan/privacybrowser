@@ -46,6 +46,10 @@
     <string name="no_title">Sin título</string>
     <string name="unrecognized_url">URL no reconocida:</string>
     <string name="open_with">Abrir con</string>
+    <string name="add_tab">Añadir pestaña</string>
+    <string name="close_tab">Cerrar pestaña</string>
+    <string name="new_tab">Nueva pestaña</string>
+    <string name="loading">Cargando…</string>
 
     <!-- Save As. -->
     <string name="save_as">Guardar como</string>
@@ -104,9 +108,10 @@
     <string name="username">Usuario</string>
     <string name="password">Contraseña</string>
 
-    <!-- MainWebViewActivity Navigation Drawer. -->
+    <!-- MainWebViewActivity Navigation Menu. -->
     <string name="navigation_drawer">Caja de navegación</string>
     <string name="navigation">Navegación</string>
+    <string name="clear_and_exit">Borrar y salir</string>
     <string name="home">Inicio</string>
     <string name="back">Atrás</string>
     <string name="forward">Adelante</string>
@@ -118,7 +123,6 @@
     <string name="logcat">Logcat</string>
     <string name="guide">Guía</string>
     <string name="about">Acerca de</string>
-    <string name="clear_and_exit">Borrar y salir</string>
 
     <!-- MainWebViewActivity Options Menu. -->
     <string name="javascript">Javascript</string>
@@ -132,22 +136,24 @@
         <string name="clear_cookies">Borrar cookies</string>
         <string name="clear_dom_storage">Borrar almacenamiento DOM</string>
         <string name="clear_form_data">Borrar datos de formulario</string>  <!-- The form data strings can be removed once the minimum API >= 26. -->
-    <string name="options_fanboys_annoyance_list">Lista molesta de Fanboy</string>
-    <string name="options_fanboys_social_blocking_list">Lista de bloqueo social de Fanboy</string>
-    <string name="options_block_all_third_party_requests">Bloquear todas las solicitudes de terceros</string>
-    <string name="layout">Diseño</string>
-        <string name="user_agent_webview_default">WebView por defecto</string>
-        <string name="user_agent_firefox_on_android">Firefox en Android</string>
-        <string name="user_agent_chrome_on_android">Chrome en Android</string>
-        <string name="user_agent_safari_on_ios">Safari en iOS</string>
-        <string name="user_agent_firefox_on_linux">Firefox en Linux</string>
-        <string name="user_agent_chromium_on_linux">Chromium en Linux</string>
-        <string name="user_agent_firefox_on_windows">Firefox en Windows</string>
-        <string name="user_agent_chrome_on_windows">Chrome en Windows</string>
-        <string name="user_agent_edge_on_windows">Edge en Windows</string>
-        <string name="user_agent_internet_explorer_on_windows">Internet Explorer en Windows</string>
-        <string name="user_agent_safari_on_macos">Safari en macOS</string>
-        <string name="user_agent_custom">Personalizado</string>
+        <string name="options_fanboys_annoyance_list">Lista molesta de Fanboy</string>
+        <string name="options_fanboys_social_blocking_list">Lista de bloqueo social de Fanboy</string>
+        <string name="options_block_all_third_party_requests">Bloquear todas las solicitudes de terceros</string>
+    <string name="page">Página</string>
+        <string name="options_user_agent">Agente de usuario</string>
+            <string name="user_agent_privacy_browser">Navegador Privado</string>
+            <string name="user_agent_webview_default">WebView por defecto</string>
+            <string name="user_agent_firefox_on_android">Firefox en Android</string>
+            <string name="user_agent_chrome_on_android">Chrome en Android</string>
+            <string name="user_agent_safari_on_ios">Safari en iOS</string>
+            <string name="user_agent_firefox_on_linux">Firefox en Linux</string>
+            <string name="user_agent_chromium_on_linux">Chromium en Linux</string>
+            <string name="user_agent_firefox_on_windows">Firefox en Windows</string>
+            <string name="user_agent_chrome_on_windows">Chrome en Windows</string>
+            <string name="user_agent_edge_on_windows">Edge en Windows</string>
+            <string name="user_agent_internet_explorer_on_windows">Internet Explorer en Windows</string>
+            <string name="user_agent_safari_on_macos">Safari en macOS</string>
+            <string name="user_agent_custom">Personalizado</string>
         <string name="font_size">Tamaño de fuente</string>
             <string name="twenty_five_percent">25%</string>
             <string name="fifty_percent">50%</string>
@@ -158,21 +164,23 @@
             <string name="one_hundred_seventy_five_percent">175%</string>
             <string name="two_hundred_percent">200%</string>
         <string name="swipe_to_refresh_options_menu">Deslizar para actualizar</string>
+        <string name="wide_viewport">Vista amplia</string>
         <string name="display_images">Mostrar imágenes</string>
+        <string name="print">Imprimir</string>
+            <string name="privacy_browser_web_page">Página web de Navegador Privado</string>
+        <string name="add_to_home_screen">Añadir a la ventana de inicio</string>
+        <string name="options_night_mode">Modo noche</string>
+    <string name="find_on_page">Buscar en página</string>
         <string name="view_source">Ver la fuente</string>
     <string name="share">Compartir</string>
         <string name="share_url">Compartir URL</string>
         <string name="open_with_app">Abrir con App</string>
         <string name="open_with_browser">Abrir con Navegador</string>
-    <string name="find_on_page">Buscar en página</string>
-    <string name="print">Imprimir</string>
-        <string name="privacy_browser_web_page">Página web de Navegador Privado</string>
-    <string name="add_to_home_screen">Añadir a la ventana de inicio</string>
     <string name="refresh">Actualizar</string>
     <string name="stop">Parar</string>
 
     <!-- Context Menus. -->
-    <string name="load_url">Cargar URL</string>
+    <string name="open_in_new_tab">Abrir en nueva pestaña</string>
     <string name="copy_url">Copiar URL</string>
     <string name="download_url">Descargar URL</string>
     <string name="email_address">Correo electrónico</string>
@@ -306,6 +314,11 @@
         <item>Modo noche habilitado</item>
         <item>Modo noche deshabilitado</item>
     </string-array>
+    <string-array name="wide_viewport_array">
+        <item>Por defecto del sistema</item>
+        <item>Vista amplia habilitada</item>
+        <item>Vista amplia deshabilitada</item>
+    </string-array>
     <string-array name="display_webpage_images_array">
         <item>Por defecto del sistema</item>
         <item>Imágenes habilitadas</item>
@@ -387,7 +400,8 @@
     <string name="api">API</string>
     <string name="build">Versión de compilación:</string>
     <string name="security_patch">Parche de seguridad:</string>
-    <string name="webview">WebView:</string>
+    <string name="webview_provider">Proveedor de WebView:</string>
+    <string name="webview_version">Versión de WebView:</string>
     <string name="orbot">Orbot:</string>
     <string name="openkeychain">OpenKeychain:</string>
     <string name="easylist_label">EasyList:</string>
@@ -410,16 +424,17 @@
 
     <!-- Preferences. -->
     <string name="privacy">Privacidad</string>
-        <string name="javascript_preference">Habilitar Javascript por defecto</string>
+        <string name="javascript_preference">Javascript</string>
         <string name="javascript_preference_summary">Javascript permite a las webs ejecutar programas (scripts) en el dispositivo.</string>
-        <string name="first_party_cookies_preference">Habilitar cookies de primera parte por defecto</string>
-        <string name="first_party_cookies_preference_summary">Dispositivos con versiones de Android más antiguas que Lollipop (versión 5.0)
-            también habilitarán las cookies de terceras partes con este ajuste.</string>
-        <string name="third_party_cookies_preference">Habilar cookies de terceras partes por defecto</string>
+        <string name="first_party_cookies_preference">Cookies de primera parte</string>
+        <string name="first_party_cookies_preference_summary">Ya que las cookies de primera parte son una configuración de nivel de aplicación, cuando la pestaña activa tiene habilitadas las cookies,
+            cualquier solicitud de red realizada en segundo plano por otras pestañas también incluirá las cookies almacenadas para sus dominios.
+            Android KitKat (versión 4.4.x) no distingue entre cookies de primera y de terceras partes y las habilitará ambas con esta configuración.</string>
+        <string name="third_party_cookies_preference">Cookies de terceras partes</string>
         <string name="third_party_cookies_summary">Este ajuste requiere Android Lollipop (versión 5.0) o mayor.  No tiene efecto si las cookies de primera parte están deshabilitadas.</string>
-        <string name="dom_storage_preference">Habilitar almacenamiento DOM por defecto</string>
+        <string name="dom_storage_preference">Almacenamiento DOM</string>
         <string name="dom_storage_preference_summary">Javascript debe estar habilitado para que funcione el almacenamiento DOM.</string>
-        <string name="save_form_data_preference">Habilitar el guardar los datos de formulario por defecto</string>
+        <string name="save_form_data_preference">Datos de formulario</string>
         <string name="save_form_data_preference_summary">Los datos de formularios guardados pueden rellenar automáticamente las casillas o campos de las webs.</string>
         <string name="user_agent">Agente de usuario</string>
         <string-array name="translated_user_agent_names">
@@ -473,6 +488,13 @@
         <string name="ultraprivacy_summary">Ultra Privacidad bloquea los rastreadores que no bloquea EasyPrivacy, porque al hacerlo puede romper páginas web.</string>
         <string name="block_all_third_party_requests">Bloquear todas las solicitudes de terceras partes</string>
         <string name="block_all_third_party_requests_summary">Bloquear todas las solicitudes de terceras  partes aumenta la privacidad, pero rompe muchas páginas web.</string>
+    <string name="url_modification">Modificación de URL</string>
+        <string name="google_analytics">Google Analytics</string>
+        <string name="google_analytics_summary">Eliminar “?utm_” o “&amp;utm_” y cualquier cosa después de esto de las URLs.</string>
+        <string name="facebook_click_ids">IDs de clics en Facebook</string>
+        <string name="facebook_click_ids_summary">Eliminar “?fbclid=” o “&amp;fbclid=” y cualquier cosa después de esto de las URLs.</string>
+        <string name="twitter_amp_redirects">Redirecciones de Twitter AMP</string>
+        <string name="twitter_amp_redirects_summary">Eliminar “?amp=1” y cualquier cosa después de esto de las URLs.</string>
     <string name="tor">Tor</string>
         <string name="proxy_through_orbot">Enviar a través de Orbot</string>
         <string name="proxy_through_orbot_summary">Enviar todo el tráfico web a través de Orbot en localhost:8118.</string>
@@ -541,6 +563,8 @@
                 <item>175%</item>
                 <item>200%</item>
             </string-array>
+        <string name="open_intents_in_new_tab">Abrir contenido en nueva pestaña</string>
+        <string name="open_intents_in_new_tab_summary">Los contenidos son enlaces enviados desde otras apps.</string>
         <string name="swipe_to_refresh">Deslizar para actualizar</string>
         <string name="swipe_to_refresh_summary">Algunas webs no funcionan bien si la opción deslizar para actualizar está habilitada.</string>
         <string name="scroll_app_bar">Desplazar la barra de aplicaciones</string>
@@ -553,6 +577,8 @@
         <string name="dark_theme_summary">Cambiar el tema reiniciará Navegador Privado.</string>
         <string name="night_mode">Modo noche</string>
         <string name="night_mode_summary">Activar el modo noche también activará javascript para todas las páginas web.</string>
+        <string name="wide_viewport_preference">Vista amplia</string>
+        <string name="wide_viewport_summary">El uso de una vista amplia hace que el diseño de algunas páginas web se parezca más al sitio de escritorio.</string>
         <string name="display_webpage_images">Mostrar imágenes de la página web</string>
         <string name="display_webpage_images_summary">Deshabilitar para conservar ancho de banda.</string>
 

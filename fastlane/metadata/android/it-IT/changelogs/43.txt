@@ -1,0 +1,8 @@
+• Aggiunta della navigazione a schede.
+• Correzione di un baco che tagliava la parte bassa di WebView quando era disabilitato lo scrolling della barra dell'applicazione.
+• Correzione di un baco che provocava il riavvio di Privacy Browser ogni volata che veniva connessa o disconnessa una tastiera Bluetooth.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
+• Aggiornamento della traduzione in Russo.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León.
+• Aggiornamento della traduzione Tedesco fornita da Bernhard G. Keller.
+• Traduzione parziale in Turco.

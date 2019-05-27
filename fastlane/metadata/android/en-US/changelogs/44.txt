@@ -1,0 +1,4 @@
+• Fix a bug that allowed the app bar to be scrolled off the screen when app bar scrolling was disabled, with no way to scroll it back.
+• Fix a bug that prevented the app bar from being displayed after a tab was deleted if the new active tab was blank.
+• Fix a rare crash when some pages finished loading.
+• Make the back button close a tab if the WebView is at the beginning of the history list.

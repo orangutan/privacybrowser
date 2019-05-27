@@ -24,8 +24,10 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +39,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
 
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
 import java.util.Locale;
 
@@ -122,8 +123,15 @@ public class DownloadFileDialog extends DialogFragment {
         // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the screenshot and theme preferences.
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+
         // Set the style according to the theme.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
         } else {
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
@@ -153,7 +161,7 @@ public class DownloadFileDialog extends DialogFragment {
         assert alertDialog.getWindow() != null;
 
         // Disable screenshots if not allowed.
-        if (!MainWebViewActivity.allowScreenshots) {
+        if (!allowScreenshots) {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 

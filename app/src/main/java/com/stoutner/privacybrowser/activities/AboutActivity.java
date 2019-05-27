@@ -19,32 +19,39 @@
 
 package com.stoutner.privacybrowser.activities;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.WindowManager;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
-import com.stoutner.privacybrowser.fragments.AboutTabFragment;
+import com.stoutner.privacybrowser.adapters.AboutPagerAdapter;
 import com.stoutner.privacybrowser.R;
 
 public class AboutActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Get the theme and screenshot preferences.
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Disable screenshots if not allowed.
-        if (!MainWebViewActivity.allowScreenshots) {
+        if (!allowScreenshots) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
         // Set the theme.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             setTheme(R.style.PrivacyBrowserDark_SecondaryActivity);
         } else {
             setTheme(R.style.PrivacyBrowserLight_SecondaryActivity);
@@ -53,11 +60,21 @@ public class AboutActivity extends AppCompatActivity {
         // Run the default commands.
         super.onCreate(savedInstanceState);
 
+        // Get the intent that launched the activity.
+        Intent launchingIntent = getIntent();
+
+        // Store the blocklist versions.
+        String[] blocklistVersions = launchingIntent.getStringArrayExtra("blocklist_versions");
+
         // Set the content view.
         setContentView(R.layout.about_coordinatorlayout);
 
-        // `SupportActionBar` from `android.support.v7.app.ActionBar` must be used until the minimum API is >= 21.
+        // Get handles for the views.
         Toolbar toolbar = findViewById(R.id.about_toolbar);
+        TabLayout aboutTabLayout = findViewById(R.id.about_tablayout);
+        ViewPager aboutViewPager = findViewById(R.id.about_viewpager);
+
+        // Set the action bar.  `SupportActionBar` must be used until the minimum API is >= 21.
         setSupportActionBar(toolbar);
 
         // Get a handle for the action bar.
@@ -70,60 +87,9 @@ public class AboutActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         //  Setup the ViewPager.
-        ViewPager aboutViewPager = findViewById(R.id.about_viewpager);
-        aboutViewPager.setAdapter(new aboutPagerAdapter(getSupportFragmentManager()));
+        aboutViewPager.setAdapter(new AboutPagerAdapter(getSupportFragmentManager(), getApplicationContext(), blocklistVersions));
 
-        // Setup the TabLayout and connect it to the ViewPager.
-        TabLayout aboutTabLayout = findViewById(R.id.about_tablayout);
+        // Connect the tab layout to the view pager.
         aboutTabLayout.setupWithViewPager(aboutViewPager);
-    }
-
-    private class aboutPagerAdapter extends FragmentPagerAdapter {
-        private aboutPagerAdapter(FragmentManager fragmentManager) {
-            // Run the default commands.
-            super(fragmentManager);
-        }
-
-        @Override
-        // Get the count of the number of tabs.
-        public int getCount() {
-            return 7;
-        }
-
-        @Override
-        // Get the name of each tab.  Tab numbers start at 0.
-        public CharSequence getPageTitle(int tab) {
-            switch (tab) {
-                case 0:
-                    return getString(R.string.version);
-
-                case 1:
-                    return getString(R.string.permissions);
-
-                case 2:
-                    return getString(R.string.privacy_policy);
-
-                case 3:
-                    return getString(R.string.changelog);
-
-                case 4:
-                    return getString(R.string.licenses);
-
-                case 5:
-                    return getString(R.string.contributors);
-
-                case 6:
-                    return getString(R.string.links);
-
-                default:
-                    return "";
-            }
-        }
-
-        @Override
-        // Setup each tab.
-        public Fragment getItem(int tab) {
-            return AboutTabFragment.createTab(tab);
-        }
     }
 }

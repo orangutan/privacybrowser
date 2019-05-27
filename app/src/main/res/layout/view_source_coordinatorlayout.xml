@@ -63,8 +63,6 @@
                     android:layout_width="match_parent"
                     android:minHeight="3dp"
                     android:layout_gravity="bottom"
-                    android:progressTint="?attr/progressTintColor"
-                    android:progressBackgroundTint="@color/transparent"
                     android:visibility="gone"
                     tools:ignore="UnusedAttribute" />
             </FrameLayout>

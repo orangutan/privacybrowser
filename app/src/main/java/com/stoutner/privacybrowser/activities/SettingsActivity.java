@@ -19,7 +19,9 @@
 
 package com.stoutner.privacybrowser.activities;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,13 +32,20 @@ import com.stoutner.privacybrowser.fragments.SettingsFragment;
 public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        // Get the screenshot and theme preferences.
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+
         // Disable screenshots if not allowed.
-        if (!MainWebViewActivity.allowScreenshots) {
+        if (!allowScreenshots) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
         // Set the activity theme.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             setTheme(R.style.PrivacyBrowserSettingsDark);
         } else {
             setTheme(R.style.PrivacyBrowserSettingsLight);

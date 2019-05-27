@@ -60,7 +60,7 @@
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="22sp"
             android:ellipsize="end"
-            android:maxLines="1" />
+            android:lines="1" />
     </LinearLayout>
 
     <!-- Second row. -->
@@ -73,7 +73,7 @@
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="22sp"
         android:ellipsize="end"
-        android:maxLines="1" />
+        android:lines="1" />
 
     <!-- Third row. -->
     <LinearLayout
@@ -109,6 +109,6 @@
             android:textSize="22sp"
             android:textStyle="italic"
             android:ellipsize="end"
-            android:maxLines="1" />
+            android:lines="1" />
     </LinearLayout>
 </LinearLayout>

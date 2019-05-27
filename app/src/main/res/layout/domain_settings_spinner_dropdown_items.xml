@@ -23,7 +23,7 @@
     android:id="@+id/spinner_dropdown_item_textview"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:maxLines="1"
+    android:lines="1"
     android:ellipsize="end"
     android:gravity="center_vertical"
     android:paddingStart="16dp"

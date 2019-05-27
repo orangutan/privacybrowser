@@ -1,5 +1,5 @@
 <!--
-  Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -24,66 +24,67 @@
     </head>
 
     <body>
-        <h3><img class="title" src="../shared_images/cookie_blue_light.png"> First-Party Cookies</h3>
+        <h3><img class="title" src="../shared_images/cookie_blue_light.png"> Birinci Taraf Çerezler</h3>
 
-        <p>First-party cookies are set by the website in the URL bar at the top of the page.</p>
+        <p>Birinci taraf çerezler, sayfanın üst kısmında yer alan URL çubuğundaki web sitesi tarafından oluşturulur.</p>
 
-        <p>From the early days of the internet, it became obvious that it would be advantageous for websites to be able to store information on a computer for future access.
-            For example, a website that displays weather information could ask the user for a zip code, and then store it in a cookie.
-            The next time the user visited the website, weather information would automatically load for that zip code, without the user having to enter it again.</p>
+        <p>İnternetin ilk günlerinde, ileri zamanlı erişimler için web sitelerinin bilgisayarda bilgi depolayabilmesinin avantajlı olacağı görüşü kesinlik kazandı. 
+            Örneğin, hava durumu bilgileri gösteren bir web sitesi, kullanıcıdan bir posta kodu isteyebilir ve daha sonra bunu bir çerezde depolar. 
+            Kullanıcının web sitesini bir sonraki ziyaretinde, posta kodunu tekrar girmesine gerek kalmadan hava durumu bilgisi otomatik olarak yüklenir.</p>
 
-        <p>Like everything else on the web, clever people figured out all types of ways to abuse cookies to do things that users would not approve of if they knew they were happening.
-            For example, a website can set a cookie with a unique serial number on a device.
-            Then, every time a user visits the website on that device, it can be linked to a unique profile the server maintains for that serial number,
-            even if the device connects from different IP addresses.</p>
+        <p>Web’deki diğer her olayda olduğu gibi, bazı kötü amaçlı zeki insanlar,
+            kullanıcıların ne olup bittiğini bilselerdi onaylamayacakları şeyleri yapmak için çerezleri kötüye kullanmanın her türlü yolunu buldular.
+            Örneğin, bir web sitesi, bir cihazda özgün bir seri numarasına sahip bir çerez oluşturabilir. 
+            Daha sonra, bir kullanıcının o cihaz üzerinden web sitesini her ziyaretinde, cihaz farklı IP adreslerinden bağlansa bile,
+            sunucunun o seri numarası için devam ettirdiği özgün profile bağlanabilir.</p>
 
-        <p>Almost all websites with logins require first-party cookies to be enabled for a user to log in.
-            That is how they make sure it is still you as you move from page to page on the site, and is, in my opinion, one of the few legitimate uses for cookies.</p>
+        <p>Oturum açılan neredeyse tüm web sitelerine, bir kullanıcının giriş yapması için birinci taraf çerezlerin etkin olması gerekir. 
+            Bu da web sitelerinin, site içinde sayfadan sayfaya atladığınızda, o kişinin hala siz olduğunuza emin olmasını sağlar, ki bana göre bu, çerezler için kullanılan birkaç yasal yöntemden biridir.</p>
 
-        <p>If first-party cookies are enabled but JavaScript is disabled, the privacy icon will be yellow <img class="inline" src="../shared_images/warning.png"> as a warning.</p>
-
-
-        <h3><img class="title" src="../shared_images/cookie_blue_light.png"> Third-Party Cookies</h3>
-
-        <p>Third-party cookies are set by portions of a website that are loaded from servers different from the URL at the top of the page.
-            For example, most website that have advertisements load them from a third-party ad broker, like Google’s <a href="https://www.google.com/adsense/start/">Ad Sense</a>.
-            Every time the website loads, it requests the ad broker to display an ad.
-            The ad broker analyzes any information they may have about the user, looks at the current rate advertisers are willing to pay for their ads, and selects the one to display.
-            The section of the website that displays the ads is loaded from the third-party broker’s server instead of the main server.</p>
-
-        <p>Because most of the advertisements on the internet are processed by only a few brokers,
-            it didn’t take long for them to realize that they could set a tracking cookie on the user’s device and know every place that user goes.
-            Every time an ad loads from a broker, the first thing it does it check to see if if the device already has a unique serial number in a tracking cookie.
-            If it does, it looks up the profile for that serial number and makes a note of the new site.
-            This is why a user can do a search on one website for a product they typically don’t look for, like walnuts,
-            and then suddenly start seeing advertisements for walnuts on every website they visit.</p>
-
-        <p>In addition to ad brokers, social media sites discovered they could get in on the action.
-            A few years ago, the major social media sites like Facebook and Twitter convinced a large number of websites
-            that it would be in their best interest to place little social media icons on their pages.
-            These are not just images. They contain <a href="https://developers.facebook.com/docs/plugins/like-button/">embedded code</a> that links back to the social media site, and, among other things,
-            loads a third-party cookie on the device. These cookies are placed even if the user does not have an account with the social media platform.
-            Over time, companies like Facebook (which also runs an ad network) have built up quite a large number of detailed profiles about people who have
-            <a href="http://www.theverge.com/2016/5/27/11795248/facebook-ad-network-non-users-cookies-plug-ins">never even created an account on their site</a>.</p>
-
-        <p>There is no good reason to ever enable third-party cookies. On devices with Android KitKat or older (version <= 4.4.4 or API <= 20), WebView does not
-            <a href="https://developer.android.com/reference/android/webkit/CookieManager.html#setAcceptThirdPartyCookies(android.webkit.WebView, boolean)">differentiate
-            between first-party and third-party cookies</a>. Thus, enabling first-party cookies will also enable third-party cookies.</p>
+        <p>Birinci taraf çerezler etkinken, ancak JavaScript devre dışı bırakılmışsa, gizlilik simgesi bir uyarı olarak sarı <img class="inline" src="../shared_images/warning.png"> olacaktır.</p>
 
 
-        <h3><img class="title" src="../shared_images/web_blue_light.png"> DOM Storage</h3>
+        <h3><img class="title" src="../shared_images/cookie_blue_light.png"> Üçüncü Taraf Çerezler</h3>
 
-        <p>Document Object Model storage, also known as web storage, is like cookies on steroids.
-            Whereas the maximum combined storage size for all cookies from a single URL is 4 kilobytes,
-            DOM storage can hold <a href="https://en.wikipedia.org/wiki/Web_storage#Storage_size">megabytes per site</a>.
-            Because DOM storage uses JavaScript to read and write data, it cannot be enabled unless JavaScript is also enabled.</p>
+        <p>Üçüncü taraf çerezler, sayfanın üst kısmındaki URL’deki farklı sunuculardan yüklenen bir web sitesinin parçaları tarafından oluşturulur. 
+            Örneğin, kullanıcılarına reklam gösteren çoğu web sitesi, reklamlarını Google <a href="https://www.google.com/adsense/start/">Ad Sense</a> gibi bir üçüncü taraf reklam aracısından yükler.
+            Web sitesi her yüklendiğinde, reklam aracısından bir reklam göstermesi istenir. 
+            Reklam aracısı kullanıcı hakkında sahip olabildiği her bilgiyi analiz eder, reklamları için ödemeye istekli olan reklamverenlerin güncel oranına bakar ve gösterilecek reklamı seçer. 
+            Web sitelerinin reklamları gösteren bölümü, ana sunucu yerine üçüncü taraf aracının sunucusundan yüklenir.</p>
+
+        <p>İnternetteki reklamların çoğu sadece birkaç aracı tarafından işlendiğinden, aracıların,
+            kullanıcılarının cihazına bir izleme çerezi koyabileceklerini ve kullanıcılarının gittiği her yeri bilebileceklerini fark etmeleri uzun sürmedi.
+            Bir aracıdan bir reklam her yüklendiğinde, yaptığı ilk şey, cihazın bir takip çerezinin içindeki özgün bir seri numarasına sahip olup olmadığını kontrol etmek olacaktır. 
+            Varsa, bu seri numarasının profilini arar ve yeni siteyi not eder. Bir kullanıcının ceviz gibi genellikle aramadığı bir ürün için bir web sitesinde arama yapmasının ardından,
+            her ziyaret ettiği web sitesinde ceviz hakkında reklamlar görmeye başlamasının sebebi budur.</p>
+
+        <p>Reklam aracılarına ek olarak, sosyal medya siteleri de harekete geçebileceklerini fark ettiler. 
+            Birkaç yıl önce, Facebook ve Twitter gibi büyük sosyal medya siteleri, çok sayıda web sitesini, sayfalarına küçük sosyal medya simgelerini yerleştirmenin yararlarına olacağına ikna etti.
+            Bu simgeler sadece görüntü değiller, aslında sosyal medya sitesine geri bağlanan <a href="https://developers.facebook.com/docs/plugins/like-button/">gömülü kod</a>
+            içerirler ve diğer şeylerin yanı sıra, cihaza bir üçüncü taraf çerez yüklerler. Bu çerezler, kullanıcının sosyal medya platformunda bir hesabı olmasa dahi yerleştirilir.
+            Zaman içinde, Facebook gibi şirketler (aynı zamanda bir reklam ağı da yürüten),
+            <a href="http://www.theverge.com/2016/5/27/11795248/facebook-ad-network-non-users-cookies-plug-ins">sitelerinde hiç hesap oluşturmayan</a>
+            insanlar hakkında oldukça fazla sayıda ayrıntılı profil oluşturdular.</p>
+
+        <p>Üçüncü taraf çerezlerini etkinleştirmek için hiçbir sebep yoktur. Android KitKat versiyonuna ya da daha eski versiyonlara (versiyon <=4.4.4 veya API <=20) sahip cihazlarda, WebView
+            <a href="https://developer.android.com/reference/android/webkit/CookieManager.html#setAcceptThirdPartyCookies(android.webkit.WebView, boolean)">
+            birinci ve üçüncü taraf çerezler arasında ayrım yapmaz.</a> Böylece birinci taraf çerezlerini etkinleştirmek üçüncü taraf çerezlerini de etkinleştirir.</p>
 
 
-        <h3><img class="title" src="../shared_images/subtitles_blue_light.png"> Form Data</h3>
+        <h3><img class="title" src="../shared_images/web_blue_light.png"> DOM Depolama</h3>
 
-        <p>Form data contains information typed into web forms, like user names, addresses, phone numbers, etc., and lists them in a drop-down box on future visits.
-            Unlike the other forms of local storage, form data is not sent to the web server without specific user interaction.
-            Beginning in Android Oreo (8.0), WebView’s form data was replaced by the <a href="https://medium.com/@bherbst/getting-androids-autofill-to-work-for-you-21435debea1">Autofill service</a>.
-            As such, controls for form data no longer appear on newer Android devices.</p>
+        <p>Document Object Model (Belge Nesne Modeli) depolaması, web depolaması olarak bilinir, büyük kurabiyeler gibidir. 
+            Tek bir URL’deki tüm çerezler için maksimum birleşik depolama boyutu 4 kilobayt iken,
+            DOM depolama bu boyutu <a href="https://en.wikipedia.org/wiki/Web_storage#Storage_size">her site için megabaytlara</a> çıkarabilir.
+            DOM depolama, veri okumak ve yazmak için JavaScript kullandığından dolayı, JavaScript etkinleştirilmeden o da etkin olamaz.</p>
+
+
+        <h3><img class="title" src="../shared_images/subtitles_blue_light.png"> Form Verisi</h3>
+
+        <p>Form verileri, kullanıcı adları, adresler, telefon numaraları vb. gibi web formlarına yazılan bilgileri içerir ve gelecekteki ziyaretler için onları açılır bir kutuya listeler. 
+            Diğer yerel depolama biçimlerinin aksine, form verisi, belirli bir kullanıcı etkileşimi olmadan web sunucusuna gönderilmez. 
+            Android Oreo (8.0) versiyonundan başlayarak,
+            WebView’in form verisi <a href="https://medium.com/@bherbst/getting-androids-autofill-to-work-for-you-21435debea1">Otomatik Doldurma servisi</a> ile değiştirildi.
+            Bu nedenle, form verisi kontrolleri artık daha yeni Android versiyona sahip cihazlarda görünmeyecek.</p>
     </body>
 </html>

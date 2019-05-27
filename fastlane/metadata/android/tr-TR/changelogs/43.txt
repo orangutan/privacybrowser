@@ -1,0 +1,8 @@
+• Sekmeli tarama eklendi.
+• Uygulama çubuğu kaydırma devredışı olduğunda Web Görünümü'nün alt kısmının kesilmesine sebep olan hata düzeltildi.
+• Ne zaman bir Bluetooth klavye bağlandığında/bağlantısı kesildiğinde Privacy Browser'i yeniden başlatmaya sebep olan hata düzeltildi.
+• Kısmi Türkçe çevirisi yapıldı.
+• Almanca çevirisi güncellendi. (Çevirmen Bernhard G. Keller.)
+• İtalyan çevirisi güncellendi. (Çevirmen Francesco Buratti.)
+• Rusça çevirisi güncellendi.
+• İspanyol çevirisi güncellendi. (Çevirmen Jose A. León.)

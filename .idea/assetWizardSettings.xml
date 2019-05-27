@@ -68,7 +68,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/home/soren/Android/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_payment_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/home/soren/Android/android-studio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_settings_overscan_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -78,8 +78,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="app_bar" />
-                            <entry key="sourceFile" value="$USER_HOME$/ownCloud/Android/Privacy Browser/Icons/Icons/file_copy_light.svg" />
+                            <entry key="outputName" value="wide_viewport_enabled_light" />
+                            <entry key="sourceFile" value="$USER_HOME$/ownCloud/Android/Privacy Browser/Icons/Icons/link_off_light.svg" />
                           </map>
                         </option>
                       </PersistentState>

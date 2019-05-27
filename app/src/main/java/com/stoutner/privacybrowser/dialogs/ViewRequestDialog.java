@@ -24,7 +24,9 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -34,7 +36,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.activities.MainWebViewActivity;
+import com.stoutner.privacybrowser.helpers.BlocklistHelper;
 
 public class ViewRequestDialog extends DialogFragment {
     // The public interface is used to send information back to the parent activity.
@@ -60,9 +62,9 @@ public class ViewRequestDialog extends DialogFragment {
         Bundle bundle = new Bundle();
 
         // Store the request details.
-        bundle.putInt("ID", id);
-        bundle.putBoolean("Is Last Request", isLastRequest);
-        bundle.putStringArray("Request Details", requestDetails);
+        bundle.putInt("id", id);
+        bundle.putBoolean("is_last_request", isLastRequest);
+        bundle.putStringArray("request_details", requestDetails);
 
         // Add the bundle to the dialog.
         ViewRequestDialog viewRequestDialog = new ViewRequestDialog();
@@ -77,19 +79,26 @@ public class ViewRequestDialog extends DialogFragment {
     // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
     @SuppressLint("InflateParams")
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the theme and screenshot preferences.
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Remove the incorrect lint warning that `getInt()` might be null.
         assert getArguments() != null;
 
         // Get the info from the bundle.
-        int id = getArguments().getInt("ID");
-        boolean isLastRequest = getArguments().getBoolean("Is Last Request");
-        String[] requestDetails = getArguments().getStringArray("Request Details");
+        int id = getArguments().getInt("id");
+        boolean isLastRequest = getArguments().getBoolean("is_last_request");
+        String[] requestDetails = getArguments().getStringArray("request_details");
 
         // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
         // Set the style and icon according to the theme.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
             dialogBuilder.setIcon(R.drawable.block_ads_enabled_dark);
         } else {
@@ -131,7 +140,7 @@ public class ViewRequestDialog extends DialogFragment {
         final AlertDialog alertDialog = dialogBuilder.create();
 
         // Disable screenshots if not allowed.
-        if (!MainWebViewActivity.allowScreenshots) {
+        if (!allowScreenshots) {
             // Remove the warning below that `getWindow()` might be null.
             assert alertDialog.getWindow() != null;
 
@@ -163,8 +172,8 @@ public class ViewRequestDialog extends DialogFragment {
         nextButton.setEnabled(!isLastRequest);
 
         // Set the request action text.
-        switch (Integer.valueOf(requestDetails[MainWebViewActivity.REQUEST_DISPOSITION])) {
-            case MainWebViewActivity.REQUEST_DEFAULT:
+        switch (requestDetails[BlocklistHelper.REQUEST_DISPOSITION]) {
+            case BlocklistHelper.REQUEST_DEFAULT:
                 // Set the text.
                 requestDisposition.setText(R.string.default_allowed);
 
@@ -172,36 +181,36 @@ public class ViewRequestDialog extends DialogFragment {
                 requestDisposition.setBackgroundColor(getResources().getColor(R.color.transparent));
                 break;
 
-            case MainWebViewActivity.REQUEST_ALLOWED:
+            case BlocklistHelper.REQUEST_ALLOWED:
                 // Set the text.
                 requestDisposition.setText(R.string.allowed);
 
                 // Set the background color.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     requestDisposition.setBackgroundColor(getResources().getColor(R.color.blue_700_50));
                 } else {
                     requestDisposition.setBackgroundColor(getResources().getColor(R.color.blue_100));
                 }
                 break;
 
-            case MainWebViewActivity.REQUEST_THIRD_PARTY:
+            case BlocklistHelper.REQUEST_THIRD_PARTY:
                 // Set the text.
                 requestDisposition.setText(R.string.third_party_blocked);
 
                 // Set the background color.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     requestDisposition.setBackgroundColor(getResources().getColor(R.color.yellow_700_50));
                 } else {
                     requestDisposition.setBackgroundColor(getResources().getColor(R.color.yellow_100));
                 }
                 break;
 
-            case MainWebViewActivity.REQUEST_BLOCKED:
+            case BlocklistHelper.REQUEST_BLOCKED:
                 // Set the text.
                 requestDisposition.setText(R.string.blocked);
 
                 // Set the background color.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     requestDisposition.setBackgroundColor(getResources().getColor(R.color.red_700_40));
                 } else {
                     requestDisposition.setBackgroundColor(getResources().getColor(R.color.red_100));
@@ -210,7 +219,7 @@ public class ViewRequestDialog extends DialogFragment {
         }
 
         // Display the request URL.
-        requestUrl.setText(requestDetails[MainWebViewActivity.REQUEST_URL]);
+        requestUrl.setText(requestDetails[BlocklistHelper.REQUEST_URL]);
 
         // Modify the dialog based on the request action.
         if (requestDetails.length == 2) {  // A default request.
@@ -225,93 +234,97 @@ public class ViewRequestDialog extends DialogFragment {
             requestBlockListOriginalEntry.setVisibility(View.GONE);
         } else {  // A blocked or allowed request.
             // Set the text on the text views.
-            requestBlockList.setText(requestDetails[MainWebViewActivity.REQUEST_BLOCKLIST]);
-            requestBlockListEntries.setText(requestDetails[MainWebViewActivity.REQUEST_BLOCKLIST_ENTRIES]);
-            requestBlockListOriginalEntry.setText(requestDetails[MainWebViewActivity.REQUEST_BLOCKLIST_ORIGINAL_ENTRY]);
+            requestBlockList.setText(requestDetails[BlocklistHelper.REQUEST_BLOCKLIST]);
+            requestBlockListEntries.setText(requestDetails[BlocklistHelper.REQUEST_BLOCKLIST_ENTRIES]);
+            requestBlockListOriginalEntry.setText(requestDetails[BlocklistHelper.REQUEST_BLOCKLIST_ORIGINAL_ENTRY]);
 
             // Set the sublist text.
-            switch (Integer.valueOf(requestDetails[MainWebViewActivity.REQUEST_SUBLIST])) {
-                case MainWebViewActivity.MAIN_WHITELIST:
+            switch (requestDetails[BlocklistHelper.REQUEST_SUBLIST]) {
+                case BlocklistHelper.MAIN_WHITELIST:
                     requestSubList.setText(R.string.main_whitelist);
                     break;
 
-                case MainWebViewActivity.FINAL_WHITELIST:
+                case BlocklistHelper.FINAL_WHITELIST:
                     requestSubList.setText(R.string.final_whitelist);
                     break;
 
-                case MainWebViewActivity.DOMAIN_WHITELIST:
+                case BlocklistHelper.DOMAIN_WHITELIST:
                     requestSubList.setText(R.string.domain_whitelist);
                     break;
 
-                case MainWebViewActivity.DOMAIN_INITIAL_WHITELIST:
+                case BlocklistHelper.DOMAIN_INITIAL_WHITELIST:
                     requestSubList.setText(R.string.domain_initial_whitelist);
                     break;
 
-                case MainWebViewActivity.DOMAIN_FINAL_WHITELIST:
+                case BlocklistHelper.DOMAIN_FINAL_WHITELIST:
                     requestSubList.setText(R.string.domain_final_whitelist);
                     break;
 
-                case MainWebViewActivity.THIRD_PARTY_WHITELIST:
+                case BlocklistHelper.THIRD_PARTY_WHITELIST:
                     requestSubList.setText(R.string.third_party_whitelist);
                     break;
 
-                case MainWebViewActivity.THIRD_PARTY_DOMAIN_WHITELIST:
+                case BlocklistHelper.THIRD_PARTY_DOMAIN_WHITELIST:
                     requestSubList.setText(R.string.third_party_domain_whitelist);
                     break;
 
-                case MainWebViewActivity.THIRD_PARTY_DOMAIN_INITIAL_WHITELIST:
+                case BlocklistHelper.THIRD_PARTY_DOMAIN_INITIAL_WHITELIST:
                     requestSubList.setText(R.string.third_party_domain_initial_whitelist);
                     break;
 
-                case MainWebViewActivity.MAIN_BLACKLIST:
+                case BlocklistHelper.MAIN_BLACKLIST:
                     requestSubList.setText(R.string.main_blacklist);
                     break;
 
-                case MainWebViewActivity.INITIAL_BLACKLIST:
+                case BlocklistHelper.INITIAL_BLACKLIST:
                     requestSubList.setText(R.string.initial_blacklist);
                     break;
 
-                case MainWebViewActivity.FINAL_BLACKLIST:
+                case BlocklistHelper.FINAL_BLACKLIST:
                     requestSubList.setText(R.string.final_blacklist);
                     break;
 
-                case MainWebViewActivity.DOMAIN_BLACKLIST:
+                case BlocklistHelper.DOMAIN_BLACKLIST:
                     requestSubList.setText(R.string.domain_blacklist);
                     break;
 
-                case MainWebViewActivity.DOMAIN_INITIAL_BLACKLIST:
+                case BlocklistHelper.DOMAIN_INITIAL_BLACKLIST:
                     requestSubList.setText(R.string.domain_initial_blacklist);
                     break;
 
-                case MainWebViewActivity.DOMAIN_FINAL_BLACKLIST:
+                case BlocklistHelper.DOMAIN_FINAL_BLACKLIST:
                     requestSubList.setText(R.string.domain_final_blacklist);
                     break;
 
-                case MainWebViewActivity.DOMAIN_REGULAR_EXPRESSION_BLACKLIST:
+                case BlocklistHelper.DOMAIN_REGULAR_EXPRESSION_BLACKLIST:
                     requestSubList.setText(R.string.domain_regular_expression_blacklist);
                     break;
 
-                case MainWebViewActivity.THIRD_PARTY_BLACKLIST:
+                case BlocklistHelper.THIRD_PARTY_BLACKLIST:
                     requestSubList.setText(R.string.third_party_blacklist);
                     break;
 
-                case MainWebViewActivity.THIRD_PARTY_DOMAIN_BLACKLIST:
+                case BlocklistHelper.THIRD_PARTY_INITIAL_BLACKLIST:
+                    requestSubList.setText(R.string.third_party_initial_blacklist);
+                    break;
+
+                case BlocklistHelper.THIRD_PARTY_DOMAIN_BLACKLIST:
                     requestSubList.setText(R.string.third_party_domain_blacklist);
                     break;
 
-                case MainWebViewActivity.THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST:
+                case BlocklistHelper.THIRD_PARTY_DOMAIN_INITIAL_BLACKLIST:
                     requestSubList.setText(R.string.third_party_domain_initial_blacklist);
                     break;
 
-                case MainWebViewActivity.THIRD_PARTY_REGULAR_EXPRESSION_BLACKLIST:
+                case BlocklistHelper.THIRD_PARTY_REGULAR_EXPRESSION_BLACKLIST:
                     requestSubList.setText(R.string.third_party_regular_expression_blacklist);
                     break;
 
-                case MainWebViewActivity.THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLACKLIST:
+                case BlocklistHelper.THIRD_PARTY_DOMAIN_REGULAR_EXPRESSION_BLACKLIST:
                     requestSubList.setText(R.string.third_party_domain_regular_expression_blacklist);
                     break;
 
-                case MainWebViewActivity.REGULAR_EXPRESSION_BLACKLIST:
+                case BlocklistHelper.REGULAR_EXPRESSION_BLACKLIST:
                     requestSubList.setText(R.string.regular_expression_blacklist);
                     break;
             }

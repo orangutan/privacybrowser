@@ -24,8 +24,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Proxy;
+import android.preference.PreferenceManager;
 import android.util.ArrayMap;
 import android.util.Log;
 
@@ -40,15 +42,21 @@ import java.lang.reflect.Method;
 
 public class OrbotProxyHelper {
     public static void setProxy(Context privacyBrowserContext, Activity parentActivity, String proxyHost, String proxyPort) {
-        // Set the proxy values
-        System.setProperty("proxyHost", proxyHost);
-        System.setProperty("proxyPort", proxyPort);
+        if (proxyPort.equals("0")) {
+            // Clear the proxy values.
+            System.clearProperty("proxyHost");
+            System.clearProperty("proxyPort");
+        } else {
+            // Set the proxy values
+            System.setProperty("proxyHost", proxyHost);
+            System.setProperty("proxyPort", proxyPort);
+        }
 
         // These entries shouldn't be needed if the above general settings are applied.  They are here for troubleshooting just in case.
-        //System.setProperty("http.proxyHost", proxyHost);
-        //System.setProperty("http.proxyPort", proxyPort);
-        //System.setProperty("https.proxyHost", proxyHost);
-        //System.setProperty("https.proxyPort", proxyPort);
+        // System.setProperty("http.proxyHost", proxyHost);
+        // System.setProperty("http.proxyPort", proxyPort);
+        // System.setProperty("https.proxyHost", proxyHost);
+        // System.setProperty("https.proxyPort", proxyPort);
 
         // Use reflection to apply the new proxy values.
         try {
@@ -116,8 +124,14 @@ public class OrbotProxyHelper {
                 // Use `AlertDialog.Builder` to create the `AlertDialog`.
                 AlertDialog.Builder dialogBuilder;
 
+                // Get a handle for the shared preferences.
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(privacyBrowserContext);
+
+                // Get the theme preference.
+                boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+
                 // Set the style according to the theme.
-                if (MainWebViewActivity.darkTheme) {
+                if (darkTheme) {
                     dialogBuilder = new AlertDialog.Builder(parentActivity, R.style.PrivacyBrowserAlertDialogDark);
                 } else {
                     dialogBuilder = new AlertDialog.Builder(parentActivity, R.style.PrivacyBrowserAlertDialogLight);

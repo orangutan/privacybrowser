@@ -21,10 +21,13 @@ package com.stoutner.privacybrowser.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -39,7 +42,6 @@ import androidx.fragment.app.Fragment;
 
 import com.stoutner.privacybrowser.BuildConfig;
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -52,19 +54,23 @@ import java.text.DateFormat;
 import java.util.Date;
 
 public class AboutTabFragment extends Fragment {
+    // Declare the class variables.
     private int tabNumber;
+    private String[] blocklistVersions;
 
-    // Store the tab number in the arguments bundle.
-    public static AboutTabFragment createTab(int tab) {
+    public static AboutTabFragment createTab(int tabNumber, String[] blocklistVersions) {
         // Create a bundle.
-        Bundle bundle = new Bundle();
+        Bundle argumentsBundle = new Bundle();
 
         // Store the tab number in the bundle.
-        bundle.putInt("Tab", tab);
+        argumentsBundle.putInt("tab_number", tabNumber);
+        argumentsBundle.putStringArray("blocklist_versions", blocklistVersions);
 
-        // Add the bundle to the fragment.
+        // Create a new instance of the tab fragment.
         AboutTabFragment aboutTabFragment = new AboutTabFragment();
-        aboutTabFragment.setArguments(bundle);
+
+        // Add the arguments bundle to the fragment.
+        aboutTabFragment.setArguments(argumentsBundle);
 
         // Return the new fragment.
         return aboutTabFragment;
@@ -75,15 +81,19 @@ public class AboutTabFragment extends Fragment {
         // Run the default commands.
         super.onCreate(savedInstanceState);
 
-        // Remove the lint warning that `getArguments()` might be null.
-        assert getArguments() != null;
+        // Get a handle for the arguments.
+        Bundle arguments = getArguments();
 
-        // Store the tab number in a class variable.
-        tabNumber = getArguments().getInt("Tab");
+        // Remove the incorrect lint warning below that arguments might be null.
+        assert arguments != null;
+
+        // Store the arguments in class variables.
+        tabNumber = getArguments().getInt("tab_number");
+        blocklistVersions = getArguments().getStringArray("blocklist_versions");
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
         // Create a tab layout view.
         View tabLayout;
 
@@ -91,10 +101,16 @@ public class AboutTabFragment extends Fragment {
         Context context = getContext();
         assert context != null;
 
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        // Get the theme preference.
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+
         // Load the tabs.  Tab numbers start at 0.
         if (tabNumber == 0) {  // Load the about tab.
             // Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.  The fragment will take care of attaching the root automatically.
-            tabLayout = inflater.inflate(R.layout.about_tab_version, container, false);
+            tabLayout = layoutInflater.inflate(R.layout.about_tab_version, container, false);
 
             // Get handles for the `TextViews`.
             TextView versionTextView = tabLayout.findViewById(R.id.version);
@@ -107,7 +123,8 @@ public class AboutTabFragment extends Fragment {
             TextView androidTextView = tabLayout.findViewById(R.id.android);
             TextView securityPatchTextView = tabLayout.findViewById(R.id.security_patch);
             TextView buildTextView = tabLayout.findViewById(R.id.build);
-            TextView webViewTextView = tabLayout.findViewById(R.id.webview);
+            TextView webViewProviderTextView = tabLayout.findViewById(R.id.webview_provider);
+            TextView webViewVersionTextView = tabLayout.findViewById(R.id.webview_version);
             TextView orbotTextView = tabLayout.findViewById(R.id.orbot);
             TextView openKeychainTextView = tabLayout.findViewById(R.id.open_keychain);
             TextView easyListTextView = tabLayout.findViewById(R.id.easylist);
@@ -124,7 +141,7 @@ public class AboutTabFragment extends Fragment {
             TextView certificateSignatureAlgorithmTextView = tabLayout.findViewById(R.id.certificate_signature_algorithm);
 
             // Setup the labels.
-            String version = getString(R.string.version) + " " + BuildConfig.VERSION_NAME + " (" + getString(R.string.version_code) + " " + Integer.toString(BuildConfig.VERSION_CODE) + ")";
+            String version = getString(R.string.version) + " " + BuildConfig.VERSION_NAME + " (" + getString(R.string.version_code) + " " + BuildConfig.VERSION_CODE + ")";
             String brandLabel = getString(R.string.brand) + "  ";
             String manufacturerLabel = getString(R.string.manufacturer) + "  ";
             String modelLabel = getString(R.string.model) + "  ";
@@ -132,7 +149,7 @@ public class AboutTabFragment extends Fragment {
             String bootloaderLabel = getString(R.string.bootloader) + "  ";
             String androidLabel = getString(R.string.android) + "  ";
             String buildLabel = getString(R.string.build) + "  ";
-            String webViewLabel = getString(R.string.webview) + "  ";
+            String webViewVersionLabel = getString(R.string.webview_version) + "  ";
             String easyListLabel = getString(R.string.easylist_label) + "  ";
             String easyPrivacyLabel = getString(R.string.easyprivacy_label) + "  ";
             String fanboyAnnoyanceLabel = getString(R.string.fanboy_annoyance_label) + "  ";
@@ -147,7 +164,8 @@ public class AboutTabFragment extends Fragment {
             String signatureAlgorithmLabel = getString(R.string.signature_algorithm) + "  ";
 
             // `webViewLayout` is only used to get the default user agent from `bare_webview`.  It is not used to render content on the screen.
-            View webViewLayout = inflater.inflate(R.layout.bare_webview, container, false);
+            // Once the minimum API >= 26 this can be accomplished with the WebView package info.
+            View webViewLayout = layoutInflater.inflate(R.layout.bare_webview, container, false);
             WebView tabLayoutWebView = webViewLayout.findViewById(R.id.bare_webview);
             String userAgentString =  tabLayoutWebView.getSettings().getUserAgentString();
 
@@ -158,7 +176,7 @@ public class AboutTabFragment extends Fragment {
             String device = Build.DEVICE;
             String bootloader = Build.BOOTLOADER;
             String radio = Build.getRadioVersion();
-            String android = Build.VERSION.RELEASE + " (" + getString(R.string.api) + " " + Integer.toString(Build.VERSION.SDK_INT) + ")";
+            String android = Build.VERSION.RELEASE + " (" + getString(R.string.api) + " " + Build.VERSION.SDK_INT + ")";
             String build = Build.DISPLAY;
             // Select the substring that begins after `Chrome/` and goes until the next ` `.
             String webView = userAgentString.substring(userAgentString.indexOf("Chrome/") + 7, userAgentString.indexOf(" ", userAgentString.indexOf("Chrome/")));
@@ -189,22 +207,20 @@ public class AboutTabFragment extends Fragment {
             SpannableStringBuilder bootloaderStringBuilder = new SpannableStringBuilder(bootloaderLabel + bootloader);
             SpannableStringBuilder androidStringBuilder = new SpannableStringBuilder(androidLabel + android);
             SpannableStringBuilder buildStringBuilder = new SpannableStringBuilder(buildLabel + build);
-            SpannableStringBuilder webViewStringBuilder = new SpannableStringBuilder(webViewLabel + webView);
-            SpannableStringBuilder easyListStringBuilder = new SpannableStringBuilder(easyListLabel + MainWebViewActivity.easyListVersion);
-            SpannableStringBuilder easyPrivacyStringBuilder = new SpannableStringBuilder(easyPrivacyLabel + MainWebViewActivity.easyPrivacyVersion);
-            SpannableStringBuilder fanboyAnnoyanceStringBuilder = new SpannableStringBuilder(fanboyAnnoyanceLabel + MainWebViewActivity.fanboysAnnoyanceVersion);
-            SpannableStringBuilder fanboySocialStringBuilder = new SpannableStringBuilder(fanboySocialLabel + MainWebViewActivity.fanboysSocialVersion);
-            SpannableStringBuilder ultraPrivacyStringBuilder = new SpannableStringBuilder(ultraPrivacyLabel + MainWebViewActivity.ultraPrivacyVersion);
+            SpannableStringBuilder webViewVersionStringBuilder = new SpannableStringBuilder(webViewVersionLabel + webView);
+            SpannableStringBuilder easyListStringBuilder = new SpannableStringBuilder(easyListLabel + blocklistVersions[0]);
+            SpannableStringBuilder easyPrivacyStringBuilder = new SpannableStringBuilder(easyPrivacyLabel + blocklistVersions[1]);
+            SpannableStringBuilder fanboyAnnoyanceStringBuilder = new SpannableStringBuilder(fanboyAnnoyanceLabel + blocklistVersions[2]);
+            SpannableStringBuilder fanboySocialStringBuilder = new SpannableStringBuilder(fanboySocialLabel + blocklistVersions[3]);
+            SpannableStringBuilder ultraPrivacyStringBuilder = new SpannableStringBuilder(ultraPrivacyLabel + blocklistVersions[4]);
 
             // Create the `blueColorSpan` variable.
             ForegroundColorSpan blueColorSpan;
 
             // Set `blueColorSpan` according to the theme.  We have to use the deprecated `getColor()` until API >= 23.
-            if (MainWebViewActivity.darkTheme) {
-                //noinspection deprecation
+            if (darkTheme) {
                 blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
             } else {
-                //noinspection deprecation
                 blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
             }
 
@@ -216,7 +232,7 @@ public class AboutTabFragment extends Fragment {
             bootloaderStringBuilder.setSpan(blueColorSpan, bootloaderLabel.length(), bootloaderStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             androidStringBuilder.setSpan(blueColorSpan, androidLabel.length(), androidStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             buildStringBuilder.setSpan(blueColorSpan, buildLabel.length(), buildStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            webViewStringBuilder.setSpan(blueColorSpan, webViewLabel.length(), webViewStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            webViewVersionStringBuilder.setSpan(blueColorSpan, webViewVersionLabel.length(), webViewVersionStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             easyListStringBuilder.setSpan(blueColorSpan, easyListLabel.length(), easyListStringBuilder.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
             easyPrivacyStringBuilder.setSpan(blueColorSpan, easyPrivacyLabel.length(), easyPrivacyStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             fanboyAnnoyanceStringBuilder.setSpan(blueColorSpan, fanboyAnnoyanceLabel.length(), fanboyAnnoyanceStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
@@ -232,23 +248,12 @@ public class AboutTabFragment extends Fragment {
             bootloaderTextView.setText(bootloaderStringBuilder);
             androidTextView.setText(androidStringBuilder);
             buildTextView.setText(buildStringBuilder);
-            webViewTextView.setText(webViewStringBuilder);
+            webViewVersionTextView.setText(webViewVersionStringBuilder);
             easyListTextView.setText(easyListStringBuilder);
             easyPrivacyTextView.setText(easyPrivacyStringBuilder);
             fanboyAnnoyanceTextView.setText(fanboyAnnoyanceStringBuilder);
             fanboySocialTextView.setText(fanboySocialStringBuilder);
             ultraPrivacyTextView.setText(ultraPrivacyStringBuilder);
-
-            // Build.VERSION.SECURITY_PATCH is only available for SDK_INT >= 23.
-            if (Build.VERSION.SDK_INT >= 23) {
-                String securityPatchLabel = getString(R.string.security_patch) + "  ";
-                String securityPatch = Build.VERSION.SECURITY_PATCH;
-                SpannableStringBuilder securityPatchStringBuilder = new SpannableStringBuilder(securityPatchLabel + securityPatch);
-                securityPatchStringBuilder.setSpan(blueColorSpan, securityPatchLabel.length(), securityPatchStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                securityPatchTextView.setText(securityPatchStringBuilder);
-            } else {  // SDK_INT < 23.
-                securityPatchTextView.setVisibility(View.GONE);
-            }
 
             // Only populate the radio text view if there is a radio in the device.
             if (!radio.isEmpty()) {
@@ -258,6 +263,45 @@ public class AboutTabFragment extends Fragment {
                 radioTextView.setText(radioStringBuilder);
             } else {  // This device does not have a radio.
                 radioTextView.setVisibility(View.GONE);
+            }
+
+            // Build.VERSION.SECURITY_PATCH is only available for SDK_INT >= 23.
+            if (Build.VERSION.SDK_INT >= 23) {
+                String securityPatchLabel = getString(R.string.security_patch) + "  ";
+                String securityPatch = Build.VERSION.SECURITY_PATCH;
+                SpannableStringBuilder securityPatchStringBuilder = new SpannableStringBuilder(securityPatchLabel + securityPatch);
+                securityPatchStringBuilder.setSpan(blueColorSpan, securityPatchLabel.length(), securityPatchStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                securityPatchTextView.setText(securityPatchStringBuilder);
+            } else {  // The API < 23.
+                // Hide the security patch text view.
+                securityPatchTextView.setVisibility(View.GONE);
+            }
+
+            // Only populate the WebView provider if the SDK >= 26.
+            if (Build.VERSION.SDK_INT >= 26) {
+                // Create the WebView provider label.
+                String webViewProviderLabel = getString(R.string.webview_provider) + "  ";
+
+                // Get the current WebView package info.
+                PackageInfo webViewPackageInfo = WebView.getCurrentWebViewPackage();
+
+                // Remove the warning below that the package info might be null.
+                assert webViewPackageInfo != null;
+
+                // Get the WebView provider name.
+                String webViewPackageName = webViewPackageInfo.packageName;
+
+                // Create the spannable string builder.
+                SpannableStringBuilder webViewProviderStringBuilder = new SpannableStringBuilder(webViewProviderLabel + webViewPackageName);
+
+                // Apply the coloration.
+                webViewProviderStringBuilder.setSpan(blueColorSpan, webViewProviderLabel.length(), webViewProviderStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+                // Display the WebView provider.
+                webViewProviderTextView.setText(webViewProviderStringBuilder);
+            } else {  // The API < 26.
+                // Hide the WebView provider text view.
+                webViewProviderTextView.setVisibility(View.GONE);
             }
 
             // Only populate the Orbot text view if it is installed.
@@ -339,15 +383,14 @@ public class AboutTabFragment extends Fragment {
             }
         } else { // load a `WebView` for all the other tabs.  Tab numbers start at 0.
             // Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.  The fragment will take care of attaching the root automatically.
-            tabLayout = inflater.inflate(R.layout.bare_webview, container, false);
+            tabLayout = layoutInflater.inflate(R.layout.bare_webview, container, false);
 
             // Get a handle for `tabWebView`.
             WebView tabWebView = (WebView) tabLayout;
 
             // Load the tabs according to the theme.
-            if (MainWebViewActivity.darkTheme) {  // The dark theme is applied.
-                // Set the background color.  We have to use the deprecated `.getColor()` until API >= 23.
-                //noinspection deprecation
+            if (darkTheme) {  // The dark theme is applied.
+                // Set the background color.  The deprecated `.getColor()` must be used until the minimum API >= 23.
                 tabWebView.setBackgroundColor(getResources().getColor(R.color.gray_850));
 
                 switch (tabNumber) {

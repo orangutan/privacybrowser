@@ -20,9 +20,12 @@
 package com.stoutner.privacybrowser.activities;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -40,23 +43,34 @@ import androidx.fragment.app.DialogFragment;
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.adapters.RequestsArrayAdapter;
 import com.stoutner.privacybrowser.dialogs.ViewRequestDialog;
+import com.stoutner.privacybrowser.helpers.BlocklistHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RequestsActivity extends AppCompatActivity implements ViewRequestDialog.ViewRequestListener {
+    // The resource requests are populated by `MainWebViewActivity` before `RequestsActivity` is launched.
+    public static ArrayList<String[]> resourceRequests;
+
     // The list view is used in `onCreate()` and `launchViewRequestDialog()`.
     private ListView requestsListView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        // Get the screenshot and theme preferences.
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+
         // Disable screenshots if not allowed.
-        if (!MainWebViewActivity.allowScreenshots) {
+        if (!allowScreenshots) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
         // Set the activity theme.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             setTheme(R.style.PrivacyBrowserDark_SecondaryActivity);
         } else {
             setTheme(R.style.PrivacyBrowserLight_SecondaryActivity);
@@ -65,10 +79,16 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
         // Run the default commands.
         super.onCreate(savedInstanceState);
 
+        // Get the launching intent
+        Intent intent = getIntent();
+
+        // Get the status of the third-party blocklist.
+        boolean blockAllThirdPartyRequests = intent.getBooleanExtra("block_all_third_party_requests", false);
+
         // Set the content view.
         setContentView(R.layout.requests_coordinatorlayout);
 
-        // Use the AndroidX toolbar from until the minimum API is >= 21.
+        // Use the AndroidX toolbar until the minimum API is >= 21.
         Toolbar toolbar = findViewById(R.id.requests_toolbar);
         setSupportActionBar(toolbar);
 
@@ -91,9 +111,9 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
         List<String[]> blockedResourceRequests = new ArrayList<>();
 
         // Populate the resource array lists.
-        for (String[] request : MainWebViewActivity.resourceRequests) {
-            switch (Integer.valueOf(request[MainWebViewActivity.REQUEST_DISPOSITION])) {
-                case MainWebViewActivity.REQUEST_DEFAULT:
+        for (String[] request : resourceRequests) {
+            switch (request[BlocklistHelper.REQUEST_DISPOSITION]) {
+                case BlocklistHelper.REQUEST_DEFAULT:
                     // Add the request to the list of all requests.
                     allResourceRequests.add(request);
 
@@ -101,7 +121,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
                     defaultResourceRequests.add(request);
                     break;
 
-                case MainWebViewActivity.REQUEST_ALLOWED:
+                case BlocklistHelper.REQUEST_ALLOWED:
                     // Add the request to the list of all requests.
                     allResourceRequests.add(request);
 
@@ -109,7 +129,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
                     allowedResourceRequests.add(request);
                     break;
 
-                case MainWebViewActivity.REQUEST_THIRD_PARTY:
+                case BlocklistHelper.REQUEST_THIRD_PARTY:
                     // Add the request to the list of all requests.
                     allResourceRequests.add(request);
 
@@ -117,7 +137,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
                     thirdPartyResourceRequests.add(request);
                     break;
 
-                case MainWebViewActivity.REQUEST_BLOCKED:
+                case BlocklistHelper.REQUEST_BLOCKED:
                     // Add the request to the list of all requests.
                     allResourceRequests.add(request);
 
@@ -132,7 +152,7 @@ public class RequestsActivity extends AppCompatActivity implements ViewRequestDi
         spinnerCursor.addRow(new Object[]{0, getString(R.string.all) + " - " + allResourceRequests.size()});
         spinnerCursor.addRow(new Object[]{1, getString(R.string.default_label) + " - " + defaultResourceRequests.size()});
         spinnerCursor.addRow(new Object[]{2, getString(R.string.allowed_plural) + " - " + allowedResourceRequests.size()});
-        if (MainWebViewActivity.blockAllThirdPartyRequests) {
+        if (blockAllThirdPartyRequests) {
             spinnerCursor.addRow(new Object[]{3, getString(R.string.third_party_plural) + " - " + thirdPartyResourceRequests.size()});
         }
         spinnerCursor.addRow(new Object[]{4, getString(R.string.blocked_plural) + " - " + blockedResourceRequests.size()});

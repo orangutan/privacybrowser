@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -69,17 +69,6 @@ img.left {
 
 /* An image must be a block to be centered. */
 img.center {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    height: 640;
-    width: 360;
-}
-
-
-/* center21 is for screenshots that have a 2:1 aspect ration (so called 18:9) */
-/* An image must be a block to be centered. */
-img.center21 {
     display: block;
     margin-left: auto;
     margin-right: auto;

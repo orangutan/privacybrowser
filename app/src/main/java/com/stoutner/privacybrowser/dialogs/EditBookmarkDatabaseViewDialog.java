@@ -24,12 +24,14 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.MergeCursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -46,33 +48,25 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
+
+import java.io.ByteArrayOutputStream;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
 
 public class EditBookmarkDatabaseViewDialog extends DialogFragment {
-    // Instantiate the constants.
+    // Define the home folder database ID constant.
     public static final int HOME_FOLDER_DATABASE_ID = -1;
 
-    // Instantiate the class variables.
+    // Define the edit bookmark database view listener.
     private EditBookmarkDatabaseViewListener editBookmarkDatabaseViewListener;
-    private String currentBookmarkName;
-    private String currentUrl;
-    private int currentFolderDatabaseId;
-    private String currentDisplayOrder;
-    private RadioButton newIconRadioButton;
-    private EditText nameEditText;
-    private EditText urlEditText;
-    private Spinner folderSpinner;
-    private EditText displayOrderEditText;
-    private Button editButton;
+
 
     // The public interface is used to send information back to the parent activity.
     public interface EditBookmarkDatabaseViewListener {
-        void onSaveBookmark(DialogFragment dialogFragment, int selectedBookmarkDatabaseId);
+        void onSaveBookmark(DialogFragment dialogFragment, int selectedBookmarkDatabaseId, Bitmap favoriteIconBitmap);
     }
 
     @Override
@@ -84,17 +78,29 @@ public class EditBookmarkDatabaseViewDialog extends DialogFragment {
         editBookmarkDatabaseViewListener = (EditBookmarkDatabaseViewListener) context;
     }
 
-    // Store the database ID in the arguments bundle.
-    public static EditBookmarkDatabaseViewDialog bookmarkDatabaseId(int databaseId) {
-        // Create a bundle.
-        Bundle bundle = new Bundle();
 
-        // Store the bookmark database ID in the bundle.
-        bundle.putInt("Database ID", databaseId);
+    public static EditBookmarkDatabaseViewDialog bookmarkDatabaseId(int databaseId, Bitmap favoriteIconBitmap) {
+        // Create a favorite icon byte array output stream.
+        ByteArrayOutputStream favoriteIconByteArrayOutputStream = new ByteArrayOutputStream();
 
-        // Add the bundle to the dialog.
+        // Convert the favorite icon to a PNG and place it in the byte array output stream.  `0` is for lossless compression (the only option for a PNG).
+        favoriteIconBitmap.compress(Bitmap.CompressFormat.PNG, 0, favoriteIconByteArrayOutputStream);
+
+        // Convert the byte array output stream to a byte array.
+        byte[] favoriteIconByteArray = favoriteIconByteArrayOutputStream.toByteArray();
+
+        // Create an arguments bundle.
+        Bundle argumentsBundle = new Bundle();
+
+        // Store the variables in the bundle.
+        argumentsBundle.putInt("database_id", databaseId);
+        argumentsBundle.putByteArray("favorite_icon_byte_array", favoriteIconByteArray);
+
+        // Create a new instance of the dialog.
         EditBookmarkDatabaseViewDialog editBookmarkDatabaseViewDialog = new EditBookmarkDatabaseViewDialog();
-        editBookmarkDatabaseViewDialog.setArguments(bundle);
+
+        // Add the arguments bundle to the dialog.
+        editBookmarkDatabaseViewDialog.setArguments(argumentsBundle);
 
         // Return the new dialog.
         return editBookmarkDatabaseViewDialog;
@@ -105,11 +111,23 @@ public class EditBookmarkDatabaseViewDialog extends DialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Remove the incorrect lint warning below that `getInt()` might be null.
-        assert getArguments() != null;
+        // Get the arguments.
+        Bundle arguments = getArguments();
+
+        // Remove the incorrect lint warning below that the arguments might be null.
+        assert arguments != null;
 
         // Get the bookmark database ID from the bundle.
-        int bookmarkDatabaseId = getArguments().getInt("Database ID");
+        int bookmarkDatabaseId = getArguments().getInt("database_id");
+
+        // Get the favorite icon byte array.
+        byte[] favoriteIconByteArray = arguments.getByteArray("favorite_icon_byte_array");
+
+        // Remove the incorrect lint warning below that the favorite icon byte array might be null.
+        assert favoriteIconByteArray != null;
+
+        // Convert the favorite icon byte array to a bitmap.
+        Bitmap favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.length);
 
         // Initialize the database helper.  The `0` specifies a database version, but that is ignored and set instead using a constant in `BookmarksDatabaseHelper`.
         BookmarksDatabaseHelper bookmarksDatabaseHelper = new BookmarksDatabaseHelper(getContext(), null, null, 0);
@@ -121,8 +139,15 @@ public class EditBookmarkDatabaseViewDialog extends DialogFragment {
         // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the screenshot and theme preferences.
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+
         // Set the style according to the theme.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
         } else {
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
@@ -142,10 +167,10 @@ public class EditBookmarkDatabaseViewDialog extends DialogFragment {
             // Do nothing.  The `AlertDialog` will close automatically.
         });
 
-        // Set the listener fo the positive button.
+        // Set the listener for the positive button.
         dialogBuilder.setPositiveButton(R.string.save, (DialogInterface dialog, int which) -> {
             // Return the `DialogFragment` to the parent activity on save.
-            editBookmarkDatabaseViewListener.onSaveBookmark(EditBookmarkDatabaseViewDialog.this, bookmarkDatabaseId);
+            editBookmarkDatabaseViewListener.onSaveBookmark(this, bookmarkDatabaseId, favoriteIconBitmap);
         });
 
         // Create an alert dialog from the alert dialog builder`.
@@ -155,7 +180,7 @@ public class EditBookmarkDatabaseViewDialog extends DialogFragment {
         assert alertDialog.getWindow() != null;
 
         // Disable screenshots if not allowed.
-        if (!MainWebViewActivity.allowScreenshots) {
+        if (!allowScreenshots) {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
@@ -167,17 +192,17 @@ public class EditBookmarkDatabaseViewDialog extends DialogFragment {
         RadioGroup iconRadioGroup = alertDialog.findViewById(R.id.edit_bookmark_icon_radiogroup);
         ImageView currentIconImageView = alertDialog.findViewById(R.id.edit_bookmark_current_icon);
         ImageView newFavoriteIconImageView = alertDialog.findViewById(R.id.edit_bookmark_webpage_favorite_icon);
-        newIconRadioButton = alertDialog.findViewById(R.id.edit_bookmark_webpage_favorite_icon_radiobutton);
-        nameEditText = alertDialog.findViewById(R.id.edit_bookmark_name_edittext);
-        urlEditText = alertDialog.findViewById(R.id.edit_bookmark_url_edittext);
-        folderSpinner = alertDialog.findViewById(R.id.edit_bookmark_folder_spinner);
-        displayOrderEditText = alertDialog.findViewById(R.id.edit_bookmark_display_order_edittext);
-        editButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        RadioButton newIconRadioButton = alertDialog.findViewById(R.id.edit_bookmark_webpage_favorite_icon_radiobutton);
+        EditText nameEditText = alertDialog.findViewById(R.id.edit_bookmark_name_edittext);
+        EditText urlEditText = alertDialog.findViewById(R.id.edit_bookmark_url_edittext);
+        Spinner folderSpinner = alertDialog.findViewById(R.id.edit_bookmark_folder_spinner);
+        EditText displayOrderEditText = alertDialog.findViewById(R.id.edit_bookmark_display_order_edittext);
+        Button editButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
         // Store the current bookmark values.
-        currentBookmarkName = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
-        currentUrl = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL));
-        currentDisplayOrder = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER));
+        String currentBookmarkName = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
+        String currentUrl = bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL));
+        int currentDisplayOrder = bookmarkCursor.getInt(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER));
 
         // Set the database ID.
         databaseIdTextView.setText(String.valueOf(bookmarkCursor.getInt(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper._ID))));
@@ -190,14 +215,6 @@ public class EditBookmarkDatabaseViewDialog extends DialogFragment {
 
         // Display `currentIconBitmap` in `edit_bookmark_current_icon`.
         currentIconImageView.setImageBitmap(currentIconBitmap);
-
-        // Get a copy of the favorite icon bitmap.
-        Bitmap favoriteIconBitmap = MainWebViewActivity.favoriteIconBitmap;
-
-        // Scale the favorite icon bitmap down if it is larger than 256 x 256.  Filtering uses bilinear interpolation.
-        if ((favoriteIconBitmap.getHeight() > 256) || (favoriteIconBitmap.getWidth() > 256)) {
-            favoriteIconBitmap = Bitmap.createScaledBitmap(favoriteIconBitmap, 256, 256, true);
-        }
 
         // Set the new favorite icon bitmap.
         newFavoriteIconImageView.setImageBitmap(favoriteIconBitmap);
@@ -283,7 +300,7 @@ public class EditBookmarkDatabaseViewDialog extends DialogFragment {
         }
 
         // Store the current folder database ID.
-        currentFolderDatabaseId = (int) folderSpinner.getSelectedItemId();
+        int currentFolderDatabaseId = (int) folderSpinner.getSelectedItemId();
 
         // Populate the display order `EditText`.
         displayOrderEditText.setText(String.valueOf(bookmarkCursor.getInt(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.DISPLAY_ORDER))));
@@ -294,7 +311,7 @@ public class EditBookmarkDatabaseViewDialog extends DialogFragment {
         // Update the edit button if the icon selection changes.
         iconRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             // Update the edit button.
-            updateEditButton();
+            updateEditButton(nameEditText, urlEditText, displayOrderEditText, folderSpinner, newIconRadioButton, editButton, currentBookmarkName, currentUrl, currentFolderDatabaseId, currentDisplayOrder);
         });
 
         // Update the edit button if the bookmark name changes.
@@ -312,7 +329,7 @@ public class EditBookmarkDatabaseViewDialog extends DialogFragment {
             @Override
             public void afterTextChanged(Editable s) {
                 // Update the edit button.
-                updateEditButton();
+                updateEditButton(nameEditText, urlEditText, displayOrderEditText, folderSpinner, newIconRadioButton, editButton, currentBookmarkName, currentUrl, currentFolderDatabaseId, currentDisplayOrder);
             }
         });
 
@@ -331,7 +348,7 @@ public class EditBookmarkDatabaseViewDialog extends DialogFragment {
             @Override
             public void afterTextChanged(Editable s) {
                 // Update the edit button.
-                updateEditButton();
+                updateEditButton(nameEditText, urlEditText, displayOrderEditText, folderSpinner, newIconRadioButton, editButton, currentBookmarkName, currentUrl, currentFolderDatabaseId, currentDisplayOrder);
             }
         });
 
@@ -340,7 +357,7 @@ public class EditBookmarkDatabaseViewDialog extends DialogFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // Update the edit button.
-                updateEditButton();
+                updateEditButton(nameEditText, urlEditText, displayOrderEditText, folderSpinner, newIconRadioButton, editButton, currentBookmarkName, currentUrl, currentFolderDatabaseId, currentDisplayOrder);
             }
 
             @Override
@@ -364,7 +381,7 @@ public class EditBookmarkDatabaseViewDialog extends DialogFragment {
             @Override
             public void afterTextChanged(Editable s) {
                 // Update the edit button.
-                updateEditButton();
+                updateEditButton(nameEditText, urlEditText, displayOrderEditText, folderSpinner, newIconRadioButton, editButton, currentBookmarkName, currentUrl, currentFolderDatabaseId, currentDisplayOrder);
             }
         });
 
@@ -373,7 +390,7 @@ public class EditBookmarkDatabaseViewDialog extends DialogFragment {
             // Save the bookmark if the event is a key-down on the "enter" button.
             if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER) && editButton.isEnabled()) {  // The enter key was pressed and the edit button is enabled.
                 // Trigger the `Listener` and return the `DialogFragment` to the parent activity.
-                editBookmarkDatabaseViewListener.onSaveBookmark(EditBookmarkDatabaseViewDialog.this, bookmarkDatabaseId);
+                editBookmarkDatabaseViewListener.onSaveBookmark(EditBookmarkDatabaseViewDialog.this, bookmarkDatabaseId, favoriteIconBitmap);
 
                 // Manually dismiss `alertDialog`.
                 alertDialog.dismiss();
@@ -390,7 +407,7 @@ public class EditBookmarkDatabaseViewDialog extends DialogFragment {
             // Save the bookmark if the event is a key-down on the "enter" button.
             if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER) && editButton.isEnabled()) {  // The enter key was pressed and the edit button is enabled.
                 // Trigger the `Listener` and return the `DialogFragment` to the parent activity.
-                editBookmarkDatabaseViewListener.onSaveBookmark(EditBookmarkDatabaseViewDialog.this, bookmarkDatabaseId);
+                editBookmarkDatabaseViewListener.onSaveBookmark(EditBookmarkDatabaseViewDialog.this, bookmarkDatabaseId, favoriteIconBitmap);
 
                 // Manually dismiss the `AlertDialog`.
                 alertDialog.dismiss();
@@ -407,7 +424,7 @@ public class EditBookmarkDatabaseViewDialog extends DialogFragment {
             // Save the bookmark if the event is a key-down on the "enter" button.
             if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER) && editButton.isEnabled()) {  // The enter key was pressed and the edit button is enabled.
                 // Trigger the `Listener` and return the `DialogFragment` to the parent activity.
-                editBookmarkDatabaseViewListener.onSaveBookmark(EditBookmarkDatabaseViewDialog.this, bookmarkDatabaseId);
+                editBookmarkDatabaseViewListener.onSaveBookmark(EditBookmarkDatabaseViewDialog.this, bookmarkDatabaseId, favoriteIconBitmap);
 
                 // Manually dismiss the `AlertDialog`.
                 alertDialog.dismiss();
@@ -423,7 +440,8 @@ public class EditBookmarkDatabaseViewDialog extends DialogFragment {
         return alertDialog;
     }
 
-    private void updateEditButton() {
+    private void updateEditButton(EditText nameEditText, EditText urlEditText, EditText displayOrderEditText, Spinner folderSpinner, RadioButton newIconRadioButton, Button editButton,
+                                  String currentBookmarkName, String currentUrl, int currentFolderDatabaseId, int currentDisplayOrder) {
         // Get the values from the dialog.
         String newName = nameEditText.getText().toString();
         String newUrl = urlEditText.getText().toString();
@@ -443,7 +461,7 @@ public class EditBookmarkDatabaseViewDialog extends DialogFragment {
         boolean folderChanged = newFolderDatabaseId != currentFolderDatabaseId;
 
         // Has the display order changed?
-        boolean displayOrderChanged = !newDisplayOrder.equals(currentDisplayOrder);
+        boolean displayOrderChanged = !newDisplayOrder.equals(String.valueOf(currentDisplayOrder));
 
         // Is the display order empty?
         boolean displayOrderNotEmpty = !newDisplayOrder.isEmpty();

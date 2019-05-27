@@ -28,7 +28,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
 
 public class DomainsDatabaseHelper extends SQLiteOpenHelper {
-    private static final int SCHEMA_VERSION = 9;
+    private static final int SCHEMA_VERSION = 10;
     static final String DOMAINS_DATABASE = "domains.db";
     static final String DOMAINS_TABLE = "domains";
 
@@ -49,6 +49,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
     public static final String FONT_SIZE = "fontsize";
     public static final String SWIPE_TO_REFRESH = "swipetorefresh";
     public static final String NIGHT_MODE = "nightmode";
+    public static final String WIDE_VIEWPORT = "wide_viewport";
     public static final String DISPLAY_IMAGES = "displayimages";
     public static final String PINNED_SSL_CERTIFICATE = "pinnedsslcertificate";
     public static final String SSL_ISSUED_TO_COMMON_NAME = "sslissuedtocommonname";
@@ -62,20 +63,10 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
     public static final String PINNED_IP_ADDRESSES = "pinned_ip_addresses";
     public static final String IP_ADDRESSES = "ip_addresses";
 
-    // Swipe to refresh constants.
-    public static final int SWIPE_TO_REFRESH_SYSTEM_DEFAULT = 0;
-    public static final int SWIPE_TO_REFRESH_ENABLED = 1;
-    public static final int SWIPE_TO_REFRESH_DISABLED = 2;
-
-    // Night mode constants.
-    public static final int NIGHT_MODE_SYSTEM_DEFAULT = 0;
-    public static final int NIGHT_MODE_ENABLED = 1;
-    public static final int NIGHT_MODE_DISABLED = 2;
-
-    // Display webpage images constants.
-    public static final int DISPLAY_WEBPAGE_IMAGES_SYSTEM_DEFAULT = 0;
-    public static final int DISPLAY_WEBPAGE_IMAGES_ENABLED = 1;
-    public static final int DISPLAY_WEBPAGE_IMAGES_DISABLED = 2;
+    // Spinner constants.
+    public static final int SYSTEM_DEFAULT = 0;
+    public static final int ENABLED = 1;
+    public static final int DISABLED = 2;
 
     static final String CREATE_DOMAINS_TABLE = "CREATE TABLE " + DOMAINS_TABLE + " (" +
             _ID + " INTEGER PRIMARY KEY, " +
@@ -95,6 +86,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
             FONT_SIZE + " INTEGER, " +
             SWIPE_TO_REFRESH + " INTEGER, " +
             NIGHT_MODE + " INTEGER, " +
+            WIDE_VIEWPORT + " INTEGER, " +
             DISPLAY_IMAGES + " INTEGER, " +
             PINNED_SSL_CERTIFICATE + " BOOLEAN, " +
             SSL_ISSUED_TO_COMMON_NAME + " TEXT, " +
@@ -219,6 +211,11 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
                 // Add the Pinned IP Addresses columns.
                 domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + PINNED_IP_ADDRESSES + " BOOLEAN");
                 domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + IP_ADDRESSES + " TEXT");
+
+            // Upgrade from schema version 9.
+            case 9:
+                // Add the Wide Viewport column.
+                domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + WIDE_VIEWPORT + " INTEGER");
         }
     }
 
@@ -315,6 +312,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainContentValues.put(FONT_SIZE, 0);
         domainContentValues.put(SWIPE_TO_REFRESH, 0);
         domainContentValues.put(NIGHT_MODE, 0);
+        domainContentValues.put(WIDE_VIEWPORT, 0);
         domainContentValues.put(DISPLAY_IMAGES, 0);
 
         // Get a writable database handle.
@@ -343,7 +341,8 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
 
     public void updateDomain(int databaseId, String domainName, boolean javaScriptEnabled, boolean firstPartyCookiesEnabled, boolean thirdPartyCookiesEnabled, boolean domStorageEnabled, boolean formDataEnabled,
                              boolean easyListEnabled, boolean easyPrivacyEnabled, boolean fanboysAnnoyanceEnabled, boolean fanboysSocialBlockingEnabled, boolean ultraPrivacyEnabled,
-                             boolean blockAllThirdPartyRequests, String userAgent, int fontSize, int swipeToRefresh, int nightMode, int displayImages, boolean pinnedSslCertificate, boolean pinnedIpAddresses) {
+                             boolean blockAllThirdPartyRequests, String userAgent, int fontSize, int swipeToRefresh, int nightMode, int wideViewport, int displayImages, boolean pinnedSslCertificate,
+                             boolean pinnedIpAddresses) {
 
         // Store the domain data in a `ContentValues`.
         ContentValues domainContentValues = new ContentValues();
@@ -365,6 +364,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainContentValues.put(FONT_SIZE, fontSize);
         domainContentValues.put(SWIPE_TO_REFRESH, swipeToRefresh);
         domainContentValues.put(NIGHT_MODE, nightMode);
+        domainContentValues.put(WIDE_VIEWPORT, wideViewport);
         domainContentValues.put(DISPLAY_IMAGES, displayImages);
         domainContentValues.put(PINNED_SSL_CERTIFICATE, pinnedSslCertificate);
         domainContentValues.put(PINNED_IP_ADDRESSES, pinnedIpAddresses);

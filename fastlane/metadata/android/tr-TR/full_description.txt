@@ -1,0 +1,19 @@
+Privacy Browser'in iki ana amacı vardır.
+
+1. İnternete gönderilen bilgi miktarını en aza indirmek.
+
+2. Cihazda depolanan bilgi miktarını en aza indirmek.
+
+Çoğu tarayıcı, gizliliğinizi tehlikeye atacak ve sizi izlemelerinize izin verecek büyük miktarda bilgiyi web sitelerine verir. Web siteleri ve reklam ağları, her kullanıcıyı kendilerine özgü bir şekilde tanımlamak ve web genelinde ve ziyaretleri sırasında izlemek için JavaScript, çerezler, DOM depolama, kullanıcı aracıları ve diğer birçok şey gibi teknolojileri kullanır.
+
+Aksine, gizliliğe duyarlı özellikler Privacy Browser'de varsayılan olarak devre dışıdır. Eğer bu teknolojilerden biri, bir web sitenin düzgün çalışması için gerekliyse, kullanıcı yalnızca bu ziyaret için onu etkinleştirebilir. Veya, özel bir web sitesine girerken, belirli özellikleri otomatik olarak açmak ve ayrılırken tekrar kapatmak için domain ayarlarını kullanabilir.
+
+Privacy Browser şu anda, web sayfalarını oluşturmak için Android’in yerleşik WebView’ini kullanmaktadır .Bu nedenle, güncel WebView versiyonu yüklü olduğunda en iyi şekilde çalışır (bakınız https://www.stoutner.com/privacy-browser/common-settings/webview/). 4.x serisinde, Privacy Browser, Android WebView’inin gelişmiş gizlilik özelliklerine sahip Privacy WebView adlı bölünmüş bir versiyon ile devam edecek.
+
+Uyarı: Android KitKat (versiyon 4.4x, API 19) eski bir OpenSSL versiyonuna sahiptir, bu da onu, eski protokolleri ve şifre takımlarını kullanan web sayfalarını ziyaret ederken, MITM(Ortadaki Adam, Man In The Middle) saldırılarına açık hale getirir. Bu konu hakkında daha fazla bilgi burada mevcuttur. https://www.stoutner.com/kitkat-security-problems/
+
+Özellikler:
+• Entegre EasyList reklam engelleme.
+• Tor Orbot vekil sunucusu desteği.
+• SSL sertifika sabitlemesi.
+• Yer imlerinin ve ayarların İçe/Dışa Aktarılması.

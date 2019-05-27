@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -21,21 +21,32 @@ package com.stoutner.privacybrowser.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.WindowManager;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
 public class AboutViewSourceDialog extends DialogFragment {
     @Override
+    @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the screenshot and theme preferences.
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+
         // Use a builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
         // Set the style and the icon according to the theme.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
             dialogBuilder.setIcon(R.drawable.about_dark);
         } else {
@@ -53,10 +64,10 @@ public class AboutViewSourceDialog extends DialogFragment {
         dialogBuilder.setMessage(R.string.about_view_source_message);
 
         // Create an alert dialog from the alert dialog builder.
-        final AlertDialog alertDialog = dialogBuilder.create();
+        AlertDialog alertDialog = dialogBuilder.create();
 
         // Disable screenshots if not allowed.
-        if (!MainWebViewActivity.allowScreenshots) {
+        if (!allowScreenshots) {
             // Remove the warning below that `getWindow()` might be null.
             assert alertDialog.getWindow() != null;
 
@@ -64,7 +75,7 @@ public class AboutViewSourceDialog extends DialogFragment {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
-        // `onCreateDialog` requires the return of an `AlertDialog`.
+        // Return the alert dialog.
         return alertDialog;
     }
 }

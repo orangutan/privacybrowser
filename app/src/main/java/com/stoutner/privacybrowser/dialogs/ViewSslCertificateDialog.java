@@ -22,15 +22,18 @@ package com.stoutner.privacybrowser.dialogs;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.http.SslCertificate;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -39,6 +42,9 @@ import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment mu
 
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.fragments.WebViewTabFragment;
+import com.stoutner.privacybrowser.views.NestedScrollWebView;
+
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -46,6 +52,23 @@ import java.util.Date;
 // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
 @SuppressLint("InflateParams")
 public class ViewSslCertificateDialog extends DialogFragment {
+    public static ViewSslCertificateDialog displayDialog(long webViewFragmentId) {
+        // Create an arguments bundle.
+        Bundle argumentsBundle = new Bundle();
+
+        // Store the WebView fragment ID in the bundle.
+        argumentsBundle.putLong("webview_fragment_id", webViewFragmentId);
+
+        // Create a new instance of the dialog.
+        ViewSslCertificateDialog viewSslCertificateDialog = new ViewSslCertificateDialog();
+
+        // Add the bundle to the dialog.
+        viewSslCertificateDialog.setArguments(argumentsBundle);
+
+        // Return the new dialog.
+        return viewSslCertificateDialog;
+    }
+
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Remove the incorrect lint warning below that the activity might be null.
@@ -54,18 +77,46 @@ public class ViewSslCertificateDialog extends DialogFragment {
         // Get the activity's layout inflater.
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
 
+        // Get the arguments.
+        Bundle arguments = getArguments();
+
+        // Remove the incorrect lint warning below that `getArguments().getLong()` might be null.
+        assert arguments != null;
+
+        // Get the current position of this WebView fragment.
+        int webViewPosition = MainWebViewActivity.webViewPagerAdapter.getPositionForId(arguments.getLong("webview_fragment_id"));
+
+        // Get the WebView tab fragment.
+        WebViewTabFragment webViewTabFragment = MainWebViewActivity.webViewPagerAdapter.getPageFragment(webViewPosition);
+
+        // Get the fragment view.
+        View fragmentView = webViewTabFragment.getView();
+
+        // Remove the incorrect lint warning below that the fragment view might be null.
+        assert fragmentView != null;
+
+        // Get a handle for the current WebView.
+        NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+
         // Use a builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the screenshot and theme preferences.
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Set the style according to the theme.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
         } else {
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
         }
 
         // Create a drawable version of the favorite icon.
-        Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), MainWebViewActivity.favoriteIconBitmap);
+        Drawable favoriteIconDrawable = new BitmapDrawable(getResources(), nestedScrollWebView.getFavoriteOrDefaultIcon());
 
         // Set the icon.
         dialogBuilder.setIcon(favoriteIconDrawable);
@@ -73,8 +124,11 @@ public class ViewSslCertificateDialog extends DialogFragment {
         // Set a listener on the negative button.  Using `null` as the listener closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.close, null);
 
+        // Get the SSL certificate.
+        SslCertificate sslCertificate = nestedScrollWebView.getCertificate();
+
         // Check to see if the website is encrypted.
-        if (MainWebViewActivity.sslCertificate == null) {  // The website is not encrypted.
+        if (sslCertificate == null) {  // The website is not encrypted.
             // Set the title.
             dialogBuilder.setTitle(R.string.unencrypted_website);
 
@@ -85,7 +139,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
             final AlertDialog alertDialog = dialogBuilder.create();
 
             // Disable screenshots if not allowed.
-            if (!MainWebViewActivity.allowScreenshots) {
+            if (!allowScreenshots) {
                 // Remove the warning below that `getWindow()` might be null.
                 assert alertDialog.getWindow() != null;
 
@@ -107,7 +161,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
             final AlertDialog alertDialog = dialogBuilder.create();
 
             // Disable screenshots if not allowed.
-            if (!MainWebViewActivity.allowScreenshots) {
+            if (!allowScreenshots) {
                 // Remove the warning below that `getWindow()` might be null.
                 assert alertDialog.getWindow() != null;
 
@@ -140,13 +194,10 @@ public class ViewSslCertificateDialog extends DialogFragment {
             String endDateLabel = getString(R.string.end_date) + "  ";
 
             // Convert the formatted URL string to a URI.
-            Uri uri = Uri.parse(MainWebViewActivity.formattedUrlString);
+            Uri uri = Uri.parse(nestedScrollWebView.getUrl());
 
             // Extract the domain name from the URI.
             String domainString = uri.getHost();
-
-            // Get the SSL certificate.
-            SslCertificate sslCertificate = MainWebViewActivity.sslCertificate;
 
             // Get the strings from the SSL certificate.
             String issuedToCName = sslCertificate.getIssuedTo().getCName();
@@ -160,7 +211,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
 
             // Create spannable string builders for each text view that needs multiple colors of text.
             SpannableStringBuilder domainStringBuilder = new SpannableStringBuilder(domainLabel + domainString);
-            SpannableStringBuilder ipAddressesStringBuilder = new SpannableStringBuilder(ipAddressesLabel + MainWebViewActivity.currentHostIpAddresses);
+            SpannableStringBuilder ipAddressesStringBuilder = new SpannableStringBuilder(ipAddressesLabel + nestedScrollWebView.getCurrentIpAddresses());
             SpannableStringBuilder issuedToCNameStringBuilder = new SpannableStringBuilder(cNameLabel + issuedToCName);
             SpannableStringBuilder issuedToONameStringBuilder = new SpannableStringBuilder(oNameLabel + issuedToOName);
             SpannableStringBuilder issuedToUNameStringBuilder = new SpannableStringBuilder(uNameLabel + issuedToUName);
@@ -177,7 +228,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
             ForegroundColorSpan blueColorSpan;
 
             // Set the blue color span according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
-            if (MainWebViewActivity.darkTheme) {
+            if (darkTheme) {
                 //noinspection deprecation
                 blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
             } else {

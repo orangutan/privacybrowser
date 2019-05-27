@@ -26,8 +26,8 @@ android {
     defaultConfig {
         minSdkVersion 26
         targetSdkVersion 28
-        versionCode 42
-        versionName "2.17.1"
+        versionCode 44
+        versionName "3.0.1"
     }
 
     buildTypes {
@@ -73,8 +73,8 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     // Include the following AndroidX libraries.
-    implementation 'androidx.arch.core:core-common:2.0.0'
-    implementation 'androidx.arch.core:core-runtime:2.0.0'
+    implementation 'androidx.arch.core:core-common:2.0.1'
+    implementation 'androidx.arch.core:core-runtime:2.0.1'
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.0.0'
@@ -86,5 +86,5 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
 
     // Only compile Firebase ads for the free flavor.
-    freeImplementation 'com.google.firebase:firebase-ads:17.1.3'
+    freeImplementation 'com.google.firebase:firebase-ads:17.2.1'
 }

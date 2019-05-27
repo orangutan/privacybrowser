@@ -1,5 +1,5 @@
 <!--
-  Copyright © 2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2018-2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -24,57 +24,58 @@
     </head>
 
     <body>
-        <h3><img class="title" src="../shared_images/local_activity_blue_dark.png"> Resource Requests</h3>
+        <h3><img class="title" src="../shared_images/local_activity_blue_dark.png"> Kaynak İstekleri</h3>
 
-        <p>When a URL is loaded, it typically makes a number of resource requests for CCS, JavaScript, image, and other files. Details about these requests can be viewed in the Requests activity.
-            The navigation drawer has a link to the Requests activity and also shows how many requests were blocked. Tapping on a request displays details about why it was allowed or blocked.</p>
+        <p>Bir URL yüklendiğinde, genellikle CCS, JavaScript, resim ve diğer dosyalar için birkaç kaynak isteği yapar. Bu isteklerle ilgili detaylar İstekler etkinliğinden ulaşılabilir.
+            Gezinti çekmecesi, İstekler etkinliğine götüren bir bağlantı içerir ve ayrıca bu etkinlik kaç tane isteğin engellediğini gösterir.
+            Bir isteğe dokunulduğunda, neden izin verildiğine ya da engellendiğine dair detaylar görüntülenir. </p>
 
-        <p><img class="center21" src="images/request_details.png"></p>
+        <p><img class="center" src="images/request_details.png"></p>
 
-        <p>Privacy Browser includes four <a href="https://easylist.to/">common blocklists</a> based on the <a href="https://adblockplus.org/filters">Adblock syntax</a>:
-            EasyList, EasyPrivacy, Fanboy’s Annoyance List, and Fanboy’s Social Blocking List.
-            These blocklists are processed by Privacy Browser into the following 22 sublists, which check resource requests in the order listed.</p>
+        <p>Privacy Browser, <a href="https://adblockplus.org/filters">Adblock sözdizimini (Adblock syntax)</a> temel alan 4 <a href="https://easylist.to/">yaygın engel listesini</a> içerir:
+            EasyList, EasyPrivacy, Fanboy’s Annoyance List ve Fanboy’s Social Blocking List.
+            Bu engel listeleri, Privacy Browser tarafından, aşağıda listelenmiş olan kaynak isteklerini kontrol eden 22 alt listeye göre işlenmiştir.</p>
 
         <ol>
-            <li>Main Whitelist</li>
-            <li>Final Whitelist</li>
-            <li>Domain Whitelist</li>
-            <li>Domain Initial Whitelist</li>
-            <li>Domain Final Whitelist</li>
-            <li>Third-Party Whitelist</li>
-            <li>Third-Party Domain Whitelist</li>
-            <li>Third-Party Domain Initial Whitelist</li>
-            <li>Main Blacklist</li>
-            <li>Initial Blacklist</li>
-            <li>Final Blacklist</li>
-            <li>Domain Blacklist</li>
-            <li>Domain Initial Blacklist</li>
-            <li>Domain Final Blacklist</li>
-            <li>Domain Regular Expression Blacklist</li>
-            <li>Third-Party Blacklist</li>
-            <li>Third-Party Initial Blacklist</li>
-            <li>Third-Party Domain Blacklist</li>
-            <li>Third-Party Domain Initial Blacklist</li>
-            <li>Third-Party Regular Expression Blacklist</li>
-            <li>Third-Party Domain Regular Expression Blacklist</li>
-            <li>Regular Expression Blacklist</li>
+            <li>Ana Beyaz Listesi</li>
+            <li>Final Beyaz Listesi</li>
+            <li>Domain Beyaz Listesi</li>
+            <li>Domain Başlangıç Beyaz Listesi</li>
+            <li>Domain Final Beyaz Listesi</li>
+            <li>Üçüncü Taraf Beyaz Listesi</li>
+            <li>Üçüncü Taraf Domain Beyaz Listesi</li>
+            <li>Üçüncü Taraf Domain Başlangıç Beyaz Listesi</li>
+            <li>Ana Kara Listesi</li>
+            <li>Başlangıç Kara Listesi</li>
+            <li>Final Kara Listesi</li>
+            <li>Domain Kara Listesi</li>
+            <li>Domain Başlangıç Kara Listesi</li>
+            <li>Domain Final Kara Listesi</li>
+            <li>Domain Düzenli İfade (Regular Expression) Kara Listesi</li>
+            <li>Üçüncü Taraf Kara Listesi</li>
+            <li>Üçüncü Taraf Başlangıç Kara Listesi</li>
+            <li>Üçüncü Taraf Domain Kara Listesi</li>
+            <li>Üçüncü Taraf Domain Başlangıç Kara Listesi</li>
+            <li>Üçüncü Taraf Düzenli İfade (Regular Expression) Kara Listesi</li>
+            <li>Üçüncü Taraf Domain Düzenli İfade (Regular Expression) Kara Listesi</li>
+            <li>Düzenli İfade (Regular Expression) Kara Listesi</li>
         </ol>
 
-        <p>Initial lists check against the beginning of the URL. Final lists check against the end of the URL. Domain lists only check against certain domains.
-            Third-party lists only apply if the root domain of the request is different than the root domain of the main URL.
-            Regular expression lists follow the <a href="https://en.wikipedia.org/wiki/Regular_expression">regular expression syntax</a>. Each sublist item has one or more entry.
-            In the case of domain sublists, the resource request is only checked against the item if the first entry matches the domain of the main URL.</p>
+        <p>Başlangıç listeleri, URL’nin başlangıcına göre kontrol eder. Final listeleri, URL’nin sonuna göre kontrol eder. Domain listeleri, yalnızca belli domainlere göre kontrol eder.
+            Üçüncü taraf listeleri, yalnızca isteğin kök domaini ana URL’nin kök domaininden farklıysa uygulanır.
+            Düzenli ifade listeleri, <a href="https://en.wikipedia.org/wiki/Regular_expression">düzenli ifade sözdizimini (regular expression syntax)</a> takip eder.
+            Her alt liste öğesinin bir veya daha fazla girdisi vardır.
+            Domain alt listeleri işe karıştığında, ilk girdi ana URL’nin domaini ile eşleşirse, kaynak isteği yalnızca öğeye göre kontrol edilir.</p>
 
-        <p>Because of limitations in Android’s WebView, and to speed up processing of requests, Privacy Browser implements a simplified interpretation of the Adblock syntax.
-            This can sometimes lead to false positives, where resources are allowed or blocked in ways that weren’t intended by the original entry.
-            A more detailed description of how the blocklist entries are processed is available at <a href="https://www.stoutner.com/privacy-browser/blocklists/">stoutner.com</a>.</p>
+        <p>Anroid’in WebView kısıtlamaları yüzünden ve isteklerin işlenmesini hızlandırmak için Privacy Browser, Adblock sözdiziminin basitleştirilmiş bir yorumunu uygular.
+            Bu durum, bazen, kaynakların orijinal girdi tarafından amaçlanmayan şekillerde izin verildiği veya engellendiği yanlış pozitif (false positive) durumuna yol açabilir.
+            Engel listesi girdilerinin nasıl işlendiğine dair daha ayrıntılı bir açıklama <a href="https://www.stoutner.com/privacy-browser/blocklists/">stoutner.com</a> adresinde bulunabilir.</p>
 
-        <p>Privacy Browser has two additional blocklists,
-            one called <a href="https://www.stoutner.com/privacy-browser/blocklists/ultraprivacy/">UltraPrivacy</a> that blocks trackers that EasyPrivacy allows,
-            and the other that blocks all third-party requests.
-            A request is only considered third-party if the base domain of the request is different than the base domain of the URL.
-            For example, if <code>www.website.com</code> loads a picture from <code>images.website.com</code>,
-            this is not blocked as a third-party request because they both share the same base domain of <code>website.com</code>.
-            Blocking all third-party requests increases privacy, but this blocklist is disabled by default because it breaks a large number of websites.</p>
+        <p>Privacy Browser, EasyPrivacy’nin izin verdiği izleyicileri engelleyen <a href="https://www.stoutner.com/privacy-browser/blocklists/ultraprivacy/">UltraPrivacy</a>
+            adında ve tüm üçüncü taraf istekleri engelleyen başka bir tane olmak üzere 2 tane ek engel listesi içerir.
+            Bir istek yalnızca, isteğin temel domaini URL’nin temel domaininden farklıysa üçüncü taraf olarak kabul edilir.
+            Örneğin, <code>www.website.com</code> adresi <code>images.website.com</code> adresinden bir resim yüklüyorsa,
+            her ikisi de aynı temel domaini (<code>website.com</code>) paylaştığı için bu üçüncü taraf isteği olarak engellenmez.
+            Tüm üçüncü taraf istekleri engellemek gizliliği arttırır, fakat çok sayıda web sitesini bozduğu için bu engel listesi varsayılan olarak devre dışıdır.</p>
     </body>
 </html>

@@ -1,5 +1,5 @@
 <!--
-  Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -24,11 +24,18 @@
     </head>
 
     <body>
-        <h3><img class="title" src="../shared_images/location_off_blue_dark.png"> Do Not Track</h3>
+        <h3><img class="title" src="../shared_images/location_off_blue_dark.png"> Takip Etme</h3>
 
-        <p>A few years ago the W3C (World Wide Web Consortium) created a mechanism for browsers to inform web servers that they would not like to be tracked.
-            This is accomplished by including a <a href="https://en.wikipedia.org/wiki/Do_Not_Track">DNT (Do Not Track) header</a> with web requests.</p>
+        <p>Birkaç yıl önce, W3C (World Wide Web Konsorsiyumu), tarayıcıların web sunucularına izlenmesini istemediklerini bildirmek için bir mekanizma yarattı.
+            Bu mekanizma, web isteklerini içeren bir başlık <a href="https://en.wikipedia.org/wiki/Do_Not_Track">DNT (Do Not Track) </a> ekleyerek çalışır.</p>
 
-        <p>The DNT header doesn't really provide any privacy because most web servers ignore it. For example, Yahoo, Google, Microsoft, and Facebook all ignore at least some DNT headers.</p>
+        <p>Fakat DNT(Takip Etme) başlığı, gerçekten herhangi bir gizlilik sağlamaz, çünkü çoğu web sunucusu bunu görmezden gelir.
+            Örneğin, Yahoo, Google, Microsoft ve Facebook, en azından bazı DNT başlıklarını yok sayar.</p>
+
+
+        <h3><img class="title" src="../shared_images/link_off_blue_dark.png"> URL Modifikasyonu</h3>
+
+        <p>Privacy Browser, <a href="https://support.google.com/analytics/answer/1033867">Google Analytics</a>'ten <code>?utm_</code> ve <a href="https://fbclid.com/">Facebook</a>'tan
+            <code>?fbclick=</code> gibi URL'deki takip id kısımlarını kaldırır. URL modifikasyonu, herhangi bir soruna yol açması halinde ayarlardan kapatılabilir.</p>
     </body>
 </html>

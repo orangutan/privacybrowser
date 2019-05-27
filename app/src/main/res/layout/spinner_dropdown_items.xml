@@ -24,7 +24,7 @@
     android:id="@+id/spinner_item_textview"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:maxLines="1"
+    android:lines="1"
     android:ellipsize="end"
     android:paddingStart="20dp"
     android:paddingEnd="20dp"

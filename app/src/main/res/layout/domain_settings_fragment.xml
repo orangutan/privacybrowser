@@ -541,6 +541,43 @@
                 android:textSize="13sp" />
         </LinearLayout>
 
+        <!-- Wide Viewport. -->
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="14dp" >
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/wide_viewport_imageview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="@string/wide_viewport" />
+
+                <Spinner
+                    android:id="@+id/wide_viewport_spinner"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/wide_viewport_textview"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_marginStart="45dp"
+                android:layout_marginEnd="36dp"
+                android:textSize="13sp" />
+        </LinearLayout>
+
         <!-- Display Images. -->
         <LinearLayout
             android:layout_height="wrap_content"

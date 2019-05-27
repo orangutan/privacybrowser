@@ -22,12 +22,15 @@ package com.stoutner.privacybrowser.activities;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.provider.DocumentsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -88,13 +91,20 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Get the theme and screenshot preferences.
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Disable screenshots if not allowed.
-        if (!MainWebViewActivity.allowScreenshots) {
+        if (!allowScreenshots) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
         // Set the activity theme.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             setTheme(R.style.PrivacyBrowserDark_SecondaryActivity);
         } else {
             setTheme(R.style.PrivacyBrowserLight_SecondaryActivity);
@@ -577,25 +587,31 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
                         // Create the file name path string.
                         String fileNamePath;
 
-                        // Construct the file name path.
-                        switch (fileNameContentPath) {
-                            // The documents home has a special content path.
-                            case "/document/home":
-                                fileNamePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" + fileNameFinalPath;
-                                break;
+                        // Check to see if the current file name final patch is a complete, valid path
+                        if (fileNameFinalPath.startsWith("/storage/emulated/")) {  // The existing file name final path is a complete, valid path.
+                            // Use the provided file name path as is.
+                            fileNamePath = fileNameFinalPath;
+                        } else {  // The existing file name final path is not a complete, valid path.
+                            // Construct the file name path.
+                            switch (fileNameContentPath) {
+                                // The documents home has a special content path.
+                                case "/document/home":
+                                    fileNamePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" + fileNameFinalPath;
+                                    break;
 
-                            // Everything else for the primary user should be in `/document/primary`.
-                            case "/document/primary":
-                                fileNamePath = Environment.getExternalStorageDirectory() + "/" + fileNameFinalPath;
-                                break;
+                                // Everything else for the primary user should be in `/document/primary`.
+                                case "/document/primary":
+                                    fileNamePath = Environment.getExternalStorageDirectory() + "/" + fileNameFinalPath;
+                                    break;
 
-                            // Just in case, catch everything else and place it in the external storage directory.
-                            default:
-                                fileNamePath = Environment.getExternalStorageDirectory() + "/" + fileNameFinalPath;
-                                break;
+                                // Just in case, catch everything else and place it in the external storage directory.
+                                default:
+                                    fileNamePath = Environment.getExternalStorageDirectory() + "/" + fileNameFinalPath;
+                                    break;
+                            }
                         }
 
-                        // Set the file name path as the text of the file name EditText.
+                        // Set the file name path as the text of the file name edit text.
                         fileNameEditText.setText(fileNamePath);
                     } else {  // The path is invalid.
                         Snackbar.make(fileNameEditText, rawFileNamePath + " " + getString(R.string.invalid_location), Snackbar.LENGTH_INDEFINITE).show();
@@ -943,8 +959,21 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
             // `Intent.FLAG_ACTIVITY_CLEAR_TASK` removes all activities from the stack.  It requires `Intent.FLAG_ACTIVITY_NEW_TASK`.
             restartIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-            // Make it so.
-            startActivity(restartIntent);
+            // Create a restart handler.
+            Handler restartHandler = new Handler();
+
+            // Create a restart runnable.
+            Runnable restartRunnable =  () -> {
+                // Restart Privacy Browser.
+                startActivity(restartIntent);
+
+                // Kill this instance of Privacy Browser.  Otherwise, the app exhibits sporadic behavior after the restart.
+                System.exit(0);
+            };
+
+            // Restart Privacy Browser after 150 milliseconds to allow enough time for the preferences to be saved.
+            restartHandler.postDelayed(restartRunnable, 150);
+
         } else if (!(encryptionSpinner.getSelectedItemPosition() == OPENPGP_ENCRYPTION)){  // The import was not successful.
             // Display a snack bar with the import error.
             Snackbar.make(fileNameEditText, getString(R.string.import_failed) + "  " + importStatus, Snackbar.LENGTH_INDEFINITE).show();

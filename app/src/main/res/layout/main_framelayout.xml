@@ -53,103 +53,124 @@
 
                 <!-- The theme has to be defined here because the activity uses a `NoActionBar` theme. -->
                 <com.google.android.material.appbar.AppBarLayout
+                    android:id="@+id/appbar_layout"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
                     android:theme="@style/PrivacyBrowserAppBarLight" >
 
-                    <!-- The frame layout allows the toolbar, progress bar, and find on page bar to occupy the same space.  The scroll flags should be set on the immediate child of AppBarLayout. -->
-                    <FrameLayout
+                    <androidx.appcompat.widget.Toolbar
+                        android:id="@+id/toolbar"
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
+                        app:layout_scrollFlags="scroll|enterAlways|snap"
+                        android:visibility="gone" />
+
+                    <!-- The find on page linear layout.  It is initially `visibility="gone"`. -->
+                    <LinearLayout
+                        android:id="@+id/find_on_page_linearlayout"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
                         app:layout_scrollFlags="scroll|enterAlways|snap" >
 
-                        <androidx.appcompat.widget.Toolbar
-                            android:id="@+id/toolbar"
+                        <!-- `android:imeOptions="actionDone"` sets the keyboard to have a `check mark` key instead of a `new line` key. -->
+                        <EditText
+                            android:id="@+id/find_on_page_edittext"
                             android:layout_height="wrap_content"
-                            android:layout_width="match_parent" />
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="4dp"
+                            android:hint="@string/find_on_page"
+                            android:lines="1"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            tools:ignore="Autofill" />
 
-                        <!-- `android:max` changes the maximum `ProgressBar` value from 10000 to 100 to match progress percentage.
-                            `android:layout_height="2dp"` works best for API >= 23, but `3dp` is required for visibility on API <= 22.
-                            `tools:ignore="UnusedAttribute"` removes the lint warning about `progressTint` and `progressBackgroundTint` not applying to API < 21. -->
-                        <ProgressBar
-                            android:id="@+id/progress_bar"
-                            style="?android:attr/progressBarStyleHorizontal"
-                            android:layout_height="3dp"
-                            android:layout_width="match_parent"
-                            android:layout_gravity="bottom"
-                            android:max="100"
-                            android:progressTint="?attr/progressTintColor"
-                            android:progressBackgroundTint="@color/transparent"
-                            android:visibility="gone"
-                            tools:ignore="UnusedAttribute" />
-
-                        <!-- The find on page linear layout.  It is initially `visibility="gone"`. -->
-                        <LinearLayout
-                            android:id="@+id/find_on_page_linearlayout"
+                        <TextView
+                            android:id="@+id/find_on_page_count_textview"
                             android:layout_height="wrap_content"
-                            android:layout_width="match_parent"
-                            android:orientation="horizontal"
-                            android:visibility="gone" >
+                            android:layout_width="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="4dp"
+                            android:text="@string/zero_of_zero" />
 
-                            <!-- `android:imeOptions="actionDone"` sets the keyboard to have a `check mark` key instead of a `new line` key. -->
-                            <EditText
-                                android:id="@+id/find_on_page_edittext"
-                                android:layout_height="wrap_content"
-                                android:layout_width="0dp"
-                                android:layout_weight="1"
-                                android:layout_marginStart="8dp"
-                                android:layout_marginEnd="4dp"
-                                android:hint="@string/find_on_page"
-                                android:lines="1"
-                                android:imeOptions="actionDone"
-                                android:inputType="text"
-                                tools:ignore="Autofill" />
+                        <ImageView
+                            android:id="@+id/find_previous"
+                            android:src="@drawable/previous"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="4dp"
+                            android:layout_gravity="center_vertical"
+                            android:tint="?attr/findOnPageIconTintColor"
+                            android:contentDescription="@string/previous"
+                            android:onClick="findPreviousOnPage" />
 
-                            <TextView
-                                android:id="@+id/find_on_page_count_textview"
-                                android:layout_height="wrap_content"
-                                android:layout_width="wrap_content"
-                                android:layout_marginStart="4dp"
-                                android:layout_marginEnd="4dp"
-                                android:text="@string/zero_of_zero" />
+                        <ImageView
+                            android:id="@+id/find_next"
+                            android:src="@drawable/next"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="4dp"
+                            android:layout_gravity="center_vertical"
+                            android:tint="?attr/findOnPageIconTintColor"
+                            android:contentDescription="@string/next"
+                            android:onClick="findNextOnPage" />
 
-                            <ImageView
-                                android:id="@+id/find_previous"
-                                android:src="@drawable/previous"
-                                android:layout_width="35dp"
-                                android:layout_height="35dp"
-                                android:layout_marginStart="4dp"
-                                android:layout_marginEnd="4dp"
-                                android:layout_gravity="center_vertical"
-                                android:tint="?attr/findOnPageIconTintColor"
-                                android:contentDescription="@string/previous"
-                                android:onClick="findPreviousOnPage" />
+                        <ImageView
+                            android:id="@+id/close_find"
+                            android:src="@drawable/close_light"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_gravity="center_vertical"
+                            android:tint="?attr/findOnPageIconTintColor"
+                            android:contentDescription="@string/close"
+                            android:onClick="closeFindOnPage" />
+                    </LinearLayout>
 
-                            <ImageView
-                                android:id="@+id/find_next"
-                                android:src="@drawable/next"
-                                android:layout_width="35dp"
-                                android:layout_height="35dp"
-                                android:layout_marginStart="4dp"
-                                android:layout_marginEnd="4dp"
-                                android:layout_gravity="center_vertical"
-                                android:tint="?attr/findOnPageIconTintColor"
-                                android:contentDescription="@string/next"
-                                android:onClick="findNextOnPage" />
+                    <LinearLayout
+                        android:id="@+id/tabs_linearlayout"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_scrollFlags="scroll|enterAlways|snap"
+                        android:visibility="gone" >
 
-                            <ImageView
-                                android:id="@+id/close_find"
-                                android:src="@drawable/close_light"
-                                android:layout_width="35dp"
-                                android:layout_height="35dp"
-                                android:layout_marginStart="4dp"
-                                android:layout_marginEnd="8dp"
-                                android:layout_gravity="center_vertical"
-                                android:tint="?attr/findOnPageIconTintColor"
-                                android:contentDescription="@string/close"
-                                android:onClick="closeFindOnPage" />
-                        </LinearLayout>
-                    </FrameLayout>
+                        <ImageView
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:paddingStart="10dp"
+                            android:paddingEnd="10dp"
+                            android:src="@drawable/close_light"
+                            android:tint="?attr/addTabIconTintColor"
+                            android:onClick="closeTab"
+                            android:contentDescription="@string/close_tab" />
+
+                        <com.google.android.material.tabs.TabLayout
+                            android:id="@+id/tablayout"
+                            android:layout_height="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            app:tabIndicatorGravity="top"
+                            app:tabMode="scrollable" />
+
+                        <ImageView
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:paddingStart="10dp"
+                            android:paddingEnd="10dp"
+                            android:src="@drawable/add_light"
+                            android:tint="?attr/addTabIconTintColor"
+                            android:onClick="addTab"
+                            android:contentDescription="@string/add_tab" />
+                    </LinearLayout>
                 </com.google.android.material.appbar.AppBarLayout>
 
                 <!-- `app:layout_behavior="@string/appbar_scrolling_view_behavior"` must be set on the sibling of AppBarLayout. -->
@@ -159,12 +180,10 @@
                     android:layout_height="match_parent"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior" >
 
-                    <com.stoutner.privacybrowser.views.NestedScrollWebView
-                        android:id="@+id/main_webview"
-                        android:layout_height="match_parent"
-                        android:layout_width="match_parent"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true" />
+                        <com.stoutner.privacybrowser.views.NoSwipeViewPager
+                            android:id="@+id/webviewpager"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
                 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
             </androidx.coordinatorlayout.widget.CoordinatorLayout>
         </RelativeLayout>
@@ -183,10 +202,35 @@
         <include layout="@layout/bookmarks_drawer" />
     </androidx.drawerlayout.widget.DrawerLayout>
 
-    <!-- `The full screen video frame layout is used to display full screen videos.  It is initially `android:visibility="gone"` to hide it from view. -->
+    <!-- The full screen video frame layout is used to display full screen videos.  It is initially `android:visibility="gone"` to hide it from view. -->
     <FrameLayout
         android:id="@+id/full_screen_video_framelayout"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:visibility="gone" />
+
+    <!-- The loading blocklists relative layout displays when the app first starts.  It is hidden once the blocklists are populated. -->
+    <RelativeLayout
+        android:id="@+id/loading_blocklists_relativelayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/privacy_browser_logo"
+            android:layout_height="256dp"
+            android:layout_width="256dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/privacy_browser_foreground"
+            tools:ignore="contentDescription" />
+
+        <TextView
+            android:id="@+id/loading_blocklist_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/privacy_browser_logo"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="10dp"
+            android:textSize="16sp"
+            android:textColor="?android:textColorPrimary" />
+    </RelativeLayout>
 </FrameLayout>

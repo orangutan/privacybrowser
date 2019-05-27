@@ -1,5 +1,5 @@
 <!--
-  Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -24,62 +24,63 @@
     </head>
 
     <body>
-        <h3><img class="title" src="../shared_images/vpn_key_blue_light.png"> Tor and Its Limits</h3>
+        <h3><img class="title" src="../shared_images/vpn_key_blue_light.png"> Tor ve Limitleri</h3>
 
-        <p>There are two general categories of bad actors that want to infringe on the privacy of the web:
-            malicious governments with access to ISPs (Internet Service Providers) and mega corporations that run social and advertising networks.
-            TOR (The Onion Router) is useful in protecting privacy from malicious governments (which spy on traffic in transit) but not from mega corporations (which embed malicious code on web servers).</p>
-
-
-        <h3><img class="title" src="../shared_images/language_blue_light.png"> Malicious Governments</h3>
-
-        <p>Malicious governments often spy on their citizens to punish dissent or human rights activity.
-            They commonly either operate the local ISPs or they can force them to disclose information showing every IP address that is visited by each user.
-            Tor is designed to defeat this infringement of privacy by encrypting the traffic from a user’s device and routing it through three separate servers on the internet
-            before sending it on to the final destination.
-            This means that no individual ISP, server, or website, can know both the <a href="https://ipleak.net">IP address the user’s device</a> and the IP address of the final web server.
-            Malicious governments and the ISPs they control cannot tell which web servers a user is accessing, although they can tell that the user is using Tor.
-            In some parts of the world, using Tor could be construed as an evidence of illegal behavior (“if you didn’t have anything to hide you wouldn’t be encrypting your traffic”)
-            and users could be punished because governments assume they are doing something that is prohibited. Thus, Tor can be helpful, but isn’t a panacea.</p>
+        <p>İnternet gizliliğini ihlal etmek isteyen iki genel kötü oyuncu kategorisi vardır:
+            İSS’lere (İnternet Servis Sağlayıcıları) erişimi olan kötü niyetli hükümetler ve sosyal ve reklam ağlarını yöneten mega şirketler.
+            TOR (Soğan Yönlendirme Protokolü), kötü niyetli hükümetlerden (internet trafiğini gözetleyen)
+            gizliliği korumakta kullanışlıdır fakat mega şirketlerden (web sunucularına kötü amaçlı kod yerleştiren) korumaz.</p>
 
 
-        <h3><img class="title" src="../shared_images/language_blue_light.png"> Mega Corporations</h3>
+        <h3><img class="title" src="../shared_images/language_blue_light.png"> Kötü Niyetli Hükümetler</h3>
 
-        <p>When a user connects to a web server, the web server can see the user’s IP address.
-            Although it isn’t a perfect science, IP addresses can be turned into physical addresses with a <a href="https://www.whatismyip.com/">fair amount of accuracy</a>.
-            Small web servers typically rely on IP addresses to identify the location of the users visiting their site. Tor is a good solution to mask the user’s location from these servers.
-            But large mega corporations that own social media and advertising networks use a whole profile of information that is designed to track users across devices and IP addresses.
-            These profiles employ a variety of techniques to identify users, including JavaScript, cookies, tracking IDs, and <a href="https://panopticlick.eff.org/">browser fingerprinting</a>.
-            Because the vast majority of the websites on the internet either load an ad from one of the major networks or embed social media icons with their associated JavaScript,
-            these corporations have built profiles for almost every user online and can track their internet activity across unrelated sites.</p>
-
-        <p>They track every site that is visited, everything that is purchased, every credit card that is used to make a purchase, every address that items are shipped to,
-            and the GPS metadata of every picture that is uploaded to the internet.
-            They build a profile of a user’s age, gender, marital status, address, political affiliations, religious affiliations, family circumstances, number of pets,
-            and everything else they can get their hands on.
-            They even buy up databases of credit card transactions at local stores, so they can track the off-line purchasing patterns of the users in their profiles.
-            Because they already have much more accurate address information about a user than an IP address discloses, Tor provides no real privacy protection against mega corporations.</p>
-
-        <p>The single best privacy protection against mega corporations is to browse the web with JavaScript disabled, followed by blocking ad networks, disabling cookies and DOM storage,
-            and using a browser that is difficult to fingerprint.</p>
+        <p>Kötü niyetli hükümetler, sık sık muhalifleri ve aktivistleri cezalandırmak için kendi vatandaşlarını gözetler.
+            Bunu genellikle yerel İSS’leri kullanarak ve onları, tüm kullanıcıların internet ziyaretlerinde kullandıkları IP adresleri gösteren bilgileri ifşa etmeye zorlayarak yaparlar.
+            Tor, bir kullanıcının cihazından çıkan trafiği şifreleyerek ve son hedefe göndermeden önce internette üç ayrı sunucuya yönlendirerek bu gizlilik ihlalinin üstesinden gelmesi için tasarlanmıştır.
+            Bu da, hiçbir İSS, sunucu veya web sitesinin, aynı anda hem <a href="https://ipleak.net">kullanıcı cihazının IP adresini</a> hem de son web sunucusunun IP adresini bilemeyeceği anlamına gelir.
+            Kötücül hükümetler ve kontrolündeki İSS’ler, kullanıcının Tor kullandığını bilmelerine rağmen hangi web sunucularına eriştiğini söyleyemez.
+            Bazı ülkelerde, Tor kullanmak yasadışı davranışların bir kanıtı olarak yorumlanabilir (“saklayacak bir şeyin olmasaydı, internet trafiğini şifrelemezdin.” mantığı) ve bu sebeple,
+            yasadışı eylemlerde bulunduklarını düşündükleri kullanıcılar hükümetlerce cezalandırılabilir. Bu yüzden Tor gizlilik konusunda yardımcı olabilir, fakat her derde deva değildir.</p>
 
 
-        <h3><img class="title" src="../shared_images/orbot_blue_light.png"> Using Tor</h3>
+        <h3><img class="title" src="../shared_images/language_blue_light.png"> Mega Şirketler</h3>
 
-        <p>Despite its limitations, Tor can be useful in some circumstances.
-            The Tor project has an app for Android called Orbot, which is available on <a href="https://f-droid.org/repository/browse/?fdfilter=orbot&fdid=org.torproject.android">F-Droid</a>
-            and everywhere else that Privacy Browser is distributed. Privacy Browser has a setting to use Orbot as a proxy.
-            When this is turned on, Privacy Browser’s app bar will have a light blue background instead of the default light grey.
-            When Privacy Browser’s Orbot proxy setting is enabled, internet access will not work unless Orbot is running and connected to Tor.
-            Because traffic is being routed through several Tor nodes, using Tor is often much slower than connecting directly to the internet.</p>
+        <p>Bir kullanıcı bir web sunucusuna bağlandığında, web sunucusu kullanıcının IP adresini görebilir.
+            Mükemmel bir teknik olmasa da, IP adresleri <a href="https://www.whatismyip.com/">makul bir doğrulukla</a> fiziksel adreslere dönüştürülebilir.
+            Küçük web sunucuları, kendilerini ziyaret eden kullanıcılarının konumlarını belirlemek için IP adreslerine genel anlamda güvenirler.
+            Tor, kullanıcının konumunu bu sunuculardan gizlemek için iyi bir çözümdür.
+            Ancak, sosyal medya ve reklam ağlarına sahip büyük mega kuruluşlar, cihazlar ve IP adresler üzerinden kullanıcıları izlemek için tüm bilgileri kullanır.
+            Bu profiller, JavaScript, çerezler, izleme kimlikleri ve <a href="https://panopticlick.eff.org/">browser fingerprinting (tarayıcı tanılama)</a>
+            dahil olmak üzere kullanıcıları tanımlamak için çeşitli teknikleri kullanır.
+            İnternetteki web sitelerinin büyük çoğunluğu ya ana ağlardan birinden bir reklam yüklediğinden ya da JavaScript ile ilişkilendirilen sosyal medya simgelerini yerleştirdiklerinden dolayı,
+            mega şirketler, hemen hemen her çevrimiçi kullanıcı için profil oluşturup internet aktivitelerini ilgisi olmayan sitelerden bile takip edebilirler.</p>
+
+        <p>Ziyaret edilen her siteyi, satın alınan her şeyi, satın almak için kullanılan her kredi kartını, eşyaların kargolandığı her adresi ve internete yüklenen her fotoğrafın GPS metaverilerini izlerler.
+            Bu sayede, bir kullanıcının yaşı, cinsiyeti, medeni hali, adresi, politik görüşü, dini görüşü, aile çevresi, evcil hayvan sayısı ve elde edebildikleri her şey hakkında bir profil oluştururlar.
+            Hatta yerel mağazalardan kredi kart işlem veri tabanlarını satın alırlar, böylece oluşturdukları profillerdeki kullanıcıların çevrimdışı satın alma modellerini de takip edebilirler. 
+            Tor, mega şirketlere karşı, bir kullanıcı hakkında bir IP adresinin gösterebileceğinden daha fazla bilgiye sahip olduklarından dolayı gerçek bir gizlilik koruması sağlamaz.</p>
+
+        <p>Mega şirketlere karşı en iyi gizlilik koruması, reklamları engellemek, JavaScript’i, DOM depolamayı ve çerezleri devre dışı bırakıp web gezintisi yapmak
+            ve fingerprint yapılması zor olan bir tarayıcı kullanmak olacaktır.</p>
+
+
+        <h3><img class="title" src="../shared_images/orbot_blue_light.png"> Tor Kullanma</h3>
+
+        <p>Kısıtlamalarına rağmen, Tor bazı koşullarda faydalı olabilir.
+            Tor projesinin, <a href="https://f-droid.org/repository/browse/?fdfilter=orbot&fdid=org.torproject.android">F-Droid</a>
+            üzerinde ve Privacy Browser’ın dağıtımı yapılan her yerde erişilebilecek Orbot adlı Android uygulaması vardır. Privacy Browser, Orbot’u proxy olarak kullanmak için bir ayara sahiptir.
+            Bu ayar açıldığında, Privacy Browser’ın uygulama çubuğunun varsayılan rengi açık griden açık mavi bir arkaplana dönecektir.
+            Privacy Browser’in Orbot proxy ayarı etkin olduğunda, internet erişiminin çalışması için Orbot’un çalışması ve Tor’a bağlı olması gereklidir.
+            İnternet trafiği birçok Tor devresi (node) üzerinden yönlendirildiği için, Tor kullanımı normal internet trafiğinden daha yavaş olacaktır.</p>
 
         <img class="center" src="images/tor.png">
 
-        <h3><img class="title" src="../shared_images/file_download_blue_light.png"> Downloading Files Via Tor</h3>
-        <p>When Orbot is operating in proxy mode, browsing the internet using Privacy Browser will be routed through the Tor network, but file downloads will not.
-            This is because Privacy Browser uses Android’s builtin download manager to download files, which doesn't have a proxy option.
-            Users who want to download files via Orbot need to enable its VPN mode.</p>
+        <h3><img class="title" src="../shared_images/file_download_blue_light.png"> Tor ile Dosya İndirme</h3>
 
-        <img class="center21" src="../shared_images/vpn_mode.png">
+        <p>Orbot, proxy modunda çalışırken, Privacy Browser kullanarak internette gezinmek Tor ağı üzerinden yönlendirilir, fakat dosya indirmeleri yönlendirilmez.
+            Bunun nedeni, Privacy Browser’ın dosyaları indirmek için bir proxy ayarı olmayan Android’in yerleşik indirme yöneticisi kullanmasıdır.
+            Orbot aracılığıyla dosya indirmek isteyen kullanıcıların VPN modunu etkinleştirmesi gerekir.</p>
+
+        <img class="center" src="../shared_images/vpn_mode.png">
     </body>
 </html>

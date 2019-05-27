@@ -1,6 +1,8 @@
 <!--
   Copyright © 2016-2018 Soren Stoutner <soren@stoutner.com>.
 
+  Translation 2019 Bernhard G. Keller.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+
   Translation 2016 Aaron Gerlach <aaron@gerlach.com>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
@@ -27,65 +29,65 @@
     <body>
         <h3><img class="title" src="../shared_images/cookie_blue_light.png"> Erstanbieter-Cookies</h3>
 
-        <p>Cookies können in zwei Typen unterteilt werden. Erstanbieter-Cookies sind Cookies, die von aktuell besuchten Website gesetzt werden.</p>
+        <p>Cookies können in zwei Typen unterteilt werden: Erstanbieter-Cookies sind Cookies, die von der aktuell besuchten Website gesetzt werden.</p>
 
-        <p>From the early days of the internet, it became obvious that it would be advantageous for websites to be able to store information on a computer for future access.
-            For example, a website that displays weather information could ask the user for a zip code, and then store it in a cookie.
-            The next time the user visited the website, weather information would automatically load for that zip code, without the user having to enter it again.</p>
+        <p>Mit solchen Erstanbieter-Cookies können Websites z.B. Informationen auf einem Computer speichern, um diese bei späteren Aufrufen derselben Seite wieder zu verwenden.
+            Zum Beispiel kann eine Internet-Seite, die das Wetter anzeigt, den Benutzer nach seiner Postleitzahl fragen und diese in einem Cookie speichern.
+            Beim nächsten Besuch der Website wird dem Benutzer dann automatisch das Wetter für diese Postleitzahl/Region angezeigt, ohne dass der Benutzer diese erneut eingeben muss.</p>
 
-        <p>Like everything else on the web, clever people figured out all types of ways to abuse cookies to do things that users would not approve of if they knew they were happening.
-            For example, a website can set a cookie with a unique serial number on a device.
-            Then, every time a user visits the website on that device, it can be linked to a unique profile the server maintains for that serial number,
-            even if the device connects from different IP addresses.</p>
+        <p>Wie viele anderen Dingen im Internet werden solche Cookies jedoch mittlerweile auch für Zwecke missbraucht, die Website-Besucher normalerweise nicht gestatten würden, wenn sie davon wüssten.
+            Zum Beispiel können Websites eindeutige Kennzeichen oder Seriennummern in Cookies speichern.
+            Jedes Mal wenn der Benutzer dann mit seinem Gerät diese Website aufruft, können dessen Bewegungen mit dem Profil dieser Seriennummer verknüpft werden,
+            auch wenn dem Gerät inzwischen eine andere IP-Adresse zugewiesen wurde. So entstehen umfangreiche Profile über die Vorlieben von Website-Besuchern.</p>
 
-        <p>Almost all websites with logins require first-party cookies to be enabled for a user to log in.
-            That is how they make sure it is still you as you move from page to page on the site, and is, in my opinion, one of the few legitimate uses for cookies.</p>
+        <p>Nahezu alle Webseiten, bei denen eine Anmeldung notwendig ist, nutzen Erstanbieter-Cookies für den Anmeldevorgang.
+            Damit wird sichergestellt, dass nur der angemeldete Benutzer Zugang zu den entsprechenden Informationen hat. Dies ist meiner Meinung nach eine der wenigen legitimen Verwendungen von Cookies.</p>
 
-        <p>Wenn Erstanbieter-Cookies aktiviert sind aber Javascript deaktiviert, ist das Privatsphäre-Icon gelb <img class="inline" src="../shared_images/warning.png"> als Warnung.</p>
-
+        <p>Wenn Erstanbieter-Cookies aktiviert sind, aber Javascript deaktiviert, ist das Privatsphäre-Icon als Warnung gelb <img class="inline" src="../shared_images/warning.png">.</p>
 
         <h3><img class="title" src="../shared_images/cookie_blue_light.png"> Drittanbieter-Cookies</h3>
 
-        <p>Drittanbieter-Cookies werden von Teilen einer Website gesetzt, die von einem anderen Server als dem aktuell besuchten.
+        <p>Drittanbieter-Cookies werden von Teilen einer Website gesetzt, die von einem anderen Server als dem aktuell besuchten geladen werden.
             Beispielsweise laden viele Websites Werbungen von einem Drittanbieter-Broker wie Googles <a href="https://www.google.com/adsense/start/">Ad Sense</a>.
-            Jedes Mal wenn die Website lädt, fragt bei dem Werbe-Broker an, dass er Werbung zeigen soll.
-            Der Werbe-Broker analysiert jegliche information, die er über den Nutzer hat, vergleicht mit dem aktuell gezahlten Satz der Werbenden Firmen, die die Werbung platziert haben wollen,
-            und wählt die anzuzeigenden Werbungen aus. Der Bereich der Website, auf dem die Werbung angezeigt wird, wird vom Drittanbieter-Broker statt von der eigentlich besuchten Website geladen.</p>
+            Jedes Mal wenn die Website lädt, fragt diese bei dem Werbe-Broker an, dass er Werbung zeigen soll.
+            Der Werbe-Broker analysiert jegliche information, die er über den Nutzer hat, vergleicht diese mit dem aktuell gezahlten Satz der werbenden Firmen,
+            die die Werbung platziert haben wollen und wählt die anzuzeigenden Werbungen aus.
+            Der Bereich der Website, auf dem die Werbung angezeigt wird, wird vom Drittanbieter-Broker statt von der eigentlich besuchten Website geladen.</p>
 
-        <p>Weil die meisten Werbungen im Internet von ein paar wenigen Brokern betrieben werden hat es nicht lange gedauert, bis sie gemerkt haben,
-            dass sie einfach einen Tracking-Cookie auf dem Gerät des Benutzers hinterlassen können um immer bescheid zu wissen, wohin er geht.
-            Jedes Mal, wenn eine Werbung von einem Broker geladen wird, ist es seine erste Aufgabe, das Gerät auf eine einmalige Seriennummer in einem cookie zu überprüfen.
-            Wenn es den hat, sucht er das Profil für diese Seriennummer heraus und merkt sich die neu besuchte Seite.
-            Deshalb kann der Nutzer auf der einen Seite nach einem Produkt suchen, nach dem er normalerweise nicht sucht, wie z. B. Walnüsse,
+        <p>Weil die meisten Werbungen im Internet von ein paar wenigen Brokern betrieben werden, hat es nicht lange gedauert, bis diese gemerkt haben,
+            dass sie einfach ein Tracking-Cookie auf dem Gerät des Benutzers hinterlassen können, um immer Bescheid zu wissen, wo sich dieser - auch über Seiten- und Domain-Grenzen hinweg - im Internet bewegt.
+            Jedes Mal, wenn eine Werbung von einem Broker geladen wird, ist es dessen erste Aufgabe, das Gerät auf eine einmalige Seriennummer in einem cookie zu überprüfen.
+            Wenn es diesen hat, sucht er das Profil für diese Seriennummer heraus und merkt sich die neu besuchte Seite.
+            Deshalb kann der Nutzer auf einer Seite nach einem Produkt suchen, nach dem er normalerweise nicht sucht, wie z. B. Walnüsse,
             und plötzlich auf jeder anderen besuchten Website Werbungen für Walnüsse angezeigt bekommen.</p>
 
         <p>Zusätzlich zu Werbe-Brokern machen Social-Media-Plattformen das Gleiche.
-            Vor ein paar Jahren haben die großen Plattformen wie Facebook und Twitter eine große Auswahl von Websites ausgemacht, auf denen es in ihrem größten Interesse wäre,
-            kleine Social Media-Icons zu platzieren. Das sind nicht nur Bilder.
-            Sie beinhalten <a href="https://developers.facebook.com/docs/plugins/like-button/">eingebettete Codes</a>,
-            welche zurück auf die Social-Media-Plattform verlinken und - neben anderen Dingen - einen Drittanbieter-Cookie auf dem Gerät hinterlassen.
+            Vor ein paar Jahren haben die großen Plattformen wie Facebook und Twitter eine große Auswahl von Websites ausgemacht, auf denen es in ihrem größten Interesse wäre, Social Media-Icons zu platzieren.
+            Das sind nicht nur Bilder, sondern auch <a href="https://developers.facebook.com/docs/plugins/like-button/">eingebettete Codes</a>,
+            welche zurück auf die Social-Media-Plattform verlinken und - neben anderen Dingen - ein Drittanbieter-Cookie auf dem Gerät hinterlassen.
             Diese Cookies werden selbst dann gesetzt, wenn der Benutzer keinen Account bei der Social-Media-Plattform hat.
             Mit der Zeit bauten Firmen wie Facebook (welche ebenfalls einen Werbe-Broker betreiben) eine große Anzahl von detaillierten Profilen über Personen an, die
             <a href="http://www.theverge.com/2016/5/27/11795248/facebook-ad-network-non-users-cookies-plug-ins">niemals einen Account auf ihrer Seite erstellt haben</a>.</p>
 
-        <p>There is no good reason to ever enable third-party cookies. On devices with Android KitKat or older (version <= 4.4.4 or API <= 20), WebView does not
-            <a href="https://developer.android.com/reference/android/webkit/CookieManager.html#setAcceptThirdPartyCookies(android.webkit.WebView, boolean)">differentiate
-            between first-party and third-party cookies</a>. Thus, enabling first-party cookies will also enable third-party cookies.</p>
-
+        <p>Es gibt daher kaum einen Grund, solche Drittanbieter-Cookies zuzulassen. Auf Geräten mit Android KitKat oder älter (version <= 4.4.4 or API <= 20) kann
+            Webkit leider nicht zwischen Erstanbieter- und Drittanbieter-Cookies unterscheiden.
+            Daher werden auf diesen Geräten <a href="https://developer.android.com/reference/android/webkit/CookieManager.html#setAcceptThirdPartyCookies(android.webkit.WebView, boolean)">
+                auch Drittanbieter-Cookies erlaubt, wenn Erstanbieter-Cookies zugelassen werden.</a></p>
 
         <h3><img class="title" src="../shared_images/web_blue_light.png"> DOM-Speicher</h3>
 
-        <p>Document Object Model storage, also known as web storage, is like cookies on steroids.
-            Whereas the maximum combined storage size for all cookies from a single URL is 4 kilobytes,
-            DOM storage can hold <a href="https://en.wikipedia.org/wiki/Web_storage#Storage_size">megabytes per site</a>.
-            Because DOM storage uses JavaScript to read and write data, it cannot be enabled unless JavaScript is also enabled.</p>
-
+        <p>DOM-Speicher (Document Object Model-Speicher) - auch bekannt als "Web Storage" - ist ein andere Art, mit der Websites Informationen speichern können.
+            Während der gesamte Speicherplatz für Cookies einer Webseite auf maximal 4 Kilobytes begrenzt ist, können im DOM-Speicher
+            <a href="https://en.wikipedia.org/wiki/Web_storage#Storage_size">Megabytes pro Seite</a> gespeichert werden - diese Art der Speicherung ist daher gewissermassen Cookies auf Steroiden.
+            Da der DOM-Speicher jedoch Javascript benötigt um Daten zu schreiben oder zu lesen, kann er nicht aktiviert werden, solange nicht auch JavaScript aktiviert ist.</p>
 
         <h3><img class="title" src="../shared_images/subtitles_blue_light.png"> Formulardaten</h3>
 
-        <p>Form data contains information typed into web forms, like user names, addresses, phone numbers, etc., and lists them in a drop-down box on future visits.
-            Unlike the other forms of local storage, form data is not sent to the web server without specific user interaction.
-            Beginning in Android Oreo (8.0), WebView’s form data was replaced by the <a href="https://medium.com/@bherbst/getting-androids-autofill-to-work-for-you-21435debea1">Autofill service</a>.
-            As such, controls for form data no longer appear on newer Android devices.</p>
+        <p>Formulardaten umfassen Informationen, die in Web-Formulare eingetippt werden, wie etwa Namen, Adressen, Telefonnummern, usw.
+            Diese werden in Drop-Down-Listen angezeigt, wenn die betreffenden Seiten später wieder aufgerufen werden.
+            Anders als die oben genannten Formen lokal gespeicherter Informationen werden Formulardaten dabei nicht ohne bewusste Interaktion des Benutzers
+            (z.B. Abschicken eines Formulars) an einen Webserver geschickt.
+            Ab Android Oreo (8.0) verwendet WebView den <a href="https://medium.com/@bherbst/getting-androids-autofill-to-work-for-you-21435debea1">Autofill-Service</a>.
+            Daher werden die entsprechenden Wahlmöglichkeiten für Formulardaten bei neueren Android-Geräten nicht mehr angezeigt.</p>
     </body>
 </html>

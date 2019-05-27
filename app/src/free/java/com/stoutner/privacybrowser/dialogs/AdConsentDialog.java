@@ -22,14 +22,16 @@ package com.stoutner.privacybrowser.dialogs;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.helpers.AdConsentDatabaseHelper;
 import com.stoutner.privacybrowser.helpers.AdHelper;
 
@@ -37,11 +39,18 @@ public class AdConsentDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the screenshot and theme preferences.
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Use a builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
         // Set the style and the icon according to the theme.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
             dialogBuilder.setIcon(R.drawable.block_ads_enabled_dark);
         } else {
@@ -87,8 +96,20 @@ public class AdConsentDialog extends DialogFragment {
             AdHelper.loadAd(getActivity().findViewById(R.id.adview), getActivity().getApplicationContext(), getString(R.string.ad_unit_id));
         });
 
+        // Create an alert dialog from the alert dialog builder.
+        AlertDialog alertDialog = dialogBuilder.create();
+
+        // Disable screenshots if not allowed.
+        if (!allowScreenshots) {
+            // Remove the warning below that `getWindow()` might be null.
+            assert alertDialog.getWindow() != null;
+
+            // Disable screenshots.
+            alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
+
         // Return the alert dialog.
-        return dialogBuilder.create();
+        return alertDialog;
     }
 
     // Close Privacy Browser Free if the dialog is cancelled without selecting a button (by tapping on the background).

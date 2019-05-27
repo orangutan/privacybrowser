@@ -22,9 +22,10 @@ package com.stoutner.privacybrowser.dialogs;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -32,42 +33,39 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.HttpAuthHandler;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
 
+import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.activities.MainWebViewActivity;
+import com.stoutner.privacybrowser.fragments.WebViewTabFragment;
+import com.stoutner.privacybrowser.views.NestedScrollWebView;
+
 public class HttpAuthenticationDialog extends DialogFragment{
-    // `httpAuthenticationListener` is used in `onAttach()` and `onCreateDialog()`
-    private HttpAuthenticationListener httpAuthenticationListener;
+    // Define the class variables.
+    private EditText usernameEditText;
+    private EditText passwordEditText;
 
-    // The public interface is used to send information back to the parent activity.
-    public interface HttpAuthenticationListener {
-        void onHttpAuthenticationCancel();
-
-        void onHttpAuthenticationProceed(DialogFragment dialogFragment);
-    }
-
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        // Get a handle for `httpAuthenticationListener` from `context`.
-        httpAuthenticationListener = (HttpAuthenticationListener) context;
-    }
-
-    public static HttpAuthenticationDialog displayDialog(String host, String realm) {
-        // Store the strings in a `Bundle`.
+    public static HttpAuthenticationDialog displayDialog(String host, String realm, long webViewFragmentId) {
+        // Create an arguments bundle.
         Bundle argumentsBundle = new Bundle();
-        argumentsBundle.putString("Host", host);
-        argumentsBundle.putString("Realm", realm);
 
-        // Add `argumentsBundle` to this instance of `HttpAuthenticationDialog`.
+        // Store the variables in the bundle.
+        argumentsBundle.putString("host", host);
+        argumentsBundle.putString("realm", realm);
+        argumentsBundle.putLong("webview_fragment_id", webViewFragmentId);
+
+        // Create a new instance of the HTTP authentication dialog.
         HttpAuthenticationDialog thisHttpAuthenticationDialog = new HttpAuthenticationDialog();
+
+        // Add the arguments bundle to the new dialog.
         thisHttpAuthenticationDialog.setArguments(argumentsBundle);
+
+        // Return the new dialog.
         return thisHttpAuthenticationDialog;
     }
 
@@ -76,12 +74,34 @@ public class HttpAuthenticationDialog extends DialogFragment{
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Remove the incorrect lint warnings that `getString()` might be null.
-        assert getArguments() != null;
+        // Get a handle for the arguments.
+        Bundle arguments = getArguments();
 
-        // Get the host and realm variables from the bundle.
-        String httpAuthHost = getArguments().getString("Host");
-        String httpAuthRealm = getArguments().getString("Realm");
+        // Remove the incorrect lint warning below that arguments might be null.
+        assert arguments != null;
+
+        // Get the variables from the bundle.
+        String httpAuthHost = arguments.getString("host");
+        String httpAuthRealm = arguments.getString("realm");
+        long webViewFragmentId = arguments.getLong("webview_fragment_id");
+
+        // Get the current position of this WebView fragment.
+        int webViewPosition = MainWebViewActivity.webViewPagerAdapter.getPositionForId(webViewFragmentId);
+
+        // Get the WebView tab fragment.
+        WebViewTabFragment webViewTabFragment = MainWebViewActivity.webViewPagerAdapter.getPageFragment(webViewPosition);
+
+        // Get the fragment view.
+        View fragmentView = webViewTabFragment.getView();
+
+        // Remove the incorrect lint warning below that the fragment view might be null.
+        assert fragmentView != null;
+
+        // Get a handle for the current WebView.
+        NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+
+        // Get a handle for the HTTP authentication handler.
+        HttpAuthHandler httpAuthHandler = nestedScrollWebView.getHttpAuthHandler();
 
         // Remove the incorrect lint warning that `getActivity()` might be null.
         assert getActivity() != null;
@@ -92,8 +112,15 @@ public class HttpAuthenticationDialog extends DialogFragment{
         // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the screenshot and theme preferences.
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Set the style according to the theme.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             // Set the dialog theme.
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
 
@@ -113,16 +140,22 @@ public class HttpAuthenticationDialog extends DialogFragment{
         // Set the layout.  The parent view is `null` because it will be assigned by `AlertDialog`.
         dialogBuilder.setView(layoutInflater.inflate(R.layout.http_authentication_dialog, null));
 
-        // Setup the negative button.
+        // Setup the close button.
         dialogBuilder.setNegativeButton(R.string.close, (DialogInterface dialog, int which) -> {
-            // Call `onHttpAuthenticationCancel()` and return the `DialogFragment` to the parent activity.
-            httpAuthenticationListener.onHttpAuthenticationCancel();
+            // Cancel the HTTP authentication request.
+            httpAuthHandler.cancel();
+
+            // Reset the HTTP authentication handler.
+            nestedScrollWebView.resetHttpAuthHandler();
         });
 
-        // Setup the positive button.
+        // Setup the proceed button.
         dialogBuilder.setPositiveButton(R.string.proceed, (DialogInterface dialog, int which) -> {
-            // Call `onHttpAuthenticationProceed()` and return the `DialogFragment` to the parent activity.
-            httpAuthenticationListener.onHttpAuthenticationProceed(HttpAuthenticationDialog.this);
+            // Send the login information
+            login(httpAuthHandler);
+
+            // Reset the HTTP authentication handler.
+            nestedScrollWebView.resetHttpAuthHandler();
         });
 
         // Create an alert dialog from the alert dialog builder.
@@ -132,31 +165,29 @@ public class HttpAuthenticationDialog extends DialogFragment{
         assert alertDialog.getWindow() != null;
 
         // Disable screenshots if not allowed.
-        if (!MainWebViewActivity.allowScreenshots) {
+        if (!allowScreenshots) {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
-        // Show the keyboard when the `AlertDialog` is displayed on the screen.
+        // Show the keyboard when the alert dialog is displayed on the screen.
         alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
         // The alert dialog needs to be shown before the contents can be modified.
         alertDialog.show();
 
-        // Get handles for the views in `alertDialog`.
+        // Get handles for the views.
         TextView realmTextView = alertDialog.findViewById(R.id.http_authentication_realm);
         TextView hostTextView = alertDialog.findViewById(R.id.http_authentication_host);
-        EditText usernameEditText = alertDialog.findViewById(R.id.http_authentication_username);
-        EditText passwordEditText = alertDialog.findViewById(R.id.http_authentication_password);
+        usernameEditText = alertDialog.findViewById(R.id.http_authentication_username);
+        passwordEditText = alertDialog.findViewById(R.id.http_authentication_password);
 
         // Set the realm text.
         realmTextView.setText(httpAuthRealm);
 
         // Set the realm text color according to the theme.  The deprecated `.getColor()` must be used until API >= 23.
-        if (MainWebViewActivity.darkTheme) {
-            //noinspection deprecation
+        if (darkTheme) {
             realmTextView.setTextColor(getResources().getColor(R.color.gray_300));
         } else {
-            //noinspection deprecation
             realmTextView.setTextColor(getResources().getColor(R.color.black));
         }
 
@@ -168,11 +199,9 @@ public class HttpAuthenticationDialog extends DialogFragment{
         ForegroundColorSpan blueColorSpan;
 
         // Set `blueColorSpan` according to the theme.  The deprecated `getColor()` must be used until API >= 23.
-        if (MainWebViewActivity.darkTheme) {
-            //noinspection deprecation
+        if (darkTheme) {
             blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
         } else {
-            //noinspection deprecation
             blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
         }
 
@@ -186,10 +215,10 @@ public class HttpAuthenticationDialog extends DialogFragment{
         usernameEditText.setOnKeyListener((View view, int keyCode, KeyEvent event) -> {
             // If the event is a key-down on the `enter` key, call `onHttpAuthenticationProceed()`.
             if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)) {
-                // Trigger `onHttpAuthenticationProceed` and return the `DialogFragment` to the parent activity.
-                httpAuthenticationListener.onHttpAuthenticationProceed(HttpAuthenticationDialog.this);
+                // Send the login information.
+                login(httpAuthHandler);
 
-                // Manually dismiss the `AlertDialog`.
+                // Manually dismiss the alert dialog.
                 alertDialog.dismiss();
 
                 // Consume the event.
@@ -203,10 +232,10 @@ public class HttpAuthenticationDialog extends DialogFragment{
         passwordEditText.setOnKeyListener((View view, int keyCode, KeyEvent event) -> {
             // If the event is a key-down on the `enter` key, call `onHttpAuthenticationProceed()`.
             if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)) {
-                // Trigger `onHttpAuthenticationProceed` and return the `DialogFragment` to the parent activity.
-                httpAuthenticationListener.onHttpAuthenticationProceed(HttpAuthenticationDialog.this);
+                // Send the login information.
+                login(httpAuthHandler);
 
-                // Manually dismiss the `AlertDialog`.
+                // Manually dismiss the alert dialog.
                 alertDialog.dismiss();
 
                 // Consume the event.
@@ -216,7 +245,12 @@ public class HttpAuthenticationDialog extends DialogFragment{
             }
         });
 
-        // `onCreateDialog()` requires the return of an `AlertDialog`.
+        // Return the alert dialog.
         return alertDialog;
+    }
+
+    private void login(HttpAuthHandler httpAuthHandler) {
+        // Send the login information.
+        httpAuthHandler.proceed(usernameEditText.getText().toString(), passwordEditText.getText().toString());
     }
 }

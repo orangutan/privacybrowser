@@ -1,0 +1,8 @@
+• Añadir navegación por pestañas.
+• Se corrigió un error que provocaba que se cortara la parte inferior de la vista web cuando se desactivaba el desplazamiento de la barra de aplicaciones.
+• Se corrigió un error que provocaba que se reiniciara Navegador Privado cada vez que se conectaba/desconectaba un teclado Bluetooth.
+• Actualizada la traducción al español proporcionada por Jose A. León.
+• Actualizada la traducción al alemán por Bernhard G. Keller.
+• Actualizada la traducción al italiano proporcionada por Francesco Buratti.
+• Actualizada la traducción al ruso.
+• Traducción parcial al turco.

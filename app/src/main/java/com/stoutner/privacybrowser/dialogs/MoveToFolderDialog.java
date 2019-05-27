@@ -24,6 +24,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.MatrixCursor;
@@ -33,6 +34,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -49,7 +51,6 @@ import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment mu
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.BookmarksActivity;
-import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 
 import java.io.ByteArrayOutputStream;
@@ -84,8 +85,15 @@ public class MoveToFolderDialog extends DialogFragment {
         // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
+        // Get a handle for the shared preferences.
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        // Get the screenshot and theme preferences.
+        boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+        boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
         // Set the style according to the theme.
-        if (MainWebViewActivity.darkTheme) {
+        if (darkTheme) {
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
         } else {
             dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
@@ -115,7 +123,7 @@ public class MoveToFolderDialog extends DialogFragment {
         final AlertDialog alertDialog = dialogBuilder.create();
 
         // Disable screenshots if not allowed.
-        if (!MainWebViewActivity.allowScreenshots) {
+        if (!allowScreenshots) {
             // Remove the warning below that `getWindow()` might be null.
             assert alertDialog.getWindow() != null;
 
@@ -172,7 +180,7 @@ public class MoveToFolderDialog extends DialogFragment {
             foldersCursorAdapter = new CursorAdapter(alertDialog.getContext(), foldersCursor, false) {
                 @Override
                 public View newView(Context context, Cursor cursor, ViewGroup parent) {
-                    // Remove the incorrect lint warning that `.getLayoutInflator()` might be false.
+                    // Remove the incorrect lint warning that `.getLayoutInflater()` might be false.
                     assert getActivity() != null;
 
                     // Inflate the individual item layout.  `false` does not attach it to the root.
@@ -245,7 +253,7 @@ public class MoveToFolderDialog extends DialogFragment {
             foldersCursorAdapter = new CursorAdapter(alertDialog.getContext(), foldersMergeCursor, false) {
                 @Override
                 public View newView(Context context, Cursor cursor, ViewGroup parent) {
-                    // Remove the incorrect lint warning that `.getLayoutInflator()` might be false.
+                    // Remove the incorrect lint warning that `.getLayoutInflater()` might be false.
                     assert getActivity() != null;
 
                     // Inflate the individual item layout.  `false` does not attach it to the root.

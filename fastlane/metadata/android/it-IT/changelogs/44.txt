@@ -1,0 +1,4 @@
+• Correzione di un baco che permetteva lo scrolling della barra dell'app anche quando lo scrolling era disabilitato impedendone anche il ritorno.
+• Correzione di un baco che impediva la visualizzazione della barra dell'app dopo l'eliminazione di una scheda quando la nuova scheda attiva era vuota.
+• Correzione di uh raro crash che avveniva al completamento del caricamento di alcune pagine.
+• Ora il tasto "indietro" chiude una scheda se WebView e' all'inizio della cronologia di navigazione.
