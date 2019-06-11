@@ -635,6 +635,18 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     }
 
 
+    // Scroll range.
+    public int getHorizontalScrollRange() {
+        // Return the horizontal scroll range.
+        return computeHorizontalScrollRange();
+    }
+
+    public int getVerticalScrollRange() {
+        // Return the vertical scroll range.
+        return computeVerticalScrollRange();
+    }
+
+
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {

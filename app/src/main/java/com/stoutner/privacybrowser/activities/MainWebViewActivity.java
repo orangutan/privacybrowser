@@ -39,6 +39,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -141,6 +142,7 @@ import com.stoutner.privacybrowser.views.NestedScrollWebView;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -301,6 +303,10 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // Remove the warning about needing to override `performClick()` when using an `OnTouchListener` with `WebView`.
     @SuppressLint("ClickableViewAccessibility")
     protected void onCreate(Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT >= 21) {
+            WebView.enableSlowWholeDocumentDraw();
+        }
+
         // Initialize the default preference values the first time the program is run.  `false` keeps this command from resetting any current preferences back to default.
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
@@ -1559,6 +1565,42 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Print the document.
                 printManager.print(getString(R.string.privacy_browser_web_page), printDocumentAdapter, null);
+                return true;
+
+            case R.id.save_as_image:
+                // Create a webpage bitmap.  Once the Minimum API >= 26 Bitmap.Config.RBGA_F16 can be used instead of ARGB_8888.
+                Bitmap webpageBitmap = Bitmap.createBitmap(currentWebView.getHorizontalScrollRange(), currentWebView.getVerticalScrollRange(), Bitmap.Config.ARGB_8888);
+
+                // Create a canvas.
+                Canvas webpageCanvas = new Canvas(webpageBitmap);
+
+                // Draw the current webpage onto the bitmap.
+                currentWebView.draw(webpageCanvas);
+
+                // Create a webpage PNG byte array output stream.
+                ByteArrayOutputStream webpageByteArrayOutputStream = new ByteArrayOutputStream();
+
+                // Convert the bitmap to a PNG.  `0` is for lossless compression (the only option for a PNG).
+                webpageBitmap.compress(Bitmap.CompressFormat.PNG, 0, webpageByteArrayOutputStream);
+
+                // Get a file for the image.
+                File imageFile = new File("/storage/emulated/0/webpage.png");
+
+                // Delete the current file if it exists.
+                if (imageFile.exists()) {
+                    //noinspection ResultOfMethodCallIgnored
+                    imageFile.delete();
+                }
+
+                try {
+                    // Create an image file output stream.
+                    FileOutputStream imageFileOutputStream = new FileOutputStream(imageFile);
+
+                    // Write the webpage image to the image file.
+                    webpageByteArrayOutputStream.writeTo(imageFileOutputStream);
+                } catch (Exception exception) {
+                    // Add a snackbar.
+                }
                 return true;
 
             case R.id.add_to_homescreen:

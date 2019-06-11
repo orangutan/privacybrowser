@@ -26,13 +26,13 @@
     <body>
         <h3><img class="title" src="../shared_images/local_activity_blue_light.png"> Kaynak İstekleri</h3>
 
-        <p>Bir URL yüklendiğinde, genellikle CCS, JavaScript, resim ve diğer dosyalar için birkaç kaynak isteği yapar. Bu isteklerle ilgili detaylar İstekler etkinliğinden ulaşılabilir. 
+        <p>Bir URL yüklendiğinde, genellikle CCS, JavaScript, resim ve diğer dosyalar için birkaç kaynak isteği yapar. Bu isteklerle ilgili detaylar İstekler etkinliğinden ulaşılabilir.
             Gezinti çekmecesi, İstekler etkinliğine götüren bir bağlantı içerir ve ayrıca bu etkinlik kaç tane isteğin engellediğini gösterir.
-            Bir isteğe dokunulduğunda, neden izin verildiğine ya da engellendiğine dair detaylar görüntülenir. </p>
+            Bir isteğe dokunulduğunda, neden izin verildiğine ya da engellendiğine dair detaylar görüntülenir.</p>
 
         <p><img class="center" src="images/request_details.png"></p>
 
-        <p>Privacy Browser, <a href="https://adblockplus.org/filters">Adblock sözdizimini (Adblock syntax)</a> temel alan 4 <a href="https://easylist.to/">yaygın engel listesini</a> içerir: 
+        <p>Privacy Browser, <a href="https://adblockplus.org/filters">Adblock sözdizimini (Adblock syntax)</a> temel alan 4 <a href="https://easylist.to/">yaygın engel listesini</a> içerir:
             EasyList, EasyPrivacy, Fanboy’s Annoyance List ve Fanboy’s Social Blocking List.
             Bu engel listeleri, Privacy Browser tarafından, aşağıda listelenmiş olan kaynak isteklerini kontrol eden 22 alt listeye göre işlenmiştir.</p>
 
@@ -61,19 +61,19 @@
             <li>Düzenli İfade (Regular Expression) Kara Listesi</li>
         </ol>
 
-        <p>Başlangıç listeleri, URL’nin başlangıcına göre kontrol eder. Final listeleri, URL’nin sonuna göre kontrol eder. Domain listeleri, yalnızca belli domainlere göre kontrol eder. 
-            Üçüncü taraf listeleri, yalnızca isteğin kök domaini ana URL’nin kök domaininden farklıysa uygulanır. 
+        <p>Başlangıç listeleri, bağlantının başlangıcına göre kontrol eder. Final listeleri, bağlantının sonuna göre kontrol eder. Domain listeleri, yalnızca belli domainlere göre kontrol eder.
+            Üçüncü taraf listeleri, yalnızca isteğin kök domaini ana bağlantının kök domaininden farklıysa uygulanır.
             Düzenli ifade listeleri, <a href="https://en.wikipedia.org/wiki/Regular_expression">düzenli ifade sözdizimini (regular expression syntax)</a> takip eder.
             Her alt liste öğesinin bir veya daha fazla girdisi vardır.
-            Domain alt listeleri işe karıştığında, ilk girdi ana URL’nin domaini ile eşleşirse, kaynak isteği yalnızca öğeye göre kontrol edilir.</p>
+            Domain alt listeleri işe karıştığında, ilk girdi ana bağlantının domaini ile eşleşirse, kaynak isteği yalnızca öğeye göre kontrol edilir.</p>
 
-        <p>Anroid’in WebView kısıtlamaları yüzünden ve isteklerin işlenmesini hızlandırmak için Privacy Browser, Adblock sözdiziminin basitleştirilmiş bir yorumunu uygular. 
-            Bu durum, bazen, kaynakların orijinal girdi tarafından amaçlanmayan şekillerde izin verildiği veya engellendiği yanlış pozitif (false positive) durumuna yol açabilir. 
+        <p>Anroid’in WebView kısıtlamaları yüzünden ve isteklerin işlenmesini hızlandırmak için Privacy Browser, Adblock sözdiziminin basitleştirilmiş bir yorumunu uygular.
+            Bu durum, bazen, kaynakların orijinal girdi tarafından amaçlanmayan şekillerde izin verildiği veya engellendiği yanlış pozitif (false positive) durumuna yol açabilir.
             Engel listesi girdilerinin nasıl işlendiğine dair daha ayrıntılı bir açıklama <a href="https://www.stoutner.com/privacy-browser/blocklists/">stoutner.com</a> adresinde bulunabilir.</p>
 
         <p>Privacy Browser, EasyPrivacy’nin izin verdiği izleyicileri engelleyen <a href="https://www.stoutner.com/privacy-browser/blocklists/ultraprivacy/">UltraPrivacy</a>
             adında ve tüm üçüncü taraf istekleri engelleyen başka bir tane olmak üzere 2 tane ek engel listesi içerir.
-            Bir istek yalnızca, isteğin temel domaini URL’nin temel domaininden farklıysa üçüncü taraf olarak kabul edilir. 
+            Bir istek yalnızca, isteğin temel domaini bağlantının temel domaininden farklıysa üçüncü taraf olarak kabul edilir.
             Örneğin, <code>www.website.com</code> adresi <code>images.website.com</code> adresinden bir resim yüklüyorsa,
             her ikisi de aynı temel domaini (<code>website.com</code>) paylaştığı için bu üçüncü taraf isteği olarak engellenmez.
             Tüm üçüncü taraf istekleri engellemek gizliliği arttırır, fakat çok sayıda web sitesini bozduğu için bu engel listesi varsayılan olarak devre dışıdır.</p>

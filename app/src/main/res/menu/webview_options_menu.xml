@@ -341,15 +341,21 @@
                 app:showAsAction="never" />
 
             <item
+                android:id="@+id/save_as_image"
+                android:title="@string/save_as_image"
+                android:orderInCategory="1000"
+                app:showAsAction="never" />
+
+            <item
                 android:id="@+id/add_to_homescreen"
                 android:title="@string/add_to_home_screen"
-                android:orderInCategory="1000"
+                android:orderInCategory="1010"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/view_source"
                 android:title="@string/view_source"
-                android:orderInCategory="1010"
+                android:orderInCategory="1020"
                 app:showAsAction="never" />
         </menu>
     </item>
