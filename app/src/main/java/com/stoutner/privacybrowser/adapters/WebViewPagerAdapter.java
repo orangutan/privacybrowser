@@ -89,6 +89,13 @@ public class WebViewPagerAdapter extends FragmentPagerAdapter {
             i++;
         }
 
+        // Set the position to be the last tab if it is not found.
+        // Sometimes there is a race condition in populating the webView fragments list when resuming Privacy Browser and displaying an SSL certificate error while loading a new intent.
+        // In that case, the last tab should be the one it is looking for.
+        if (position == -1) {
+            position = webViewFragmentsList.size() - 1;
+        }
+
         // Return the position.
         return position;
     }

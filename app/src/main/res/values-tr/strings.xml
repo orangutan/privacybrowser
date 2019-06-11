@@ -206,7 +206,7 @@
     <string name="error_body">Hata Metni</string>
     <string name="about_view_source">Kaynağı Görüntüle Hakkında</string>
     <string name="about_view_source_message">Android WebView kaynak bilgisini gösteremediğinden, bu etkinlikte gösterilen bilgiyi toplamak için sistem araçları kullanılarak ayrı bir istek yapıldı.
-        Elde edilen veri ile ana etkinlikteki WebView'ın kullandığı veri arasında farklılıklar olabilir. Bu sorun, 4.x serisinde Privacy WebView sürümüyle ortadan kalkacaktır.</string>
+        Elde edilen veri ile ana etkinlikteki WebView\'ın kullandığı veri arasında farklılıklar olabilir. Bu sorun, 4.x serisinde Privacy WebView sürümüyle ortadan kalkacaktır.</string>
 
     <!-- Create Home Screen Shortcut Alert Dialog. -->
     <string name="create_shortcut">Kısayol oluştur</string>
