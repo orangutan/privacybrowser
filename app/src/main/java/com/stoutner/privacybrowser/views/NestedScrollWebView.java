@@ -38,7 +38,9 @@ import androidx.core.view.ViewCompat;
 import com.stoutner.privacybrowser.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 // NestedScrollWebView extends WebView to handle nested scrolls (scrolling the app bar off the screen).
 public class NestedScrollWebView extends WebView implements NestedScrollingChild2 {
@@ -72,7 +74,7 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     private boolean domainSettingsJavaScriptEnabled;
 
     // Track the resource requests.
-    private ArrayList<String[]> resourceRequests = new ArrayList<>();
+    private List<String[]> resourceRequests = Collections.synchronizedList(new ArrayList<>());  // Using a synchronized list makes adding resource requests thread safe.
     private boolean easyListEnabled;
     private boolean easyPrivacyEnabled;
     private boolean fanboysAnnoyanceListEnabled;
@@ -272,8 +274,8 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
         resourceRequests.add(resourceRequest);
     }
 
-    public ArrayList<String[]> getResourceRequests() {
-        // Return the list of resource requests.
+    public List<String[]> getResourceRequests() {
+        // Return the list of resource requests as an array list.
         return resourceRequests;
     }
 

@@ -50,7 +50,7 @@ import java.util.List;
 
 public class RequestsActivity extends AppCompatActivity implements ViewRequestDialog.ViewRequestListener {
     // The resource requests are populated by `MainWebViewActivity` before `RequestsActivity` is launched.
-    public static ArrayList<String[]> resourceRequests;
+    public static List<String[]> resourceRequests;
 
     // The list view is used in `onCreate()` and `launchViewRequestDialog()`.
     private ListView requestsListView;
