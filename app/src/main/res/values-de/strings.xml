@@ -360,7 +360,6 @@
     <string name="export_successful">Export erfolgreich.</string>
     <string name="export_failed">Export fehlgeschlagen:</string>
     <string name="import_failed">Import fehlgeschlagen:</string>
-    <string name="invalid_location">ist kein gültiger Ordner.</string>
     <string name="storage_permission">Speicher-Berechtigung</string>
     <string name="storage_permission_message">Privacy Browser benötigt die Speicher-Berechtigung, um auf öffentliche Ordner zuzugreifen.
         Wenn diese verweigert wird, können die Ordner der Anwendung trotzdem verwendet werden.</string>
@@ -389,7 +388,7 @@
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Orbot-Proxy wird nicht funktionieren, solange Orbot nicht installiert ist.</string>
-    <string name="waiting_for_orbot">Warte, bis sich Orbot verbindet...</string>
+    <string name="waiting_for_orbot">Warte, bis sich Orbot verbindet…</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">Über Privacy Browser</string>

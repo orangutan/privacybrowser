@@ -24,6 +24,7 @@ package com.stoutner.privacybrowser.activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.DownloadManager;
 import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
@@ -39,7 +40,6 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -117,6 +117,7 @@ import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.adapters.WebViewPagerAdapter;
 import com.stoutner.privacybrowser.asynctasks.GetHostIpAddresses;
 import com.stoutner.privacybrowser.asynctasks.PopulateBlocklists;
+import com.stoutner.privacybrowser.asynctasks.SaveWebpageImage;
 import com.stoutner.privacybrowser.dialogs.AdConsentDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkFolderDialog;
@@ -127,7 +128,9 @@ import com.stoutner.privacybrowser.dialogs.DownloadLocationPermissionDialog;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkFolderDialog;
 import com.stoutner.privacybrowser.dialogs.HttpAuthenticationDialog;
+import com.stoutner.privacybrowser.dialogs.SaveWebpageImageDialog;
 import com.stoutner.privacybrowser.dialogs.SslCertificateErrorDialog;
+import com.stoutner.privacybrowser.dialogs.StoragePermissionDialog;
 import com.stoutner.privacybrowser.dialogs.UrlHistoryDialog;
 import com.stoutner.privacybrowser.dialogs.ViewSslCertificateDialog;
 import com.stoutner.privacybrowser.fragments.WebViewTabFragment;
@@ -136,13 +139,13 @@ import com.stoutner.privacybrowser.helpers.BlocklistHelper;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 import com.stoutner.privacybrowser.helpers.CheckPinnedMismatchHelper;
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
+import com.stoutner.privacybrowser.helpers.FileNameHelper;
 import com.stoutner.privacybrowser.helpers.OrbotProxyHelper;
 import com.stoutner.privacybrowser.views.NestedScrollWebView;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -160,7 +163,8 @@ import java.util.Set;
 // AppCompatActivity from android.support.v7.app.AppCompatActivity must be used to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
         DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, DownloadLocationPermissionDialog.DownloadLocationPermissionDialogListener, EditBookmarkDialog.EditBookmarkListener,
-        EditBookmarkFolderDialog.EditBookmarkFolderListener, NavigationView.OnNavigationItemSelectedListener, PopulateBlocklists.PopulateBlocklistsListener, WebViewTabFragment.NewTabListener {
+        EditBookmarkFolderDialog.EditBookmarkFolderListener, NavigationView.OnNavigationItemSelectedListener, PopulateBlocklists.PopulateBlocklistsListener, SaveWebpageImageDialog.SaveWebpageImageListener,
+        StoragePermissionDialog.StoragePermissionDialogListener, WebViewTabFragment.NewTabListener {
 
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxyThroughOrbot()`.
     public static String orbotStatus;
@@ -187,6 +191,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public final static int DOMAINS_WEBVIEW_DEFAULT_USER_AGENT = 2;
     public final static int DOMAINS_CUSTOM_USER_AGENT = 13;
 
+    // Start activity for result request codes.
+    private final int FILE_UPLOAD_REQUEST_CODE = 0;
+    public final static int BROWSE_SAVE_WEBPAGE_IMAGE_REQUEST_CODE = 1;
 
 
     // The current WebView is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`,
@@ -295,9 +302,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `downloadImageUrl` is used in `onCreateContextMenu()` and `onRequestPermissionResult()`.
     private String downloadImageUrl;
 
-    // The request codes are used in `onCreate()`, `onCreateContextMenu()`, `onCloseDownloadLocationPermissionDialog()`, `onRequestPermissionResult()`, and `initializeWebView()`.
+    // The save website image file path string is used in `onSaveWebpageImage()` and `onRequestPermissionResult()`
+    private String saveWebsiteImageFilePath;
+
+    // The permission result request codes are used in `onCreateContextMenu()`, `onCloseDownloadLocationPermissionDialog()`, `onRequestPermissionResult()`, `onSaveWebpageImage()`,
+    // `onCloseStoragePermissionDialog()`, and `initializeWebView()`.
     private final int DOWNLOAD_FILE_REQUEST_CODE = 1;
     private final int DOWNLOAD_IMAGE_REQUEST_CODE = 2;
+    private final int SAVE_WEBPAGE_IMAGE_REQUEST_CODE = 3;
 
     @Override
     // Remove the warning about needing to override `performClick()` when using an `OnTouchListener` with `WebView`.
@@ -963,6 +975,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.add_or_edit_domain:
@@ -1069,6 +1083,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Make it so.
                     startActivity(domainsIntent);
                 }
+
+                // Consume the event.
                 return true;
 
             case R.id.toggle_first_party_cookies:
@@ -1095,6 +1111,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.toggle_third_party_cookies:
@@ -1115,6 +1133,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Reload the current WebView.
                     currentWebView.reload();
                 } // Else do nothing because SDK < 21.
+
+                // Consume the event.
                 return true;
 
             case R.id.toggle_dom_storage:
@@ -1136,6 +1156,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             // Form data can be removed once the minimum API >= 26.
@@ -1158,6 +1180,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.clear_cookies:
@@ -1180,6 +1204,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             }
                         })
                         .show();
+
+                // Consume the event.
                 return true;
 
             case R.id.clear_dom_storage:
@@ -1235,6 +1261,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             }
                         })
                         .show();
+
+                // Consume the event.
                 return true;
 
             // Form data can be remove once the minimum API >= 26.
@@ -1255,6 +1283,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             }
                         })
                         .show();
+
+                // Consume the event.
                 return true;
 
             case R.id.easylist:
@@ -1266,6 +1296,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.easyprivacy:
@@ -1277,6 +1309,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.fanboys_annoyance_list:
@@ -1292,6 +1326,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.fanboys_social_blocking_list:
@@ -1303,6 +1339,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.ultraprivacy:
@@ -1314,6 +1352,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.block_all_third_party_requests:
@@ -1325,6 +1365,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_privacy_browser:
@@ -1333,6 +1375,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_webview_default:
@@ -1341,6 +1385,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_firefox_on_android:
@@ -1349,6 +1395,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_chrome_on_android:
@@ -1357,6 +1405,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_safari_on_ios:
@@ -1365,6 +1415,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_firefox_on_linux:
@@ -1373,6 +1425,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_chromium_on_linux:
@@ -1381,6 +1435,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_firefox_on_windows:
@@ -1389,6 +1445,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_chrome_on_windows:
@@ -1397,6 +1455,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_edge_on_windows:
@@ -1405,6 +1465,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_internet_explorer_on_windows:
@@ -1413,6 +1475,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_safari_on_macos:
@@ -1421,6 +1485,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_custom:
@@ -1429,38 +1495,64 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.font_size_twenty_five_percent:
+                // Set the font size.
                 currentWebView.getSettings().setTextZoom(25);
+
+                // Consume the event.
                 return true;
 
             case R.id.font_size_fifty_percent:
+                // Set the font size.
                 currentWebView.getSettings().setTextZoom(50);
+
+                // Consume the event.
                 return true;
 
             case R.id.font_size_seventy_five_percent:
+                // Set the font size.
                 currentWebView.getSettings().setTextZoom(75);
+
+                // Consume the event.
                 return true;
 
             case R.id.font_size_one_hundred_percent:
+                // Set the font size.
                 currentWebView.getSettings().setTextZoom(100);
+
+                // Consume the event.
                 return true;
 
             case R.id.font_size_one_hundred_twenty_five_percent:
+                // Set the font size.
                 currentWebView.getSettings().setTextZoom(125);
+
+                // Consume the event.
                 return true;
 
             case R.id.font_size_one_hundred_fifty_percent:
+                // Set the font size.
                 currentWebView.getSettings().setTextZoom(150);
+
+                // Consume the event.
                 return true;
 
             case R.id.font_size_one_hundred_seventy_five_percent:
+                // Set the font size.
                 currentWebView.getSettings().setTextZoom(175);
+
+                // Consume the event.
                 return true;
 
             case R.id.font_size_two_hundred_percent:
+                // Set the font size.
                 currentWebView.getSettings().setTextZoom(200);
+
+                // Consume the event.
                 return true;
 
             case R.id.swipe_to_refresh:
@@ -1478,11 +1570,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Disable the swipe refresh layout.
                     swipeRefreshLayout.setEnabled(false);
                 }
+
+                // Consume the event.
                 return true;
 
             case R.id.wide_viewport:
                 // Toggle the viewport.
                 currentWebView.getSettings().setUseWideViewPort(!currentWebView.getSettings().getUseWideViewPort());
+
+                // Consume the event.
                 return true;
 
             case R.id.display_images:
@@ -1496,6 +1592,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Enable loading of images.  Missing images will be loaded without the need for a reload.
                     currentWebView.getSettings().setLoadsImagesAutomatically(true);
                 }
+
+                // Consume the event.
                 return true;
 
             case R.id.night_mode:
@@ -1519,6 +1617,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the website.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.find_on_page:
@@ -1551,6 +1651,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Display the keyboard.  `0` sets no input flags.
                     inputMethodManager.showSoftInput(findOnPageEditText, 0);
                 }, 200);
+
+                // Consume the event.
                 return true;
 
             case R.id.print:
@@ -1565,42 +1667,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Print the document.
                 printManager.print(getString(R.string.privacy_browser_web_page), printDocumentAdapter, null);
+
+                // Consume the event.
                 return true;
 
             case R.id.save_as_image:
-                // Create a webpage bitmap.  Once the Minimum API >= 26 Bitmap.Config.RBGA_F16 can be used instead of ARGB_8888.
-                Bitmap webpageBitmap = Bitmap.createBitmap(currentWebView.getHorizontalScrollRange(), currentWebView.getVerticalScrollRange(), Bitmap.Config.ARGB_8888);
+                // Instantiate the save webpage image dialog.
+                DialogFragment saveWebpageImageDialogFragment = new SaveWebpageImageDialog();
 
-                // Create a canvas.
-                Canvas webpageCanvas = new Canvas(webpageBitmap);
+                // Show the save webpage image dialog.
+                saveWebpageImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_as_image));
 
-                // Draw the current webpage onto the bitmap.
-                currentWebView.draw(webpageCanvas);
-
-                // Create a webpage PNG byte array output stream.
-                ByteArrayOutputStream webpageByteArrayOutputStream = new ByteArrayOutputStream();
-
-                // Convert the bitmap to a PNG.  `0` is for lossless compression (the only option for a PNG).
-                webpageBitmap.compress(Bitmap.CompressFormat.PNG, 0, webpageByteArrayOutputStream);
-
-                // Get a file for the image.
-                File imageFile = new File("/storage/emulated/0/webpage.png");
-
-                // Delete the current file if it exists.
-                if (imageFile.exists()) {
-                    //noinspection ResultOfMethodCallIgnored
-                    imageFile.delete();
-                }
-
-                try {
-                    // Create an image file output stream.
-                    FileOutputStream imageFileOutputStream = new FileOutputStream(imageFile);
-
-                    // Write the webpage image to the image file.
-                    webpageByteArrayOutputStream.writeTo(imageFileOutputStream);
-                } catch (Exception exception) {
-                    // Add a snackbar.
-                }
+                // Consume the event.
                 return true;
 
             case R.id.add_to_homescreen:
@@ -1610,6 +1688,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Show the create home screen shortcut dialog.
                 createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getString(R.string.create_shortcut));
+
+                // Consume the event.
                 return true;
 
             case R.id.view_source:
@@ -1622,6 +1702,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Make it so.
                 startActivity(viewSourceIntent);
+
+                // Consume the event.
                 return true;
 
             case R.id.share_url:
@@ -1635,14 +1717,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Make it so.
                 startActivity(Intent.createChooser(shareIntent, getString(R.string.share_url)));
+
+                // Consume the event.
                 return true;
 
             case R.id.open_with_app:
+                // Open the URL with an outside app.
                 openWithApp(currentWebView.getUrl());
+
+                // Consume the event.
                 return true;
 
             case R.id.open_with_browser:
+                // Open the URL with an outside browser.
                 openWithBrowser(currentWebView.getUrl());
+
+                // Consume the event.
                 return true;
 
             case R.id.proxy_through_orbot:
@@ -1651,6 +1741,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Apply the proxy through Orbot settings.
                 applyProxyThroughOrbot(true);
+
+                // Consume the event.
                 return true;
 
             case R.id.refresh:
@@ -1661,12 +1753,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Stop the loading of the WebView.
                     currentWebView.stopLoading();
                 }
+
+                // Consume the event.
                 return true;
 
             case R.id.ad_consent:
-                // Display the ad consent dialog.
+                // Instantiate the ad consent dialog.
                 DialogFragment adConsentDialogFragment = new AdConsentDialog();
+
+                // Display the ad consent dialog.
                 adConsentDialogFragment.show(getSupportFragmentManager(), getString(R.string.ad_consent));
+
+                // Consume the event.
                 return true;
 
             default:
@@ -2378,6 +2476,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Reset the image URL variable.
                 downloadImageUrl = "";
                 break;
+
+            case SAVE_WEBPAGE_IMAGE_REQUEST_CODE:
+                // Check to see if the storage permission was granted.  If the dialog was canceled the grant result will be empty.
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
+                    // Save the webpage image.
+                    new SaveWebpageImage(this, currentWebView).execute(saveWebsiteImageFilePath);
+                } else {  // The storage permission was not granted.
+                    // Display an error snackbar.
+                    Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
+                }
+
+                // Reset the save website image file path.
+                saveWebsiteImageFilePath = "";
+                break;
         }
     }
 
@@ -2533,13 +2645,44 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
     }
 
-    // Process the results of an upload file chooser.  Currently there is only one `startActivityForResult` in this activity, so the request code, used to differentiate them, is ignored.
+    // Process the results of a file browse.
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // File uploads only work on API >= 21.
-        if (Build.VERSION.SDK_INT >= 21) {
-            // Pass the file to the WebView.
-            fileChooserCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
+        // Run the commands that correlate to the specified request code.
+        switch (requestCode) {
+            case FILE_UPLOAD_REQUEST_CODE:
+                // File uploads only work on API >= 21.
+                if (Build.VERSION.SDK_INT >= 21) {
+                    // Pass the file to the WebView.
+                    fileChooserCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
+                }
+                break;
+
+            case BROWSE_SAVE_WEBPAGE_IMAGE_REQUEST_CODE:
+                // Don't do anything if the user pressed back from the file picker.
+                if (resultCode == Activity.RESULT_OK) {
+                    // Get a handle for the save dialog fragment.
+                    DialogFragment saveWebpageImageDialogFragment= (DialogFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.save_as_image));
+
+                    // Only update the file name if the dialog still exists.
+                    if (saveWebpageImageDialogFragment != null) {
+                        // Get a handle for the save webpage image dialog.
+                        Dialog saveWebpageImageDialog = saveWebpageImageDialogFragment.getDialog();
+
+                        // Get a handle for the file name edit text.
+                        EditText fileNameEditText = saveWebpageImageDialog.findViewById(R.id.file_name_edittext);
+
+                        // Instantiate the file name helper.
+                        FileNameHelper fileNameHelper = new FileNameHelper();
+
+                        // Convert the file name URI to a file name path.
+                        String fileNamePath = fileNameHelper.convertUriToFileNamePath(data.getData());
+
+                        // Set the file name path as the text of the file name edit text.
+                        fileNameEditText.setText(fileNamePath);
+                    }
+                }
+                break;
         }
     }
 
@@ -2662,6 +2805,54 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Hide the keyboard.
         inputMethodManager.hideSoftInputFromWindow(toolbar.getWindowToken(), 0);
+    }
+
+    @Override
+    public void onSaveWebpageImage(DialogFragment dialogFragment) {
+        // Get a handle for the file name edit text.
+        EditText fileNameEditText = dialogFragment.getDialog().findViewById(R.id.file_name_edittext);
+
+        // Get the file path string.
+        saveWebsiteImageFilePath = fileNameEditText.getText().toString();
+
+        // Check to see if the storage permission is needed.
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
+            // Save the webpage image.
+            new SaveWebpageImage(this, currentWebView).execute(saveWebsiteImageFilePath);
+        } else {  // The storage permission has not been granted.
+            // Get the external private directory `File`.
+            File externalPrivateDirectoryFile = getExternalFilesDir(null);
+
+            // Remove the incorrect lint error below that the file might be null.
+            assert externalPrivateDirectoryFile != null;
+
+            // Get the external private directory string.
+            String externalPrivateDirectory = externalPrivateDirectoryFile.toString();
+
+            // Check to see if the file path is in the external private directory.
+            if (saveWebsiteImageFilePath.startsWith(externalPrivateDirectory)) {  // The file path is in the external private directory.
+                // Save the webpage image.
+                new SaveWebpageImage(this, currentWebView).execute(saveWebsiteImageFilePath);
+            } else {  // The file path is in a public directory.
+                // Check if the user has previously denied the storage permission.
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
+                    // Instantiate the storage permission alert dialog.
+                    DialogFragment storagePermissionDialogFragment = new StoragePermissionDialog();
+
+                    // Show the storage permission alert dialog.  The permission will be requested when the dialog is closed.
+                    storagePermissionDialogFragment.show(getSupportFragmentManager(), getString(R.string.storage_permission));
+                } else {  // Show the permission request directly.
+                    // Request the write external storage permission.  The webpage image will be saved when it finishes.
+                    ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, SAVE_WEBPAGE_IMAGE_REQUEST_CODE);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onCloseStoragePermissionDialog() {
+        // Request the write external storage permission.  The webpage image will be saved when it finishes.
+        ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, SAVE_WEBPAGE_IMAGE_REQUEST_CODE);
     }
 
     private void applyAppSettings() {
@@ -4903,8 +5094,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Create an intent to open a chooser based ont the file chooser parameters.
                     Intent fileChooserIntent = fileChooserParams.createIntent();
 
-                    // Open the file chooser.  Currently only one `startActivityForResult` exists in this activity, so the request code, used to differentiate them, is simply `0`.
-                    startActivityForResult(fileChooserIntent, 0);
+                    // Open the file chooser.
+                    startActivityForResult(fileChooserIntent, FILE_UPLOAD_REQUEST_CODE);
                 }
                 return true;
             }

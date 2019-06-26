@@ -354,7 +354,6 @@
     <string name="export_successful">Dışa aktarım başarılı</string>
     <string name="export_failed">Dışa aktarım başarısız:</string>
     <string name="import_failed">İçe aktarım başarısız:</string>
-    <string name="invalid_location">geçerli bir konum değildir</string>
     <string name="storage_permission">Depolama İzni</string>
     <string name="storage_permission_message">Privacy Browser, genel dizinlere erişmek için depolama iznine ihtiyaç duymaktadır. Reddedildiği takdirde, uygulamanın dizinleri hala kullanılabilir.</string>
     <string name="storage_permission_explanation">Genel dizinlerdeki dosyalara erişim icin depolama izni gerekmektedir. Aksi takdirde, sadece uygulamanın dizinleri çalışacaktır.</string>
@@ -383,7 +382,7 @@
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Orbot yüklenmeden Orbot vekil sunucusu çalışmayacaktır.</string>
-    <string name="waiting_for_orbot">Orbot\'un bağlanması bekleniyor...</string>
+    <string name="waiting_for_orbot">Orbot\'un bağlanması bekleniyor…</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">Privacy Browser Hakkında</string>

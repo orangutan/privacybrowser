@@ -43,13 +43,14 @@ public class PopulateBlocklists extends AsyncTask<Void, String, ArrayList<ArrayL
         void finishedPopulatingBlocklists(ArrayList<ArrayList<List<String[]>>> combinedBlocklists);
     }
 
-    // Declare a populate blocklists listener.
+    // Define a populate blocklists listener.
     private PopulateBlocklistsListener populateBlocklistsListener;
 
-    // Declare weak references for the activity and context.
+    // Define weak references for the activity and context.
     private WeakReference<Context> contextWeakReference;
     private WeakReference<Activity> activityWeakReference;
 
+    // The public constructor.
     public PopulateBlocklists(Context context, Activity activity) {
         // Populate the weak reference to the context.
         contextWeakReference = new WeakReference<>(context);

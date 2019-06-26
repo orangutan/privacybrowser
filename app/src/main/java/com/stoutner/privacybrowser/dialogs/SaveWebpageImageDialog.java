@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2019 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -44,17 +44,18 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment is required or an error is produced on API <=22.  It is also required for the browse button to work correctly.
+import androidx.fragment.app.DialogFragment;
 
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
-public class SaveLogcatDialog extends DialogFragment {
-    // Define the save logcat listener.
-    private SaveLogcatListener saveLogcatListener;
+public class SaveWebpageImageDialog extends DialogFragment {
+    // Define the save webpage image listener.
+    private SaveWebpageImageListener saveWebpageImageListener;
 
     // The public interface is used to send information back to the parent activity.
-    public interface SaveLogcatListener {
-        void onSaveLogcat(DialogFragment dialogFragment);
+    public interface SaveWebpageImageListener {
+        void onSaveWebpageImage(DialogFragment dialogFragment);
     }
 
     @Override
@@ -62,8 +63,8 @@ public class SaveLogcatDialog extends DialogFragment {
         // Run the default commands.
         super.onAttach(context);
 
-        // Get a handle for save logcat listener from the launching context.
-        saveLogcatListener = (SaveLogcatListener) context;
+        // Get a handle for the save webpage image listener from the launching context.
+        saveWebpageImageListener = (SaveWebpageImageListener) context;
     }
 
     // `@SuppressLing("InflateParams")` removes the warning about using null as the parent view group when inflating the alert dialog.
@@ -82,7 +83,7 @@ public class SaveLogcatDialog extends DialogFragment {
         AlertDialog.Builder dialogBuilder;
 
         // Get a handle for the activity.
-        Activity activity = getActivity();
+        Activity activity  = getActivity();
 
         // Remove the incorrect lint warning below that the activity might be null.
         assert activity != null;
@@ -95,13 +96,13 @@ public class SaveLogcatDialog extends DialogFragment {
         }
 
         // Set the title.
-        dialogBuilder.setTitle(R.string.save_logcat);
+        dialogBuilder.setTitle(R.string.save_image);
 
         // Set the icon according to the theme.
         if (darkTheme) {
-            dialogBuilder.setIcon(R.drawable.save_dialog_dark);
+            dialogBuilder.setIcon(R.drawable.images_enabled_dark);
         } else {
-            dialogBuilder.setIcon(R.drawable.save_dialog_light);
+            dialogBuilder.setIcon(R.drawable.images_enabled_light);
         }
 
         // Set the view.  The parent view is null because it will be assigned by the alert dialog.
@@ -115,13 +116,13 @@ public class SaveLogcatDialog extends DialogFragment {
         // Set the save button listener.
         dialogBuilder.setPositiveButton(R.string.save, (DialogInterface dialog, int which) -> {
             // Return the dialog fragment to the parent activity.
-            saveLogcatListener.onSaveLogcat(this);
+            saveWebpageImageListener.onSaveWebpageImage(this);
         });
 
         // Create an alert dialog from the builder.
         AlertDialog alertDialog = dialogBuilder.create();
 
-        // Remove the incorrect lint warning below that `getWindow()` might be null.
+        // Remove the incorrect lint warning below that `getWindows()` might be null.
         assert alertDialog.getWindow() != null;
 
         // Disable screenshots if not allowed.
@@ -144,16 +145,16 @@ public class SaveLogcatDialog extends DialogFragment {
         // Get a handle for the context.
         Context context = getContext();
 
-        // Remove the incorrect lint warning below that context might be null.
+        // Remove the incorrect lint warning that context might be null.
         assert context != null;
 
         // Set the default file path according to the storage permission state.
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
             // Set the default file path to use the external public directory.
-            defaultFilePath = Environment.getExternalStorageDirectory() + "/" + getString(R.string.privacy_browser_logcat_txt);
+            defaultFilePath = Environment.getExternalStorageDirectory() + "/" + getString(R.string.webpage_png);
         } else {  // The storage permission has not been granted.
             // Set the default file path to use the external private directory.
-            defaultFilePath = context.getExternalFilesDir(null) + "/" + getString(R.string.privacy_browser_logcat_txt);
+            defaultFilePath = context.getExternalFilesDir(null) + "/" + getString(R.string.webpage_png);
         }
 
         // Display the default file path.
@@ -173,7 +174,7 @@ public class SaveLogcatDialog extends DialogFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                // Enable the save button if a file name exists.
+                // // Enable the save button if a file name exists.
                 saveButton.setEnabled(!fileNameEditText.getText().toString().isEmpty());
             }
         });
@@ -187,7 +188,7 @@ public class SaveLogcatDialog extends DialogFragment {
             browseIntent.setType("*/*");
 
             // Set the initial file name.
-            browseIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.privacy_browser_logcat_txt));
+            browseIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.webpage_png));
 
             // Set the initial directory if the minimum API >= 26.
             if (Build.VERSION.SDK_INT >= 26) {
@@ -197,8 +198,8 @@ public class SaveLogcatDialog extends DialogFragment {
             // Request a file that can be opened.
             browseIntent.addCategory(Intent.CATEGORY_OPENABLE);
 
-            // Launch the file picker.  There is only one `startActivityForResult()`, so the request code is simply set to 0, but it must be run under `activity` so the request code is correct.
-            activity.startActivityForResult(browseIntent, 0);
+            // Start the file picker.  This must be started under `activity` so that the request code is returned correctly.
+            activity.startActivityForResult(browseIntent, MainWebViewActivity.BROWSE_SAVE_WEBPAGE_IMAGE_REQUEST_CODE);
         });
 
         // Hide the storage permission text view on API < 23 as permissions on older devices are automatically granted.

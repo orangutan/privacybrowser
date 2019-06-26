@@ -357,7 +357,6 @@
     <string name="export_successful">Esportazione riuscita</string>
     <string name="export_failed">Esportazione fallita:</string>
     <string name="import_failed">Importazione fallita:</string>
-    <string name="invalid_location">non è una cartella valida.</string>
     <string name="storage_permission">Permesso di accesso alla memoria</string>
     <string name="storage_permission_message">Privacy Browser necessita del permesso di accesso alla memoria per poter accedere alle cartelle pubbliche.
         Se questo permesso è negato possono comunque essere utilizzate le cartelle dell\'applicazione.</string>
@@ -388,7 +387,7 @@
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Il Proxy con Orbot funziona solo se è installato Orbot.</string>
-    <string name="waiting_for_orbot">In attesa della connessione di Orbot...</string>
+    <string name="waiting_for_orbot">In attesa della connessione di Orbot…</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">Informazioni su Privacy Browser</string>

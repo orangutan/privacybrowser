@@ -29,7 +29,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -94,18 +93,15 @@ public class DownloadImageDialog extends DialogFragment {
         // Remove the warning below that `.getActivity()` might be null.
         assert getActivity() != null;
 
-        // Get the activity's layout inflater.
-        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-
-        // Use and alert dialog builder to create the alert dialog.
-        AlertDialog.Builder dialogBuilder;
-
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         // Get the screenshot and theme preferences.
         boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
         boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
+
+        // Use and alert dialog builder to create the alert dialog.
+        AlertDialog.Builder dialogBuilder;
 
         // Set the style according to the theme.
         if (darkTheme) {
@@ -117,8 +113,18 @@ public class DownloadImageDialog extends DialogFragment {
         // Set the title.
         dialogBuilder.setTitle(R.string.save_image_as);
 
+        // Set the icon according to the theme.
+        if (darkTheme) {
+            dialogBuilder.setIcon(R.drawable.images_enabled_dark);
+        } else {
+            dialogBuilder.setIcon(R.drawable.images_enabled_light);
+        }
+
+        // Remove the incorrect lint warning below that `getActivity() might be null.
+        assert getActivity() != null;
+
         // Set the view.  The parent view is `null` because it will be assigned by `AlertDialog`.
-        dialogBuilder.setView(layoutInflater.inflate(R.layout.download_image_dialog, null));
+        dialogBuilder.setView(getActivity().getLayoutInflater().inflate(R.layout.download_image_dialog, null));
 
         // Set an listener on the negative button.
         dialogBuilder.setNegativeButton(R.string.cancel, (DialogInterface dialog, int which) -> {
