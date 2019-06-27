@@ -180,6 +180,7 @@
         <string name="find_on_page">Auf Seite finden</string>
         <string name="print">Drucken</string>
             <string name="privacy_browser_web_page">Privacy Browser-Website</string>
+        <string name="save_as_image">Als Grafik speichern</string>
         <string name="view_source">Quelltext anzeigen</string>
         <string name="add_to_home_screen">Zur Startseite hinzufügen</string>
     <string name="share">Teilen</string>
@@ -202,6 +203,13 @@
     <!-- Find on Page. -->
     <string name="previous">Vorheriges</string>
     <string name="next">Nächstes</string>
+
+    <!-- Save Webpage as Image. -->
+    <string name="save_image">Grafik speichern</string>
+    <string name="webpage_png">Webseite.png</string>
+    <string name="saving_image">Speichere Grafik…</string>
+    <string name="image_saved">Grafik gespeichert.</string>
+    <string name="error_saving_image">Fehler beim Speichern der Grafik:</string>
 
     <!-- View Source. -->
     <string name="request_headers">Anfragekopfzeilen</string>

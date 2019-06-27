@@ -50,6 +50,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
@@ -2000,7 +2001,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Store the hit test result.
         final WebView.HitTestResult hitTestResult = currentWebView.getHitTestResult();
 
-        // Create the URL strings.
+        // Define the URL strings.
         final String imageUrl;
         final String linkUrl;
 
@@ -2026,19 +2027,25 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 menu.add(R.string.open_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
                     // Load the link URL in a new tab.
                     addNewTab(linkUrl);
-                    return false;
+
+                    // Consume the event.
+                    return true;
                 });
 
                 // Add an Open with App entry.
                 menu.add(R.string.open_with_app).setOnMenuItemClickListener((MenuItem item) -> {
                     openWithApp(linkUrl);
-                    return false;
+
+                    // Consume the event.
+                    return true;
                 });
 
                 // Add an Open with Browser entry.
                 menu.add(R.string.open_with_browser).setOnMenuItemClickListener((MenuItem item) -> {
                     openWithBrowser(linkUrl);
-                    return false;
+
+                    // Consume the event.
+                    return true;
                 });
 
                 // Add a Copy URL entry.
@@ -2048,7 +2055,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Set the `ClipData` as the clipboard's primary clip.
                     clipboardManager.setPrimaryClip(srcAnchorTypeClipData);
-                    return false;
+
+                    // Consume the event.
+                    return true;
                 });
 
                 // Add a Download URL entry.
@@ -2083,7 +2092,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             downloadFileDialogFragment.show(fragmentManager, getString(R.string.download));
                         }
                     }
-                    return false;
+
+                    // Consume the event.
+                    return true;
                 });
 
                 // Add a Cancel entry, which by default closes the context menu.
@@ -2110,7 +2121,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Make it so.
                     startActivity(emailIntent);
-                    return false;
+
+                    // Consume the event.
+                    return true;
                 });
 
                 // Add a Copy Email Address entry.
@@ -2120,16 +2133,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Set the `ClipData` as the clipboard's primary clip.
                     clipboardManager.setPrimaryClip(srcEmailTypeClipData);
-                    return false;
+
+                    // Consume the event.
+                    return true;
                 });
 
                 // Add a `Cancel` entry, which by default closes the `ContextMenu`.
                 menu.add(R.string.cancel);
                 break;
 
-            // `IMAGE_TYPE` is an image. `SRC_IMAGE_ANCHOR_TYPE` is an image that is also a link.  Privacy Browser processes them the same.
+            // `IMAGE_TYPE` is an image.
             case WebView.HitTestResult.IMAGE_TYPE:
-            case WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE:
                 // Get the image URL.
                 imageUrl = hitTestResult.getExtra();
 
@@ -2140,16 +2154,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 menu.add(R.string.open_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
                     // Load the image URL in a new tab.
                     addNewTab(imageUrl);
-                    return false;
+
+                    // Consume the event.
+                    return true;
                 });
 
                 // Add a View Image entry.
                 menu.add(R.string.view_image).setOnMenuItemClickListener(item -> {
+                    // Load the image in the current tab.
                     loadUrl(imageUrl);
-                    return false;
+
+                    // Consume the event.
+                    return true;
                 });
 
-                // Add a `Download Image` entry.
+                // Add a Download Image entry.
                 menu.add(R.string.download_image).setOnMenuItemClickListener((MenuItem item) -> {
                     // Check if the download should be processed by an external app.
                     if (sharedPreferences.getBoolean("download_with_external_app", false)) {  // Download with an external app.
@@ -2168,7 +2187,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 // Show the download location permission alert dialog.  The permission will be requested when the dialog is closed.
                                 downloadLocationPermissionDialogFragment.show(fragmentManager, getString(R.string.download_location));
                             } else {  // Show the permission request directly.
-                                // Request the permission.  The download dialog will be launched by `onRequestPermissionResult().
+                                // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
                                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_IMAGE_REQUEST_CODE);
                             }
                         } else {  // The storage permission has already been granted.
@@ -2179,32 +2198,149 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             downloadImageDialogFragment.show(fragmentManager, getString(R.string.download));
                         }
                     }
-                    return false;
+
+                    // Consume the event.
+                    return true;
                 });
 
-                // Add a `Copy URL` entry.
-                menu.add(R.string.copy_url).setOnMenuItemClickListener(item -> {
-                    // Save the image URL in a `ClipData`.
-                    ClipData srcImageAnchorTypeClipData = ClipData.newPlainText(getString(R.string.url), imageUrl);
+                // Add a Copy URL entry.
+                menu.add(R.string.copy_url).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Save the image URL in a clip data.
+                    ClipData imageTypeClipData = ClipData.newPlainText(getString(R.string.url), imageUrl);
 
-                    // Set the `ClipData` as the clipboard's primary clip.
-                    clipboardManager.setPrimaryClip(srcImageAnchorTypeClipData);
-                    return false;
+                    // Set the clip data as the clipboard's primary clip.
+                    clipboardManager.setPrimaryClip(imageTypeClipData);
+
+                    // Consume the event.
+                    return true;
                 });
 
                 // Add an Open with App entry.
                 menu.add(R.string.open_with_app).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Open the image URL with an external app.
                     openWithApp(imageUrl);
-                    return false;
+
+                    // Consume the event.
+                    return true;
                 });
 
                 // Add an Open with Browser entry.
                 menu.add(R.string.open_with_browser).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Open the image URL with an external browser.
                     openWithBrowser(imageUrl);
-                    return false;
+
+                    // Consume the event.
+                    return true;
                 });
 
-                // Add a `Cancel` entry, which by default closes the `ContextMenu`.
+                // Add a Cancel entry, which by default closes the context menu.
+                menu.add(R.string.cancel);
+                break;
+
+            // `SRC_IMAGE_ANCHOR_TYPE` is an image that is also a link.
+            case WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE:
+                // Get the image URL.
+                imageUrl = hitTestResult.getExtra();
+
+                // Instantiate a handler.
+                Handler handler = new Handler();
+
+                // Get a message from the handler.
+                Message message = handler.obtainMessage();
+
+                // Request the image details from the last touched node be returned in the message.
+                currentWebView.requestFocusNodeHref(message);
+
+                // Get the link URL from the message data.
+                linkUrl = message.getData().getString("url");
+
+                // Set the link URL as the title of the context menu.
+                menu.setHeaderTitle(linkUrl);
+
+                // Add an Open in New Tab entry.
+                menu.add(R.string.open_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Load the link URL in a new tab.
+                    addNewTab(linkUrl);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add a View Image entry.
+                menu.add(R.string.view_image).setOnMenuItemClickListener((MenuItem item) -> {
+                   // View the image in the current tab.
+                   loadUrl(imageUrl);
+
+                   // Consume the event.
+                   return true;
+                });
+
+                // Add a Download Image entry.
+                menu.add(R.string.download_image).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Check if the download should be processed by an external app.
+                    if (sharedPreferences.getBoolean("download_with_external_app", false)) {  // Download with an external app.
+                        openUrlWithExternalApp(imageUrl);
+                    } else {  // Download with Android's download manager.
+                        // Check to see if the storage permission has already been granted.
+                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {  // The storage permission needs to be requested.
+                            // Store the image URL for use by `onRequestPermissionResult()`.
+                            downloadImageUrl = imageUrl;
+
+                            // Show a dialog if the user has previously denied the permission.
+                            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
+                                // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_IMAGE.
+                                DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_IMAGE);
+
+                                // Show the download location permission alert dialog.  The permission will be requested when the dialog is closed.
+                                downloadLocationPermissionDialogFragment.show(fragmentManager, getString(R.string.download_location));
+                            } else {  // Show the permission request directly.
+                                // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
+                                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_IMAGE_REQUEST_CODE);
+                            }
+                        } else {  // The storage permission has already been granted.
+                            // Get a handle for the download image alert dialog.
+                            DialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
+
+                            // Show the download image alert dialog.
+                            downloadImageDialogFragment.show(fragmentManager, getString(R.string.download));
+                        }
+                    }
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add a Copy URL entry.
+                menu.add(R.string.copy_url).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Save the link URL in a clip data.
+                    ClipData srcImageAnchorTypeClipData = ClipData.newPlainText(getString(R.string.url), linkUrl);
+
+                    // Set the clip data as the clipboard's primary clip.
+                    clipboardManager.setPrimaryClip(srcImageAnchorTypeClipData);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add an Open with App entry.
+                menu.add(R.string.open_with_app).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Open the link URL with an external app.
+                    openWithApp(linkUrl);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add an Open with Browser entry.
+                menu.add(R.string.open_with_browser).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Open the link URL with an external browser.
+                    openWithBrowser(linkUrl);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add a cancel entry, which by default closes the context menu.
                 menu.add(R.string.cancel);
                 break;
         }
@@ -4216,8 +4352,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Flag the intent to open in a new task.
         openWithAppIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        // Show the chooser.
-        startActivity(openWithAppIntent);
+        try {
+            // Show the chooser.
+            startActivity(openWithAppIntent);
+        } catch (ActivityNotFoundException exception) {
+            // Show a snackbar with the error.
+            Snackbar.make(currentWebView, getString(R.string.error) + "  " + exception, Snackbar.LENGTH_INDEFINITE).show();
+        }
     }
 
     private void openWithBrowser(String url) {
@@ -4230,8 +4371,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Flag the intent to open in a new task.
         openWithBrowserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        // Show the chooser.
-        startActivity(openWithBrowserIntent);
+        try {
+            // Show the chooser.
+            startActivity(openWithBrowserIntent);
+        } catch (ActivityNotFoundException exception) {
+            // Show a snackbar with the error.
+            Snackbar.make(currentWebView, getString(R.string.error) + "  " + exception, Snackbar.LENGTH_INDEFINITE).show();
+        }
     }
 
     private String sanitizeUrl(String url) {

@@ -55,6 +55,7 @@
     <string name="close_tab">Close Tab</string>
     <string name="new_tab">New tab</string>
     <string name="loading">Loading…</string>
+    <string name="error">Error:</string>
 
     <!-- Loading Blocklists. -->
     <string name="loading_easylist">Loading EasyList</string>

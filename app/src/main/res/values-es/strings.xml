@@ -175,6 +175,7 @@
         <string name="display_images">Mostrar imágenes</string>
         <string name="print">Imprimir</string>
             <string name="privacy_browser_web_page">Página web de Navegador Privado</string>
+        <string name="save_as_image">Guardar como imagen</string>
         <string name="add_to_home_screen">Añadir a la ventana de inicio</string>
         <string name="options_night_mode">Modo noche</string>
     <string name="find_on_page">Buscar en página</string>
@@ -199,6 +200,13 @@
     <!-- Find on Page. -->
     <string name="previous">Anterior</string>
     <string name="next">Siguiente</string>
+
+    <!-- Save Webpage as Image. -->
+    <string name="save_image">Guardar imagen</string>
+    <string name="webpage_png">Webpage.png</string>
+    <string name="saving_image">Guardando imagen…</string>
+    <string name="image_saved">Imagen guardada.</string>
+    <string name="error_saving_image">Error guardando imagen:</string>
 
     <!-- View Source. -->
     <string name="request_headers">Cabeceras de solicitud</string>

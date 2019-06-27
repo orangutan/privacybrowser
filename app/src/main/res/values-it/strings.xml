@@ -177,6 +177,7 @@
         <string name="find_on_page">Cerca nella pagina</string>
         <string name="print">Stampa</string>
             <string name="privacy_browser_web_page">Pagina web di Privacy Browser</string>
+        <string name="save_as_image">Salva come Immagine</string>
         <string name="add_to_home_screen">Aggiungi collegamento</string>
         <string name="view_source">Visualizza sorgente</string>
     <string name="share">Condividi</string>
@@ -199,6 +200,13 @@
     <!-- Find on Page. -->
     <string name="previous">Precedente</string>
     <string name="next">Successivo</string>
+
+    <!-- Save Webpage as Image. -->
+    <string name="save_image">Salva Immagine</string>
+    <string name="webpage_png">Webpage.png</string>
+    <string name="saving_image">Salvataggio immagine…</string>
+    <string name="image_saved">Immagine salvata.</string>
+    <string name="error_saving_image">Errore nel salvare l\'immagine:</string>
 
     <!-- View Source. -->
     <string name="request_headers">Richiesta Intestazioni</string>

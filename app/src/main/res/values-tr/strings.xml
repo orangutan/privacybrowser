@@ -175,6 +175,7 @@
         <string name="find_on_page">Sayfada bul</string>
         <string name="print">Yazdır</string>
             <string name="privacy_browser_web_page">Privacy Browser Web Sayfası</string>
+        <string name="save_as_image">Resmi farklı kaydet</string>
         <string name="add_to_home_screen">Ana ekrana ekle</string>
         <string name="view_source">Kaynağı görüntüle</string>
     <string name="share">Paylaş</string>
@@ -197,6 +198,13 @@
     <!-- Find on Page. -->
     <string name="previous">Önceki</string>
     <string name="next">Sonraki</string>
+
+    <!-- Save Webpage as Image. -->
+    <string name="save_image">Resmi kaydet</string>
+    <string name="webpage_png">Websayfası.png</string>
+    <string name="saving_image">Resim kaydediliyor…</string>
+    <string name="image_saved">Resim kaydedildi</string>
+    <string name="error_saving_image">Resim kaydı başarısız:</string>
 
     <!-- View Source. -->
     <string name="request_headers">İstek Başlıkları</string>
