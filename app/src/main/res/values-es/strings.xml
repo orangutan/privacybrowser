@@ -203,7 +203,7 @@
 
     <!-- Save Webpage as Image. -->
     <string name="save_image">Guardar imagen</string>
-    <string name="webpage_png">Webpage.png</string>
+    <string name="webpage_png">PaginaWeb.png</string>
     <string name="saving_image">Guardando imagen…</string>
     <string name="image_saved">Imagen guardada.</string>
     <string name="error_saving_image">Error guardando imagen:</string>

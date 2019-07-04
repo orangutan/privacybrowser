@@ -141,14 +141,16 @@
                         app:layout_scrollFlags="scroll|enterAlways|snap"
                         android:visibility="gone" >
 
+                        <!-- `android:background="?attr/selectableItemBackground"` adds a ripple animation on touch. -->
                         <ImageView
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_width="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:paddingStart="10dp"
                             android:paddingEnd="10dp"
                             android:src="@drawable/close_light"
                             android:tint="?attr/addTabIconTintColor"
+                            android:background="?attr/selectableItemBackground"
                             android:onClick="closeTab"
                             android:contentDescription="@string/close_tab" />
 
@@ -160,14 +162,16 @@
                             app:tabIndicatorGravity="top"
                             app:tabMode="scrollable" />
 
+                        <!-- `android:background="?attr/selectableItemBackground"` adds a ripple animation on touch. -->
                         <ImageView
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_width="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:paddingStart="10dp"
                             android:paddingEnd="10dp"
                             android:src="@drawable/add_light"
                             android:tint="?attr/addTabIconTintColor"
+                            android:background="?attr/selectableItemBackground"
                             android:onClick="addTab"
                             android:contentDescription="@string/add_tab" />
                     </LinearLayout>
