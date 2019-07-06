@@ -930,23 +930,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // Remove Android Studio's warning about the dangers of using SetJavaScriptEnabled.
     @SuppressLint("SetJavaScriptEnabled")
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        // Reenter full screen browsing mode if it was interrupted by the options menu.  <https://redmine.stoutner.com/issues/389>
-        if (inFullScreenBrowsingMode) {
-            // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-            FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
-
-            /* Hide the system bars.
-             * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
-             * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
-             * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
-             * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
-             */
-            rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
-
         // Get the selected menu item ID.
         int menuItemId = menuItem.getItemId();
 
@@ -4998,12 +4981,25 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
         });
 
-        // Update the status of swipe to refresh based on the scroll position of the nested scroll WebView.
+        // Update the status of swipe to refresh based on the scroll position of the nested scroll WebView.  Also reinforce full screen browsing mode.
         // Once the minimum API >= 23 this can be replaced with `nestedScrollWebView.setOnScrollChangeListener()`.
         nestedScrollWebView.getViewTreeObserver().addOnScrollChangedListener(() -> {
             if (nestedScrollWebView.getSwipeToRefresh()) {
                 // Only enable swipe to refresh if the WebView is scrolled to the top.
                 swipeRefreshLayout.setEnabled(nestedScrollWebView.getScrollY() == 0);
+            }
+
+            // Reinforce the system UI visibility flags if in full screen browsing mode.
+            // This hides the status and navigation bars, which are displayed if other elements are shown, like dialog boxes, the options menu, or the keyboard.
+            if (inFullScreenBrowsingMode) {
+                /* Hide the system bars.
+                 * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                 * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+                 * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                 * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+                 */
+                rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
             }
         });
 
