@@ -69,9 +69,9 @@
             This can sometimes lead to false positives, where resources are allowed or blocked in ways that weren’t intended by the original entry.
             A more detailed description of how the blocklist entries are processed is available at <a href="https://www.stoutner.com/privacy-browser/blocklists/">stoutner.com</a>.</p>
 
-        <p>Privacy Browser has two additional blocklists,
-            one called <a href="https://www.stoutner.com/privacy-browser/blocklists/ultraprivacy/">UltraPrivacy</a> that blocks trackers that EasyPrivacy allows,
-            and the other that blocks all third-party requests.
+        <p>Privacy Browser has three additional blocklists.
+            <a href="https://www.stoutner.com/privacy-browser/blocklists/ultralist/">UltraList</a> and <a href="https://www.stoutner.com/privacy-browser/blocklists/ultraprivacy/">UltraPrivacy</a>
+            block ads and trackers that EasyList and EasyPrivacy do not. The third blocks all third-party requests.
             A request is only considered third-party if the base domain of the request is different than the base domain of the URL.
             For example, if <code>www.website.com</code> loads a picture from <code>images.website.com</code>,
             this is not blocked as a third-party request because they both share the same base domain of <code>website.com</code>.

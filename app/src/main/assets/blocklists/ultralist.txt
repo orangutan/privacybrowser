@@ -1,0 +1,10 @@
+[Adblock Plus 2.0]
+! Version: 1
+! Title: UltraList
+! Last modified: 9 July 2019 18:11 UTC
+! Expires: 90 days (update frequency)
+! Homepage: https://www.stoutner.com/privacy-browser/blocklists/ultralist/
+! Licence: GPLv3+ http://www.gnu.org/licenses/gpl-3.0.html
+!
+! There should be no `adservice` on my system.  <https://redmine.stoutner.com/issues/450>
+adservice

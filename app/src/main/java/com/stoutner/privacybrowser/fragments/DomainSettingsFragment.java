@@ -107,29 +107,31 @@ public class DomainSettingsFragment extends Fragment {
 
         // Get handles for the views in the fragment.
         EditText domainNameEditText = domainSettingsView.findViewById(R.id.domain_settings_name_edittext);
-        Switch javaScriptEnabledSwitch = domainSettingsView.findViewById(R.id.javascript_switch);
         ImageView javaScriptImageView = domainSettingsView.findViewById(R.id.javascript_imageview);
-        Switch firstPartyCookiesEnabledSwitch = domainSettingsView.findViewById(R.id.first_party_cookies_switch);
+        Switch javaScriptSwitch = domainSettingsView.findViewById(R.id.javascript_switch);
         ImageView firstPartyCookiesImageView = domainSettingsView.findViewById(R.id.first_party_cookies_imageview);
+        Switch firstPartyCookiesSwitch = domainSettingsView.findViewById(R.id.first_party_cookies_switch);
         LinearLayout thirdPartyCookiesLinearLayout = domainSettingsView.findViewById(R.id.third_party_cookies_linearlayout);
-        Switch thirdPartyCookiesEnabledSwitch = domainSettingsView.findViewById(R.id.third_party_cookies_switch);
         ImageView thirdPartyCookiesImageView = domainSettingsView.findViewById(R.id.third_party_cookies_imageview);
-        Switch domStorageEnabledSwitch = domainSettingsView.findViewById(R.id.dom_storage_switch);
+        Switch thirdPartyCookiesSwitch = domainSettingsView.findViewById(R.id.third_party_cookies_switch);
         ImageView domStorageImageView = domainSettingsView.findViewById(R.id.dom_storage_imageview);
-        Switch formDataEnabledSwitch = domainSettingsView.findViewById(R.id.form_data_switch);  // The form data views can be remove once the minimum API >= 26.
+        Switch domStorageSwitch = domainSettingsView.findViewById(R.id.dom_storage_switch);
         ImageView formDataImageView = domainSettingsView.findViewById(R.id.form_data_imageview);  // The form data views can be remove once the minimum API >= 26.
-        Switch easyListSwitch = domainSettingsView.findViewById(R.id.easylist_switch);
+        Switch formDataSwitch = domainSettingsView.findViewById(R.id.form_data_switch);  // The form data views can be remove once the minimum API >= 26.
         ImageView easyListImageView = domainSettingsView.findViewById(R.id.easylist_imageview);
-        Switch easyPrivacySwitch = domainSettingsView.findViewById(R.id.easyprivacy_switch);
+        Switch easyListSwitch = domainSettingsView.findViewById(R.id.easylist_switch);
         ImageView easyPrivacyImageView = domainSettingsView.findViewById(R.id.easyprivacy_imageview);
-        Switch fanboysAnnoyanceListSwitch = domainSettingsView.findViewById(R.id.fanboys_annoyance_list_switch);
+        Switch easyPrivacySwitch = domainSettingsView.findViewById(R.id.easyprivacy_switch);
         ImageView fanboysAnnoyanceListImageView = domainSettingsView.findViewById(R.id.fanboys_annoyance_list_imageview);
-        Switch fanboysSocialBlockingListSwitch = domainSettingsView.findViewById(R.id.fanboys_social_blocking_list_switch);
+        Switch fanboysAnnoyanceListSwitch = domainSettingsView.findViewById(R.id.fanboys_annoyance_list_switch);
         ImageView fanboysSocialBlockingListImageView = domainSettingsView.findViewById(R.id.fanboys_social_blocking_list_imageview);
-        Switch ultraPrivacySwitch = domainSettingsView.findViewById(R.id.ultraprivacy_switch);
+        Switch fanboysSocialBlockingListSwitch = domainSettingsView.findViewById(R.id.fanboys_social_blocking_list_switch);
+        ImageView ultraListImageView = domainSettingsView.findViewById(R.id.ultralist_imageview);
+        Switch ultraListSwitch = domainSettingsView.findViewById(R.id.ultralist_switch);
         ImageView ultraPrivacyImageView = domainSettingsView.findViewById(R.id.ultraprivacy_imageview);
-        Switch blockAllThirdPartyRequestsSwitch = domainSettingsView.findViewById(R.id.block_all_third_party_requests_switch);
+        Switch ultraPrivacySwitch = domainSettingsView.findViewById(R.id.ultraprivacy_switch);
         ImageView blockAllThirdPartyRequestsImageView = domainSettingsView.findViewById(R.id.block_all_third_party_requests_imageview);
+        Switch blockAllThirdPartyRequestsSwitch = domainSettingsView.findViewById(R.id.block_all_third_party_requests_switch);
         Spinner userAgentSpinner = domainSettingsView.findViewById(R.id.user_agent_spinner);
         TextView userAgentTextView = domainSettingsView.findViewById(R.id.user_agent_textview);
         EditText customUserAgentEditText = domainSettingsView.findViewById(R.id.custom_user_agent_edittext);
@@ -199,16 +201,17 @@ public class DomainSettingsFragment extends Fragment {
 
         // Save the cursor entries as variables.
         String domainNameString = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.DOMAIN_NAME));
-        int javaScriptEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT));
-        int firstPartyCookiesEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES));
-        int thirdPartyCookiesEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES));
-        int domStorageEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE));
-        int formDataEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA));  // Form data can be remove once the minimum API >= 26.
-        int easyListEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYLIST));
-        int easyPrivacyEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY));
+        int javaScriptInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_JAVASCRIPT));
+        int firstPartyCookiesInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FIRST_PARTY_COOKIES));
+        int thirdPartyCookiesInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_THIRD_PARTY_COOKIES));
+        int domStorageInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE));
+        int formDataInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA));  // Form data can be remove once the minimum API >= 26.
+        int easyListInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYLIST));
+        int easyPrivacyInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY));
         int fanboysAnnoyanceListInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST));
         int fanboysSocialBlockingListInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST));
-        int ultraPrivacyEnabledInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY));
+        int ultraListInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ULTRALIST));
+        int ultraPrivacyInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY));
         int blockAllThirdPartyRequestsInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS));
         String currentUserAgentName = domainCursor.getString(domainCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT));
         int fontSizeInt = domainCursor.getInt(domainCursor.getColumnIndex(DomainsDatabaseHelper.FONT_SIZE));
@@ -364,31 +367,31 @@ public class DomainSettingsFragment extends Fragment {
 
         // Disable the JavaScript switch if night mode is enabled.
         if (nightModeEnabled) {
-            javaScriptEnabledSwitch.setEnabled(false);
+            javaScriptSwitch.setEnabled(false);
         } else {
-            javaScriptEnabledSwitch.setEnabled(true);
+            javaScriptSwitch.setEnabled(true);
         }
 
         // Set the JavaScript icon.
-        if ((javaScriptEnabledInt == 1) || nightModeEnabled) {
+        if ((javaScriptInt == 1) || nightModeEnabled) {
             javaScriptImageView.setImageDrawable(resources.getDrawable(R.drawable.javascript_enabled));
         } else {
             javaScriptImageView.setImageDrawable(resources.getDrawable(R.drawable.privacy_mode));
         }
 
         // Set the JavaScript switch status.
-        if (javaScriptEnabledInt == 1) {  // JavaScript is enabled.
-            javaScriptEnabledSwitch.setChecked(true);
+        if (javaScriptInt == 1) {  // JavaScript is enabled.
+            javaScriptSwitch.setChecked(true);
         } else {  // JavaScript is disabled.
-            javaScriptEnabledSwitch.setChecked(false);
+            javaScriptSwitch.setChecked(false);
         }
 
         // Set the first-party cookies status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-        if (firstPartyCookiesEnabledInt == 1) {  // First-party cookies are enabled.
-            firstPartyCookiesEnabledSwitch.setChecked(true);
+        if (firstPartyCookiesInt == 1) {  // First-party cookies are enabled.
+            firstPartyCookiesSwitch.setChecked(true);
             firstPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_enabled));
         } else {  // First-party cookies are disabled.
-            firstPartyCookiesEnabledSwitch.setChecked(false);
+            firstPartyCookiesSwitch.setChecked(false);
 
             // Set the icon according to the theme.
             if (darkTheme) {
@@ -401,13 +404,13 @@ public class DomainSettingsFragment extends Fragment {
         // Only display third-party cookies if SDK_INT >= 21.
         if (Build.VERSION.SDK_INT >= 21) {  // Third-party cookies can be configured for API >= 21.
             // Only enable third-party-cookies if first-party cookies are enabled.
-            if (firstPartyCookiesEnabledInt == 1) {  // First-party cookies are enabled.
+            if (firstPartyCookiesInt == 1) {  // First-party cookies are enabled.
                 // Set the third-party cookies status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-                if (thirdPartyCookiesEnabledInt == 1) {  // Both first-party and third-party cookies are enabled.
-                    thirdPartyCookiesEnabledSwitch.setChecked(true);
+                if (thirdPartyCookiesInt == 1) {  // Both first-party and third-party cookies are enabled.
+                    thirdPartyCookiesSwitch.setChecked(true);
                     thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_warning));
                 } else {  // First party cookies are enabled but third-party cookies are disabled.
-                    thirdPartyCookiesEnabledSwitch.setChecked(false);
+                    thirdPartyCookiesSwitch.setChecked(false);
 
                     // Set the icon according to the theme.
                     if (darkTheme) {
@@ -418,14 +421,14 @@ public class DomainSettingsFragment extends Fragment {
                 }
             } else {  // First-party cookies are disabled.
                 // Set the status of third-party cookies.
-                if (thirdPartyCookiesEnabledInt == 1) {
-                    thirdPartyCookiesEnabledSwitch.setChecked(true);
+                if (thirdPartyCookiesInt == 1) {
+                    thirdPartyCookiesSwitch.setChecked(true);
                 } else {
-                    thirdPartyCookiesEnabledSwitch.setChecked(false);
+                    thirdPartyCookiesSwitch.setChecked(false);
                 }
 
                 // Disable the third-party cookies switch.
-                thirdPartyCookiesEnabledSwitch.setEnabled(false);
+                thirdPartyCookiesSwitch.setEnabled(false);
 
                 // Set the icon according to the theme.
                 if (darkTheme) {
@@ -440,17 +443,17 @@ public class DomainSettingsFragment extends Fragment {
         }
 
         // Only enable DOM storage if JavaScript is enabled.
-        if ((javaScriptEnabledInt == 1) || nightModeEnabled) {  // JavaScript is enabled.
+        if ((javaScriptInt == 1) || nightModeEnabled) {  // JavaScript is enabled.
             // Enable the DOM storage `Switch`.
-            domStorageEnabledSwitch.setEnabled(true);
+            domStorageSwitch.setEnabled(true);
 
             // Set the DOM storage status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-            if (domStorageEnabledInt == 1) {  // Both JavaScript and DOM storage are enabled.
-                domStorageEnabledSwitch.setChecked(true);
+            if (domStorageInt == 1) {  // Both JavaScript and DOM storage are enabled.
+                domStorageSwitch.setChecked(true);
                 domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_enabled));
             } else {  // JavaScript is enabled but DOM storage is disabled.
                 // Set the DOM storage switch to off.
-                domStorageEnabledSwitch.setChecked(false);
+                domStorageSwitch.setChecked(false);
 
                 // Set the icon according to the theme.
                 if (darkTheme) {
@@ -461,13 +464,13 @@ public class DomainSettingsFragment extends Fragment {
             }
         } else {  // JavaScript is disabled.
             // Disable the DOM storage `Switch`.
-            domStorageEnabledSwitch.setEnabled(false);
+            domStorageSwitch.setEnabled(false);
 
             // Set the checked status of DOM storage.
-            if (domStorageEnabledInt == 1) {  // DOM storage is enabled but JavaScript is disabled.
-                domStorageEnabledSwitch.setChecked(true);
+            if (domStorageInt == 1) {  // DOM storage is enabled but JavaScript is disabled.
+                domStorageSwitch.setChecked(true);
             } else {  // Both JavaScript and DOM storage are disabled.
-                domStorageEnabledSwitch.setChecked(false);
+                domStorageSwitch.setChecked(false);
             }
 
             // Set the icon according to the theme.
@@ -481,14 +484,14 @@ public class DomainSettingsFragment extends Fragment {
         // Set the form data status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.  Form data can be removed once the minimum API >= 26.
         if (Build.VERSION.SDK_INT >= 26) {  // Form data no longer applies to newer versions of Android.
             // Hide the form data switch.
-            formDataEnabledSwitch.setVisibility(View.GONE);
+            formDataSwitch.setVisibility(View.GONE);
         } else {  // Form data should be displayed because this is an older version of Android.
-            if (formDataEnabledInt == 1) {  // Form data is on.
-                formDataEnabledSwitch.setChecked(true);
+            if (formDataInt == 1) {  // Form data is on.
+                formDataSwitch.setChecked(true);
                 formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_enabled));
             } else {  // Form data is off.
                 // Turn the form data switch to off.
-                formDataEnabledSwitch.setChecked(false);
+                formDataSwitch.setChecked(false);
 
                 // Set the icon according to the theme.
                 if (darkTheme) {
@@ -500,7 +503,7 @@ public class DomainSettingsFragment extends Fragment {
         }
 
         // Set the EasyList status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-        if (easyListEnabledInt == 1) {  // EasyList is on.
+        if (easyListInt == 1) {  // EasyList is on.
             // Turn the switch on.
             easyListSwitch.setChecked(true);
 
@@ -523,7 +526,7 @@ public class DomainSettingsFragment extends Fragment {
         }
 
         // Set the EasyPrivacy status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-        if (easyPrivacyEnabledInt == 1) {  // EasyPrivacy is on.
+        if (easyPrivacyInt == 1) {  // EasyPrivacy is on.
             // Turn the switch on.
             easyPrivacySwitch.setChecked(true);
 
@@ -614,8 +617,31 @@ public class DomainSettingsFragment extends Fragment {
             }
         }
 
+        // Set the UltraList status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
+        if (ultraListInt == 1) {  // UltraList is on.
+            // Turn the switch on.
+            ultraListSwitch.setChecked(true);
+
+            // Set the icon according to the theme.
+            if (darkTheme) {
+                ultraListImageView.setImageDrawable(resources.getDrawable(R.drawable.block_ads_enabled_dark));
+            } else {
+                ultraListImageView.setImageDrawable(resources.getDrawable(R.drawable.block_ads_enabled_light));
+            }
+        } else {  // UltraList is off.
+            // Turn the switch off.
+            ultraListSwitch.setChecked(false);
+
+            // Set the icon according to the theme.
+            if (darkTheme) {
+                ultraListImageView.setImageDrawable(resources.getDrawable(R.drawable.block_ads_disabled_dark));
+            } else {
+                ultraListImageView.setImageDrawable(resources.getDrawable(R.drawable.block_ads_disabled_light));
+            }
+        }
+
         // Set the UltraPrivacy status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-        if (ultraPrivacyEnabledInt == 1) {  // UltraPrivacy is on.
+        if (ultraPrivacyInt == 1) {  // UltraPrivacy is on.
             // Turn the switch on.
             ultraPrivacySwitch.setChecked(true);
 
@@ -1269,16 +1295,16 @@ public class DomainSettingsFragment extends Fragment {
 
 
         // Set the JavaScript switch listener.
-        javaScriptEnabledSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+        javaScriptSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             if (isChecked) {  // JavaScript is enabled.
                 // Update the JavaScript icon.
                 javaScriptImageView.setImageDrawable(resources.getDrawable(R.drawable.javascript_enabled));
 
                 // Enable the DOM storage `Switch`.
-                domStorageEnabledSwitch.setEnabled(true);
+                domStorageSwitch.setEnabled(true);
 
                 // Update the DOM storage icon.
-                if (domStorageEnabledSwitch.isChecked()) {  // DOM storage is enabled.
+                if (domStorageSwitch.isChecked()) {  // DOM storage is enabled.
                     domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_enabled));
                 } else {  // DOM storage is disabled.
                     // Set the icon according to the theme.
@@ -1293,7 +1319,7 @@ public class DomainSettingsFragment extends Fragment {
                 javaScriptImageView.setImageDrawable(resources.getDrawable(R.drawable.privacy_mode));
 
                 // Disable the DOM storage `Switch`.
-                domStorageEnabledSwitch.setEnabled(false);
+                domStorageSwitch.setEnabled(false);
 
                 // Set the DOM storage icon according to the theme.
                 if (darkTheme) {
@@ -1305,16 +1331,16 @@ public class DomainSettingsFragment extends Fragment {
         });
 
         // Set the first-party cookies switch listener.
-        firstPartyCookiesEnabledSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+        firstPartyCookiesSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             if (isChecked) {  // First-party cookies are enabled.
                 // Update the first-party cookies icon.
                 firstPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_enabled));
 
                 // Enable the third-party cookies switch.
-                thirdPartyCookiesEnabledSwitch.setEnabled(true);
+                thirdPartyCookiesSwitch.setEnabled(true);
 
                 // Update the third-party cookies icon.
-                if (thirdPartyCookiesEnabledSwitch.isChecked()) {  // Third-party cookies are enabled.
+                if (thirdPartyCookiesSwitch.isChecked()) {  // Third-party cookies are enabled.
                     thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_warning));
                 } else {  // Third-party cookies are disabled.
                     // Set the third-party cookies icon according to the theme.
@@ -1333,7 +1359,7 @@ public class DomainSettingsFragment extends Fragment {
                 }
 
                 // Disable the third-party cookies switch.
-                thirdPartyCookiesEnabledSwitch.setEnabled(false);
+                thirdPartyCookiesSwitch.setEnabled(false);
 
                 // Set the third-party cookies icon according to the theme.
                 if (darkTheme) {
@@ -1345,7 +1371,7 @@ public class DomainSettingsFragment extends Fragment {
         });
 
         // Set the third-party cookies switch listener.
-        thirdPartyCookiesEnabledSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+        thirdPartyCookiesSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             // Update the icon.
             if (isChecked) {
                 thirdPartyCookiesImageView.setImageDrawable(resources.getDrawable(R.drawable.cookies_warning));
@@ -1360,7 +1386,7 @@ public class DomainSettingsFragment extends Fragment {
         });
 
         // Set the DOM Storage switch listener.
-        domStorageEnabledSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+        domStorageSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             // Update the icon.
             if (isChecked) {
                 domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_enabled));
@@ -1376,7 +1402,7 @@ public class DomainSettingsFragment extends Fragment {
 
         // Set the form data switch listener.  It can be removed once the minimum API >= 26.
         if (Build.VERSION.SDK_INT < 26) {
-            formDataEnabledSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            formDataSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
                 // Update the icon.
                 if (isChecked) {
                     formDataImageView.setImageDrawable(resources.getDrawable(R.drawable.form_data_enabled));
@@ -1498,6 +1524,26 @@ public class DomainSettingsFragment extends Fragment {
                     fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_dark));
                 } else {
                     fanboysSocialBlockingListImageView.setImageDrawable(resources.getDrawable(R.drawable.social_media_disabled_light));
+                }
+            }
+        });
+
+        // Set the UltraList switch listener.
+        ultraListSwitch.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            // Update the icon.
+            if (isChecked) {  // UltraList is on.
+                // Set the icon according to the theme.
+                if (darkTheme) {
+                    ultraListImageView.setImageDrawable(resources.getDrawable(R.drawable.block_ads_enabled_dark));
+                } else {
+                    ultraListImageView.setImageDrawable(resources.getDrawable(R.drawable.block_ads_enabled_light));
+                }
+            } else {  // UltraList is off.
+                // Set the icon according to the theme.
+                if (darkTheme) {
+                    ultraListImageView.setImageDrawable(resources.getDrawable(R.drawable.block_ads_disabled_dark));
+                } else {
+                    ultraListImageView.setImageDrawable(resources.getDrawable(R.drawable.block_ads_disabled_light));
                 }
             }
         });
@@ -1740,35 +1786,35 @@ public class DomainSettingsFragment extends Fragment {
                         break;
                 }
 
-                // Create a `boolean` to store the current night mode setting.
+                // Create a boolean to store the current night mode setting.
                 boolean currentNightModeEnabled = (position == DomainsDatabaseHelper.ENABLED) || ((position == DomainsDatabaseHelper.SYSTEM_DEFAULT) && defaultNightMode);
 
-                // Disable the JavaScript `Switch` if night mode is enabled.
+                // Disable the JavaScript switch if night mode is enabled.
                 if (currentNightModeEnabled) {
-                    javaScriptEnabledSwitch.setEnabled(false);
+                    javaScriptSwitch.setEnabled(false);
                 } else {
-                    javaScriptEnabledSwitch.setEnabled(true);
+                    javaScriptSwitch.setEnabled(true);
                 }
 
                 // Update the JavaScript icon.
-                if ((javaScriptEnabledInt == 1) || currentNightModeEnabled) {
+                if ((javaScriptInt == 1) || currentNightModeEnabled) {
                     javaScriptImageView.setImageDrawable(resources.getDrawable(R.drawable.javascript_enabled));
                 } else {
                     javaScriptImageView.setImageDrawable(resources.getDrawable(R.drawable.privacy_mode));
                 }
 
                 // Update the DOM storage status.
-                if ((javaScriptEnabledInt == 1) || currentNightModeEnabled) {  // JavaScript is enabled.
+                if ((javaScriptInt == 1) || currentNightModeEnabled) {  // JavaScript is enabled.
                     // Enable the DOM storage `Switch`.
-                    domStorageEnabledSwitch.setEnabled(true);
+                    domStorageSwitch.setEnabled(true);
 
                     // Set the DOM storage status.  Once the minimum API >= 21 a selector can be used as the tint mode instead of specifying different icons.
-                    if (domStorageEnabledInt == 1) {  // Both JavaScript and DOM storage are enabled.
-                        domStorageEnabledSwitch.setChecked(true);
+                    if (domStorageInt == 1) {  // Both JavaScript and DOM storage are enabled.
+                        domStorageSwitch.setChecked(true);
                         domStorageImageView.setImageDrawable(resources.getDrawable(R.drawable.dom_storage_enabled));
                     } else {  // JavaScript is enabled but DOM storage is disabled.
                         // Set the DOM storage switch to off.
-                        domStorageEnabledSwitch.setChecked(false);
+                        domStorageSwitch.setChecked(false);
 
                         // Set the icon according to the theme.
                         if (darkTheme) {
@@ -1779,13 +1825,13 @@ public class DomainSettingsFragment extends Fragment {
                     }
                 } else {  // JavaScript is disabled.
                     // Disable the DOM storage `Switch`.
-                    domStorageEnabledSwitch.setEnabled(false);
+                    domStorageSwitch.setEnabled(false);
 
                     // Set the checked status of DOM storage.
-                    if (domStorageEnabledInt == 1) {  // DOM storage is enabled but JavaScript is disabled.
-                        domStorageEnabledSwitch.setChecked(true);
+                    if (domStorageInt == 1) {  // DOM storage is enabled but JavaScript is disabled.
+                        domStorageSwitch.setChecked(true);
                     } else {  // Both JavaScript and DOM storage are disabled.
-                        domStorageEnabledSwitch.setChecked(false);
+                        domStorageSwitch.setChecked(false);
                     }
 
                     // Set the icon according to the theme.

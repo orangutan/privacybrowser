@@ -112,7 +112,7 @@ public class AboutTabFragment extends Fragment {
             // Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.  The fragment will take care of attaching the root automatically.
             tabLayout = layoutInflater.inflate(R.layout.about_tab_version, container, false);
 
-            // Get handles for the `TextViews`.
+            // Get handles for the text views.
             TextView versionTextView = tabLayout.findViewById(R.id.version);
             TextView brandTextView = tabLayout.findViewById(R.id.brand);
             TextView manufacturerTextView = tabLayout.findViewById(R.id.manufacturer);
@@ -131,6 +131,7 @@ public class AboutTabFragment extends Fragment {
             TextView easyPrivacyTextView = tabLayout.findViewById(R.id.easyprivacy);
             TextView fanboyAnnoyanceTextView = tabLayout.findViewById(R.id.fanboy_annoyance);
             TextView fanboySocialTextView = tabLayout.findViewById(R.id.fanboy_social);
+            TextView ultraListTextView = tabLayout.findViewById(R.id.ultralist);
             TextView ultraPrivacyTextView = tabLayout.findViewById(R.id.ultraprivacy);
             TextView certificateIssuerDNTextView = tabLayout.findViewById(R.id.certificate_issuer_dn);
             TextView certificateSubjectDNTextView = tabLayout.findViewById(R.id.certificate_subject_dn);
@@ -154,6 +155,7 @@ public class AboutTabFragment extends Fragment {
             String easyPrivacyLabel = getString(R.string.easyprivacy_label) + "  ";
             String fanboyAnnoyanceLabel = getString(R.string.fanboy_annoyance_label) + "  ";
             String fanboySocialLabel = getString(R.string.fanboy_social_label) + "  ";
+            String ultraListLabel = getString(R.string.ultralist_label) + "  ";
             String ultraPrivacyLabel = getString(R.string.ultraprivacy_label) + "  ";
             String issuerDNLabel = getString(R.string.issuer_dn) + "  ";
             String subjectDNLabel = getString(R.string.subject_dn) + "  ";
@@ -163,7 +165,7 @@ public class AboutTabFragment extends Fragment {
             String serialNumberLabel = getString(R.string.serial_number) + "  ";
             String signatureAlgorithmLabel = getString(R.string.signature_algorithm) + "  ";
 
-            // `webViewLayout` is only used to get the default user agent from `bare_webview`.  It is not used to render content on the screen.
+            // The WebView layout is only used to get the default user agent from `bare_webview`.  It is not used to render content on the screen.
             // Once the minimum API >= 26 this can be accomplished with the WebView package info.
             View webViewLayout = layoutInflater.inflate(R.layout.bare_webview, container, false);
             WebView tabLayoutWebView = webViewLayout.findViewById(R.id.bare_webview);
@@ -212,7 +214,8 @@ public class AboutTabFragment extends Fragment {
             SpannableStringBuilder easyPrivacyStringBuilder = new SpannableStringBuilder(easyPrivacyLabel + blocklistVersions[1]);
             SpannableStringBuilder fanboyAnnoyanceStringBuilder = new SpannableStringBuilder(fanboyAnnoyanceLabel + blocklistVersions[2]);
             SpannableStringBuilder fanboySocialStringBuilder = new SpannableStringBuilder(fanboySocialLabel + blocklistVersions[3]);
-            SpannableStringBuilder ultraPrivacyStringBuilder = new SpannableStringBuilder(ultraPrivacyLabel + blocklistVersions[4]);
+            SpannableStringBuilder ultraListStringBuilder = new SpannableStringBuilder(ultraListLabel + blocklistVersions[4]);
+            SpannableStringBuilder ultraPrivacyStringBuilder = new SpannableStringBuilder(ultraPrivacyLabel + blocklistVersions[5]);
 
             // Create the `blueColorSpan` variable.
             ForegroundColorSpan blueColorSpan;
@@ -237,6 +240,7 @@ public class AboutTabFragment extends Fragment {
             easyPrivacyStringBuilder.setSpan(blueColorSpan, easyPrivacyLabel.length(), easyPrivacyStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             fanboyAnnoyanceStringBuilder.setSpan(blueColorSpan, fanboyAnnoyanceLabel.length(), fanboyAnnoyanceStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             fanboySocialStringBuilder.setSpan(blueColorSpan, fanboySocialLabel.length(), fanboySocialStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            ultraListStringBuilder.setSpan(blueColorSpan, ultraListLabel.length(), ultraListStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             ultraPrivacyStringBuilder.setSpan(blueColorSpan, ultraPrivacyLabel.length(), ultraPrivacyStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
             // Display the strings in the text boxes.
@@ -253,6 +257,7 @@ public class AboutTabFragment extends Fragment {
             easyPrivacyTextView.setText(easyPrivacyStringBuilder);
             fanboyAnnoyanceTextView.setText(fanboyAnnoyanceStringBuilder);
             fanboySocialTextView.setText(fanboySocialStringBuilder);
+            ultraListTextView.setText(ultraListStringBuilder);
             ultraPrivacyTextView.setText(ultraPrivacyStringBuilder);
 
             // Only populate the radio text view if there is a radio in the device.
@@ -327,9 +332,10 @@ public class AboutTabFragment extends Fragment {
             // Display the package signature.
             try {
                 // Get the first package signature.  Suppress the lint warning about the need to be careful in implementing comparison of certificates for security purposes.
-                @SuppressLint("PackageManagerGetSignatures") Signature packageSignature = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), PackageManager.GET_SIGNATURES).signatures[0];
+                @SuppressLint("PackageManagerGetSignatures") Signature packageSignature = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(),
+                        PackageManager.GET_SIGNATURES).signatures[0];
 
-                // Convert the signature to a `byte[]` `InputStream`.
+                // Convert the signature to a byte array input stream.
                 InputStream certificateByteArrayInputStream = new ByteArrayInputStream(packageSignature.toByteArray());
 
                 // Display the certificate information on the screen.
@@ -381,7 +387,7 @@ public class AboutTabFragment extends Fragment {
             } catch (PackageManager.NameNotFoundException e) {
                 // Do nothing if `PackageManager` says Privacy Browser isn't installed.
             }
-        } else { // load a `WebView` for all the other tabs.  Tab numbers start at 0.
+        } else { // load a WebView for all the other tabs.  Tab numbers start at 0.
             // Setting false at the end of inflater.inflate does not attach the inflated layout as a child of container.  The fragment will take care of attaching the root automatically.
             tabLayout = layoutInflater.inflate(R.layout.bare_webview, container, false);
 

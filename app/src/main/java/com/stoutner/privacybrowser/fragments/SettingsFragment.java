@@ -70,6 +70,7 @@ public class SettingsFragment extends PreferenceFragment {
         Preference easyPrivacyPreference = findPreference("easyprivacy");
         Preference fanboyAnnoyanceListPreference = findPreference("fanboys_annoyance_list");
         Preference fanboySocialBlockingListPreference = findPreference("fanboys_social_blocking_list");
+        Preference ultraListPreference = findPreference("ultralist");
         Preference ultraPrivacyPreference = findPreference("ultraprivacy");
         Preference blockAllThirdPartyRequestsPreference = findPreference("block_all_third_party_requests");
         Preference googleAnalyticsPreference = findPreference("google_analytics");
@@ -428,6 +429,21 @@ public class SettingsFragment extends PreferenceFragment {
                 } else {
                     fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_light);
                 }
+            }
+        }
+
+        // Set the UltraList icon.
+        if (savedPreferences.getBoolean("ultralist", true)){
+            if (darkTheme) {
+                ultraListPreference.setIcon(R.drawable.block_ads_enabled_dark);
+            } else {
+                ultraListPreference.setIcon(R.drawable.block_ads_enabled_light);
+            }
+        } else {
+            if (darkTheme) {
+                ultraListPreference.setIcon(R.drawable.block_ads_disabled_dark);
+            } else {
+                ultraListPreference.setIcon(R.drawable.block_ads_disabled_light);
             }
         }
 
@@ -1136,6 +1152,23 @@ public class SettingsFragment extends PreferenceFragment {
                             fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_dark);
                         } else {
                             fanboySocialBlockingListPreference.setIcon(R.drawable.social_media_disabled_light);
+                        }
+                    }
+                    break;
+
+                case "ultralist":
+                    // Update the icon.
+                    if (sharedPreferences.getBoolean("ultralist", true)) {
+                        if (darkTheme) {
+                            ultraListPreference.setIcon(R.drawable.block_ads_enabled_dark);
+                        } else {
+                            ultraListPreference.setIcon(R.drawable.block_ads_enabled_light);
+                        }
+                    } else {
+                        if (darkTheme) {
+                            ultraListPreference.setIcon(R.drawable.block_ads_disabled_dark);
+                        } else {
+                            ultraListPreference.setIcon(R.drawable.block_ads_disabled_light);
                         }
                     }
                     break;

@@ -130,16 +130,23 @@
                 app:showAsAction="never" />
 
             <item
+                android:id="@+id/ultralist"
+                android:title="@string/ultralist"
+                android:orderInCategory="850"
+                android:checkable="true"
+                app:showAsAction="never" />
+
+            <item
                 android:id="@+id/ultraprivacy"
                 android:title="@string/ultraprivacy"
-                android:orderInCategory="850"
+                android:orderInCategory="860"
                 android:checkable="true"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/block_all_third_party_requests"
                 android:title="@string/options_block_all_third_party_requests"
-                android:orderInCategory="860"
+                android:orderInCategory="870"
                 android:checkable="true"
                 app:showAsAction="never" />
         </menu>

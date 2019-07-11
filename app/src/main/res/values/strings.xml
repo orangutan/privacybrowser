@@ -62,6 +62,7 @@
     <string name="loading_easyprivacy">Loading EasyPrivacy</string>
     <string name="loading_fanboys_annoyance_list">Loading Fanboy’s Annoyance List</string>
     <string name="loading_fanboys_social_blocking_list">Loading Fanboy’s Social Blocking List</string>
+    <string name="loading_ultralist">Loading UltraList</string>
     <string name="loading_ultraprivacy">Loading UltraPrivacy</string>
 
     <!-- Save As. -->
@@ -424,6 +425,7 @@
     <string name="easyprivacy_label">EasyPrivacy:</string>
     <string name="fanboy_annoyance_label">Fanboy’s Annoyance List:</string>
     <string name="fanboy_social_label">Fanboy’s Social Blocking List:</string>
+    <string name="ultralist_label">UltraList:</string>
     <string name="ultraprivacy_label">UltraPrivacy:</string>
     <string name="package_signature">Package Signature</string>
     <string name="issuer_dn">Issuer DN:</string>
@@ -531,6 +533,8 @@
         <string name="fanboys_annoyance_list_summary">Block annoying popups and links.  Includes Fanboy’s social blocking lists.</string>
         <string name="fanboys_social_blocking_list">Fanboy’s social blocking list</string>
         <string name="fanboys_social_blocking_list_summary">Blocks third-party social media content.</string>
+        <string name="ultralist">UltraList</string>
+        <string name="ultralist_summary">UltraList blocks ads that EasyList doesn’t because doing so can break websites.</string>
         <string name="ultraprivacy">UltraPrivacy</string>
         <string name="ultraprivacy_summary">UltraPrivacy blocks trackers that EasyPrivacy doesn’t because doing so can break websites.</string>
         <string name="block_all_third_party_requests">Block all third-party requests</string>

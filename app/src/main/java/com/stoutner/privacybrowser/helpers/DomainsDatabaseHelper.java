@@ -28,7 +28,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
 
 public class DomainsDatabaseHelper extends SQLiteOpenHelper {
-    private static final int SCHEMA_VERSION = 10;
+    private static final int SCHEMA_VERSION = 11;
     static final String DOMAINS_DATABASE = "domains.db";
     static final String DOMAINS_TABLE = "domains";
 
@@ -43,6 +43,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
     public static final String ENABLE_EASYPRIVACY = "enableeasyprivacy";
     public static final String ENABLE_FANBOYS_ANNOYANCE_LIST = "enablefanboysannoyancelist";
     public static final String ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST = "enablefanboyssocialblockinglist";
+    public static final String ULTRALIST = "ultralist";
     public static final String ENABLE_ULTRAPRIVACY = "enableultraprivacy";
     public static final String BLOCK_ALL_THIRD_PARTY_REQUESTS = "blockallthirdpartyrequests";
     public static final String USER_AGENT = "useragent";
@@ -80,6 +81,7 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
             ENABLE_EASYPRIVACY + " BOOLEAN, " +
             ENABLE_FANBOYS_ANNOYANCE_LIST + " BOOLEAN, " +
             ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST + " BOOLEAN, " +
+            ULTRALIST + " BOOLEAN, " +
             ENABLE_ULTRAPRIVACY + " BOOLEAN, " +
             BLOCK_ALL_THIRD_PARTY_REQUESTS + " BOOLEAN, " +
             USER_AGENT + " TEXT, " +
@@ -216,6 +218,14 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
             case 9:
                 // Add the Wide Viewport column.
                 domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + WIDE_VIEWPORT + " INTEGER");
+
+            // Upgrade from schema version 10.
+            case 10:
+                // Add the UltraList column.
+                domainsDatabase.execSQL("ALTER TABLE " + DOMAINS_TABLE + " ADD COLUMN " + ULTRALIST + " BOOLEAN");
+
+                // Enable it for all existing rows.
+                domainsDatabase.execSQL("UPDATE " + DOMAINS_TABLE + " SET " + ULTRALIST + " = " + 1);
         }
     }
 
@@ -283,30 +293,32 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(appContext);
 
         // Get the default settings.
-        boolean javaScriptEnabled = sharedPreferences.getBoolean("javascript", false);
-        boolean firstPartyCookiesEnabled = sharedPreferences.getBoolean("first_party_cookies", false);
-        boolean thirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies", false);
-        boolean domStorageEnabled = sharedPreferences.getBoolean("dom_storage", false);
-        boolean saveFormDataEnabled = sharedPreferences.getBoolean("save_form_data", false);  // Form data can be removed once the minimum API >= 26.
-        boolean easyListEnabled = sharedPreferences.getBoolean("easylist", true);
-        boolean easyPrivacyEnabled = sharedPreferences.getBoolean("easyprivacy", true);
-        boolean fanboyAnnoyanceListEnabled = sharedPreferences.getBoolean("fanboys_annoyance_list", true);
-        boolean fanboySocialBlockingListEnabled = sharedPreferences.getBoolean("fanboys_social_blocking_list", true);
-        boolean ultraPrivacyEnabled = sharedPreferences.getBoolean("ultraprivacy", true);
+        boolean javaScript = sharedPreferences.getBoolean("javascript", false);
+        boolean firstPartyCookies = sharedPreferences.getBoolean("first_party_cookies", false);
+        boolean thirdPartyCookies = sharedPreferences.getBoolean("third_party_cookies", false);
+        boolean domStorage = sharedPreferences.getBoolean("dom_storage", false);
+        boolean saveFormData = sharedPreferences.getBoolean("save_form_data", false);  // Form data can be removed once the minimum API >= 26.
+        boolean easyList = sharedPreferences.getBoolean("easylist", true);
+        boolean easyPrivacy = sharedPreferences.getBoolean("easyprivacy", true);
+        boolean fanboyAnnoyanceList = sharedPreferences.getBoolean("fanboys_annoyance_list", true);
+        boolean fanboySocialBlockingList = sharedPreferences.getBoolean("fanboys_social_blocking_list", true);
+        boolean ultraList = sharedPreferences.getBoolean("ultralist", true);
+        boolean ultraPrivacy = sharedPreferences.getBoolean("ultraprivacy", true);
         boolean blockAllThirdPartyRequests = sharedPreferences.getBoolean("block_all_third_party_requests", false);
 
         // Create entries for the database fields.  The ID is created automatically.  The pinned SSL certificate information is not created unless added by the user.
         domainContentValues.put(DOMAIN_NAME, domainName);
-        domainContentValues.put(ENABLE_JAVASCRIPT, javaScriptEnabled);
-        domainContentValues.put(ENABLE_FIRST_PARTY_COOKIES, firstPartyCookiesEnabled);
-        domainContentValues.put(ENABLE_THIRD_PARTY_COOKIES, thirdPartyCookiesEnabled);
-        domainContentValues.put(ENABLE_DOM_STORAGE, domStorageEnabled);
-        domainContentValues.put(ENABLE_FORM_DATA, saveFormDataEnabled);  // Form data can be removed once the minimum API >= 26.
-        domainContentValues.put(ENABLE_EASYLIST, easyListEnabled);
-        domainContentValues.put(ENABLE_EASYPRIVACY, easyPrivacyEnabled);
-        domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, fanboyAnnoyanceListEnabled);
-        domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, fanboySocialBlockingListEnabled);
-        domainContentValues.put(ENABLE_ULTRAPRIVACY, ultraPrivacyEnabled);
+        domainContentValues.put(ENABLE_JAVASCRIPT, javaScript);
+        domainContentValues.put(ENABLE_FIRST_PARTY_COOKIES, firstPartyCookies);
+        domainContentValues.put(ENABLE_THIRD_PARTY_COOKIES, thirdPartyCookies);
+        domainContentValues.put(ENABLE_DOM_STORAGE, domStorage);
+        domainContentValues.put(ENABLE_FORM_DATA, saveFormData);  // Form data can be removed once the minimum API >= 26.
+        domainContentValues.put(ENABLE_EASYLIST, easyList);
+        domainContentValues.put(ENABLE_EASYPRIVACY, easyPrivacy);
+        domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, fanboyAnnoyanceList);
+        domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, fanboySocialBlockingList);
+        domainContentValues.put(ULTRALIST, ultraList);
+        domainContentValues.put(ENABLE_ULTRAPRIVACY, ultraPrivacy);
         domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, blockAllThirdPartyRequests);
         domainContentValues.put(USER_AGENT, "System default user agent");
         domainContentValues.put(FONT_SIZE, 0);
@@ -339,26 +351,26 @@ public class DomainsDatabaseHelper extends SQLiteOpenHelper {
         domainsDatabase.close();
     }
 
-    public void updateDomain(int databaseId, String domainName, boolean javaScriptEnabled, boolean firstPartyCookiesEnabled, boolean thirdPartyCookiesEnabled, boolean domStorageEnabled, boolean formDataEnabled,
-                             boolean easyListEnabled, boolean easyPrivacyEnabled, boolean fanboysAnnoyanceEnabled, boolean fanboysSocialBlockingEnabled, boolean ultraPrivacyEnabled,
-                             boolean blockAllThirdPartyRequests, String userAgent, int fontSize, int swipeToRefresh, int nightMode, int wideViewport, int displayImages, boolean pinnedSslCertificate,
-                             boolean pinnedIpAddresses) {
+    public void updateDomain(int databaseId, String domainName, boolean javaScript, boolean firstPartyCookies, boolean thirdPartyCookies, boolean domStorage, boolean formData, boolean easyList,
+                             boolean easyPrivacy, boolean fanboysAnnoyance, boolean fanboysSocialBlocking, boolean ultraList, boolean ultraPrivacy, boolean blockAllThirdPartyRequests, String userAgent,
+                             int fontSize, int swipeToRefresh, int nightMode, int wideViewport, int displayImages, boolean pinnedSslCertificate, boolean pinnedIpAddresses) {
 
         // Store the domain data in a `ContentValues`.
         ContentValues domainContentValues = new ContentValues();
 
         // Add entries for each field in the database.
         domainContentValues.put(DOMAIN_NAME, domainName);
-        domainContentValues.put(ENABLE_JAVASCRIPT, javaScriptEnabled);
-        domainContentValues.put(ENABLE_FIRST_PARTY_COOKIES, firstPartyCookiesEnabled);
-        domainContentValues.put(ENABLE_THIRD_PARTY_COOKIES, thirdPartyCookiesEnabled);
-        domainContentValues.put(ENABLE_DOM_STORAGE, domStorageEnabled);
-        domainContentValues.put(ENABLE_FORM_DATA, formDataEnabled);  // Form data can be removed once the minimum API >= 26.
-        domainContentValues.put(ENABLE_EASYLIST, easyListEnabled);
-        domainContentValues.put(ENABLE_EASYPRIVACY, easyPrivacyEnabled);
-        domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, fanboysAnnoyanceEnabled);
-        domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, fanboysSocialBlockingEnabled);
-        domainContentValues.put(ENABLE_ULTRAPRIVACY, ultraPrivacyEnabled);
+        domainContentValues.put(ENABLE_JAVASCRIPT, javaScript);
+        domainContentValues.put(ENABLE_FIRST_PARTY_COOKIES, firstPartyCookies);
+        domainContentValues.put(ENABLE_THIRD_PARTY_COOKIES, thirdPartyCookies);
+        domainContentValues.put(ENABLE_DOM_STORAGE, domStorage);
+        domainContentValues.put(ENABLE_FORM_DATA, formData);  // Form data can be removed once the minimum API >= 26.
+        domainContentValues.put(ENABLE_EASYLIST, easyList);
+        domainContentValues.put(ENABLE_EASYPRIVACY, easyPrivacy);
+        domainContentValues.put(ENABLE_FANBOYS_ANNOYANCE_LIST, fanboysAnnoyance);
+        domainContentValues.put(ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, fanboysSocialBlocking);
+        domainContentValues.put(ULTRALIST, ultraList);
+        domainContentValues.put(ENABLE_ULTRAPRIVACY, ultraPrivacy);
         domainContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, blockAllThirdPartyRequests);
         domainContentValues.put(USER_AGENT, userAgent);
         domainContentValues.put(FONT_SIZE, fontSize);

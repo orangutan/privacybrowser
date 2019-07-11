@@ -128,6 +128,12 @@ public class PopulateBlocklists extends AsyncTask<Void, String, ArrayList<ArrayL
 
 
             // Update the progress.
+            publishProgress(context.getString(R.string.loading_ultralist));
+
+            // Populate UltraList.
+            ArrayList<List<String[]>> ultraList = blocklistHelper.parseBlocklist(context.getAssets(), "blocklists/ultralist.txt");
+
+            // Update the progress.
             publishProgress(context.getString(R.string.loading_ultraprivacy));
 
             // Populate UltraPrivacy.
@@ -139,6 +145,7 @@ public class PopulateBlocklists extends AsyncTask<Void, String, ArrayList<ArrayL
             combinedBlocklists.add(easyPrivacy);
             combinedBlocklists.add(fanboysAnnoyanceList);
             combinedBlocklists.add(fanboysSocialList);
+            combinedBlocklists.add(ultraList);
             combinedBlocklists.add(ultraPrivacy);
         }
 

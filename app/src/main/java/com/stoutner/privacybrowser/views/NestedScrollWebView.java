@@ -46,12 +46,13 @@ import java.util.List;
 public class NestedScrollWebView extends WebView implements NestedScrollingChild2 {
     // These constants identify the blocklists.
     public final static int BLOCKED_REQUESTS = 0;
-    public final static int EASY_LIST = 1;
-    public final static int EASY_PRIVACY = 2;
+    public final static int EASYLIST = 1;
+    public final static int EASYPRIVACY = 2;
     public final static int FANBOYS_ANNOYANCE_LIST = 3;
     public final static int FANBOYS_SOCIAL_BLOCKING_LIST = 4;
-    public final static int ULTRA_PRIVACY = 5;
-    public final static int THIRD_PARTY_REQUESTS = 6;
+    public final static int ULTRALIST = 5;
+    public final static int ULTRAPRIVACY = 6;
+    public final static int THIRD_PARTY_REQUESTS = 7;
 
     // Keep a copy of the WebView fragment ID.
     private long webViewFragmentId;
@@ -79,6 +80,7 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     private boolean easyPrivacyEnabled;
     private boolean fanboysAnnoyanceListEnabled;
     private boolean fanboysSocialBlockingListEnabled;
+    private boolean ultraListEnabled;
     private boolean ultraPrivacyEnabled;
     private boolean blockAllThirdPartyRequests;
     private int blockedRequests;
@@ -86,6 +88,7 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     private int easyPrivacyBlockedRequests;
     private int fanboysAnnoyanceListBlockedRequests;
     private int fanboysSocialBlockingListBlockedRequests;
+    private int ultraListBlockedRequests;
     private int ultraPrivacyBlockedRequests;
     private int thirdPartyBlockedRequests;
 
@@ -289,12 +292,12 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     public void enableBlocklist(int blocklist, boolean status) {
         // Update the status of the indicated blocklist.
         switch (blocklist) {
-            case EASY_LIST:
+            case EASYLIST:
                 // Update the status of the blocklist.
                 easyListEnabled = status;
                 break;
 
-            case EASY_PRIVACY:
+            case EASYPRIVACY:
                 // Update the status of the blocklist.
                 easyPrivacyEnabled = status;
                 break;
@@ -309,7 +312,12 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
                 fanboysSocialBlockingListEnabled = status;
                 break;
 
-            case ULTRA_PRIVACY:
+            case ULTRALIST:
+                // Update the status of the blocklist.
+                ultraListEnabled = status;
+                break;
+
+            case ULTRAPRIVACY:
                 // Update the status of the blocklist.
                 ultraPrivacyEnabled = status;
                 break;
@@ -324,11 +332,11 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     public boolean isBlocklistEnabled(int blocklist) {
         // Get the status of the indicated blocklist.
         switch (blocklist) {
-            case EASY_LIST:
+            case EASYLIST:
                 // Return the status of the blocklist.
                 return easyListEnabled;
 
-            case EASY_PRIVACY:
+            case EASYPRIVACY:
                 // Return the status of the blocklist.
                 return easyPrivacyEnabled;
 
@@ -340,7 +348,11 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
                 // Return the status of the blocklist.
                 return fanboysSocialBlockingListEnabled;
 
-            case ULTRA_PRIVACY:
+            case ULTRALIST:
+                // Return the status of the blocklist.
+                return ultraListEnabled;
+
+            case ULTRAPRIVACY:
                 // Return the status of the blocklist.
                 return ultraPrivacyEnabled;
 
@@ -363,6 +375,7 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
         easyPrivacyBlockedRequests = 0;
         fanboysAnnoyanceListBlockedRequests = 0;
         fanboysSocialBlockingListBlockedRequests = 0;
+        ultraListBlockedRequests = 0;
         ultraPrivacyBlockedRequests = 0;
         thirdPartyBlockedRequests = 0;
     }
@@ -375,12 +388,12 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
                 blockedRequests++;
                 break;
 
-            case EASY_LIST:
+            case EASYLIST:
                 // Increment the EasyList blocked requests count.
                 easyListBlockedRequests++;
                 break;
 
-            case EASY_PRIVACY:
+            case EASYPRIVACY:
                 // Increment the EasyPrivacy blocked requests count.
                 easyPrivacyBlockedRequests++;
                 break;
@@ -395,7 +408,12 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
                 fanboysSocialBlockingListBlockedRequests++;
                 break;
 
-            case ULTRA_PRIVACY:
+            case ULTRALIST:
+                // Increment the UltraList blocked requests count.
+                ultraListBlockedRequests++;
+                break;
+
+            case ULTRAPRIVACY:
                 // Increment the UltraPrivacy blocked requests count.
                 ultraPrivacyBlockedRequests++;
                 break;
@@ -414,11 +432,11 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
                 // Return the blocked requests count.
                 return blockedRequests;
 
-            case EASY_LIST:
+            case EASYLIST:
                 // Return the EasyList blocked requests count.
                 return easyListBlockedRequests;
 
-            case EASY_PRIVACY:
+            case EASYPRIVACY:
                 // Return the EasyPrivacy blocked requests count.
                 return easyPrivacyBlockedRequests;
 
@@ -430,7 +448,11 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
                 // Return the Fanboy's Social Blocking List blocked requests count.
                 return fanboysSocialBlockingListBlockedRequests;
 
-            case ULTRA_PRIVACY:
+            case ULTRALIST:
+                // Return the UltraList blocked requests count.
+                return ultraListBlockedRequests;
+
+            case ULTRAPRIVACY:
                 // Return the UltraPrivacy blocked requests count.
                 return ultraPrivacyBlockedRequests;
 
