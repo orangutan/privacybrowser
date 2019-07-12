@@ -3591,6 +3591,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Store a copy of the current user agent to track changes for the return boolean.
         String initialUserAgent = nestedScrollWebView.getSettings().getUserAgentString();
 
+        // Store the current URL.
+        nestedScrollWebView.setCurrentUrl(url);
+
         // Parse the URL into a URI.
         Uri uri = Uri.parse(url);
 
@@ -5344,6 +5347,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Check requests against the block lists.  The deprecated `shouldInterceptRequest()` must be used until minimum API >= 21.
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+                // Check to see if the resource request is for the main URL.
+                if (url.equals(nestedScrollWebView.getCurrentUrl())) {
+                    // `return null` loads the resource request, which should never be blocked if it is the main URL.
+                    return null;
+                }
+
                 // Wait until the blocklists have been populated.  When Privacy Browser is being resumed after having the process killed in the background it will try to load the URLs immediately.
                 while (ultraPrivacy == null) {
                     // The wait must be synchronized, which only lets one thread run on it at a time, or `java.lang.IllegalMonitorStateException` is thrown.

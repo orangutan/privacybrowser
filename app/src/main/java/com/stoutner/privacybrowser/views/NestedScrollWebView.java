@@ -65,6 +65,9 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     private boolean domainSettingsApplied;
     private int domainSettingsDatabaseId;
 
+    // Keep track of the current URL.  This is used to not block resource requests to the main URL.
+    private String currentUrl;
+
     // Keep track of when the domain name changes so that domain settings can be reapplied.  This should never be null.
     private String currentDomainName = "";
 
@@ -227,6 +230,18 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     public int getDomainSettingsDatabaseId() {
         // Return the domain settings database ID.
         return domainSettingsDatabaseId;
+    }
+
+
+    // Current URL.
+    public void setCurrentUrl(String url) {
+        // Store the current URL.
+        currentUrl = url;
+    }
+
+    public String getCurrentUrl() {
+        // Return the current URL.
+        return currentUrl;
     }
 
 
