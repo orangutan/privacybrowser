@@ -48,12 +48,14 @@
     <string name="close_tab">Закрыть вкладку</string>
     <string name="new_tab">Новая вкладка</string>
     <string name="loading">Загрузка…</string>
+    <string name="error">Ошибка:</string>
 
     <!-- Loading Blocklists. -->
     <string name="loading_easylist">Загрузка EasyList</string>
     <string name="loading_easyprivacy">Загрузка EasyPrivacy</string>
     <string name="loading_fanboys_annoyance_list">Загрузка Fanboy’s Annoyance List</string>
     <string name="loading_fanboys_social_blocking_list">Загрузка Fanboy’s Social Blocking List</string>
+    <string name="loading_ultralist">Загрузка UltraList</string>
     <string name="loading_ultraprivacy">Загрузка UltraPrivacy</string>
 
     <!-- Save As. -->
@@ -416,6 +418,7 @@
     <string name="easyprivacy_label">EasyPrivacy:</string>
     <string name="fanboy_annoyance_label">Fanboy’s Annoyance List:</string>
     <string name="fanboy_social_label">Fanboy’s Social Blocking List:</string>
+    <string name="ultralist_label">UltraList:</string>
     <string name="ultraprivacy_label">UltraPrivacy:</string>
     <string name="package_signature">Подпись пакета</string>
     <string name="issuer_dn">DN эмитента:</string>
@@ -492,6 +495,8 @@
         <string name="fanboys_annoyance_list_summary">Блокирует раздражающие всплывающие окна и ссылки.  Включает в себя Fanboy’s social blocking lists.</string>
         <string name="fanboys_social_blocking_list">Fanboy’s social blocking list</string>
         <string name="fanboys_social_blocking_list_summary">Блокирует содержимое социальных сетей.</string>
+        <string name="ultralist">UltraList</string>
+        <string name="ultralist_summary">UltraList блокирует рекламу, которую пропускает EasyList, так как блокировка может сломать сайты.</string>
         <string name="ultraprivacy">UltraPrivacy</string>
         <string name="ultraprivacy_summary">UltraPrivacy блокирует трекеры, которые пропускает EasyPrivacy, чтобы не ломать веб-сайты.</string>
         <string name="block_all_third_party_requests">Блокировать все сторонние запросы</string>

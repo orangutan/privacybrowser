@@ -433,7 +433,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     loadingNewIntent = true;
 
                     // Add a new tab.
-                    addNewTab(url);
+                    addNewTab(url, true);
                 } else {  // Load the URL in the current tab.
                     // Make it so.
                     loadUrl(url);
@@ -2026,7 +2026,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Add an Open in New Tab entry.
                 menu.add(R.string.open_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
                     // Load the link URL in a new tab.
-                    addNewTab(linkUrl);
+                    addNewTab(linkUrl, false);
 
                     // Consume the event.
                     return true;
@@ -2151,9 +2151,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 menu.setHeaderTitle(imageUrl);
 
                 // Add an Open in New Tab entry.
-                menu.add(R.string.open_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Load the image URL in a new tab.
-                    addNewTab(imageUrl);
+                menu.add(R.string.open_image_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Load the image in a new tab.
+                    addNewTab(imageUrl, false);
 
                     // Consume the event.
                     return true;
@@ -2260,7 +2260,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Add an Open in New Tab entry.
                 menu.add(R.string.open_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
                     // Load the link URL in a new tab.
-                    addNewTab(linkUrl);
+                    addNewTab(linkUrl, false);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add an Open Image in New Tab entry.
+                menu.add(R.string.open_image_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Load the image in a new tab.
+                    addNewTab(imageUrl, false);
 
                     // Consume the event.
                     return true;
@@ -4434,15 +4443,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         ultraPrivacy = combinedBlocklists.get(5);
 
         // Add the first tab.
-        addNewTab("");
+        addNewTab("", true);
     }
 
     public void addTab(View view) {
         // Add a new tab with a blank URL.
-        addNewTab("");
+        addNewTab("", true);
     }
 
-    private void addNewTab(String url) {
+    private void addNewTab(String url, boolean moveToTab) {
         // Sanitize the URL.
         url = sanitizeUrl(url);
 
@@ -4466,7 +4475,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         newTab.setCustomView(R.layout.tab_custom_view);
 
         // Add the new WebView page.
-        webViewPagerAdapter.addPage(newTabNumber, webViewPager, url);
+        webViewPagerAdapter.addPage(newTabNumber, webViewPager, url, moveToTab);
     }
 
     public void closeTab(View view) {

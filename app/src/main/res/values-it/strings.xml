@@ -50,12 +50,14 @@
     <string name="close_tab">Chiudi Scheda</string>
     <string name="new_tab">Nuova Scheda</string>
     <string name="loading">Caricamento…</string>
+    <string name="error">Errore:</string>
 
     <!-- Loading Blocklists. -->
     <string name="loading_easylist">Caricamento EasyList</string>
     <string name="loading_easyprivacy">Caricamento EasyPrivacy</string>
     <string name="loading_fanboys_annoyance_list">Caricamento Fanboy’s Annoyance List</string>
     <string name="loading_fanboys_social_blocking_list">Caricamento Fanboy’s Social Blocking List</string>
+    <string name="loading_ultralist">Caricamento UltraList</string>
     <string name="loading_ultraprivacy">Caricamento UltraPrivacy</string>
 
     <!-- Save As. -->
@@ -421,6 +423,7 @@
     <string name="easyprivacy_label">EasyPrivacy:</string>
     <string name="fanboy_annoyance_label">Fanboy’s Annoyance List:</string>
     <string name="fanboy_social_label">Fanboy’s Social Blocking List:</string>
+    <string name="ultralist_label">UltraList:</string>
     <string name="ultraprivacy_label">UltraPrivacy:</string>
     <string name="package_signature">Firma del Pacchetto</string>
     <string name="issuer_dn">Emittente:</string>
@@ -498,6 +501,8 @@
         <string name="fanboys_annoyance_list_summary">Blocca fastidiosi pop-up e collegamenti.  Include le liste Fanboy’s social blocking.</string>
         <string name="fanboys_social_blocking_list">Fanboy’s social blocking list</string>
         <string name="fanboys_social_blocking_list_summary">Blocca contenuti di terze parti sui social media .</string>
+        <string name="ultralist">UltraList</string>
+        <string name="ultralist_summary">UltraList blocca gli annunci che EasyList non blocca per non impedire la visualizzazione dei siti web.</string>
         <string name="ultraprivacy">UltraPrivacy</string>
         <string name="ultraprivacy_summary">L\'UltraPrivacy blocca i tracciamenti che EasyPrivacy ignora perché potrebbero impedire la visualizzazione dei siti web.</string>
         <string name="block_all_third_party_requests">Blocca tutte le richieste di Terze Parti</string>

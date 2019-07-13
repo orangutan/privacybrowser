@@ -100,7 +100,7 @@ public class WebViewPagerAdapter extends FragmentPagerAdapter {
         return position;
     }
 
-    public void addPage(int pageNumber, ViewPager webViewPager, String url) {
+    public void addPage(int pageNumber, ViewPager webViewPager, String url, boolean moveToTab) {
         // Add a new page.
         webViewFragmentsList.add(WebViewTabFragment.createPage(pageNumber, url));
 
@@ -108,7 +108,7 @@ public class WebViewPagerAdapter extends FragmentPagerAdapter {
         notifyDataSetChanged();
 
         // Move to the new page if it isn't the first one.
-        if (pageNumber > 0) {
+        if (pageNumber > 0 && moveToTab) {
             webViewPager.setCurrentItem(pageNumber);
         }
     }

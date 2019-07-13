@@ -54,12 +54,14 @@
     <string name="close_tab">Tab schließen</string>
     <string name="new_tab">Neuer Tab</string>
     <string name="loading">Laden…</string>
+    <string name="error">Fehler:</string>
 
     <!-- Loading Blocklists. -->
     <string name="loading_easylist">Lade EasyList</string>
     <string name="loading_easyprivacy">Lade EasyPrivacy</string>
     <string name="loading_fanboys_annoyance_list">Lade Fanboy’s Annoyance Filterliste</string>
     <string name="loading_fanboys_social_blocking_list">Fanboy’s Social Blocking Filterliste</string>
+    <string name="loading_ultralist">Lade UltraList</string>
     <string name="loading_ultraprivacy">Lade UltraPrivacy</string>
 
     <!-- Save As. -->
@@ -422,6 +424,7 @@
     <string name="easyprivacy_label">EasyPrivacy:</string>
     <string name="fanboy_annoyance_label">Fanboy’s Annoyance Sperrliste:</string>
     <string name="fanboy_social_label">Fanboy’s Social Blocking Sperrliste:</string>
+    <string name="ultralist_label">UltraList:</string>
     <string name="ultraprivacy_label">UltraPrivacy:</string>
     <string name="package_signature">Paket-Signatur</string>
     <string name="issuer_dn">Aussteller-DN:</string>
@@ -499,6 +502,8 @@
         <string name="fanboys_annoyance_list_summary">Blockiert nervende PopUps und Links. Enthält Fanboy’s Social Blocking Sperrliste.</string>
         <string name="fanboys_social_blocking_list">Fanboy’s Social Blocking Sperrliste</string>
         <string name="fanboys_social_blocking_list_summary">Blockiert Social-Media-Inhalte von Drittanbietern.</string>
+        <string name="ultralist">UltraList</string>
+        <string name="ultralist_summary">UltraList blockiert Werbung, die von EasyList nicht blockiert wird, da dies Webseiten verunstalten kann.</string>
         <string name="ultraprivacy">UltraPrivacy</string>
         <string name="ultraprivacy_summary">UltraPrivacy blockiert Tracker, die von EasyPrivacy nicht blockiert werden, da dies Webseiten verunstalten kann.</string>
         <string name="block_all_third_party_requests">Alle Zugriffe auf Dritt-Anbieter-Inhalte blockieren</string>
