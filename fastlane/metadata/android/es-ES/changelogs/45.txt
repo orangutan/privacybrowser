@@ -1,0 +1,17 @@
+• Añadir un botón de cerrar pestaña a la barra de aplicaciones.
+• Arreglar el desplazamiento a la izquierda y a la derecha de los elementos de la página web, lo que también hace que la barra de aplicaciones se desplace más suavemente.
+• Añadir una pantalla de lista de bloqueo y disminuir el tiempo de carga de aplicaciones.
+• Añadir modificación de URL para Google Analytics, Facebook, y Twitter.
+• Añadir la posibilidad de abrir una imagen en una nueva pestaña.
+• Arreglar el menú contextual de búsqueda web.
+• Arreglar los reinicios indeseados al entrar o salir del modo de pantalla dividida.
+• Arreglar los cambios en Descargar con app externa que no se aplica hasta después de un reinicio.
+• Corregir la navegación con algunos gestores de archivos.
+• Añadir la opción para deshabilitar la vista amplia.
+• Mejorar la carga y el cambio de pestañas.
+• Mostrar el proveedor de WebView en Acerca de > Versión en Android Oreo y versiones más recientes.
+• Primera traducción completa al idioma turco.
+• Actualizada la traducción al español proporcionada por Jose A. León.
+• Actualizada la traducción al alemán por Bernhard G. Keller.
+• Actualizada la traducción al italiano proporcionada por Francesco Buratti.
+• Actualizada la traducción al ruso.

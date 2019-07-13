@@ -43,13 +43,14 @@ public class PopulateBlocklists extends AsyncTask<Void, String, ArrayList<ArrayL
         void finishedPopulatingBlocklists(ArrayList<ArrayList<List<String[]>>> combinedBlocklists);
     }
 
-    // Declare a populate blocklists listener.
+    // Define a populate blocklists listener.
     private PopulateBlocklistsListener populateBlocklistsListener;
 
-    // Declare weak references for the activity and context.
+    // Define weak references for the activity and context.
     private WeakReference<Context> contextWeakReference;
     private WeakReference<Activity> activityWeakReference;
 
+    // The public constructor.
     public PopulateBlocklists(Context context, Activity activity) {
         // Populate the weak reference to the context.
         contextWeakReference = new WeakReference<>(context);
@@ -59,6 +60,30 @@ public class PopulateBlocklists extends AsyncTask<Void, String, ArrayList<ArrayL
 
         // Get a handle for the populate blocklists listener from the launching activity.
         populateBlocklistsListener = (PopulateBlocklistsListener) context;
+    }
+
+    // `onPreExecute()` operates on the UI thread.
+    @Override
+    protected void onPreExecute() {
+        // Get a handle for the activity.
+        Activity activity = activityWeakReference.get();
+
+        // Abort if the activity is gone.
+        if ((activity == null) || activity.isFinishing()) {
+            return;
+        }
+
+        // Get handles for the views.
+        Toolbar toolbar = activity.findViewById(R.id.toolbar);
+        LinearLayout tabsLinearLayout = activity.findViewById(R.id.tabs_linearlayout);
+        RelativeLayout loadingBlocklistsRelativeLayout = activity.findViewById(R.id.loading_blocklists_relativelayout);
+
+        // Hide the toolbar and tabs linear layout, which will be visible if this is being run after the app process has been killed in the background.
+        toolbar.setVisibility(View.GONE);
+        tabsLinearLayout.setVisibility(View.GONE);
+
+        // Show the loading blocklists screen.
+        loadingBlocklistsRelativeLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -103,6 +128,12 @@ public class PopulateBlocklists extends AsyncTask<Void, String, ArrayList<ArrayL
 
 
             // Update the progress.
+            publishProgress(context.getString(R.string.loading_ultralist));
+
+            // Populate UltraList.
+            ArrayList<List<String[]>> ultraList = blocklistHelper.parseBlocklist(context.getAssets(), "blocklists/ultralist.txt");
+
+            // Update the progress.
             publishProgress(context.getString(R.string.loading_ultraprivacy));
 
             // Populate UltraPrivacy.
@@ -114,6 +145,7 @@ public class PopulateBlocklists extends AsyncTask<Void, String, ArrayList<ArrayL
             combinedBlocklists.add(easyPrivacy);
             combinedBlocklists.add(fanboysAnnoyanceList);
             combinedBlocklists.add(fanboysSocialList);
+            combinedBlocklists.add(ultraList);
             combinedBlocklists.add(ultraPrivacy);
         }
 

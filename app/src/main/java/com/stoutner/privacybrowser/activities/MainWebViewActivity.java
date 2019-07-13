@@ -24,6 +24,7 @@ package com.stoutner.privacybrowser.activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.DownloadManager;
 import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
@@ -49,6 +50,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
@@ -116,6 +118,7 @@ import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.adapters.WebViewPagerAdapter;
 import com.stoutner.privacybrowser.asynctasks.GetHostIpAddresses;
 import com.stoutner.privacybrowser.asynctasks.PopulateBlocklists;
+import com.stoutner.privacybrowser.asynctasks.SaveWebpageImage;
 import com.stoutner.privacybrowser.dialogs.AdConsentDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkFolderDialog;
@@ -126,7 +129,9 @@ import com.stoutner.privacybrowser.dialogs.DownloadLocationPermissionDialog;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkFolderDialog;
 import com.stoutner.privacybrowser.dialogs.HttpAuthenticationDialog;
+import com.stoutner.privacybrowser.dialogs.SaveWebpageImageDialog;
 import com.stoutner.privacybrowser.dialogs.SslCertificateErrorDialog;
+import com.stoutner.privacybrowser.dialogs.StoragePermissionDialog;
 import com.stoutner.privacybrowser.dialogs.UrlHistoryDialog;
 import com.stoutner.privacybrowser.dialogs.ViewSslCertificateDialog;
 import com.stoutner.privacybrowser.fragments.WebViewTabFragment;
@@ -135,6 +140,7 @@ import com.stoutner.privacybrowser.helpers.BlocklistHelper;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 import com.stoutner.privacybrowser.helpers.CheckPinnedMismatchHelper;
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
+import com.stoutner.privacybrowser.helpers.FileNameHelper;
 import com.stoutner.privacybrowser.helpers.OrbotProxyHelper;
 import com.stoutner.privacybrowser.views.NestedScrollWebView;
 
@@ -158,7 +164,8 @@ import java.util.Set;
 // AppCompatActivity from android.support.v7.app.AppCompatActivity must be used to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
         DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, DownloadLocationPermissionDialog.DownloadLocationPermissionDialogListener, EditBookmarkDialog.EditBookmarkListener,
-        EditBookmarkFolderDialog.EditBookmarkFolderListener, NavigationView.OnNavigationItemSelectedListener, PopulateBlocklists.PopulateBlocklistsListener, WebViewTabFragment.NewTabListener {
+        EditBookmarkFolderDialog.EditBookmarkFolderListener, NavigationView.OnNavigationItemSelectedListener, PopulateBlocklists.PopulateBlocklistsListener, SaveWebpageImageDialog.SaveWebpageImageListener,
+        StoragePermissionDialog.StoragePermissionDialogListener, WebViewTabFragment.NewTabListener {
 
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxyThroughOrbot()`.
     public static String orbotStatus;
@@ -185,6 +192,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public final static int DOMAINS_WEBVIEW_DEFAULT_USER_AGENT = 2;
     public final static int DOMAINS_CUSTOM_USER_AGENT = 13;
 
+    // Start activity for result request codes.
+    private final int FILE_UPLOAD_REQUEST_CODE = 0;
+    public final static int BROWSE_SAVE_WEBPAGE_IMAGE_REQUEST_CODE = 1;
 
 
     // The current WebView is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`,
@@ -205,6 +215,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private ArrayList<List<String[]>> easyPrivacy;
     private ArrayList<List<String[]>> fanboysAnnoyanceList;
     private ArrayList<List<String[]>> fanboysSocialList;
+    private ArrayList<List<String[]>> ultraList;
     private ArrayList<List<String[]>> ultraPrivacy;
 
     // `webViewDefaultUserAgent` is used in `onCreate()` and `onPrepareOptionsMenu()`.
@@ -293,14 +304,23 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `downloadImageUrl` is used in `onCreateContextMenu()` and `onRequestPermissionResult()`.
     private String downloadImageUrl;
 
-    // The request codes are used in `onCreate()`, `onCreateContextMenu()`, `onCloseDownloadLocationPermissionDialog()`, `onRequestPermissionResult()`, and `initializeWebView()`.
+    // The save website image file path string is used in `onSaveWebpageImage()` and `onRequestPermissionResult()`
+    private String saveWebsiteImageFilePath;
+
+    // The permission result request codes are used in `onCreateContextMenu()`, `onCloseDownloadLocationPermissionDialog()`, `onRequestPermissionResult()`, `onSaveWebpageImage()`,
+    // `onCloseStoragePermissionDialog()`, and `initializeWebView()`.
     private final int DOWNLOAD_FILE_REQUEST_CODE = 1;
     private final int DOWNLOAD_IMAGE_REQUEST_CODE = 2;
+    private final int SAVE_WEBPAGE_IMAGE_REQUEST_CODE = 3;
 
     @Override
     // Remove the warning about needing to override `performClick()` when using an `OnTouchListener` with `WebView`.
     @SuppressLint("ClickableViewAccessibility")
     protected void onCreate(Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT >= 21) {
+            WebView.enableSlowWholeDocumentDraw();
+        }
+
         // Initialize the default preference values the first time the program is run.  `false` keeps this command from resetting any current preferences back to default.
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
@@ -328,6 +348,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Set the content view.
         setContentView(R.layout.main_framelayout);
+
         // Get handles for the views that need to be modified.
         DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -367,63 +388,69 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     protected void onNewIntent(Intent intent) {
-        // Get the information from the intent.
-        String intentAction = intent.getAction();
-        Uri intentUriData = intent.getData();
+        // Replace the intent that started the app with this one.
+        setIntent(intent);
 
-        // Determine if this is a web search.
-        boolean isWebSearch = ((intentAction != null) && intentAction.equals(Intent.ACTION_WEB_SEARCH));
+        // Process the intent here if Privacy Browser is fully initialized.  If the process has been killed by the system while sitting in the background, this will be handled in `initializeWebView()`.
+        if (ultraPrivacy != null) {
+            // Get the information from the intent.
+            String intentAction = intent.getAction();
+            Uri intentUriData = intent.getData();
 
-        // Only process the URI if it contains data or it is a web search.  If the user pressed the desktop icon after the app was already running the URI will be null.
-        if (intentUriData != null || isWebSearch) {
-            // Get the shared preferences.
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            // Determine if this is a web search.
+            boolean isWebSearch = ((intentAction != null) && intentAction.equals(Intent.ACTION_WEB_SEARCH));
 
-            // Create a URL string.
-            String url;
+            // Only process the URI if it contains data or it is a web search.  If the user pressed the desktop icon after the app was already running the URI will be null.
+            if (intentUriData != null || isWebSearch) {
+                // Get the shared preferences.
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-            // If the intent action is a web search, perform the search.
-            if (isWebSearch) {
-                // Create an encoded URL string.
-                String encodedUrlString;
+                // Create a URL string.
+                String url;
 
-                // Sanitize the search input and convert it to a search.
-                try {
-                    encodedUrlString = URLEncoder.encode(intent.getStringExtra(SearchManager.QUERY), "UTF-8");
-                } catch (UnsupportedEncodingException exception) {
-                    encodedUrlString = "";
+                // If the intent action is a web search, perform the search.
+                if (isWebSearch) {
+                    // Create an encoded URL string.
+                    String encodedUrlString;
+
+                    // Sanitize the search input and convert it to a search.
+                    try {
+                        encodedUrlString = URLEncoder.encode(intent.getStringExtra(SearchManager.QUERY), "UTF-8");
+                    } catch (UnsupportedEncodingException exception) {
+                        encodedUrlString = "";
+                    }
+
+                    // Add the base search URL.
+                    url = searchURL + encodedUrlString;
+                } else {  // The intent should contain a URL.
+                    // Set the intent data as the URL.
+                    url = intentUriData.toString();
                 }
 
-                // Add the base search URL.
-                url = searchURL + encodedUrlString;
-            } else {  // The intent should contain a URL.
-                // Set the intent data as the URL.
-                url = intentUriData.toString();
-            }
+                // Add a new tab if specified in the preferences.
+                if (sharedPreferences.getBoolean("open_intents_in_new_tab", true)) {  // Load the URL in a new tab.
+                    // Set the loading new intent flag.
+                    loadingNewIntent = true;
 
-            // Add a new tab if specified in the preferences.
-            if (sharedPreferences.getBoolean("open_intents_in_new_tab", true)) {  // Load the URL in a new tab.
-                // Set the loading new intent flag.
-                loadingNewIntent = true;
+                    // Add a new tab.
+                    addNewTab(url);
+                } else {  // Load the URL in the current tab.
+                    // Make it so.
+                    loadUrl(url);
+                }
 
-                // Add a new tab.
-                addNewTab(url);
-            } else {  // Load the URL in the current tab.
-                // Make it so.
-                loadUrl(url);
-            }
+                // Get a handle for the drawer layout.
+                DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
 
-            // Get a handle for the drawer layout.
-            DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
+                // Close the navigation drawer if it is open.
+                if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                }
 
-            // Close the navigation drawer if it is open.
-            if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
-                drawerLayout.closeDrawer(GravityCompat.START);
-            }
-
-            // Close the bookmarks drawer if it is open.
-            if (drawerLayout.isDrawerVisible(GravityCompat.END)) {
-                drawerLayout.closeDrawer(GravityCompat.END);
+                // Close the bookmarks drawer if it is open.
+                if (drawerLayout.isDrawerVisible(GravityCompat.END)) {
+                    drawerLayout.closeDrawer(GravityCompat.END);
+                }
             }
         }
     }
@@ -699,6 +726,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem easyPrivacyMenuItem = menu.findItem(R.id.easyprivacy);
         MenuItem fanboysAnnoyanceListMenuItem = menu.findItem(R.id.fanboys_annoyance_list);
         MenuItem fanboysSocialBlockingListMenuItem = menu.findItem(R.id.fanboys_social_blocking_list);
+        MenuItem ultraListMenuItem = menu.findItem(R.id.ultralist);
         MenuItem ultraPrivacyMenuItem = menu.findItem(R.id.ultraprivacy);
         MenuItem blockAllThirdPartyRequestsMenuItem = menu.findItem(R.id.block_all_third_party_requests);
         MenuItem fontSizeMenuItem = menu.findItem(R.id.font_size);
@@ -733,11 +761,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Set the status of the menu item checkboxes.
             domStorageMenuItem.setChecked(currentWebView.getSettings().getDomStorageEnabled());
             saveFormDataMenuItem.setChecked(currentWebView.getSettings().getSaveFormData());  // Form data can be removed once the minimum API >= 26.
-            easyListMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASY_LIST));
-            easyPrivacyMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASY_PRIVACY));
+            easyListMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASYLIST));
+            easyPrivacyMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASYPRIVACY));
             fanboysAnnoyanceListMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST));
             fanboysSocialBlockingListMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST));
-            ultraPrivacyMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRA_PRIVACY));
+            ultraListMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRALIST));
+            ultraPrivacyMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRAPRIVACY));
             blockAllThirdPartyRequestsMenuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.THIRD_PARTY_REQUESTS));
             swipeToRefreshMenuItem.setChecked(currentWebView.getSwipeToRefresh());
             wideViewportMenuItem.setChecked(currentWebView.getSettings().getUseWideViewPort());
@@ -746,11 +775,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             // Initialize the display names for the blocklists with the number of blocked requests.
             blocklistsMenuItem.setTitle(getString(R.string.blocklists) + " - " + currentWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-            easyListMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.EASY_LIST) + " - " + getString(R.string.easylist));
-            easyPrivacyMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.EASY_PRIVACY) + " - " + getString(R.string.easyprivacy));
+            easyListMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.EASYLIST) + " - " + getString(R.string.easylist));
+            easyPrivacyMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.EASYPRIVACY) + " - " + getString(R.string.easyprivacy));
             fanboysAnnoyanceListMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST) + " - " + getString(R.string.fanboys_annoyance_list));
             fanboysSocialBlockingListMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST) + " - " + getString(R.string.fanboys_social_blocking_list));
-            ultraPrivacyMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.ULTRA_PRIVACY) + " - " + getString(R.string.ultraprivacy));
+            ultraListMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.ULTRALIST) + " - " + getString(R.string.ultralist));
+            ultraPrivacyMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.ULTRAPRIVACY) + " - " + getString(R.string.ultraprivacy));
             blockAllThirdPartyRequestsMenuItem.setTitle(currentWebView.getRequestsCount(NestedScrollWebView.THIRD_PARTY_REQUESTS) + " - " + getString(R.string.block_all_third_party_requests));
 
             // Only modify third-party cookies if the API >= 21.
@@ -904,23 +934,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // Remove Android Studio's warning about the dangers of using SetJavaScriptEnabled.
     @SuppressLint("SetJavaScriptEnabled")
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        // Reenter full screen browsing mode if it was interrupted by the options menu.  <https://redmine.stoutner.com/issues/389>
-        if (inFullScreenBrowsingMode) {
-            // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-            FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
-
-            /* Hide the system bars.
-             * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
-             * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
-             * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
-             * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
-             */
-            rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
-
         // Get the selected menu item ID.
         int menuItemId = menuItem.getItemId();
 
@@ -950,6 +963,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.add_or_edit_domain:
@@ -1056,6 +1071,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Make it so.
                     startActivity(domainsIntent);
                 }
+
+                // Consume the event.
                 return true;
 
             case R.id.toggle_first_party_cookies:
@@ -1082,6 +1099,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.toggle_third_party_cookies:
@@ -1102,6 +1121,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Reload the current WebView.
                     currentWebView.reload();
                 } // Else do nothing because SDK < 21.
+
+                // Consume the event.
                 return true;
 
             case R.id.toggle_dom_storage:
@@ -1123,6 +1144,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             // Form data can be removed once the minimum API >= 26.
@@ -1145,6 +1168,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.clear_cookies:
@@ -1167,6 +1192,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             }
                         })
                         .show();
+
+                // Consume the event.
                 return true;
 
             case R.id.clear_dom_storage:
@@ -1222,6 +1249,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             }
                         })
                         .show();
+
+                // Consume the event.
                 return true;
 
             // Form data can be remove once the minimum API >= 26.
@@ -1242,28 +1271,34 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             }
                         })
                         .show();
+
+                // Consume the event.
                 return true;
 
             case R.id.easylist:
                 // Toggle the EasyList status.
-                currentWebView.enableBlocklist(NestedScrollWebView.EASY_LIST, !currentWebView.isBlocklistEnabled(NestedScrollWebView.EASY_LIST));
+                currentWebView.enableBlocklist(NestedScrollWebView.EASYLIST, !currentWebView.isBlocklistEnabled(NestedScrollWebView.EASYLIST));
 
                 // Update the menu checkbox.
-                menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASY_LIST));
+                menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASYLIST));
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.easyprivacy:
                 // Toggle the EasyPrivacy status.
-                currentWebView.enableBlocklist(NestedScrollWebView.EASY_PRIVACY, !currentWebView.isBlocklistEnabled(NestedScrollWebView.EASY_PRIVACY));
+                currentWebView.enableBlocklist(NestedScrollWebView.EASYPRIVACY, !currentWebView.isBlocklistEnabled(NestedScrollWebView.EASYPRIVACY));
 
                 // Update the menu checkbox.
-                menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASY_PRIVACY));
+                menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.EASYPRIVACY));
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.fanboys_annoyance_list:
@@ -1279,6 +1314,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.fanboys_social_blocking_list:
@@ -1290,17 +1327,34 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
+                return true;
+
+            case R.id.ultralist:
+                // Toggle the UltraList status.
+                currentWebView.enableBlocklist(NestedScrollWebView.ULTRALIST, !currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRALIST));
+
+                // Update the menu checkbox.
+                menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRALIST));
+
+                // Reload the current WebView.
+                currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.ultraprivacy:
                 // Toggle the UltraPrivacy status.
-                currentWebView.enableBlocklist(NestedScrollWebView.ULTRA_PRIVACY, !currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRA_PRIVACY));
+                currentWebView.enableBlocklist(NestedScrollWebView.ULTRAPRIVACY, !currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRAPRIVACY));
 
                 // Update the menu checkbox.
-                menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRA_PRIVACY));
+                menuItem.setChecked(currentWebView.isBlocklistEnabled(NestedScrollWebView.ULTRAPRIVACY));
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.block_all_third_party_requests:
@@ -1312,6 +1366,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_privacy_browser:
@@ -1320,6 +1376,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_webview_default:
@@ -1328,6 +1386,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_firefox_on_android:
@@ -1336,6 +1396,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_chrome_on_android:
@@ -1344,6 +1406,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_safari_on_ios:
@@ -1352,6 +1416,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_firefox_on_linux:
@@ -1360,6 +1426,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_chromium_on_linux:
@@ -1368,6 +1436,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_firefox_on_windows:
@@ -1376,6 +1446,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_chrome_on_windows:
@@ -1384,6 +1456,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_edge_on_windows:
@@ -1392,6 +1466,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_internet_explorer_on_windows:
@@ -1400,6 +1476,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_safari_on_macos:
@@ -1408,6 +1486,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.user_agent_custom:
@@ -1416,38 +1496,64 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the current WebView.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.font_size_twenty_five_percent:
+                // Set the font size.
                 currentWebView.getSettings().setTextZoom(25);
+
+                // Consume the event.
                 return true;
 
             case R.id.font_size_fifty_percent:
+                // Set the font size.
                 currentWebView.getSettings().setTextZoom(50);
+
+                // Consume the event.
                 return true;
 
             case R.id.font_size_seventy_five_percent:
+                // Set the font size.
                 currentWebView.getSettings().setTextZoom(75);
+
+                // Consume the event.
                 return true;
 
             case R.id.font_size_one_hundred_percent:
+                // Set the font size.
                 currentWebView.getSettings().setTextZoom(100);
+
+                // Consume the event.
                 return true;
 
             case R.id.font_size_one_hundred_twenty_five_percent:
+                // Set the font size.
                 currentWebView.getSettings().setTextZoom(125);
+
+                // Consume the event.
                 return true;
 
             case R.id.font_size_one_hundred_fifty_percent:
+                // Set the font size.
                 currentWebView.getSettings().setTextZoom(150);
+
+                // Consume the event.
                 return true;
 
             case R.id.font_size_one_hundred_seventy_five_percent:
+                // Set the font size.
                 currentWebView.getSettings().setTextZoom(175);
+
+                // Consume the event.
                 return true;
 
             case R.id.font_size_two_hundred_percent:
+                // Set the font size.
                 currentWebView.getSettings().setTextZoom(200);
+
+                // Consume the event.
                 return true;
 
             case R.id.swipe_to_refresh:
@@ -1465,11 +1571,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Disable the swipe refresh layout.
                     swipeRefreshLayout.setEnabled(false);
                 }
+
+                // Consume the event.
                 return true;
 
             case R.id.wide_viewport:
                 // Toggle the viewport.
                 currentWebView.getSettings().setUseWideViewPort(!currentWebView.getSettings().getUseWideViewPort());
+
+                // Consume the event.
                 return true;
 
             case R.id.display_images:
@@ -1483,6 +1593,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Enable loading of images.  Missing images will be loaded without the need for a reload.
                     currentWebView.getSettings().setLoadsImagesAutomatically(true);
                 }
+
+                // Consume the event.
                 return true;
 
             case R.id.night_mode:
@@ -1506,6 +1618,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Reload the website.
                 currentWebView.reload();
+
+                // Consume the event.
                 return true;
 
             case R.id.find_on_page:
@@ -1538,6 +1652,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Display the keyboard.  `0` sets no input flags.
                     inputMethodManager.showSoftInput(findOnPageEditText, 0);
                 }, 200);
+
+                // Consume the event.
                 return true;
 
             case R.id.print:
@@ -1552,6 +1668,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Print the document.
                 printManager.print(getString(R.string.privacy_browser_web_page), printDocumentAdapter, null);
+
+                // Consume the event.
+                return true;
+
+            case R.id.save_as_image:
+                // Instantiate the save webpage image dialog.
+                DialogFragment saveWebpageImageDialogFragment = new SaveWebpageImageDialog();
+
+                // Show the save webpage image dialog.
+                saveWebpageImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_as_image));
+
+                // Consume the event.
                 return true;
 
             case R.id.add_to_homescreen:
@@ -1561,6 +1689,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Show the create home screen shortcut dialog.
                 createHomeScreenShortcutDialogFragment.show(getSupportFragmentManager(), getString(R.string.create_shortcut));
+
+                // Consume the event.
                 return true;
 
             case R.id.view_source:
@@ -1573,6 +1703,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Make it so.
                 startActivity(viewSourceIntent);
+
+                // Consume the event.
                 return true;
 
             case R.id.share_url:
@@ -1586,14 +1718,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Make it so.
                 startActivity(Intent.createChooser(shareIntent, getString(R.string.share_url)));
+
+                // Consume the event.
                 return true;
 
             case R.id.open_with_app:
+                // Open the URL with an outside app.
                 openWithApp(currentWebView.getUrl());
+
+                // Consume the event.
                 return true;
 
             case R.id.open_with_browser:
+                // Open the URL with an outside browser.
                 openWithBrowser(currentWebView.getUrl());
+
+                // Consume the event.
                 return true;
 
             case R.id.proxy_through_orbot:
@@ -1602,6 +1742,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Apply the proxy through Orbot settings.
                 applyProxyThroughOrbot(true);
+
+                // Consume the event.
                 return true;
 
             case R.id.refresh:
@@ -1612,12 +1754,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Stop the loading of the WebView.
                     currentWebView.stopLoading();
                 }
+
+                // Consume the event.
                 return true;
 
             case R.id.ad_consent:
-                // Display the ad consent dialog.
+                // Instantiate the ad consent dialog.
                 DialogFragment adConsentDialogFragment = new AdConsentDialog();
+
+                // Display the ad consent dialog.
                 adConsentDialogFragment.show(getSupportFragmentManager(), getString(R.string.ad_consent));
+
+                // Consume the event.
                 return true;
 
             default:
@@ -1793,7 +1941,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Create a string array for the blocklist versions.
                 String[] blocklistVersions = new String[] {easyList.get(0).get(0)[0], easyPrivacy.get(0).get(0)[0], fanboysAnnoyanceList.get(0).get(0)[0], fanboysSocialList.get(0).get(0)[0],
-                        ultraPrivacy.get(0).get(0)[0]};
+                        ultraList.get(0).get(0)[0], ultraPrivacy.get(0).get(0)[0]};
 
                 // Add the blocklist versions to the intent.
                 aboutIntent.putExtra("blocklist_versions", blocklistVersions);
@@ -1853,7 +2001,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Store the hit test result.
         final WebView.HitTestResult hitTestResult = currentWebView.getHitTestResult();
 
-        // Create the URL strings.
+        // Define the URL strings.
         final String imageUrl;
         final String linkUrl;
 
@@ -1879,19 +2027,25 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 menu.add(R.string.open_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
                     // Load the link URL in a new tab.
                     addNewTab(linkUrl);
-                    return false;
+
+                    // Consume the event.
+                    return true;
                 });
 
                 // Add an Open with App entry.
                 menu.add(R.string.open_with_app).setOnMenuItemClickListener((MenuItem item) -> {
                     openWithApp(linkUrl);
-                    return false;
+
+                    // Consume the event.
+                    return true;
                 });
 
                 // Add an Open with Browser entry.
                 menu.add(R.string.open_with_browser).setOnMenuItemClickListener((MenuItem item) -> {
                     openWithBrowser(linkUrl);
-                    return false;
+
+                    // Consume the event.
+                    return true;
                 });
 
                 // Add a Copy URL entry.
@@ -1901,7 +2055,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Set the `ClipData` as the clipboard's primary clip.
                     clipboardManager.setPrimaryClip(srcAnchorTypeClipData);
-                    return false;
+
+                    // Consume the event.
+                    return true;
                 });
 
                 // Add a Download URL entry.
@@ -1936,7 +2092,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             downloadFileDialogFragment.show(fragmentManager, getString(R.string.download));
                         }
                     }
-                    return false;
+
+                    // Consume the event.
+                    return true;
                 });
 
                 // Add a Cancel entry, which by default closes the context menu.
@@ -1963,7 +2121,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Make it so.
                     startActivity(emailIntent);
-                    return false;
+
+                    // Consume the event.
+                    return true;
                 });
 
                 // Add a Copy Email Address entry.
@@ -1973,16 +2133,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Set the `ClipData` as the clipboard's primary clip.
                     clipboardManager.setPrimaryClip(srcEmailTypeClipData);
-                    return false;
+
+                    // Consume the event.
+                    return true;
                 });
 
                 // Add a `Cancel` entry, which by default closes the `ContextMenu`.
                 menu.add(R.string.cancel);
                 break;
 
-            // `IMAGE_TYPE` is an image. `SRC_IMAGE_ANCHOR_TYPE` is an image that is also a link.  Privacy Browser processes them the same.
+            // `IMAGE_TYPE` is an image.
             case WebView.HitTestResult.IMAGE_TYPE:
-            case WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE:
                 // Get the image URL.
                 imageUrl = hitTestResult.getExtra();
 
@@ -1993,16 +2154,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 menu.add(R.string.open_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
                     // Load the image URL in a new tab.
                     addNewTab(imageUrl);
-                    return false;
+
+                    // Consume the event.
+                    return true;
                 });
 
                 // Add a View Image entry.
                 menu.add(R.string.view_image).setOnMenuItemClickListener(item -> {
+                    // Load the image in the current tab.
                     loadUrl(imageUrl);
-                    return false;
+
+                    // Consume the event.
+                    return true;
                 });
 
-                // Add a `Download Image` entry.
+                // Add a Download Image entry.
                 menu.add(R.string.download_image).setOnMenuItemClickListener((MenuItem item) -> {
                     // Check if the download should be processed by an external app.
                     if (sharedPreferences.getBoolean("download_with_external_app", false)) {  // Download with an external app.
@@ -2021,7 +2187,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 // Show the download location permission alert dialog.  The permission will be requested when the dialog is closed.
                                 downloadLocationPermissionDialogFragment.show(fragmentManager, getString(R.string.download_location));
                             } else {  // Show the permission request directly.
-                                // Request the permission.  The download dialog will be launched by `onRequestPermissionResult().
+                                // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
                                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_IMAGE_REQUEST_CODE);
                             }
                         } else {  // The storage permission has already been granted.
@@ -2032,32 +2198,149 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             downloadImageDialogFragment.show(fragmentManager, getString(R.string.download));
                         }
                     }
-                    return false;
+
+                    // Consume the event.
+                    return true;
                 });
 
-                // Add a `Copy URL` entry.
-                menu.add(R.string.copy_url).setOnMenuItemClickListener(item -> {
-                    // Save the image URL in a `ClipData`.
-                    ClipData srcImageAnchorTypeClipData = ClipData.newPlainText(getString(R.string.url), imageUrl);
+                // Add a Copy URL entry.
+                menu.add(R.string.copy_url).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Save the image URL in a clip data.
+                    ClipData imageTypeClipData = ClipData.newPlainText(getString(R.string.url), imageUrl);
 
-                    // Set the `ClipData` as the clipboard's primary clip.
-                    clipboardManager.setPrimaryClip(srcImageAnchorTypeClipData);
-                    return false;
+                    // Set the clip data as the clipboard's primary clip.
+                    clipboardManager.setPrimaryClip(imageTypeClipData);
+
+                    // Consume the event.
+                    return true;
                 });
 
                 // Add an Open with App entry.
                 menu.add(R.string.open_with_app).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Open the image URL with an external app.
                     openWithApp(imageUrl);
-                    return false;
+
+                    // Consume the event.
+                    return true;
                 });
 
                 // Add an Open with Browser entry.
                 menu.add(R.string.open_with_browser).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Open the image URL with an external browser.
                     openWithBrowser(imageUrl);
-                    return false;
+
+                    // Consume the event.
+                    return true;
                 });
 
-                // Add a `Cancel` entry, which by default closes the `ContextMenu`.
+                // Add a Cancel entry, which by default closes the context menu.
+                menu.add(R.string.cancel);
+                break;
+
+            // `SRC_IMAGE_ANCHOR_TYPE` is an image that is also a link.
+            case WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE:
+                // Get the image URL.
+                imageUrl = hitTestResult.getExtra();
+
+                // Instantiate a handler.
+                Handler handler = new Handler();
+
+                // Get a message from the handler.
+                Message message = handler.obtainMessage();
+
+                // Request the image details from the last touched node be returned in the message.
+                currentWebView.requestFocusNodeHref(message);
+
+                // Get the link URL from the message data.
+                linkUrl = message.getData().getString("url");
+
+                // Set the link URL as the title of the context menu.
+                menu.setHeaderTitle(linkUrl);
+
+                // Add an Open in New Tab entry.
+                menu.add(R.string.open_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Load the link URL in a new tab.
+                    addNewTab(linkUrl);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add a View Image entry.
+                menu.add(R.string.view_image).setOnMenuItemClickListener((MenuItem item) -> {
+                   // View the image in the current tab.
+                   loadUrl(imageUrl);
+
+                   // Consume the event.
+                   return true;
+                });
+
+                // Add a Download Image entry.
+                menu.add(R.string.download_image).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Check if the download should be processed by an external app.
+                    if (sharedPreferences.getBoolean("download_with_external_app", false)) {  // Download with an external app.
+                        openUrlWithExternalApp(imageUrl);
+                    } else {  // Download with Android's download manager.
+                        // Check to see if the storage permission has already been granted.
+                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {  // The storage permission needs to be requested.
+                            // Store the image URL for use by `onRequestPermissionResult()`.
+                            downloadImageUrl = imageUrl;
+
+                            // Show a dialog if the user has previously denied the permission.
+                            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
+                                // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_IMAGE.
+                                DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_IMAGE);
+
+                                // Show the download location permission alert dialog.  The permission will be requested when the dialog is closed.
+                                downloadLocationPermissionDialogFragment.show(fragmentManager, getString(R.string.download_location));
+                            } else {  // Show the permission request directly.
+                                // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
+                                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_IMAGE_REQUEST_CODE);
+                            }
+                        } else {  // The storage permission has already been granted.
+                            // Get a handle for the download image alert dialog.
+                            DialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
+
+                            // Show the download image alert dialog.
+                            downloadImageDialogFragment.show(fragmentManager, getString(R.string.download));
+                        }
+                    }
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add a Copy URL entry.
+                menu.add(R.string.copy_url).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Save the link URL in a clip data.
+                    ClipData srcImageAnchorTypeClipData = ClipData.newPlainText(getString(R.string.url), linkUrl);
+
+                    // Set the clip data as the clipboard's primary clip.
+                    clipboardManager.setPrimaryClip(srcImageAnchorTypeClipData);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add an Open with App entry.
+                menu.add(R.string.open_with_app).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Open the link URL with an external app.
+                    openWithApp(linkUrl);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add an Open with Browser entry.
+                menu.add(R.string.open_with_browser).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Open the link URL with an external browser.
+                    openWithBrowser(linkUrl);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add a cancel entry, which by default closes the context menu.
                 menu.add(R.string.cancel);
                 break;
         }
@@ -2329,6 +2612,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Reset the image URL variable.
                 downloadImageUrl = "";
                 break;
+
+            case SAVE_WEBPAGE_IMAGE_REQUEST_CODE:
+                // Check to see if the storage permission was granted.  If the dialog was canceled the grant result will be empty.
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
+                    // Save the webpage image.
+                    new SaveWebpageImage(this, currentWebView).execute(saveWebsiteImageFilePath);
+                } else {  // The storage permission was not granted.
+                    // Display an error snackbar.
+                    Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
+                }
+
+                // Reset the save website image file path.
+                saveWebsiteImageFilePath = "";
+                break;
         }
     }
 
@@ -2484,13 +2781,44 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
     }
 
-    // Process the results of an upload file chooser.  Currently there is only one `startActivityForResult` in this activity, so the request code, used to differentiate them, is ignored.
+    // Process the results of a file browse.
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // File uploads only work on API >= 21.
-        if (Build.VERSION.SDK_INT >= 21) {
-            // Pass the file to the WebView.
-            fileChooserCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
+        // Run the commands that correlate to the specified request code.
+        switch (requestCode) {
+            case FILE_UPLOAD_REQUEST_CODE:
+                // File uploads only work on API >= 21.
+                if (Build.VERSION.SDK_INT >= 21) {
+                    // Pass the file to the WebView.
+                    fileChooserCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
+                }
+                break;
+
+            case BROWSE_SAVE_WEBPAGE_IMAGE_REQUEST_CODE:
+                // Don't do anything if the user pressed back from the file picker.
+                if (resultCode == Activity.RESULT_OK) {
+                    // Get a handle for the save dialog fragment.
+                    DialogFragment saveWebpageImageDialogFragment= (DialogFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.save_as_image));
+
+                    // Only update the file name if the dialog still exists.
+                    if (saveWebpageImageDialogFragment != null) {
+                        // Get a handle for the save webpage image dialog.
+                        Dialog saveWebpageImageDialog = saveWebpageImageDialogFragment.getDialog();
+
+                        // Get a handle for the file name edit text.
+                        EditText fileNameEditText = saveWebpageImageDialog.findViewById(R.id.file_name_edittext);
+
+                        // Instantiate the file name helper.
+                        FileNameHelper fileNameHelper = new FileNameHelper();
+
+                        // Convert the file name URI to a file name path.
+                        String fileNamePath = fileNameHelper.convertUriToFileNamePath(data.getData());
+
+                        // Set the file name path as the text of the file name edit text.
+                        fileNameEditText.setText(fileNamePath);
+                    }
+                }
+                break;
         }
     }
 
@@ -2613,6 +2941,54 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Hide the keyboard.
         inputMethodManager.hideSoftInputFromWindow(toolbar.getWindowToken(), 0);
+    }
+
+    @Override
+    public void onSaveWebpageImage(DialogFragment dialogFragment) {
+        // Get a handle for the file name edit text.
+        EditText fileNameEditText = dialogFragment.getDialog().findViewById(R.id.file_name_edittext);
+
+        // Get the file path string.
+        saveWebsiteImageFilePath = fileNameEditText.getText().toString();
+
+        // Check to see if the storage permission is needed.
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
+            // Save the webpage image.
+            new SaveWebpageImage(this, currentWebView).execute(saveWebsiteImageFilePath);
+        } else {  // The storage permission has not been granted.
+            // Get the external private directory `File`.
+            File externalPrivateDirectoryFile = getExternalFilesDir(null);
+
+            // Remove the incorrect lint error below that the file might be null.
+            assert externalPrivateDirectoryFile != null;
+
+            // Get the external private directory string.
+            String externalPrivateDirectory = externalPrivateDirectoryFile.toString();
+
+            // Check to see if the file path is in the external private directory.
+            if (saveWebsiteImageFilePath.startsWith(externalPrivateDirectory)) {  // The file path is in the external private directory.
+                // Save the webpage image.
+                new SaveWebpageImage(this, currentWebView).execute(saveWebsiteImageFilePath);
+            } else {  // The file path is in a public directory.
+                // Check if the user has previously denied the storage permission.
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
+                    // Instantiate the storage permission alert dialog.
+                    DialogFragment storagePermissionDialogFragment = new StoragePermissionDialog();
+
+                    // Show the storage permission alert dialog.  The permission will be requested when the dialog is closed.
+                    storagePermissionDialogFragment.show(getSupportFragmentManager(), getString(R.string.storage_permission));
+                } else {  // Show the permission request directly.
+                    // Request the write external storage permission.  The webpage image will be saved when it finishes.
+                    ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, SAVE_WEBPAGE_IMAGE_REQUEST_CODE);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onCloseStoragePermissionDialog() {
+        // Request the write external storage permission.  The webpage image will be saved when it finishes.
+        ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, SAVE_WEBPAGE_IMAGE_REQUEST_CODE);
     }
 
     private void applyAppSettings() {
@@ -3215,6 +3591,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Store a copy of the current user agent to track changes for the return boolean.
         String initialUserAgent = nestedScrollWebView.getSettings().getUserAgentString();
 
+        // Store the current URL.
+        nestedScrollWebView.setCurrentUrl(url);
+
         // Parse the URL into a URI.
         Uri uri = Uri.parse(url);
 
@@ -3361,15 +3740,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 nestedScrollWebView.getSettings().setDomStorageEnabled(currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_DOM_STORAGE)) == 1);
                 // Form data can be removed once the minimum API >= 26.
                 boolean saveFormData = (currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FORM_DATA)) == 1);
-                nestedScrollWebView.enableBlocklist(NestedScrollWebView.EASY_LIST,
+                nestedScrollWebView.enableBlocklist(NestedScrollWebView.EASYLIST,
                         currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYLIST)) == 1);
-                nestedScrollWebView.enableBlocklist(NestedScrollWebView.EASY_PRIVACY,
+                nestedScrollWebView.enableBlocklist(NestedScrollWebView.EASYPRIVACY,
                         currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY)) == 1);
                 nestedScrollWebView.enableBlocklist(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST,
                         currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST)) == 1);
                 nestedScrollWebView.enableBlocklist(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST,
                         currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)) == 1);
-                nestedScrollWebView.enableBlocklist(NestedScrollWebView.ULTRA_PRIVACY,
+                nestedScrollWebView.enableBlocklist(NestedScrollWebView.ULTRALIST, currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ULTRALIST)) == 1);
+                nestedScrollWebView.enableBlocklist(NestedScrollWebView.ULTRAPRIVACY,
                         currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY)) == 1);
                 nestedScrollWebView.enableBlocklist(NestedScrollWebView.THIRD_PARTY_REQUESTS,
                         currentDomainSettingsCursor.getInt(currentDomainSettingsCursor.getColumnIndex(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)) == 1);
@@ -3583,11 +3963,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 boolean defaultThirdPartyCookiesEnabled = sharedPreferences.getBoolean("third_party_cookies", false);
                 nestedScrollWebView.getSettings().setDomStorageEnabled(sharedPreferences.getBoolean("dom_storage", false));
                 boolean saveFormData = sharedPreferences.getBoolean("save_form_data", false);  // Form data can be removed once the minimum API >= 26.
-                nestedScrollWebView.enableBlocklist(NestedScrollWebView.EASY_LIST, sharedPreferences.getBoolean("easylist", true));
-                nestedScrollWebView.enableBlocklist(NestedScrollWebView.EASY_PRIVACY, sharedPreferences.getBoolean("easyprivacy", true));
+                nestedScrollWebView.enableBlocklist(NestedScrollWebView.EASYLIST, sharedPreferences.getBoolean("easylist", true));
+                nestedScrollWebView.enableBlocklist(NestedScrollWebView.EASYPRIVACY, sharedPreferences.getBoolean("easyprivacy", true));
                 nestedScrollWebView.enableBlocklist(NestedScrollWebView.FANBOYS_ANNOYANCE_LIST, sharedPreferences.getBoolean("fanboys_annoyance_list", true));
                 nestedScrollWebView.enableBlocklist(NestedScrollWebView.FANBOYS_SOCIAL_BLOCKING_LIST, sharedPreferences.getBoolean("fanboys_social_blocking_list", true));
-                nestedScrollWebView.enableBlocklist(NestedScrollWebView.ULTRA_PRIVACY, sharedPreferences.getBoolean("ultraprivacy", true));
+                nestedScrollWebView.enableBlocklist(NestedScrollWebView.ULTRALIST, sharedPreferences.getBoolean("ultralist", true));
+                nestedScrollWebView.enableBlocklist(NestedScrollWebView.ULTRAPRIVACY, sharedPreferences.getBoolean("ultraprivacy", true));
                 nestedScrollWebView.enableBlocklist(NestedScrollWebView.THIRD_PARTY_REQUESTS, sharedPreferences.getBoolean("block_all_third_party_requests", false));
                 nestedScrollWebView.setNightMode(sharedPreferences.getBoolean("night_mode", false));
 
@@ -3976,8 +4357,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Flag the intent to open in a new task.
         openWithAppIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        // Show the chooser.
-        startActivity(openWithAppIntent);
+        try {
+            // Show the chooser.
+            startActivity(openWithAppIntent);
+        } catch (ActivityNotFoundException exception) {
+            // Show a snackbar with the error.
+            Snackbar.make(currentWebView, getString(R.string.error) + "  " + exception, Snackbar.LENGTH_INDEFINITE).show();
+        }
     }
 
     private void openWithBrowser(String url) {
@@ -3990,8 +4376,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Flag the intent to open in a new task.
         openWithBrowserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        // Show the chooser.
-        startActivity(openWithBrowserIntent);
+        try {
+            // Show the chooser.
+            startActivity(openWithBrowserIntent);
+        } catch (ActivityNotFoundException exception) {
+            // Show a snackbar with the error.
+            Snackbar.make(currentWebView, getString(R.string.error) + "  " + exception, Snackbar.LENGTH_INDEFINITE).show();
+        }
     }
 
     private String sanitizeUrl(String url) {
@@ -4039,7 +4430,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         easyPrivacy = combinedBlocklists.get(1);
         fanboysAnnoyanceList = combinedBlocklists.get(2);
         fanboysSocialList = combinedBlocklists.get(3);
-        ultraPrivacy = combinedBlocklists.get(4);
+        ultraList = combinedBlocklists.get(4);
+        ultraPrivacy = combinedBlocklists.get(5);
 
         // Add the first tab.
         addNewTab("");
@@ -4612,12 +5004,25 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
         });
 
-        // Update the status of swipe to refresh based on the scroll position of the nested scroll WebView.
+        // Update the status of swipe to refresh based on the scroll position of the nested scroll WebView.  Also reinforce full screen browsing mode.
         // Once the minimum API >= 23 this can be replaced with `nestedScrollWebView.setOnScrollChangeListener()`.
         nestedScrollWebView.getViewTreeObserver().addOnScrollChangedListener(() -> {
             if (nestedScrollWebView.getSwipeToRefresh()) {
                 // Only enable swipe to refresh if the WebView is scrolled to the top.
                 swipeRefreshLayout.setEnabled(nestedScrollWebView.getScrollY() == 0);
+            }
+
+            // Reinforce the system UI visibility flags if in full screen browsing mode.
+            // This hides the status and navigation bars, which are displayed if other elements are shown, like dialog boxes, the options menu, or the keyboard.
+            if (inFullScreenBrowsingMode) {
+                /* Hide the system bars.
+                 * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                 * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+                 * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                 * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+                 */
+                rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
             }
         });
 
@@ -4854,8 +5259,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Create an intent to open a chooser based ont the file chooser parameters.
                     Intent fileChooserIntent = fileChooserParams.createIntent();
 
-                    // Open the file chooser.  Currently only one `startActivityForResult` exists in this activity, so the request code, used to differentiate them, is simply `0`.
-                    startActivityForResult(fileChooserIntent, 0);
+                    // Open the file chooser.
+                    startActivityForResult(fileChooserIntent, FILE_UPLOAD_REQUEST_CODE);
                 }
                 return true;
             }
@@ -4942,6 +5347,25 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Check requests against the block lists.  The deprecated `shouldInterceptRequest()` must be used until minimum API >= 21.
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+                // Check to see if the resource request is for the main URL.
+                if (url.equals(nestedScrollWebView.getCurrentUrl())) {
+                    // `return null` loads the resource request, which should never be blocked if it is the main URL.
+                    return null;
+                }
+
+                // Wait until the blocklists have been populated.  When Privacy Browser is being resumed after having the process killed in the background it will try to load the URLs immediately.
+                while (ultraPrivacy == null) {
+                    // The wait must be synchronized, which only lets one thread run on it at a time, or `java.lang.IllegalMonitorStateException` is thrown.
+                    synchronized (this) {
+                        try {
+                            // Check to see if the blocklists have been populated after 100 ms.
+                            wait(100);
+                        } catch (InterruptedException exception) {
+                            // Do nothing.
+                        }
+                    }
+                }
+
                 // Sanitize the URL.
                 url = sanitizeUrl(url);
 
@@ -5031,20 +5455,19 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     return emptyWebResourceResponse;
                 }
 
-                // Check UltraPrivacy if it is enabled.
-                if (nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.ULTRA_PRIVACY)) {
-                    // Check the URL against UltraPrivacy.
-                    String[] ultraPrivacyResults = blocklistHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, ultraPrivacy);
+                // Check UltraList if it is enabled.
+                if (nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.ULTRALIST)) {
+                    // Check the URL against UltraList.
+                    String[] ultraListResults = blocklistHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, ultraList);
 
-                    // Process the UltraPrivacy results.
-                    if (ultraPrivacyResults[0].equals(BlocklistHelper.REQUEST_BLOCKED)) {  // The resource request matched UltraPrivacy's blacklist.
+                    // Process the UltraList results.
+                    if (ultraListResults[0].equals(BlocklistHelper.REQUEST_BLOCKED)) {  // The resource request matched UltraLists's blacklist.
                         // Add the result to the resource requests.
-                        nestedScrollWebView.addResourceRequest(new String[] {ultraPrivacyResults[0], ultraPrivacyResults[1], ultraPrivacyResults[2], ultraPrivacyResults[3], ultraPrivacyResults[4],
-                                ultraPrivacyResults[5]});
+                        nestedScrollWebView.addResourceRequest(new String[] {ultraListResults[0], ultraListResults[1], ultraListResults[2], ultraListResults[3], ultraListResults[4], ultraListResults[5]});
 
                         // Increment the blocked requests counters.
                         nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS);
-                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.ULTRA_PRIVACY);
+                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.ULTRALIST);
 
                         // Update the titles of the blocklist menu items if the WebView is currently displayed.
                         if (webViewDisplayed) {
@@ -5056,7 +5479,48 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 // Update the options menu if it has been populated.
                                 if (optionsMenu != null) {
                                     optionsMenu.findItem(R.id.blocklists).setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                    optionsMenu.findItem(R.id.ultraprivacy).setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.ULTRA_PRIVACY) + " - " + getString(R.string.ultraprivacy));
+                                    optionsMenu.findItem(R.id.ultralist).setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.ULTRALIST) + " - " + getString(R.string.ultralist));
+                                }
+                            });
+                        }
+
+                        // The resource request was blocked.  Return an empty web resource response.
+                        return emptyWebResourceResponse;
+                    } else if (ultraListResults[0].equals(BlocklistHelper.REQUEST_ALLOWED)) {  // The resource request matched UltraList's whitelist.
+                        // Add a whitelist entry to the resource requests array.
+                        nestedScrollWebView.addResourceRequest(new String[] {ultraListResults[0], ultraListResults[1], ultraListResults[2], ultraListResults[3], ultraListResults[4], ultraListResults[5]});
+
+                        // The resource request has been allowed by UltraPrivacy.  `return null` loads the requested resource.
+                        return null;
+                    }
+                }
+
+                // Check UltraPrivacy if it is enabled.
+                if (nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.ULTRAPRIVACY)) {
+                    // Check the URL against UltraPrivacy.
+                    String[] ultraPrivacyResults = blocklistHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, ultraPrivacy);
+
+                    // Process the UltraPrivacy results.
+                    if (ultraPrivacyResults[0].equals(BlocklistHelper.REQUEST_BLOCKED)) {  // The resource request matched UltraPrivacy's blacklist.
+                        // Add the result to the resource requests.
+                        nestedScrollWebView.addResourceRequest(new String[] {ultraPrivacyResults[0], ultraPrivacyResults[1], ultraPrivacyResults[2], ultraPrivacyResults[3], ultraPrivacyResults[4],
+                                ultraPrivacyResults[5]});
+
+                        // Increment the blocked requests counters.
+                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS);
+                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.ULTRAPRIVACY);
+
+                        // Update the titles of the blocklist menu items if the WebView is currently displayed.
+                        if (webViewDisplayed) {
+                            // Updating the UI must be run from the UI thread.
+                            activity.runOnUiThread(() -> {
+                                // Update the menu item titles.
+                                navigationRequestsMenuItem.setTitle(getString(R.string.requests) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+
+                                // Update the options menu if it has been populated.
+                                if (optionsMenu != null) {
+                                    optionsMenu.findItem(R.id.blocklists).setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
+                                    optionsMenu.findItem(R.id.ultraprivacy).setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.ULTRAPRIVACY) + " - " + getString(R.string.ultraprivacy));
                                 }
                             });
                         }
@@ -5074,7 +5538,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Check EasyList if it is enabled.
-                if (nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.EASY_LIST)) {
+                if (nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.EASYLIST)) {
                     // Check the URL against EasyList.
                     String[] easyListResults = blocklistHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, easyList);
 
@@ -5085,7 +5549,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // Increment the blocked requests counters.
                         nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS);
-                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.EASY_LIST);
+                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.EASYLIST);
 
                         // Update the titles of the blocklist menu items if the WebView is currently displayed.
                         if (webViewDisplayed) {
@@ -5097,7 +5561,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 // Update the options menu if it has been populated.
                                 if (optionsMenu != null) {
                                     optionsMenu.findItem(R.id.blocklists).setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                    optionsMenu.findItem(R.id.easylist).setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.EASY_LIST) + " - " + getString(R.string.easylist));
+                                    optionsMenu.findItem(R.id.easylist).setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.EASYLIST) + " - " + getString(R.string.easylist));
                                 }
                             });
                         }
@@ -5111,7 +5575,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Check EasyPrivacy if it is enabled.
-                if (nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.EASY_PRIVACY)) {
+                if (nestedScrollWebView.isBlocklistEnabled(NestedScrollWebView.EASYPRIVACY)) {
                     // Check the URL against EasyPrivacy.
                     String[] easyPrivacyResults = blocklistHelper.checkBlocklist(currentDomain, url, isThirdPartyRequest, easyPrivacy);
 
@@ -5123,7 +5587,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // Increment the blocked requests counters.
                         nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS);
-                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.EASY_PRIVACY);
+                        nestedScrollWebView.incrementRequestsCount(NestedScrollWebView.EASYPRIVACY);
 
                         // Update the titles of the blocklist menu items if the WebView is currently displayed.
                         if (webViewDisplayed) {
@@ -5135,7 +5599,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 // Update the options menu if it has been populated.
                                 if (optionsMenu != null) {
                                     optionsMenu.findItem(R.id.blocklists).setTitle(getString(R.string.blocklists) + " - " + nestedScrollWebView.getRequestsCount(NestedScrollWebView.BLOCKED_REQUESTS));
-                                    optionsMenu.findItem(R.id.easyprivacy).setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.EASY_PRIVACY) + " - " + getString(R.string.easyprivacy));
+                                    optionsMenu.findItem(R.id.easyprivacy).setTitle(nestedScrollWebView.getRequestsCount(NestedScrollWebView.EASYPRIVACY) + " - " + getString(R.string.easyprivacy));
                                 }
                             });
                         }

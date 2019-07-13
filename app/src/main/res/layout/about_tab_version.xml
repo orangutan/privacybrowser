@@ -212,6 +212,12 @@
                 android:textIsSelectable="true" />
 
             <TextView
+                android:id="@+id/ultralist"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
+
+            <TextView
                 android:id="@+id/ultraprivacy"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"

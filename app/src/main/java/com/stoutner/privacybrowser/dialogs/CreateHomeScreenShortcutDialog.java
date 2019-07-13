@@ -61,6 +61,7 @@ public class CreateHomeScreenShortcutDialog extends DialogFragment {
     private EditText urlEditText;
     private RadioButton openWithPrivacyBrowserRadioButton;
 
+    // The public constructor.
     public static CreateHomeScreenShortcutDialog createDialog(String shortcutName, String urlString, Bitmap favoriteIconBitmap) {
         // Create a favorite icon byte array output stream.
         ByteArrayOutputStream favoriteIconByteArrayOutputStream = new ByteArrayOutputStream();

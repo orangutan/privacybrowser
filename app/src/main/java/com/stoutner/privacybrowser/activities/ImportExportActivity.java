@@ -25,7 +25,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.MediaScannerConnection;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -60,6 +59,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.dialogs.StoragePermissionDialog;
+import com.stoutner.privacybrowser.helpers.FileNameHelper;
 import com.stoutner.privacybrowser.helpers.ImportExportDatabaseHelper;
 
 import java.io.File;
@@ -566,56 +566,14 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
                     // Get a handle for the file name edit text.
                     EditText fileNameEditText = findViewById(R.id.file_name_edittext);
 
-                    // Get the file name URI.
-                    Uri fileNameUri = data.getData();
+                    // Instantiate the file name helper.
+                    FileNameHelper fileNameHelper = new FileNameHelper();
 
-                    // Remove the lint warning that the file name URI might be null.
-                    assert fileNameUri != null;
+                    // Convert the file name URI to a file name path.
+                    String fileNamePath = fileNameHelper.convertUriToFileNamePath(data.getData());
 
-                    // Get the raw file name path.
-                    String rawFileNamePath = fileNameUri.getPath();
-
-                    // Remove the incorrect lint warning that the file name path might be null.
-                    assert rawFileNamePath != null;
-
-                    // Check to see if the file name Path includes a valid storage location.
-                    if (rawFileNamePath.contains(":")) {  // The path is valid.
-                        // Split the path into the initial content uri and the final path information.
-                        String fileNameContentPath = rawFileNamePath.substring(0, rawFileNamePath.indexOf(":"));
-                        String fileNameFinalPath = rawFileNamePath.substring(rawFileNamePath.indexOf(":") + 1);
-
-                        // Create the file name path string.
-                        String fileNamePath;
-
-                        // Check to see if the current file name final patch is a complete, valid path
-                        if (fileNameFinalPath.startsWith("/storage/emulated/")) {  // The existing file name final path is a complete, valid path.
-                            // Use the provided file name path as is.
-                            fileNamePath = fileNameFinalPath;
-                        } else {  // The existing file name final path is not a complete, valid path.
-                            // Construct the file name path.
-                            switch (fileNameContentPath) {
-                                // The documents home has a special content path.
-                                case "/document/home":
-                                    fileNamePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" + fileNameFinalPath;
-                                    break;
-
-                                // Everything else for the primary user should be in `/document/primary`.
-                                case "/document/primary":
-                                    fileNamePath = Environment.getExternalStorageDirectory() + "/" + fileNameFinalPath;
-                                    break;
-
-                                // Just in case, catch everything else and place it in the external storage directory.
-                                default:
-                                    fileNamePath = Environment.getExternalStorageDirectory() + "/" + fileNameFinalPath;
-                                    break;
-                            }
-                        }
-
-                        // Set the file name path as the text of the file name edit text.
-                        fileNameEditText.setText(fileNamePath);
-                    } else {  // The path is invalid.
-                        Snackbar.make(fileNameEditText, rawFileNamePath + " " + getString(R.string.invalid_location), Snackbar.LENGTH_INDEFINITE).show();
-                    }
+                    // Set the file name path as the text of the file name edit text.
+                    fileNameEditText.setText(fileNamePath);
                 }
                 break;
 

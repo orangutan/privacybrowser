@@ -21,6 +21,7 @@ package com.stoutner.privacybrowser.dialogs;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -48,34 +49,28 @@ import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment is
 import com.stoutner.privacybrowser.R;
 
 public class SaveLogcatDialog extends DialogFragment {
-    // Instantiate the class variables.
+    // Define the save logcat listener.
     private SaveLogcatListener saveLogcatListener;
-    private Context parentContext;
 
     // The public interface is used to send information back to the parent activity.
     public interface SaveLogcatListener {
         void onSaveLogcat(DialogFragment dialogFragment);
     }
 
+    @Override
     public void onAttach(Context context) {
         // Run the default commands.
         super.onAttach(context);
 
-        // Store a handle for the context.
-        parentContext = context;
-
-        // Get a handle for `SaveLogcatListener` from the launching context.
+        // Get a handle for save logcat listener from the launching context.
         saveLogcatListener = (SaveLogcatListener) context;
     }
 
-    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
+    // `@SuppressLing("InflateParams")` removes the warning about using null as the parent view group when inflating the alert dialog.
     @SuppressLint("InflateParams")
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use an alert dialog builder to create the alert dialog.
-        AlertDialog.Builder dialogBuilder;
-
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
@@ -83,21 +78,24 @@ public class SaveLogcatDialog extends DialogFragment {
         boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
         boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
 
+        // Use an alert dialog builder to create the alert dialog.
+        AlertDialog.Builder dialogBuilder;
+
+        // Get a handle for the activity.
+        Activity activity = getActivity();
+
+        // Remove the incorrect lint warning below that the activity might be null.
+        assert activity != null;
+
         // Set the style according to the theme.
         if (darkTheme) {
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
+            dialogBuilder = new AlertDialog.Builder(activity, R.style.PrivacyBrowserAlertDialogDark);
         } else {
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
+            dialogBuilder = new AlertDialog.Builder(activity, R.style.PrivacyBrowserAlertDialogLight);
         }
 
         // Set the title.
         dialogBuilder.setTitle(R.string.save_logcat);
-
-        // Remove the incorrect lint warning that `getActivity().getLayoutInflater()` might be null.
-        assert getActivity() != null;
-
-        // Set the view.  The parent view is null because it will be assigned by the alert dialog.
-        dialogBuilder.setView(getActivity().getLayoutInflater().inflate(R.layout.save_logcat_dialog, null));
 
         // Set the icon according to the theme.
         if (darkTheme) {
@@ -105,6 +103,9 @@ public class SaveLogcatDialog extends DialogFragment {
         } else {
             dialogBuilder.setIcon(R.drawable.save_dialog_light);
         }
+
+        // Set the view.  The parent view is null because it will be assigned by the alert dialog.
+        dialogBuilder.setView(activity.getLayoutInflater().inflate(R.layout.save_dialog, null));
 
         // Set the cancel button listener.
         dialogBuilder.setNegativeButton(R.string.cancel, (DialogInterface dialog, int which) -> {
@@ -120,7 +121,7 @@ public class SaveLogcatDialog extends DialogFragment {
         // Create an alert dialog from the builder.
         AlertDialog alertDialog = dialogBuilder.create();
 
-        // Remove the incorrect lint warning below that `getWindow().addFlags()` might be null.
+        // Remove the incorrect lint warning below that `getWindow()` might be null.
         assert alertDialog.getWindow() != null;
 
         // Disable screenshots if not allowed.
@@ -140,13 +141,19 @@ public class SaveLogcatDialog extends DialogFragment {
         // Create a string for the default file path.
         String defaultFilePath;
 
+        // Get a handle for the context.
+        Context context = getContext();
+
+        // Remove the incorrect lint warning below that context might be null.
+        assert context != null;
+
         // Set the default file path according to the storage permission state.
-        if (ContextCompat.checkSelfPermission(parentContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
             // Set the default file path to use the external public directory.
             defaultFilePath = Environment.getExternalStorageDirectory() + "/" + getString(R.string.privacy_browser_logcat_txt);
         } else {  // The storage permission has not been granted.
             // Set the default file path to use the external private directory.
-            defaultFilePath = parentContext.getExternalFilesDir(null) + "/" + getString(R.string.privacy_browser_logcat_txt);
+            defaultFilePath = context.getExternalFilesDir(null) + "/" + getString(R.string.privacy_browser_logcat_txt);
         }
 
         // Display the default file path.
@@ -190,8 +197,8 @@ public class SaveLogcatDialog extends DialogFragment {
             // Request a file that can be opened.
             browseIntent.addCategory(Intent.CATEGORY_OPENABLE);
 
-            // Launch the file picker.  There is only one `startActivityForResult()`, so the request code is simply set to 0.
-            startActivityForResult(browseIntent, 0);
+            // Launch the file picker.  There is only one `startActivityForResult()`, so the request code is simply set to 0, but it must be run under `activity` so the request code is correct.
+            activity.startActivityForResult(browseIntent, 0);
         });
 
         // Hide the storage permission text view on API < 23 as permissions on older devices are automatically granted.

@@ -51,6 +51,13 @@
     <string name="new_tab">Nuova Scheda</string>
     <string name="loading">Caricamento…</string>
 
+    <!-- Loading Blocklists. -->
+    <string name="loading_easylist">Caricamento EasyList</string>
+    <string name="loading_easyprivacy">Caricamento EasyPrivacy</string>
+    <string name="loading_fanboys_annoyance_list">Caricamento Fanboy’s Annoyance List</string>
+    <string name="loading_fanboys_social_blocking_list">Caricamento Fanboy’s Social Blocking List</string>
+    <string name="loading_ultraprivacy">Caricamento UltraPrivacy</string>
+
     <!-- Save As. -->
     <string name="save_as">Salva come</string>
     <string name="save_image_as">Salva l\'immagine come</string>
@@ -170,6 +177,7 @@
         <string name="find_on_page">Cerca nella pagina</string>
         <string name="print">Stampa</string>
             <string name="privacy_browser_web_page">Pagina web di Privacy Browser</string>
+        <string name="save_as_image">Salva come Immagine</string>
         <string name="add_to_home_screen">Aggiungi collegamento</string>
         <string name="view_source">Visualizza sorgente</string>
     <string name="share">Condividi</string>
@@ -192,6 +200,13 @@
     <!-- Find on Page. -->
     <string name="previous">Precedente</string>
     <string name="next">Successivo</string>
+
+    <!-- Save Webpage as Image. -->
+    <string name="save_image">Salva Immagine</string>
+    <string name="webpage_png">Webpage.png</string>
+    <string name="saving_image">Salvataggio immagine…</string>
+    <string name="image_saved">Immagine salvata.</string>
+    <string name="error_saving_image">Errore nel salvare l\'immagine:</string>
 
     <!-- View Source. -->
     <string name="request_headers">Richiesta Intestazioni</string>
@@ -350,7 +365,6 @@
     <string name="export_successful">Esportazione riuscita</string>
     <string name="export_failed">Esportazione fallita:</string>
     <string name="import_failed">Importazione fallita:</string>
-    <string name="invalid_location">non è una cartella valida.</string>
     <string name="storage_permission">Permesso di accesso alla memoria</string>
     <string name="storage_permission_message">Privacy Browser necessita del permesso di accesso alla memoria per poter accedere alle cartelle pubbliche.
         Se questo permesso è negato possono comunque essere utilizzate le cartelle dell\'applicazione.</string>
@@ -381,7 +395,7 @@
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Il Proxy con Orbot funziona solo se è installato Orbot.</string>
-    <string name="waiting_for_orbot">In attesa della connessione di Orbot...</string>
+    <string name="waiting_for_orbot">In attesa della connessione di Orbot…</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">Informazioni su Privacy Browser</string>

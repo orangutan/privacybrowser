@@ -55,12 +55,14 @@
     <string name="close_tab">Close Tab</string>
     <string name="new_tab">New tab</string>
     <string name="loading">Loading…</string>
+    <string name="error">Error:</string>
 
     <!-- Loading Blocklists. -->
     <string name="loading_easylist">Loading EasyList</string>
     <string name="loading_easyprivacy">Loading EasyPrivacy</string>
     <string name="loading_fanboys_annoyance_list">Loading Fanboy’s Annoyance List</string>
     <string name="loading_fanboys_social_blocking_list">Loading Fanboy’s Social Blocking List</string>
+    <string name="loading_ultralist">Loading UltraList</string>
     <string name="loading_ultraprivacy">Loading UltraPrivacy</string>
 
     <!-- Save As. -->
@@ -181,6 +183,7 @@
         <string name="find_on_page">Find on Page</string>
         <string name="print">Print</string>
             <string name="privacy_browser_web_page">Privacy Browser Web Page</string>
+        <string name="save_as_image">Save as Image</string>
         <string name="add_to_home_screen">Add to Home Screen</string>
         <string name="view_source">View Source</string>
     <string name="share">Share</string>
@@ -204,6 +207,13 @@
     <string name="zero_of_zero" translatable="false">0/0</string>
     <string name="previous">Previous</string>
     <string name="next">Next</string>
+
+    <!-- Save Webpage as Image. -->
+    <string name="save_image">Save Image</string>
+    <string name="webpage_png">Webpage.png</string>
+    <string name="saving_image">Saving image…</string>
+    <string name="image_saved">Image saved.</string>
+    <string name="error_saving_image">Error saving image:</string>
 
     <!-- View Source. -->
     <string name="request_headers">Request Headers</string>
@@ -362,7 +372,6 @@
     <string name="export_successful">Export successful.</string>
     <string name="export_failed">Export failed:</string>
     <string name="import_failed">Import failed:</string>
-    <string name="invalid_location">is not a valid location.</string>
     <string name="storage_permission">Storage Permission</string>
     <string name="storage_permission_message">Privacy Browser needs the storage permission to access public directories. If it is denied, the app’s directories can still be used.</string>
     <string name="storage_permission_explanation">Accessing files in public directories requires the storage permission. Otherwise, only app directories will work.</string>
@@ -390,7 +399,7 @@
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Orbot proxy will not work unless Orbot is installed.</string>
-    <string name="waiting_for_orbot">Waiting for Orbot to connect...</string>
+    <string name="waiting_for_orbot">Waiting for Orbot to connect…</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">About Privacy Browser</string>
@@ -416,6 +425,7 @@
     <string name="easyprivacy_label">EasyPrivacy:</string>
     <string name="fanboy_annoyance_label">Fanboy’s Annoyance List:</string>
     <string name="fanboy_social_label">Fanboy’s Social Blocking List:</string>
+    <string name="ultralist_label">UltraList:</string>
     <string name="ultraprivacy_label">UltraPrivacy:</string>
     <string name="package_signature">Package Signature</string>
     <string name="issuer_dn">Issuer DN:</string>
@@ -494,16 +504,16 @@
         <string-array name="user_agent_data" translatable="false">  <!-- The data used to populate the actual user agents.  They should not be translated because they are referenced in code.-->
             <item>PrivacyBrowser/1.0</item>
             <item>WebView default user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
-            <item>Mozilla/5.0 (Android 9; Mobile; rv:66.0) Gecko/66.0 Firefox/66.0</item>
-            <item>Mozilla/5.0 (Linux; Android 9; Pixel 2 XL) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.90 Mobile Safari/537.36</item>
-            <item>Mozilla/5.0 (iPhone; CPU iPhone OS 12_1_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1</item>
+            <item>Mozilla/5.0 (Android 9; Mobile; rv:67.0) Gecko/67.0 Firefox/67.0</item>
+            <item>Mozilla/5.0 (Linux; Android 9; Pixel 2 XL) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Mobile Safari/537.36</item>
+            <item>Mozilla/5.0 (iPhone; CPU iPhone OS 12_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Mobile/15E148 Safari/604.1</item>
             <item>Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/60.0</item>
             <item>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36</item>
-            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0</item>
-            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.108 Safari/537.36</item>
+            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0</item>
+            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36</item>
             <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/18.17763</item>
             <item>Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko</item>
-            <item>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15</item>
+            <item>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15</item>
             <item>Custom user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
         </string-array>
         <string name="custom_user_agent">Custom user agent</string>
@@ -523,6 +533,8 @@
         <string name="fanboys_annoyance_list_summary">Block annoying popups and links.  Includes Fanboy’s social blocking lists.</string>
         <string name="fanboys_social_blocking_list">Fanboy’s social blocking list</string>
         <string name="fanboys_social_blocking_list_summary">Blocks third-party social media content.</string>
+        <string name="ultralist">UltraList</string>
+        <string name="ultralist_summary">UltraList blocks ads that EasyList doesn’t because doing so can break websites.</string>
         <string name="ultraprivacy">UltraPrivacy</string>
         <string name="ultraprivacy_summary">UltraPrivacy blocks trackers that EasyPrivacy doesn’t because doing so can break websites.</string>
         <string name="block_all_third_party_requests">Block all third-party requests</string>

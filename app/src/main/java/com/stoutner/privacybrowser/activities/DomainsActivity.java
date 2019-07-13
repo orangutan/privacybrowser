@@ -687,6 +687,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         Switch easyPrivacySwitch = view.findViewById(R.id.easyprivacy_switch);
         Switch fanboysAnnoyanceSwitch = view.findViewById(R.id.fanboys_annoyance_list_switch);
         Switch fanboysSocialBlockingSwitch = view.findViewById(R.id.fanboys_social_blocking_list_switch);
+        Switch ultraListSwitch = view.findViewById(R.id.ultralist_switch);
         Switch ultraPrivacySwitch = view.findViewById(R.id.ultraprivacy_switch);
         Switch blockAllThirdPartyRequestsSwitch = view.findViewById(R.id.block_all_third_party_requests_switch);
         Spinner userAgentSpinner = view.findViewById(R.id.user_agent_spinner);
@@ -703,16 +704,17 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
         // Extract the data for the domain settings.
         String domainNameString = domainNameEditText.getText().toString();
-        boolean javaScriptEnabled = javaScriptSwitch.isChecked();
-        boolean firstPartyCookiesEnabled = firstPartyCookiesSwitch.isChecked();
-        boolean thirdPartyCookiesEnabled = thirdPartyCookiesSwitch.isChecked();
-        boolean domStorageEnabled  = domStorageSwitch.isChecked();
-        boolean formDataEnabled = formDataSwitch.isChecked();  // Form data can be removed once the minimum API >= 26.
-        boolean easyListEnabled = easyListSwitch.isChecked();
-        boolean easyPrivacyEnabled = easyPrivacySwitch.isChecked();
-        boolean fanboysAnnoyanceEnabled = fanboysAnnoyanceSwitch.isChecked();
-        boolean fanboysSocialBlockingEnabled = fanboysSocialBlockingSwitch.isChecked();
-        boolean ultraPrivacyEnabled = ultraPrivacySwitch.isChecked();
+        boolean javaScript = javaScriptSwitch.isChecked();
+        boolean firstPartyCookies = firstPartyCookiesSwitch.isChecked();
+        boolean thirdPartyCookies = thirdPartyCookiesSwitch.isChecked();
+        boolean domStorage  = domStorageSwitch.isChecked();
+        boolean formData = formDataSwitch.isChecked();  // Form data can be removed once the minimum API >= 26.
+        boolean easyList = easyListSwitch.isChecked();
+        boolean easyPrivacy = easyPrivacySwitch.isChecked();
+        boolean fanboysAnnoyance = fanboysAnnoyanceSwitch.isChecked();
+        boolean fanboysSocialBlocking = fanboysSocialBlockingSwitch.isChecked();
+        boolean ultraList = ultraListSwitch.isChecked();
+        boolean ultraPrivacy = ultraPrivacySwitch.isChecked();
         boolean blockAllThirdPartyRequests = blockAllThirdPartyRequestsSwitch.isChecked();
         int userAgentPosition = userAgentSpinner.getSelectedItemPosition();
         int fontSizePosition = fontSizeSpinner.getSelectedItemPosition();
@@ -750,9 +752,9 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         int fontSizeInt = Integer.parseInt(resources.getStringArray(R.array.domain_settings_font_size_entry_values)[fontSizePosition]);
 
         // Save the domain settings.
-        domainsDatabaseHelper.updateDomain(DomainsActivity.currentDomainDatabaseId, domainNameString, javaScriptEnabled, firstPartyCookiesEnabled, thirdPartyCookiesEnabled,
-                    domStorageEnabled, formDataEnabled, easyListEnabled, easyPrivacyEnabled, fanboysAnnoyanceEnabled, fanboysSocialBlockingEnabled, ultraPrivacyEnabled, blockAllThirdPartyRequests,
-                    userAgentName, fontSizeInt, swipeToRefreshInt, nightModeInt, wideViewportInt, displayWebpageImagesInt, pinnedSslCertificate, pinnedIpAddress);
+        domainsDatabaseHelper.updateDomain(DomainsActivity.currentDomainDatabaseId, domainNameString, javaScript, firstPartyCookies, thirdPartyCookies, domStorage, formData, easyList, easyPrivacy,
+                fanboysAnnoyance, fanboysSocialBlocking, ultraList, ultraPrivacy, blockAllThirdPartyRequests, userAgentName, fontSizeInt, swipeToRefreshInt, nightModeInt, wideViewportInt,
+                displayWebpageImagesInt, pinnedSslCertificate, pinnedIpAddress);
 
         // Update the pinned SSL certificate if a new one is checked.
         if (currentWebsiteCertificateRadioButton.isChecked()) {
@@ -792,7 +794,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             }
         };
 
-        // Update the `ListView`.
+        // Update the list view.
         domainsListView.setAdapter(domainsCursorAdapter);
 
         // Display the domain settings in the second pane if operating in two pane mode and the database contains at least one domain.

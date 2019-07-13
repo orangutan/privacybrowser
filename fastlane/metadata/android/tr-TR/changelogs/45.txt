@@ -1,0 +1,17 @@
+• Uygulama çubuğuna sekmeyi kapat butonu eklendi.
+• Aynı zamanda uygulama çubuğunun daha düzgünce kaydırmasına olanak sağlayan, web site elemanlarının sağ ve sol kaydırması düzeltildi.
+• Açılış ekranını yükleyen ve uygulama yükleme süresini kısaltan bir engel listesi eklendi.
+• Google Analytics, Facebook, ve Twitteriçin URL modifikasyonu eklendi.
+• Resmi yeni sekmede aç özelliği eklendi.
+• İçerik menüsü web araması düzeltildi.
+• Bölünmüş ekran moduna girerken ya da çıkarken meydana gelen istenmeyen yeniden başlatmalar düzeltildi.
+• Yeniden başlatma sonrasına kadar uygulanmayan Harici Uygulamayla İndir ile ilgili değişiklikler düzeltildi.
+• Bazı dosya yöneticileriyle tarama sorunu düzeltildi.
+• Geniş ekranı devre dışı bırak seçeneği eklendi.
+• Sekmelerin yüklenmesinde ve sekmeler arası geçişlerde iyileştirmeler yapıldı.
+• WebView sağlayıcısını Android Oreo sürümünde ve daha yeni sürümlerde Hakkında seçeneği içerisinde görüntüleyebilirsiniz.
+• İlk full Türkçe çeviri eklendi.
+• Almanca çevirisi güncellendi. (Çevirmen Bernhard G. Keller.)
+• İtalyan çevirisi güncellendi. (Çevirmen Francesco Buratti.)
+• Rusça çevirisi güncellendi.
+• İspanyol çevirisi güncellendi. (Çevirmen Jose A. León.)

@@ -51,6 +51,13 @@
     <string name="new_tab">Nueva pestaña</string>
     <string name="loading">Cargando…</string>
 
+    <!-- Loading Blocklists. -->
+    <string name="loading_easylist">Cargando EasyList</string>
+    <string name="loading_easyprivacy">Cargando EasyPrivacy</string>
+    <string name="loading_fanboys_annoyance_list">Cargando la lista molesta de Fanboy</string>
+    <string name="loading_fanboys_social_blocking_list">Cargando la lista de bloqueo social de Fanboy</string>
+    <string name="loading_ultraprivacy">Cargando Ultra Privacidad</string>
+
     <!-- Save As. -->
     <string name="save_as">Guardar como</string>
     <string name="save_image_as">Guardar imagen como</string>
@@ -168,6 +175,7 @@
         <string name="display_images">Mostrar imágenes</string>
         <string name="print">Imprimir</string>
             <string name="privacy_browser_web_page">Página web de Navegador Privado</string>
+        <string name="save_as_image">Guardar como imagen</string>
         <string name="add_to_home_screen">Añadir a la ventana de inicio</string>
         <string name="options_night_mode">Modo noche</string>
     <string name="find_on_page">Buscar en página</string>
@@ -192,6 +200,13 @@
     <!-- Find on Page. -->
     <string name="previous">Anterior</string>
     <string name="next">Siguiente</string>
+
+    <!-- Save Webpage as Image. -->
+    <string name="save_image">Guardar imagen</string>
+    <string name="webpage_png">PaginaWeb.png</string>
+    <string name="saving_image">Guardando imagen…</string>
+    <string name="image_saved">Imagen guardada.</string>
+    <string name="error_saving_image">Error guardando imagen:</string>
 
     <!-- View Source. -->
     <string name="request_headers">Cabeceras de solicitud</string>
@@ -351,7 +366,6 @@
     <string name="export_successful">Exportación exitosa.</string>
     <string name="export_failed">Exportación fallida:</string>
     <string name="import_failed">Importación fallida:</string>
-    <string name="invalid_location">no es una ubicación válida.</string>
     <string name="storage_permission">Permiso de almacenamiento</string>
     <string name="storage_permission_message">Navegador Privado necesita el permiso de almacenamiento para acceder a los directorios públicos.
         Si se deniega, los directorios de la aplicación pueden seguir utilizándose.</string>
@@ -382,7 +396,7 @@
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Enviar a través de Orbot no funcionará a menos que se instale Orbot.</string>
-    <string name="waiting_for_orbot">Esperando a Orbot para conectar...</string>
+    <string name="waiting_for_orbot">Esperando a Orbot para conectar…</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">Acerca de Navegador Privado</string>

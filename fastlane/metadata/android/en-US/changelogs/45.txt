@@ -1,0 +1,17 @@
+• Add a close tab button to the app bar.
+• Fix the left and right scrolling of website elements, which also makes the app bar scroll more smoothly.
+• Add a blocklist loading splash screen and decrease the app load time.
+• Add URL modification for Google Analytics, Facebook, and Twitter.
+• Add the ability to open an image in a new tab.
+• Fix the context menu web search.
+• Fix undesired restarts when entering or exiting split screen mode.
+• Fix changes to Download with External App not applying until after a restart.
+• Fix browsing with some file managers.
+• Add the option to disable the wide viewport.
+• Improve the loading and switching of tabs.
+• Display the WebView provider in About > Version on Android Oreo and newer.
+• First full Turkish translation.
+• Updated German translation provided by Bernhard G. Keller.
+• Updated Italian translation provided by Francesco Buratti.
+• Updated Russian translation.
+• Updated Spanish translation provided by Jose A. León.

@@ -38,7 +38,7 @@ public class ImportExportDatabaseHelper {
     public static final String EXPORT_SUCCESSFUL = "Export Successful";
     public static final String IMPORT_SUCCESSFUL = "Import Successful";
 
-    private static final int SCHEMA_VERSION = 7;
+    private static final int SCHEMA_VERSION = 8;
     private static final String PREFERENCES_TABLE = "preferences";
 
     // The preferences constants.
@@ -57,6 +57,7 @@ public class ImportExportDatabaseHelper {
     private static final String EASYPRIVACY = "easyprivacy";
     private static final String FANBOYS_ANNOYANCE_LIST = "fanboys_annoyance_list";
     private static final String FANBOYS_SOCIAL_BLOCKING_LIST = "fanboys_social_blocking_list";
+    private static final String ULTRALIST = "ultralist";
     private static final String ULTRAPRIVACY = "ultraprivacy";
     private static final String BLOCK_ALL_THIRD_PARTY_REQUESTS = "block_all_third_party_requests";
     private static final String GOOGLE_ANALYTICS = "google_analytics";
@@ -127,6 +128,7 @@ public class ImportExportDatabaseHelper {
                 domainsContentValues.put(DomainsDatabaseHelper.ENABLE_EASYPRIVACY, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_EASYPRIVACY)));
                 domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST)));
                 domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)));
+                domainsContentValues.put(DomainsDatabaseHelper.ULTRALIST, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ULTRALIST)));
                 domainsContentValues.put(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY)));
                 domainsContentValues.put(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS, domainsCursor.getInt(domainsCursor.getColumnIndex(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)));
                 domainsContentValues.put(DomainsDatabaseHelper.USER_AGENT, domainsCursor.getString(domainsCursor.getColumnIndex(DomainsDatabaseHelper.USER_AGENT)));
@@ -211,6 +213,7 @@ public class ImportExportDatabaseHelper {
                     EASYPRIVACY + " BOOLEAN, " +
                     FANBOYS_ANNOYANCE_LIST + " BOOLEAN, " +
                     FANBOYS_SOCIAL_BLOCKING_LIST + " BOOLEAN, " +
+                    ULTRALIST + " BOOLEAN, " +
                     ULTRAPRIVACY + " BOOLEAN, " +
                     BLOCK_ALL_THIRD_PARTY_REQUESTS + " BOOLEAN, " +
                     GOOGLE_ANALYTICS + " BOOLEAN, " +
@@ -263,6 +266,7 @@ public class ImportExportDatabaseHelper {
             preferencesContentValues.put(EASYPRIVACY, sharedPreferences.getBoolean(EASYPRIVACY, true));
             preferencesContentValues.put(FANBOYS_ANNOYANCE_LIST, sharedPreferences.getBoolean(FANBOYS_ANNOYANCE_LIST, true));
             preferencesContentValues.put(FANBOYS_SOCIAL_BLOCKING_LIST, sharedPreferences.getBoolean(FANBOYS_SOCIAL_BLOCKING_LIST, true));
+            preferencesContentValues.put(ULTRALIST, sharedPreferences.getBoolean(ULTRALIST, true));
             preferencesContentValues.put(ULTRAPRIVACY, sharedPreferences.getBoolean(ULTRAPRIVACY, true));
             preferencesContentValues.put(BLOCK_ALL_THIRD_PARTY_REQUESTS, sharedPreferences.getBoolean(BLOCK_ALL_THIRD_PARTY_REQUESTS, false));
             preferencesContentValues.put(GOOGLE_ANALYTICS, sharedPreferences.getBoolean(GOOGLE_ANALYTICS, true));
@@ -495,6 +499,26 @@ public class ImportExportDatabaseHelper {
                         } else {
                             importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + WIDE_VIEWPORT + " = " + 0);
                         }
+
+                    // Upgrade from schema version 7.
+                    case 7:
+                        // Add the UltraList column to the domains table.
+                        importDatabase.execSQL("ALTER TABLE " + DomainsDatabaseHelper.DOMAINS_TABLE + " ADD COLUMN " + DomainsDatabaseHelper.ULTRALIST + " BOOLEAN");
+
+                        // Add the UltraList column to the preferences table.
+                        importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + ULTRALIST + " BOOLEAN");
+
+                        // Get the current preference values.
+                        boolean ultraList = sharedPreferences.getBoolean(ULTRALIST, true);
+
+                        // Populate the tables with the current UltraList value.
+                        if (ultraList) {
+                            importDatabase.execSQL("UPDATE " + DomainsDatabaseHelper.DOMAINS_TABLE + " SET " + DomainsDatabaseHelper.ULTRALIST + " = " + 1);
+                            importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + ULTRALIST + " = " + 1);
+                        } else {
+                            importDatabase.execSQL("UPDATE " + DomainsDatabaseHelper.DOMAINS_TABLE + " SET " + DomainsDatabaseHelper.ULTRALIST + " = " + 0);
+                            importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + ULTRALIST + " = " + 0);
+                        }
                 }
             }
 
@@ -526,6 +550,7 @@ public class ImportExportDatabaseHelper {
                         importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_ANNOYANCE_LIST)));
                 domainsContentValues.put(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST,
                         importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_FANBOYS_SOCIAL_BLOCKING_LIST)));
+                domainsContentValues.put(DomainsDatabaseHelper.ULTRALIST, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.ULTRALIST)));
                 domainsContentValues.put(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY, importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.ENABLE_ULTRAPRIVACY)));
                 domainsContentValues.put(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS,
                         importDomainsCursor.getInt(importDomainsCursor.getColumnIndex(DomainsDatabaseHelper.BLOCK_ALL_THIRD_PARTY_REQUESTS)));
@@ -623,6 +648,7 @@ public class ImportExportDatabaseHelper {
                     .putBoolean(EASYPRIVACY, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(EASYPRIVACY)) == 1)
                     .putBoolean(FANBOYS_ANNOYANCE_LIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(FANBOYS_ANNOYANCE_LIST)) == 1)
                     .putBoolean(FANBOYS_SOCIAL_BLOCKING_LIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(FANBOYS_SOCIAL_BLOCKING_LIST)) == 1)
+                    .putBoolean(ULTRALIST, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(ULTRALIST)) == 1)
                     .putBoolean(ULTRAPRIVACY, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(ULTRAPRIVACY)) == 1)
                     .putBoolean(BLOCK_ALL_THIRD_PARTY_REQUESTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(BLOCK_ALL_THIRD_PARTY_REQUESTS)) == 1)
                     .putBoolean(GOOGLE_ANALYTICS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(GOOGLE_ANALYTICS)) == 1)

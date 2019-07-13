@@ -49,6 +49,13 @@
     <string name="new_tab">Новая вкладка</string>
     <string name="loading">Загрузка…</string>
 
+    <!-- Loading Blocklists. -->
+    <string name="loading_easylist">Загрузка EasyList</string>
+    <string name="loading_easyprivacy">Загрузка EasyPrivacy</string>
+    <string name="loading_fanboys_annoyance_list">Загрузка Fanboy’s Annoyance List</string>
+    <string name="loading_fanboys_social_blocking_list">Загрузка Fanboy’s Social Blocking List</string>
+    <string name="loading_ultraprivacy">Загрузка UltraPrivacy</string>
+
     <!-- Save As. -->
     <string name="save_as">Сохранить как</string>
     <string name="save_image_as">Сохранить изображение как</string>
@@ -167,6 +174,7 @@
         <string name="find_on_page">Найти на странице</string>
         <string name="print">Печать</string>
             <string name="privacy_browser_web_page">Privacy Browser веб-страница</string>
+        <string name="save_as_image">Сохранить как изображение</string>
         <string name="add_to_home_screen">Добавить на главный экран</string>
         <string name="view_source">Просмотр исходного кода</string>
     <string name="share">Поделиться</string>
@@ -189,6 +197,13 @@
     <!-- Find on Page. -->
     <string name="previous">Предыдущий</string>
     <string name="next">Следующий</string>
+
+    <!-- Save Webpage as Image. -->
+    <string name="save_image">Сохранить изображение</string>
+    <string name="webpage_png">Webpage.png</string>
+    <string name="saving_image">Сохранение изображения…</string>
+    <string name="image_saved">Изображение сохранено.</string>
+    <string name="error_saving_image">Ошибка сохранения изображения:</string>
 
     <!-- View Source. -->
     <string name="request_headers">Заголовки запроса</string>
@@ -347,7 +362,6 @@
     <string name="export_successful">Экспорт выполнен.</string>
     <string name="export_failed">Сбой при экспорте:</string>
     <string name="import_failed">Сбой при импорте:</string>
-    <string name="invalid_location">- недопустимое расположение.</string>
     <string name="storage_permission">Доступ к хранилищу</string>
     <string name="storage_permission_message">Privacy Browser необходимо разрешение на доступ к внешним папкам. Если доступ предоставлен не будет, можно использовать локальную папку приложения.</string>
     <string name="storage_permission_explanation">Для доступа к файлам во внешних папках требуется соответствующее разрешение. В противном случае будут работать только локальные папки.</string>
@@ -376,7 +390,7 @@
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Проксирование Orbot работает только с установленным Orbot.</string>
-    <string name="waiting_for_orbot">Ожидание Orbot для подключения...</string>
+    <string name="waiting_for_orbot">Ожидание Orbot для подключения…</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">О Privacy Browser</string>
