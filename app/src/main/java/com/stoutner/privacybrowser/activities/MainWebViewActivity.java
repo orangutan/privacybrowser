@@ -2783,6 +2783,77 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Load the new folder.
                 loadBookmarksFolder();
             }
+        } else if (displayingFullScreenVideo) {  // A full screen video is shown.
+            // Get a handle for the layouts.
+            FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
+            RelativeLayout mainContentRelativeLayout = findViewById(R.id.main_content_relativelayout);
+            FrameLayout fullScreenVideoFrameLayout = findViewById(R.id.full_screen_video_framelayout);
+
+            // Re-enable the screen timeout.
+            fullScreenVideoFrameLayout.setKeepScreenOn(false);
+
+            // Unset the full screen video flag.
+            displayingFullScreenVideo = false;
+
+            // Remove all the views from the full screen video frame layout.
+            fullScreenVideoFrameLayout.removeAllViews();
+
+            // Hide the full screen video frame layout.
+            fullScreenVideoFrameLayout.setVisibility(View.GONE);
+
+            // Enable the sliding drawers.
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+
+            // Show the main content relative layout.
+            mainContentRelativeLayout.setVisibility(View.VISIBLE);
+
+            // Apply the appropriate full screen mode flags.
+            if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
+                // Hide the app bar if specified.
+                if (hideAppBar) {
+                    // Get handles for the views.
+                    LinearLayout tabsLinearLayout = findViewById(R.id.tabs_linearlayout);
+                    ActionBar actionBar = getSupportActionBar();
+
+                    // Remove the incorrect lint warning below that the action bar might be null.
+                    assert actionBar != null;
+
+                    // Hide the tab linear layout.
+                    tabsLinearLayout.setVisibility(View.GONE);
+
+                    // Hide the action bar.
+                    actionBar.hide();
+                }
+
+                // Hide the banner ad in the free flavor.
+                if (BuildConfig.FLAVOR.contentEquals("free")) {
+                    AdHelper.hideAd(findViewById(R.id.adview));
+                }
+
+                // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                /* Hide the system bars.
+                 * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                 * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+                 * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                 * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+                 */
+                rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            } else {  // Switch to normal viewing mode.
+                // Remove the `SYSTEM_UI` flags from the root frame layout.
+                rootFrameLayout.setSystemUiVisibility(0);
+
+                // Add the translucent status flag.
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            }
+
+            // Reload the ad for the free flavor if not in full screen mode.
+            if (BuildConfig.FLAVOR.contentEquals("free") && !inFullScreenBrowsingMode) {
+                // Reload the ad.
+                AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_unit_id));
+            }
         } else if (currentWebView.canGoBack()) {  // There is at least one item in the current WebView history.
             // Get the current web back forward list.
             WebBackForwardList webBackForwardList = currentWebView.copyBackForwardList();
@@ -5252,6 +5323,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Show the full screen video frame layout.
                 fullScreenVideoFrameLayout.setVisibility(View.VISIBLE);
+
+                // Disable the screen timeout while the video is playing.  YouTube does this automatically, but not all other videos do.
+                fullScreenVideoFrameLayout.setKeepScreenOn(true);
             }
 
             // Exit full screen video.
@@ -5259,6 +5333,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             public void onHideCustomView() {
                 // Get a handle for the full screen video frame layout.
                 FrameLayout fullScreenVideoFrameLayout = findViewById(R.id.full_screen_video_framelayout);
+
+                // Re-enable the screen timeout.
+                fullScreenVideoFrameLayout.setKeepScreenOn(false);
 
                 // Unset the full screen video flag.
                 displayingFullScreenVideo = false;
