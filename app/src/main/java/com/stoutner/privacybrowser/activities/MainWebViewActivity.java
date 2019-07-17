@@ -4419,6 +4419,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             if (url.contains("&fbclid=")) {
                 url = url.substring(0, url.indexOf("&fbclid="));
             }
+
+            // Remove `?fbadid=`.
+            if (url.contains("?fbadid=")) {
+                url = url.substring(0, url.indexOf("?fbadid="));
+            }
+
+            // Remove `&fbadid=`.
+            if (url.contains("&fbadid=")) {
+                url = url.substring(0, url.indexOf("&fbadid="));
+            }
         }
 
         // Sanitize Twitter AMP redirects.
@@ -5932,11 +5942,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 tabTitleTextView.setText(R.string.new_tab);
                             }
                         } else {  // The WebView has loaded a webpage.
-                            // Display the final URL.  Getting the URL from the WebView instead of using the one provided by `onPageFinished()` makes websites like YouTube function correctly.
-                            urlEditText.setText(currentUrl);
+                            // Update the URL edit text if it is not currently being edited.
+                            if (!urlEditText.hasFocus()) {
+                                // Sanitize the current URL.  This removes unwanted URL elements that were added by redirects, so that they won't be included if the URL is shared.
+                                String sanitizedUrl = sanitizeUrl(currentUrl);
 
-                            // Apply text highlighting to the URL.
-                            highlightUrlText();
+                                // Display the final URL.  Getting the URL from the WebView instead of using the one provided by `onPageFinished()` makes websites like YouTube function correctly.
+                                urlEditText.setText(sanitizedUrl);
+
+                                // Apply text highlighting to the URL.
+                                highlightUrlText();
+                            }
 
                             // Only populate the title text view if the tab has been fully created.
                             if (tab != null) {
