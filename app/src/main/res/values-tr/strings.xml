@@ -189,6 +189,7 @@
 
     <!-- Context Menus. -->
     <string name="open_in_new_tab">Yeni sekmede aç</string>
+    <string name="open_image_in_new_tab">Resmi Yeni Sekmede Aç</string>
     <string name="copy_url">URL\'yi kopyala</string>
     <string name="download_url">URL\'yi indir</string>
     <string name="email_address">E-posta adresi</string>
@@ -505,9 +506,9 @@
         <string name="block_all_third_party_requests_summary">Tüm üçüncü taraf istekleri engellemek gizliliği arttırır, fakat çoğu web sitesinin çökmesine sebep olur.</string>
     <string name="url_modification">URL Modifikasyonu</string>
         <string name="google_analytics">Google Analytics</string>
-        <string name="google_analytics_summary">URL\'den sonra gelen “?utm_” or “&amp;utm_” ve diğer şeyleri kaldırır.</string>
+        <string name="google_analytics_summary">URL\'lerde “?utm_” ve “&amp;utm_” ve onlardan sonra gelen her şey kaldırıldı.</string>
         <string name="facebook_click_ids">Facebook Tık ID\'leri</string>
-        <string name="facebook_click_ids_summary">URL\'den sonra gelen “?fbclid=” or “&amp;fbclid=” ve diğer şeyleri kaldırır.</string>
+        <string name="facebook_click_ids_summary">URL\'lerde “?fbclid=”, “&amp;fbclid=”, “?fbadid=”, ve “&amp;fbadid=” ve onlardan sonra gelen her şey kaldırıldı.</string>
         <string name="twitter_amp_redirects">Twitter AMP yönlendirmeleri</string>
         <string name="twitter_amp_redirects_summary">URL\'den sonra gelen “?amp=1” ve diğer şeyleri kaldırır.</string>
     <string name="tor">Tor</string>

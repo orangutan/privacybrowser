@@ -73,6 +73,7 @@ import android.webkit.CookieManager;
 import android.webkit.HttpAuthHandler;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
+import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
@@ -129,6 +130,7 @@ import com.stoutner.privacybrowser.dialogs.DownloadLocationPermissionDialog;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkFolderDialog;
 import com.stoutner.privacybrowser.dialogs.HttpAuthenticationDialog;
+import com.stoutner.privacybrowser.dialogs.PinnedMismatchDialog;
 import com.stoutner.privacybrowser.dialogs.SaveWebpageImageDialog;
 import com.stoutner.privacybrowser.dialogs.SslCertificateErrorDialog;
 import com.stoutner.privacybrowser.dialogs.StoragePermissionDialog;
@@ -164,8 +166,8 @@ import java.util.Set;
 // AppCompatActivity from android.support.v7.app.AppCompatActivity must be used to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
         DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, DownloadLocationPermissionDialog.DownloadLocationPermissionDialogListener, EditBookmarkDialog.EditBookmarkListener,
-        EditBookmarkFolderDialog.EditBookmarkFolderListener, NavigationView.OnNavigationItemSelectedListener, PopulateBlocklists.PopulateBlocklistsListener, SaveWebpageImageDialog.SaveWebpageImageListener,
-        StoragePermissionDialog.StoragePermissionDialogListener, WebViewTabFragment.NewTabListener {
+        EditBookmarkFolderDialog.EditBookmarkFolderListener, NavigationView.OnNavigationItemSelectedListener, PinnedMismatchDialog.PinnedMismatchListener, PopulateBlocklists.PopulateBlocklistsListener, SaveWebpageImageDialog.SaveWebpageImageListener,
+        StoragePermissionDialog.StoragePermissionDialogListener, UrlHistoryDialog.NavigateHistoryListener, WebViewTabFragment.NewTabListener {
 
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxyThroughOrbot()`.
     public static String orbotStatus;
@@ -1803,11 +1805,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.back:
                 if (currentWebView.canGoBack()) {
+                    // Get the current web back forward list.
+                    WebBackForwardList webBackForwardList = currentWebView.copyBackForwardList();
+
+                    // Get the previous entry URL.
+                    String previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() - 1).getUrl();
+
                     // Reset the current domain name so that navigation works if third-party requests are blocked.
                     currentWebView.resetCurrentDomainName();
 
-                    // Set navigating history so that the domain settings are applied when the new URL is loaded.
-                    currentWebView.setNavigatingHistory(true);
+                    // Apply the domain settings.
+                    applyDomainSettings(currentWebView, previousUrl, false, false);
 
                     // Load the previous website in the history.
                     currentWebView.goBack();
@@ -1816,11 +1824,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.forward:
                 if (currentWebView.canGoForward()) {
+                    // Get the current web back forward list.
+                    WebBackForwardList webBackForwardList = currentWebView.copyBackForwardList();
+
+                    // Get the next entry URL.
+                    String nextUrl = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() + 1).getUrl();
+
                     // Reset the current domain name so that navigation works if third-party requests are blocked.
                     currentWebView.resetCurrentDomainName();
 
-                    // Set navigating history so that the domain settings are applied when the new URL is loaded.
-                    currentWebView.setNavigatingHistory(true);
+                    // Apply the domain settings.
+                    applyDomainSettings(currentWebView, nextUrl, false, false);
 
                     // Load the next website in the history.
                     currentWebView.goForward();
@@ -2748,7 +2762,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
     }
 
-    // Override `onBackPressed` to handle the navigation drawer and and the WebView.
+    // Override `onBackPressed` to handle the navigation drawer and and the WebViews.
     @Override
     public void onBackPressed() {
         // Get a handle for the drawer layout and the tab layout.
@@ -2770,11 +2784,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 loadBookmarksFolder();
             }
         } else if (currentWebView.canGoBack()) {  // There is at least one item in the current WebView history.
+            // Get the current web back forward list.
+            WebBackForwardList webBackForwardList = currentWebView.copyBackForwardList();
+
+            // Get the previous entry URL.
+            String previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() - 1).getUrl();
+
             // Reset the current domain name so that navigation works if third-party requests are blocked.
             currentWebView.resetCurrentDomainName();
 
-            // Set navigating history so that the domain settings are applied when the new URL is loaded.
-            currentWebView.setNavigatingHistory(true);
+            // Apply the domain settings.
+            applyDomainSettings(currentWebView, previousUrl, false, false);
 
             // Go back.
             currentWebView.goBack();
@@ -3592,6 +3612,36 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Destroy the bare WebView.
         bareWebView.destroy();
+    }
+
+    @Override
+    public void navigateHistory(String url, int steps) {
+        // Reset the current domain name so that navigation works if third-party requests are blocked.
+        currentWebView.resetCurrentDomainName();
+
+        // Apply the domain settings.
+        applyDomainSettings(currentWebView, url, false, false);
+
+        // Load the history entry.
+        currentWebView.goBackOrForward(steps);
+    }
+
+    @Override
+    public void pinnedErrorGoBack() {
+        // Get the current web back forward list.
+        WebBackForwardList webBackForwardList = currentWebView.copyBackForwardList();
+
+        // Get the previous entry URL.
+        String previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() - 1).getUrl();
+
+        // Reset the current domain name so that navigation works if third-party requests are blocked.
+        currentWebView.resetCurrentDomainName();
+
+        // Apply the domain settings.
+        applyDomainSettings(currentWebView, previousUrl, false, false);
+
+        // Go back.
+        currentWebView.goBack();
     }
 
     // `reloadWebsite` is used if returning from the Domains activity.  Otherwise JavaScript might not function correctly if it is newly enabled.
@@ -5800,20 +5850,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Get the IP addresses for the host.
                     new GetHostIpAddresses(activity, getSupportFragmentManager(), nestedScrollWebView).execute(currentUri.getHost());
-
-                    // Apply any custom domain settings if the URL was loaded by navigating history.
-                    if (nestedScrollWebView.getNavigatingHistory()) {
-                        // Reset navigating history.
-                        nestedScrollWebView.setNavigatingHistory(false);
-
-                        // Apply the domain settings.
-                        boolean userAgentChanged = applyDomainSettings(nestedScrollWebView, url, true, false);
-
-                        // Manually load the URL if the user agent has changed, which will have caused the previous URL to be reloaded.
-                        if (userAgentChanged) {
-                            loadUrl(url);
-                        }
-                    }
 
                     // Replace Refresh with Stop if the options menu has been created.  (The first WebView typically begins loading before the menu items are instantiated.)
                     if (optionsMenu != null) {

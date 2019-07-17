@@ -22,6 +22,7 @@ package com.stoutner.privacybrowser.dialogs;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -35,6 +36,7 @@ import android.view.WindowManager;
 import android.webkit.WebBackForwardList;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -50,6 +52,23 @@ import com.stoutner.privacybrowser.views.NestedScrollWebView;
 import java.util.ArrayList;
 
 public class UrlHistoryDialog extends DialogFragment{
+    // The public interface is used to send information back to the parent activity.
+    public interface NavigateHistoryListener {
+        void navigateHistory(String url, int steps);
+    }
+
+    // The navigate history listener is used in `onAttach()` and `onCreateDialog()`.
+    private NavigateHistoryListener navigateHistoryListener;
+
+    @Override
+    public void onAttach(Context context) {
+        // Run the default commands.
+        super.onAttach(context);
+
+        // Get a handle for the listener from the launching context.
+        navigateHistoryListener = (NavigateHistoryListener) context;
+    }
+
     public static UrlHistoryDialog loadBackForwardList(long webViewFragmentId) {
         // Create an arguments bundle.
         Bundle argumentsBundle = new Bundle();
@@ -126,7 +145,7 @@ public class UrlHistoryDialog extends DialogFragment{
         // Create a history array list.
         ArrayList<History> historyArrayList = new ArrayList<>();
 
-        // Populate the history array list, descending from `urlStringArrayList.size()` so that the newest entries are at the top.  `-1` is needed because the history array list is zero-based.
+        // Populate the history array list, descending from the end of the list so that the newest entries are at the top.  `-1` is needed because the history array list is zero-based.
         for (int i=webBackForwardList.getSize() -1; i >= 0; i--) {
             // Create a variable to store the favorite icon bitmap.
             Bitmap favoriteIconBitmap;
@@ -214,14 +233,14 @@ public class UrlHistoryDialog extends DialogFragment{
 
             // Only consume the click if it is not on the `currentPageId`.
             if (itemId != currentPageId) {
-                // Reset the current domain name so that navigation works if third-party requests are blocked.
-                nestedScrollWebView.resetCurrentDomainName();
+                // Get a handle for the URL text view.
+                TextView urlTextView = view.findViewById(R.id.history_url_textview);
 
-                // Set navigating history so that the domain settings are applied when the new URL is loaded.
-                nestedScrollWebView.setNavigatingHistory(true);
+                // Get the URL.
+                String url = urlTextView.getText().toString();
 
-                // Load the history entry.
-                nestedScrollWebView.goBackOrForward(currentPageId - itemId);
+                // Invoke the navigate history listener in the calling activity.  These commands cannot be run here because they need access to `applyDomainSettings()`.
+                navigateHistoryListener.navigateHistory(url, currentPageId - itemId);
 
                 // Dismiss the alert dialog.
                 alertDialog.dismiss();
