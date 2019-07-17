@@ -194,6 +194,7 @@
 
     <!-- Context Menus. -->
     <string name="open_in_new_tab">In neuem Tab öffnen</string>
+    <string name="open_image_in_new_tab">Grafik in neuem Tab öffnen</string>
     <string name="copy_url">URL kopieren</string>
     <string name="download_url">Download URL</string>
     <string name="email_address">E-Mail-Adresse</string>
@@ -510,9 +511,9 @@
         <string name="block_all_third_party_requests_summary">Alle Zugriffe auf Dritt-Anbieter-Inhalte zu blockieren verbessert die Privatsphäre, kann jedoch Webseiten verunstalten.</string>
     <string name="url_modification">URL-Bereinigung</string>
         <string name="google_analytics">Google Analytics</string>
-        <string name="google_analytics_summary">Entfernt “?utm_” oder “&amp;utm_” sowie alles danach aus URLs.</string>
+        <string name="google_analytics_summary">Entfernt “?utm_” und “&amp;utm_” sowie alles danach aus URLs.</string>
         <string name="facebook_click_ids">Facebook Click-IDs</string>
-        <string name="facebook_click_ids_summary">Entfernt “?fbclid=” or “&amp;fbclid=” sowie alles danach aus URLs.</string>
+        <string name="facebook_click_ids_summary">Entfernt “?fbclid=”, “&amp;fbclid=”, “?fbadid=” und “&amp;fbadid=” sowie alles danach aus URLs.</string>
         <string name="twitter_amp_redirects">Twitter AMP-Umleitungen</string>
         <string name="twitter_amp_redirects_summary">Entfernt “?amp=1” sowie alles danach URLs.</string>
     <string name="tor">Tor</string>

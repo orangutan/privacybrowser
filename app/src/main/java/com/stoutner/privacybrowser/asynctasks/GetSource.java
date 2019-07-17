@@ -108,7 +108,7 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
             // Open a connection to the URL.  No data is actually sent at this point.
             HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection();
 
-            // Instantiate the variables necessary to build the request headers.
+            // Define the variables necessary to build the request headers.
             requestHeadersBuilder = new SpannableStringBuilder();
             int oldRequestHeadersBuilderLength;
             int newRequestHeadersBuilderLength;
@@ -146,6 +146,22 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
             requestHeadersBuilder.append(":  keep-alive");
 
 
+            // Set the `Upgrade-Insecure-Requests` header property.
+            httpUrlConnection.setRequestProperty("Upgrade-Insecure-Requests", "1");
+
+            // Add the `Upgrade-Insecure-Requests` header to the string builder and format the text.
+            requestHeadersBuilder.append(System.getProperty("line.separator"));
+            if (Build.VERSION.SDK_INT >= 21) {  // Newer versions of Android are so smart.
+                requestHeadersBuilder.append("Upgrade-Insecure-Requests", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            } else {  // Older versions not so much.
+                oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
+                requestHeadersBuilder.append("Upgrade-Insecure_Requests");
+                newRequestHeadersBuilderLength = requestHeadersBuilder.length();
+                requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength + 1, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            requestHeadersBuilder.append(":  1");
+
+
             // Set the `User-Agent` header property.
             httpUrlConnection.setRequestProperty("User-Agent", userAgent);
 
@@ -161,22 +177,6 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
             }
             requestHeadersBuilder.append(":  ");
             requestHeadersBuilder.append(userAgent);
-
-
-            // Set the `Upgrade-Insecure-Requests` header property.
-            httpUrlConnection.setRequestProperty("Upgrade-Insecure-Requests", "1");
-
-            // Add the `Upgrade-Insecure-Requests` header to the string builder and format the text.
-            requestHeadersBuilder.append(System.getProperty("line.separator"));
-            if (Build.VERSION.SDK_INT >= 21) {  // Newer versions of Android are so smart.
-                requestHeadersBuilder.append("Upgrade-Insecure-Requests", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            } else {  // Older versions not so much.
-                oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                requestHeadersBuilder.append("Upgrade-Insecure_Requests");
-                newRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength + 1, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-            requestHeadersBuilder.append(":  1");
 
 
             // Set the `x-requested-with` header property.
@@ -218,7 +218,7 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
 
 
             // Set the `Accept` header property.
-            httpUrlConnection.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
+            httpUrlConnection.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3");
 
             // Add the `Accept` header to the string builder and format the text.
             requestHeadersBuilder.append(System.getProperty("line.separator"));
@@ -231,7 +231,7 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
                 requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength + 1, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
             requestHeadersBuilder.append(":  ");
-            requestHeadersBuilder.append("text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
+            requestHeadersBuilder.append("text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3");
 
 
             // Instantiate a locale string.
@@ -255,17 +255,37 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
                         localesStringBuilder.append(",");
                     }
 
-                    // Get the indicated locale from the list.
-                    localesStringBuilder.append(localeList.get(i));
+                    // Get the locale from the list.
+                    Locale locale = localeList.get(i);
 
-                    // If not the first locale, append `;q=0.i`, which drops by .1 for each removal from the main locale.
+                    // Add the locale to the string.  `locale` by default displays as `en_US`, but WebView uses the `en-US` format.
+                    localesStringBuilder.append(locale.getLanguage());
+                    localesStringBuilder.append("-");
+                    localesStringBuilder.append(locale.getCountry());
+
+                    // If not the first locale, append `;q=0.x`, which drops by .1 for each removal from the main locale until q=0.1.
                     if (q < 10) {
                         localesStringBuilder.append(";q=0.");
                         localesStringBuilder.append(q);
                     }
 
-                    // Decrement `q`.
-                    q--;
+                    // Decrement `q` if it is greater than 1.
+                    if (q > 1) {
+                        q--;
+                    }
+
+                    // Add a second entry for the language only portion of the locale.
+                    localesStringBuilder.append(",");
+                    localesStringBuilder.append(locale.getLanguage());
+
+                    // Append `1;q=0.x`, which drops by .1 for each removal form the main locale until q=0.1.
+                    localesStringBuilder.append(";q=0.");
+                    localesStringBuilder.append(q);
+
+                    // Decrement `q` if it is greater than 1.
+                    if (q > 1) {
+                        q--;
+                    }
                 }
 
                 // Store the populated string builder in the locale string.

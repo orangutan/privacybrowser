@@ -188,6 +188,7 @@
 
     <!-- Context Menus. -->
     <string name="open_in_new_tab">Открыть в новой вкладке</string>
+    <string name="open_image_in_new_tab">Открыть изображение в новой вкладке</string>
     <string name="copy_url">Копировать URL</string>
     <string name="download_url">Загрузить URL</string>
     <string name="email_address">Адрес email</string>
@@ -503,9 +504,9 @@
         <string name="block_all_third_party_requests_summary">Блокировка всех сторонних запросов повышает конфиденциальность, но ломает многие веб-сайты.</string>
     <string name="url_modification">Модификация URL</string>
         <string name="google_analytics">Google Analytics</string>
-        <string name="google_analytics_summary">Удалять из URL “?utm_” или “&amp;utm_” и все что будет после.</string>
+        <string name="google_analytics_summary">Удалять из URL “?utm_” и “&amp;utm_” и все что будет после.</string>
         <string name="facebook_click_ids">Идентификаторы кликов в Facebook</string>
-        <string name="facebook_click_ids_summary">Удалять из URL “?fbclid=” или “&amp;fbclid=” и все что будет после.</string>
+        <string name="facebook_click_ids_summary">Удалять из URL “?fbclid=”, “&amp;fbclid=”, “?fbadid=”, и “&amp;fbadid=” и все что будет после.</string>
         <string name="twitter_amp_redirects">AMP-перенаправления в Twitter</string>
         <string name="twitter_amp_redirects_summary">Удалять из URL “?amp=1” и все что будет после.</string>
     <string name="tor">Tor</string>
