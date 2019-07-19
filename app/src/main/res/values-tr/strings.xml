@@ -393,7 +393,7 @@
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Orbot yüklenmeden Orbot vekil sunucusu çalışmayacaktır.</string>
-    <string name="waiting_for_orbot">Orbot\'un bağlanması bekleniyor…</string>
+    <string name="waiting_for_orbot">Orbot\'un bağlanması bekleniyor...</string>  <!-- The WebView in API 19 does not like the ellipse character. -->
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">Privacy Browser Hakkında</string>

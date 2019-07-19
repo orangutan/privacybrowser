@@ -393,7 +393,7 @@
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Проксирование Orbot работает только с установленным Orbot.</string>
-    <string name="waiting_for_orbot">Ожидание Orbot для подключения…</string>
+    <string name="waiting_for_orbot">Ожидание Orbot для подключения...</string>  <!-- The WebView in API 19 does not like the ellipse character. -->
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">О Privacy Browser</string>

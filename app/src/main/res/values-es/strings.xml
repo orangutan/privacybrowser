@@ -399,7 +399,7 @@
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Enviar a través de Orbot no funcionará a menos que se instale Orbot.</string>
-    <string name="waiting_for_orbot">Esperando a Orbot para conectar…</string>
+    <string name="waiting_for_orbot">Esperando a Orbot para conectar...</string>  <!-- The WebView in API 19 does not like the ellipse character. -->
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">Acerca de Navegador Privado</string>

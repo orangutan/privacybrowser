@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Proxy;
+import android.os.Build;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.util.ArrayMap;
@@ -72,18 +73,18 @@ public class OrbotProxyHelper {
             @SuppressLint("PrivateApi") Class loadedApkClass = Class.forName("android.app.LoadedApk");
 
             // Get the declared fields.  Suppress the lint warning that `mLoadedApk` cannot be resolved.
-            @SuppressWarnings("JavaReflectionMemberAccess") Field mLoadedApkField = applicationClass.getDeclaredField("mLoadedApk");
-            Field mReceiversField = loadedApkClass.getDeclaredField("mReceivers");
+            @SuppressWarnings("JavaReflectionMemberAccess") Field methodLoadedApkField = applicationClass.getDeclaredField("mLoadedApk");
+            Field methodReceiversField = loadedApkClass.getDeclaredField("mReceivers");
 
             // Allow the values to be changed.
-            mLoadedApkField.setAccessible(true);
-            mReceiversField.setAccessible(true);
+            methodLoadedApkField.setAccessible(true);
+            methodReceiversField.setAccessible(true);
 
             // Get the APK object.
-            Object mLoadedApkObject = mLoadedApkField.get(privacyBrowserContext);
+            Object methodLoadedApkObject = methodLoadedApkField.get(privacyBrowserContext);
 
             // Get an array map of the receivers.
-            ArrayMap receivers = (ArrayMap) mReceiversField.get(mLoadedApkObject);
+            ArrayMap receivers = (ArrayMap) methodReceiversField.get(methodLoadedApkObject);
 
             // Set the proxy.
             for (Object receiverMap : receivers.values()) {
@@ -100,18 +101,20 @@ public class OrbotProxyHelper {
                         // Create a proxy change intent.
                         Intent proxyChangeIntent = new Intent(Proxy.PROXY_CHANGE_ACTION);
 
-                        // Get a proxy info class.
-                        // `Class<?>`, which is an `unbounded wildcard parameterized type`, must be used instead of `Class`, which is a `raw type`.  Otherwise, `proxyInfoClass.getMethod()` is unhappy.
-                        Class<?> proxyInfoClass = Class.forName("android.net.ProxyInfo");
+                        if (Build.VERSION.SDK_INT >= 21) {
+                            // Get a proxy info class.
+                            // `Class<?>`, which is an `unbounded wildcard parameterized type`, must be used instead of `Class`, which is a `raw type`.  Otherwise, `proxyInfoClass.getMethod()` is unhappy.
+                            Class<?> proxyInfoClass = Class.forName("android.net.ProxyInfo");
 
-                        // Get the build direct proxy method from the proxy info class.
-                        Method buildDirectProxyMethod = proxyInfoClass.getMethod("buildDirectProxy", String.class, Integer.TYPE);
+                            // Get the build direct proxy method from the proxy info class.
+                            Method buildDirectProxyMethod = proxyInfoClass.getMethod("buildDirectProxy", String.class, Integer.TYPE);
 
-                        // Populate a proxy info object with the new proxy information.
-                        Object proxyInfoObject = buildDirectProxyMethod.invoke(proxyInfoClass, proxyHost, Integer.valueOf(proxyPort));
+                            // Populate a proxy info object with the new proxy information.
+                            Object proxyInfoObject = buildDirectProxyMethod.invoke(proxyInfoClass, proxyHost, Integer.valueOf(proxyPort));
 
-                        // Add the proxy info object into the proxy change intent.
-                        proxyChangeIntent.putExtra("proxy", (Parcelable) proxyInfoObject);
+                            // Add the proxy info object into the proxy change intent.
+                            proxyChangeIntent.putExtra("proxy", (Parcelable) proxyInfoObject);
+                        }
 
                         // Pass the proxy change intent to the `onReceive` method of the receiver class.
                         onReceiveMethod.invoke(receiver, privacyBrowserContext, proxyChangeIntent);

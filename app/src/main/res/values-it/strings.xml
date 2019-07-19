@@ -398,7 +398,7 @@
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Il Proxy con Orbot funziona solo se è installato Orbot.</string>
-    <string name="waiting_for_orbot">In attesa della connessione di Orbot…</string>
+    <string name="waiting_for_orbot">In attesa della connessione di Orbot...</string>  <!-- The WebView in API 19 does not like the ellipse character. -->
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">Informazioni su Privacy Browser</string>

@@ -400,7 +400,7 @@
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Orbot proxy will not work unless Orbot is installed.</string>
-    <string name="waiting_for_orbot">Waiting for Orbot to connect…</string>
+    <string name="waiting_for_orbot">Waiting for Orbot to connect...</string>  <!-- The WebView in API 19 does not like the ellipse character. -->
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">About Privacy Browser</string>
