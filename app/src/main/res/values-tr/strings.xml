@@ -525,8 +525,8 @@
         <string name="tor_search_custom_url">Tor özel sayfa arama</string>
     <string name="search">Arama</string>
         <string-array name="search_entries">
+            <item>Startpage</item>
             <item>Searx</item>
-            <item>StartPage</item>
             <item>DuckDuckGo - JavaScript devre dışı</item>
             <item>DuckDuckGo - JavaScript etkin</item>
             <item>Qwant - JavaScript devre dışı</item>

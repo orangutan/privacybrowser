@@ -567,8 +567,8 @@
         <string name="tor_search_custom_url">Tor search custom URL</string>
     <string name="search">Search</string>
         <string-array name="search_entries">
+            <item>Startpage</item>
             <item>Searx</item>
-            <item>StartPage</item>
             <item>DuckDuckGo - JavaScript disabled</item>
             <item>DuckDuckGo - JavaScript enabled</item>
             <item>Qwant - JavaScript disabled</item>
@@ -580,8 +580,8 @@
             <item>Custom</item>
         </string-array>
         <string-array name="search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
-            <item>https://searx.me/?q=</item>
             <item>https://www.startpage.com/do/search?query=</item>
+            <item>https://searx.me/?q=</item>
             <item>https://duckduckgo.com/html/?q=</item>
             <item>https://duckduckgo.com/?q=</item>
             <item>https://lite.qwant.com/?q=</item>
@@ -677,12 +677,12 @@
     <!-- Non-translatable preference default values. -->
     <string name="user_agent_default_value" translatable="false">Privacy Browser</string>
     <string name="custom_user_agent_default_value" translatable="false">PrivacyBrowser/1.0</string>
-    <string name="tor_homepage_default_value" translatable="false">http://ulrn6sryqaifefld.onion/</string>
-    <string name="tor_search_default_value" translatable="false">http://ulrn6sryqaifefld.onion/?q=</string>
+    <string name="tor_homepage_default_value" translatable="false">https://3g2upl4pq6kufc4m.onion/</string>
+    <string name="tor_search_default_value" translatable="false">https://3g2upl4pq6kufc4m.onion/html?q=</string>
     <string name="tor_search_custom_url_default_value" translatable="false" />
-    <string name="search_default_value" translatable="false">https://searx.me/?q=</string>
+    <string name="search_default_value" translatable="false">https://www.startpage.com/do/search?query=</string>
     <string name="search_custom_url_default_value" translatable="false" />
-    <string name="homepage_default_value" translatable="false">https://searx.me/</string>
+    <string name="homepage_default_value" translatable="false">https://www.startpage.com/</string>
     <string name="font_size_default_value" translatable="false">100</string>
 
     <!-- Ad Control. There are no ads in the standard flavor, but these strings must exist because they are referenced in the code. -->

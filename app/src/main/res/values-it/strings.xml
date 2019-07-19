@@ -529,8 +529,8 @@
         <string name="tor_search_custom_url">Tor - Ricerca personalizzata</string>
     <string name="search">Ricerca</string>
         <string-array name="search_entries">
+            <item>Startpage</item>
             <item>Searx</item>
-            <item>StartPage</item>
             <item>DuckDuckGo - JavaScript disabilitato</item>
             <item>DuckDuckGo - JavaScript abilitato</item>
             <item>Qwant - JavaScript disabilitato</item>

@@ -530,8 +530,8 @@
         <string name="tor_search_custom_url">eigene TOR-Such-URL</string>
     <string name="search">Suche</string>
         <string-array name="search_entries">
+            <item>Startpage</item>
             <item>Searx</item>
-            <item>StartPage</item>
             <item>DuckDuckGo - JavaScript deaktiviert</item>
             <item>DuckDuckGo - JavaScript aktiviert</item>
             <item>Qwant - JavaScript deaktiviert</item>
