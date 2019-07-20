@@ -1,0 +1,18 @@
+• Modifica del motore di ricerca e della pagina iniziale di default in Startpage.
+• Sistemazione del proxy con Orbot per le più recenti versioni di WebView.
+• Creazione della UltraList.
+• Correzione di un problema con le liste di blocco che talvolta provocava il blocco della URL principale.
+• Aggiornamento della modifica della URL di Facebook.
+• Correzione dei problemi delle impostazioni dei domini quando si sfogliava la cronolgia.
+• Disattivazione del timeout dello schermo quando si guarda un video a schermo intero.
+• Aggiunta del feedback del tocco e facilitazione per il tocco dei pulsanti di chiusura e di apertura delle schede.
+• Caricamento delle schede in background dal menù contestuale.
+• Aggiunta dell'opzione per salvare come immagine una pagina web.
+• Miglioramento del supporto per la tastiera quando si naviga a schermo intero.
+• Aggiornamento della richiesta delle intestazioni nella visualizzazione della sorgente.
+• Correzione di diversi crash.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
+• Aggiornamento della traduzione in Russo.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León.
+• Aggiornamento della traduzione Tedesco fornita da Bernhard G. Keller.
+• Aggiornamento della traduzione in Turco.
