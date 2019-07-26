@@ -18,7 +18,7 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<!-- Allow HTTP traffic. -->
+<!-- Allow HTTP traffic and disable HSTS, which has no benefit for Privacy Browser (because unspecified links default to HTTPS) but has negative fingerprinting implications. -->
 <network-security-config>
-    <base-config cleartextTrafficPermitted="true" />
+    <base-config cleartextTrafficPermitted="true" hstsEnforced="false" />
 </network-security-config>
