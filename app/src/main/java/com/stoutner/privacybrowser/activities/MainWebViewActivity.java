@@ -1811,9 +1811,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Get the previous entry URL.
                     String previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() - 1).getUrl();
 
-                    // Reset the current domain name so that navigation works if third-party requests are blocked.
-                    currentWebView.resetCurrentDomainName();
-
                     // Apply the domain settings.
                     applyDomainSettings(currentWebView, previousUrl, false, false);
 
@@ -1829,9 +1826,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Get the next entry URL.
                     String nextUrl = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() + 1).getUrl();
-
-                    // Reset the current domain name so that navigation works if third-party requests are blocked.
-                    currentWebView.resetCurrentDomainName();
 
                     // Apply the domain settings.
                     applyDomainSettings(currentWebView, nextUrl, false, false);
@@ -2861,9 +2855,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Get the previous entry URL.
             String previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() - 1).getUrl();
 
-            // Reset the current domain name so that navigation works if third-party requests are blocked.
-            currentWebView.resetCurrentDomainName();
-
             // Apply the domain settings.
             applyDomainSettings(currentWebView, previousUrl, false, false);
 
@@ -3687,9 +3678,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void navigateHistory(String url, int steps) {
-        // Reset the current domain name so that navigation works if third-party requests are blocked.
-        currentWebView.resetCurrentDomainName();
-
         // Apply the domain settings.
         applyDomainSettings(currentWebView, url, false, false);
 
@@ -3704,9 +3692,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Get the previous entry URL.
         String previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() - 1).getUrl();
-
-        // Reset the current domain name so that navigation works if third-party requests are blocked.
-        currentWebView.resetCurrentDomainName();
 
         // Apply the domain settings.
         applyDomainSettings(currentWebView, previousUrl, false, false);
