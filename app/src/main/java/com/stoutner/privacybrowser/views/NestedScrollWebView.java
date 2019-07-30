@@ -117,9 +117,6 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     // The ignore pinned domain information tracker.  This is set when a user proceeds past a pinned mismatch dialog to prevent the dialog from showing again until after the domain changes.
     private boolean ignorePinnedDomainInformation;
 
-    // Track navigation of history.
-    private boolean navigatingHistory;
-
     // The default or favorite icon.
     private Bitmap favoriteOrDefaultIcon;
 
@@ -604,18 +601,6 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     public boolean ignorePinnedDomainInformation() {
         // Return the status of the ignore pinned domain information tracker.
         return ignorePinnedDomainInformation;
-    }
-
-
-    // Navigating history.
-    public void setNavigatingHistory(boolean status) {
-        // Set the status of navigating history.
-        navigatingHistory = status;
-    }
-
-    public boolean getNavigatingHistory() {
-        // Return the status of navigating history.
-        return navigatingHistory;
     }
 
 

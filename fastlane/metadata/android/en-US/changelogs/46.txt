@@ -1,0 +1,18 @@
+• Change the default search engine and homepage to Startpage.
+• Fix proxying through Orbot on recent versions of WebView.
+• Create UltraList.
+• Fix a problem with blocklists sometimes blocking the main URL.
+• Update Facebook URL modification.
+• Fix domain settings problems when navigating history.
+• Always disable the screen timeout when watching a full screen video.
+• Add touch feedback and make it easier to tap the close and add tab buttons.
+• Load tabs from the context menus in the background.
+• Add an option to save a webpage as an image.
+• Improve keyboard support in full screen browsing mode.
+• Update the request headers in View Source.
+• Fix a number of crashes.
+• Updated German translation provided by Bernhard G. Keller.
+• Updated Italian translation provided by Francesco Buratti.
+• Updated Russian translation.
+• Updated Spanish translation provided by Jose A. León.
+• Updated Turkish translation.

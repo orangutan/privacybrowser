@@ -1,0 +1,18 @@
+• Standard-Suchmaschine und Startseite auf Startpage geändert.
+• Probleme mit dem Orbot-Proxy unter aktuellen WebView-Versionen behoben.
+• UltraList hinzugefügt.
+• Problem mit fälschlich blockierten Haupt-URLs behoben.
+• Facebook-URL-Bereinigung geändert.
+• Problem mit Domain-Einstellungen bei der Navigation per Browser-History behoben.
+• Bildschirm-Timeout bei Vollbild-Darstellung immer deaktiviert.
+• Touch-Feedback hinzugefügt und einfachere Möglichkeit geschaffen, Tabs zu schliessen und neue Tabs hinzuzufügen.
+• Möglichkeit geschaffen, Tabs im Hintergrund zu öffnen.
+• Möglichkeit geschaffen, Webseiten als Grafik zu speichern.
+• Tastatur-Unterstützung im Vollbild-Modus verbessert.
+• Request-Headers in Quelltext-Ansicht aktualisiert.
+• Verschiedene Ursachen für Abstürze behoben.
+• Aktualisierte deutsche Übersetzung von Bernhard G. Keller.
+• Aktualisierte italienische Übersetzung von Francesco Buratti.
+• Aktualisierte russische Übersetzung.
+• Aktualisierte spanische Übersetzung von Jose A. León.
+• Aktualisierte türkische Übersetzung.

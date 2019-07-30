@@ -73,6 +73,7 @@ import android.webkit.CookieManager;
 import android.webkit.HttpAuthHandler;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
+import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
@@ -129,6 +130,7 @@ import com.stoutner.privacybrowser.dialogs.DownloadLocationPermissionDialog;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkFolderDialog;
 import com.stoutner.privacybrowser.dialogs.HttpAuthenticationDialog;
+import com.stoutner.privacybrowser.dialogs.PinnedMismatchDialog;
 import com.stoutner.privacybrowser.dialogs.SaveWebpageImageDialog;
 import com.stoutner.privacybrowser.dialogs.SslCertificateErrorDialog;
 import com.stoutner.privacybrowser.dialogs.StoragePermissionDialog;
@@ -164,8 +166,8 @@ import java.util.Set;
 // AppCompatActivity from android.support.v7.app.AppCompatActivity must be used to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
         DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, DownloadLocationPermissionDialog.DownloadLocationPermissionDialogListener, EditBookmarkDialog.EditBookmarkListener,
-        EditBookmarkFolderDialog.EditBookmarkFolderListener, NavigationView.OnNavigationItemSelectedListener, PopulateBlocklists.PopulateBlocklistsListener, SaveWebpageImageDialog.SaveWebpageImageListener,
-        StoragePermissionDialog.StoragePermissionDialogListener, WebViewTabFragment.NewTabListener {
+        EditBookmarkFolderDialog.EditBookmarkFolderListener, NavigationView.OnNavigationItemSelectedListener, PinnedMismatchDialog.PinnedMismatchListener, PopulateBlocklists.PopulateBlocklistsListener, SaveWebpageImageDialog.SaveWebpageImageListener,
+        StoragePermissionDialog.StoragePermissionDialogListener, UrlHistoryDialog.NavigateHistoryListener, WebViewTabFragment.NewTabListener {
 
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxyThroughOrbot()`.
     public static String orbotStatus;
@@ -433,7 +435,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     loadingNewIntent = true;
 
                     // Add a new tab.
-                    addNewTab(url);
+                    addNewTab(url, true);
                 } else {  // Load the URL in the current tab.
                     // Make it so.
                     loadUrl(url);
@@ -1803,11 +1805,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.back:
                 if (currentWebView.canGoBack()) {
-                    // Reset the current domain name so that navigation works if third-party requests are blocked.
-                    currentWebView.resetCurrentDomainName();
+                    // Get the current web back forward list.
+                    WebBackForwardList webBackForwardList = currentWebView.copyBackForwardList();
 
-                    // Set navigating history so that the domain settings are applied when the new URL is loaded.
-                    currentWebView.setNavigatingHistory(true);
+                    // Get the previous entry URL.
+                    String previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() - 1).getUrl();
+
+                    // Apply the domain settings.
+                    applyDomainSettings(currentWebView, previousUrl, false, false);
 
                     // Load the previous website in the history.
                     currentWebView.goBack();
@@ -1816,11 +1821,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
             case R.id.forward:
                 if (currentWebView.canGoForward()) {
-                    // Reset the current domain name so that navigation works if third-party requests are blocked.
-                    currentWebView.resetCurrentDomainName();
+                    // Get the current web back forward list.
+                    WebBackForwardList webBackForwardList = currentWebView.copyBackForwardList();
 
-                    // Set navigating history so that the domain settings are applied when the new URL is loaded.
-                    currentWebView.setNavigatingHistory(true);
+                    // Get the next entry URL.
+                    String nextUrl = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() + 1).getUrl();
+
+                    // Apply the domain settings.
+                    applyDomainSettings(currentWebView, nextUrl, false, false);
 
                     // Load the next website in the history.
                     currentWebView.goForward();
@@ -2026,7 +2034,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Add an Open in New Tab entry.
                 menu.add(R.string.open_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
                     // Load the link URL in a new tab.
-                    addNewTab(linkUrl);
+                    addNewTab(linkUrl, false);
 
                     // Consume the event.
                     return true;
@@ -2151,9 +2159,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 menu.setHeaderTitle(imageUrl);
 
                 // Add an Open in New Tab entry.
-                menu.add(R.string.open_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Load the image URL in a new tab.
-                    addNewTab(imageUrl);
+                menu.add(R.string.open_image_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Load the image in a new tab.
+                    addNewTab(imageUrl, false);
 
                     // Consume the event.
                     return true;
@@ -2260,7 +2268,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Add an Open in New Tab entry.
                 menu.add(R.string.open_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
                     // Load the link URL in a new tab.
-                    addNewTab(linkUrl);
+                    addNewTab(linkUrl, false);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add an Open Image in New Tab entry.
+                menu.add(R.string.open_image_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Load the image in a new tab.
+                    addNewTab(imageUrl, false);
 
                     // Consume the event.
                     return true;
@@ -2739,7 +2756,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
     }
 
-    // Override `onBackPressed` to handle the navigation drawer and and the WebView.
+    // Override `onBackPressed` to handle the navigation drawer and and the WebViews.
     @Override
     public void onBackPressed() {
         // Get a handle for the drawer layout and the tab layout.
@@ -2760,12 +2777,86 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Load the new folder.
                 loadBookmarksFolder();
             }
-        } else if (currentWebView.canGoBack()) {  // There is at least one item in the current WebView history.
-            // Reset the current domain name so that navigation works if third-party requests are blocked.
-            currentWebView.resetCurrentDomainName();
+        } else if (displayingFullScreenVideo) {  // A full screen video is shown.
+            // Get a handle for the layouts.
+            FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
+            RelativeLayout mainContentRelativeLayout = findViewById(R.id.main_content_relativelayout);
+            FrameLayout fullScreenVideoFrameLayout = findViewById(R.id.full_screen_video_framelayout);
 
-            // Set navigating history so that the domain settings are applied when the new URL is loaded.
-            currentWebView.setNavigatingHistory(true);
+            // Re-enable the screen timeout.
+            fullScreenVideoFrameLayout.setKeepScreenOn(false);
+
+            // Unset the full screen video flag.
+            displayingFullScreenVideo = false;
+
+            // Remove all the views from the full screen video frame layout.
+            fullScreenVideoFrameLayout.removeAllViews();
+
+            // Hide the full screen video frame layout.
+            fullScreenVideoFrameLayout.setVisibility(View.GONE);
+
+            // Enable the sliding drawers.
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+
+            // Show the main content relative layout.
+            mainContentRelativeLayout.setVisibility(View.VISIBLE);
+
+            // Apply the appropriate full screen mode flags.
+            if (fullScreenBrowsingModeEnabled && inFullScreenBrowsingMode) {  // Privacy Browser is currently in full screen browsing mode.
+                // Hide the app bar if specified.
+                if (hideAppBar) {
+                    // Get handles for the views.
+                    LinearLayout tabsLinearLayout = findViewById(R.id.tabs_linearlayout);
+                    ActionBar actionBar = getSupportActionBar();
+
+                    // Remove the incorrect lint warning below that the action bar might be null.
+                    assert actionBar != null;
+
+                    // Hide the tab linear layout.
+                    tabsLinearLayout.setVisibility(View.GONE);
+
+                    // Hide the action bar.
+                    actionBar.hide();
+                }
+
+                // Hide the banner ad in the free flavor.
+                if (BuildConfig.FLAVOR.contentEquals("free")) {
+                    AdHelper.hideAd(findViewById(R.id.adview));
+                }
+
+                // Remove the translucent status flag.  This is necessary so the root frame layout can fill the entire screen.
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                /* Hide the system bars.
+                 * SYSTEM_UI_FLAG_FULLSCREEN hides the status bar at the top of the screen.
+                 * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN makes the root frame layout fill the area that is normally reserved for the status bar.
+                 * SYSTEM_UI_FLAG_HIDE_NAVIGATION hides the navigation bar on the bottom or right of the screen.
+                 * SYSTEM_UI_FLAG_IMMERSIVE_STICKY makes the status and navigation bars translucent and automatically re-hides them after they are shown.
+                 */
+                rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            } else {  // Switch to normal viewing mode.
+                // Remove the `SYSTEM_UI` flags from the root frame layout.
+                rootFrameLayout.setSystemUiVisibility(0);
+
+                // Add the translucent status flag.
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            }
+
+            // Reload the ad for the free flavor if not in full screen mode.
+            if (BuildConfig.FLAVOR.contentEquals("free") && !inFullScreenBrowsingMode) {
+                // Reload the ad.
+                AdHelper.loadAd(findViewById(R.id.adview), getApplicationContext(), getString(R.string.ad_unit_id));
+            }
+        } else if (currentWebView.canGoBack()) {  // There is at least one item in the current WebView history.
+            // Get the current web back forward list.
+            WebBackForwardList webBackForwardList = currentWebView.copyBackForwardList();
+
+            // Get the previous entry URL.
+            String previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() - 1).getUrl();
+
+            // Apply the domain settings.
+            applyDomainSettings(currentWebView, previousUrl, false, false);
 
             // Go back.
             currentWebView.goBack();
@@ -3583,6 +3674,30 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Destroy the bare WebView.
         bareWebView.destroy();
+    }
+
+    @Override
+    public void navigateHistory(String url, int steps) {
+        // Apply the domain settings.
+        applyDomainSettings(currentWebView, url, false, false);
+
+        // Load the history entry.
+        currentWebView.goBackOrForward(steps);
+    }
+
+    @Override
+    public void pinnedErrorGoBack() {
+        // Get the current web back forward list.
+        WebBackForwardList webBackForwardList = currentWebView.copyBackForwardList();
+
+        // Get the previous entry URL.
+        String previousUrl = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() - 1).getUrl();
+
+        // Apply the domain settings.
+        applyDomainSettings(currentWebView, previousUrl, false, false);
+
+        // Go back.
+        currentWebView.goBack();
     }
 
     // `reloadWebsite` is used if returning from the Domains activity.  Otherwise JavaScript might not function correctly if it is newly enabled.
@@ -4410,6 +4525,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             if (url.contains("&fbclid=")) {
                 url = url.substring(0, url.indexOf("&fbclid="));
             }
+
+            // Remove `?fbadid=`.
+            if (url.contains("?fbadid=")) {
+                url = url.substring(0, url.indexOf("?fbadid="));
+            }
+
+            // Remove `&fbadid=`.
+            if (url.contains("&fbadid=")) {
+                url = url.substring(0, url.indexOf("&fbadid="));
+            }
         }
 
         // Sanitize Twitter AMP redirects.
@@ -4434,15 +4559,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         ultraPrivacy = combinedBlocklists.get(5);
 
         // Add the first tab.
-        addNewTab("");
+        addNewTab("", true);
     }
 
     public void addTab(View view) {
         // Add a new tab with a blank URL.
-        addNewTab("");
+        addNewTab("", true);
     }
 
-    private void addNewTab(String url) {
+    private void addNewTab(String url, boolean moveToTab) {
         // Sanitize the URL.
         url = sanitizeUrl(url);
 
@@ -4466,7 +4591,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         newTab.setCustomView(R.layout.tab_custom_view);
 
         // Add the new WebView page.
-        webViewPagerAdapter.addPage(newTabNumber, webViewPager, url);
+        webViewPagerAdapter.addPage(newTabNumber, webViewPager, url, moveToTab);
     }
 
     public void closeTab(View view) {
@@ -5183,6 +5308,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Show the full screen video frame layout.
                 fullScreenVideoFrameLayout.setVisibility(View.VISIBLE);
+
+                // Disable the screen timeout while the video is playing.  YouTube does this automatically, but not all other videos do.
+                fullScreenVideoFrameLayout.setKeepScreenOn(true);
             }
 
             // Exit full screen video.
@@ -5190,6 +5318,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             public void onHideCustomView() {
                 // Get a handle for the full screen video frame layout.
                 FrameLayout fullScreenVideoFrameLayout = findViewById(R.id.full_screen_video_framelayout);
+
+                // Re-enable the screen timeout.
+                fullScreenVideoFrameLayout.setKeepScreenOn(false);
 
                 // Unset the full screen video flag.
                 displayingFullScreenVideo = false;
@@ -5782,20 +5913,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Get the IP addresses for the host.
                     new GetHostIpAddresses(activity, getSupportFragmentManager(), nestedScrollWebView).execute(currentUri.getHost());
 
-                    // Apply any custom domain settings if the URL was loaded by navigating history.
-                    if (nestedScrollWebView.getNavigatingHistory()) {
-                        // Reset navigating history.
-                        nestedScrollWebView.setNavigatingHistory(false);
-
-                        // Apply the domain settings.
-                        boolean userAgentChanged = applyDomainSettings(nestedScrollWebView, url, true, false);
-
-                        // Manually load the URL if the user agent has changed, which will have caused the previous URL to be reloaded.
-                        if (userAgentChanged) {
-                            loadUrl(url);
-                        }
-                    }
-
                     // Replace Refresh with Stop if the options menu has been created.  (The first WebView typically begins loading before the menu items are instantiated.)
                     if (optionsMenu != null) {
                         // Get a handle for the refresh menu item.
@@ -5923,11 +6040,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 tabTitleTextView.setText(R.string.new_tab);
                             }
                         } else {  // The WebView has loaded a webpage.
-                            // Display the final URL.  Getting the URL from the WebView instead of using the one provided by `onPageFinished()` makes websites like YouTube function correctly.
-                            urlEditText.setText(currentUrl);
+                            // Update the URL edit text if it is not currently being edited.
+                            if (!urlEditText.hasFocus()) {
+                                // Sanitize the current URL.  This removes unwanted URL elements that were added by redirects, so that they won't be included if the URL is shared.
+                                String sanitizedUrl = sanitizeUrl(currentUrl);
 
-                            // Apply text highlighting to the URL.
-                            highlightUrlText();
+                                // Display the final URL.  Getting the URL from the WebView instead of using the one provided by `onPageFinished()` makes websites like YouTube function correctly.
+                                urlEditText.setText(sanitizedUrl);
+
+                                // Apply text highlighting to the URL.
+                                highlightUrlText();
+                            }
 
                             // Only populate the title text view if the tab has been fully created.
                             if (tab != null) {

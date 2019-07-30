@@ -50,12 +50,14 @@
     <string name="close_tab">Chiudi Scheda</string>
     <string name="new_tab">Nuova Scheda</string>
     <string name="loading">Caricamento…</string>
+    <string name="error">Errore:</string>
 
     <!-- Loading Blocklists. -->
     <string name="loading_easylist">Caricamento EasyList</string>
     <string name="loading_easyprivacy">Caricamento EasyPrivacy</string>
     <string name="loading_fanboys_annoyance_list">Caricamento Fanboy’s Annoyance List</string>
     <string name="loading_fanboys_social_blocking_list">Caricamento Fanboy’s Social Blocking List</string>
+    <string name="loading_ultralist">Caricamento UltraList</string>
     <string name="loading_ultraprivacy">Caricamento UltraPrivacy</string>
 
     <!-- Save As. -->
@@ -189,6 +191,7 @@
 
     <!-- Context Menus. -->
     <string name="open_in_new_tab">Apri in una nuova Scheda</string>
+    <string name="open_image_in_new_tab">Apri l\'immagine in una nuova scheda</string>
     <string name="copy_url">Copia URL</string>
     <string name="download_url">Scarica URL</string>
     <string name="email_address">Indirizzo Email</string>
@@ -395,7 +398,7 @@
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Il Proxy con Orbot funziona solo se è installato Orbot.</string>
-    <string name="waiting_for_orbot">In attesa della connessione di Orbot…</string>
+    <string name="waiting_for_orbot">In attesa della connessione di Orbot...</string>  <!-- The WebView in API 19 does not like the ellipse character. -->
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">Informazioni su Privacy Browser</string>
@@ -421,6 +424,7 @@
     <string name="easyprivacy_label">EasyPrivacy:</string>
     <string name="fanboy_annoyance_label">Fanboy’s Annoyance List:</string>
     <string name="fanboy_social_label">Fanboy’s Social Blocking List:</string>
+    <string name="ultralist_label">UltraList:</string>
     <string name="ultraprivacy_label">UltraPrivacy:</string>
     <string name="package_signature">Firma del Pacchetto</string>
     <string name="issuer_dn">Emittente:</string>
@@ -498,15 +502,17 @@
         <string name="fanboys_annoyance_list_summary">Blocca fastidiosi pop-up e collegamenti.  Include le liste Fanboy’s social blocking.</string>
         <string name="fanboys_social_blocking_list">Fanboy’s social blocking list</string>
         <string name="fanboys_social_blocking_list_summary">Blocca contenuti di terze parti sui social media .</string>
+        <string name="ultralist">UltraList</string>
+        <string name="ultralist_summary">UltraList blocca gli annunci che EasyList non blocca per non impedire la visualizzazione dei siti web.</string>
         <string name="ultraprivacy">UltraPrivacy</string>
         <string name="ultraprivacy_summary">L\'UltraPrivacy blocca i tracciamenti che EasyPrivacy ignora perché potrebbero impedire la visualizzazione dei siti web.</string>
         <string name="block_all_third_party_requests">Blocca tutte le richieste di Terze Parti</string>
         <string name="block_all_third_party_requests_summary">Il blocco di tutte le richieste di Terze Parti aumenta privacy, ma impedisce la visualizzazione di molti siti web.</string>
     <string name="url_modification">Modifica delle URL</string>
         <string name="google_analytics">Google Analytics</string>
-        <string name="google_analytics_summary">Rimuovi “?utm_” o “&amp;utm_” e tutto quello che segue dalle URL.</string>
+        <string name="google_analytics_summary">Rimuovi “?utm_” e “&amp;utm_” e tutto quello che segue dalle URL.</string>
         <string name="facebook_click_ids">Facebook Click ID</string>
-        <string name="facebook_click_ids_summary">Rimuovi “?fbclid=” o “&amp;fbclid=”  e tutto quello che segue dalle URL.</string>
+        <string name="facebook_click_ids_summary">Rimuovi “?fbclid=”, “&amp;fbclid=”, “?fbadid=”, e “&amp;fbadid=” e tutto quello che segue dalle URL.</string>
         <string name="twitter_amp_redirects">Reindirizzamenti Twitter AMP</string>
         <string name="twitter_amp_redirects_summary">Rimuovi “?amp=1”  e tutto quello che segue dalle URL.</string>
     <string name="tor">Tor</string>
@@ -523,8 +529,8 @@
         <string name="tor_search_custom_url">Tor - Ricerca personalizzata</string>
     <string name="search">Ricerca</string>
         <string-array name="search_entries">
+            <item>Startpage</item>
             <item>Searx</item>
-            <item>StartPage</item>
             <item>DuckDuckGo - JavaScript disabilitato</item>
             <item>DuckDuckGo - JavaScript abilitato</item>
             <item>Qwant - JavaScript disabilitato</item>

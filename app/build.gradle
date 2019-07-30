@@ -26,8 +26,8 @@ android {
     defaultConfig {
         minSdkVersion 26
         targetSdkVersion 28
-        versionCode 45
-        versionName "3.1"
+        versionCode 46
+        versionName "3.2"
     }
 
     buildTypes {
@@ -62,11 +62,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
-    // Allow the releases to be built even though the versions of the support and consent libraries don't match (Privacy Browser doesn't use the consent library form, so it doesn't matter).
-    lintOptions {
-        abortOnError false
-    }
 }
 
 dependencies {
@@ -86,5 +81,5 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
 
     // Only compile Firebase ads for the free flavor.
-    freeImplementation 'com.google.firebase:firebase-ads:18.0.0'
+    freeImplementation 'com.google.firebase:firebase-ads:18.1.0'
 }

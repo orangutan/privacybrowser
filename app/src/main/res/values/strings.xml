@@ -195,6 +195,7 @@
 
     <!-- Context Menus. -->
     <string name="open_in_new_tab">Open in New Tab</string>
+    <string name="open_image_in_new_tab">Open Image in New Tab</string>
     <string name="copy_url">Copy URL</string>
     <string name="download_url">Download URL</string>
     <string name="email_address">Email Address</string>
@@ -399,7 +400,7 @@
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Orbot proxy will not work unless Orbot is installed.</string>
-    <string name="waiting_for_orbot">Waiting for Orbot to connect…</string>
+    <string name="waiting_for_orbot">Waiting for Orbot to connect...</string>  <!-- The WebView in API 19 does not like the ellipse character. -->
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">About Privacy Browser</string>
@@ -504,14 +505,14 @@
         <string-array name="user_agent_data" translatable="false">  <!-- The data used to populate the actual user agents.  They should not be translated because they are referenced in code.-->
             <item>PrivacyBrowser/1.0</item>
             <item>WebView default user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
-            <item>Mozilla/5.0 (Android 9; Mobile; rv:67.0) Gecko/67.0 Firefox/67.0</item>
-            <item>Mozilla/5.0 (Linux; Android 9; Pixel 2 XL) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Mobile Safari/537.36</item>
+            <item>Mozilla/5.0 (Android 9; Mobile; rv:68.0) Gecko/68.0 Firefox/68.0</item>
+            <item>Mozilla/5.0 (Linux; Android 9; Pixel 2 XL) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.143 Mobile Safari/537.36</item>
             <item>Mozilla/5.0 (iPhone; CPU iPhone OS 12_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Mobile/15E148 Safari/604.1</item>
             <item>Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/60.0</item>
             <item>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36</item>
-            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0</item>
-            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36</item>
-            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/18.17763</item>
+            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0</item>
+            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36</item>
+            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.18362</item>
             <item>Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko</item>
             <item>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15</item>
             <item>Custom user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
@@ -541,9 +542,9 @@
         <string name="block_all_third_party_requests_summary">Blocking all third-party requests increases privacy, but it breaks many websites.</string>
     <string name="url_modification">URL Modification</string>
         <string name="google_analytics">Google Analytics</string>
-        <string name="google_analytics_summary">Remove “?utm_” or “&amp;utm_” and anything after it from URLs.</string>
+        <string name="google_analytics_summary">Remove “?utm_” and “&amp;utm_” and anything after them from URLs.</string>
         <string name="facebook_click_ids">Facebook Click IDs</string>
-        <string name="facebook_click_ids_summary">Remove “?fbclid=” or “&amp;fbclid=” and anything after it from URLs.</string>
+        <string name="facebook_click_ids_summary">Remove “?fbclid=”, “&amp;fbclid=”, “?fbadid=”, and “&amp;fbadid=” and anything after them from URLs.</string>
         <string name="twitter_amp_redirects">Twitter AMP redirects</string>
         <string name="twitter_amp_redirects_summary">Remove “?amp=1” and anything after it from URLs.</string>
     <string name="tor">Tor</string>
@@ -566,8 +567,8 @@
         <string name="tor_search_custom_url">Tor search custom URL</string>
     <string name="search">Search</string>
         <string-array name="search_entries">
+            <item>Startpage</item>
             <item>Searx</item>
-            <item>StartPage</item>
             <item>DuckDuckGo - JavaScript disabled</item>
             <item>DuckDuckGo - JavaScript enabled</item>
             <item>Qwant - JavaScript disabled</item>
@@ -579,8 +580,8 @@
             <item>Custom</item>
         </string-array>
         <string-array name="search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
-            <item>https://searx.me/?q=</item>
             <item>https://www.startpage.com/do/search?query=</item>
+            <item>https://searx.me/?q=</item>
             <item>https://duckduckgo.com/html/?q=</item>
             <item>https://duckduckgo.com/?q=</item>
             <item>https://lite.qwant.com/?q=</item>
@@ -676,12 +677,12 @@
     <!-- Non-translatable preference default values. -->
     <string name="user_agent_default_value" translatable="false">Privacy Browser</string>
     <string name="custom_user_agent_default_value" translatable="false">PrivacyBrowser/1.0</string>
-    <string name="tor_homepage_default_value" translatable="false">http://ulrn6sryqaifefld.onion/</string>
-    <string name="tor_search_default_value" translatable="false">http://ulrn6sryqaifefld.onion/?q=</string>
+    <string name="tor_homepage_default_value" translatable="false">https://3g2upl4pq6kufc4m.onion/</string>
+    <string name="tor_search_default_value" translatable="false">https://3g2upl4pq6kufc4m.onion/html?q=</string>
     <string name="tor_search_custom_url_default_value" translatable="false" />
-    <string name="search_default_value" translatable="false">https://searx.me/?q=</string>
+    <string name="search_default_value" translatable="false">https://www.startpage.com/do/search?query=</string>
     <string name="search_custom_url_default_value" translatable="false" />
-    <string name="homepage_default_value" translatable="false">https://searx.me/</string>
+    <string name="homepage_default_value" translatable="false">https://www.startpage.com/</string>
     <string name="font_size_default_value" translatable="false">100</string>
 
     <!-- Ad Control. There are no ads in the standard flavor, but these strings must exist because they are referenced in the code. -->

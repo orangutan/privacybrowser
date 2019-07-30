@@ -1,0 +1,18 @@
+• Cambiar el motor de búsqueda y la página de inicio predeterminados a Startpage.
+• Corregir el proxy a través de Orbot en recientes versiones de WebView.
+• Crear UltraList.
+• Corregir un problema con las listas de bloqueo que a veces bloquean la URL principal.
+• Actualizar la modificación de la URL de Facebook.
+• Corregir los problemas de configuración de dominio al navegar por el historial.
+• Desactivar siempre el tiempo de espera de la pantalla al ver un vídeo a pantalla completa.
+• Añadir reacción táctil y facilitar la pulsación de los botones de cerrar y añadir pestaña.
+• Cargar pestañas de los menús contextutales en segundo plano.
+• Añadir una opción para guardar una página web como imagen.
+• Mejorar la compatibilidad del teclado en el modo de navegación a pantalla completa.
+• Actualizar las cabeceras de solicitud en la Vista de fuente.
+• Corregir una serie de fallos.
+• Actualizada la traducción al español proporcionada por Jose A. León.
+• Actualizada la traducción al alemán por Bernhard G. Keller.
+• Actualizada la traducción al italiano proporcionada por Francesco Buratti.
+• Actualizada la traducción al ruso.
+• Actualizada la traducción al turco.

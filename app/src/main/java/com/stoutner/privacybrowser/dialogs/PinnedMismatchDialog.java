@@ -59,7 +59,13 @@ import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment mu
 import androidx.viewpager.widget.PagerAdapter;
 
 public class PinnedMismatchDialog extends DialogFragment {
+    // The public interface is used to send information back to the parent activity.
+    public interface PinnedMismatchListener {
+        void pinnedErrorGoBack();
+    }
+
     // Declare the class variables.
+    private PinnedMismatchListener pinnedMismatchListener;
     private NestedScrollWebView nestedScrollWebView;
     private String currentSslIssuedToCName;
     private String currentSslIssuedToOName;
@@ -69,6 +75,15 @@ public class PinnedMismatchDialog extends DialogFragment {
     private String currentSslIssuedByUName;
     private Date currentSslStartDate;
     private Date currentSslEndDate;
+
+    @Override
+    public void onAttach(Context context) {
+        // Run the default commands.
+        super.onAttach(context);
+
+        // Get a handle for the listener from the launching context.
+        pinnedMismatchListener = (PinnedMismatchListener) context;
+    }
 
     public static PinnedMismatchDialog displayDialog(long webViewFragmentId) {
         // Create an arguments bundle.
@@ -211,14 +226,8 @@ public class PinnedMismatchDialog extends DialogFragment {
         // Setup the back button.
         dialogBuilder.setNegativeButton(R.string.back, (DialogInterface dialog, int which) -> {
             if (nestedScrollWebView.canGoBack()) {  // There is a back page in the history.
-                // Reset the current domain name so that navigation works if third-party requests are blocked.
-                nestedScrollWebView.resetCurrentDomainName();
-
-                // Set navigating history so that the domain settings are applied when the new URL is loaded.
-                nestedScrollWebView.setNavigatingHistory(true);
-
-                // Go back.
-                nestedScrollWebView.goBack();
+                // Invoke the navigate history listener in the calling activity.  These commands cannot be run here because they need access to `applyDomainSettings()`.
+                pinnedMismatchListener.pinnedErrorGoBack();
             } else {  // There are no pages to go back to.
                 // Load a blank page
                 nestedScrollWebView.loadUrl("");

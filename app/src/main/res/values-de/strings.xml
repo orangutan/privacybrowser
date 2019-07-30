@@ -54,12 +54,14 @@
     <string name="close_tab">Tab schließen</string>
     <string name="new_tab">Neuer Tab</string>
     <string name="loading">Laden…</string>
+    <string name="error">Fehler:</string>
 
     <!-- Loading Blocklists. -->
     <string name="loading_easylist">Lade EasyList</string>
     <string name="loading_easyprivacy">Lade EasyPrivacy</string>
     <string name="loading_fanboys_annoyance_list">Lade Fanboy’s Annoyance Filterliste</string>
     <string name="loading_fanboys_social_blocking_list">Fanboy’s Social Blocking Filterliste</string>
+    <string name="loading_ultralist">Lade UltraList</string>
     <string name="loading_ultraprivacy">Lade UltraPrivacy</string>
 
     <!-- Save As. -->
@@ -192,6 +194,7 @@
 
     <!-- Context Menus. -->
     <string name="open_in_new_tab">In neuem Tab öffnen</string>
+    <string name="open_image_in_new_tab">Grafik in neuem Tab öffnen</string>
     <string name="copy_url">URL kopieren</string>
     <string name="download_url">Download URL</string>
     <string name="email_address">E-Mail-Adresse</string>
@@ -396,7 +399,7 @@
 
     <!-- Orbot. -->
     <string name="orbot_proxy_not_installed">Orbot-Proxy wird nicht funktionieren, solange Orbot nicht installiert ist.</string>
-    <string name="waiting_for_orbot">Warte, bis sich Orbot verbindet…</string>
+    <string name="waiting_for_orbot">Warte, bis sich Orbot verbindet...</string>  <!-- The WebView in API 19 does not like the ellipse character. -->
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">Über Privacy Browser</string>
@@ -422,6 +425,7 @@
     <string name="easyprivacy_label">EasyPrivacy:</string>
     <string name="fanboy_annoyance_label">Fanboy’s Annoyance Sperrliste:</string>
     <string name="fanboy_social_label">Fanboy’s Social Blocking Sperrliste:</string>
+    <string name="ultralist_label">UltraList:</string>
     <string name="ultraprivacy_label">UltraPrivacy:</string>
     <string name="package_signature">Paket-Signatur</string>
     <string name="issuer_dn">Aussteller-DN:</string>
@@ -499,15 +503,17 @@
         <string name="fanboys_annoyance_list_summary">Blockiert nervende PopUps und Links. Enthält Fanboy’s Social Blocking Sperrliste.</string>
         <string name="fanboys_social_blocking_list">Fanboy’s Social Blocking Sperrliste</string>
         <string name="fanboys_social_blocking_list_summary">Blockiert Social-Media-Inhalte von Drittanbietern.</string>
+        <string name="ultralist">UltraList</string>
+        <string name="ultralist_summary">UltraList blockiert Werbung, die von EasyList nicht blockiert wird, da dies Webseiten verunstalten kann.</string>
         <string name="ultraprivacy">UltraPrivacy</string>
         <string name="ultraprivacy_summary">UltraPrivacy blockiert Tracker, die von EasyPrivacy nicht blockiert werden, da dies Webseiten verunstalten kann.</string>
         <string name="block_all_third_party_requests">Alle Zugriffe auf Dritt-Anbieter-Inhalte blockieren</string>
         <string name="block_all_third_party_requests_summary">Alle Zugriffe auf Dritt-Anbieter-Inhalte zu blockieren verbessert die Privatsphäre, kann jedoch Webseiten verunstalten.</string>
     <string name="url_modification">URL-Bereinigung</string>
         <string name="google_analytics">Google Analytics</string>
-        <string name="google_analytics_summary">Entfernt “?utm_” oder “&amp;utm_” sowie alles danach aus URLs.</string>
+        <string name="google_analytics_summary">Entfernt “?utm_” und “&amp;utm_” sowie alles danach aus URLs.</string>
         <string name="facebook_click_ids">Facebook Click-IDs</string>
-        <string name="facebook_click_ids_summary">Entfernt “?fbclid=” or “&amp;fbclid=” sowie alles danach aus URLs.</string>
+        <string name="facebook_click_ids_summary">Entfernt “?fbclid=”, “&amp;fbclid=”, “?fbadid=” und “&amp;fbadid=” sowie alles danach aus URLs.</string>
         <string name="twitter_amp_redirects">Twitter AMP-Umleitungen</string>
         <string name="twitter_amp_redirects_summary">Entfernt “?amp=1” sowie alles danach URLs.</string>
     <string name="tor">Tor</string>
@@ -524,8 +530,8 @@
         <string name="tor_search_custom_url">eigene TOR-Such-URL</string>
     <string name="search">Suche</string>
         <string-array name="search_entries">
+            <item>Startpage</item>
             <item>Searx</item>
-            <item>StartPage</item>
             <item>DuckDuckGo - JavaScript deaktiviert</item>
             <item>DuckDuckGo - JavaScript aktiviert</item>
             <item>Qwant - JavaScript deaktiviert</item>
