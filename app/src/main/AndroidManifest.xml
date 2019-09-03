@@ -95,7 +95,7 @@
              `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
             android:name=".activities.MainWebViewActivity"
-            android:label="@string/privacy_browser"
+            android:label="@string/privacy"
             android:theme="@style/PrivacyBrowserLight"
             android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
             android:launchMode="singleTask"
