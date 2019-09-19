@@ -24,8 +24,9 @@
 <resources>
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser</string>
+    <string name="short_name">Privacy</string>
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  For example, Spanish is `es`.  This should not be translated unless the Guide and About sections are localized. -->
-    <string name="android_asset_path">en</string>
+    <string name="android_asset_path">fr</string>
 
     <!-- MainWebView. -->
     <string name="privacy_mode">Mode privé</string>
@@ -288,6 +289,30 @@
         <string name="blocked_plural">Bloquées</string>
     <string name="blocklist">Liste noires</string>
     <string name="sublist">Sous-listes</string>
+        <string name="main_whitelist">Main whitelist</string>
+        <string name="final_whitelist">Final whitelist</string>
+        <string name="domain_whitelist">Domain whitelist</string>
+        <string name="domain_initial_whitelist">Domain initial whitelist</string>
+        <string name="domain_final_whitelist">Domain final whitelist</string>
+        <string name="third_party_whitelist">Third-party whitelist</string>
+        <string name="third_party_domain_whitelist">Third-party domain whitelist</string>
+        <string name="third_party_domain_initial_whitelist">Third-party domain initial whitelist</string>
+        <string name="main_blacklist">Main blacklist</string>
+        <string name="initial_blacklist">Initial blacklist</string>
+        <string name="final_blacklist">Final blacklist</string>
+        <string name="domain_blacklist">Domain blacklist</string>
+        <string name="domain_initial_blacklist">Domain initial blacklist</string>
+        <string name="domain_final_blacklist">Domain final blacklist</string>
+        <string name="domain_regular_expression_blacklist">Domain regular expression blacklist</string>
+        <string name="third_party_blacklist">Third-party blacklist</string>
+        <string name="third_party_initial_blacklist">Third-party initial blacklist</string>
+        <string name="third_party_domain_blacklist">Third-party domain blacklist</string>
+        <string name="third_party_domain_initial_blacklist">Third-party domain initial blacklist</string>
+        <string name="third_party_regular_expression_blacklist">Third-party regular expression blacklist</string>
+        <string name="third_party_domain_regular_expression_blacklist">Third-party domain regular expression blacklist</string>
+        <string name="regular_expression_blacklist">Regular expression blacklist</string>
+    <string name="blocklist_entries">Blocklist entries</string>
+    <string name="blocklist_original_entry">Blocklist original entry</string>
 
     <!-- Domains. -->
     <string name="domains">Domaines</string>
@@ -336,6 +361,7 @@
     <string name="kitkat_password_encryption_message">Le chiffrement par mot de passe ne fonctionne pas sous Android KitKat.</string>
     <string name="openkeychain_required">Le chiffrement OpenPGP nécessite l\'installation d\'OpenKeychain.</string>
     <string name="openkeychain_import_instructions">Le fichier non-chiffré devra être importé dans un deuxième temps, après son déchiffrement.</string>
+    <string name="settings_pbs">Settings.pbs</string>
     <string name="file_location">Emplacement du fichier</string>
     <string name="browse">Parcourir</string>
     <string name="export">Exporter</string>
