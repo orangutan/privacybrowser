@@ -85,17 +85,18 @@
                 android:resource="@xml/file_provider_paths" />
         </provider>
         
-        <!-- The theme has to be defined here or an ugly title bar is displayed when the app launches.
-             `android:configChanges="orientation|screenSize"` makes the activity not restart when the orientation changes, which preserves scroll location in the WebView.
-             `android:configChanges="screenLayout"` makes the activity not restart when entering or exiting split screen mode.
-             `android:configChanges="keyboard|keyboardHidden"` makes the activity not restart when a bluetooth keyboard is activated/goes to sleep.
-             `android:launchMode="singleTask"` makes the app launch in a new task instead of inside the task of the program that sends it an intent.
-             It also makes it reuse an existing Privacy Browser activity if available instead of launching a new one.
-             `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
-             `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
+        <!-- The label uses the short name so that it isn't truncated under the icon in the launcher on most phones.
+            The theme has to be defined here or an ugly title bar is displayed when the app launches.
+            `android:configChanges="orientation|screenSize"` makes the activity not restart when the orientation changes, which preserves scroll location in the WebView.
+            `android:configChanges="screenLayout"` makes the activity not restart when entering or exiting split screen mode.
+            `android:configChanges="keyboard|keyboardHidden"` makes the activity not restart when a bluetooth keyboard is activated/goes to sleep.
+            `android:launchMode="singleTask"` makes the app launch in a new task instead of inside the task of the program that sends it an intent.
+            It also makes it reuse an existing Privacy Browser activity if available instead of launching a new one.
+            `android:persistableMode="persistNever"` removes Privacy Browser from the recent apps list on a device reboot.
+            `tools:ignore="unusedAttribute"` removes the lint warning that `persistableMode` does not apply to API < 21. -->
         <activity
             android:name=".activities.MainWebViewActivity"
-            android:label="@string/privacy_browser"
+            android:label="@string/short_name"
             android:theme="@style/PrivacyBrowserLight"
             android:configChanges="orientation|screenSize|screenLayout|keyboard|keyboardHidden"
             android:launchMode="singleTask"

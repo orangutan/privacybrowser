@@ -21,6 +21,7 @@
 <resources>
     <!-- Activities. -->
     <string name="privacy_browser">Privacy Browser</string>
+    <string name="short_name">Конфиденциальность</string>
     <!-- For translations, `android_asset_path` should be the localization abbreviation.  This should not be translated unless the Guide and About sections are localized. -->
     <string name="android_asset_path">ru</string> -->
 

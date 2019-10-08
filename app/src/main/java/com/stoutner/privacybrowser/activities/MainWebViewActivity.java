@@ -874,6 +874,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem selectedFontSizeMenuItem;
 
         // Prepare the font size title and current size menu item.
+        //noinspection DuplicateBranchesInSwitch
         switch (fontSize) {
             case 25:
                 fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.twenty_five_percent);
@@ -2864,8 +2865,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Close the current tab.
             closeCurrentTab();
         } else {  // There isn't anything to do in Privacy Browser.
-            // Run the default commands.
-            super.onBackPressed();
+            // Close Privacy Browser.  `finishAndRemoveTask()` also removes Privacy Browser from the recent app list.
+            if (Build.VERSION.SDK_INT >= 21) {
+                finishAndRemoveTask();
+            } else {
+                finish();
+            }
 
             // Manually kill Privacy Browser.  Otherwise, it is glitchy when restarted.
             System.exit(0);
@@ -2902,11 +2907,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Instantiate the file name helper.
                         FileNameHelper fileNameHelper = new FileNameHelper();
 
-                        // Convert the file name URI to a file name path.
-                        String fileNamePath = fileNameHelper.convertUriToFileNamePath(data.getData());
+                        // Get the file path if it isn't null.
+                        if (data.getData() != null) {
+                            // Convert the file name URI to a file name path.
+                            String fileNamePath = fileNameHelper.convertUriToFileNamePath(data.getData());
 
-                        // Set the file name path as the text of the file name edit text.
-                        fileNameEditText.setText(fileNamePath);
+                            // Set the file name path as the text of the file name edit text.
+                            fileNameEditText.setText(fileNamePath);
+                        }
                     }
                 }
                 break;

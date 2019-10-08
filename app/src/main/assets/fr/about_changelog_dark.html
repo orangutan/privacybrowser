@@ -1,0 +1,628 @@
+<!--
+  Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+
+  Translation 2019 Kévin LE FLOHIC <kevinliste@framalistes.org>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+
+        <link rel="stylesheet" href="../css/dark_theme.css">
+    </head>
+
+    <body>
+        <h3><a href="https://www.stoutner.com/privacy-browser-3-2/">3.2</a> (version du code 46)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=424ab40e495fed0fd1fe4109be466206d64ae6be">20 Juillet 2019</a> - API minimale : 19, API optimale : 28</p>
+        <ul>
+            <li>Changement du moteur de recherche par défaut et la page d'accueil par <a href="https://www.stoutner.com/switching-to-startpage-as-the-default-homepage-and-search-engine/">Startpage</a>.</li>
+            <li>Correction du proxy via Orbot sur les <a href="https://redmine.stoutner.com/issues/473">récentes</a> <a href="https://redmine.stoutner.com/issues/474">versions</a> de WebView.</li>
+            <li>Création d'<a href="https://redmine.stoutner.com/issues/450">UltraList</a>.</li>
+            <li>Correction d'un problème avec les listes de blocages bloquant parfois <a href="https://redmine.stoutner.com/issues/444">l'URL principale</a>.</li>
+            <li>MAJ <a href="https://redmine.stoutner.com/issues/472"> modification URL de Facebook</a>.</li>
+            <li>Correction des paramètres de domaines <a href="https://redmine.stoutner.com/issues/439">en naviguant dans l'historique</a>.</li>
+            <li>Systématiquement<a href="https://redmine.stoutner.com/issues/404">désactiver exinction écran</a> en regardant une vidéo en plein écran</li>
+            <li>Ajout touch feedback and make it easier to tap the <a href="https://redmine.stoutner.com/issues/437">close and add tab buttons</a>.</li>
+            <li>Chargement des onglets du menu contextuel<a href="https://redmine.stoutner.com/issues/462">en arrière-plan</a>.</li>
+            <li>Ajout d'une option pour<a href="https://redmine.stoutner.com/issues/187">sauvegarder un site web comme une image</a>.</li>
+            <li>Amélioration du <a href="https://redmine.stoutner.com/issues/458">support du clavier</a> en <a href="https://redmine.stoutner.com/issues/389">navigation plein écran</a>.</li>
+            <li>MAJ des  <a href="https://redmine.stoutner.com/issues/445">en-têtes des requêtes</a> dans la Vue Source.</li>
+            <li>Correction d'un <a href="https://redmine.stoutner.com/issues/466">nombre</a> <a href="https://redmine.stoutner.com/issues/468">de</a>
+                <a href="https://redmine.stoutner.com/issues/464">plantages</a>.</li>
+            <li>MAJ traduction en Allemand effectuée par Bernhard G. Keller.</li>
+            <li>MAJ traduction en Italien effectuée par Francesco Buratti.</li>
+            <li>MAJ traduction en Russe.</li>
+            <li>MAJ traduction en Espagnol effectuée par Jose A. León.</li>
+            <li>MAJ traduction en Turc.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-3-1/">3.1</a> (version du code 45)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=2a28c6401f60afa40ca93b18fc0b9a0ab196ff88">27 Mai 2019</a> - API minimale : 19, API optimale : 28</p>
+        <ul>
+            <li>Ajout d'un <a href="https://redmine.stoutner.com/issues/416">bouton Fermer</a> dans la barre d'application.</li>
+            <li>Correction du <a href="https://redmine.stoutner.com/issues/415">défilement gauche et droite</a> sur des éléments de sites web,
+                qui permet également <a href="https://redmine.stoutner.com/issues/411">un défilement plus fluide de la barre d'application</a>.</li>
+            <li>Ajout du chargement des listes de blocages sur <a href="https://redmine.stoutner.com/issues/285">l'écran de démarrage</a> et réduction du
+                <a href="https://redmine.stoutner.com/issues/452">temps de chargement de l'application</a>.</li>
+            <li>Ajout de modification d'URL modification <a href="https://redmine.stoutner.com/issues/414">Google Analytics</a>, <a href="https://redmine.stoutner.com/issues/436">Facebook</a>,
+                et <a href="https://redmine.stoutner.com/issues/417">Twitter</a>.</li>
+            <li>Ajout de la possibilité d'<a href="https://redmine.stoutner.com/issues/430">ouvrir une image dans un nouvel onglet</a>.</li>
+            <li>Correction du menu contextuel pour <a href="https://redmine.stoutner.com/issues/431">la recherche web</a>.</li>
+            <li>Correction de <a href="https://redmine.stoutner.com/issues/447">redémarrages intempestifs</a> en entrant ou sortant du mode écran divisé</li>
+            <li>Correction du paramètre <a href="https://redmine.stoutner.com/issues/451">Téléchargement avec une app externe</a> ne s'appliquant qu'après un redémarrage.</li>
+            <li>Correction de la <a href="https://redmine.stoutner.com/issues/432">navigation</a> avec certains gestionnaires de fichiers</li>
+            <li>Ajout de l'option permettant de <a href="https://redmine.stoutner.com/issues/399">désactiver la vue fenêtre large.</a>.</li>
+            <li>Amélioration du  <a href="https://redmine.stoutner.com/issues/412">chargement</a> et de la <a href="https://redmine.stoutner.com/issues/441">navigation</a> entre onglets.</li>
+            <li>Affichage du <a href="https://redmine.stoutner.com/issues/423">fournisseur WebView</a> dans A propos > Version sur Android Oreo et plus.</li>
+            <li>Première traduction complète en Turc</li>
+            <li>MAJ traduction en Allemand effectuée par Bernhard G. Keller.</li>
+            <li>MAJ traduction en Italien effectuée par Francesco Buratti.</li>
+            <li>MAJ traduction en Russe.</li>
+            <li>MAJ traduction en Espagnol effectuée par Jose A. León.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-3-0-1/">3.0.1</a> (version du code 44)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=fd8eedc7aab1062da69d65514cf5d0a6fd28abad">2 Mai 2019</a> - API minimale : 19, API optimale : 28</p>
+        <ul>
+            <li>Correction d’un bug qui permettait de faire défiler la barre d’application hors de l’écran lorsque le défilement de la barre d’application était désactivé,
+                avec<a href="https://redmine.stoutner.com/issues/418">sans possibilité de la faire revenir à l'écran</a>.</li>
+            <li>Corrige un bug qui <a href="https://redmine.stoutner.com/issues/419"> empêchait l'affichage de la barre d'applications </a>
+                après la suppression d'un onglet si le nouvel onglet actif était vide.</li>
+            <li>Corrige un plantage rare lorsque certaines pages <a href="https://redmine.stoutner.com/issues/424"> étaient téléchargées </a>.</li>
+            <li>Make the <a href="https://redmine.stoutner.com/issues/421">back button close a tab</a> if the WebView is at the beginning of the history list.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-3-0/">3.0</a> (version du code 43)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=aedc35976f8eda7c00bdd822c172e19cad0fc485">26 Avril 2019</a> - API minimale : 19, API optimale : 28</p>
+        <ul>
+            <li>Ajout <a href="https://redmine.stoutner.com/issues/22">de la nvaigation par onglet</a>.</li>
+            <li>Correction d'un bug qui coupait le <a href="https://redmine.stoutner.com/issues/398"> bas de la WebView </a> lorsque le défilement de la barre d'applications était désactivé. </li>
+             <li>Correction d'un bug qui faisait redémarrer le <a href="https://redmine.stoutner.com/issues/408"> Privacy Browser </a> à chaque fois qu'un clavier Bluetooth était connecté / déconnecté. </li>
+            <li>MAJ traduction en Allemand effectuée par Bernhard G. Keller.</li>
+            <li>MAJ traduction en Italien effectuée par Francesco Buratti.</li>
+            <li>MAJ traduction en Russe.</li>
+            <li>MAJ traduction en Espagnol effectuée par Jose A. León.</li>
+            <li>Traduction partielle en Turc.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-2-17-1/">2.17.1</a> (version du code 42)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=fbb7aef30a9417c42661a0f76b5836dcf6a40242">5 Mars 2019</a> - API minimale : 19, API optimale : 28</p>
+        <ul>
+            <li>Corrige un plantage provoqué par des favoris avec de <a href="https://redmine.stoutner.com/issues/395"> très grandes icônes</a>.</li>
+            <li>Autoriser le déplacement de Privacy Browser vers une <a href="https://redmine.stoutner.com/issues/394">carte SD</a>.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-2-17/">2.17</a> (version du code 41)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=ee0fa80bcf12d87d13c5ae9feb44ceb2b5aed2dd">27 Février 2019</a> - API minimale : 19, API optimale : 28</p>
+        <ul>
+			<li>Ajout de la possibilité de <a href="https://redmine.stoutner.com/issues/8"> faire défiler la barre d'applications</a>.</li>
+			<li>Création d'une<a href="https://redmine.stoutner.com/issues/264"> activité Logcat </a>.</li>
+			<li>Autoriser les utilisateurs à <a href="https://redmine.stoutner.com/issues/334"> spécifier l'URL </a> et <a href = "https://redmine.stoutner.com/issues / 222 ">quel navigateur ouvrir</a>
+                lors de la création d’un raccourci sur le bureau.</li>
+			<li>Ajouter des entrées avec des liens au lien et à l’image <a href="https://redmine.stoutner.com/issues/334"> menus contextuels </a>.</li>
+			<li>Autoriser <a href="https://redmine.stoutner.com/issues/375"> la définition des applications par défaut </a> à partir du sélecteur Ouvrir avec.</li>
+			<li>Corrige un bug qui permettait à la syntaxe des URL d'être mis en évidence <a href="https://redmine.stoutner.com/issues/377"> lors de la saisie </a>.</li>
+			<li>Correction de la boîte de dialogue de non-concordance s'affichant parfois <a href="https://redmine.stoutner.com/issues/373"> alors qu'il n'y a pas de non-concordance </a>.</li>
+			<li>MAJ traduction en Italien effectuée par Francesco Buratti.</li>
+			<li>MAJ traduction en Russe.</li>
+			<li>MAJ traduction en Espagnol effectuée par Jose A. León.</li>
+			<li>Traduction partielle en Allemand by Bernhard G. Keller.</li>
+			<li>Traduction partielle en Turc.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-2-16/">2.16</a> (version du code 40)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=6fa1563622642855d342cd7bcb523a8c1b6bbc44">31 Janvier 2019</a> - API minimale : 19, API optimale : 28</p>
+        <ul>
+            <li>Correction d'un bug, introduit en version 2.15 qui ne faisait pas<a href="https://redmine.stoutner.com/issues/370">la vérification sur le certificat SSL</a> dans la plupart des cas</li>
+            <li>Ajout <a href="https://redmine.stoutner.com/issues/179">de l'épinglage</a> <a href="https://redmine.stoutner.com/issues/211">des addresses</a>
+                <a href="https://redmine.stoutner.com/issues/212">IP</a> aux paramètres d'un domaine.</li>
+            <li>Création d'une option dans le menu pour l'ouverture avec <a href="https://redmine.stoutner.com/issues/336">une application en particulier</a> et
+                <a href="https://redmine.stoutner.com/issues/362">d'autres navigateurs</a>.</li>
+            <li>Amélioration de la <a href="https://redmine.stoutner.com/issues/194">couleur de sélection du texte</a> en mode sombre.</li>
+            <li><a href="https://redmine.stoutner.com/issues/218">Mise en place de </a> <a href="https://redmine.stoutner.com/issues/220">différentes</a>
+                <a href="https://redmine.stoutner.com/issues/221">améliorations</a> de la vue base de données des favoris.</li>
+            <li>MAJ traduction en Italien effectuée par Francesco Buratti.</li>
+            <li>MAJ traduction en Russe.</li>
+            <li>MAJ traduction en Espagnol effectuée par Jose A. León.</li>
+            <li>Traduction partielle en Turc.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-2-15-1/">2.15.1</a> (version du code 39)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=df8b520d10c3fa31b603ff7c50670ab1f0728d2f">27 Décembre 2018</a> - API minimale : 19, API optimale : 28</p>
+        <ul>
+            <li>Correction d'un bug qui causaient <a href="https://redmine.stoutner.com/issues/364">un plantage sur certains terminaux</a> à l'ouverture d'une deuxième page Web.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-2-15/">2.15</a> (version du code 38)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=2250acd83180a9dcf1fbee80025a9d6aadbee510">24 Décembre 2018</a> - API minimale : 19, API optimale : 28</p>
+        <ul>
+            <li>Correction d'un bug lors <a href="https://redmine.stoutner.com/issues/160">du changement du user agent</a> dans les paramètres du domaine.</li>
+            <li>Correction de la disposition <a href="https://redmine.stoutner.com/issues/250">des menus sur les terminaux avec encoche.</a>.</li>
+            <li>Mettre en surbrillance la syntaxe de l'URL en affichant le <a href="https://redmine.stoutner.com/issues/345">domaine principal</a>.</li>
+            <li>Correction d'un bug lors de l'ouverture de menu <a href="https://redmine.stoutner.com/issues/354">en sélectionnant du texte</a>.</li>
+            <li>Correction de <a href="https://redmine.stoutner.com/issues/348">deux</a> <a href="https://redmine.stoutner.com/issues/347">bugs</a> avec EasyList.</li>
+            <li>Ajout du support pour les URLs du type<a href="https://redmine.stoutner.com/issues/360">file://</a> et <a href="https://redmine.stoutner.com/issues/352">content://</a>.</li>
+            <li>MAJ du nom de <a href="https://redmine.stoutner.com/issues/351">différentes</a> <a href="https://redmine.stoutner.com/issues/343">préférences</a>.</li>
+            <li>Enregistrement de Privacy Browser comme un <a href="https://redmine.stoutner.com/issues/184">moteur de recherche</a>.</li>
+            <li>Ajout <a href="https://redmine.stoutner.com/issues/349">d'instructions pour télécharger des fichiers dans</a> Guide > Tor.</li>
+            <li>Création d'un <a href="https://redmine.stoutner.com/issues/242">thème sombre pour l'animation Glisser pour rafraîchir</a>.</li>
+            <li>Ajout de l'option Glisser pour rafraîchir <a href="https://redmine.stoutner.com/issues/243">dans la vue Voir Source</a>.</li>
+            <li>Suppression de la <a href="https://redmine.stoutner.com/issues/329">librairie Ad Consent de Google</a> dans la version gratuite.</li>
+            <li>MAJ traduction en Italien effectuée par Francesco Buratti.</li>
+            <li>MAJ traduction en Russe.</li>
+            <li>MAJ traduction en Espagnol effectuée par Jose A. León.</li>
+            <li>Traduction partielle en Turc.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-2-14/">2.14</a> (version du code 37)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=57020e5c7cad1eec43c3627f136be1640d07d4aa">8 Décembre 2018</a> - API minimale : 19, API optimale : 28</p>
+        <ul>
+            <li>Ajout option de <a href="https://redmine.stoutner.com/issues/338">chiffrement pour import et export</a>.</li>
+            <li>Correction d'un bug lors de <a href="https://redmine.stoutner.com/issues/350">l'import de bases de données dans certaines circonstances</a>.</li>
+            <li>Ajout d'options <a href="https://redmine.stoutner.com/issues/326">pour changer rapidement le proxy via Orbot</a>.</li>
+            <li>Ajout d'une option pour <a href="https://redmine.stoutner.com/issues/333">télécharger les fichiers en utilisant une autre application</a>.</li>
+            <li>Corrige la <a href="https://redmine.stoutner.com/issues/230">suppresion du stockage du DOM</a>.</li>
+            <li>Revenir <a href="https://redmine.stoutner.com/issues/341">au début de la text box de l'URL </a> aprèd édition.</li>
+            <li>Autoriser de quitter la vue Favoris <a href="https://redmine.stoutner.com/issues/267">directement depuis un sous-dossier</a>.</li>
+            <li>Changement de l'icône de l'application <a href="https://redmine.stoutner.com/issues/344">à l'ancien style </a> pour les anciennes version d'Android.</li>
+            <li>MAJ traduction en Italien effectuée par Francesco Buratti.</li>
+            <li>MAJ traduction en Russe.</li>
+            <li>MAJ traduction en Espagnol effectuée par Jose A. León.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-2-13/">2.13</a> (version du code 36)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=c44cc1c5af504b415b86654d7d03a3e78a5adf1b">29 Octobre 2018</a> - API minimale : 19, API optimale : 28</p>
+        <ul>
+            <li>Ajout <a href="https://redmine.stoutner.com/issues/23">import et export</a>
+                des favorise et paramètres (incluant <a href="https://redmine.stoutner.com/issues/280"> la lecture des permissions en écriture)</a>).</li>
+            <li>Changement <a href="https://redmine.stoutner.com/issues/165">du chargement par défaut des URLs</a> de HTTP vers HTTPS.</li>
+            <li>Affiche le nombre d'élément <a href="https://redmine.stoutner.com/issues/313">bloqué pour chaque liste noire</a> avec
+                <a href="https://redmine.stoutner.com/issues/323">MAJ en temps réel</a>.</li>
+            <li>Ajout d'un bouton <a href="https://redmine.stoutner.com/issues/252">pour arrêter le chargement</a>.</li>
+            <li>Ajout du contrôle du <a href="https://redmine.stoutner.com/issues/305">user agent</a> et <a href="https://redmine.stoutner.com/issues/274">du mode nuit</a> dans le menu d'Options.</li>
+            <li>Correction d'un bug qui <a href="https://redmine.stoutner.com/issues/325">masquait les barres systèmes</a> après la vue en plein écran d'une video.</li>
+            <li>Corrige le status du <a href="https://redmine.stoutner.com/issues/317">menu Supprimer les données</a> sur Oreo (Android 8.0) et plus récent.</li>
+            <li>Corrige la taille du message <a href="https://redmine.stoutner.com/issues/319">En attente d'Orbot</a>.</li>
+            <li>Changement API optimale vers 28 (Android 9 Pie).</li>
+            <li>MAJ traduction en Italien effectuée par Francesco Buratti.</li>
+            <li>MAJ traduction en Russe.</li>
+            <li>MAJ traduction en Espagnol effectuée par Jose A. León.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-2-12/">2.12</a> (version du code 35)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=eeb6f383b74980bc29ff1ecab8f6c3eb6ac17d54">31 Juillet 2018</a> - API minimale : 19, API optimale : 27</p>
+        <ul>
+            <li>Changement de la page d'accueil et du moteur de recherche par défaut pour <a href="https://redmine.stoutner.com/issues/308">Searx.me</a>.</li>
+            <li>Ajout <a href="https://redmine.stoutner.com/issues/310">UltraPrivacy</a> aux listes noires.</li>
+            <li>Ajout d'une option pour <a href="https://redmine.stoutner.com/issues/209">supprimer les requêtes tierces parties</a>.</li>
+            <li>Ajout du <a href="https://redmine.stoutner.com/issues/279">contrôle des listes noires</a> dans la vue Options.</li>
+            <li>Ajout d'un <a href="https://redmine.stoutner.com/issues/301">onglet Guide</a> expliquant la vue Requêtes.</li>
+            <li>Corrige le message “<a href="https://redmine.stoutner.com/issues/307">En attente d'Orbot</a>”.</li>
+            <li>Corrige <a href="https://redmine.stoutner.com/issues/306">deux</a> <a href="https://redmine.stoutner.com/issues/314">bugs</a> le traitement des listes noires.</li>
+            <li>Corrige <a href="https://redmine.stoutner.com/issues/298">deux</a> <a href="https://redmine.stoutner.com/issues/296">problèmes</a> avec le lecture vidéo en plein écran.</li>
+            <li>MAJ traduction en Italien effectuée par Francesco Buratti.</li>
+            <li>MAJ traduction en Russe.</li>
+            <li>MAJ traduction en Espagnol effectuée par Jose A. León.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-2-11/">2.11</a> (version du code 34)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=bc45b14cfda10249800a6ccfdb8247d2ce9b32a9">10 Juillet 2018</a> - API minimale : 19, API optimale : 27</p>
+        <ul>
+            <li>Ajout d'une <a href="https://redmine.stoutner.com/issues/170">vue Requêtes</a> qui affiche le nombre de requêtes bloquées.</li>
+            <li>Corrige un problème avec <a href="https://redmine.stoutner.com/issues/297">le proxy via Orbot</a> sur les versions récentes de WebView.</li>
+            <li>Ajout d'une option pour <a href="https://redmine.stoutner.com/issues/266">désactiver les captures d'écrans et l'enregistrement d'écrans</a>.</li>
+            <li>Ajout de <a href="https://redmine.stoutner.com/issues/191">"Glisser pour rafraĉhir"</a> aux paramétrage des domaines.</li>
+            <li>Remplacement de l'icône sur les formulaires de données par <a href="https://redmine.stoutner.com/issues/288">l'icône refraîchir dans la barre de navigation</a>.</li>
+            <li><a href="https://redmine.stoutner.com/issues/185">Option de suppression des formulaires de données</a> pour les version d'Android Oreo et ultérieure.</li>
+            <li>Corrige un plantage lors <a href="https://redmine.stoutner.com/issues/295">de la visualisation ou du chargement des paramètres de domaines avec une URL vierge</a>.</li>
+            <li>MAJ traduction partielle en Allemand effectuée par Stefan Erhardt.</li>
+            <li>MAJ traduction en Italien effectuée par Francesco Buratti.</li>
+            <li>MAJ traduction en Russe.</li>
+            <li>MAJ traduction en Espagnol effectuée par Jose A. León.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-2-10/">2.10</a> (version du code 33)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=29e6b7b467e6987d6aa42429b03e3b5498acbae3">24 Mai 2018</a> - API minimale : 19, API optimale : 27</p>
+        <ul>
+            <li>Permettre <a href="https://redmine.stoutner.com/issues/1">le téléversement de fichiers</a> vers des sites Web sur Lollipop et ultérieur.</li>
+            <li>Permettre <a href="https://redmine.stoutner.com/issues/216">aux user agents paramétrés d'être MAJ automatiquement</a> avec les nouvelles versions.</li>
+            <li>Ajout d'une <a href="https://redmine.stoutner.com/issues/269">option de téléchargement de l'URL</a> dans le menu contextuel.</li>
+            <li>Ajout d'une <a href="https://redmine.stoutner.com/issues/278">fenêtre sur le consentement à la publicité</a> et MAJ de
+                <a href="https://www.stoutner.com/privacy-browser/privacy-policy/">la politique sur la vie privée</a> pour Privacy Browser Free afin d'être en règle avec le RGPD.</li>
+            <li>Utilisation des nouveaux contrôles publicitaires du RGPD pour que toutes les publicités utilisées dans Privacy Browser Free soient
+                <a href="https://developers.google.com/admob/android/eu-consent#collect_consent">non-personalisées et non-intrusives</a>.</li>
+            <li>Correction d'un bug introduit en version 2.9 qui <a href="https://redmine.stoutner.com/issues/282">empêchaient les favoris d'être chargé </a> depuis la vue Favoris.</li>
+            <li>Correction d'un bug qui causait des changements de le paramétrage des domaines
+                <a href="https://redmine.stoutner.com/issues/281">qui ne pouvaient s'appliquer qu'après un lancement de l'appli</a>.</li>
+            <li>Amélioration du workflow lors <a href="https://redmine.stoutner.com/issues/276">de l'ajout</a> et <a href="https://redmine.stoutner.com/issues/240">de l'édition</a>
+                des paramétrages des domaines depuis la vue Options.</li>
+            <li>MAJ traduction en Italien effectuée par Francesco Buratti.</li>
+            <li>MAJ traduction en Russe.</li>
+            <li>MAJ traduction en Espagnol effectuée par Jose A. León.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-2-9/">2.9</a> (version du code 32)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=39cde1235af331de5e5ff454ac2daf667d7d894f">9 Mai 2018</a> - API minimale : 19, API optimale : 27</p>
+        <ul>
+            <li>Utilisation du <a href="https://redmine.stoutner.com/issues/224">dossier public de téléchargement</a>
+                (nécessite <a href="https://redmine.stoutner.com/issues/79">les permissions en écriture</a>).</li>
+            <li>Ajout <a href="https://redmine.stoutner.com/issues/223">du contrôle pour les listes noires</a> aux paramétrage des domaines.</li>
+            <li>Support <a href="https://redmine.stoutner.com/issues/268">du lancement d'autres applications en utilisant des URLs personnalisées</a>.</li>
+            <li>Ajout d'un <a href="https://redmine.stoutner.com/issues/247">onglet favoris</a> au guide.</li>
+            <li>Création d'une <a href="https://redmine.stoutner.com/issues/265">icône adaptative</a>.</li>
+            <li><a href="https://redmine.stoutner.com/issues/260">Preserve l'icône favorite</a> en revenant des vues paramètres ou domaines.</li>
+            <li>Ajout d'un avertissement qui indique que le Mode Incognito <a href="https://redmine.stoutner.com/issues/271">désactive la navigation dans l'historique</a>.</li>
+            <li>Permettre <a href="https://redmine.stoutner.com/issues/257">aux cookies d'être sauvegardés</a> lorsque le Mode Incognito est activé.</li>
+            <li>Ne pas <a href="https://redmine.stoutner.com/issues/256">recharger la page web</a> lors du redémarrage depuis le launcher.</li>
+            <li>MAJ partielle traduction en Allemand effectuée par Stefan Erhardt.</li>
+            <li>MAJ traduction en Italien effectuée par Francesco Buratti.</li>
+            <li>Première Traduction complète en Russe.</li>
+            <li>MAJ traduction en Espagnol effectuée par Jose A. León.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-2-8-1/">2.8.1</a> (version du code 31)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=8d1060fb1148d2d2fd7af8261dc9956c3a5687a1">1 Mars 2018</a> - API minimale : 19, API optimale : 27</p>
+        <ul>
+            <li>Contournement d'un bug dans les version récentes d'Android WebView qui <a href="https://redmine.stoutner.com/issues/253">empêchaient les utilisateurs de sauvegarder les cookkies</a>
+                lorsque cela était souhaité.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-2-8/">2.8</a> (version du code 30)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=0718e0dc7330462352c7cf71b0ef486ee6b90df7">22 Février 2018</a> - API minimale : 19, API optimale : 27</p>
+        <ul>
+            <li><a href="https://redmine.stoutner.com/issues/136">Basculement vers EasyList</a> pour le blocage des publicités et des traceurs.</li>
+            <li>Ajout d'une <a href="https://redmine.stoutner.com/issues/64">vue Voir Source</a>.</li>
+            <li>Ajout d'un <a href="https://redmine.stoutner.com/issues/229">sous-menu Effacer les données</a> dans le menu Options.</li>
+            <li>Corrige l'option <a href="https://redmine.stoutner.com/issues/231">Ajout à l'écran d'accueil</a> pour être compatible avec Android Oreo.</li>
+            <li>Corrige <a href="https://redmine.stoutner.com/issues/248">le formatage de la couleur</a> dans la barre d'URL.</li>
+            <li>Clarification du langage dans la <a href="https://redmine.stoutner.com/issues/244">politique de vie privée</a>.</li>
+            <li>MAJ API optimale : Passage à 27 (Android Oreo, 8.1.0).</li>
+            <li>MAJ traduction en Italien effectuée par Francesco Buratti.</li>
+            <li>Traduction partielle en Russe.</li>
+            <li>MAJ traduction en Espagnol effectuée par Jose A. León.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-2-7-2/">2.7.2</a> (version du code 29)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=298ddb5aeffe0e18e84c7551c55ff8164b238080">22 Novembre 2017</a> - API minimale : 19, API optimale : 26</p>
+        <ul>
+            <li>Ajout d'un élément d'options pour <a href="https://redmine.stoutner.com/issues/104">création/edition des paramètres du domaine courant</a>.</li>
+            <li>Ouverture <a href="https://redmine.stoutner.com/issues/226">des hyperliens de numéro de téléphone</a> dans l'application de numérotation.</li>
+            <li>Corrige une erreur <a href="https://forum.f-droid.org/t/build-failing-with-could-not-find-gradle-error/1612/4">empêchant la mise à disposition des versions 2.7 et 2.7.1</a> dans F-Droid.</li>
+            <li>MAJ traduction en Italien effectuée par Francesco Buratti.</li>
+            <li>MAJ traduction en Espagnol effectuée par Jose A. León.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-2-7-1/">2.7.1</a> (version du code 28)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=24f2d6529540bc8ea47f45bc07dd058f402a9140">9 Novembre 2017</a> - API minimale : 19, API optimale : 26</p>
+        <ul>
+            <li>Corrige un plantage lors de <a href="https://redmine.stoutner.com/issues/225">l'édition d'un favori</a> dans le nouveau panneau Favoris.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-2-7/">2.7</a> (version du code 27)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=eb9bc527c37223964f7c00592df982b47ff2f81c">7 Novembre 2017</a> - API minimale : 19, API optimale : 26</p>
+        <ul>
+            <li>Ajout d'un <a href="https://redmine.stoutner.com/issues/132">panneau favoris </a> accessible en glissant l'écran vers la gauche.</li>
+            <li>Empêcher le mode nuit <a href="https://redmine.stoutner.com/issues/213">d'afficher un fond blanc</a> lors du chargement de nouvelles pages.</li>
+            <li>MAJ des <a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=379d977e9db12b28952cbce0b127548576c87b95">user agents</a>.</li>
+            <li>MAJ API optimale : vers 26 (Android Oreo, 8.0.0).</li>
+            <li>MAJ traduction en Italien effectuée par Francesco Buratti.</li>
+            <li>MAJ traduction en Espagnol effectuée par Jose A. León.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-2-6/">2.6</a> (version du code 26)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=ecd1f67963852c0523c42ce1326b78cb7a71f053">18 Septembre 2017</a> - API minimale : 19, API optimale : 25</p>
+        <ul>
+            <li>Ajout <a href="https://redmine.stoutner.com/issues/145">du mode nuit</a>.</li>
+            <li>MAJ du thème sombre affichant les sections <a href="https://redmine.stoutner.com/issues/150">A propos et Guide</a>.</li>
+            <li>Ajout du support pour <a href="https://redmine.stoutner.com/issues/52">l'authentification HTTP</a>.</li>
+            <li><a href="https://redmine.stoutner.com/issues/178">Code couleur des CN</a> dans la popup du certificat SSL.</li>
+            <li>MAJ traduction en Italien effectuée par Francesco Buratti.</li>
+            <li>MAJ traduction en Espagnol effectuée par Jose A. León.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-2-5/">2.5</a> (version du code 25)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=80ddcb075d03a4c78263d1ff80466f3df0967f6d">26 Août 2017</a> - API minimale : 19, API optimale : 25</p>
+        <ul>
+            <li>Ajout <a href="https://redmine.stoutner.com/issues/54">SSL certificate pinning</a> to domain settings.</li>
+            <li>Ajout de <a href="https://redmine.stoutner.com/issues/163">searx.me</a> à la liste des moteurs de recherche.</li>
+            <li><a href="https://redmine.stoutner.com/issues/164">MAJ de la page d'accueil par défaut</a> pour fonctionner avec et sans JavaScript.</li>
+            <li>Correction d'un bug qui masquait le titre d'un site web <a href="https://redmine.stoutner.com/issues/175">lors de la rotation de l'écran</a>.</li>
+            <li><a href="https://redmine.stoutner.com/issues/138">Masquer l'option “Vider le stockage du DOM”</a> s'il n'y a rien à supprimer.</li>
+            <li>Usage <a href="https://redmine.stoutner.com/issues/161">d'un texte rouge non-gras</a> pour indiquer les sites web non-chiffrés.</li>
+            <li>Correction d'un bug qui ne permettaient pas toujours <a href="https://redmine.stoutner.com/issues/160">l'usage de user agents spécifiques sur un domaine</a>.</li>
+            <li>Correction d'un bug qui causait la modification de site web (comme le tri d'une liste) d'être perdu si Privacy Browser
+                <a href="https://redmine.stoutner.com/issues/139">était envoyé en arrière plan</a>.</li>
+            <li>Beaucoup  <a href="https://redmine.stoutner.com/issues/102">de petites</a> <a href="https://redmine.stoutner.com/issues/153">améliorations</a>
+                <a href="https://redmine.stoutner.com/issues/97">ont été</a> <a href="https://redmine.stoutner.com/issues/108">effectuées</a> <a href="https://redmine.stoutner.com/issues/171">à</a>
+                <a href="https://redmine.stoutner.com/issues/172">la</a> <a href="https://redmine.stoutner.com/issues/173">vue</a> <a href="https://redmine.stoutner.com/issues/152">Domaines</a>.</li>
+            <li>MAJ traduction en Italien effectuée par Francesco Buratti.</li>
+            <li>MAJ traduction en Espagnol effectuée par Jose A. León.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-2-4/">2.4</a> (version du code 24)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=0063aac3b25ee5ea558669d42269d16158eca40b">23 Juin 2017</a> - API minimale : 19, API optimale : 25</p>
+        <ul>
+            <li>Ajout de l'option <a href="https://redmine.stoutner.com/issues/124">d'un thème sombre</a>.</li>
+            <li><a href="https://redmine.stoutner.com/issues/137">Surligner http:// en rouge</a> si le domaine n'est pas chiffré.</li>
+            <li><a href="https://redmine.stoutner.com/issues/126">Surligner le domaine</a> dans la vue de l'URL.</li>
+            <li>Ajout de paramètres pour <a href="https://redmine.stoutner.com/issues/133">contrôler ce qui se passe lors de Nettoyer et Quitter</a>.</li>
+            <li>Changement de la <a href="https://redmine.stoutner.com/issues/140">page d'accueil par défaut par https://start.duckduckgo.com</a>.</li>
+            <li>Ajout d'une <a href="https://redmine.stoutner.com/issues/134">action Annuler</a> à la snackbar quand les cookies, le stockage du DOM,
+                ou les données de formulaire sont vidées depuis le menu options.</li>
+            <li>Correction d'un bug <a href="https://redmine.stoutner.com/issues/139">qui perdait les modifications effectuées après un redémarrage</a>.</li>
+            <li>Correction d'un bug avec le <a href="https://redmine.stoutner.com/issues/131">spinner layout sur des terminaux Huawei</a>.</li>
+            <li>MAJ traduction en Italien effectuée par Francesco Buratti.</li>
+            <li>MAJ traduction en Espagnol effectuée par Jose A. León.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-2-3/">2.3</a> (version du code 23)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=edbeafeb712ae0c2a217a130d940f6c8326ca2d0">26 Mai 2017</a> - API minimale : 19, API optimale : 25</p>
+        <ul>
+            <li><a href="https://redmine.stoutner.com/issues/127">Ne pas inclure les URLs de redirection</a> dans l'historique.</li>
+            <li>Ajout d'une option pour <a href="https://redmine.stoutner.com/issues/123">désactiver le chargement des images of images</a> pour conserver de la bande passante.</li>
+            <li>Corrige l'affichage de certaines pages web en utilisant <a href="https://redmine.stoutner.com/issues/113">la vue Grand Ecran</a>.</li>
+            <li>Permettre le chargement <a href="https://redmine.stoutner.com/issues/128">des URLs hôtes uniquement</a>.</li>
+            <li><a href="https://redmine.stoutner.com/issues/129">Ajout d'icônes dans la vue Paramètres</a>.</li>
+            <li><a href="https://redmine.stoutner.com/issues/130">Ajout d'un titre</a> à l'URL lors du partage.</li>
+            <li>Désactiver les options <a href="https://redmine.stoutner.com/issues/93">sur les cookies tiers sur KitKat</a> car cela ne fonctionne que sur Lollipop et plus récent.</li>
+            <li><a href="https://redmine.stoutner.com/issues/89">Déplacement de Rafraîchir au bas</a> du menu Options.</li>
+            <li>MAJ traduction en Italien effectuée par Francesco Buratti.</li>
+            <li>MAJ traduction en Espagnol effectuée par Jose A. León.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-2-2/">2.2</a> (version du code 22)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=1d8a8322dace658f69b80ad4d24f941074aa2200">27 Avril 2017</a> - API minimale : 19, API optimale : 25</p>
+        <ul>
+            <li>Création d'un <a href="https://redmine.stoutner.com/issues/116">Mode Incognito</a>, qui supprimer le cache et l'historique après chaque chargement de page.</li>
+            <li>Fusionner l'activation/désactivation <a href="https://redmine.stoutner.com/issues/122">de Javascript</a> en une seule entrée.</li>
+            <li>Affichage de sections erronées d'un <a href="https://redmine.stoutner.com/issues/53">certificat SSL en rouge</a>.</li>
+            <li>Suppression de l'entièreté <a href="https://redmine.stoutner.com/issues/114">du dossier privé de cache</a> sur Nettoyer et Quitter.</li>
+            <li>Ajout d'un <a href="https://redmine.stoutner.com/issues/120">zoom à 25% </a>.</li>
+            <li>Correction d'un plantage avec Orbot si la <a href="https://redmine.stoutner.com/issues/118">page d'accueil est blanche ou vide</a>.</li>
+            <li>Suppression de Torch de la liste <a href="https://redmine.stoutner.com/issues/119">des moteurs de recherche Tor recommandés</a> car il ne supporte pas HTTPS.</li>
+            <li>Corrige un problème d'affichage si la vue "Rechercher sur la page" est affichée lorsque <a href="https://redmine.stoutner.com/issues/121">Privacy Browser est relancé</a>.</li>
+            <li>Affichage de la <a href="https://redmine.stoutner.com/issues/117">version d'Orbot </a> and <a href="https://redmine.stoutner.com/issues/115">et de la signature de la version de l'APK</a>
+                dans A propos → Version.</li>
+            <li>MAJ de la <a href="https://www.stoutner.com/privacy-browser/privacy-policy/">politique de vie privée </a> en version 1.4.</li>
+            <li>MAJ de <a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=blobdiff;f=app/src/main/assets/pgl.yoyo.org_adservers.txt;h=cd750892e52bf06e7295aa4b51ccb548de4571cd;hp=436a8b83f3142b231cf43b144a6659f869b2a3ab;hb=9ba6d8a73e76d1d65a9df80f101ff3092f946972;hpb=76a37e5ce26f7d4ebe57d38cecc842e4c6c15819">
+                de la liste des serveurs de pubs</a> depuis pgl.yoyo.org.</li>
+            <li>MAJ traduction en Italien effectuée par Francesco Buratti.</li>
+            <li>MAJ traduction en Espagnol effectuée par Jose A. León.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-2-1/">2.1</a> (version du code 21)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=f01cad697eb5ab015888e88e20f26ac5911b1d85">25 Mars 2017</a> - API minimale : 19, API optimale : 25</p>
+        <ul>
+            <li>Corrige un <a href="https://redmine.stoutner.com/issues/110">plantage au lancement</a> introduit en version 2.0.1 si la page d'accueil est paramétré à vide.</li>
+            <li>Correction d'un bug qui <a href="https://redmine.stoutner.com/issues/112">empêchaient les sites web de se charger avec le domaine localhost</a>.</li>
+            <li>Correction d'un bug qui <a href="https://redmine.stoutner.com/issues/92">empêchaient les URLs avec des caractères spéciaux de se charger</a> depuis la boîte d'URL.</li>
+            <li><a href="https://redmine.stoutner.com/issues/103">MAZ de l'icône favoris et du titre</a> avant de charger un nouveau domaine.</li>
+            <li>Automatiquement <a href="https://redmine.stoutner.com/issues/111">selectionner tout le texte de la boîte d'URL </a> lorsque l'utilisateur tappe dessus.</li>
+            <li><a href="https://redmine.stoutner.com/issues/105">Réordonner les éléments du menu principal </a> par leur popularité.</li>
+            <li><a href="https://redmine.stoutner.com/issues/109">Réappliquer les paramètres du domain </a> après la fermeture des vues Paramètres ou Domaines.</li>
+            <li><a href="https://redmine.stoutner.com/issues/106">Arrondir les coins de custom domain settings highlight</a>.</li>
+            <li><a href="https://redmine.stoutner.com/issues/107">Déplacer la barre de progression</a> au bas de l'application.</li>
+            <li>MAJ traduction en Italien effectuée par Francesco Buratti.</li>
+            <li>MAJ traduction en Espagnol effectuée par Jose A. León.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-2-0-1/">2.0.1</a> (version du code 20)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=1aec01e7c168c3fcc272530607e16f5ffa6d6c74">21 Mars 2017</a> - API minimale : 19, API optimale : 25</p>
+        <ul>
+            <li><a href="https://redmine.stoutner.com/issues/101">Ne charger les paramètres des domaines uniquement lorsque les domaines changent</a>.</li>
+            <li>N'appliquer les paramètres aux sous-domaines uniquement si <a href="https://redmine.stoutner.com/issues/99">*. est spécifié au début du nom des domaines</a>.</li>
+            <li>Recharger les paramètres du domaine <a href="https://redmine.stoutner.com/issues/100">lors de la navigation avec le bouton Retour</a>.</li>
+            <li><a href="https://redmine.stoutner.com/issues/98">Remplissage automatique de la boîte de dialogue de création d'un favori</a>.</li>
+            <li>MAJ traduction en Italien effectuée par Francesco Buratti.</li>
+            <li>MAJ traduction en Espagnol effectuée par Jose A. León.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-2-0/">2.0</a> (version du code 19)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=8f1c15606ef8cd277f51cc837c2c39667c48d0d4">16 Mars 2017</a> - API minimale : 19, API optimale : 25</p>
+        <ul>
+            <li>Mise en place <a href="https://redmine.stoutner.com/issues/7">de paramètres personnalisés pour les domaines</a>.</li>
+            <li>Lors de l'usage du Proxy Tor, <a href="https://redmine.stoutner.com/issues/90">attendre qu'Orbot soit prêt</a> avant de charger la page.</li>
+            <li><a href="https://redmine.stoutner.com/issues/87">Utilisation des moteurs de recherche .onion </a> lors de l'utilisation du proxy via Tor.</li>
+            <li>MAJ traduction en Italien effectuée par Francesco Buratti.</li>
+            <li>MAJ traduction en Espagnol effectuée par Jose A. León.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-1-15/">1.15</a> (version du code 18)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=8f4d6373a35a43a36050ed383f58c4074143b264">11 Février 2017</a> - API minimale : 19, API optimale : 25</p>
+        <ul>
+            <li>Suppression du <a href="https://redmine.stoutner.com/issues/84">cache WebView secrect et non-documenté</a> via Nettoyer et Quitter.</li>
+            <li><a href="https://redmine.stoutner.com/issues/83">Démarrer automatiquement Orbot</a> lorsque le proxy via Orbot est activé.</li>
+            <li><a href="https://redmine.stoutner.com/issues/82">Localisation des dates</a> dans les popups des certificats SSL.</li>
+            <li>Permettre le téléchargement de fichier sur  <a href="https://redmine.stoutner.com/issues/73">des sites webs qui nécessite un identifiant</a>. Contribution d'Hendrik Knackstedt.</li>
+            <li>Corrige un plantage lors de tentative
+                <a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commit;h=da8974edd917b868957fa78bb3843fefb93b8cb7">télécharger un fichier qui n'avait pas d'URI HTTP ou HTTPS.</a>.</li>
+            <li>Première traduction en Italien effectuée par Francesco Buratti.</li>
+            <li>MAJ traduction en Espagnol effectuée par Jose A. León.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-1-14-1/">1.14.1</a> (version du code 17)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=5bd318993ebf675433f514dd04fc3e29545c9312">4 Janvier 2017</a> - API minimale : 19, API optimale : 25</p>
+        <ul>
+            <li>Correction d'un bug qui faisait planter Privacy Browser <a href="https://redmine.stoutner.com/issues/80">sur certains sites web</a> lorsque le blocage publicitaire était activé.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-1-14/">1.14</a> (version du code 16)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=6d3d23ab62cfdd6ef142dbdb764a6bac8fc38ce1">26 Décembre 2016</a> - API minimale : 19, API optimale : 25</p>
+        <ul>
+            <li>Mise en place <a href="https://redmine.stoutner.com/issues/31">du blocage publicitaire</a>.</li>
+            <li>Changement du user agent par défaut vers PrivacyBrowser/1.0
+                <a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=7f0fda47dbd040262a8149e1e6d27f7abe9043ea">pour de vrai cete fois-ci</a>.</li>
+            <li>Changement <a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=c3ec2515bf9a49d4561efc47f5d21106f15cb286">de l'option "Ne pas me suivre" désactivée par défaut</a>.</li>
+            <li>Ajout d'une option pour <a href="https://redmine.stoutner.com/issues/75">activer le mode plein écran</a> et le rendre
+                <a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=blobdiff;f=app/src/main/res/xml/preferences.xml;h=cdda87e7c2eaa0cabdb6a1a77ffca1124e9423e1;hp=8ed81b84aab687621a0f08921c4f6165392d59d2;hb=743982f883eab347e4029f8a3be760f780b14da1;hpb=7f0fda47dbd040262a8149e1e6d27f7abe9043ea">
+                    inactif par défaut</a>.</li>
+            <li>Correction d'un bug qui de temps en temps <a href="https://redmine.stoutner.com/issues/74">affichait la barre de navigation en gris en plein écran</a> en naviguant entre les applications.</li>
+            <li>MAJ <a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=5c6db7b33577612ff7f120b30fb98cab8afa591f">API optimale : vers 25</a>.</li>
+            <li>MAJ <a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=blobdiff;f=app/src/main/res/values-es/strings.xml;h=83c162b389a075effb68c7ce41cd03482c7c8bce;hp=ff79b6a9f30dbe71a0a076cfcfdc0df834ebb792;hb=2c8e83a7d1a044a5186020ac17d3cefb22b7f330;hpb=e9ed376cc7890f1d1f2e370e2e63f19dcfd1859d">de la</a> <a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=blob;f=app/src/main/assets/es/about_permissions.html;h=eab82ba8ee104e6a71776a557366f70660d28711;hb=2c8e83a7d1a044a5186020ac17d3cefb22b7f330">traduction partielle en </a> <a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=blobdiff;f=app/src/main/assets/es/about_changelog.html;h=ffb0e4895c0323ae4ee6ca11aab775b318a1b9ef;hp=f810cccc58ee840eb2704bcf81c9e3387d29ff2c;hb=c3ec2515bf9a49d4561efc47f5d21106f15cb286;hpb=2c8e83a7d1a044a5186020ac17d3cefb22b7f330">
+                Espagnol</a>.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-1-13/">1.13</a> (version du code 15)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=5a9cabddff240061fe521f01df3025b037e9da9e">28 Novembre 2016</a> - API minimale : 19, API optimale : 24</p>
+        <ul>
+            <li>Double-cliquer pour <a href="https://redmine.stoutner.com/issues/46">une navigation en plein écran</a>.</li>
+            <li>Changement du user agent par défaut par <a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=b0ddee839c666ba339e374749588f910070658ee">PrivacyBrowser/1.0</a>.</li>
+            <li>Ajout d'un bouton <a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=blobdiff;f=app/src/main/java/com/stoutner/privacybrowser/UrlHistory.java;h=ec0b45e455acc659acc7c303077bfcf4079ddad9;hp=d2d4fecde081bf3e4ee1327243f38212e9f40c3f;hb=ac6db897f8e99a28a7e2d916238fbdf7a021ac55;hpb=eb1e349d876e09e2b82e4eb9d6dc199147e1cde5">
+                Vider l'historique</a>.</li>
+            <li>Ajout <a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=d45c5240d1a82d1a43742b6aea8173b520697520">de Copier URL</a> dans le menu contextuel de l'URL.</li>
+            <li>Permettre au bouton Retour <a href="https://redmine.stoutner.com/issues/60">de naviguer dans le dossier parent</a> dans la vue Favoris.</li>
+            <li>MAJ de la politique de vie privée <a href="https://www.stoutner.com/MAJ-privacy-policy/">en version 1.3</a>.</li>
+            <li><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=blobdiff;f=app/src/main/res/values-es/strings.xml;h=601da35d052ca3b36bedc4645c3db3189b3e1605;hp=09cc8c34e66b17e473d5d2b2ccb025c0f03b1804;hb=66213601459e6e2f739f2991581ffb0a1a1c0b43;hpb=3bd71cebfddb14b7adcbb39c5ab98f9ce90f8d9d">
+                Traduction partielle en Espagnol</a>.</li>
+            <li>MAJ traduction en Allemand effectuée par <a href="mailto:aaron@gerlach.com">Aaron Gerlach</a>.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-1-12/">1.12</a> (version du code 14)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=3f2c7129a56e84d34cb07c151baf87bdea94dd12">9 Novembre 2016</a> - API minimale : 19, API optimale : 24</p>
+        <ul>
+            <li>Ajout d'un <a href="https://redmine.stoutner.com/issues/24">liste d'historique des précédents et suivants</a>.</li>
+            <li>Un appui long <a href="https://redmine.stoutner.com/issues/63">affiche à présnet l'URL cible</a> et l'option de
+                <a href="https://redmine.stoutner.com/issues/10">voir ou télécharger les images</a>.</li>
+            <li>Ajout <a href="https://redmine.stoutner.com/issues/9">de Rechercher dans la page</a>.</li>
+            <li>Suppression <a href="https://redmine.stoutner.com/issues/69">complète de Privacy Browser de la RAM</a> en utilisant "Nettoyer et Quitter".</li>
+            <li>Corrige un plantage lors de <a href="https://redmine.stoutner.com/issues/70">l'affichage d'erreur sur un certificat SSL Certificate </a> sur Android KitKat et Lollipop.</li>
+            <li>Corrige un plantage sur certains fichiers téléchargés causés par
+                <a href="https://redmine.stoutner.com/issues/71">l'impossibilité de lire l'en-tête de disposition de contenu (Content-Disposition)</a> correctement.</li>
+            <li>MAJ traduction en Allemand effectuée par <a href="mailto:aaron@gerlach.com">Aaron Gerlach</a>.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-1-11/">1.11</a> (version du code 13)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=d9974f13e3a4dad62f760e02e94d8782d6e4bb3d">22 Octobre 2016</a> - API minimale : 19, API optimale : 24</p>
+        <ul>
+            <li>MAJ API optimale : à 24, qui permet le support multi-fenêtre sur Nougat.</li>
+            <li>Correction d'un bug introduit en version 1.10 qui consommait <a href="https://redmine.stoutner.com/issues/66">énormément de CPU</a> sans bonne raison.</li>
+            <li>Ajout <a href="https://redmine.stoutner.com/issues/18">du support de l'impression</a>.</li>
+            <li>Corrige <a href="https://redmine.stoutner.com/issues/67">le téléchargement de fichier</a> sur KitKat et Lollipop.</li>
+            <li>MAJ traduction en Allemand effectuée par <a href="mailto:aaron@gerlach.com">Aaron Gerlach</a>.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-1-10/">1.10</a> (version du code 12)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=c9365866ad37cc2b0b0fa53ee04aaaa4740f70b7">15 Septembre 2016</a> - API minimale : 19, API optimale : 23</p>
+        <ul>
+            <li>Ajout du support de <a href="https://redmine.stoutner.com/issues/26">Tor Orbot proxy</a>.</li>
+            <li>Ajout du support de <a href="https://redmine.stoutner.com/issues/30">Do Not Track</a>.</li>
+            <li>Ajout une <a href="https://redmine.stoutner.com/issues/58">boîte de dialogue</a> qui permet à l'utilisateur de
+                <a href="https://redmine.stoutner.com/issues/59">modifier le nom d'un fichier</a> afin que son téléchargement ne débute.</li>
+            <li>Ajout de boutons d'actions optionnels les cookies, le stockage du DOM, et les formulaire de données.</li>
+            <li>MAJ user agents et ajout de Safari sur iOS et OS X.</li>
+            <li>Ajout StartPage et Qwant à la liste des moteurs de recherche.</li>
+            <li>MAJ traduction en Allemand effectuée par <a href="mailto:aaron@gerlach.com">Aaron Gerlach</a>.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-1-9-and-1-9-1/">1.9.1</a> (version du code 11)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=6de831ce03c8b9114212870715c6c722e26f5b28">27 Août 2016</a> - API minimale : 19, API optimale : 23</p>
+        <ul>
+            <li>Changement des liens des images par des liens relatifs afin que Privacy Browser soit construit sous F-Droid.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-1-9-and-1-9-1/">1.9</a> (version du code 10)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=7c6dae59026beeb9e32fcc4d6706129f8bee029c">26 Août 2016</a> - API minimale : 19, API optimale : 23</p>
+        <ul>
+            <li>Traduction en Allemand effectuée par <a href="mailto:aaron@gerlach.com">Aaron Gerlach</a>.</li>
+            <li>Ajout la possibilité de <a href="https://redmine.stoutner.com/issues/2">voir les détails des certificats SSL et les messages d'erreur SSL</a>.
+                Cela permet à Privacy Browser de charger des pages web avec des certificatsd auto-signés.</li>
+            <li>Ajout <a href="https://redmine.stoutner.com/issues/38">du contrôlé de la taille de police</a>.</li>
+            <li>Prise en charge <a href="https://redmine.stoutner.com/issues/14">des liens "mailto:"</a> sur les sites web.</li>
+            <li>Corrige un crash lors <a href="https://redmine.stoutner.com/issues/47">de la création ou l'édition d'un favori sans icône de favori</a>.</li>
+            <li>Correction d'un bug qui de parfois <a href="https://redmine.stoutner.com/issues/28">désactivait le panneau de navigation en quittant une vidéo en plein écran</a>.</li>
+            <li>Envoi d'une <a href="https://redmine.stoutner.com/issues/37">valeur nulle pour les en-têtes "X-Requested-With" sur le chargement de la page de démarrage</a>.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-1-8/">1.8</a> (version du code 9)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=f386169ee9c68325562068394cb6b21b0b89be1c">16 Juillet 2016</a> - API minimale : 19, API optimale : 23</p>
+        <ul>
+            <li>Ajout d'une <a href="https://redmine.stoutner.com/issues/16">interface pour les favoris</a>.</li>
+            <li>Ajout <a href="https://redmine.stoutner.com/issues/29">de contrôles de bases pour les formulaires de données</a>.</li>
+            <li>Correction d'un bug qui <a href="https://redmine.stoutner.com/issues/40">empêchait l'édition d'un user agent personnalisé</a>.</li>
+            <li>Correction d'un bug qui <a href="https://redmine.stoutner.com/issues/33">empêchait des URLs de se charger lors d'espace au début ou à la fin</a>.</li>
+        </ul>
+
+        <h3><a href="https://www.stoutner.com/privacy-browser-1-7/">1.7</a> (version du code 8)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=347e702f50a02782add9400afa552fbee1cf7ab6;ds=inline">16 Juin 2016</a> - API minimale : 19, API optimale : 23</p>
+        <ul>
+            <li>Création d'une vue <a href="https://redmine.stoutner.com/issues/15">A propos avec onglet</a>.</li>
+            <li>Création d'une vue Guide avec onglet.</li>
+            <li>MAJ API minimale : de 15 à 19 à cause de <a href="https://freedom-to-tinker.com/blog/dwallach/android-webview-security-and-the-mobile-advertising-marketplace/">
+                squestions de sécurité</a> concernant des versions antérieures de WebView.</li>
+        </ul>
+
+        <h3>1.6 (version du code 7)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=151e4550065da8e740e8e3bd414ec30ae2a18c33">11 Mai 2016</a> - API minimale : 15, API optimale : 23</p>
+        <ul>
+            <li>Ajout d'un paramètre pour <a href="https://redmine.stoutner.com/issues/4">personnaliser les URLs de recherche</a>.</li>
+            <li>Ajout d'un paramètre pour <a href="https://redmine.stoutner.com/issues/3">personnaliser le user agent du navigateur</a>.</li>
+        </ul>
+
+        <h3>1.5 (version du code 6)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=b0a048867d5582bc693ba8699a75aa93b4fa1b69">5 Mai 2016</a> - API minimale : 15, API optimale : 23</p>
+        <ul>
+            <li>Ajout de l'option pour désactiver "glisser pour rafraîchir" afin que certains sites web, comme Google Maps, puissent fonctionner correctement.</li>
+        </ul>
+
+        <h3>1.4 (version du code 5)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=58e6c22da860871eadd1cbf214a30e88ced4f19e">28 Avril 2016</a> - API minimale : 15, API optimale : 23</p>
+        <ul>
+            <li>Ajout du contrôle pour les <a href="https://redmine.stoutner.com/issues/21">cookies tierces-parties</a>.</li>
+            <li>Corrige la lecture des vidéos en plein écran.</li>
+        </ul>
+
+        <h3>1.3 (version du code 4)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=4f704be746c00c0a29a52c28646e6d7cf2f9c53c">7 Avril 2016</a> - API minimale : 15, API optimale : 23</p>
+        <ul>
+            <li>Création d'un <a href="https://redmine.stoutner.com/issues/17">panneau de navigation</a>.</li>
+        </ul>
+
+        <h3>1.2 (version du code 3)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=bde6908fee004715f0125ab2d51016dd63a956f4">23 Mars 2016</a> - API minimale : 15, API optimale : 23</p>
+        <ul>
+            <li>MAJ de l'icône de lancement pour la rendre plus grosse.</li>
+            <li>Remplacement de tous les toast messages par <a href="https://redmine.stoutner.com/issues/12">des snackbars</a>.</li>
+            <li><a href="https://redmine.stoutner.com/issues/11">Ne pas MAJ la barre d'URL si l'utilisateur y entre des données</a>.</li>
+            <li>MAJ API minimale : de 10 à 15. Privacy Browser plantait au chargement avec l'API 10.</li>
+        </ul>
+
+        <h3>1.1 (version du code 2)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=f56d4111a627bebdb7f181da062253b3e6145381">9 Mars 2016</a> - API minimale : 10, API optimale : 23</p>
+        <ul>
+            <li>Séparation de la version gratuite et de la version standard pour que Privacy Browser se construise correctement dans F-Droid.</li>
+        </ul>
+
+        <h3>1.0 (version du code 1)</h3>
+        <p><a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=commitdiff;h=6f7130bc4218755bea242a2108e4c4ad6f63dcf9">24 Février 2016</a> - API minimale : 10, API optimale : 23</p>
+        <ul>
+            <li>Activer/Désactiver JavaScript, stockage du DOM, et les cookies.</li>
+            <li>Paramétrage du comportement par défaut pour JavaScript, le stockage du DOM, et les cookies.</li>
+            <li>Suppression du stockage du DOM et des cookies.</li>
+            <li>Ajout des raccourcis à la page d'accueil.</li>
+            <li>Utilisation du gestionnaire de téléchargement.</li>
+            <li>Navigation suivant et précédent.</li>
+            <li>Couper, coller, copier des URLs.</li>
+            <li>Partager des URLs.</li>
+            <li>Paramétrage page d'accueil.</li>
+            <li>Navigation dans la barre d'URL.</li>
+            <li>Maintain WebView scroll location when rotating écran.</li>
+            <li>Glisser pour actualiser WebView.</li>
+            <li>Lecture des vidéos en plein écran (nécessite l'activation de JavaScript).</li>
+            <li>Bouton Nettoyer et Quitter.</li>
+        </ul>
+    </body>
+</html>

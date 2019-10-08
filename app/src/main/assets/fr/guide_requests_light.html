@@ -1,0 +1,84 @@
+<!--
+  Copyright © 2018 Soren Stoutner <soren@stoutner.com>.
+
+  Translation 2019 Kévin LE FLOHIC <kevinliste@framalistes.org>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+
+        <link rel="stylesheet" href="../css/light_theme.css">
+    </head>
+
+    <body>
+        <h3><img class="title" src="../shared_images/local_activity_blue_light.png"> Demandes de ressources</h3>
+
+        <p>Lorsqu'une URL est chargée, elle effectue généralement un certain nombre de requêtes de ressources pour le CSS, JavaScript, des images et d'autres fichiers.
+            Les détails sur ces requêtes peuvent être consultés dans la vue Requêtes.
+            Le panneau de navigation contient un lien vers la vue Requêtes et indique également le nombre de requêtes bloquées.
+            Un appui sur une requête affiche les détails de la raison pour laquelle elle a été autorisée ou bloquée.</p>
+        <p><img class="center" src="images/request_details.png"></p>
+
+        <p>Privacy Browser inclus quatre <a href="https://easylist.to/">listes noires communes</a> basées sur la <a href="https://adblockplus.org/filters">syntaxe d'Adblock</a>:
+            EasyList, EasyPrivacy, Fanboy’s Annoyance List, et Fanboy’s Social Blocking List.
+            Ces listes noires sont executées par Privacy Browser dans les 22 sous-listes suivantes, qui vérifient les demandes de ressources dans l’ordre indiqué.</p>
+
+        <ol>
+            <li>Main Whitelist</li>
+            <li>Final Whitelist</li>
+            <li>Domain Whitelist</li>
+            <li>Domain Initial Whitelist</li>
+            <li>Domain Final Whitelist</li>
+            <li>Third-Party Whitelist</li>
+            <li>Third-Party Domain Whitelist</li>
+            <li>Third-Party Domain Initial Whitelist</li>
+            <li>Main Blacklist</li>
+            <li>Initial Blacklist</li>
+            <li>Final Blacklist</li>
+            <li>Domain Blacklist</li>
+            <li>Domain Initial Blacklist</li>
+            <li>Domain Final Blacklist</li>
+            <li>Domain Regular Expression Blacklist</li>
+            <li>Third-Party Blacklist</li>
+            <li>Third-Party Initial Blacklist</li>
+            <li>Third-Party Domain Blacklist</li>
+            <li>Third-Party Domain Initial Blacklist</li>
+            <li>Third-Party Regular Expression Blacklist</li>
+            <li>Third-Party Domain Regular Expression Blacklist</li>
+            <li>Regular Expression Blacklist</li>
+        </ol>
+
+        <p>Les listes initiales sont comparées au début de l'URL. Les listes finales sont comparées à la fin de l'URL. Les listes de domaines ne vérifient que certains domaines.
+            Les listes tierces ne s'appliquent que si le domaine racine de la demande est différent du domaine racine de l'URL principale.
+            Les listes d'expressions régulières respectent la <a href="https://en.wikipedia.org/wiki/Regular_expression">syntaxe d'expression régulière</a>.
+            Chaque élément de sous-liste comporte une ou plusieurs entrées.
+            Dans le cas de sous-listes de domaines, la demande de ressource n'est vérifiée par rapport à l'élément que si la première entrée correspond au domaine de l'URL principale.</p>
+
+        <p>En raison des limitations de d’Android WebView et de l’accélération du traitement des demandes, Privacy Browser implémente une interprétation simplifiée de la syntaxe d'Adblock.
+            Cela peut parfois conduire à des faux positifs, dans lesquels les ressources sont autorisées ou bloquées d’une manière qui n’était pas prévue par l’entrée originale.
+            Une description plus détaillée du traitement des entrées de liste de blocage est disponible à l'adresse <a href="https://www.stoutner.com/privacy-browser/blocklists/">stoutner.com</a>.</p>
+
+        <p> Privacy Browser a trois listes de blocage supplémentaires.
+            <a href="https://www.stoutner.com/privacy-browser/blocklists/ultralist/"> UltraList </a> et <a href="https://www.stoutner.com/privacy-browser/blocklists/ultraprivacy/">UltraPrivacy</a>
+            bloquent les annonces et les trackers que EasyList et EasyPrivacy ne font pas. Le troisième bloque toutes les demandes de tiers.
+            Une demande n'est considérée comme tierce que si le domaine de base de la demande est différent du domaine de base de l'URL.
+            Par exemple, si <code>www.website.com</code> charge une image à partir de <code>images.website.com</code>,
+            cette demande n'est pas bloquée en tant que demande tierce car elle partage le même domaine de base que <code>website.com</code>.
+            Le blocage de toutes les demandes de tiers augmente la confidentialité, mais cette liste de blocage est désactivée par défaut car elle perturbe un grand nombre de sites Web.</p>
+    </body>
+</html>
