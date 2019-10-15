@@ -27,7 +27,7 @@
             android:key="javascript"
             android:title="@string/javascript_preference"
             android:summary="@string/javascript_preference_summary"
-            android:defaultValue="true" />
+            android:defaultValue="false" />
 
         <SwitchPreference
             android:key="first_party_cookies"
@@ -39,13 +39,13 @@
             android:key="third_party_cookies"
             android:title="@string/third_party_cookies_preference"
             android:summary="@string/third_party_cookies_summary"
-            android:defaultValue="true" />
+            android:defaultValue="false" />
 
         <SwitchPreference
             android:key="dom_storage"
             android:title="@string/dom_storage_preference"
             android:summary="@string/dom_storage_preference_summary"
-            android:defaultValue="true" />
+            android:defaultValue="false" />
 
         <!-- Save form data can be removed once the minimum API >= 26. -->
         <SwitchPreference
@@ -301,7 +301,7 @@
             android:key="display_additional_app_bar_icons"
             android:title="@string/display_additional_app_bar_icons"
             android:summary="@string/display_additional_app_bar_icons_summary"
-            android:defaultValue="false" />
+            android:defaultValue="true" />
 
         <SwitchPreference
             android:key="download_with_external_app"
