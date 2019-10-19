@@ -30,18 +30,18 @@
 
         <p>Les cookies propriétaires sont définis par le site Web dans la barre d'adresse en haut de la page.</p>
 
-        <p>Dès les débuts d’Internet, il est devenu évident qu’il serait avantageux pour les sites Web de pouvoir stocker des informations sur un ordinateur pour un accès ultérieur.
+        <p>Dès les débuts d'Internet, il est devenu évident qu'il serait avantageux pour les sites Web de pouvoir stocker des informations sur un ordinateur pour un accès ultérieur.
             Par exemple, un site Web affichant des informations météorologiques peut demander à l'utilisateur un code postal, puis le stocker dans un cookie.
             Lors de la prochaine visite de l'utilisateur sur le site Web, les informations météo se chargeraient automatiquement pour ce code postal, sans que l'utilisateur ait à le saisir à nouveau.</p>
 
         <p>Comme pour tout le reste du Web,
-            des personnes intelligentes ont découvert toutes sortes de moyens d’abuser des cookies pour faire des choses que les utilisateurs n’approuveraient pas s’ils savaient qu’ils se produisaient.
+            des personnes intelligentes ont découvert toutes sortes de moyens d'abuser des cookies pour faire des choses que les utilisateurs n'approuveraient pas s'ils savaient qu'ils se produisaient.
             Par exemple, un site Web peut définir un cookie avec un numéro de série unique sur un appareil.
             Ensuite, chaque fois qu'un utilisateur visite le site Web sur cet appareil, il peut être lié à un profil unique que le serveur conserve pour ce numéro de série.
-            même si le périphérique se connecte à partir d’adresses IP différentes.</p>
+            même si le périphérique se connecte à partir d'adresses IP différentes.</p>
 
         <p>Presque tous les sites Web avec des connexions exigent que les cookies propriétaires soient activés pour qu'un utilisateur puisse se connecter.
-            C’est ainsi qu’ils s’assurent que c’est toujours votre cas lorsque vous vous déplacez de page en page sur le site. C’est, à mon avis, l’une des rares utilisations légitimes des cookies.</p>
+            C'est ainsi qu'ils s'assurent que c'est toujours votre cas lorsque vous vous déplacez de page en page sur le site. C'est, à mon avis, l'une des rares utilisations légitimes des cookies.</p>
 
         <p>Si les cookies propriétaires sont activés mais que JavaScript est désactivé,
             l'icône de confidentialité sera jaune <img class="inline" src="../shared_images/warning.png"> en guise d'avertissement.</p>
@@ -57,13 +57,13 @@
             La section du site Web qui affiche les annonces est chargée à partir du serveur du courtier tiers au lieu du serveur principal.</p>
 
         <p>La plupart des publicités sur Internet étant traitées par quelques courtiers uniquement,
-            ils ont vite compris qu’ils pouvaient définir un cookie de suivi sur le terminal de l’utilisateur et connaître chaque lieu où cet utilisateur se rend.
-            Chaque fois qu’une annonce est chargée à partir d’un courtier, elle vérifie d’abord si le périphérique a déjà un numéro de série unique dans un cookie de suivi.
+            ils ont vite compris qu'ils pouvaient définir un cookie de suivi sur le terminal de l'utilisateur et connaître chaque lieu où cet utilisateur se rend.
+            Chaque fois qu'une annonce est chargée à partir d'un courtier, elle vérifie d'abord si le périphérique a déjà un numéro de série unique dans un cookie de suivi.
             Si tel est le cas, il recherche le profil pour ce numéro de série et note le nouveau site.
-            C’est pourquoi un utilisateur peut rechercher sur un site Web un produit qu’il ne recherche généralement pas, comme les noix,
+            C'est pourquoi un utilisateur peut rechercher sur un site Web un produit qu'il ne recherche généralement pas, comme les noix,
             et puis soudain commencer à voir des publicités pour les noix sur chaque site Web qu'ils visitent.</p>
 
-        <p>Outre les courtiers en publicité, les sites de médias sociaux ont découvert qu’ils pouvaient jouer un rôle actif.
+        <p>Outre les courtiers en publicité, les sites de médias sociaux ont découvert qu'ils pouvaient jouer un rôle actif.
             Il y a quelques années, les principaux sites de médias sociaux tels que Facebook et Twitter ont convaincu un grand nombre de sites Web.
             qu'il serait dans leur intérêt de placer de petites icônes de médias sociaux sur leurs pages.
             Ce ne sont pas que des images. Ils contiennent le <a href="https://developers.facebook.com/docs/plugins/like-button/">code incorporé</a> qui renvoie au site de média social et, entre autres,
@@ -71,7 +71,7 @@
             Au fil du temps, des entreprises comme Facebook (qui gère également une régie publicitaire) ont constitué un assez grand nombre de profils détaillés sur les personnes qui ont
             <a href="http://www.theverge.com/2016/5/27/11795248/facebook-ad-network-non-users-cookies-plug-ins"> n'a même jamais créé de compte sur son site </a>.</p>
 
-        <p>Il n’existe aucune raison valable d’autoriser les cookies tiers. Sur les appareils avec Android KitKat ou une version antérieure (version <= 4.4.4 ou API <= 20), WebView ne
+        <p>Il n'existe aucune raison valable d'autoriser les cookies tiers. Sur les appareils avec Android KitKat ou une version antérieure (version <= 4.4.4 ou API <= 20), WebView ne
             <a href="https://developer.android.com/reference/android/webkit/CookieManager.html#setAcceptThirdPartyCookies(android.webkit.WebView, boolean)"> différencie pas
             entre les cookies propriétaires et tiers </a>. Ainsi, l'activation des cookies propriétaires permettra également l'utilisation de cookies tiers.</p>
 
