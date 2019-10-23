@@ -390,6 +390,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     protected void onNewIntent(Intent intent) {
+        // Run the default commands.
+        super.onNewIntent(intent);
+
         // Replace the intent that started the app with this one.
         setIntent(intent);
 
@@ -1978,7 +1981,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         // Run the default commands.
         super.onConfigurationChanged(newConfig);
 
@@ -2034,7 +2037,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Add an Open in New Tab entry.
                 menu.add(R.string.open_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Load the link URL in a new tab.
+                    // Load the link URL in a new tab and move to it.
+                    addNewTab(linkUrl, true);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add an Open in Background entry.
+                menu.add(R.string.open_in_background).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Load the link URL in a new tab but do not move to it.
                     addNewTab(linkUrl, false);
 
                     // Consume the event.
@@ -2162,7 +2174,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Add an Open in New Tab entry.
                 menu.add(R.string.open_image_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
                     // Load the image in a new tab.
-                    addNewTab(imageUrl, false);
+                    addNewTab(imageUrl, true);
 
                     // Consume the event.
                     return true;
@@ -2268,7 +2280,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Add an Open in New Tab entry.
                 menu.add(R.string.open_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Load the link URL in a new tab.
+                    // Load the link URL in a new tab and move to it.
+                    addNewTab(linkUrl, true);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add an Open in Background entry.
+                menu.add(R.string.open_in_background).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Lod the link URL in a new tab but do not move to it.
                     addNewTab(linkUrl, false);
 
                     // Consume the event.
@@ -2277,8 +2298,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Add an Open Image in New Tab entry.
                 menu.add(R.string.open_image_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Load the image in a new tab.
-                    addNewTab(imageUrl, false);
+                    // Load the image in a new tab and move to it.
+                    addNewTab(imageUrl, true);
 
                     // Consume the event.
                     return true;
@@ -2369,9 +2390,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get a handle for the bookmarks list view.
         ListView bookmarksListView = findViewById(R.id.bookmarks_drawer_listview);
 
+        // Get the dialog.
+        Dialog dialog = dialogFragment.getDialog();
+
+        // Remove the incorrect lint warning below that the dialog might be null.
+        assert dialog != null;
+
         // Get the views from the dialog fragment.
-        EditText createBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.create_bookmark_name_edittext);
-        EditText createBookmarkUrlEditText = dialogFragment.getDialog().findViewById(R.id.create_bookmark_url_edittext);
+        EditText createBookmarkNameEditText = dialog.findViewById(R.id.create_bookmark_name_edittext);
+        EditText createBookmarkUrlEditText = dialog.findViewById(R.id.create_bookmark_url_edittext);
 
         // Extract the strings from the edit texts.
         String bookmarkNameString = createBookmarkNameEditText.getText().toString();
@@ -2407,10 +2434,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Get a handle for the bookmarks list view.
         ListView bookmarksListView = findViewById(R.id.bookmarks_drawer_listview);
 
+        // Get the dialog.
+        Dialog dialog = dialogFragment.getDialog();
+
+        // Remove the incorrect lint warning below that the dialog might be null.
+        assert dialog != null;
+
         // Get handles for the views in the dialog fragment.
-        EditText createFolderNameEditText = dialogFragment.getDialog().findViewById(R.id.create_folder_name_edittext);
-        RadioButton defaultFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon_radiobutton);
-        ImageView folderIconImageView = dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon);
+        EditText createFolderNameEditText = dialog.findViewById(R.id.create_folder_name_edittext);
+        RadioButton defaultFolderIconRadioButton = dialog.findViewById(R.id.create_folder_default_icon_radiobutton);
+        ImageView folderIconImageView = dialog.findViewById(R.id.create_folder_default_icon);
 
         // Get new folder name string.
         String folderNameString = createFolderNameEditText.getText().toString();
@@ -2463,10 +2496,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void onSaveBookmark(DialogFragment dialogFragment, int selectedBookmarkDatabaseId, Bitmap favoriteIconBitmap) {
-        // Get handles for the views from `dialogFragment`.
-        EditText editBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_name_edittext);
-        EditText editBookmarkUrlEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_url_edittext);
-        RadioButton currentBookmarkIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_current_icon_radiobutton);
+        // Get the dialog.
+        Dialog dialog = dialogFragment.getDialog();
+
+        // Remove the incorrect lint warning below that the dialog might be null.
+        assert dialog != null;
+
+        // Get handles for the views from the dialog.
+        EditText editBookmarkNameEditText = dialog.findViewById(R.id.edit_bookmark_name_edittext);
+        EditText editBookmarkUrlEditText = dialog.findViewById(R.id.edit_bookmark_url_edittext);
+        RadioButton currentBookmarkIconRadioButton = dialog.findViewById(R.id.edit_bookmark_current_icon_radiobutton);
 
         // Store the bookmark strings.
         String bookmarkNameString = editBookmarkNameEditText.getText().toString();
@@ -2498,11 +2537,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedFolderDatabaseId, Bitmap favoriteIconBitmap) {
+        // Get the dialog.
+        Dialog dialog = dialogFragment.getDialog();
+
+        // Remove the incorrect lint warning below that the dialog might be null.
+        assert dialog != null;
+
         // Get handles for the views from `dialogFragment`.
-        EditText editFolderNameEditText = dialogFragment.getDialog().findViewById(R.id.edit_folder_name_edittext);
-        RadioButton currentFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_current_icon_radiobutton);
-        RadioButton defaultFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_radiobutton);
-        ImageView defaultFolderIconImageView = dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_imageview);
+        EditText editFolderNameEditText = dialog.findViewById(R.id.edit_folder_name_edittext);
+        RadioButton currentFolderIconRadioButton = dialog.findViewById(R.id.edit_folder_current_icon_radiobutton);
+        RadioButton defaultFolderIconRadioButton = dialog.findViewById(R.id.edit_folder_default_icon_radiobutton);
+        ImageView defaultFolderIconImageView = dialog.findViewById(R.id.edit_folder_default_icon_imageview);
 
         // Get the new folder name.
         String newFolderNameString = editFolderNameEditText.getText().toString();
@@ -2670,8 +2715,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 downloadRequest.addRequestHeader("Cookie", cookies);
             }
 
+            // Get the dialog.
+            Dialog dialog = dialogFragment.getDialog();
+
+            // Remove the incorrect lint warning below that the dialog might be null.
+            assert dialog != null;
+
             // Get the file name from the dialog fragment.
-            EditText downloadImageNameEditText = dialogFragment.getDialog().findViewById(R.id.download_image_name);
+            EditText downloadImageNameEditText = dialog.findViewById(R.id.download_image_name);
             String imageName = downloadImageNameEditText.getText().toString();
 
             // Specify the download location.
@@ -2725,8 +2776,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 downloadRequest.addRequestHeader("Cookie", cookies);
             }
 
-            // Get the file name from the dialog fragment.
-            EditText downloadFileNameEditText = dialogFragment.getDialog().findViewById(R.id.download_file_name);
+            // Get the dialog.
+            Dialog dialog = dialogFragment.getDialog();
+
+            // Remove the incorrect lint warning below that the dialog might be null.
+            assert dialog != null;
+
+            // Get the file name from the dialog.
+            EditText downloadFileNameEditText = dialog.findViewById(R.id.download_file_name);
             String fileName = downloadFileNameEditText.getText().toString();
 
             // Specify the download location.
@@ -2880,6 +2937,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // Process the results of a file browse.
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Run the default commands.
+        super.onActivityResult(requestCode, resultCode, data);
+
         // Run the commands that correlate to the specified request code.
         switch (requestCode) {
             case FILE_UPLOAD_REQUEST_CODE:
@@ -2900,6 +2960,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     if (saveWebpageImageDialogFragment != null) {
                         // Get a handle for the save webpage image dialog.
                         Dialog saveWebpageImageDialog = saveWebpageImageDialogFragment.getDialog();
+
+                        // Remove the incorrect lint warning below that the dialog might be null.
+                        assert saveWebpageImageDialog != null;
 
                         // Get a handle for the file name edit text.
                         EditText fileNameEditText = saveWebpageImageDialog.findViewById(R.id.file_name_edittext);
@@ -3044,8 +3107,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void onSaveWebpageImage(DialogFragment dialogFragment) {
+        // Get the dialog.
+        Dialog dialog = dialogFragment.getDialog();
+
+        // Remove the incorrect lint warning below that the dialog might be null.
+        assert dialog != null;
+
         // Get a handle for the file name edit text.
-        EditText fileNameEditText = dialogFragment.getDialog().findViewById(R.id.file_name_edittext);
+        EditText fileNameEditText = dialog.findViewById(R.id.file_name_edittext);
 
         // Get the file path string.
         saveWebsiteImageFilePath = fileNameEditText.getText().toString();
