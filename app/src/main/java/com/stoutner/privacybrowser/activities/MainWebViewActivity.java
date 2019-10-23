@@ -3627,10 +3627,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         bookmarksListView.setOnItemClickListener((parent, view, position, id) -> {
             // Convert the id from long to int to match the format of the bookmarks database.
-            int databaseID = (int) id;
+            int databaseId = (int) id;
 
-            // Get the bookmark cursor for this ID and move it to the first row.
-            Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmark(databaseID);
+            // Get the bookmark cursor for this ID.
+            Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmark(databaseId);
+
+            // Move the bookmark cursor to the first row.
             bookmarkCursor.moveToFirst();
 
             // Act upon the bookmark according to the type.
@@ -3663,13 +3665,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Save the current folder name, which is used in `onSaveEditBookmarkFolder()`.
                 oldFolderNameString = bookmarksCursor.getString(bookmarksCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_NAME));
 
-                // Show the edit bookmark folder `AlertDialog` and name the instance `@string/edit_folder`.
+                // Instantiate the edit folder bookmark dialog.
                 DialogFragment editBookmarkFolderDialog = EditBookmarkFolderDialog.folderDatabaseId(databaseId, currentWebView.getFavoriteOrDefaultIcon());
+
+                // Show the edit folder bookmark dialog.
                 editBookmarkFolderDialog.show(getSupportFragmentManager(), getString(R.string.edit_folder));
             } else {
-                // Show the edit bookmark `AlertDialog` and name the instance `@string/edit_bookmark`.
-                DialogFragment editBookmarkDialog = EditBookmarkDialog.bookmarkDatabaseId(databaseId, currentWebView.getFavoriteOrDefaultIcon());
-                editBookmarkDialog.show(getSupportFragmentManager(), getString(R.string.edit_bookmark));
+                // Get the bookmark cursor for this ID.
+                Cursor bookmarkCursor = bookmarksDatabaseHelper.getBookmark(databaseId);
+
+                // Move the bookmark cursor to the first row.
+                bookmarkCursor.moveToFirst();
+
+                // Load the bookmark in a new tab but do not switch to the tab or close the drawer.
+                addNewTab(bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL)), false);
             }
 
             // Consume the event.
