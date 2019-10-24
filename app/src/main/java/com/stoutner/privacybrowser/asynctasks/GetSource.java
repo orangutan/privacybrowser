@@ -124,7 +124,7 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
                 oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
                 requestHeadersBuilder.append("Host");
                 newRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength + 1, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
             requestHeadersBuilder.append(":  ");
             requestHeadersBuilder.append(url.getHost());
@@ -141,7 +141,7 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
                 oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
                 requestHeadersBuilder.append("Connection");
                 newRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength + 1, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
             requestHeadersBuilder.append(":  keep-alive");
 
@@ -157,7 +157,7 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
                 oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
                 requestHeadersBuilder.append("Upgrade-Insecure_Requests");
                 newRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength + 1, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
             requestHeadersBuilder.append(":  1");
 
@@ -173,7 +173,7 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
                 oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
                 requestHeadersBuilder.append("User-Agent");
                 newRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength + 1, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
             requestHeadersBuilder.append(":  ");
             requestHeadersBuilder.append(userAgent);
@@ -190,9 +190,57 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
                 oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
                 requestHeadersBuilder.append("x-requested-with");
                 newRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength + 1, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
             requestHeadersBuilder.append(":  ");
+
+
+            // Set the `Sec-Fetch-Site` header property.
+            httpUrlConnection.setRequestProperty("Sec-Fetch-Site", "none");
+
+            // Add the `Sec-Fetch-Site` header to the string builder and format the text.
+            requestHeadersBuilder.append(System.getProperty("line.separator"));
+            if (Build.VERSION.SDK_INT >= 21) {  // Newer versions of Android are so smart.
+                requestHeadersBuilder.append("Sec-Fetch-Site", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            } else {  // Older versions not so much.
+                oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
+                requestHeadersBuilder.append("Sec-Fetch-Site");
+                newRequestHeadersBuilderLength = requestHeadersBuilder.length();
+                requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            requestHeadersBuilder.append(":  none");
+
+
+            // Set the `Sec-Fetch-Mode` header property.
+            httpUrlConnection.setRequestProperty("Sec-Fetch-Mode", "navigate");
+
+            // Add the `Sec-Fetch-Mode` header to the string builder and format the text.
+            requestHeadersBuilder.append(System.getProperty("line.separator"));
+            if (Build.VERSION.SDK_INT >= 21) {  // Newer versions of Android are so smart.
+                requestHeadersBuilder.append("Sec-Fetch-Mode", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            } else {  // Older versions not so much.
+                oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
+                requestHeadersBuilder.append("Sec-Fetch-Mode");
+                newRequestHeadersBuilderLength = requestHeadersBuilder.length();
+                requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            requestHeadersBuilder.append(":  navigate");
+
+
+            // Set the `Sec-Fetch-User` header property.
+            httpUrlConnection.setRequestProperty("Sec-Fetch-User", "?1");
+
+            // Add the `Sec-Fetch-User` header to the string builder and format the text.
+            requestHeadersBuilder.append(System.getProperty("line.separator"));
+            if (Build.VERSION.SDK_INT >= 21) {  // Newer versions of Android are so smart.
+                requestHeadersBuilder.append("Sec-Fetch-User", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            } else {  // Older versions not so much.
+                oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
+                requestHeadersBuilder.append("Sec-Fetch-User");
+                newRequestHeadersBuilderLength = requestHeadersBuilder.length();
+                requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            requestHeadersBuilder.append(":  ?1");
 
 
             // Get a handle for the shared preferences.
@@ -211,7 +259,7 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
                     oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
                     requestHeadersBuilder.append("dnt");
                     newRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength + 1, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
                 requestHeadersBuilder.append(":  1");
             }
@@ -228,7 +276,7 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
                 oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
                 requestHeadersBuilder.append("Accept");
                 newRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength + 1, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
             requestHeadersBuilder.append(":  ");
             requestHeadersBuilder.append("text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3");
@@ -306,7 +354,7 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
                 oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
                 requestHeadersBuilder.append("Accept-Language");
                 newRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength + 1, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
             requestHeadersBuilder.append(":  ");
             requestHeadersBuilder.append(localeString);
@@ -328,7 +376,7 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
                     oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
                     requestHeadersBuilder.append("Cookie");
                     newRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                    requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength + 1, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
                 requestHeadersBuilder.append(":  ");
                 requestHeadersBuilder.append(cookiesString);
@@ -344,7 +392,7 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
                 oldRequestHeadersBuilderLength = requestHeadersBuilder.length();
                 requestHeadersBuilder.append("Accept-Encoding");
                 newRequestHeadersBuilderLength = requestHeadersBuilder.length();
-                requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength + 1, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                requestHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldRequestHeadersBuilderLength, newRequestHeadersBuilderLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
             requestHeadersBuilder.append(":  gzip");
 
@@ -386,7 +434,7 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
                         int oldLength = responseHeadersBuilder.length();
                         responseHeadersBuilder.append(httpUrlConnection.getHeaderFieldKey(i));
                         int newLength = responseHeadersBuilder.length();
-                        responseHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldLength + 1, newLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        responseHeadersBuilder.setSpan(new StyleSpan(Typeface.BOLD), oldLength, newLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
                     responseHeadersBuilder.append(":  ");
                     responseHeadersBuilder.append(httpUrlConnection.getHeaderField(i));
