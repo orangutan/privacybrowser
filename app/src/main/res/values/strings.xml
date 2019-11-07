@@ -196,6 +196,7 @@
 
     <!-- Context Menus. -->
     <string name="open_in_new_tab">Open in New Tab</string>
+    <string name="open_in_background">Open in Background</string>
     <string name="open_image_in_new_tab">Open Image in New Tab</string>
     <string name="copy_url">Copy URL</string>
     <string name="download_url">Download URL</string>

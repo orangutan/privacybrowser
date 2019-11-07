@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  Copyright © 2015-2018 Soren Stoutner <soren@stoutner.com>.
+
+  Translation 2019 Kévin LE FLOHIC <kevinliste@framalistes.org>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<!-- `tools:ignore="MissingTranslation"` allows release APKs to be built if translation strings are missing.  The missing strings will fall back to English. -->
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation" >
+
+    <!-- Activities. -->
+    <string name="privacy_browser">Privacy Browser Free</string>
+
+    <!-- Create Home Screen Shortcut Alert Dialog. -->
+    <string name="open_with_privacy_browser">Ouvrir avec Privacy Browser Free.</string>
+
+    <!-- Ad Consent. -->
+    <string name="ad_consent_text">Privacy Browser Free affiche une bannière publicitaire en bas de l\'écran.
+         Ces annonces proviennent des fournisseurs de Google couramment utilisés et sont configurées pour être non personnalisées.
+         \n\nLa version standard de Privacy Browser ne contient pas d\'annonces d\'applications.</string>
+    <string name="close_browser">Fermer le navigateur</string>
+    <string name="accept_ads">Accepter les annonces</string>
+</resources>

@@ -31,19 +31,19 @@
     android:focusable="true"
     android:focusableInTouchMode="true" >
 
-    <!-- The `LinearLayout` with `orientation="vertical"` moves the content below the app bar layout. -->
+    <!-- The linear layout with `orientation="vertical"` moves the content below the app bar layout. -->
     <LinearLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:orientation="vertical" >
 
-        <!-- The `AppBarLayout` theme has to be defined here because the activity uses a `NoActionBar` theme. -->
+        <!-- The app bar layout theme has to be defined here because the activity uses a `NoActionBar` theme. -->
         <com.google.android.material.appbar.AppBarLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:theme="@style/PrivacyBrowserAppBarLight" >
 
-            <!-- The `FrameLayout` allows the toolbar and the progress bar to occupy the same space. -->
+            <!-- The frame layout allows the toolbar and the progress bar to occupy the same space. -->
             <FrameLayout
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent" >

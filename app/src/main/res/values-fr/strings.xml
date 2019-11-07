@@ -592,8 +592,8 @@
         <string name="scroll_app_bar">Défilement barre d\'applications</string>
         <string name="scroll_app_bar_summary">Faites défiler la barre d\'applications en haut de l\'écran lorsque WebView défile vers le bas.</string>
         <string name="display_additional_app_bar_icons">Icônes supplémentaires dans la barre d\'applications</string>
-        <string name="display_additional_app_bar_icons_summary">Affichez des icônes dans la barre d’applications pour actualiser WebView et, le cas échéant,
- pour activer/désactiver les cookies et le stockage DOM.</string>
+        <string name="display_additional_app_bar_icons_summary">Affichez des icônes dans la barre d\'applications pour actualiser WebView et, le cas échéant,
+            pour activer/désactiver les cookies et le stockage DOM.</string>
         <string name="download_with_external_app">Téléchargement externe</string>
         <string name="download_with_external_app_summary">Le gestionnaire de téléchargement Android ne fonctionne pas bien sur certains appareils.</string>
         <string name="dark_theme">Thème sombre</string>
@@ -604,4 +604,7 @@
         <string name="wide_viewport_summary">L\'utilisation d\'une fenêtre d\'affichage large fait que la mise en page de certaines pages Web ressemble davantage au site de bureau.</string>
         <string name="display_webpage_images">Afficher images Web</string>
         <string name="display_webpage_images_summary">Désactiver pour conserver la bande passante.</string>
+
+    <!-- Ad Control. There are no ads in the standard flavor, but these strings must exist because they are referenced in the code. -->
+    <string name="ad_consent">Consentement publicitaire</string>
 </resources>

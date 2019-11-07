@@ -28,7 +28,7 @@
     <body>
         <h3>Disposer d'un accès réseau complet</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#INTERNET">android.permission.INTERNET</a></p>
-        <p>Requis pour que WebView puisse accéder à Internet. Sans cette autorisation, Privacy Browser serait «No Browser: protégez votre vie privée en restant complètement hors d’Internet».</p>
+        <p>Requis pour que WebView puisse accéder à Internet. Sans cette autorisation, Privacy Browser serait «No Browser: protégez votre vie privée en restant complètement hors d'Internet».</p>
 
         <h3>Installer les raccourcis</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#INSTALL_SHORTCUT">com.android.launcher.permission.INSTALL_SHORTCUT</a></p>
@@ -37,7 +37,7 @@
         <h3>Lire le stockage</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission#READ_EXTERNAL_STORAGE">android.permission.READ_EXTERNAL_STORAGE</a></p>
         <p>Requis pour importer les paramètres des dossiers publics. Sous Android Marshmallow (API 23) et plus récente, si cette autorisation est refusée,
-            Privacy Browser peut importer les paramètres à partir des dossiers de l’application.</p>
+            Privacy Browser peut importer les paramètres à partir des dossiers de l'application.</p>
 
         <h3>Mémoire d'écriture</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WRITE_EXTERNAL_STORAGE">android.permission.WRITE_EXTERNAL_STORAGE</a></p>
@@ -49,29 +49,29 @@
         <hr/>
         <br/>
 
-        <p>In addition, Privacy Browser Free displays ads from Google’s AdMob network using the Firebase backend.
-            For the free flavor, Firebase adds the following permissions even though they are not listed in the source code
+        <p>En outre, Privacy Browser Free affiche les annonces du réseau AdMob de Google à l'aide du backend Firebase.
+             Pour la version gratuite, Firebase ajoute les autorisations suivantes même si elles ne sont pas répertoriées dans le code source.
             <a href="https://git.stoutner.com/?p=PrivacyBrowser.git;a=blob;f=app/src/main/AndroidManifest.xml;hb=HEAD">manifest file</a>.</p>
 
-        <h3>View network connections</h3>
+        <h3>Afficher les connexions réseau</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#ACCESS_NETWORK_STATE">android.permission.ACCESS_NETWORK_STATE</a></p>
-        <p>Allows the ads to tell when you are connected to the internet and when you aren’t (presumably so they don’t try to reload an ad when you are disconnected).
-            They can also tell if you are connected via Wi-Fi, 2G, 3G, 4G, etc.</p>
+        <p>Permet aux annonces de dire quand vous êtes connecté à Internet et quand vous n'êtes pas (vraisemblablement pour ne pas essayer de recharger une annonce lorsque vous êtes déconnecté).
+             Ils peuvent également savoir si vous êtes connecté via Wi-Fi, 2G, 3G, 4G, etc.</p>
 
-        <h3>Prevent phone from sleeping</h3>
+        <h3>Empêcher le téléphone de dormir</h3>
         <p><a href="https://developer.android.com/reference/android/Manifest.permission.html#WAKE_LOCK">android.permission.WAKE_LOCK</a></p>
-        <p>Allows the ads to keep the processor from sleeping and the screen from dimming, although in my testing I don’t think the ads actually do this.</p>
+        <p>Permet aux annonces d'empêcher le processeur de dormir et l'éclairage de l'écran, bien que lors de mes tests, je ne pense pas que les annonces le fassent réellement.</p>
 
-        <h3>Play Install Referrer API</h3>
+        <h3>Jouer Installer l'API Référent</h3>
         <p><a href="https://android-developers.googleblog.com/2017/11/google-play-referrer-api-track-and.html">com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE</a></p>
-        <p>Allows other apps to tell if their installation was launched from an ad in Privacy Browser Free.</p>
+        <p>Permet aux autres applications de savoir si leur installation a été lancée à partir d'une annonce dans Privacy Browser Free.</p>
 
-        <h3>Receive data from Internet</h3>
+        <h3>Recevoir des données d'Internet</h3>
         <p><a href="http://androidpermissions.com/permission/com.google.android.c2dm.permission.RECEIVE">com.google.android.c2dm.permission.RECEIVE</a></p>
-        <p>Allows Google to send information directly to the AdView without having to receive a request first (cloud-to-device messaging).</p>
+        <p>Permet à Google d'envoyer des informations directement à AdView sans avoir à recevoir de demande préalable (messagerie de périphérique à périphérique).</p>
 
-        <h3>Receive data from Internet</h3>
+        <h3>Recevoir des données d'Internet</h3>
         <p><a href="https://developers.google.com/cloud-messaging/android/client">com.stoutner.privacybrowser.free.permission.C2D_MESSAGE</a></p>
-        <p>Secures the cloud-to-device messages so that only Privacy Browser Free can receive them.</p>
+        <p>Sécurise les messages de cloud à périphérique afin que seul Privacy Browser Free puisse les recevoir.</p>
     </body>
 </html>
