@@ -167,19 +167,11 @@
             <string name="user_agent_internet_explorer_on_windows">Internet Explorer auf Windows</string>
             <string name="user_agent_safari_on_macos">Safari auf macOS</string>
             <string name="user_agent_custom">Eigener</string>
-        <string name="font_size">Schriftgröße</string>
-            <string name="twenty_five_percent">25%</string>
-            <string name="fifty_percent">50%</string>
-            <string name="seventy_five_percent">75%</string>
-            <string name="one_hundred_percent">100%</string>
-            <string name="one_hundred_twenty_five_percent">125%</string>
-            <string name="one_hundred_fifty_percent">150%</string>
-            <string name="one_hundred_seventy_five_percent">175%</string>
-            <string name="two_hundred_percent">200%</string>
         <string name="swipe_to_refresh_options_menu">Herunterziehen zum aktualisieren</string>
         <string name="wide_viewport">Breiter Anzeigebereich</string>
         <string name="display_images">Bilder anzeigen</string>
         <string name="options_night_mode">Nacht-Modus</string>
+        <string name="font_size">Schriftgröße</string>
         <string name="find_on_page">Auf Seite finden</string>
         <string name="print">Drucken</string>
             <string name="privacy_browser_web_page">Privacy Browser-Website</string>
@@ -195,6 +187,7 @@
 
     <!-- Context Menus. -->
     <string name="open_in_new_tab">In neuem Tab öffnen</string>
+    <string name="open_in_background">Im Hintergrund öffnen</string>
     <string name="open_image_in_new_tab">Grafik in neuem Tab öffnen</string>
     <string name="copy_url">URL kopieren</string>
     <string name="download_url">Download URL</string>
@@ -325,6 +318,10 @@
     <string name="domain_name">Domainname</string>
     <string name="domain_deleted">Domain gelöscht</string>
     <string name="domain_name_instructions">*. kann als Wildcard-Subdomain verwendet werden (z.B. *.stoutner.com)</string>
+    <string-array name="font_size_array">
+        <item>Standardeinstellung</item>
+        <item>Custom font size</item>
+    </string-array>
     <string-array name="swipe_to_refresh_array">
         <item>Standardeinstellung</item>
         <item>Herunterziehen zum aktualisieren aktiviert</item>
@@ -367,7 +364,7 @@
     <string name="file_location">Datei-Ordner</string>
     <string name="browse">durchsuchen</string>
     <string name="export">exportieren</string>
-    <string name="import_button">importieren</string>  <!-- `import` is a reserved word and cannot be used as the name -->
+    <string name="import_button">importieren</string>  <!-- `import` is a reserved word and cannot be used as the name. -->
     <string name="decrypt">entschlüsseln</string>
     <string name="export_successful">Export erfolgreich.</string>
     <string name="export_failed">Export fehlgeschlagen:</string>
@@ -379,7 +376,7 @@
     <string name="cannot_use_location">Dieser Ordner kann nicht genutzt werden, da die Speicher-Berechtigung nicht erteilt wurde.</string>
 
     <!-- Logcat. -->
-    <string name="copy">kopieren</string>
+    <string name="copy_string">kopieren</string>  <!-- `copy` is a reserved word and should not be used as the name. -->
     <string name="logcat_copied">Logcat kopiert.</string>
     <string name="clear">leeren</string>
     <string name="save_logcat">Logcat speichern</string>
@@ -564,27 +561,6 @@
     <string name="general">Allgemein</string>
         <string name="homepage">Startseite</string>
         <string name="font_size_preference">Schriftgröße</string>
-        <string-array name="font_size_entries">
-            <item>25%</item>
-            <item>50%</item>
-            <item>75%</item>
-            <item>100%</item>
-            <item>125%</item>
-            <item>150%</item>
-            <item>175%</item>
-            <item>200%</item>
-        </string-array>
-            <string-array name="domain_settings_font_size_entries">
-                <item>Standardeinstellung</item>
-                <item>25%</item>
-                <item>50%</item>
-                <item>75%</item>
-                <item>100%</item>
-                <item>125%</item>
-                <item>150%</item>
-                <item>175%</item>
-                <item>200%</item>
-            </string-array>
         <string name="open_intents_in_new_tab">Intents in neuem Tab öffnen</string>
         <string name="open_intents_in_new_tab_summary">Intents sind Links, die von anderen Apps übergeben werden.</string>
         <string name="swipe_to_refresh">Herunterziehen zum Aktualisieren</string>

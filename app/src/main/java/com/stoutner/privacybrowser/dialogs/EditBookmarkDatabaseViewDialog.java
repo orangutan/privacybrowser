@@ -70,7 +70,7 @@ public class EditBookmarkDatabaseViewDialog extends DialogFragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         // Run the default commands.
         super.onAttach(context);
 

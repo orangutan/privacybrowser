@@ -136,7 +136,8 @@ public class DomainSettingsFragment extends Fragment {
         TextView userAgentTextView = domainSettingsView.findViewById(R.id.user_agent_textview);
         EditText customUserAgentEditText = domainSettingsView.findViewById(R.id.custom_user_agent_edittext);
         Spinner fontSizeSpinner = domainSettingsView.findViewById(R.id.font_size_spinner);
-        TextView fontSizeTextView = domainSettingsView.findViewById(R.id.font_size_textview);
+        TextView defaultFontSizeTextView = domainSettingsView.findViewById(R.id.default_font_size_textview);
+        EditText customFontSizeEditText = domainSettingsView.findViewById(R.id.custom_font_size_edittext);
         ImageView swipeToRefreshImageView = domainSettingsView.findViewById(R.id.swipe_to_refresh_imageview);
         Spinner swipeToRefreshSpinner = domainSettingsView.findViewById(R.id.swipe_to_refresh_spinner);
         TextView swipeToRefreshTextView = domainSettingsView.findViewById(R.id.swipe_to_refresh_textview);
@@ -244,8 +245,7 @@ public class DomainSettingsFragment extends Fragment {
 
         // Create array adapters for the spinners.
         ArrayAdapter<CharSequence> translatedUserAgentArrayAdapter = ArrayAdapter.createFromResource(context, R.array.translated_domain_settings_user_agent_names, R.layout.spinner_item);
-        ArrayAdapter<CharSequence> fontSizeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.domain_settings_font_size_entries, R.layout.spinner_item);
-        ArrayAdapter<CharSequence> fontSizeEntryValuesArrayAdapter = ArrayAdapter.createFromResource(context, R.array.domain_settings_font_size_entry_values, R.layout.spinner_item);
+        ArrayAdapter<CharSequence> fontSizeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.font_size_array, R.layout.spinner_item);
         ArrayAdapter<CharSequence> swipeToRefreshArrayAdapter = ArrayAdapter.createFromResource(context, R.array.swipe_to_refresh_array, R.layout.spinner_item);
         ArrayAdapter<CharSequence> nightModeArrayAdapter = ArrayAdapter.createFromResource(context, R.array.night_mode_array, R.layout.spinner_item);
         ArrayAdapter<CharSequence> wideViewportArrayAdapter = ArrayAdapter.createFromResource(context, R.array.wide_viewport_array, R.layout.spinner_item);
@@ -761,23 +761,41 @@ public class DomainSettingsFragment extends Fragment {
             userAgentSpinner.performClick();
         });
 
-        // Set the selected font size.
-        int fontSizeArrayPosition = fontSizeEntryValuesArrayAdapter.getPosition(String.valueOf(fontSizeInt));
-        fontSizeSpinner.setSelection(fontSizeArrayPosition);
+        // Display the font size settings.
+        if (fontSizeInt == 0) {  // `0` is the code for system default font size.
+            // Set the font size to the system default
+            fontSizeSpinner.setSelection(0);
 
-        // Set the default font size text.
-        int defaultFontSizeArrayPosition = fontSizeEntryValuesArrayAdapter.getPosition(defaultFontSizeString);
-        fontSizeTextView.setText(fontSizeArrayAdapter.getItem(defaultFontSizeArrayPosition));
+            // Show the default font size text view.
+            defaultFontSizeTextView.setVisibility(View.VISIBLE);
 
-        // Set the display options for the font size TextView.
-        if (fontSizeArrayPosition == 0) {  // System default font size is selected.  Display `fontSizeTextView`.
-            fontSizeTextView.setVisibility(View.VISIBLE);
-        } else {  // A custom font size is specified.  Hide `fontSizeTextView`.
-            fontSizeTextView.setVisibility(View.GONE);
+            // Hide the custom font size edit text.
+            customFontSizeEditText.setVisibility(View.GONE);
+
+            // Set the default font size as the text of the custom font size edit text.  This way, if the user switches to custom it will already be populated.
+            customFontSizeEditText.setText(defaultFontSizeString);
+        } else {  // A custom font size is selected.
+            // Set the spinner to the custom font size.
+            fontSizeSpinner.setSelection(1);
+
+            // Hide the default font size text view.
+            defaultFontSizeTextView.setVisibility(View.GONE);
+
+            // Show the custom font size edit text.
+            customFontSizeEditText.setVisibility(View.GONE);
+
+            // Set the custom font size.
+            customFontSizeEditText.setText(String.valueOf(fontSizeInt));
         }
 
-        // Open the font size spinner when the TextView is clicked.
-        fontSizeTextView.setOnClickListener((View v) -> {
+        // Initialize the default font size percentage string.
+        String defaultFontSizePercentageString = defaultFontSizeString + "%";
+
+        // Set the default font size text in the text view.
+        defaultFontSizeTextView.setText(defaultFontSizePercentageString);
+
+        // Open the font size spinner when the text view is clicked.
+        defaultFontSizeTextView.setOnClickListener((View v) -> {
             // Open the user agent spinner.
             fontSizeSpinner.performClick();
         });
@@ -1662,11 +1680,19 @@ public class DomainSettingsFragment extends Fragment {
         fontSizeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // Update the display options for `fontSizeTextView`.
-                if (position == 0) {  // System default font size has been selected.  Display `fontSizeTextView`.
-                    fontSizeTextView.setVisibility(View.VISIBLE);
-                } else {  // A custom font size has been selected.  Hide `fontSizeTextView`.
-                    fontSizeTextView.setVisibility(View.GONE);
+                // Update the font size display options.
+                if (position == 0) {  // The system default font size has been selected.
+                    // Show the default font size text view.
+                    defaultFontSizeTextView.setVisibility(View.VISIBLE);
+
+                    // Hide the custom font size edit text.
+                    customFontSizeEditText.setVisibility(View.GONE);
+                } else {  // A custom font size has been selected.
+                    // Hide the default font size text view.
+                    defaultFontSizeTextView.setVisibility(View.GONE);
+
+                    // Show the custom font size edit text.
+                    customFontSizeEditText.setVisibility(View.VISIBLE);
                 }
             }
 

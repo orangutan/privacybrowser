@@ -64,7 +64,8 @@
                 android:layout_width="match_parent"
                 android:hint="@string/bookmark_url"
                 android:imeOptions="actionGo"
-                android:inputType="textUri" />
+                android:inputType="textUri"
+                android:selectAllOnFocus="true" />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 </ScrollView>

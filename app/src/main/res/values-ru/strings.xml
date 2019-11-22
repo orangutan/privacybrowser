@@ -161,19 +161,11 @@
             <string name="user_agent_internet_explorer_on_windows">Internet Explorer на Windows</string>
             <string name="user_agent_safari_on_macos">Safari на macOS</string>
             <string name="user_agent_custom">Настраиваемый</string>
-        <string name="font_size">Размер шрифта</string>
-            <string name="twenty_five_percent">25%</string>
-            <string name="fifty_percent">50%</string>
-            <string name="seventy_five_percent">75%</string>
-            <string name="one_hundred_percent">100%</string>
-            <string name="one_hundred_twenty_five_percent">125%</string>
-            <string name="one_hundred_fifty_percent">150%</string>
-            <string name="one_hundred_seventy_five_percent">175%</string>
-            <string name="two_hundred_percent">200%</string>
         <string name="swipe_to_refresh_options_menu">Потянуть для обновления</string>
         <string name="wide_viewport">Широкий вид просмотра</string>
         <string name="display_images">Показывать изображения</string>
         <string name="options_night_mode">Ночной режим</string>
+        <string name="font_size">Размер шрифта</string>
         <string name="find_on_page">Найти на странице</string>
         <string name="print">Печать</string>
             <string name="privacy_browser_web_page">Privacy Browser веб-страница</string>
@@ -189,6 +181,7 @@
 
     <!-- Context Menus. -->
     <string name="open_in_new_tab">Открыть в новой вкладке</string>
+    <string name="open_in_background">Открыть в фоне</string>
     <string name="open_image_in_new_tab">Открыть изображение в новой вкладке</string>
     <string name="copy_url">Копировать URL</string>
     <string name="download_url">Загрузить URL</string>
@@ -319,6 +312,10 @@
     <string name="domain_name">Имя домена</string>
     <string name="domain_deleted">Домен удален</string>
     <string name="domain_name_instructions">добавьте *. для включения всех поддоменов (напр. *.stoutner.com)</string>
+    <string-array name="font_size_array">
+        <item>Настройки по умолчанию</item>
+        <item>Custom font size</item>
+    </string-array>
     <string-array name="swipe_to_refresh_array">
         <item>Настройки по умолчанию</item>
         <item>Потянуть для обновления - включено</item>
@@ -361,7 +358,7 @@
     <string name="file_location">Расположение файла</string>
     <string name="browse">Обзор</string>
     <string name="export">Экспорт</string>
-    <string name="import_button">Импорт</string>  <!-- `import` is a reserved word and cannot be used as the name -->
+    <string name="import_button">Импорт</string>  <!-- `import` is a reserved word and cannot be used as the name. -->
     <string name="decrypt">Расшифровать</string>
     <string name="export_successful">Экспорт выполнен.</string>
     <string name="export_failed">Сбой при экспорте:</string>
@@ -372,7 +369,7 @@
     <string name="cannot_use_location">Это расположение использовано быть не может, поскольку разрешение на хранение предоставлено не было.</string>
 
     <!-- Logcat. -->
-    <string name="copy">Копировать</string>
+    <string name="copy_string">Копировать</string>  <!-- `copy` is a reserved word and should not be used as the name. -->
     <string name="logcat_copied">Logcat скопирован.</string>
     <string name="clear">Очистить</string>
     <string name="save_logcat">Сохранить logcat</string>
@@ -556,27 +553,6 @@
     <string name="general">Общее</string>
         <string name="homepage">Домашняя страница</string>
         <string name="font_size_preference">Размер шрифта</string>
-        <string-array name="font_size_entries">
-            <item>25%</item>
-            <item>50%</item>
-            <item>75%</item>
-            <item>100%</item>
-            <item>125%</item>
-            <item>150%</item>
-            <item>175%</item>
-            <item>200%</item>
-        </string-array>
-            <string-array name="domain_settings_font_size_entries">
-                <item>Настройки по умолчанию</item>
-                <item>25%</item>
-                <item>50%</item>
-                <item>75%</item>
-                <item>100%</item>
-                <item>125%</item>
-                <item>150%</item>
-                <item>175%</item>
-                <item>200%</item>
-            </string-array>
         <string name="open_intents_in_new_tab">Открывать цели в новой вкладке</string>
         <string name="open_intents_in_new_tab_summary">Цели - это ссылки, отправленные из других приложений.</string>
         <string name="swipe_to_refresh">Потянуть для обновления</string>

@@ -165,19 +165,11 @@
             <string name="user_agent_internet_explorer_on_windows">Internet Explorer sous Windows</string>
             <string name="user_agent_safari_on_macos">Safari sous macOS</string>
             <string name="user_agent_custom">Personnalisé</string>
-        <string name="font_size">Police</string>
-            <string name="twenty_five_percent">25%</string>
-            <string name="fifty_percent">50%</string>
-            <string name="seventy_five_percent">75%</string>
-            <string name="one_hundred_percent">100%</string>
-            <string name="one_hundred_twenty_five_percent">125%</string>
-            <string name="one_hundred_fifty_percent">150%</string>
-            <string name="one_hundred_seventy_five_percent">175%</string>
-            <string name="two_hundred_percent">200%</string>
         <string name="swipe_to_refresh_options_menu">Glisser pour actualiser</string>
         <string name="wide_viewport">Fenêtre large</string>
         <string name="display_images">Afficher les images</string>
         <string name="options_night_mode">Mode nuit</string>
+        <string name="font_size">Police</string>
         <string name="find_on_page">Chercher sur la page</string>
         <string name="print">Imprimer</string>
             <string name="privacy_browser_web_page">Site Web de Privacy Browser</string>
@@ -193,6 +185,7 @@
 
     <!-- Context Menus. -->
     <string name="open_in_new_tab">Ouvrir dans un nouvel onglet</string>
+    <string name="open_in_background">Ouvrir en arrière-plan</string>
     <string name="open_image_in_new_tab">Ouvrir l\'image dans un nouvel onglet</string>
     <string name="copy_url">Copier l\'URL</string>
     <string name="download_url">Télécharger la cible</string>
@@ -323,6 +316,10 @@
     <string name="domain_name">Nom de demaine</string>
     <string name="domain_deleted">Domaine supprimé</string>
     <string name="domain_name_instructions">Faire précéder par *. pour inclure l\'ensemble des sous-domaines (ex. *.stoutner.com)</string>
+    <string-array name="font_size_array">
+        <item>Réglages systèmes</item>
+        <item>Custom font size</item>
+    </string-array>
     <string-array name="swipe_to_refresh_array">
         <item>Réglages systèmes</item>
         <item>Glisser pour actualiser activé</item>
@@ -365,7 +362,7 @@
     <string name="file_location">Emplacement du fichier</string>
     <string name="browse">Parcourir</string>
     <string name="export">Exporter</string>
-    <string name="import_button">Importer</string>  <!-- `import` is a reserved word and cannot be used as the name -->
+    <string name="import_button">Importer</string>  <!-- `import` is a reserved word and cannot be used as the name. -->
     <string name="decrypt">Déchiffrer</string>
     <string name="export_successful">Export effectué.</string>
     <string name="export_failed">L\'export a échoué :</string>
@@ -378,7 +375,7 @@
     <string name="cannot_use_location">Ce dossier ne peut pas être utilisé car les droits d\'accès au stockage n\'ont pas été autorisés.</string>
 
     <!-- Logcat. -->
-    <string name="copy">Copie</string>
+    <string name="copy_string">Copie</string>  <!-- `copy` is a reserved word and should not be used as the name. -->
     <string name="logcat_copied">Journal système copié.</string>
     <string name="clear">Vider</string>
     <string name="save_logcat">Sauvegarder le journal système</string>
@@ -564,27 +561,6 @@
     <string name="general">General</string>
         <string name="homepage">Page d\'accueil</string>
         <string name="font_size_preference">Zoom</string>
-        <string-array name="font_size_entries">
-            <item>25%</item>
-            <item>50%</item>
-            <item>75%</item>
-            <item>100%</item>
-            <item>125%</item>
-            <item>150%</item>
-            <item>175%</item>
-            <item>200%</item>
-        </string-array>
-            <string-array name="domain_settings_font_size_entries">
-                <item>Par défaut</item>
-                <item>25%</item>
-                <item>50%</item>
-                <item>75%</item>
-                <item>100%</item>
-                <item>125%</item>
-                <item>150%</item>
-                <item>175%</item>
-                <item>200%</item>
-            </string-array>
         <string name="open_intents_in_new_tab">Intentions dans un nouvel onglet</string>
         <string name="open_intents_in_new_tab_summary">Les intentions sont des liens envoyés à partir d\'autres applications.</string>
         <string name="swipe_to_refresh">Glisser pour rafraîchir</string>

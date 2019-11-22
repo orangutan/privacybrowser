@@ -164,24 +164,16 @@
             <string name="user_agent_internet_explorer_on_windows">Internet Explorer en Windows</string>
             <string name="user_agent_safari_on_macos">Safari en macOS</string>
             <string name="user_agent_custom">Personalizado</string>
-        <string name="font_size">Tamaño de fuente</string>
-            <string name="twenty_five_percent">25%</string>
-            <string name="fifty_percent">50%</string>
-            <string name="seventy_five_percent">75%</string>
-            <string name="one_hundred_percent">100%</string>
-            <string name="one_hundred_twenty_five_percent">125%</string>
-            <string name="one_hundred_fifty_percent">150%</string>
-            <string name="one_hundred_seventy_five_percent">175%</string>
-            <string name="two_hundred_percent">200%</string>
         <string name="swipe_to_refresh_options_menu">Deslizar para actualizar</string>
         <string name="wide_viewport">Vista amplia</string>
         <string name="display_images">Mostrar imágenes</string>
+        <string name="options_night_mode">Modo noche</string>
+        <string name="font_size">Tamaño de fuente</string>
+        <string name="find_on_page">Buscar en página</string>
         <string name="print">Imprimir</string>
             <string name="privacy_browser_web_page">Página web de Navegador Privado</string>
         <string name="save_as_image">Guardar como imagen</string>
         <string name="add_to_home_screen">Añadir a la ventana de inicio</string>
-        <string name="options_night_mode">Modo noche</string>
-    <string name="find_on_page">Buscar en página</string>
         <string name="view_source">Ver la fuente</string>
     <string name="share">Compartir</string>
         <string name="share_url">Compartir URL</string>
@@ -192,6 +184,7 @@
 
     <!-- Context Menus. -->
     <string name="open_in_new_tab">Abrir en nueva pestaña</string>
+    <string name="open_in_background">Abrir en segundo plano</string>
     <string name="open_image_in_new_tab">Abrir imagen en nueva pestaña</string>
     <string name="copy_url">Copiar URL</string>
     <string name="download_url">Descargar URL</string>
@@ -323,6 +316,10 @@
     <string name="domain_name">Nombre de dominio</string>
     <string name="domain_deleted">Dominio borrado</string>
     <string name="domain_name_instructions">*. puede ser añadido a un dominio para incluir todos los subdominios (p.ej. *.stoutner.com)</string>
+    <string-array name="font_size_array">
+        <item>Por defecto del sistema</item>
+        <item>Custom font size</item>
+    </string-array>
     <string-array name="swipe_to_refresh_array">
         <item>Por defecto del sistema</item>
         <item>Deslizar para actualizar habilitado</item>
@@ -365,7 +362,7 @@
     <string name="file_location">Ubicación del archivo</string>
     <string name="browse">Navegar</string>
     <string name="export">Exportar</string>
-    <string name="import_button">Importar</string>  <!-- `import` is a reserved word and cannot be used as the name -->
+    <string name="import_button">Importar</string>  <!-- `import` is a reserved word and cannot be used as the name. -->
     <string name="decrypt">Descifrar</string>
     <string name="export_successful">Exportación exitosa.</string>
     <string name="export_failed">Exportación fallida:</string>
@@ -378,7 +375,7 @@
     <string name="cannot_use_location">Esta ubicación no se puede utilizar porque no se ha concedido el permiso de almacenamiento.</string>
 
     <!-- Logcat. -->
-    <string name="copy">Copiar</string>
+    <string name="copy_string">Copiar</string>  <!-- `copy` is a reserved word and should not be used as the name. -->
     <string name="logcat_copied">Logcat copiado.</string>
     <string name="clear">Borrar</string>
     <string name="save_logcat">Guardar logcat</string>
@@ -563,27 +560,6 @@
     <string name="general">General</string>
         <string name="homepage">Página de inicio</string>
         <string name="font_size_preference">Tamaño de fuente</string>
-        <string-array name="font_size_entries">
-            <item>25%</item>
-            <item>50%</item>
-            <item>75%</item>
-            <item>100%</item>
-            <item>125%</item>
-            <item>150%</item>
-            <item>175%</item>
-            <item>200%</item>
-        </string-array>
-            <string-array name="domain_settings_font_size_entries">
-                <item>Por defecto del sistema</item>
-                <item>25%</item>
-                <item>50%</item>
-                <item>75%</item>
-                <item>100%</item>
-                <item>125%</item>
-                <item>150%</item>
-                <item>175%</item>
-                <item>200%</item>
-            </string-array>
         <string name="open_intents_in_new_tab">Abrir contenido en nueva pestaña</string>
         <string name="open_intents_in_new_tab_summary">Los contenidos son enlaces enviados desde otras apps.</string>
         <string name="swipe_to_refresh">Deslizar para actualizar</string>

@@ -66,7 +66,7 @@ public class MoveToFolderDialog extends DialogFragment {
         void onMoveToFolder(DialogFragment dialogFragment);
     }
 
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         // Run the default commands.
         super.onAttach(context);
 

@@ -162,19 +162,11 @@
             <string name="user_agent_internet_explorer_on_windows">İnternet Explorer - Windows</string>
             <string name="user_agent_safari_on_macos">Safari - macOS</string>
             <string name="user_agent_custom">Özel</string>
-        <string name="font_size">Yazı Tipi Boyutu</string>
-            <string name="twenty_five_percent">%25</string>
-            <string name="fifty_percent">%50</string>
-            <string name="seventy_five_percent">%75</string>
-            <string name="one_hundred_percent">%100</string>
-            <string name="one_hundred_twenty_five_percent">%125</string>
-            <string name="one_hundred_fifty_percent">%150</string>
-            <string name="one_hundred_seventy_five_percent">%175</string>
-            <string name="two_hundred_percent">%200</string>
         <string name="swipe_to_refresh_options_menu">Yenilemek için kaydır</string>
         <string name="wide_viewport">Geniş ekran</string>
         <string name="display_images">Resimleri göster</string>
         <string name="options_night_mode">Gece modu</string>
+        <string name="font_size">Yazı Tipi Boyutu</string>
         <string name="find_on_page">Sayfada bul</string>
         <string name="print">Yazdır</string>
             <string name="privacy_browser_web_page">Privacy Browser Web Sayfası</string>
@@ -319,6 +311,10 @@
     <string name="domain_name">Domain adı</string>
     <string name="domain_deleted">Domain silinmiş</string>
     <string name="domain_name_instructions">*. tüm altdomainleri içeren bir domainin başına getirilebilir (örn. *.stoutner.com)</string>
+    <string-array name="font_size_array">
+        <item>Sistem varsayılanı</item>
+        <item>Custom font size</item>
+    </string-array>
     <string-array name="swipe_to_refresh_array">
         <item>Sistem varsayılanı</item>
         <item>Yenilemek için kaydır etkin</item>
@@ -361,7 +357,7 @@
     <string name="file_location">Dosya Konumu</string>
     <string name="browse">Gözat</string>
     <string name="export">Dışarı aktar</string>
-    <string name="import_button">İçeri aktar</string>  <!-- `import` is a reserved word and cannot be used as the name -->
+    <string name="import_button">İçeri aktar</string>  <!-- `import` is a reserved word and cannot be used as the name. -->
     <string name="decrypt">Şifre çöz (Decrypt)</string>
     <string name="export_successful">Dışa aktarım başarılı</string>
     <string name="export_failed">Dışa aktarım başarısız:</string>
@@ -372,7 +368,7 @@
     <string name="cannot_use_location">Depolama izni verilmediği için bu konum kullanılamaz.</string>
 
     <!-- Logcat. -->
-    <string name="copy">Kopyala</string>
+    <string name="copy_string">Kopyala</string>  <!-- `copy` is a reserved word and should not be used as the name. -->
     <string name="logcat_copied">Logcat kopyalandı.</string>
     <string name="clear">Temizle</string>
     <string name="save_logcat">Logcat kaydet</string>
@@ -558,27 +554,6 @@
     <string name="general">Genel</string>
         <string name="homepage">Ana Sayfa</string>
         <string name="font_size_preference">Yazı tipi boyutu</string>
-        <string-array name="font_size_entries">
-            <item>%25</item>
-            <item>%50</item>
-            <item>%75</item>
-            <item>%100</item>
-            <item>%125</item>
-            <item>%150</item>
-            <item>%175</item>
-            <item>%200</item>
-        </string-array>
-            <string-array name="domain_settings_font_size_entries">
-                <item>Sistem varsayılanı</item>
-                <item>%25</item>
-                <item>%50</item>
-                <item>%75</item>
-                <item>%100</item>
-                <item>%125</item>
-                <item>%150</item>
-                <item>%175</item>
-                <item>%200</item>
-            </string-array>
         <string name="open_intents_in_new_tab">Intent\'leri yeni sekmede aç</string>
         <string name="open_intents_in_new_tab_summary">Intent\'ler diğer uygulamalardan gönderilen linklerdir.</string>
         <string name="swipe_to_refresh">Yenilemek için kaydır</string>

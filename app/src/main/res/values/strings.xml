@@ -57,6 +57,7 @@
     <string name="new_tab">New tab</string>
     <string name="loading">Loading…</string>
     <string name="error">Error:</string>
+    <string name="apply">Apply</string>
 
     <!-- Loading Blocklists. -->
     <string name="loading_easylist">Loading EasyList</string>
@@ -168,19 +169,11 @@
             <string name="user_agent_internet_explorer_on_windows">Internet Explorer on Windows</string>
             <string name="user_agent_safari_on_macos">Safari on macOS</string>
             <string name="user_agent_custom">Custom</string>
-        <string name="font_size">Font Size</string>
-            <string name="twenty_five_percent">25%</string>
-            <string name="fifty_percent">50%</string>
-            <string name="seventy_five_percent">75%</string>
-            <string name="one_hundred_percent">100%</string>
-            <string name="one_hundred_twenty_five_percent">125%</string>
-            <string name="one_hundred_fifty_percent">150%</string>
-            <string name="one_hundred_seventy_five_percent">175%</string>
-            <string name="two_hundred_percent">200%</string>
         <string name="swipe_to_refresh_options_menu">Swipe to Refresh</string>
         <string name="wide_viewport">Wide Viewport</string>
         <string name="display_images">Display Images</string>
         <string name="options_night_mode">Night Mode</string>
+        <string name="font_size">Font Size</string>
         <string name="find_on_page">Find on Page</string>
         <string name="print">Print</string>
             <string name="privacy_browser_web_page">Privacy Browser Web Page</string>
@@ -328,6 +321,10 @@
     <string name="domain_name">Domain name</string>
     <string name="domain_deleted">Domain deleted</string>
     <string name="domain_name_instructions">*. may be prepended to a domain to include all subdomains (eg. *.stoutner.com)</string>
+    <string-array name="font_size_array">
+        <item>System default</item>
+        <item>Custom font size</item>
+    </string-array>
     <string-array name="swipe_to_refresh_array">
         <item>System default</item>
         <item>Swipe to refresh enabled</item>
@@ -370,7 +367,7 @@
     <string name="file_location">File Location</string>
     <string name="browse">Browse</string>
     <string name="export">Export</string>
-    <string name="import_button">Import</string>  <!-- `import` is a reserved word and cannot be used as the name -->
+    <string name="import_button">Import</string>  <!-- `import` is a reserved word and cannot be used as the name. -->
     <string name="decrypt">Decrypt</string>
     <string name="export_successful">Export successful.</string>
     <string name="export_failed">Export failed:</string>
@@ -381,7 +378,7 @@
     <string name="cannot_use_location">This location cannot be used because the storage permission has not been granted.</string>
 
     <!-- Logcat. -->
-    <string name="copy">Copy</string>
+    <string name="copy_string">Copy</string>  <!-- `copy` is a reserved word and should not be used as the name. -->
     <string name="logcat_copied">Logcat copied.</string>
     <string name="clear">Clear</string>
     <string name="save_logcat">Save logcat</string>
@@ -615,48 +612,6 @@
     <string name="general">General</string>
         <string name="homepage">Homepage</string>
         <string name="font_size_preference">Font size</string>
-        <string-array name="font_size_entries">
-            <item>25%</item>
-            <item>50%</item>
-            <item>75%</item>
-            <item>100%</item>
-            <item>125%</item>
-            <item>150%</item>
-            <item>175%</item>
-            <item>200%</item>
-        </string-array>
-        <string-array name="font_size_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
-            <item>25</item>
-            <item>50</item>
-            <item>75</item>
-            <item>100</item>
-            <item>125</item>
-            <item>150</item>
-            <item>175</item>
-            <item>200</item>
-        </string-array>
-            <string-array name="domain_settings_font_size_entries">
-                <item>System default</item>
-                <item>25%</item>
-                <item>50%</item>
-                <item>75%</item>
-                <item>100%</item>
-                <item>125%</item>
-                <item>150%</item>
-                <item>175%</item>
-                <item>200%</item>
-            </string-array>
-            <string-array name="domain_settings_font_size_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
-                <item>0</item>
-                <item>25</item>
-                <item>50</item>
-                <item>75</item>
-                <item>100</item>
-                <item>125</item>
-                <item>150</item>
-                <item>175</item>
-                <item>200</item>
-            </string-array>
         <string name="open_intents_in_new_tab">Open intents in new tab</string>
         <string name="open_intents_in_new_tab_summary">Intents are links sent from other apps.</string>
         <string name="swipe_to_refresh">Swipe to refresh</string>

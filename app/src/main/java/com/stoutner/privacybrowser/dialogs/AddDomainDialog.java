@@ -53,7 +53,7 @@ public class AddDomainDialog extends DialogFragment {
     private AddDomainListener addDomainListener;
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         // Run the default commands.
         super.onAttach(context);
 

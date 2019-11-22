@@ -181,6 +181,7 @@
             android:entryValues="@array/tor_search_entry_values"
             android:defaultValue="@string/tor_search_default_value" />
 
+        <!-- `android:inputType` currently doesn't work with AndroidX. -->
         <EditTextPreference
             android:key="tor_search_custom_url"
             android:title="@string/tor_search_custom_url"
@@ -271,12 +272,12 @@
             android:inputType="textUri"
             android:icon="?attr/homepageIcon" />
 
-        <ListPreference
+        <!-- `android:inputType="number"` currently doesn't work with AndroidX. -->
+        <EditTextPreference
             android:key="font_size"
             android:title="@string/font_size_preference"
-            android:entries="@array/font_size_entries"
-            android:entryValues="@array/font_size_entry_values"
             android:defaultValue="@string/font_size_default_value"
+            android:inputType="number"
             android:icon="?attr/fontSizeIcon" />
 
         <SwitchPreference

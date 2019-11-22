@@ -249,91 +249,39 @@
             </item>
 
             <item
-                android:id="@+id/font_size"
-                android:title="@string/font_size"
-                android:orderInCategory="930"
-                app:showAsAction="never" >
-
-                <menu>
-                    <group android:checkableBehavior="single">
-                        <item
-                            android:id="@+id/font_size_twenty_five_percent"
-                            android:title="@string/twenty_five_percent"
-                            android:orderInCategory="931"
-                            app:showAsAction="never" />
-
-                        <item
-                            android:id="@+id/font_size_fifty_percent"
-                            android:title="@string/fifty_percent"
-                            android:orderInCategory="932"
-                            app:showAsAction="never" />
-
-                        <item
-                            android:id="@+id/font_size_seventy_five_percent"
-                            android:title="@string/seventy_five_percent"
-                            android:orderInCategory="933"
-                            app:showAsAction="never" />
-
-                        <item
-                            android:id="@+id/font_size_one_hundred_percent"
-                            android:title="@string/one_hundred_percent"
-                            android:orderInCategory="934"
-                            app:showAsAction="never" />
-
-                        <item
-                            android:id="@+id/font_size_one_hundred_twenty_five_percent"
-                            android:title="@string/one_hundred_twenty_five_percent"
-                            android:orderInCategory="935"
-                            app:showAsAction="never" />
-
-                        <item
-                            android:id="@+id/font_size_one_hundred_fifty_percent"
-                            android:title="@string/one_hundred_fifty_percent"
-                            android:orderInCategory="936"
-                            app:showAsAction="never" />
-
-                        <item
-                            android:id="@+id/font_size_one_hundred_seventy_five_percent"
-                            android:title="@string/one_hundred_seventy_five_percent"
-                            android:orderInCategory="937"
-                            app:showAsAction="never" />
-
-                        <item
-                            android:id="@+id/font_size_two_hundred_percent"
-                            android:title="@string/two_hundred_percent"
-                            android:orderInCategory="938"
-                            app:showAsAction="never" />
-                    </group>
-                </menu>
-            </item>
-
-            <item
                 android:id="@+id/swipe_to_refresh"
                 android:title="@string/swipe_to_refresh_options_menu"
-                android:orderInCategory="940"
+                android:orderInCategory="930"
                 android:checkable="true"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/wide_viewport"
                 android:title="@string/wide_viewport"
-                android:orderInCategory="950"
+                android:orderInCategory="940"
                 android:checkable="true"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/display_images"
                 android:title="@string/display_images"
-                android:orderInCategory="960"
+                android:orderInCategory="950"
                 android:checkable="true"
                 app:showAsAction="never" />
 
             <item
                 android:id="@+id/night_mode"
                 android:title="@string/options_night_mode"
-                android:orderInCategory="970"
+                android:orderInCategory="960"
                 android:checkable="true"
                 app:showAsAction="never" />
+
+            <item
+                android:id="@+id/font_size"
+                android:title="@string/font_size"
+                android:orderInCategory="970"
+                app:showAsAction="never" >
+            </item>
 
             <item
                 android:id="@+id/find_on_page"

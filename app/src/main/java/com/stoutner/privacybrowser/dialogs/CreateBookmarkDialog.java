@@ -52,7 +52,7 @@ public class CreateBookmarkDialog extends DialogFragment {
     // The create bookmark listener is initialized in `onAttach()` and used in `onCreateDialog()`.
     private CreateBookmarkListener createBookmarkListener;
 
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         // Run the default commands.
         super.onAttach(context);
 

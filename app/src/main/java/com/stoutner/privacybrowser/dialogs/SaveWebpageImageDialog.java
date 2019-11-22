@@ -32,7 +32,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.provider.DocumentsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -45,6 +44,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.preference.PreferenceManager;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
@@ -59,7 +59,7 @@ public class SaveWebpageImageDialog extends DialogFragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         // Run the default commands.
         super.onAttach(context);
 
@@ -72,8 +72,16 @@ public class SaveWebpageImageDialog extends DialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Get a handle for the activity and the context.
+        Activity activity = getActivity();
+        Context context = getContext();
+
+        // Remove the incorrect lint warnings below that the activity and context might be null.
+        assert activity != null;
+        assert context != null;
+
         // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         // Get the screenshot and theme preferences.
         boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
@@ -82,36 +90,23 @@ public class SaveWebpageImageDialog extends DialogFragment {
         // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
-        // Get a handle for the activity.
-        Activity activity  = getActivity();
-
-        // Remove the incorrect lint warning below that the activity might be null.
-        assert activity != null;
-
-        // Set the style according to the theme.
+        // Set the style and icon according to the theme.
         if (darkTheme) {
             dialogBuilder = new AlertDialog.Builder(activity, R.style.PrivacyBrowserAlertDialogDark);
+            dialogBuilder.setIcon(R.drawable.images_enabled_dark);
         } else {
             dialogBuilder = new AlertDialog.Builder(activity, R.style.PrivacyBrowserAlertDialogLight);
+            dialogBuilder.setIcon(R.drawable.images_enabled_light);
         }
 
         // Set the title.
         dialogBuilder.setTitle(R.string.save_image);
 
-        // Set the icon according to the theme.
-        if (darkTheme) {
-            dialogBuilder.setIcon(R.drawable.images_enabled_dark);
-        } else {
-            dialogBuilder.setIcon(R.drawable.images_enabled_light);
-        }
-
         // Set the view.  The parent view is null because it will be assigned by the alert dialog.
         dialogBuilder.setView(activity.getLayoutInflater().inflate(R.layout.save_dialog, null));
 
-        // Set the cancel button listener.
-        dialogBuilder.setNegativeButton(R.string.cancel, (DialogInterface dialog, int which) -> {
-            // Do nothing.  The alert dialog will close automatically.
-        });
+        // Set the cancel button listener.  Using `null` as the listener closes the dialog without doing anything else.
+        dialogBuilder.setNegativeButton(R.string.cancel, null);
 
         // Set the save button listener.
         dialogBuilder.setPositiveButton(R.string.save, (DialogInterface dialog, int which) -> {
@@ -122,7 +117,7 @@ public class SaveWebpageImageDialog extends DialogFragment {
         // Create an alert dialog from the builder.
         AlertDialog alertDialog = dialogBuilder.create();
 
-        // Remove the incorrect lint warning below that `getWindows()` might be null.
+        // Remove the incorrect lint warning below that `getWindow()` might be null.
         assert alertDialog.getWindow() != null;
 
         // Disable screenshots if not allowed.
@@ -141,12 +136,6 @@ public class SaveWebpageImageDialog extends DialogFragment {
 
         // Create a string for the default file path.
         String defaultFilePath;
-
-        // Get a handle for the context.
-        Context context = getContext();
-
-        // Remove the incorrect lint warning that context might be null.
-        assert context != null;
 
         // Set the default file path according to the storage permission state.
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.

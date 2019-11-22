@@ -32,6 +32,7 @@ import android.text.style.ForegroundColorSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.HttpAuthHandler;
 import android.widget.EditText;
@@ -161,16 +162,19 @@ public class HttpAuthenticationDialog extends DialogFragment{
         // Create an alert dialog from the alert dialog builder.
         final AlertDialog alertDialog = dialogBuilder.create();
 
-        // Remove the warning below that `getWindow()` might be null.
-        assert alertDialog.getWindow() != null;
+        // Get the alert dialog window.
+        Window dialogWindow = alertDialog.getWindow();
+
+        // Remove the incorrect lint warning below that the dialog window might be null.
+        assert dialogWindow != null;
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
-        // Show the keyboard when the alert dialog is displayed on the screen.
-        alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        // Display the keyboard.
+        dialogWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
         // The alert dialog needs to be shown before the contents can be modified.
         alertDialog.show();

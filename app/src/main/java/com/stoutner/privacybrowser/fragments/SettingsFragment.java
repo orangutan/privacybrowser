@@ -20,37 +20,43 @@
 package com.stoutner.privacybrowser.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.Preference;
-import android.preference.PreferenceCategory;
-import android.preference.PreferenceFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 
+import androidx.preference.Preference;
+import androidx.preference.PreferenceCategory;
+import androidx.preference.PreferenceFragmentCompat;
+
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
-public class SettingsFragment extends PreferenceFragment {
+public class SettingsFragment extends PreferenceFragmentCompat {
+    // Define the class variables.
     private SharedPreferences.OnSharedPreferenceChangeListener preferencesListener;
     private SharedPreferences savedPreferences;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        // Run the default commands.
-        super.onCreate(savedInstanceState);
-
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         // Load the preferences from the XML file.
-        addPreferencesFromResource(R.xml.preferences);
+        setPreferencesFromResource(R.xml.preferences, rootKey);
+
+        // Get a handle for the activity.
+        Activity activity = getActivity();
+
+        // Remove the lint warning below that `getApplicationContext()` might produce a null pointer exception.
+        assert activity != null;
 
         // Get a handle for the context.
-        Context context = getActivity().getApplicationContext();
+        Context context = activity.getApplicationContext();
 
         // Initialize savedPreferences.
         savedPreferences = getPreferenceScreen().getSharedPreferences();
@@ -101,6 +107,52 @@ public class SettingsFragment extends PreferenceFragment {
         Preference wideViewportPreference = findPreference("wide_viewport");
         Preference displayWebpageImagesPreference = findPreference("display_webpage_images");
 
+        // Remove the lint warnings below that the preferences might be null.
+        assert javaScriptPreference != null;
+        assert firstPartyCookiesPreference != null;
+        assert thirdPartyCookiesPreference != null;
+        assert domStoragePreference != null;
+        assert formDataPreference != null;
+        assert userAgentPreference != null;
+        assert customUserAgentPreference != null;
+        assert incognitoModePreference != null;
+        assert doNotTrackPreference != null;
+        assert allowScreenshotsPreference != null;
+        assert easyListPreference != null;
+        assert easyPrivacyPreference != null;
+        assert fanboyAnnoyanceListPreference != null;
+        assert fanboySocialBlockingListPreference != null;
+        assert ultraListPreference != null;
+        assert ultraPrivacyPreference != null;
+        assert blockAllThirdPartyRequestsPreference != null;
+        assert googleAnalyticsPreference != null;
+        assert facebookClickIdsPreference != null;
+        assert twitterAmpRedirectsPreference != null;
+        assert proxyThroughOrbotPreference != null;
+        assert torHomepagePreference != null;
+        assert torSearchPreference != null;
+        assert torSearchCustomURLPreference != null;
+        assert searchPreference != null;
+        assert searchCustomURLPreference != null;
+        assert fullScreenBrowsingModePreference != null;
+        assert hideAppBarPreference != null;
+        assert clearEverythingPreference != null;
+        assert clearCookiesPreference != null;
+        assert clearDomStoragePreference != null;
+        assert clearFormDataPreference != null;
+        assert clearCachePreference != null;
+        assert homepagePreference != null;
+        assert fontSizePreference != null;
+        assert openIntentsInNewTabPreference != null;
+        assert swipeToRefreshPreference != null;
+        assert scrollAppBarPreference != null;
+        assert displayAdditionalAppBarIconsPreference != null;
+        assert downloadWithExternalAppPreference != null;
+        assert darkThemePreference != null;
+        assert nightModePreference != null;
+        assert wideViewportPreference != null;
+        assert displayWebpageImagesPreference != null;
+
         // Set dependencies.
         torHomepagePreference.setDependency("proxy_through_orbot");
         torSearchPreference.setDependency("proxy_through_orbot");
@@ -131,8 +183,12 @@ public class SettingsFragment extends PreferenceFragment {
         // Remove the form data preferences if the API is >= 26 as they no longer do anything.
         if (Build.VERSION.SDK_INT >= 26) {
             // Get the categories.
-            PreferenceCategory privacyCategory = (PreferenceCategory) findPreference("privacy");
-            PreferenceCategory clearAndExitCategory = (PreferenceCategory) findPreference("clear_and_exit");
+            PreferenceCategory privacyCategory = findPreference("privacy");
+            PreferenceCategory clearAndExitCategory = findPreference("clear_and_exit");
+
+            // Remove the lint warnings below that the preference categories might be null.
+            assert privacyCategory != null;
+            assert clearAndExitCategory != null;
 
             // Remove the form data preferences.
             privacyCategory.removePreference(formDataPreference);
@@ -229,7 +285,7 @@ public class SettingsFragment extends PreferenceFragment {
         homepagePreference.setSummary(savedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
 
         // Set the font size as the summary text for the preference.
-        fontSizePreference.setSummary(savedPreferences.getString("font_size", getString(R.string.font_size_default_value)) + "%%");
+        fontSizePreference.setSummary(savedPreferences.getString("font_size", getString(R.string.font_size_default_value)) + "%");
 
         // Disable the JavaScript preference if Night Mode is enabled.  JavaScript will be enabled for all web pages.
         javaScriptPreference.setEnabled(!nightMode);
@@ -1574,7 +1630,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                 case "font_size":
                     // Update the font size summary text.
-                    fontSizePreference.setSummary(sharedPreferences.getString("font_size", getString(R.string.font_size_default_value)) + "%%");
+                    fontSizePreference.setSummary(sharedPreferences.getString("font_size", getString(R.string.font_size_default_value)) + "%");
                     break;
 
                 case "open_intents_in_new_tab":

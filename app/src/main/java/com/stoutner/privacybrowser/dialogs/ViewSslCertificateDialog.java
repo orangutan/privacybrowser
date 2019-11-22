@@ -20,15 +20,16 @@
 package com.stoutner.privacybrowser.dialogs;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.http.SslCertificate;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -39,6 +40,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
+import androidx.preference.PreferenceManager;
 
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.R;
@@ -69,18 +71,24 @@ public class ViewSslCertificateDialog extends DialogFragment {
         return viewSslCertificateDialog;
     }
 
+    @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Remove the incorrect lint warning below that the activity might be null.
-        assert getActivity() != null;
+        // Get a handle for the activity and the context.
+        Activity activity = getActivity();
+        Context context = getContext();
+
+        // Remove the incorrect lint warnings below that the activity and context might be null.
+        assert activity != null;
+        assert context != null;
 
         // Get the activity's layout inflater.
-        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+        LayoutInflater layoutInflater = activity.getLayoutInflater();
 
         // Get the arguments.
         Bundle arguments = getArguments();
 
-        // Remove the incorrect lint warning below that `getArguments().getLong()` might be null.
+        // Remove the incorrect lint warning below that `getLong()` might be null.
         assert arguments != null;
 
         // Get the current position of this WebView fragment.
@@ -98,11 +106,12 @@ public class ViewSslCertificateDialog extends DialogFragment {
         // Get a handle for the current WebView.
         NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
 
+
         // Use a builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
         // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         // Get the screenshot and theme preferences.
         boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
@@ -110,9 +119,9 @@ public class ViewSslCertificateDialog extends DialogFragment {
 
         // Set the style according to the theme.
         if (darkTheme) {
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogDark);
+            dialogBuilder = new AlertDialog.Builder(activity, R.style.PrivacyBrowserAlertDialogDark);
         } else {
-            dialogBuilder = new AlertDialog.Builder(getActivity(), R.style.PrivacyBrowserAlertDialogLight);
+            dialogBuilder = new AlertDialog.Builder(activity, R.style.PrivacyBrowserAlertDialogLight);
         }
 
         // Create a drawable version of the favorite icon.
@@ -121,7 +130,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
         // Set the icon.
         dialogBuilder.setIcon(favoriteIconDrawable);
 
-        // Set a listener on the negative button.  Using `null` as the listener closes the dialog without doing anything else.
+        // Set the close button listener.  Using `null` as the listener closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.close, null);
 
         // Get the SSL certificate.
@@ -222,17 +231,15 @@ public class ViewSslCertificateDialog extends DialogFragment {
             SpannableStringBuilder endDateStringBuilder = new SpannableStringBuilder(endDateLabel + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.LONG).format(endDate));
 
             // Create a red foreground color span.  The deprecated `getColor` must be used until the minimum API >= 23.
-            @SuppressWarnings("deprecation") ForegroundColorSpan redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
+            ForegroundColorSpan redColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.red_a700));
 
             // Create a blue foreground color span.
             ForegroundColorSpan blueColorSpan;
 
             // Set the blue color span according to the theme.  The deprecated `getColor()` must be used until the minimum API >= 23.
             if (darkTheme) {
-                //noinspection deprecation
                 blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_400));
             } else {
-                //noinspection deprecation
                 blueColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blue_700));
             }
 

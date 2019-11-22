@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -200,8 +201,14 @@ public class LogcatActivity extends AppCompatActivity implements SaveLogcatDialo
 
     @Override
     public void onSaveLogcat(DialogFragment dialogFragment) {
+        // Get a handle for the dialog fragment.
+        Dialog dialog = dialogFragment.getDialog();
+
+        // Remove the lint warning below that the dialog fragment might be null.
+        assert dialog != null;
+
         // Get a handle for the file name edit text.
-        EditText fileNameEditText = dialogFragment.getDialog().findViewById(R.id.file_name_edittext);
+        EditText fileNameEditText = dialog.findViewById(R.id.file_name_edittext);
 
         // Get the file path string.
         filePathString = fileNameEditText.getText().toString();
@@ -312,6 +319,9 @@ public class LogcatActivity extends AppCompatActivity implements SaveLogcatDialo
     // The activity result is called after browsing for a file in the save alert dialog.
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Run the default commands.
+        super.onActivityResult(requestCode, resultCode, data);
+
         // Don't do anything if the user pressed back from the file picker.
         if (resultCode == Activity.RESULT_OK) {
             // Get a handle for the save dialog fragment.
@@ -322,17 +332,26 @@ public class LogcatActivity extends AppCompatActivity implements SaveLogcatDialo
                 // Get a handle for the save dialog.
                 Dialog saveDialog = saveDialogFragment.getDialog();
 
+                // Remove the lint warning below that the save dialog might be null.
+                assert saveDialog != null;
+
                 // Get a handle for the file name edit text.
                 EditText fileNameEditText = saveDialog.findViewById(R.id.file_name_edittext);
 
                 // Instantiate the file name helper.
                 FileNameHelper fileNameHelper = new FileNameHelper();
 
-                // Convert the file name URI to a file name path.
-                String fileNamePath = fileNameHelper.convertUriToFileNamePath(data.getData());
+                // Get the file name URI from the intent.
+                Uri fileNameUri= data.getData();
 
-                // Set the file name path as the text of the file name edit text.
-                fileNameEditText.setText(fileNamePath);
+                // Process the file name URI if it is not null.
+                if (fileNameUri != null) {
+                    // Convert the file name URI to a file name path.
+                    String fileNamePath = fileNameHelper.convertUriToFileNamePath(fileNameUri);
+
+                    // Set the file name path as the text of the file name edit text.
+                    fileNameEditText.setText(fileNamePath);
+                }
             }
         }
     }

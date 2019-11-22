@@ -129,6 +129,7 @@ import com.stoutner.privacybrowser.dialogs.DownloadImageDialog;
 import com.stoutner.privacybrowser.dialogs.DownloadLocationPermissionDialog;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkFolderDialog;
+import com.stoutner.privacybrowser.dialogs.FontSizeDialog;
 import com.stoutner.privacybrowser.dialogs.HttpAuthenticationDialog;
 import com.stoutner.privacybrowser.dialogs.PinnedMismatchDialog;
 import com.stoutner.privacybrowser.dialogs.SaveWebpageImageDialog;
@@ -161,12 +162,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 // AppCompatActivity from android.support.v7.app.AppCompatActivity must be used to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
         DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, DownloadLocationPermissionDialog.DownloadLocationPermissionDialogListener, EditBookmarkDialog.EditBookmarkListener,
-        EditBookmarkFolderDialog.EditBookmarkFolderListener, NavigationView.OnNavigationItemSelectedListener, PinnedMismatchDialog.PinnedMismatchListener, PopulateBlocklists.PopulateBlocklistsListener, SaveWebpageImageDialog.SaveWebpageImageListener,
+        EditBookmarkFolderDialog.EditBookmarkFolderListener, FontSizeDialog.UpdateFontSizeListener, NavigationView.OnNavigationItemSelectedListener, PinnedMismatchDialog.PinnedMismatchListener, PopulateBlocklists.PopulateBlocklistsListener, SaveWebpageImageDialog.SaveWebpageImageListener,
         StoragePermissionDialog.StoragePermissionDialogListener, UrlHistoryDialog.NavigateHistoryListener, WebViewTabFragment.NewTabListener {
 
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxyThroughOrbot()`.
@@ -815,14 +817,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         File localStorageDirectory = new File (privateDataDirectoryString + "/app_webview/Local Storage/");
         int localStorageDirectoryNumberOfFiles = 0;
         if (localStorageDirectory.exists()) {
-            localStorageDirectoryNumberOfFiles = localStorageDirectory.list().length;
+            // `Objects.requireNonNull` removes a lint warning that `localStorageDirectory.list` might produce a null pointed exception if it is dereferenced.
+            localStorageDirectoryNumberOfFiles = Objects.requireNonNull(localStorageDirectory.list()).length;
         }
 
         // Get a count of the number of files in the IndexedDB directory.
         File indexedDBDirectory = new File (privateDataDirectoryString + "/app_webview/IndexedDB");
         int indexedDBDirectoryNumberOfFiles = 0;
         if (indexedDBDirectory.exists()) {
-            indexedDBDirectoryNumberOfFiles = indexedDBDirectory.list().length;
+            // `Objects.requireNonNull` removes a lint warning that `indexedDBDirectory.list` might produce a null pointed exception if it is dereferenced.
+            indexedDBDirectoryNumberOfFiles = Objects.requireNonNull(indexedDBDirectory.list()).length;
         }
 
         // Enable Clear DOM Storage if there is any.
@@ -872,62 +876,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             menu.findItem(R.id.user_agent_custom).setChecked(true);
         }
 
-        // Instantiate the font size title and the selected font size menu item.
-        String fontSizeTitle;
-        MenuItem selectedFontSizeMenuItem;
-
-        // Prepare the font size title and current size menu item.
-        //noinspection DuplicateBranchesInSwitch
-        switch (fontSize) {
-            case 25:
-                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.twenty_five_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_twenty_five_percent);
-                break;
-
-            case 50:
-                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.fifty_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_fifty_percent);
-                break;
-
-            case 75:
-                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.seventy_five_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_seventy_five_percent);
-                break;
-
-            case 100:
-                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.one_hundred_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_one_hundred_percent);
-                break;
-
-            case 125:
-                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.one_hundred_twenty_five_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_one_hundred_twenty_five_percent);
-                break;
-
-            case 150:
-                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.one_hundred_fifty_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_one_hundred_fifty_percent);
-                break;
-
-            case 175:
-                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.one_hundred_seventy_five_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_one_hundred_seventy_five_percent);
-                break;
-
-            case 200:
-                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.two_hundred_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_two_hundred_percent);
-                break;
-
-            default:
-                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.one_hundred_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_one_hundred_percent);
-                break;
-        }
-
-        // Set the font size title and select the current size menu item.
-        fontSizeMenuItem.setTitle(fontSizeTitle);
-        selectedFontSizeMenuItem.setChecked(true);
+        // Set the font size title.
+        fontSizeMenuItem.setTitle(getString(R.string.font_size) + " - " + fontSize + "%");
 
         // Run all the other default commands.
         super.onPrepareOptionsMenu(menu);
@@ -1506,58 +1456,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Consume the event.
                 return true;
 
-            case R.id.font_size_twenty_five_percent:
-                // Set the font size.
-                currentWebView.getSettings().setTextZoom(25);
+            case R.id.font_size:
+                // Instantiate the font size dialog.
+                DialogFragment fontSizeDialogFragment = FontSizeDialog.displayDialog(currentWebView.getSettings().getTextZoom());
 
-                // Consume the event.
-                return true;
-
-            case R.id.font_size_fifty_percent:
-                // Set the font size.
-                currentWebView.getSettings().setTextZoom(50);
-
-                // Consume the event.
-                return true;
-
-            case R.id.font_size_seventy_five_percent:
-                // Set the font size.
-                currentWebView.getSettings().setTextZoom(75);
-
-                // Consume the event.
-                return true;
-
-            case R.id.font_size_one_hundred_percent:
-                // Set the font size.
-                currentWebView.getSettings().setTextZoom(100);
-
-                // Consume the event.
-                return true;
-
-            case R.id.font_size_one_hundred_twenty_five_percent:
-                // Set the font size.
-                currentWebView.getSettings().setTextZoom(125);
-
-                // Consume the event.
-                return true;
-
-            case R.id.font_size_one_hundred_fifty_percent:
-                // Set the font size.
-                currentWebView.getSettings().setTextZoom(150);
-
-                // Consume the event.
-                return true;
-
-            case R.id.font_size_one_hundred_seventy_five_percent:
-                // Set the font size.
-                currentWebView.getSettings().setTextZoom(175);
-
-                // Consume the event.
-                return true;
-
-            case R.id.font_size_two_hundred_percent:
-                // Set the font size.
-                currentWebView.getSettings().setTextZoom(200);
+                // Show the font size dialog.
+                fontSizeDialogFragment.show(getSupportFragmentManager(), getString(R.string.font_size));
 
                 // Consume the event.
                 return true;
@@ -3106,6 +3010,31 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
+    public void onApplyNewFontSize(DialogFragment dialogFragment) {
+        // Get the dialog.
+        Dialog dialog = dialogFragment.getDialog();
+
+        // Remove the incorrect lint warning below tha the dialog might be null.
+        assert dialog != null;
+
+        // Get a handle for the font size edit text.
+        EditText fontSizeEditText = dialog.findViewById(R.id.font_size_edittext);
+
+        // Initialize the new font size variable with the current font size.
+        int newFontSize = currentWebView.getSettings().getTextZoom();
+
+        // Get the font size from the edit text.
+        try {
+            newFontSize = Integer.valueOf(fontSizeEditText.getText().toString());
+        } catch (Exception exception) {
+            // If the edit text does not contain a valid font size do nothing.
+        }
+
+        // Apply the new font size.
+        currentWebView.getSettings().setTextZoom(newFontSize);
+    }
+
+    @Override
     public void onSaveWebpageImage(DialogFragment dialogFragment) {
         // Get the dialog.
         Dialog dialog = dialogFragment.getDialog();
@@ -3370,7 +3299,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 orbotStatus = intent.getStringExtra("org.torproject.android.intent.extra.STATUS");
 
                 // If Privacy Browser is waiting on Orbot, load the website now that Orbot is connected.
-                if (orbotStatus.equals("ON") && waitingForOrbot) {
+                if ((orbotStatus != null) && orbotStatus.equals("ON") && waitingForOrbot) {
                     // Reset the waiting for Orbot status.
                     waitingForOrbot = false;
 
@@ -4043,10 +3972,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Apply the font size.
-                if (fontSize == 0) {  // Apply the default font size.
-                    nestedScrollWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
-                } else {  // Apply the specified font size.
-                    nestedScrollWebView.getSettings().setTextZoom(fontSize);
+                try {  // Try the specified font size to see if it is valid.
+                    if (fontSize == 0) {  // Apply the default font size.
+                            // Try to set the font size from the value in the app settings.
+                            nestedScrollWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
+                    } else {  // Apply the font size from domain settings.
+                        nestedScrollWebView.getSettings().setTextZoom(fontSize);
+                    }
+                } catch (Exception exception) {  // The specified font size is invalid
+                    // Set the font size to be 100%
+                    nestedScrollWebView.getSettings().setTextZoom(100);
                 }
 
                 // Set the user agent.
@@ -4182,9 +4117,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     nestedScrollWebView.getSettings().setJavaScriptEnabled(defaultJavaScriptEnabled);
                 }
 
-                // Apply the default settings.
+                // Apply the default first-party cookie setting.
                 cookieManager.setAcceptCookie(nestedScrollWebView.getAcceptFirstPartyCookies());
-                nestedScrollWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
+
+                // Apply the default font size setting.
+                try {
+                    // Try to set the font size from the value in the app settings.
+                    nestedScrollWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
+                } catch (Exception exception) {
+                    // If the app settings value is invalid, set the font size to 100%.
+                    nestedScrollWebView.getSettings().setTextZoom(100);
+                }
 
                 // Apply the form data setting if the API < 26.
                 if (Build.VERSION.SDK_INT < 26) {
