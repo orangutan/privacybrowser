@@ -24,23 +24,24 @@
     </head>
 
     <body>
-        <h3><img class="title" src="../shared_images/vpn_key_blue_dark.png"> Tor ve Limitleri</h3>
+        <h3><img class="title" src="../shared_images/vpn_key_blue_dark.png"> Proxies and Their Limits</h3>
 
         <p>İnternet gizliliğini ihlal etmek isteyen iki genel kötü oyuncu kategorisi vardır:
             İSS’lere (İnternet Servis Sağlayıcıları) erişimi olan kötü niyetli hükümetler ve sosyal ve reklam ağlarını yöneten mega şirketler.
-            TOR (Soğan Yönlendirme Protokolü), kötü niyetli hükümetlerden (internet trafiğini gözetleyen)
-            gizliliği korumakta kullanışlıdır fakat mega şirketlerden (web sunucularına kötü amaçlı kod yerleştiren) korumaz.</p>
+            Proxies like TOR (The Onion Router) and I2P (the Invisible Internet Project) are useful in protecting privacy from malicious governments (which spy on traffic in transit)
+            but not from mega corporations (which embed malicious code on web servers).</p>
 
 
         <h3><img class="title" src="../shared_images/language_blue_dark.png"> Kötü Niyetli Hükümetler</h3>
 
         <p>Kötü niyetli hükümetler, sık sık muhalifleri ve aktivistleri cezalandırmak için kendi vatandaşlarını gözetler.
             Bunu genellikle yerel İSS’leri kullanarak ve onları, tüm kullanıcıların internet ziyaretlerinde kullandıkları IP adresleri gösteren bilgileri ifşa etmeye zorlayarak yaparlar.
-            Tor, bir kullanıcının cihazından çıkan trafiği şifreleyerek ve son hedefe göndermeden önce internette üç ayrı sunucuya yönlendirerek bu gizlilik ihlalinin üstesinden gelmesi için tasarlanmıştır.
-            Bu da, hiçbir İSS, sunucu veya web sitesinin, aynı anda hem <a href="https://ipleak.net">kullanıcı cihazının IP adresini</a> hem de son web sunucusunun IP adresini bilemeyeceği anlamına gelir.
-            Kötücül hükümetler ve kontrolündeki İSS’ler, kullanıcının Tor kullandığını bilmelerine rağmen hangi web sunucularına eriştiğini söyleyemez.
-            Bazı ülkelerde, Tor kullanmak yasadışı davranışların bir kanıtı olarak yorumlanabilir (“saklayacak bir şeyin olmasaydı, internet trafiğini şifrelemezdin.” mantığı) ve bu sebeple,
-            yasadışı eylemlerde bulunduklarını düşündükleri kullanıcılar hükümetlerce cezalandırılabilir. Bu yüzden Tor gizlilik konusunda yardımcı olabilir, fakat her derde deva değildir.</p>
+            Layered proxies are designed to defeat this infringement of privacy by encrypting the traffic from a user’s device and routing it through multiple servers on the internet
+            before sending it on to the final destination.
+            This means that no individual ISP, server, or website, can know both the <a href="https://ipleak.net">IP address of the user’s device</a> and the IP address of the final web server.
+            Malicious governments and the ISPs they control cannot tell which web servers a user is accessing, although they can tell that the user is using a layered proxy service.
+            In some parts of the world, using proxies could be construed as an evidence of illegal behavior (“If you didn’t have anything to hide you wouldn’t be encrypting your traffic”)
+            and users could be punished because governments assume they are doing something that is prohibited. Thus, proxies can be helpful, but they aren’t a panacea.</p>
 
 
         <h3><img class="title" src="../shared_images/language_blue_dark.png"> Mega Şirketler</h3>
@@ -48,7 +49,7 @@
         <p>Bir kullanıcı bir web sunucusuna bağlandığında, web sunucusu kullanıcının IP adresini görebilir.
             Mükemmel bir teknik olmasa da, IP adresleri <a href="https://www.whatismyip.com/">makul bir doğrulukla</a> fiziksel adreslere dönüştürülebilir.
             Küçük web sunucuları, kendilerini ziyaret eden kullanıcılarının konumlarını belirlemek için IP adreslerine genel anlamda güvenirler.
-            Tor, kullanıcının konumunu bu sunuculardan gizlemek için iyi bir çözümdür.
+            Proxies are a good solution to mask the user’s location from these servers.
             Ancak, sosyal medya ve reklam ağlarına sahip büyük mega kuruluşlar, cihazlar ve IP adresler üzerinden kullanıcıları izlemek için tüm bilgileri kullanır.
             Bu profiller, JavaScript, çerezler, izleme kimlikleri ve <a href="https://panopticlick.eff.org/">browser fingerprinting (tarayıcı tanılama)</a>
             dahil olmak üzere kullanıcıları tanımlamak için çeşitli teknikleri kullanır.
@@ -58,28 +59,26 @@
         <p>Ziyaret edilen her siteyi, satın alınan her şeyi, satın almak için kullanılan her kredi kartını, eşyaların kargolandığı her adresi ve internete yüklenen her fotoğrafın GPS metaverilerini izlerler.
             Bu sayede, bir kullanıcının yaşı, cinsiyeti, medeni hali, adresi, politik görüşü, dini görüşü, aile çevresi, evcil hayvan sayısı ve elde edebildikleri her şey hakkında bir profil oluştururlar.
             Hatta yerel mağazalardan kredi kart işlem veri tabanlarını satın alırlar, böylece oluşturdukları profillerdeki kullanıcıların çevrimdışı satın alma modellerini de takip edebilirler.
-            Tor, mega şirketlere karşı, bir kullanıcı hakkında bir IP adresinin gösterebileceğinden daha fazla bilgiye sahip olduklarından dolayı gerçek bir gizlilik koruması sağlamaz.</p>
+            Because they already have much more accurate address information about a user than an IP address discloses, proxies provides no real privacy protection against mega corporations.</p>
 
         <p>Mega şirketlere karşı en iyi gizlilik koruması, reklamları engellemek, JavaScript’i, DOM depolamayı ve çerezleri devre dışı bırakıp web gezintisi yapmak
             ve fingerprint yapılması zor olan bir tarayıcı kullanmak olacaktır.</p>
 
 
-        <h3><img class="title" src="../shared_images/orbot_blue_dark.png"> Tor Kullanma</h3>
+        <h3><img class="title" src="../shared_images/open_in_browser_blue_dark.png"> Using Proxies</h3>
 
-        <p>Kısıtlamalarına rağmen, Tor bazı koşullarda faydalı olabilir.
-            Tor projesinin, <a href="https://f-droid.org/repository/browse/?fdfilter=orbot&fdid=org.torproject.android">F-Droid</a>
-            üzerinde ve Privacy Browser’ın dağıtımı yapılan her yerde erişilebilecek Orbot adlı Android uygulaması vardır. Privacy Browser, Orbot’u proxy olarak kullanmak için bir ayara sahiptir.
-            Bu ayar açıldığında, Privacy Browser’ın uygulama çubuğunun varsayılan rengi açık griden açık mavi bir arkaplana dönecektir.
-            Privacy Browser’in Orbot proxy ayarı etkin olduğunda, internet erişiminin çalışması için Orbot’un çalışması ve Tor’a bağlı olması gereklidir.
-            İnternet trafiği birçok Tor devresi (node) üzerinden yönlendirildiği için, Tor kullanımı normal internet trafiğinden daha yavaş olacaktır.</p>
+        <p>Despite their limitations, proxies can be useful in some circumstances.
+            <a href="https://play.google.com/store/apps/details?id=org.torproject.android">Tor</a> and <a href="https://f-droid.org/en/packages/net.i2p.android.router/">I2p</a>
+            have Android apps that make it easy to use their proxy networks. When proxying is turned on in Privacy Browser, the app bar will have a light blue background instead of the default light grey.
+            Because traffic is being routed through several proxy nodes, using a layered proxy is often much slower than connecting directly to the internet.</p>
 
         <img class="center" src="images/tor.png">
 
         <h3><img class="title" src="../shared_images/file_download_blue_dark.png"> Tor ile Dosya İndirme</h3>
 
-        <p>Orbot, proxy modunda çalışırken, Privacy Browser kullanarak internette gezinmek Tor ağı üzerinden yönlendirilir, fakat dosya indirmeleri yönlendirilmez.
-            Bunun nedeni, Privacy Browser’ın dosyaları indirmek için bir proxy ayarı olmayan Android’in yerleşik indirme yöneticisi kullanmasıdır.
-            Orbot aracılığıyla dosya indirmek isteyen kullanıcıların VPN modunu etkinleştirmesi gerekir.</p>
+        <p>When Orbot is operating in proxy mode, browsing the internet using Privacy Browser will be routed through the proxy, but file downloads will not.
+            This is because Privacy Browser uses Android’s builtin download manager to download files, which doesn’t have a proxy option.
+            Users who want to download files via Orbot need to enable its VPN mode.  There is currently no way to download files through I2P.</p>
 
         <img class="center" src="../shared_images/vpn_mode.png">
     </body>

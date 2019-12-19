@@ -51,8 +51,6 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-// `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the `AlertDialog`.
-@SuppressLint("InflateParams")
 public class ViewSslCertificateDialog extends DialogFragment {
     public static ViewSslCertificateDialog displayDialog(long webViewFragmentId) {
         // Create an arguments bundle.
@@ -71,6 +69,8 @@ public class ViewSslCertificateDialog extends DialogFragment {
         return viewSslCertificateDialog;
     }
 
+    // `@SuppressLing("InflateParams")` removes the warning about using `null` as the parent view group when inflating the alert dialog.
+    @SuppressLint("InflateParams")
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -88,7 +88,7 @@ public class ViewSslCertificateDialog extends DialogFragment {
         // Get the arguments.
         Bundle arguments = getArguments();
 
-        // Remove the incorrect lint warning below that `getLong()` might be null.
+        // Remove the incorrect lint warning below that the arguments might be null.
         assert arguments != null;
 
         // Get the current position of this WebView fragment.
@@ -141,8 +141,8 @@ public class ViewSslCertificateDialog extends DialogFragment {
             // Set the title.
             dialogBuilder.setTitle(R.string.unencrypted_website);
 
-            // Set the Layout.  The parent view is `null` because it will be assigned by `AlertDialog`.
-            dialogBuilder.setView(layoutInflater.inflate(R.layout.unencrypted_website, null));
+            // Set the Layout.  The parent view is `null` because it will be assigned by the alert dialog.
+            dialogBuilder.setView(layoutInflater.inflate(R.layout.unencrypted_website_dialog, null));
 
             // Create an alert dialog from the alert dialog builder.
             final AlertDialog alertDialog = dialogBuilder.create();
@@ -163,8 +163,8 @@ public class ViewSslCertificateDialog extends DialogFragment {
             // Set the title.
             dialogBuilder.setTitle(R.string.ssl_certificate);
 
-            // Set the layout.  The parent view is `null` because it will be assigned by `AlertDialog`.
-            dialogBuilder.setView(layoutInflater.inflate(R.layout.view_ssl_certificate, null));
+            // Set the layout.  The parent view is `null` because it will be assigned by the alert dialog.
+            dialogBuilder.setView(layoutInflater.inflate(R.layout.view_ssl_certificate_dialog, null));
 
             // Create an alert dialog from the builder.
             final AlertDialog alertDialog = dialogBuilder.create();

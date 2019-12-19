@@ -21,13 +21,14 @@ package com.stoutner.privacybrowser.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.preference.PreferenceManager;
 
 import com.stoutner.privacybrowser.R;
 
@@ -35,8 +36,14 @@ public class AboutViewSourceDialog extends DialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Get the context.
+        Context context = getContext();
+
+        // Remove the incorrect lint warning below that the context might be null.
+        assert context != null;
+
         // Get a handle for the shared preferences.
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         // Get the screenshot and theme preferences.
         boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);

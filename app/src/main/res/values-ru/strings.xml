@@ -50,6 +50,7 @@
     <string name="new_tab">Новая вкладка</string>
     <string name="loading">Загрузка…</string>
     <string name="error">Ошибка:</string>
+    <string name="apply">Применить</string>
 
     <!-- Loading Blocklists. -->
     <string name="loading_easylist">Загрузка EasyList</string>
@@ -314,7 +315,7 @@
     <string name="domain_name_instructions">добавьте *. для включения всех поддоменов (напр. *.stoutner.com)</string>
     <string-array name="font_size_array">
         <item>Настройки по умолчанию</item>
-        <item>Custom font size</item>
+        <item>Пользовательский размер шрифта</item>
     </string-array>
     <string-array name="swipe_to_refresh_array">
         <item>Настройки по умолчанию</item>
@@ -390,8 +391,7 @@
     <string name="ok">OK</string>
 
     <!-- Orbot. -->
-    <string name="orbot_proxy_not_installed">Проксирование Orbot работает только с установленным Orbot.</string>
-    <string name="waiting_for_orbot">Ожидание Orbot для подключения...</string>  <!-- The WebView in API 19 does not like the ellipse character. -->
+    <string name="waiting_for_orbot">Ожидание Orbot для подключения.</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">О Privacy Browser</string>
@@ -507,18 +507,6 @@
         <string name="facebook_click_ids_summary">Удалять из URL “?fbclid=”, “&amp;fbclid=”, “?fbadid=”, и “&amp;fbadid=” и все что будет после.</string>
         <string name="twitter_amp_redirects">AMP-перенаправления в Twitter</string>
         <string name="twitter_amp_redirects_summary">Удалять из URL “?amp=1” и все что будет после.</string>
-    <string name="tor">Tor</string>
-        <string name="proxy_through_orbot">Прокси через Orbot</string>
-        <string name="proxy_through_orbot_summary">Проксировать весь веб-трафик через Orbot на localhost:8118.</string>
-        <string name="tor_homepage">Домашняя страница Tor</string>
-        <string name="tor_search">Поиск Tor</string>
-        <string-array name="tor_search_entries">
-            <item>Searx</item>
-            <item>DuckDuckGo - JavaScript выключен</item>
-            <item>DuckDuckGo - JavaScript включен</item>
-            <item>Настраиваемый</item>
-        </string-array>
-        <string name="tor_search_custom_url">Настраиваемый URL поиска Tor</string>
     <string name="search">Поиск</string>
         <string-array name="search_entries">
             <item>Startpage</item>

@@ -397,9 +397,15 @@
     <string name="download_location_message">Privacy Browser needs the storage permission to use the public download directory. If it is denied, the app’s download directory will be used instead.</string>
     <string name="ok">OK</string>
 
-    <!-- Orbot. -->
-    <string name="orbot_proxy_not_installed">Orbot proxy will not work unless Orbot is installed.</string>
-    <string name="waiting_for_orbot">Waiting for Orbot to connect...</string>  <!-- The WebView in API 19 does not like the ellipse character. -->
+    <!-- Proxy. -->
+    <string name="proxy_not_installed_dialog" translatable="false">Proxy not installed dialog</string>  <!-- This string is used to tag the proxy not installed dialog.  It is never displayed to the user. -->
+    <string name="waiting_for_proxy_dialog" translatable="false">Waiting for proxy dialog</string>  <!-- This string is used to tag the waiting for proxy dialog.  It is never displayed to the user. -->
+    <string name="proxies">Proxies</string>
+    <string name="orbot_not_installed_title">Orbot Not Installed</string>
+    <string name="orbot_not_installed_message">Proxying through Orbot will not work unless the Orbot app is installed.</string>
+    <string name="i2p_not_installed_title">I2P Not Installed</string>
+    <string name="i2p_not_installed_message">Proxying through I2P will not work unless the I2P app is installed</string>
+    <string name="waiting_for_orbot">Waiting for Orbot to connect.</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">About Privacy Browser</string>
@@ -420,6 +426,7 @@
     <string name="webview_provider">WebView Provider:</string>
     <string name="webview_version">WebView Version:</string>
     <string name="orbot">Orbot:</string>
+    <string name="i2p">I2P:</string>
     <string name="openkeychain">OpenKeychain:</string>
     <string name="easylist_label">EasyList:</string>
     <string name="easyprivacy_label">EasyPrivacy:</string>
@@ -546,24 +553,6 @@
         <string name="facebook_click_ids_summary">Remove “?fbclid=”, “&amp;fbclid=”, “?fbadid=”, and “&amp;fbadid=” and anything after them from URLs.</string>
         <string name="twitter_amp_redirects">Twitter AMP redirects</string>
         <string name="twitter_amp_redirects_summary">Remove “?amp=1” and anything after it from URLs.</string>
-    <string name="tor">Tor</string>
-        <string name="proxy_through_orbot">Proxy through Orbot</string>
-        <string name="proxy_through_orbot_summary">Proxy all web traffic through Orbot on localhost:8118.</string>
-        <string name="tor_homepage">Tor homepage</string>
-        <string name="tor_search">Tor search</string>
-        <string-array name="tor_search_entries">
-            <item>Searx</item>
-            <item>DuckDuckGo - JavaScript disabled</item>
-            <item>DuckDuckGo - JavaScript enabled</item>
-            <item>Custom</item>
-        </string-array>
-        <string-array name="tor_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
-            <item>http://ulrn6sryqaifefld.onion/?q=</item>
-            <item>https://3g2upl4pq6kufc4m.onion/html/?q=</item>
-            <item>https://3g2upl4pq6kufc4m.onion/?q=</item>
-            <item>Custom URL</item><!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
-        </string-array>
-        <string name="tor_search_custom_url">Tor search custom URL</string>
     <string name="search">Search</string>
         <string-array name="search_entries">
             <item>Startpage</item>
@@ -578,7 +567,7 @@
             <item>Yahoo - JavaScript enabled</item>
             <item>Custom</item>
         </string-array>
-        <string-array name="search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
+        <string-array name="search_entry_values" translatable="false">  <!-- None of the items in this string array should be translated. -->
             <item>https://www.startpage.com/do/search?query=</item>
             <item>https://searx.me/?q=</item>
             <item>https://duckduckgo.com/html/?q=</item>
@@ -593,6 +582,29 @@
         </string-array>
         <string name="search_custom_url">Search custom URL</string>
         <string name="custom_url">Custom URL</string>
+    <string name="proxy">Proxy</string>
+        <string name="proxy_none">None</string>
+        <string name="proxy_tor">Tor</string>
+        <string name="proxy_i2p">I2P</string>
+        <string name="proxy_custom">Custom</string>
+        <string-array name="proxy_entries">
+            <item>None</item>
+            <item>Tor</item>
+            <item>I2P</item>
+            <item>Custom</item>
+        </string-array>
+        <string-array name="proxy_entry_values" translatable="false">  <!-- None of the items in this string array should be translated. They are referenced in the code and are never displayed on the screen.-->
+            <item>None</item>
+            <item>Tor</item>
+            <item>I2P</item>
+            <item>Custom</item>
+        </string-array>
+        <string name="no_proxy_enabled">No proxy enabled.  Connect directly to the internet.</string>
+        <string name="tor_enabled">Tor - proxy through localhost on port 8118.</string>
+        <string name="i2p_enabled">I2P - proxy through localhost on port 4444.</string>
+        <string name="custom_proxy">Custom proxy</string>
+        <string name="proxy_custom_host">Proxy custom host</string>
+        <string name="proxy_custom_port">Proxy custom port</string>
     <string name="full_screen">Full Screen</string>
         <string name="full_screen_browsing_mode">Full screen browsing mode</string>
         <string name="full_screen_browsing_mode_summary">Double-tap to toggle full screen browsing mode.</string>
@@ -634,11 +646,11 @@
     <!-- Non-translatable preference default values. -->
     <string name="user_agent_default_value" translatable="false">Privacy Browser</string>
     <string name="custom_user_agent_default_value" translatable="false">PrivacyBrowser/1.0</string>
-    <string name="tor_homepage_default_value" translatable="false">https://3g2upl4pq6kufc4m.onion/</string>
-    <string name="tor_search_default_value" translatable="false">https://3g2upl4pq6kufc4m.onion/html?q=</string>
-    <string name="tor_search_custom_url_default_value" translatable="false" />
     <string name="search_default_value" translatable="false">https://www.startpage.com/do/search?query=</string>
     <string name="search_custom_url_default_value" translatable="false" />
+    <string name="proxy_default_value" translatable="false">None</string>
+    <string name="proxy_custom_host_default_value" translatable="false" />
+    <string name="proxy_custom_port_default_value" translatable="false" />
     <string name="homepage_default_value" translatable="false">https://www.startpage.com/</string>
     <string name="font_size_default_value" translatable="false">100</string>
 

@@ -52,6 +52,7 @@
     <string name="new_tab">Nuova Scheda</string>
     <string name="loading">Caricamento…</string>
     <string name="error">Errore:</string>
+    <string name="apply">Applica</string>
 
     <!-- Loading Blocklists. -->
     <string name="loading_easylist">Caricamento EasyList</string>
@@ -317,7 +318,7 @@
     <string name="domain_name_instructions">è possibile anteporre *. a un dominio per includere tutti i sottodomini (es. *.stoutner.com)</string>
     <string-array name="font_size_array">
         <item>Impostazioni di default</item>
-        <item>Custom font size</item>
+        <item>Dimensione carattere personalizzata</item>
     </string-array>
     <string-array name="swipe_to_refresh_array">
         <item>Impostazioni di default</item>
@@ -395,8 +396,7 @@
     <string name="ok">OK</string>
 
     <!-- Orbot. -->
-    <string name="orbot_proxy_not_installed">Il Proxy con Orbot funziona solo se è installato Orbot.</string>
-    <string name="waiting_for_orbot">In attesa della connessione di Orbot...</string>  <!-- The WebView in API 19 does not like the ellipse character. -->
+    <string name="waiting_for_orbot">In attesa della connessione di Orbot.</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">Informazioni su Privacy Browser</string>
@@ -513,18 +513,6 @@
         <string name="facebook_click_ids_summary">Rimuovi “?fbclid=”, “&amp;fbclid=”, “?fbadid=”, e “&amp;fbadid=” e tutto quello che segue dalle URL.</string>
         <string name="twitter_amp_redirects">Reindirizzamenti Twitter AMP</string>
         <string name="twitter_amp_redirects_summary">Rimuovi “?amp=1”  e tutto quello che segue dalle URL.</string>
-    <string name="tor">Tor</string>
-        <string name="proxy_through_orbot">Utilizza Proxy con Orbot</string>
-        <string name="proxy_through_orbot_summary">Utilizza Proxy attraverso Orbot su localhost:8118.</string>
-        <string name="tor_homepage">Tor Homepage</string>
-        <string name="tor_search">Tor - Ricerca</string>
-        <string-array name="tor_search_entries">
-            <item>Searx</item>
-            <item>DuckDuckGo - JavaScript disabilitato</item>
-            <item>DuckDuckGo - JavaScript abilitato</item>
-            <item>Personalizzata</item>
-        </string-array>
-        <string name="tor_search_custom_url">Tor - Ricerca personalizzata</string>
     <string name="search">Ricerca</string>
         <string-array name="search_entries">
             <item>Startpage</item>

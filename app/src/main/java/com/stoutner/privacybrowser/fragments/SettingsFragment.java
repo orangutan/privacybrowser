@@ -38,6 +38,7 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
+import com.stoutner.privacybrowser.helpers.ProxyHelper;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
     // Define the class variables.
@@ -82,12 +83,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Preference googleAnalyticsPreference = findPreference("google_analytics");
         Preference facebookClickIdsPreference = findPreference("facebook_click_ids");
         Preference twitterAmpRedirectsPreference = findPreference("twitter_amp_redirects");
-        Preference proxyThroughOrbotPreference = findPreference("proxy_through_orbot");
-        Preference torHomepagePreference = findPreference("tor_homepage");
-        Preference torSearchPreference = findPreference("tor_search");
-        Preference torSearchCustomURLPreference = findPreference("tor_search_custom_url");
         Preference searchPreference = findPreference("search");
         Preference searchCustomURLPreference = findPreference("search_custom_url");
+        Preference proxyPreference = findPreference("proxy");
+        Preference proxyCustomHostPreference = findPreference("proxy_custom_host");
+        Preference proxyCustomPortPreference = findPreference("proxy_custom_port");
         Preference fullScreenBrowsingModePreference = findPreference("full_screen_browsing_mode");
         Preference hideAppBarPreference = findPreference("hide_app_bar");
         Preference clearEverythingPreference = findPreference("clear_everything");
@@ -128,12 +128,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         assert googleAnalyticsPreference != null;
         assert facebookClickIdsPreference != null;
         assert twitterAmpRedirectsPreference != null;
-        assert proxyThroughOrbotPreference != null;
-        assert torHomepagePreference != null;
-        assert torSearchPreference != null;
-        assert torSearchCustomURLPreference != null;
         assert searchPreference != null;
         assert searchCustomURLPreference != null;
+        assert proxyPreference != null;
+        assert proxyCustomHostPreference != null;
+        assert proxyCustomPortPreference != null;
         assert fullScreenBrowsingModePreference != null;
         assert hideAppBarPreference != null;
         assert clearEverythingPreference != null;
@@ -153,14 +152,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         assert wideViewportPreference != null;
         assert displayWebpageImagesPreference != null;
 
-        // Set dependencies.
-        torHomepagePreference.setDependency("proxy_through_orbot");
-        torSearchPreference.setDependency("proxy_through_orbot");
+        // Set the hide app bar preference dependency.
         hideAppBarPreference.setDependency("full_screen_browsing_mode");
 
         // Get strings from the preferences.
-        String torSearchString = savedPreferences.getString("tor_search", getString(R.string.tor_search_default_value));
         String searchString = savedPreferences.getString("search", getString(R.string.search_default_value));
+        String proxyString = savedPreferences.getString("proxy", getString(R.string.proxy_default_value));
 
         // Get booleans that are used in multiple places from the preferences.
         boolean javaScriptEnabled = savedPreferences.getBoolean("javascript", false);
@@ -168,7 +165,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         boolean thirdPartyCookiesEnabled = savedPreferences.getBoolean("third_party_cookies", false);
         boolean fanboyAnnoyanceListEnabled = savedPreferences.getBoolean("fanboys_annoyance_list", true);
         boolean fanboySocialBlockingEnabled = savedPreferences.getBoolean("fanboys_social_blocking_list", true);
-        boolean proxyThroughOrbot = savedPreferences.getBoolean("proxy_through_orbot", false);
         boolean fullScreenBrowsingMode = savedPreferences.getBoolean("full_screen_browsing_mode", false);
         boolean clearEverything = savedPreferences.getBoolean("clear_everything", true);
         boolean darkTheme = savedPreferences.getBoolean("dark_theme", false);
@@ -241,27 +237,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         customUserAgentPreference.setSummary(savedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value)));
         customUserAgentPreference.setEnabled(userAgentPreference.getSummary().equals(getString(R.string.custom_user_agent)));
 
-
-        // Set the Tor homepage URL as the summary text for the `tor_homepage` preference when the preference screen is loaded.  The default is Searx: `http://ulrn6sryqaifefld.onion/`.
-        torHomepagePreference.setSummary(savedPreferences.getString("tor_homepage", getString(R.string.tor_homepage_default_value)));
-
-
-        // Set the Tor search URL as the summary text for the Tor preference when the preference screen is loaded.
-        if (torSearchString.equals("Custom URL")) {
-            // Use R.string.custom_url, which will be translated, instead of the array value, which will not.
-            torSearchPreference.setSummary(R.string.custom_url);
-        } else {
-            // Set the array value as the summary text.
-            torSearchPreference.setSummary(torSearchString);
-        }
-
-        // Set the summary text for `tor_search_custom_url`.  The default is `""`.
-        torSearchCustomURLPreference.setSummary(savedPreferences.getString("tor_search_custom_url", getString(R.string.tor_search_custom_url_default_value)));
-
-        // Enable the Tor custom URL search options only if proxying through Orbot and the search is set to `Custom URL`.
-        torSearchCustomURLPreference.setEnabled(proxyThroughOrbot && torSearchString.equals("Custom URL"));
-
-
         // Set the search URL as the summary text for the search preference when the preference screen is loaded.
         if (searchString.equals("Custom URL")) {
             // Use R.string.custom_url, which will be translated, instead of the array value, which will not.
@@ -274,6 +249,33 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         // Set the summary text for `search_custom_url` (the default is `""`) and enable it if `search` is set to `Custom URL`.
         searchCustomURLPreference.setSummary(savedPreferences.getString("search_custom_url", getString(R.string.search_custom_url_default_value)));
         searchCustomURLPreference.setEnabled(searchString.equals("Custom URL"));
+
+        // Set the summary text for the proxy preference when the preference screen is loaded.
+        switch (proxyString) {
+            case ProxyHelper.NONE:
+                proxyPreference.setSummary(getString(R.string.no_proxy_enabled));
+                break;
+
+            case ProxyHelper.TOR:
+                proxyPreference.setSummary(getString(R.string.tor_enabled));
+                break;
+
+            case ProxyHelper.I2P:
+                proxyPreference.setSummary(getString(R.string.i2p_enabled));
+                break;
+
+            case ProxyHelper.CUSTOM:
+                proxyPreference.setSummary(getString(R.string.custom_proxy));
+                break;
+        }
+
+        // Only enable the custom proxy options if a custom proxy is selected.
+        proxyCustomHostPreference.setEnabled(proxyString.equals("Custom"));
+        proxyCustomPortPreference.setEnabled(proxyString.equals("Custom"));
+
+        // Set the summary text for the custom proxy options.
+        proxyCustomHostPreference.setSummary(savedPreferences.getString("proxy_custom_host", getString(R.string.proxy_custom_host_default_value)));
+        proxyCustomPortPreference.setSummary(savedPreferences.getString("proxy_custom_port", getString(R.string.proxy_custom_port_default_value)));
 
         // Set the status of the Clear and Exit preferences.
         clearCookiesPreference.setEnabled(!clearEverything);
@@ -578,45 +580,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         }
 
-        // Set the Tor icons according to the theme.
-        if (proxyThroughOrbot) {  // Proxying is enabled.
-            if (darkTheme) {
-                proxyThroughOrbotPreference.setIcon(R.drawable.orbot_enabled_dark);
-                torHomepagePreference.setIcon(R.drawable.home_enabled_dark);
-                torSearchPreference.setIcon(R.drawable.search_enabled_dark);
-
-                // Set the custom search icon.
-                if (torSearchCustomURLPreference.isEnabled()) {
-                    torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_dark);
-                } else {
-                    torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_dark);
-                }
-            } else {
-                proxyThroughOrbotPreference.setIcon(R.drawable.orbot_enabled_light);
-                torHomepagePreference.setIcon(R.drawable.home_enabled_light);
-                torSearchPreference.setIcon(R.drawable.search_enabled_light);
-
-                // Set the custom search icon.
-                if (torSearchCustomURLPreference.isEnabled()) {
-                    torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_light);
-                } else {
-                    torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_light);
-                }
-            }
-        } else {  // Proxying is disabled.
-            if (darkTheme) {
-                proxyThroughOrbotPreference.setIcon(R.drawable.orbot_disabled_dark);
-                torHomepagePreference.setIcon(R.drawable.home_ghosted_dark);
-                torSearchPreference.setIcon(R.drawable.search_ghosted_dark);
-                torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_dark);
-            } else {
-                proxyThroughOrbotPreference.setIcon(R.drawable.orbot_disabled_light);
-                torHomepagePreference.setIcon(R.drawable.home_ghosted_light);
-                torSearchPreference.setIcon(R.drawable.search_ghosted_light);
-                torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_light);
-            }
-        }
-
         // Set the search custom URL icon.
         if (searchCustomURLPreference.isEnabled()) {
             if (darkTheme) {
@@ -629,6 +592,51 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 searchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_dark);
             } else {
                 searchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_light);
+            }
+        }
+
+        // Set the Proxy icons according to the theme and status.
+        if (proxyString.equals("None")) {  // Proxying is disabled.
+            if (darkTheme) {  // Dark theme.
+                // Set the main proxy icon to be disabled.
+                proxyPreference.setIcon(R.drawable.proxy_disabled_dark);
+
+                // Set the custom proxy icons to be ghosted.
+                proxyCustomHostPreference.setIcon(R.drawable.proxy_ghosted_dark);
+                proxyCustomPortPreference.setIcon(R.drawable.proxy_ghosted_dark);
+            } else {  // Light theme.
+                // Set the main proxy icon to be disabled.
+                proxyPreference.setIcon(R.drawable.proxy_disabled_light);
+
+                // Set the custom proxy icons to be ghosted.
+                proxyCustomHostPreference.setIcon(R.drawable.proxy_ghosted_light);
+                proxyCustomPortPreference.setIcon(R.drawable.proxy_ghosted_light);
+            }
+        } else {  // Proxying is enabled.
+            if (darkTheme) {  // Dark theme.
+                // Set the main proxy icon to be enabled.
+                proxyPreference.setIcon(R.drawable.proxy_enabled_dark);
+
+                // Set the custom proxy icons according to their status.
+                if (proxyCustomHostPreference.isEnabled()) {  // Custom proxy is enabled.
+                    proxyCustomHostPreference.setIcon(R.drawable.proxy_enabled_dark);
+                    proxyCustomPortPreference.setIcon(R.drawable.proxy_enabled_dark);
+                } else {  // Custom proxy is disabled.
+                    proxyCustomHostPreference.setIcon(R.drawable.proxy_ghosted_dark);
+                    proxyCustomPortPreference.setIcon(R.drawable.proxy_ghosted_dark);
+                }
+            } else {  // Light theme.
+                // Set the main proxy icon to be enabled.
+                proxyPreference.setIcon(R.drawable.proxy_enabled_light);
+
+                // Set the custom proxy icons according to their status.
+                if (proxyCustomHostPreference.isEnabled()) {  // Custom proxy is enabled.
+                    proxyCustomHostPreference.setIcon(R.drawable.proxy_enabled_light);
+                    proxyCustomPortPreference.setIcon(R.drawable.proxy_enabled_light);
+                } else {  // Custom proxy is disabled.
+                    proxyCustomHostPreference.setIcon(R.drawable.proxy_ghosted_light);
+                    proxyCustomPortPreference.setIcon(R.drawable.proxy_ghosted_light);
+                }
             }
         }
 
@@ -1314,99 +1322,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     }
                     break;
 
-                case "proxy_through_orbot":
-                    // Get current settings.
-                    boolean currentProxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
-                    String currentTorSearchString = sharedPreferences.getString("tor_search", getString(R.string.tor_search_default_value));
-
-                    // Enable the Tor custom URL search option only if `currentProxyThroughOrbot` is true and the search is set to `Custom URL`.
-                    torSearchCustomURLPreference.setEnabled(currentProxyThroughOrbot && currentTorSearchString.equals("Custom URL"));
-
-                    // Update the icons.
-                    if (currentProxyThroughOrbot) {
-                        // Set the Tor icons according to the theme.
-                        if (darkTheme) {
-                            proxyThroughOrbotPreference.setIcon(R.drawable.orbot_enabled_dark);
-                            torHomepagePreference.setIcon(R.drawable.home_enabled_dark);
-                            torSearchPreference.setIcon(R.drawable.search_enabled_dark);
-
-                            // Set the `torSearchCustomURLPreference` icon.
-                            if (torSearchCustomURLPreference.isEnabled()) {
-                                torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_dark);
-                            } else {
-                                torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_dark);
-                            }
-                        } else {
-                            proxyThroughOrbotPreference.setIcon(R.drawable.orbot_enabled_light);
-                            torHomepagePreference.setIcon(R.drawable.home_enabled_light);
-                            torSearchPreference.setIcon(R.drawable.search_enabled_light);
-
-                            // Set the `torSearchCustomURLPreference` icon.
-                            if (torSearchCustomURLPreference.isEnabled()) {
-                                torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_light);
-                            } else {
-                                torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_light);
-                            }
-                        }
-                    } else {  // Proxy through Orbot is disabled.
-                        if (darkTheme) {
-                            proxyThroughOrbotPreference.setIcon(R.drawable.orbot_disabled_dark);
-                            torHomepagePreference.setIcon(R.drawable.home_ghosted_dark);
-                            torSearchPreference.setIcon(R.drawable.search_ghosted_dark);
-                            torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_dark);
-                        } else {
-                            proxyThroughOrbotPreference.setIcon(R.drawable.orbot_disabled_light);
-                            torHomepagePreference.setIcon(R.drawable.home_ghosted_light);
-                            torSearchPreference.setIcon(R.drawable.search_ghosted_light);
-                            torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_light);
-                        }
-                    }
-                    break;
-
-                case "tor_homepage":
-                    // Set the new tor homepage URL as the summary text for the `tor_homepage` preference.  The default is Searx:  `http://ulrn6sryqaifefld.onion/`.
-                    torHomepagePreference.setSummary(sharedPreferences.getString("tor_homepage", getString(R.string.tor_homepage_default_value)));
-                    break;
-
-                case "tor_search":
-                    // Get the present search string.
-                    String presentTorSearchString = sharedPreferences.getString("tor_search", getString(R.string.tor_search_default_value));
-
-                    // Update the preferences.
-                    if (presentTorSearchString.equals("Custom URL")) {
-                        // Use `R.string.custom_url`, which is translated, as the summary instead of the array value, which isn't.
-                        torSearchPreference.setSummary(R.string.custom_url);
-
-                        // Enable `torSearchCustomURLPreference`.
-                        torSearchCustomURLPreference.setEnabled(true);
-
-                        // Update the `torSearchCustomURLPreference` icon.
-                        if (darkTheme) {
-                            torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_dark);
-                        } else {
-                            torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_enabled_light);
-                        }
-                    } else {
-                        // Set the array value as the summary text.
-                        torSearchPreference.setSummary(presentTorSearchString);
-
-                        // Disable `torSearchCustomURLPreference`.
-                        torSearchCustomURLPreference.setEnabled(false);
-
-                        // Update the `torSearchCustomURLPreference` icon.
-                        if (darkTheme) {
-                            torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_dark);
-                        } else {
-                            torSearchCustomURLPreference.setIcon(R.drawable.search_custom_url_ghosted_light);
-                        }
-                    }
-                    break;
-
-                case "tor_search_custom_url":
-                    // Set the summary text for `tor_search_custom_url`.
-                    torSearchCustomURLPreference.setSummary(sharedPreferences.getString("tor_search_custom_url", getString(R.string.tor_search_custom_url_default_value)));
-                    break;
-
                 case "search":
                     // Store the new search string.
                     String newSearchString = sharedPreferences.getString("search", getString(R.string.search_default_value));
@@ -1445,6 +1360,88 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     // Set the new custom search URL as the summary text for `search_custom_url`.  The default is `""`.
                     searchCustomURLPreference.setSummary(sharedPreferences.getString("search_custom_url", getString(R.string.search_custom_url_default_value)));
                     break;
+
+                case "proxy":
+                    // Get current proxy string.
+                    String currentProxyString = sharedPreferences.getString("proxy", getString(R.string.proxy_default_value));
+
+                    // Update the summary text for the proxy preference.
+                    switch (currentProxyString) {
+                        case ProxyHelper.NONE:
+                            proxyPreference.setSummary(getString(R.string.no_proxy_enabled));
+                            break;
+
+                        case ProxyHelper.TOR:
+                            proxyPreference.setSummary(getString(R.string.tor_enabled));
+                            break;
+
+                        case ProxyHelper.I2P:
+                            proxyPreference.setSummary(getString(R.string.i2p_enabled));
+                            break;
+
+                        case ProxyHelper.CUSTOM:
+                            proxyPreference.setSummary(getString(R.string.custom_proxy));
+                            break;
+                    }
+
+                    // Update the status of the custom proxy options.
+                    proxyCustomHostPreference.setEnabled(currentProxyString.equals("Custom"));
+                    proxyCustomPortPreference.setEnabled(currentProxyString.equals("Custom"));
+
+                    // Update the icons.
+                    if (currentProxyString.equals("None")) {  // Proxying is disabled.
+                        if (darkTheme) {  // Dark theme.
+                            // Set the main proxy icon to be disabled
+                            proxyPreference.setIcon(R.drawable.proxy_disabled_dark);
+
+                            // Set the custom proxy icons to be ghosted.
+                            proxyCustomHostPreference.setIcon(R.drawable.proxy_ghosted_dark);
+                            proxyCustomPortPreference.setIcon(R.drawable.proxy_ghosted_dark);
+                        } else {  // Light theme.
+                            // Set the main proxy icon to be disabled.
+                            proxyPreference.setIcon(R.drawable.proxy_disabled_light);
+
+                            // Set the custom proxy icons to be ghosted.
+                            proxyCustomHostPreference.setIcon(R.drawable.proxy_ghosted_light);
+                            proxyCustomPortPreference.setIcon(R.drawable.proxy_ghosted_light);
+                        }
+                    } else {  // Proxying is enabled.
+                        if (darkTheme) {  // Dark theme.
+                            // Set the main proxy icon to be enabled.
+                            proxyPreference.setIcon(R.drawable.proxy_enabled_dark);
+
+                            /// Set the custom proxy icons according to their status.
+                            if (proxyCustomHostPreference.isEnabled()) {  // Custom proxy is enabled.
+                                proxyCustomHostPreference.setIcon(R.drawable.proxy_enabled_dark);
+                                proxyCustomPortPreference.setIcon(R.drawable.proxy_enabled_dark);
+                            } else {  // Custom proxy is disabled.
+                                proxyCustomHostPreference.setIcon(R.drawable.proxy_ghosted_dark);
+                                proxyCustomPortPreference.setIcon(R.drawable.proxy_ghosted_dark);
+                            }
+                        } else {  // Light theme.
+                            // Set the main proxy icon to be enabled.
+                            proxyPreference.setIcon(R.drawable.proxy_enabled_light);
+
+                            // Set the custom proxy icons according to their status.
+                            if (proxyCustomHostPreference.isEnabled()) {  // Custom proxy is enabled.
+                                proxyCustomHostPreference.setIcon(R.drawable.proxy_enabled_light);
+                                proxyCustomPortPreference.setIcon(R.drawable.proxy_enabled_light);
+                            } else {  // Custom proxy is disabled.
+                                proxyCustomHostPreference.setIcon(R.drawable.proxy_ghosted_light);
+                                proxyCustomPortPreference.setIcon(R.drawable.proxy_ghosted_light);
+                            }
+                        }
+                    }
+                    break;
+
+                case "proxy_custom_host":
+                    // Set the summary text for the proxy custom host.
+                    proxyCustomHostPreference.setSummary(sharedPreferences.getString("proxy_custom_host", getString(R.string.proxy_custom_host_default_value)));
+                    break;
+
+                case "proxy_custom_port":
+                    // Set the summary text for the proxy custom port.
+                    proxyCustomPortPreference.setSummary(sharedPreferences.getString("proxy_custom_port", getString(R.string.proxy_custom_port_default_value)));
 
                 case "full_screen_browsing_mode":
                     if (sharedPreferences.getBoolean("full_screen_browsing_mode", false)) {  // Full screen browsing is enabled.

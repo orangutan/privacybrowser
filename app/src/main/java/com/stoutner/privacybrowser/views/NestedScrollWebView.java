@@ -126,6 +126,9 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
     // Track swipe to refresh.
     private boolean swipeToRefresh;
 
+    // Track a URL waiting for a proxy.
+    private String waitingForProxyUrlString = "";
+
     // The nested scrolling child helper is used throughout the class.
     private NestedScrollingChildHelper nestedScrollingChildHelper;
 
@@ -658,6 +661,22 @@ public class NestedScrollWebView extends WebView implements NestedScrollingChild
         return swipeToRefresh;
     }
 
+
+    // Waiting for proxy.
+    public void setWaitingForProxyUrlString(String urlString) {
+        // Store the waiting for proxy URL string.
+        waitingForProxyUrlString = urlString;
+    }
+
+    public String getWaitingForProxyUrlString() {
+        // Return the waiting for proxy URL string.
+        return waitingForProxyUrlString;
+    }
+
+    public void resetWaitingForProxyUrlString() {
+        // Clear the waiting for proxy URL string.
+        waitingForProxyUrlString = "";
+    }
 
     // Scroll range.
     public int getHorizontalScrollRange() {

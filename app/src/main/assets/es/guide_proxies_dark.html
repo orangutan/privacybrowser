@@ -1,7 +1,7 @@
 <!--
   Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2017 Jose A. León.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017,2019 Jose A. León.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -22,36 +22,35 @@
     <head>
         <meta charset="UTF-8">
 
-        <link rel="stylesheet" href="../css/light_theme.css">
+        <link rel="stylesheet" href="../css/dark_theme.css">
     </head>
 
     <body>
-        <h3><img class="title" src="../shared_images/vpn_key_blue_light.png"> Tor y sus límites</h3>
+        <h3><img class="title" src="../shared_images/vpn_key_blue_dark.png"> Proxies and Their Limits</h3>
 
         <p>Existen dos categorías generales de malos actores que quieren infringir la privacidad de la web:
             gobiernos maliciosos con acceso a ISPs (Proveedores de Servicios de Internet) y grandes corporaciones que ofrecen redes sociales y de publicidad.
-            TOR (El Enrutador de Cebolla) es útil en proteger la privacidad de gobiernos maliciosos (que espían el tráfico en tránsito) pero no de grandes corporaciones
-            (que incrustan código malicioso en los servidores web).</p>
+            Proxies like TOR (The Onion Router) and I2P (the Invisible Internet Project) are useful in protecting privacy from malicious governments (which spy on traffic in transit)
+            but not from mega corporations (which embed malicious code on web servers).</p>
 
 
-        <h3><img class="title" src="../shared_images/language_blue_light.png"> Gobiernos maliciosos</h3>
+        <h3><img class="title" src="../shared_images/language_blue_dark.png"> Gobiernos maliciosos</h3>
 
         <p>Los gobiernos maliciosos a menudo espían a sus ciudadanos para castigar la disidencia o la actividad de derechos humanos.
             Normalmente suelen operar los ISPs locales o los fuerzan a revelar información mostrando cada dirección IP que visita cada usuario.
-            Tor está diseñado para vencer esta infracción de privacidad encriptando el tráfico del dispositivo de un usuario,
-            enrutándolo a través de tres servidores separados en internet antes de enviarlo al destino final.
-            Esto significa que ningún ISP local, servidor o página web pueden, a la vez, conocer la dirección IP del dispositivo del usuario y la dirección IP del servidor web final.
-            Los gobiernos maliciosos y los ISPs que ellos controlan no pueden decir a qué servidores web está accediendo un determinado usuario, aunque pueden decir que ese usuario está usando Tor.
-            En algunas partes del mundo, usar Tor podría interpretarse como una prueba de conducta ilegal (“si no tuvieras nada que esconder no estarías encriptando tu tráfico”)
-            y los usuarios podrían ser castigados porque los gobiernos asumen que están haciendo algo prohibido. Por tanto, Tor puede ser útil, pero no es la panacea.</p>
+            Layered proxies are designed to defeat this infringement of privacy by encrypting the traffic from a user’s device and routing it through multiple servers on the internet
+            before sending it on to the final destination.
+            This means that no individual ISP, server, or website, can know both the <a href="https://ipleak.net">IP address of the user’s device</a> and the IP address of the final web server.
+            Malicious governments and the ISPs they control cannot tell which web servers a user is accessing, although they can tell that the user is using a layered proxy service.
+            In some parts of the world, using proxies could be construed as an evidence of illegal behavior (“If you didn’t have anything to hide you wouldn’t be encrypting your traffic”)
+            and users could be punished because governments assume they are doing something that is prohibited. Thus, proxies can be helpful, but they aren’t a panacea.</p>
 
 
-        <h3><img class="title" src="../shared_images/language_blue_light.png"> Grandes corporaciones</h3>
+        <h3><img class="title" src="../shared_images/language_blue_dark.png"> Grandes corporaciones</h3>
 
         <p>Cuando un usuario se conecta a un servidor web, éste puede ver la dirección IP del usuario.
             Aunque esto no es una ciencia perfecta, las direcciones IP se pueden convertir a direcciones físicas con <a href="https://www.whatismyip.com/">bastante precisión</a>.
-            Los pequeños servidores web normalmente se basan en las direcciones IP para identificar la ubicación de los usuarios que visitan su web.
-            Tor es una buena solución para ocultar la ubicación del usuario de estos servidores.
+            Small web servers typically rely on IP addresses to identify the location of the users visiting their site. Proxies are a good solution to mask the user’s location from these servers.
             Pero las más grandes corporaciones que poseen medios sociales y redes de publicidad usan un perfil completo de información diseñado
             para rastrear a los usuarios a través de los dispositivos y direcciones IP.
             Estos perfiles emplean una variedad de técnicas para identificar a los usuarios, incluyendo Javascript, cookies, IDs de seguimiento,
@@ -65,28 +64,26 @@
             y cualquier otra cosa que caiga en sus manos.
             Incluso compran bases de datos de transacciones con tarjeta de crédito en tiendas locales,
             para así poder rastrear de los usuarios en sus perfiles los patrones de compra que hacen cuando no están conectados.
-            Debido a que ya tienen información de dirección mucho más precisa sobre un usuario que lo que pueda revelar una dirección IP,
-            Tor no ofrece una verdadera protección de la privacidad contra las grandes corporaciones.</p>
+            Because they already have much more accurate address information about a user than an IP address discloses, proxies provides no real privacy protection against mega corporations.</p>
 
         <p>La única mejor protección de la privacidad contra las grandes corporaciones es navegar por la web con Javascript deshabilitado, seguido de bloquear redes publicitarias,
             inhabilitar cookies y almacenamiento DOM, y usar un navegador del que sea difícil recoger huellas.</p>
 
 
-        <h3><img class="title" src="../shared_images/orbot_blue_light.png"> Usando Tor</h3>
+        <h3><img class="title" src="../shared_images/open_in_browser_blue_dark.png"> Using Proxies</h3>
 
-        <p>A pesar de sus limitaciones, Tor puede ser útil en algunas circunstancias.
-            El proyecto Tor tiene una app para Android llamada Orbot, que está disponible en F-Droid y en todos los sitios donde se distribuye Navegador Privado.
-            Navegador Privado tiene un ajuste para usar Orbot como un proxy. Cuando se enciende, la barra de aplicaciones de Navegador Privado tendrá un fondo azul claro en lugar del gris claro por defecto.
-            Cuando el ajuste proxy Orbot de Navegador Privado está habilitado, el acceso a internet no funcionará a menos que se esté ejecutando Orbot y esté conectado a Tor.
-            Ya que el tráfico se está enrutando a través de varios nodos Tor, usar Tor es a menudo mucho más lento que conectar directamente a internet.</p>
+        <p>Despite their limitations, proxies can be useful in some circumstances.
+            <a href="https://play.google.com/store/apps/details?id=org.torproject.android">Tor</a> and <a href="https://f-droid.org/en/packages/net.i2p.android.router/">I2p</a>
+            have Android apps that make it easy to use their proxy networks. When proxying is turned on in Privacy Browser, the app bar will have a light blue background instead of the default light grey.
+            Because traffic is being routed through several proxy nodes, using a layered proxy is often much slower than connecting directly to the internet.</p>
 
         <img class="center" src="images/tor.png">
 
-        <h3><img class="title" src="../shared_images/file_download_blue_light.png"> Descarga de archivos a través de Tor</h3>
+        <h3><img class="title" src="../shared_images/file_download_blue_dark.png"> Descarga de archivos a través de Tor</h3>
 
-        <p>Cuando Orbot está operando en modo proxy, navegar por Internet usando Navegador Privado será enrutado a través de la red Tor, pero no en el caso de las descargas de archivos.
-            Esto es debido a que Navegador Privado utiliza el gestor de descargas integrado de Android para descargar archivos, que no tiene una opción de proxy.
-            Los usuarios que quieran descargar archivos a través de Orbot necesitan habilitar su modo VPN.</p>
+        <p>When Orbot is operating in proxy mode, browsing the internet using Privacy Browser will be routed through the proxy, but file downloads will not.
+            This is because Privacy Browser uses Android’s builtin download manager to download files, which doesn’t have a proxy option.
+            Users who want to download files via Orbot need to enable its VPN mode.  There is currently no way to download files through I2P.</p>
 
         <img class="center" src="../shared_images/vpn_mode.png">
     </body>

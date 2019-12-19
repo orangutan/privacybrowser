@@ -159,37 +159,6 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="tor"
-        android:title="@string/tor" >
-
-        <SwitchPreference
-            android:key="proxy_through_orbot"
-            android:title="@string/proxy_through_orbot"
-            android:summary="@string/proxy_through_orbot_summary"
-            android:defaultValue="false" />
-
-        <EditTextPreference
-            android:key="tor_homepage"
-            android:title="@string/tor_homepage"
-            android:defaultValue="@string/tor_homepage_default_value"
-            android:inputType="textUri" />
-
-        <ListPreference
-            android:key="tor_search"
-            android:title="@string/tor_search"
-            android:entries="@array/tor_search_entries"
-            android:entryValues="@array/tor_search_entry_values"
-            android:defaultValue="@string/tor_search_default_value" />
-
-        <!-- `android:inputType` currently doesn't work with AndroidX. -->
-        <EditTextPreference
-            android:key="tor_search_custom_url"
-            android:title="@string/tor_search_custom_url"
-            android:defaultValue="@string/tor_search_custom_url_default_value"
-            android:inputType="textUri" />
-    </PreferenceCategory>
-
-    <PreferenceCategory
         android:key="search_category"
         android:title="@string/search" >
 
@@ -206,6 +175,31 @@
             android:title="@string/search_custom_url"
             android:defaultValue="@string/search_custom_url_default_value"
             android:inputType="textUri" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="proxy_category"
+        android:title="@string/proxy" >
+
+        <ListPreference
+            android:key="proxy"
+            android:title="@string/proxy"
+            android:entries="@array/proxy_entries"
+            android:entryValues="@array/proxy_entry_values"
+            android:defaultValue="@string/proxy_default_value" />
+
+        <EditTextPreference
+            android:key="proxy_custom_host"
+            android:title="@string/proxy_custom_host"
+            android:defaultValue="@string/proxy_custom_host_default_value"
+            android:inputType="textUri" />
+
+        <!-- `android:inputType="number"` currently doesn't work with AndroidX. -->
+        <EditTextPreference
+            android:key="proxy_custom_port"
+            android:title="@string/proxy_custom_port"
+            android:defaultValue="@string/proxy_custom_port_default_value"
+            android:inputType="number" />
     </PreferenceCategory>
 
     <PreferenceCategory

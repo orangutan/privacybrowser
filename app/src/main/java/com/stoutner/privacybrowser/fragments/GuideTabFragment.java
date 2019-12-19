@@ -82,8 +82,6 @@ public class GuideTabFragment extends Fragment {
 
         // Load the tabs according to the theme.
         if (darkTheme) {  // The dark theme is applied.
-            // Set the background color.  The deprecated `.getColor()` must be used until API >= 23.
-            //noinspection deprecation
             tabWebView.setBackgroundColor(getResources().getColor(R.color.gray_850));
 
             // Tab numbers start at 0.
@@ -117,7 +115,7 @@ public class GuideTabFragment extends Fragment {
                     break;
 
                 case 7:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_tor_dark.html");
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_proxies_dark.html");
                     break;
 
                 case 8:
@@ -160,7 +158,7 @@ public class GuideTabFragment extends Fragment {
                     break;
 
                 case 7:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_tor_light.html");
+                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_proxies_light.html");
                     break;
 
                 case 8:

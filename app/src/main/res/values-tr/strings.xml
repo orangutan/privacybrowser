@@ -389,8 +389,7 @@
     <string name="ok">OK</string>
 
     <!-- Orbot. -->
-    <string name="orbot_proxy_not_installed">Orbot yüklenmeden Orbot vekil sunucusu çalışmayacaktır.</string>
-    <string name="waiting_for_orbot">Orbot\'un bağlanması bekleniyor...</string>  <!-- The WebView in API 19 does not like the ellipse character. -->
+    <string name="waiting_for_orbot">Orbot\'un bağlanması bekleniyor.</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">Privacy Browser Hakkında</string>
@@ -508,18 +507,6 @@
         <string name="facebook_click_ids_summary">URL\'lerde “?fbclid=”, “&amp;fbclid=”, “?fbadid=”, ve “&amp;fbadid=” ve onlardan sonra gelen her şey kaldırıldı.</string>
         <string name="twitter_amp_redirects">Twitter AMP yönlendirmeleri</string>
         <string name="twitter_amp_redirects_summary">URL\'den sonra gelen “?amp=1” ve diğer şeyleri kaldırır.</string>
-    <string name="tor">Tor</string>
-        <string name="proxy_through_orbot">Orbot vekil sunucusu</string>
-        <string name="proxy_through_orbot_summary">localhost:8118 üzerinden tüm web trafiği için vekil sunucusunu Orbot yapar.</string>
-        <string name="tor_homepage">Tor anasayfa</string>
-        <string name="tor_search">Tor arama</string>
-        <string-array name="tor_search_entries">
-            <item>Searx</item>
-            <item>DuckDuckGo - JavaScript devre dışı</item>
-            <item>DuckDuckGo - JavaScript etkin</item>
-            <item>Özel</item>
-        </string-array>
-        <string name="tor_search_custom_url">Tor özel sayfa arama</string>
     <string name="search">Arama</string>
         <string-array name="search_entries">
             <item>Startpage</item>

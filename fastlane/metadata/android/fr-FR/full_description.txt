@@ -1,0 +1,19 @@
+Privacy Browser a deux objectifs principaux.
+
+1. Réduire au minimum la quantité d'informations envoyées sur Internet.
+
+2. Réduire au minimum la quantité d'informations stockées sur le périphérique.
+
+La plupart des navigateurs donnent silencieusement aux sites Web des quantités énormes d'informations leur permettant de vous suivre et de compromettre votre confidentialité. Les sites Web et les réseaux publicitaires utilisent des technologies telles que JavaScript, les cookies, le stockage DOM, les agents utilisateur et bien d'autres choses pour identifier chaque utilisateur de manière unique et le suivre entre chaque visite et au travers du Web.	
+
+A l'inverse, les fonctionnalités sensibles sont désactivées par défaut dans Privacy Browser. Si l'une de ces technologies est nécessaire au bon fonctionnement d'un site Web, l'utilisateur peut choisir de l'activer uniquement pour une visite. Il peut également utiliser des paramètres de domaine pour activer automatiquement certaines fonctionnalités lors de l'arrivée sun site Web spécifique et les désactiver à nouveau lors de son départ.
+
+Privacy Browser utilise actuellement WebView intégré à Android pour le rendu des pages Web. En tant que tel, cela fonctionne mieux lorsque la dernière version de WebView est installée (voir https://www.stoutner.com/privacy-browser/common-settings/webview/). Dans la série 4.x, Privacy Browser basculera vers une version de WebView d’Android appelée Privacy WebView, qui permettra des fonctionnalités de confidentialité avancées.
+
+Avertissement: Android KitKat (version 4.4.x, API 19) fournit une version ancienne d’OpenSSL, exposée aux attaques de MITM (Man In The Middle) lors de la navigation sur des sites Web utilisant des suites de protocoles et de chiffrement obsolètes. Plus d'informations sur ce problème sont disponibles sur https://www.stoutner.com/kitkat-security-problems/.
+
+Fonctionnalités:
+• Blocage intégré des publicités EasyList.
+• Prise en charge du proxy Tor Orbot.
+• Épinglage de certificat SSL.
+• Importation / exportation des paramètres et des favoris.
