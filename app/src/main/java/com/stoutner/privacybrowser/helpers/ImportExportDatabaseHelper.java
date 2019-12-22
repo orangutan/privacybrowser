@@ -23,6 +23,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 
@@ -66,8 +67,7 @@ public class ImportExportDatabaseHelper {
     private static final String SEARCH = "search";
     private static final String SEARCH_CUSTOM_URL = "search_custom_url";
     private static final String PROXY = "proxy";
-    private static final String PROXY_CUSTOM_HOST = "proxy_custom_host";
-    private static final String PROXY_CUSTOM_PORT = "proxy_custom_port";
+    private static final String PROXY_CUSTOM_URL = "proxy_custom_url";
     private static final String FULL_SCREEN_BROWSING_MODE = "full_screen_browsing_mode";
     private static final String HIDE_APP_BAR = "hide_app_bar";
     private static final String CLEAR_EVERYTHING = "clear_everything";
@@ -221,8 +221,7 @@ public class ImportExportDatabaseHelper {
                     SEARCH + " TEXT, " +
                     SEARCH_CUSTOM_URL + " TEXT, " +
                     PROXY + " TEXT, " +
-                    PROXY_CUSTOM_HOST + " TEXT, " +
-                    PROXY_CUSTOM_PORT + " TEXT, " +
+                    PROXY_CUSTOM_URL + " TEXT, " +
                     FULL_SCREEN_BROWSING_MODE + " BOOLEAN, " +
                     HIDE_APP_BAR + " BOOLEAN, " +
                     CLEAR_EVERYTHING + " BOOLEAN, " +
@@ -273,8 +272,7 @@ public class ImportExportDatabaseHelper {
             preferencesContentValues.put(SEARCH, sharedPreferences.getString(SEARCH, context.getString(R.string.search_default_value)));
             preferencesContentValues.put(SEARCH_CUSTOM_URL, sharedPreferences.getString(SEARCH_CUSTOM_URL, context.getString(R.string.search_custom_url_default_value)));
             preferencesContentValues.put(PROXY, sharedPreferences.getString(PROXY, context.getString(R.string.proxy_default_value)));
-            preferencesContentValues.put(PROXY_CUSTOM_HOST, sharedPreferences.getString(PROXY_CUSTOM_HOST, context.getString(R.string.proxy_custom_host_default_value)));
-            preferencesContentValues.put(PROXY_CUSTOM_PORT, sharedPreferences.getString(PROXY_CUSTOM_PORT, context.getString(R.string.proxy_custom_port_default_value)));
+            preferencesContentValues.put(PROXY_CUSTOM_URL, sharedPreferences.getString(PROXY_CUSTOM_URL, context.getString(R.string.proxy_custom_url_default_value)));
             preferencesContentValues.put(FULL_SCREEN_BROWSING_MODE, sharedPreferences.getBoolean(FULL_SCREEN_BROWSING_MODE, false));
             preferencesContentValues.put(HIDE_APP_BAR, sharedPreferences.getBoolean(HIDE_APP_BAR, true));
             preferencesContentValues.put(CLEAR_EVERYTHING, sharedPreferences.getBoolean(CLEAR_EVERYTHING, true));
@@ -399,6 +397,9 @@ public class ImportExportDatabaseHelper {
                         // Get the current value in `default_font_size`.
                         String fontSize = importDatabasePreferenceCursor.getString(importDatabasePreferenceCursor.getColumnIndex("default_font_size"));
 
+                        // SQL escape the font size.
+                        fontSize = DatabaseUtils.sqlEscapeString(fontSize);
+
                         // Close the cursor.
                         importDatabasePreferenceCursor.close();
 
@@ -521,18 +522,18 @@ public class ImportExportDatabaseHelper {
                     case 8:
                         // Add the new proxy columns to the preferences table.
                         importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + PROXY + " TEXT");
-                        importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + PROXY_CUSTOM_HOST + " TEXT");
-                        importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + PROXY_CUSTOM_PORT + " TEXT");
+                        importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + PROXY_CUSTOM_URL + " TEXT");
 
                         // Get the current proxy values.
                         String proxy = sharedPreferences.getString(PROXY, context.getString(R.string.proxy_default_value));
-                        String proxyCustomHost = sharedPreferences.getString(PROXY_CUSTOM_HOST, context.getString(R.string.proxy_custom_host_default_value));
-                        String proxyCustomPort = sharedPreferences.getString(PROXY_CUSTOM_PORT, context.getString(R.string.proxy_custom_port_default_value));
+                        String proxyCustomUrl = sharedPreferences.getString(PROXY_CUSTOM_URL, context.getString(R.string.proxy_custom_url_default_value));
+
+                        // SQL escape the proxy custom URL string.
+                        proxyCustomUrl = DatabaseUtils.sqlEscapeString(proxyCustomUrl);
 
                         // Populate the table with the current proxy values.
                         importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + PROXY + " = '" + proxy + "'");
-                        importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + PROXY_CUSTOM_HOST + " = '" + proxyCustomHost + "'");
-                        importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + PROXY_CUSTOM_PORT + " = '" + proxyCustomPort +"'");
+                        importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + PROXY_CUSTOM_URL + " = '" + proxyCustomUrl + "'");
                 }
             }
 
@@ -671,8 +672,7 @@ public class ImportExportDatabaseHelper {
                     .putString(SEARCH, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(SEARCH)))
                     .putString(SEARCH_CUSTOM_URL, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(SEARCH_CUSTOM_URL)))
                     .putString(PROXY, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(PROXY)))
-                    .putString(PROXY_CUSTOM_HOST, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(PROXY_CUSTOM_HOST)))
-                    .putString(PROXY_CUSTOM_PORT, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(PROXY_CUSTOM_PORT)))
+                    .putString(PROXY_CUSTOM_URL, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(PROXY_CUSTOM_URL)))
                     .putBoolean(FULL_SCREEN_BROWSING_MODE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(FULL_SCREEN_BROWSING_MODE)) == 1)
                     .putBoolean(HIDE_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(HIDE_APP_BAR)) == 1)
                     .putBoolean(CLEAR_EVERYTHING, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_EVERYTHING)) == 1)

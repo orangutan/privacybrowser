@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -558,7 +559,10 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        // Run the default commands.
+        super.onActivityResult(requestCode, resultCode, intent);
+
         switch (requestCode) {
             case (BROWSE_RESULT_CODE):
                 // Don't do anything if the user pressed back from the file picker.
@@ -569,11 +573,17 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
                     // Instantiate the file name helper.
                     FileNameHelper fileNameHelper = new FileNameHelper();
 
-                    // Convert the file name URI to a file name path.
-                    String fileNamePath = fileNameHelper.convertUriToFileNamePath(data.getData());
+                    // Get the file path URI from the intent.
+                    Uri filePathUri = intent.getData();
 
-                    // Set the file name path as the text of the file name edit text.
-                    fileNameEditText.setText(fileNamePath);
+                    // Use the file path from the intent if it exists.
+                    if (filePathUri != null) {
+                        // Convert the file name URI to a file name path.
+                        String fileNamePath = fileNameHelper.convertUriToFileNamePath(filePathUri);
+
+                        // Set the file name path as the text of the file name edit text.
+                        fileNameEditText.setText(fileNamePath);
+                    }
                 }
                 break;
 

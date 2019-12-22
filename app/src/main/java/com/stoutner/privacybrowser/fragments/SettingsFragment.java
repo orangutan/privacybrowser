@@ -86,8 +86,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Preference searchPreference = findPreference("search");
         Preference searchCustomURLPreference = findPreference("search_custom_url");
         Preference proxyPreference = findPreference("proxy");
-        Preference proxyCustomHostPreference = findPreference("proxy_custom_host");
-        Preference proxyCustomPortPreference = findPreference("proxy_custom_port");
+        Preference proxyCustomUrlPreference = findPreference("proxy_custom_url");
         Preference fullScreenBrowsingModePreference = findPreference("full_screen_browsing_mode");
         Preference hideAppBarPreference = findPreference("hide_app_bar");
         Preference clearEverythingPreference = findPreference("clear_everything");
@@ -131,8 +130,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         assert searchPreference != null;
         assert searchCustomURLPreference != null;
         assert proxyPreference != null;
-        assert proxyCustomHostPreference != null;
-        assert proxyCustomPortPreference != null;
+        assert proxyCustomUrlPreference != null;
         assert fullScreenBrowsingModePreference != null;
         assert hideAppBarPreference != null;
         assert clearEverythingPreference != null;
@@ -257,7 +255,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 break;
 
             case ProxyHelper.TOR:
-                proxyPreference.setSummary(getString(R.string.tor_enabled));
+                if (Build.VERSION.SDK_INT == 19) {  // Proxying through SOCKS doesn't work on Android KitKat.
+                    proxyPreference.setSummary(getString(R.string.tor_enabled_kitkat));
+                } else {
+                    proxyPreference.setSummary(getString(R.string.tor_enabled));
+                }
                 break;
 
             case ProxyHelper.I2P:
@@ -269,13 +271,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 break;
         }
 
-        // Only enable the custom proxy options if a custom proxy is selected.
-        proxyCustomHostPreference.setEnabled(proxyString.equals("Custom"));
-        proxyCustomPortPreference.setEnabled(proxyString.equals("Custom"));
+        // Only enable the custom proxy URL if a custom proxy is selected.
+        proxyCustomUrlPreference.setEnabled(proxyString.equals("Custom"));
 
-        // Set the summary text for the custom proxy options.
-        proxyCustomHostPreference.setSummary(savedPreferences.getString("proxy_custom_host", getString(R.string.proxy_custom_host_default_value)));
-        proxyCustomPortPreference.setSummary(savedPreferences.getString("proxy_custom_port", getString(R.string.proxy_custom_port_default_value)));
+        // Set the summary text for the custom proxy URL.
+        proxyCustomUrlPreference.setSummary(savedPreferences.getString("proxy_custom_url", getString(R.string.proxy_custom_url_default_value)));
 
         // Set the status of the Clear and Exit preferences.
         clearCookiesPreference.setEnabled(!clearEverything);
@@ -601,41 +601,35 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 // Set the main proxy icon to be disabled.
                 proxyPreference.setIcon(R.drawable.proxy_disabled_dark);
 
-                // Set the custom proxy icons to be ghosted.
-                proxyCustomHostPreference.setIcon(R.drawable.proxy_ghosted_dark);
-                proxyCustomPortPreference.setIcon(R.drawable.proxy_ghosted_dark);
+                // Set the custom proxy URL icon to be ghosted.
+                proxyCustomUrlPreference.setIcon(R.drawable.proxy_ghosted_dark);
             } else {  // Light theme.
                 // Set the main proxy icon to be disabled.
                 proxyPreference.setIcon(R.drawable.proxy_disabled_light);
 
-                // Set the custom proxy icons to be ghosted.
-                proxyCustomHostPreference.setIcon(R.drawable.proxy_ghosted_light);
-                proxyCustomPortPreference.setIcon(R.drawable.proxy_ghosted_light);
+                // Set the custom proxy URL icon to be ghosted.
+                proxyCustomUrlPreference.setIcon(R.drawable.proxy_ghosted_light);
             }
         } else {  // Proxying is enabled.
             if (darkTheme) {  // Dark theme.
                 // Set the main proxy icon to be enabled.
                 proxyPreference.setIcon(R.drawable.proxy_enabled_dark);
 
-                // Set the custom proxy icons according to their status.
-                if (proxyCustomHostPreference.isEnabled()) {  // Custom proxy is enabled.
-                    proxyCustomHostPreference.setIcon(R.drawable.proxy_enabled_dark);
-                    proxyCustomPortPreference.setIcon(R.drawable.proxy_enabled_dark);
+                // Set the custom proxy URL icon according to its status.
+                if (proxyCustomUrlPreference.isEnabled()) {  // Custom proxy is enabled.
+                    proxyCustomUrlPreference.setIcon(R.drawable.proxy_enabled_dark);
                 } else {  // Custom proxy is disabled.
-                    proxyCustomHostPreference.setIcon(R.drawable.proxy_ghosted_dark);
-                    proxyCustomPortPreference.setIcon(R.drawable.proxy_ghosted_dark);
+                    proxyCustomUrlPreference.setIcon(R.drawable.proxy_ghosted_dark);
                 }
             } else {  // Light theme.
                 // Set the main proxy icon to be enabled.
                 proxyPreference.setIcon(R.drawable.proxy_enabled_light);
 
-                // Set the custom proxy icons according to their status.
-                if (proxyCustomHostPreference.isEnabled()) {  // Custom proxy is enabled.
-                    proxyCustomHostPreference.setIcon(R.drawable.proxy_enabled_light);
-                    proxyCustomPortPreference.setIcon(R.drawable.proxy_enabled_light);
+                // Set the custom proxy URL icon according to its status.
+                if (proxyCustomUrlPreference.isEnabled()) {  // Custom proxy is enabled.
+                    proxyCustomUrlPreference.setIcon(R.drawable.proxy_enabled_light);
                 } else {  // Custom proxy is disabled.
-                    proxyCustomHostPreference.setIcon(R.drawable.proxy_ghosted_light);
-                    proxyCustomPortPreference.setIcon(R.drawable.proxy_ghosted_light);
+                    proxyCustomUrlPreference.setIcon(R.drawable.proxy_ghosted_light);
                 }
             }
         }
@@ -1372,7 +1366,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             break;
 
                         case ProxyHelper.TOR:
-                            proxyPreference.setSummary(getString(R.string.tor_enabled));
+                            if (Build.VERSION.SDK_INT == 19) {  // Proxying through SOCKS doesn't work on Android KitKat.
+                                proxyPreference.setSummary(getString(R.string.tor_enabled_kitkat));
+                            } else {
+                                proxyPreference.setSummary(getString(R.string.tor_enabled));
+                            }
                             break;
 
                         case ProxyHelper.I2P:
@@ -1384,9 +1382,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             break;
                     }
 
-                    // Update the status of the custom proxy options.
-                    proxyCustomHostPreference.setEnabled(currentProxyString.equals("Custom"));
-                    proxyCustomPortPreference.setEnabled(currentProxyString.equals("Custom"));
+                    // Update the status of the custom URL preference.
+                    proxyCustomUrlPreference.setEnabled(currentProxyString.equals("Custom"));
 
                     // Update the icons.
                     if (currentProxyString.equals("None")) {  // Proxying is disabled.
@@ -1394,54 +1391,44 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             // Set the main proxy icon to be disabled
                             proxyPreference.setIcon(R.drawable.proxy_disabled_dark);
 
-                            // Set the custom proxy icons to be ghosted.
-                            proxyCustomHostPreference.setIcon(R.drawable.proxy_ghosted_dark);
-                            proxyCustomPortPreference.setIcon(R.drawable.proxy_ghosted_dark);
+                            // Set the custom proxy URL icon to be ghosted.
+                            proxyCustomUrlPreference.setIcon(R.drawable.proxy_ghosted_dark);
                         } else {  // Light theme.
                             // Set the main proxy icon to be disabled.
                             proxyPreference.setIcon(R.drawable.proxy_disabled_light);
 
-                            // Set the custom proxy icons to be ghosted.
-                            proxyCustomHostPreference.setIcon(R.drawable.proxy_ghosted_light);
-                            proxyCustomPortPreference.setIcon(R.drawable.proxy_ghosted_light);
+                            // Set the custom proxy URL icon to be ghosted.
+                            proxyCustomUrlPreference.setIcon(R.drawable.proxy_ghosted_light);
                         }
                     } else {  // Proxying is enabled.
                         if (darkTheme) {  // Dark theme.
                             // Set the main proxy icon to be enabled.
                             proxyPreference.setIcon(R.drawable.proxy_enabled_dark);
 
-                            /// Set the custom proxy icons according to their status.
-                            if (proxyCustomHostPreference.isEnabled()) {  // Custom proxy is enabled.
-                                proxyCustomHostPreference.setIcon(R.drawable.proxy_enabled_dark);
-                                proxyCustomPortPreference.setIcon(R.drawable.proxy_enabled_dark);
+                            /// Set the custom proxy URL icon according to its status.
+                            if (proxyCustomUrlPreference.isEnabled()) {  // Custom proxy is enabled.
+                                proxyCustomUrlPreference.setIcon(R.drawable.proxy_enabled_dark);
                             } else {  // Custom proxy is disabled.
-                                proxyCustomHostPreference.setIcon(R.drawable.proxy_ghosted_dark);
-                                proxyCustomPortPreference.setIcon(R.drawable.proxy_ghosted_dark);
+                                proxyCustomUrlPreference.setIcon(R.drawable.proxy_ghosted_dark);
                             }
                         } else {  // Light theme.
                             // Set the main proxy icon to be enabled.
                             proxyPreference.setIcon(R.drawable.proxy_enabled_light);
 
-                            // Set the custom proxy icons according to their status.
-                            if (proxyCustomHostPreference.isEnabled()) {  // Custom proxy is enabled.
-                                proxyCustomHostPreference.setIcon(R.drawable.proxy_enabled_light);
-                                proxyCustomPortPreference.setIcon(R.drawable.proxy_enabled_light);
+                            // Set the custom proxy URL icon according to its status.
+                            if (proxyCustomUrlPreference.isEnabled()) {  // Custom proxy is enabled.
+                                proxyCustomUrlPreference.setIcon(R.drawable.proxy_enabled_light);
                             } else {  // Custom proxy is disabled.
-                                proxyCustomHostPreference.setIcon(R.drawable.proxy_ghosted_light);
-                                proxyCustomPortPreference.setIcon(R.drawable.proxy_ghosted_light);
+                                proxyCustomUrlPreference.setIcon(R.drawable.proxy_ghosted_light);
                             }
                         }
                     }
                     break;
 
-                case "proxy_custom_host":
-                    // Set the summary text for the proxy custom host.
-                    proxyCustomHostPreference.setSummary(sharedPreferences.getString("proxy_custom_host", getString(R.string.proxy_custom_host_default_value)));
+                case "proxy_custom_url":
+                    // Set the summary text for the proxy custom URL.
+                    proxyCustomUrlPreference.setSummary(sharedPreferences.getString("proxy_custom_url", getString(R.string.proxy_custom_url_default_value)));
                     break;
-
-                case "proxy_custom_port":
-                    // Set the summary text for the proxy custom port.
-                    proxyCustomPortPreference.setSummary(sharedPreferences.getString("proxy_custom_port", getString(R.string.proxy_custom_port_default_value)));
 
                 case "full_screen_browsing_mode":
                     if (sharedPreferences.getBoolean("full_screen_browsing_mode", false)) {  // Full screen browsing is enabled.

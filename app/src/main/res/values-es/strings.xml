@@ -388,6 +388,7 @@
     <string name="overview">Visión general</string>
     <string name="local_storage">Almacenamiento local</string>
     <string name="ssl_certificates">Certificados SSL</string>
+    <string name="proxies">Proxis</string>
     <string name="tracking_ids">Rastreo de IDs</string>
 
     <!-- Download Location -->
@@ -396,8 +397,12 @@
         Si se deniega, se utilizará el directorio de descarga de la aplicación.</string>
     <string name="ok">OK</string>
 
-    <!-- Orbot. -->
-    <string name="waiting_for_orbot">Esperando a Orbot para conectar.</string>
+    <!-- Proxy. -->
+    <string name="orbot_not_installed_title">Orbot No Instalado</string>
+    <string name="orbot_not_installed_message">El proxy a través de Orbot no funcionará a menos que la aplicación Orbot esté instalada.</string>
+    <string name="i2p_not_installed_title">I2P No Instalado</string>
+    <string name="i2p_not_installed_message">El proxy a través de I2P no funcionará a menos que la aplicación I2P esté instalada.</string>
+    <string name="waiting_for_orbot">Esperando a que Orbot se conecte.</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">Acerca de Navegador Privado</string>
@@ -418,6 +423,7 @@
     <string name="webview_provider">Proveedor de WebView:</string>
     <string name="webview_version">Versión de WebView:</string>
     <string name="orbot">Orbot:</string>
+    <string name="i2p">I2P:</string>
     <string name="openkeychain">OpenKeychain:</string>
     <string name="easylist_label">EasyList:</string>
     <string name="easyprivacy_label">EasyPrivacy:</string>
@@ -529,6 +535,18 @@
         </string-array>
         <string name="search_custom_url">URL personalizado de búsqueda</string>
         <string name="custom_url">URL personalizado</string>
+    <string name="proxy">Proxy</string>
+        <string name="proxy_none">Ninguno</string>
+        <string name="proxy_tor">Tor</string>
+        <string name="proxy_i2p">I2P</string>
+        <string name="proxy_custom">Personalizado</string>
+        <string-array name="proxy_entries">
+            <item>Ninguno</item>
+            <item>Tor</item>
+            <item>I2P</item>
+            <item>Personalizado</item>
+        </string-array>
+        <string name="custom_proxy">Proxy personalizado</string>
     <string name="full_screen">Pantalla completa</string>
         <string name="full_screen_browsing_mode">Navegación de pantalla completa</string>
         <string name="full_screen_browsing_mode_summary">Doble toque para alternar a modo de navegación de pantalla completa.</string>

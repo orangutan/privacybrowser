@@ -390,6 +390,7 @@
     <string name="overview">Overview</string>
     <string name="local_storage">Local Storage</string>
     <string name="ssl_certificates">SSL Certificates</string>
+    <string name="proxies">Proxies</string>
     <string name="tracking_ids">Tracking IDs</string>
 
     <!-- Download Location -->
@@ -400,12 +401,13 @@
     <!-- Proxy. -->
     <string name="proxy_not_installed_dialog" translatable="false">Proxy not installed dialog</string>  <!-- This string is used to tag the proxy not installed dialog.  It is never displayed to the user. -->
     <string name="waiting_for_proxy_dialog" translatable="false">Waiting for proxy dialog</string>  <!-- This string is used to tag the waiting for proxy dialog.  It is never displayed to the user. -->
-    <string name="proxies">Proxies</string>
     <string name="orbot_not_installed_title">Orbot Not Installed</string>
     <string name="orbot_not_installed_message">Proxying through Orbot will not work unless the Orbot app is installed.</string>
     <string name="i2p_not_installed_title">I2P Not Installed</string>
-    <string name="i2p_not_installed_message">Proxying through I2P will not work unless the I2P app is installed</string>
+    <string name="i2p_not_installed_message">Proxying through I2P will not work unless the I2P app is installed.</string>
     <string name="waiting_for_orbot">Waiting for Orbot to connect.</string>
+    <string name="custom_proxy_invalid">The custom proxy URL is invalid.</string>
+    <string name="socks_proxies_do_not_work_on_kitkat">SOCKS proxies do not work on Android KitKat.</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">About Privacy Browser</string>
@@ -599,12 +601,12 @@
             <item>I2P</item>
             <item>Custom</item>
         </string-array>
-        <string name="no_proxy_enabled">No proxy enabled.  Connect directly to the internet.</string>
-        <string name="tor_enabled">Tor - proxy through localhost on port 8118.</string>
-        <string name="i2p_enabled">I2P - proxy through localhost on port 4444.</string>
+        <string name="no_proxy_enabled">None - connect directly to the internet.</string>
+        <string name="tor_enabled">Tor - connect through socks://localhost:9050.</string>
+        <string name="tor_enabled_kitkat">Tor - connect through http://localhost:8118</string>
+        <string name="i2p_enabled">I2P - connect through http://localhost:4444.</string>
         <string name="custom_proxy">Custom proxy</string>
-        <string name="proxy_custom_host">Proxy custom host</string>
-        <string name="proxy_custom_port">Proxy custom port</string>
+        <string name="proxy_custom_url">Proxy custom URL</string>
     <string name="full_screen">Full Screen</string>
         <string name="full_screen_browsing_mode">Full screen browsing mode</string>
         <string name="full_screen_browsing_mode_summary">Double-tap to toggle full screen browsing mode.</string>
@@ -649,8 +651,7 @@
     <string name="search_default_value" translatable="false">https://www.startpage.com/do/search?query=</string>
     <string name="search_custom_url_default_value" translatable="false" />
     <string name="proxy_default_value" translatable="false">None</string>
-    <string name="proxy_custom_host_default_value" translatable="false" />
-    <string name="proxy_custom_port_default_value" translatable="false" />
+    <string name="proxy_custom_url_default_value" translatable="false">http://localhost:8118</string>
     <string name="homepage_default_value" translatable="false">https://www.startpage.com/</string>
     <string name="font_size_default_value" translatable="false">100</string>
 

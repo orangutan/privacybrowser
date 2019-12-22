@@ -382,6 +382,7 @@
     <string name="overview">Обзор</string>
     <string name="local_storage">Локальное хранилище</string>
     <string name="ssl_certificates">Сертификаты SSL</string>
+    <string name="proxies">Прокси</string>
     <string name="tracking_ids">Идентификаторы отслеживания</string>
 
     <!-- Download Location -->
@@ -390,8 +391,12 @@
         Если разрешение получено не будет, то для загрузок будет использоваться папка приложения</string>
     <string name="ok">OK</string>
 
-    <!-- Orbot. -->
-    <string name="waiting_for_orbot">Ожидание Orbot для подключения.</string>
+    <!-- Proxy. -->
+    <string name="orbot_not_installed_title">Orbot не установлен</string>
+    <string name="orbot_not_installed_message">Прокси через Orbot работать не будет, если приложение Orbot не установлено.</string>
+    <string name="i2p_not_installed_title">I2P не установлен</string>
+    <string name="i2p_not_installed_message">Прокси через I2P работать не будет, если приложение I2P не установлено.</string>
+    <string name="waiting_for_orbot">Ожидание подключения Orbot.</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">О Privacy Browser</string>
@@ -412,6 +417,7 @@
     <string name="webview_provider">Провайдер WebView:</string>
     <string name="webview_version">Версия WebView:</string>
     <string name="orbot">Orbot:</string>
+    <string name="i2p">I2P:</string>
     <string name="openkeychain">OpenKeychain:</string>
     <string name="easylist_label">EasyList:</string>
     <string name="easyprivacy_label">EasyPrivacy:</string>
@@ -523,6 +529,18 @@
         </string-array>
         <string name="search_custom_url">Настраиваемый URL поиска</string>
         <string name="custom_url">Настраиваемый URL</string>
+    <string name="proxy">Прокси</string>
+        <string name="proxy_none">Нет</string>
+        <string name="proxy_tor">Tor</string>
+        <string name="proxy_i2p">I2P</string>
+        <string name="proxy_custom">Пользовательский</string>
+        <string-array name="proxy_entries">
+            <item>Нет</item>
+            <item>Tor</item>
+            <item>I2P</item>
+            <item>Пользовательский</item>
+        </string-array>
+        <string name="custom_proxy">Пользовательский прокси</string>
     <string name="full_screen">Во весь экран</string>
         <string name="full_screen_browsing_mode">Полноэкранный режим просмотра</string>
         <string name="full_screen_browsing_mode_summary">Двойное касание переключает режим просмотра.</string>

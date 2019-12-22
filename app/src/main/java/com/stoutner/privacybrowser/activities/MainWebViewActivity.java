@@ -173,7 +173,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         EditBookmarkFolderDialog.EditBookmarkFolderListener, FontSizeDialog.UpdateFontSizeListener, NavigationView.OnNavigationItemSelectedListener, PinnedMismatchDialog.PinnedMismatchListener, PopulateBlocklists.PopulateBlocklistsListener, SaveWebpageImageDialog.SaveWebpageImageListener,
         StoragePermissionDialog.StoragePermissionDialogListener, UrlHistoryDialog.NavigateHistoryListener, WebViewTabFragment.NewTabListener {
 
-    // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxyThroughOrbot()`.
+    // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxy()`.
     public static String orbotStatus = "unknown";
 
     // The WebView pager adapter is accessed from `HttpAuthenticationDialog`, `PinnedMismatchDialog`, and `SslCertificateErrorDialog`.  It is also used in `onCreate()`, `onResume()`, and `addTab()`.
@@ -4316,12 +4316,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         AppBarLayout appBarLayout = findViewById(R.id.appbar_layout);
 
         // Set the proxy according to the mode.  `this` refers to the current activity where an alert dialog might be displayed.
-        ProxyHelper.setProxy(getApplicationContext(), proxyMode);
+        ProxyHelper.setProxy(getApplicationContext(), appBarLayout, proxyMode);
 
         // Reset the waiting for proxy tracker.
         waitingForProxy = false;
 
-        // Update the user interface and reload the WebViews is requested.
+        // Update the user interface and reload the WebViews if requested.
         switch (proxyMode) {
             case ProxyHelper.NONE:
                 // Set the default app bar layout background.

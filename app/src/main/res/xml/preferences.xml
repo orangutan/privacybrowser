@@ -189,17 +189,10 @@
             android:defaultValue="@string/proxy_default_value" />
 
         <EditTextPreference
-            android:key="proxy_custom_host"
-            android:title="@string/proxy_custom_host"
-            android:defaultValue="@string/proxy_custom_host_default_value"
+            android:key="proxy_custom_url"
+            android:title="@string/proxy_custom_url"
+            android:defaultValue="@string/proxy_custom_url_default_value"
             android:inputType="textUri" />
-
-        <!-- `android:inputType="number"` currently doesn't work with AndroidX. -->
-        <EditTextPreference
-            android:key="proxy_custom_port"
-            android:title="@string/proxy_custom_port"
-            android:defaultValue="@string/proxy_custom_port_default_value"
-            android:inputType="number" />
     </PreferenceCategory>
 
     <PreferenceCategory
