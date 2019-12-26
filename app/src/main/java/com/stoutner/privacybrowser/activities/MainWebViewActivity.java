@@ -133,7 +133,7 @@ import com.stoutner.privacybrowser.dialogs.FontSizeDialog;
 import com.stoutner.privacybrowser.dialogs.HttpAuthenticationDialog;
 import com.stoutner.privacybrowser.dialogs.ProxyNotInstalledDialog;
 import com.stoutner.privacybrowser.dialogs.PinnedMismatchDialog;
-import com.stoutner.privacybrowser.dialogs.SaveWebpageImageDialog;
+import com.stoutner.privacybrowser.dialogs.SaveWebpageDialog;
 import com.stoutner.privacybrowser.dialogs.SslCertificateErrorDialog;
 import com.stoutner.privacybrowser.dialogs.StoragePermissionDialog;
 import com.stoutner.privacybrowser.dialogs.UrlHistoryDialog;
@@ -170,8 +170,9 @@ import java.util.Set;
 // AppCompatActivity from android.support.v7.app.AppCompatActivity must be used to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
         DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, DownloadLocationPermissionDialog.DownloadLocationPermissionDialogListener, EditBookmarkDialog.EditBookmarkListener,
-        EditBookmarkFolderDialog.EditBookmarkFolderListener, FontSizeDialog.UpdateFontSizeListener, NavigationView.OnNavigationItemSelectedListener, PinnedMismatchDialog.PinnedMismatchListener, PopulateBlocklists.PopulateBlocklistsListener, SaveWebpageImageDialog.SaveWebpageImageListener,
-        StoragePermissionDialog.StoragePermissionDialogListener, UrlHistoryDialog.NavigateHistoryListener, WebViewTabFragment.NewTabListener {
+        EditBookmarkFolderDialog.EditBookmarkFolderListener, FontSizeDialog.UpdateFontSizeListener, NavigationView.OnNavigationItemSelectedListener, PinnedMismatchDialog.PinnedMismatchListener,
+        PopulateBlocklists.PopulateBlocklistsListener, SaveWebpageDialog.SaveWebpageListener, StoragePermissionDialog.StoragePermissionDialogListener, UrlHistoryDialog.NavigateHistoryListener,
+        WebViewTabFragment.NewTabListener {
 
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxy()`.
     public static String orbotStatus = "unknown";
@@ -200,7 +201,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // Start activity for result request codes.
     private final int FILE_UPLOAD_REQUEST_CODE = 0;
-    public final static int BROWSE_SAVE_WEBPAGE_IMAGE_REQUEST_CODE = 1;
+    public final static int BROWSE_SAVE_WEBPAGE_REQUEST_CODE = 1;
 
 
     // The current WebView is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`,
@@ -311,13 +312,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `downloadImageUrl` is used in `onCreateContextMenu()` and `onRequestPermissionResult()`.
     private String downloadImageUrl;
 
-    // The save website image file path string is used in `onSaveWebpageImage()` and `onRequestPermissionResult()`
-    private String saveWebsiteImageFilePath;
+    // The save webpage file path string is used in `onSaveWebpageImage()` and `onRequestPermissionResult()`
+    private String saveWebpageFilePath;
 
     // The permission result request codes are used in `onCreateContextMenu()`, `onCloseDownloadLocationPermissionDialog()`, `onRequestPermissionResult()`, `onSaveWebpageImage()`,
     // `onCloseStoragePermissionDialog()`, and `initializeWebView()`.
-    private final int DOWNLOAD_FILE_REQUEST_CODE = 1;
-    private final int DOWNLOAD_IMAGE_REQUEST_CODE = 2;
+    private final int DOWNLOAD_FILE_REQUEST_CODE = 0;
+    private final int DOWNLOAD_IMAGE_REQUEST_CODE = 1;
+    private final int SAVE_WEBPAGE_ARCHIVE_REQUEST_CODE = 2;
     private final int SAVE_WEBPAGE_IMAGE_REQUEST_CODE = 3;
 
     @Override
@@ -1698,12 +1700,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Consume the event.
                 return true;
 
+            case R.id.save_as_archive:
+                // Instantiate the save webpage archive dialog.
+                DialogFragment saveWebpageArchiveDialogFragment = SaveWebpageDialog.saveWebpage(SaveWebpageDialog.ARCHIVE);
+
+                // Show the save webpage archive dialog.
+                saveWebpageArchiveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_webpage));
+
+                // Consume the event.
+                return true;
+
             case R.id.save_as_image:
                 // Instantiate the save webpage image dialog.
-                DialogFragment saveWebpageImageDialogFragment = new SaveWebpageImageDialog();
+                DialogFragment saveWebpageImageDialogFragment = SaveWebpageDialog.saveWebpage(SaveWebpageDialog.IMAGE);
 
                 // Show the save webpage image dialog.
-                saveWebpageImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_as_image));
+                saveWebpageImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_webpage));
 
                 // Consume the event.
                 return true;
@@ -2680,18 +2692,32 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 downloadImageUrl = "";
                 break;
 
+            case SAVE_WEBPAGE_ARCHIVE_REQUEST_CODE:
+                // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
+                    // Save the webpage archive.
+                    currentWebView.saveWebArchive(saveWebpageFilePath);
+                } else {
+                    // Display an error snackbar.
+                    Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
+                }
+
+                // Reset the save webpage file path.
+                saveWebpageFilePath = "";
+                break;
+
             case SAVE_WEBPAGE_IMAGE_REQUEST_CODE:
-                // Check to see if the storage permission was granted.  If the dialog was canceled the grant result will be empty.
+                // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
                 if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
                     // Save the webpage image.
-                    new SaveWebpageImage(this, currentWebView).execute(saveWebsiteImageFilePath);
+                    new SaveWebpageImage(this, currentWebView).execute(saveWebpageFilePath);
                 } else {  // The storage permission was not granted.
                     // Display an error snackbar.
                     Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
                 }
 
-                // Reset the save website image file path.
-                saveWebsiteImageFilePath = "";
+                // Reset the save webpage file path.
+                saveWebpageFilePath = "";
                 break;
         }
     }
@@ -2954,22 +2980,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
                 break;
 
-            case BROWSE_SAVE_WEBPAGE_IMAGE_REQUEST_CODE:
+            case BROWSE_SAVE_WEBPAGE_REQUEST_CODE:
                 // Don't do anything if the user pressed back from the file picker.
                 if (resultCode == Activity.RESULT_OK) {
                     // Get a handle for the save dialog fragment.
-                    DialogFragment saveWebpageImageDialogFragment= (DialogFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.save_as_image));
+                    DialogFragment saveWebpageDialogFragment= (DialogFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.save_webpage));
 
                     // Only update the file name if the dialog still exists.
-                    if (saveWebpageImageDialogFragment != null) {
-                        // Get a handle for the save webpage image dialog.
-                        Dialog saveWebpageImageDialog = saveWebpageImageDialogFragment.getDialog();
+                    if (saveWebpageDialogFragment != null) {
+                        // Get a handle for the save webpage dialog.
+                        Dialog saveWebpageDialog = saveWebpageDialogFragment.getDialog();
 
                         // Remove the incorrect lint warning below that the dialog might be null.
-                        assert saveWebpageImageDialog != null;
+                        assert saveWebpageDialog != null;
 
                         // Get a handle for the file name edit text.
-                        EditText fileNameEditText = saveWebpageImageDialog.findViewById(R.id.file_name_edittext);
+                        EditText fileNameEditText = saveWebpageDialog.findViewById(R.id.file_name_edittext);
 
                         // Instantiate the file name helper.
                         FileNameHelper fileNameHelper = new FileNameHelper();
@@ -3135,7 +3161,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onSaveWebpageImage(DialogFragment dialogFragment) {
+    public void onSaveWebpage(int saveType, DialogFragment dialogFragment) {
         // Get the dialog.
         Dialog dialog = dialogFragment.getDialog();
 
@@ -3146,12 +3172,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         EditText fileNameEditText = dialog.findViewById(R.id.file_name_edittext);
 
         // Get the file path string.
-        saveWebsiteImageFilePath = fileNameEditText.getText().toString();
+        saveWebpageFilePath = fileNameEditText.getText().toString();
 
         // Check to see if the storage permission is needed.
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
-            // Save the webpage image.
-            new SaveWebpageImage(this, currentWebView).execute(saveWebsiteImageFilePath);
+            //Save the webpage according to the save type.
+            switch (saveType) {
+                case SaveWebpageDialog.ARCHIVE:
+                    // Save the webpage archive.
+                    currentWebView.saveWebArchive(saveWebpageFilePath);
+                    break;
+
+                case SaveWebpageDialog.IMAGE:
+                    // Save the webpage image.
+                    new SaveWebpageImage(this, currentWebView).execute(saveWebpageFilePath);
+                    break;
+            }
         } else {  // The storage permission has not been granted.
             // Get the external private directory `File`.
             File externalPrivateDirectoryFile = getExternalFilesDir(null);
@@ -3163,29 +3199,57 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             String externalPrivateDirectory = externalPrivateDirectoryFile.toString();
 
             // Check to see if the file path is in the external private directory.
-            if (saveWebsiteImageFilePath.startsWith(externalPrivateDirectory)) {  // The file path is in the external private directory.
-                // Save the webpage image.
-                new SaveWebpageImage(this, currentWebView).execute(saveWebsiteImageFilePath);
+            if (saveWebpageFilePath.startsWith(externalPrivateDirectory)) {  // The file path is in the external private directory.
+                //Save the webpage according to the save type.
+                switch (saveType) {
+                    case SaveWebpageDialog.ARCHIVE:
+                        // Save the webpage archive.
+                        currentWebView.saveWebArchive(saveWebpageFilePath);
+                        break;
+
+                    case SaveWebpageDialog.IMAGE:
+                        // Save the webpage image.
+                        new SaveWebpageImage(this, currentWebView).execute(saveWebpageFilePath);
+                        break;
+                }
             } else {  // The file path is in a public directory.
                 // Check if the user has previously denied the storage permission.
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
                     // Instantiate the storage permission alert dialog.
-                    DialogFragment storagePermissionDialogFragment = new StoragePermissionDialog();
+                    DialogFragment storagePermissionDialogFragment = StoragePermissionDialog.displayDialog(saveType);
 
                     // Show the storage permission alert dialog.  The permission will be requested when the dialog is closed.
                     storagePermissionDialogFragment.show(getSupportFragmentManager(), getString(R.string.storage_permission));
                 } else {  // Show the permission request directly.
-                    // Request the write external storage permission.  The webpage image will be saved when it finishes.
-                    ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, SAVE_WEBPAGE_IMAGE_REQUEST_CODE);
+                    switch (saveType) {
+                        case SaveWebpageDialog.ARCHIVE:
+                            // Request the write external storage permission.  The webpage archive will be saved when it finishes.
+                            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, SAVE_WEBPAGE_ARCHIVE_REQUEST_CODE);
+                            break;
+
+                        case SaveWebpageDialog.IMAGE:
+                            // Request the write external storage permission.  The webpage image will be saved when it finishes.
+                            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, SAVE_WEBPAGE_IMAGE_REQUEST_CODE);
+                            break;
+                    }
                 }
             }
         }
     }
 
     @Override
-    public void onCloseStoragePermissionDialog() {
-        // Request the write external storage permission.  The webpage image will be saved when it finishes.
-        ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, SAVE_WEBPAGE_IMAGE_REQUEST_CODE);
+    public void onCloseStoragePermissionDialog(int saveType) {
+        switch (saveType) {
+            case SaveWebpageDialog.ARCHIVE:
+                // Request the write external storage permission.  The webpage archive will be saved when it finishes.
+                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, SAVE_WEBPAGE_ARCHIVE_REQUEST_CODE);
+                break;
+
+            case SaveWebpageDialog.IMAGE:
+                // Request the write external storage permission.  The webpage image will be saved when it finishes.
+                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, SAVE_WEBPAGE_IMAGE_REQUEST_CODE);
+                break;
+        }
     }
 
     private void applyAppSettings() {

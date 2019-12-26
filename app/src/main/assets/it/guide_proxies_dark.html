@@ -26,31 +26,34 @@
     </head>
 
     <body>
-        <h3><img class="title" src="../shared_images/vpn_key_blue_dark.png"> Proxies and Their Limits</h3>
+        <h3><img class="title" src="../shared_images/vpn_key_blue_dark.png"> I Proxy e i loro limiti</h3>
 
         <p>Esistono due categorie generali di cattivi soggetti che vogliono violare la privacy del web:
             governi maliziosi con accesso agli ISP (Internet Service Providers) e mega corporations che gestiscono social network e agenzie pubblicitarie.
-            Proxies like TOR (The Onion Router) and I2P (the Invisible Internet Project) are useful in protecting privacy from malicious governments (which spy on traffic in transit)
-            but not from mega corporations (which embed malicious code on web servers).</p>
+            Proxy come TOR (The Onion Router) e I2P (Invisible Internet Project) sono utili per la protezione della privacy da governi maliziosi (che spiano il traffico in transito)
+            ma non dalle mega corporations (che inseriscono codice malizioso sui web server).</p>
 
 
         <h3><img class="title" src="../shared_images/language_blue_dark.png"> Governi Maliziosi</h3>
 
         <p>I governi malizionsi spesso spiano i loro cittadini per punire il dissenso o le attività di difesa dei diritti umani.
             Solitamente, o gestiscono loro stessi gli ISP locali oppure li obbligano a rivelare informazioni mostrando tutti gli indirizzi IP visitati da ciascun utente.
-            Layered proxies are designed to defeat this infringement of privacy by encrypting the traffic from a user’s device and routing it through multiple servers on the internet
-            before sending it on to the final destination.
-            This means that no individual ISP, server, or website, can know both the <a href="https://ipleak.net">IP address of the user’s device</a> and the IP address of the final web server.
-            Malicious governments and the ISPs they control cannot tell which web servers a user is accessing, although they can tell that the user is using a layered proxy service.
-            In some parts of the world, using proxies could be construed as an evidence of illegal behavior (“If you didn’t have anything to hide you wouldn’t be encrypting your traffic”)
-            and users could be punished because governments assume they are doing something that is prohibited. Thus, proxies can be helpful, but they aren’t a panacea.</p>
+            I proxy a strati sono progettati per sconfiggere questa violazione di privacy crittografando il traffico dal dispositivo dell'utente e instradandolo attraverso server multipli su internet
+            prima di inviarlo alla destinazione finale.
+            Questo significa che nessun ISP individuale, server, o sito web,
+            può conoscere sia l'<a href="https://ipleak.net">indirizzo IP del dispositivo dell'utente</a> che l'indirizzo IP del web server finale.
+            I governi maliziosi e gli ISP che controllano, non possono conoscere i web server ai quali l'utente sta accedendo, sebbene sappiano che l'utente sta utilizzando un servizio di proxy a strati.
+            In alcune parti del mondo l'utilizzo di proxy può essere consideraro come evidenza di un comportamento illegale (“Se non hai nulla da nascondere non crittograferesti il tuo traffico”)
+            e gli utenti potrebbero essere perseguiti perchè il loro governo potrebbe assumere che stiano facendo qualcosa di proibito.
+            Per questo motivo i proxy possono essere utili ma non sono la soluzione di tutti i mali.</p>
 
 
         <h3><img class="title" src="../shared_images/language_blue_dark.png"> Mega corporations</h3>
 
         <p>Quando un utente si connette a un web server, il server può vedere l'indirizzo IP dell'utente.
             Nonostante non sia una scienza esatta, è possibile convertire l'IP in indirizzi fisici con <a href="https://www.whatismyip.com/">discreta accuratezza</a>.
-            Small web servers typically rely on IP addresses to identify the location of the users visiting their site. Proxies are a good solution to mask the user’s location from these servers.
+            I piccoli web servers solitamente si basano sull'indirizzo IP per identificare la posizione degli utenti che accedono al loro sito.
+            I Proxy sono una buona soluzione per mascherare la posizione dell'utente a questi server.
             Le mega corporations proprietarie di social media e agenzie pubblicitarie utilizzano però un intero profilo di informazioni con lo scopo di tracciare gli utenti sui dispositivi e sgli indirizzi IP.
             Questi profili utilizzano molte tecniche diverse per l'identificazione degli utenti, tra cui JavaScript, cookie, ID traccianti,
             e <a href="https://panopticlick.eff.org/">impronta digitale dei browser</a>.
@@ -60,26 +63,27 @@
         <p>Viene tracciato ogni sito visitato, ogni acquisto effettuato, ogni carta di credito utilizzata, ogni indirizzo di spedizione, i metadati GPS di ogni immagine che viene caricata su internet.
             Viene costruito il profilo per età, sesso, stato civile, indirizzo, appartenenza politica, religione, situazione familiare, animali domestici, e tutto ciò su cui possono mettere le mani.
             Le corporations acquistano anche i database delle transazioni con carta di credito effettuate nei negozi, per poter tracciare anche le abitudini di acquisto off-line degli utenti nei loro profili.
-            Because they already have much more accurate address information about a user than an IP address discloses, proxies provides no real privacy protection against mega corporations.</p>
+            Poichè hanno già informazioni molto più accurate sull'utente rispetto a quelle fornite dall'indirizzo IP, i proxy non forniscono alcuna vera protezione della privacy contro le mega corporations.</p>
 
         <p>La miglior protezione per la privacy contro le mega corporations è quella di navigare con JavaScript disabilitato, seguita dal bloccare gli annunci pubblicitari,
             disabilitare i cookie e il DOM storage, e utilizzare un browser di cui è difficile avere l'impronta digitale.</p>
 
 
-        <h3><img class="title" src="../shared_images/open_in_browser_blue_dark.png"> Using Proxies</h3>
+        <h3><img class="title" src="../shared_images/open_in_browser_blue_dark.png"> L'utilizzo di Proxy</h3>
 
-        <p>Despite their limitations, proxies can be useful in some circumstances.
-            <a href="https://play.google.com/store/apps/details?id=org.torproject.android">Tor</a> and <a href="https://f-droid.org/en/packages/net.i2p.android.router/">I2p</a>
-            have Android apps that make it easy to use their proxy networks. When proxying is turned on in Privacy Browser, the app bar will have a light blue background instead of the default light grey.
-            Because traffic is being routed through several proxy nodes, using a layered proxy is often much slower than connecting directly to the internet.</p>
+        <p>Nonostante i loro limiti, i proxy possono essere utili in alcune circostanze.
+            <a href="https://play.google.com/store/apps/details?id=org.torproject.android">Tor</a> e <a href="https://f-droid.org/en/packages/net.i2p.android.router/">I2P</a>
+            hanno app per Android che facilitano l'utilizzo delle loro reti proxy.
+            Quando si abilita il proxy in Privacy Browser la barra dell'app bar avrà una colorazione dello sfondo azzurra, rispetto a quella grigia di default.
+            Dal momento che il traffico è instradato attraverso diversi nodi proxy, l'utilizzo di un proxy a strati è spesso molto più lento di una connessione diretta a internet.</p>
 
         <img class="center" src="images/tor.png">
 
         <h3><img class="title" src="../shared_images/file_download_blue_dark.png"> Download di File con Tor</h3>
 
-        <p>When Orbot is operating in proxy mode, browsing the internet using Privacy Browser will be routed through the proxy, but file downloads will not.
-            This is because Privacy Browser uses Android’s builtin download manager to download files, which doesn’t have a proxy option.
-            Users who want to download files via Orbot need to enable its VPN mode.  There is currently no way to download files through I2P.</p>
+        <p>Quando Orbot sta funzionando in modalità proxy, la navigazione su internet con Privacy Browser è instradata attraverso il proxy, ma il download di file no.
+            Questo perchè Privacy Browser utilizza il download manager nativo di Android per lo scaricamento dei file, e questo non ha l'opzione proxy.
+            Gli utenti che vogliono scaricare i file via Orbot devono quindi abilitare la sua modalità VPN.  Attualmente non c'è ancora la possibilità di scaricare file con I2P.</p>
 
         <img class="center" src="../shared_images/vpn_mode.png">
     </body>

@@ -49,13 +49,17 @@ import androidx.preference.PreferenceManager;
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 
-public class SaveWebpageImageDialog extends DialogFragment {
-    // Define the save webpage image listener.
-    private SaveWebpageImageListener saveWebpageImageListener;
+public class SaveWebpageDialog extends DialogFragment {
+    // Define the save type constants.
+    public static final int ARCHIVE = 0;
+    public static final int IMAGE = 1;
+
+    // Define the save webpage listener.
+    private SaveWebpageListener saveWebpageListener;
 
     // The public interface is used to send information back to the parent activity.
-    public interface SaveWebpageImageListener {
-        void onSaveWebpageImage(DialogFragment dialogFragment);
+    public interface SaveWebpageListener {
+        void onSaveWebpage(int saveType, DialogFragment dialogFragment);
     }
 
     @Override
@@ -63,8 +67,25 @@ public class SaveWebpageImageDialog extends DialogFragment {
         // Run the default commands.
         super.onAttach(context);
 
-        // Get a handle for the save webpage image listener from the launching context.
-        saveWebpageImageListener = (SaveWebpageImageListener) context;
+        // Get a handle for the save webpage listener from the launching context.
+        saveWebpageListener = (SaveWebpageListener) context;
+    }
+
+    public static SaveWebpageDialog saveWebpage(int saveType) {
+        // Create an arguments bundle.
+        Bundle argumentsBundle = new Bundle();
+
+        // Store the save type in the bundle.
+        argumentsBundle.putInt("save_type", saveType);
+
+        // Create a new instance of the save webpage dialog.
+        SaveWebpageDialog saveWebpageDialog = new SaveWebpageDialog();
+
+        // Add the arguments bundle to the new dialog.
+        saveWebpageDialog.setArguments(argumentsBundle);
+
+        // Return the new dialog.
+        return saveWebpageDialog;
     }
 
     // `@SuppressLing("InflateParams")` removes the warning about using null as the parent view group when inflating the alert dialog.
@@ -72,6 +93,15 @@ public class SaveWebpageImageDialog extends DialogFragment {
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // Get a handle for the arguments.
+        Bundle arguments = getArguments();
+
+        // Remove the incorrect lint warning that the arguments might be null.
+        assert arguments != null;
+
+        // Get the save type.
+        int saveType = arguments.getInt("save_type");
+
         // Get a handle for the activity and the context.
         Activity activity = getActivity();
         Context context = getContext();
@@ -92,15 +122,45 @@ public class SaveWebpageImageDialog extends DialogFragment {
 
         // Set the style and icon according to the theme.
         if (darkTheme) {
+            // Set the style.
             dialogBuilder = new AlertDialog.Builder(activity, R.style.PrivacyBrowserAlertDialogDark);
-            dialogBuilder.setIcon(R.drawable.images_enabled_dark);
+
+            // Set the icon according to the save type.
+            switch (saveType) {
+                case ARCHIVE:
+                    dialogBuilder.setIcon(R.drawable.dom_storage_cleared_dark);
+                    break;
+
+                case IMAGE:
+                    dialogBuilder.setIcon(R.drawable.images_enabled_dark);
+                    break;
+            }
         } else {
+            // Set the style.
             dialogBuilder = new AlertDialog.Builder(activity, R.style.PrivacyBrowserAlertDialogLight);
-            dialogBuilder.setIcon(R.drawable.images_enabled_light);
+
+            // Set the icon according to the save type.
+            switch (saveType) {
+                case ARCHIVE:
+                    dialogBuilder.setIcon(R.drawable.dom_storage_cleared_light);
+                    break;
+
+                case IMAGE:
+                    dialogBuilder.setIcon(R.drawable.images_enabled_light);
+                    break;
+            }
         }
 
-        // Set the title.
-        dialogBuilder.setTitle(R.string.save_image);
+        // Set the title according to the type.
+        switch (saveType) {
+            case ARCHIVE:
+                dialogBuilder.setTitle(R.string.save_archive);
+                break;
+
+            case IMAGE:
+                dialogBuilder.setTitle(R.string.save_image);
+                break;
+        }
 
         // Set the view.  The parent view is null because it will be assigned by the alert dialog.
         dialogBuilder.setView(activity.getLayoutInflater().inflate(R.layout.save_dialog, null));
@@ -111,7 +171,7 @@ public class SaveWebpageImageDialog extends DialogFragment {
         // Set the save button listener.
         dialogBuilder.setPositiveButton(R.string.save, (DialogInterface dialog, int which) -> {
             // Return the dialog fragment to the parent activity.
-            saveWebpageImageListener.onSaveWebpageImage(this);
+            saveWebpageListener.onSaveWebpage(saveType, this);
         });
 
         // Create an alert dialog from the builder.
@@ -134,16 +194,30 @@ public class SaveWebpageImageDialog extends DialogFragment {
         TextView storagePermissionTextView = alertDialog.findViewById(R.id.storage_permission_textview);
         Button saveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
+        // Create a default file name string.
+        String defaultFileName = "";
+
+        // Set the default file name according to the type.
+        switch (saveType) {
+            case ARCHIVE:
+                defaultFileName = getString(R.string.webpage_mht);
+                break;
+
+            case IMAGE:
+                defaultFileName = getString(R.string.webpage_png);
+                break;
+        }
+
         // Create a string for the default file path.
         String defaultFilePath;
 
         // Set the default file path according to the storage permission state.
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
             // Set the default file path to use the external public directory.
-            defaultFilePath = Environment.getExternalStorageDirectory() + "/" + getString(R.string.webpage_png);
+            defaultFilePath = Environment.getExternalStorageDirectory() + "/" + defaultFileName;
         } else {  // The storage permission has not been granted.
             // Set the default file path to use the external private directory.
-            defaultFilePath = context.getExternalFilesDir(null) + "/" + getString(R.string.webpage_png);
+            defaultFilePath = context.getExternalFilesDir(null) + "/" + defaultFileName;
         }
 
         // Display the default file path.
@@ -176,8 +250,16 @@ public class SaveWebpageImageDialog extends DialogFragment {
             // Set the intent MIME type to include all files so that everything is visible.
             browseIntent.setType("*/*");
 
-            // Set the initial file name.
-            browseIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.webpage_png));
+            // Set the initial file name according to the type.
+            switch (saveType) {
+                case ARCHIVE:
+                    browseIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.webpage_mht));
+                    break;
+
+                case IMAGE:
+                    browseIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.webpage_png));
+                    break;
+            }
 
             // Set the initial directory if the minimum API >= 26.
             if (Build.VERSION.SDK_INT >= 26) {
@@ -188,7 +270,7 @@ public class SaveWebpageImageDialog extends DialogFragment {
             browseIntent.addCategory(Intent.CATEGORY_OPENABLE);
 
             // Start the file picker.  This must be started under `activity` so that the request code is returned correctly.
-            activity.startActivityForResult(browseIntent, MainWebViewActivity.BROWSE_SAVE_WEBPAGE_IMAGE_REQUEST_CODE);
+            activity.startActivityForResult(browseIntent, MainWebViewActivity.BROWSE_SAVE_WEBPAGE_REQUEST_CODE);
         });
 
         // Hide the storage permission text view on API < 23 as permissions on older devices are automatically granted.

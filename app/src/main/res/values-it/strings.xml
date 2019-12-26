@@ -173,7 +173,8 @@
         <string name="find_on_page">Cerca nella pagina</string>
         <string name="print">Stampa</string>
             <string name="privacy_browser_web_page">Pagina web di Privacy Browser</string>
-        <string name="save_as_image">Salva come Immagine</string>
+        <string name="save">Salva</string>
+            <string name="save_as_image">Salva come Immagine</string>
         <string name="add_to_home_screen">Aggiungi collegamento</string>
         <string name="view_source">Visualizza sorgente</string>
     <string name="share">Condividi</string>
@@ -242,7 +243,6 @@
     <string name="edit_folder">Modifica Cartella</string>
     <string name="move_to_folder">Sposta nella Cartella</string>
     <string name="move">Sposta</string>
-    <string name="save">Salva</string>
 
     <!-- Bookmarks Contextual App Bar. -->
     <string name="selected">Selezionato:</string>  <!--This is a plural adjective.-->
@@ -387,6 +387,7 @@
     <string name="overview">Descrizione</string>
     <string name="local_storage">Archiviazione Locale</string>
     <string name="ssl_certificates">Certificati SSL</string>
+    <string name="proxies">Proxy</string>
     <string name="tracking_ids">Tracciamento utenti</string>
 
     <!-- Download Location -->
@@ -395,8 +396,14 @@
         Nel caso in cui il permesso sia negato sarà utilizzata la cartella di download dell\'applicazione.</string>
     <string name="ok">OK</string>
 
-    <!-- Orbot. -->
+    <!-- Proxy. -->
+    <string name="orbot_not_installed_title">Orbot Non Installato</string>
+    <string name="orbot_not_installed_message">Il Proxy con Orbot non funziona se non è installata la app Orbot.</string>
+    <string name="i2p_not_installed_title">I2P Non Installato</string>
+    <string name="i2p_not_installed_message">Il Proxy con I2P non funziona se non è installata la app I2P.</string>
     <string name="waiting_for_orbot">In attesa della connessione di Orbot.</string>
+    <string name="custom_proxy_invalid">La URL del proxy personalizzato non è valida.</string>
+    <string name="socks_proxies_do_not_work_on_kitkat">I proxy SOCKS non funzionano con Android KitKat.</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">Informazioni su Privacy Browser</string>
@@ -417,6 +424,7 @@
     <string name="webview_provider">Provider di WebView:</string>
     <string name="webview_version">Versione di WebView:</string>
     <string name="orbot">Orbot:</string>
+    <string name="i2p">I2P:</string>
     <string name="openkeychain">OpenKeychain:</string>
     <string name="easylist_label">EasyList:</string>
     <string name="easyprivacy_label">EasyPrivacy:</string>
@@ -529,6 +537,23 @@
         </string-array>
         <string name="search_custom_url">Ricerca personalizzata</string>
         <string name="custom_url">URL Personalizzata</string>
+    <string name="proxy">Proxy</string>
+        <string name="proxy_none">Nessuno</string>
+        <string name="proxy_tor">Tor</string>
+        <string name="proxy_i2p">I2P</string>
+        <string name="proxy_custom">Personalizzato</string>
+        <string-array name="proxy_entries">
+            <item>Nessuno</item>
+            <item>Tor</item>
+            <item>I2P</item>
+            <item>Personalizzato</item>
+        </string-array>
+        <string name="no_proxy_enabled">Nessuno - connessione diretta a internet.</string>
+        <string name="tor_enabled">Tor - connessione con socks://localhost:9050.</string>
+        <string name="tor_enabled_kitkat">Tor - connessione con http://localhost:8118.</string>
+        <string name="i2p_enabled">I2P - connessione con http://localhost:4444.</string>
+        <string name="custom_proxy">Proxy personalizzato</string>
+        <string name="proxy_custom_url">URL personalizzata del Proxy</string>
     <string name="full_screen">Schermo intero</string>
         <string name="full_screen_browsing_mode">Navigazione a schermo intero</string>
         <string name="full_screen_browsing_mode_summary">Toccare due volte per avviare la navigazione a schermo intero.</string>

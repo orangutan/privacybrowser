@@ -131,6 +131,23 @@
                 <data android:mimeType="text/*" />
             </intent-filter>
 
+            <!-- Process intents for MHT archives. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+
+                <data android:host="*" />
+
+                <!-- This pattern matches any file that starts with a `/`, has at least one character, followed by any number of other characters, terminating with `.mht`. -->
+                <data android:pathPattern="/.*\.mht" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+
             <!-- Process web search intents. -->
             <intent-filter>
                 <action android:name="android.intent.action.WEB_SEARCH" />

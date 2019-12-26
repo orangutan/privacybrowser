@@ -117,7 +117,7 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
         // Set the content view.
         setContentView(R.layout.import_export_coordinatorlayout);
 
-        // Use the `SupportActionBar` from `android.support.v7.app.ActionBar` until the minimum API is >= 21.
+        // Set the support action bar.
         Toolbar toolbar = findViewById(R.id.import_export_toolbar);
         setSupportActionBar(toolbar);
 
@@ -130,7 +130,7 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
         // Display the home arrow on the support action bar.
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        // Find out if we are running KitKat
+        // Find out if the system is running KitKat
         boolean runningKitKat = (Build.VERSION.SDK_INT == 19);
 
         // Find out if OpenKeychain is installed.
@@ -519,7 +519,7 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
                 // Check if the user has previously denied the storage permission.
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
                     // Instantiate the storage permission alert dialog.
-                    DialogFragment storagePermissionDialogFragment = new StoragePermissionDialog();
+                    DialogFragment storagePermissionDialogFragment = StoragePermissionDialog.displayDialog(0);
 
                     // Show the storage permission alert dialog.  The permission will be requested when the dialog is closed.
                     storagePermissionDialogFragment.show(getSupportFragmentManager(), getString(R.string.storage_permission));
@@ -532,7 +532,7 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
     }
 
     @Override
-    public void onCloseStoragePermissionDialog() {
+    public void onCloseStoragePermissionDialog(int type) {
         // Request the write external storage permission.  The import/export will be run when it finishes.
         ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
     }

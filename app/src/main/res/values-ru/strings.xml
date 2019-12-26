@@ -170,7 +170,8 @@
         <string name="find_on_page">Найти на странице</string>
         <string name="print">Печать</string>
             <string name="privacy_browser_web_page">Privacy Browser веб-страница</string>
-        <string name="save_as_image">Сохранить как изображение</string>
+        <string name="save">Сохранить</string>
+            <string name="save_as_image">Сохранить как изображение</string>
         <string name="add_to_home_screen">Добавить на главный экран</string>
         <string name="view_source">Просмотр исходного кода</string>
     <string name="share">Поделиться</string>
@@ -239,7 +240,6 @@
     <string name="edit_folder">Изменить папку</string>
     <string name="move_to_folder">Переместить в папку</string>
     <string name="move">Переместить</string>
-    <string name="save">Сохранить</string>
 
     <!-- Bookmarks Contextual App Bar. -->
     <string name="selected">выбраны:</string>  <!--This is a plural adjective.-->
@@ -397,6 +397,8 @@
     <string name="i2p_not_installed_title">I2P не установлен</string>
     <string name="i2p_not_installed_message">Прокси через I2P работать не будет, если приложение I2P не установлено.</string>
     <string name="waiting_for_orbot">Ожидание подключения Orbot.</string>
+    <string name="custom_proxy_invalid">URL пользовательского прокси недействителен.</string>
+    <string name="socks_proxies_do_not_work_on_kitkat">SOCKS-прокси не работает на Android KitKat.</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">О Privacy Browser</string>
@@ -540,7 +542,12 @@
             <item>I2P</item>
             <item>Пользовательский</item>
         </string-array>
+        <string name="no_proxy_enabled">Нет - подключиться к интернету напрямую.</string>
+        <string name="tor_enabled">Tor - connect through socks://localhost:9050.</string>
+        <string name="tor_enabled_kitkat">Tor - подключиться через http://localhost:8118.</string>
+        <string name="i2p_enabled">I2P - подключиться через http://localhost:4444.</string>
         <string name="custom_proxy">Пользовательский прокси</string>
+        <string name="proxy_custom_url">URL пользовательского прокси</string>
     <string name="full_screen">Во весь экран</string>
         <string name="full_screen_browsing_mode">Полноэкранный режим просмотра</string>
         <string name="full_screen_browsing_mode_summary">Двойное касание переключает режим просмотра.</string>

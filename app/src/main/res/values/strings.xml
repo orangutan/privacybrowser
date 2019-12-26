@@ -177,7 +177,9 @@
         <string name="find_on_page">Find on Page</string>
         <string name="print">Print</string>
             <string name="privacy_browser_web_page">Privacy Browser Web Page</string>
-        <string name="save_as_image">Save as Image</string>
+        <string name="save">Save</string>
+            <string name="save_as_archive">Save as Archive</string>
+            <string name="save_as_image">Save as Image</string>
         <string name="add_to_home_screen">Add to Home Screen</string>
         <string name="view_source">View Source</string>
     <string name="share">Share</string>
@@ -204,8 +206,11 @@
     <string name="previous">Previous</string>
     <string name="next">Next</string>
 
-    <!-- Save Webpage as Image. -->
+    <!-- Save Webpage. -->
+    <string name="save_webpage">Save Webpage</string>
+    <string name="save_archive">Save Archive</string>
     <string name="save_image">Save Image</string>
+    <string name="webpage_mht">Webpage.mht</string>
     <string name="webpage_png">Webpage.png</string>
     <string name="saving_image">Saving image…</string>
     <string name="image_saved">Image saved.</string>
@@ -247,7 +252,6 @@
     <string name="edit_folder">Edit Folder</string>
     <string name="move_to_folder">Move to Folder</string>
     <string name="move">Move</string>
-    <string name="save">Save</string>
 
     <!-- Bookmarks Contextual App Bar. -->
     <string name="selected">Selected:</string>  <!--This is a plural adjective.-->
@@ -603,7 +607,7 @@
         </string-array>
         <string name="no_proxy_enabled">None - connect directly to the internet.</string>
         <string name="tor_enabled">Tor - connect through socks://localhost:9050.</string>
-        <string name="tor_enabled_kitkat">Tor - connect through http://localhost:8118</string>
+        <string name="tor_enabled_kitkat">Tor - connect through http://localhost:8118.</string>
         <string name="i2p_enabled">I2P - connect through http://localhost:4444.</string>
         <string name="custom_proxy">Custom proxy</string>
         <string name="proxy_custom_url">Proxy custom URL</string>

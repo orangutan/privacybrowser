@@ -173,7 +173,8 @@
         <string name="find_on_page">Buscar en página</string>
         <string name="print">Imprimir</string>
             <string name="privacy_browser_web_page">Página web de Navegador Privado</string>
-        <string name="save_as_image">Guardar como imagen</string>
+        <string name="save">Guardar</string>
+            <string name="save_as_image">Guardar como imagen</string>
         <string name="add_to_home_screen">Añadir a la ventana de inicio</string>
         <string name="view_source">Ver la fuente</string>
     <string name="share">Compartir</string>
@@ -243,7 +244,6 @@
     <string name="edit_folder">Editar carpeta</string>
     <string name="move_to_folder">Mover a carpeta</string>
     <string name="move">Mover</string>
-    <string name="save">Guardar</string>
 
     <!-- Bookmarks Contextual App Bar. -->
     <string name="selected">Seleccionados:</string>  <!--This is a plural adjective.-->
@@ -403,6 +403,8 @@
     <string name="i2p_not_installed_title">I2P No Instalado</string>
     <string name="i2p_not_installed_message">El proxy a través de I2P no funcionará a menos que la aplicación I2P esté instalada.</string>
     <string name="waiting_for_orbot">Esperando a que Orbot se conecte.</string>
+    <string name="custom_proxy_invalid">La URL del proxy personalizado no es válida.</string>
+    <string name="socks_proxies_do_not_work_on_kitkat">SOCKS proxies do not work on Android KitKat.</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">Acerca de Navegador Privado</string>
@@ -533,8 +535,13 @@
             <item>Yahoo - Javascript habilitado</item>
             <item>Personalizado</item>
         </string-array>
+        <string name="no_proxy_enabled">Ninguno - conectar directamente a Internet.</string>
+        <string name="tor_enabled">Tor - conectar a través de socks://localhost:9050.</string>
+        <string name="tor_enabled_kitkat">Tor - conectar a través de http://localhost:8118.</string>
+        <string name="i2p_enabled">I2P - conectar a través de http://localhost:4444.</string>
         <string name="search_custom_url">URL personalizado de búsqueda</string>
         <string name="custom_url">URL personalizado</string>
+        <string name="proxy_custom_url">URL personalizada del proxy</string>
     <string name="proxy">Proxy</string>
         <string name="proxy_none">Ninguno</string>
         <string name="proxy_tor">Tor</string>

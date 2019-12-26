@@ -315,8 +315,7 @@
                 android:id="@+id/font_size"
                 android:title="@string/font_size"
                 android:orderInCategory="1070"
-                app:showAsAction="never" >
-            </item>
+                app:showAsAction="never" />
 
             <item
                 android:id="@+id/find_on_page"
@@ -331,10 +330,25 @@
                 app:showAsAction="never" />
 
             <item
-                android:id="@+id/save_as_image"
-                android:title="@string/save_as_image"
+                android:id="@+id/save"
+                android:title="@string/save"
                 android:orderInCategory="1100"
-                app:showAsAction="never" />
+                app:showAsAction="never" >
+
+                <menu>
+                    <item
+                        android:id="@+id/save_as_archive"
+                        android:title="@string/save_as_archive"
+                        android:orderInCategory="1101"
+                        app:showAsAction="never" />
+
+                    <item
+                        android:id="@+id/save_as_image"
+                        android:title="@string/save_as_image"
+                        android:orderInCategory="1102"
+                        app:showAsAction="never" />
+                </menu>
+            </item>
 
             <item
                 android:id="@+id/add_to_homescreen"

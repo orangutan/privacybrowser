@@ -170,7 +170,8 @@
         <string name="find_on_page">Sayfada bul</string>
         <string name="print">Yazdır</string>
             <string name="privacy_browser_web_page">Privacy Browser Web Sayfası</string>
-        <string name="save_as_image">Resmi farklı kaydet</string>
+        <string name="save">Kaydet</string>
+            <string name="save_as_image">Resmi farklı kaydet</string>
         <string name="add_to_home_screen">Ana ekrana ekle</string>
         <string name="view_source">Kaynağı görüntüle</string>
     <string name="share">Paylaş</string>
@@ -237,7 +238,6 @@
     <string name="edit_folder">Klasörü düzenle</string>
     <string name="move_to_folder">Klasöre taşı</string>
     <string name="move">Taşı</string>
-    <string name="save">Kaydet</string>
 
     <!-- Bookmarks Contextual App Bar. -->
     <string name="selected">Seçili:</string>  <!--This is a plural adjective.-->

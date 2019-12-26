@@ -177,7 +177,8 @@
         <string name="find_on_page">Auf Seite finden</string>
         <string name="print">Drucken</string>
             <string name="privacy_browser_web_page">Privacy Browser-Website</string>
-        <string name="save_as_image">Als Grafik speichern</string>
+        <string name="save">Speichern</string>
+            <string name="save_as_image">Als Grafik speichern</string>
         <string name="view_source">Quelltext anzeigen</string>
         <string name="add_to_home_screen">Zur Startseite hinzufügen</string>
     <string name="share">Teilen</string>
@@ -246,7 +247,6 @@
     <string name="edit_folder">Ordner bearbeiten</string>
     <string name="move_to_folder">In Ordner verschieben</string>
     <string name="move">Verschieben</string>
-    <string name="save">Speichern</string>
 
     <!-- Bookmarks Contextual App Bar. -->
     <string name="selected">Ausgewählt:</string>  <!--This is a plural adjective.-->
@@ -404,6 +404,8 @@
     <string name="i2p_not_installed_title">I2P ist nicht installiert</string>
     <string name="i2p_not_installed_message">Der I2P-Proxy kann erst nach Installation der I2P-App genutzt werden.</string>
     <string name="waiting_for_orbot">Warte auf die Verbindung zum Orbot-Proxy.</string>
+    <string name="custom_proxy_invalid">Die benutzerdefinierte Proxy-URL ist ungültig.</string>
+    <string name="socks_proxies_do_not_work_on_kitkat">SOCKS-Proxies funktionieren nicht unter Android KitKat.</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">Über Privacy Browser</string>
@@ -548,7 +550,12 @@
             <item>I2P</item>
             <item>Benutzerdefiniert</item>
         </string-array>
+        <string name="no_proxy_enabled">Keiner - direkte Verbindung zum Internet.</string>
+        <string name="tor_enabled">Tor - Verbidnung über socks://localhost:9050.</string>
+        <string name="tor_enabled_kitkat">Tor - Verbidnung über http://localhost:8118.</string>
+        <string name="i2p_enabled">I2P - Verbindung über http://localhost:4444.</string>
         <string name="custom_proxy">Benutzerdefinierter Proxy</string>
+        <string name="proxy_custom_url">Benutzerdefinierte Proxy-URL</string>
     <string name="full_screen">Vollbild-Modus</string>
         <string name="full_screen_browsing_mode">Vollbild-Browser-Modus</string>
         <string name="full_screen_browsing_mode_summary">Doppel-Tippen, um zwischen normalem und Vollbild-Modus umzuschalten.</string>

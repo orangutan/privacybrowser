@@ -174,7 +174,8 @@
         <string name="find_on_page">Chercher sur la page</string>
         <string name="print">Imprimer</string>
             <string name="privacy_browser_web_page">Site Web de Privacy Browser</string>
-        <string name="save_as_image">Sauvergarder comme image</string>
+        <string name="save">Sauvegarder</string>
+            <string name="save_as_image">Sauvergarder comme image</string>
         <string name="add_to_home_screen">Ajouter à l\'écran d\'accueil</string>
         <string name="view_source">Voir Source</string>
     <string name="share">Partager</string>
@@ -243,7 +244,6 @@
     <string name="edit_folder">Editer dossier</string>
     <string name="move_to_folder">Déplacer vers dossier</string>
     <string name="move">Déplacer</string>
-    <string name="save">Sauvegarder</string>
 
     <!-- Bookmarks Contextual App Bar. -->
     <string name="selected">Selectionnés :</string>  <!--This is a plural adjective.-->
@@ -403,6 +403,8 @@
     <string name="i2p_not_installed_title">I2P non installé</string>
     <string name="i2p_not_installed_message">Le proxy via I2P ne fonctionnera que si l\'application I2P est installée.</string>
     <string name="waiting_for_orbot">En attente de la connexion d\'Orbot.</string>
+    <string name="custom_proxy_invalid">L\'URL du proxy personnalisé n\'est pas valide.</string>
+    <string name="socks_proxies_do_not_work_on_kitkat">Les proxys de type SOCKS ne fonctionnent pas sur Android KitKat.</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">À propos</string>
@@ -546,7 +548,12 @@
             <item>I2P</item>
             <item>Personnalisé</item>
         </string-array>
+        <string name="no_proxy_enabled">Aucun - Connectez-vous directement à Internet.</string>
+        <string name="tor_enabled">Tor - Connectez-vous via socks://localhost:9050.</string>
+        <string name="tor_enabled_kitkat">Tor - Connectez-vous via http://localhost:8118.</string>
+        <string name="i2p_enabled">I2P - Connectez-vous via http://localhost:4444.</string>
         <string name="custom_proxy">Proxy personnalisé</string>
+        <string name="proxy_custom_url">URL personnalisée du proxy</string>
     <string name="full_screen">Plein écran</string>
         <string name="full_screen_browsing_mode">Navigation plein écran</string>
         <string name="full_screen_browsing_mode_summary">Appuyez deux fois pour basculer en mode de navigation en plein écran.</string>

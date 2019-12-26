@@ -39,7 +39,7 @@ public class StoragePermissionDialog extends DialogFragment {
 
     // The public interface is used to send information back to the parent activity.
     public interface StoragePermissionDialogListener {
-        void onCloseStoragePermissionDialog();
+        void onCloseStoragePermissionDialog(int saveType);
     }
 
     @Override
@@ -51,11 +51,34 @@ public class StoragePermissionDialog extends DialogFragment {
         storagePermissionDialogListener = (StoragePermissionDialogListener) context;
     }
 
+    public static StoragePermissionDialog displayDialog(int saveType) {
+        // Create an arguments bundle.
+        Bundle argumentsBundle = new Bundle();
+
+        // Store the save type in the bundle.
+        argumentsBundle.putInt("save_type", saveType);
+
+        // Create a new instance of the storage permission dialog.
+        StoragePermissionDialog storagePermissionDialog = new StoragePermissionDialog();
+
+        // Add the arguments bundle to the new dialog.
+        storagePermissionDialog.setArguments(argumentsBundle);
+
+        // Return the new dialog.
+        return storagePermissionDialog;
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Use a builder to create the alert dialog.
-        AlertDialog.Builder dialogBuilder;
+        // Get a handle for the arguments.
+        Bundle arguments = getArguments();
+
+        // Remove the incorrect lint warning that the arguments might be null.
+        assert arguments != null;
+
+        // Get the save type.
+        int saveType = arguments.getInt("save_type");
 
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -63,6 +86,9 @@ public class StoragePermissionDialog extends DialogFragment {
         // Get the screenshot and theme preferences.
         boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
         boolean allowScreenshots = sharedPreferences.getBoolean("allow_screenshots", false);
+
+        // Use a builder to create the alert dialog.
+        AlertDialog.Builder dialogBuilder;
 
         // Set the style and the icon according to the theme.
         if (darkTheme) {
@@ -79,10 +105,10 @@ public class StoragePermissionDialog extends DialogFragment {
         // Set the text.
         dialogBuilder.setMessage(R.string.storage_permission_message);
 
-        // Set an `onClick` listener on the negative button.
+        // Set an listener on the OK button.
         dialogBuilder.setNegativeButton(R.string.ok, (DialogInterface dialog, int which) -> {
             // Inform the parent activity that the dialog was closed.
-            storagePermissionDialogListener.onCloseStoragePermissionDialog();
+            storagePermissionDialogListener.onCloseStoragePermissionDialog(saveType);
         });
 
         // Create an alert dialog from the builder.
@@ -97,7 +123,7 @@ public class StoragePermissionDialog extends DialogFragment {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
 
-        // `onCreateDialog()` requires the return of an `AlertDialog`.
+        // Return the alert dialog.
         return alertDialog;
     }
 }
