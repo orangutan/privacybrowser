@@ -34,12 +34,17 @@ import androidx.fragment.app.DialogFragment;
 import com.stoutner.privacybrowser.R;
 
 public class StoragePermissionDialog extends DialogFragment {
+    // Define the save type constants.
+    public static final int OPEN = 0;
+    public static final int SAVE_ARCHIVE = 1;
+    public static final int SAVE_IMAGE = 2;
+
     // The listener is used in `onAttach()` and `onCreateDialog()`.
     private StoragePermissionDialogListener storagePermissionDialogListener;
 
     // The public interface is used to send information back to the parent activity.
     public interface StoragePermissionDialogListener {
-        void onCloseStoragePermissionDialog(int saveType);
+        void onCloseStoragePermissionDialog(int requestType);
     }
 
     @Override
@@ -51,12 +56,12 @@ public class StoragePermissionDialog extends DialogFragment {
         storagePermissionDialogListener = (StoragePermissionDialogListener) context;
     }
 
-    public static StoragePermissionDialog displayDialog(int saveType) {
+    public static StoragePermissionDialog displayDialog(int requestType) {
         // Create an arguments bundle.
         Bundle argumentsBundle = new Bundle();
 
         // Store the save type in the bundle.
-        argumentsBundle.putInt("save_type", saveType);
+        argumentsBundle.putInt("request_type", requestType);
 
         // Create a new instance of the storage permission dialog.
         StoragePermissionDialog storagePermissionDialog = new StoragePermissionDialog();
@@ -78,7 +83,7 @@ public class StoragePermissionDialog extends DialogFragment {
         assert arguments != null;
 
         // Get the save type.
-        int saveType = arguments.getInt("save_type");
+        int requestType = arguments.getInt("request_type");
 
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -108,7 +113,7 @@ public class StoragePermissionDialog extends DialogFragment {
         // Set an listener on the OK button.
         dialogBuilder.setNegativeButton(R.string.ok, (DialogInterface dialog, int which) -> {
             // Inform the parent activity that the dialog was closed.
-            storagePermissionDialogListener.onCloseStoragePermissionDialog(saveType);
+            storagePermissionDialogListener.onCloseStoragePermissionDialog(requestType);
         });
 
         // Create an alert dialog from the builder.

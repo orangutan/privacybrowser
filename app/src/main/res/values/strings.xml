@@ -132,6 +132,7 @@
     <string name="forward">Forward</string>
     <string name="history">History</string>
         <string name="clear_history">Clear History</string>
+    <string name="open">Open</string>
     <string name="downloads">Downloads</string>
     <string name="settings">Settings</string>
     <string name="import_export">Import/Export</string>
