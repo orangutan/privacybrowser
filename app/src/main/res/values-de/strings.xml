@@ -132,6 +132,7 @@
     <string name="forward">Vorwärts</string>
     <string name="history">Verlauf</string>
         <string name="clear_history">Verlauf löschen</string>
+    <string name="open">Öffnen</string>
     <string name="downloads">Downloads</string>
     <string name="settings">Einstellungen</string>
     <string name="import_export">Importieren/Exportieren</string>
@@ -178,6 +179,7 @@
         <string name="print">Drucken</string>
             <string name="privacy_browser_web_page">Privacy Browser-Website</string>
         <string name="save">Speichern</string>
+            <string name="save_as_archive">Als Archiv speichern</string>
             <string name="save_as_image">Als Grafik speichern</string>
         <string name="view_source">Quelltext anzeigen</string>
         <string name="add_to_home_screen">Zur Startseite hinzufügen</string>
@@ -204,8 +206,10 @@
     <string name="previous">Vorheriges</string>
     <string name="next">Nächstes</string>
 
-    <!-- Save Webpage as Image. -->
+    <!-- Save Webpage. -->
+    <string name="save_archive">Archiv speichern</string>
     <string name="save_image">Grafik speichern</string>
+    <string name="webpage_mht">Webseite.mht</string>
     <string name="webpage_png">Webseite.png</string>
     <string name="saving_image">Speichere Grafik…</string>
     <string name="image_saved">Grafik gespeichert.</string>

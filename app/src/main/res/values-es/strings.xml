@@ -128,6 +128,7 @@
     <string name="forward">Adelante</string>
     <string name="history">Historial</string>
         <string name="clear_history">Borrar historial</string>
+    <string name="open">Abrir</string>
     <string name="downloads">Descargas</string>
     <string name="settings">Configuración</string>
     <string name="import_export">Importar/Exportar</string>
@@ -174,6 +175,7 @@
         <string name="print">Imprimir</string>
             <string name="privacy_browser_web_page">Página web de Navegador Privado</string>
         <string name="save">Guardar</string>
+            <string name="save_as_archive">Guardar como archivo</string>
             <string name="save_as_image">Guardar como imagen</string>
         <string name="add_to_home_screen">Añadir a la ventana de inicio</string>
         <string name="view_source">Ver la fuente</string>
@@ -200,8 +202,10 @@
     <string name="previous">Anterior</string>
     <string name="next">Siguiente</string>
 
-    <!-- Save Webpage as Image. -->
+    <!-- Save Webpage. -->
+    <string name="save_archive">Guardar archivo</string>
     <string name="save_image">Guardar imagen</string>
+    <string name="webpage_mht">PaginaWeb.mht</string>
     <string name="webpage_png">PaginaWeb.png</string>
     <string name="saving_image">Guardando imagen…</string>
     <string name="image_saved">Imagen guardada.</string>

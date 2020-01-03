@@ -28,27 +28,29 @@
 
         <p>Существуют две основные отрицательные категории субъектов, которые нарушают конфиденциальность в интернете: злонамеренные правительства, имеющие доступ к интернет-провайдерам и крупные корпорации,
             которые управляют социальными и рекламными сетями.
-            Proxies like TOR (The Onion Router) and I2P (the Invisible Internet Project) are useful in protecting privacy from malicious governments (which spy on traffic in transit)
-            but not from mega corporations (which embed malicious code on web servers).</p>
+            Такие прокси, как TOR (The Onion Router) и I2P (the Invisible Internet Project) полезны для защиты конфиденциальности от вредоносных правительств (шпионящих за транзитным трафиком),
+            но не от мегакорпораций (встраивающих вредоносный код на веб-серверы).</p>
 
 
         <h3><img class="title" src="../shared_images/language_blue_light.png"> Злонамеренные правительства</h3>
 
         <p>Злонамеренные правительства часто следят за своими гражданами, чтобы наказать за инакомыслие или правозащитную деятельность.
             Как правило, они либо работают с локальными интернет-провайдерами, либо могут заставить их раскрыть информацию, содержащую статистику посещений сайтов нужного пользователя.
-            Layered proxies are designed to defeat this infringement of privacy by encrypting the traffic from a user’s device and routing it through multiple servers on the internet
-            before sending it on to the final destination.
-            This means that no individual ISP, server, or website, can know both the <a href="https://ipleak.net">IP address of the user’s device</a> and the IP address of the final web server.
-            Malicious governments and the ISPs they control cannot tell which web servers a user is accessing, although they can tell that the user is using a layered proxy service.
-            In some parts of the world, using proxies could be construed as an evidence of illegal behavior (“If you didn’t have anything to hide you wouldn’t be encrypting your traffic”)
-            and users could be punished because governments assume they are doing something that is prohibited. Thus, proxies can be helpful, but they aren’t a panacea.</p>
+            Многоуровневые прокси-серверы предназначены для пресечения нарушения конфиденциальности путем шифрования трафика от устройства пользователя и маршрутизации его через несколько серверов в интернете,
+            прежде чем отправить его в точку назначения.
+            Это означает, что ни один провайдер, сервер или веб-сайт не может знать ни <a href="https://ipleak.net">IP-адрес устройства пользователя</a>, ни IP-адрес конечного веб-сервера.
+            Злонамеренные правительства и интернет-провайдеры, которых они контролируют, не могут узнать к каким веб-серверам обращается пользователь,
+            но они могут определить использование пользователем многоуровневой системы прокси-серверов.
+            В некоторых странах использование прокси может быть истолковано как подтверждение незаконного поведения ("Если бы вам нечего было скрывать, вы бы не шифровали свой трафик"),
+            и пользователи могут быть наказаны, поскольку правительства предполагают, что они совершают нечто запрещенное. Таким образом, прокси-серверы могут быть полезны, но они не являются панацеей.</p>
 
 
         <h3><img class="title" src="../shared_images/language_blue_light.png"> Крупные корпорации</h3>
 
         <p>Когда пользователь подключается к веб-серверу, сервер может видеть IP-адрес пользователя.
             Несмотря на то, что пока это работает не идеально, IP-адреса могут быть превращены в физические адреса с <a href="https://www.whatismyip.com/">достаточным количеством точности</a>.
-            Small web servers typically rely on IP addresses to identify the location of the users visiting their site. Proxies are a good solution to mask the user’s location from these servers.
+            Небольшие веб-серверы обычно используют IP-адреса для определения местоположения пользователей, посещающих их сайт.
+            Прокси-серверы являются хорошим решением для маскировки местоположения пользователя от этих серверов.
             Но крупные корпорации, которые владеют социальными и рекламными сетями, используют весь профиль информации, который предназначен для отслеживания пользователей через устройства и IP-адреса.
             В этих профилях используются различные методы идентификации пользователей, включая JavaScript, файлы cookie,
             идентификаторы отслеживания и <a href="https://panopticlick.eff.org/">отпечаток браузера</a>.
@@ -60,26 +62,27 @@
             Они создают профиль из возраста пользователя, пола, семейного положения, адреса, политических пристрастий, религиозной принадлежности, семейных обстоятельств,
             количества домашних животных и всего остального, что им удается получить.
             Они даже скупают базы данных транзакций по кредитным картам в местных магазинах, поэтому они могут отслеживать автономные модели покупок пользователей в своих профилях.
-            Because they already have much more accurate address information about a user than an IP address discloses, proxies provides no real privacy protection against mega corporations.</p>
+            Поскольку у них уже есть гораздо более точная адресная информация о пользователе, чем раскрытый IP-адрес, прокси-серверы не обеспечивают реальной защиты конфиденциальности от мегакорпораций.</p>
 
         <p>Единственной и самой лучшей защитой конфиденциальности от крупных корпораций является просмотр веб-сайта с отключенным JavaScript, за которым следует блокирование рекламных сетей,
             отключение файлов cookie и хранилища DOM, а также использование браузера, отпечаток которого трудно определить.</p>
 
 
-        <h3><img class="title" src="../shared_images/open_in_browser_blue_light.png"> Using Proxies</h3>
+        <h3><img class="title" src="../shared_images/open_in_browser_blue_light.png"> Использование прокси</h3>
 
-        <p>Despite their limitations, proxies can be useful in some circumstances.
-            <a href="https://play.google.com/store/apps/details?id=org.torproject.android">Tor</a> and <a href="https://f-droid.org/en/packages/net.i2p.android.router/">I2P</a>
-            have Android apps that make it easy to use their proxy networks. When proxying is turned on in Privacy Browser, the app bar will have a light blue background instead of the default light grey.
-            Because traffic is being routed through several proxy nodes, using a layered proxy is often much slower than connecting directly to the internet.</p>
+        <p>Несмотря на свои ограничения, прокси-серверы могут быть полезны в некоторых ситуациях.
+            <a href="https://play.google.com/store/apps/details?id=org.torproject.android">Tor</a> и <a href="https://f-droid.org/en/packages/net.i2p.android.router/">I2P</a>
+            имеют приложения для Android, которые облегчают использование их прокси-сетей.
+            При включенном в Privacy Browser проксировании, панель приложения будет иметь светло-синий фон вместо светло-серого по умолчанию.
+            Поскольку трафик маршрутизируется через несколько прокси-узлов, использование многоуровневого прокси зачастую требует гораздо больше времени, чем прямое подключение к интернету.</p>
 
         <img class="center" src="images/tor.png">
 
         <h3><img class="title" src="../shared_images/file_download_blue_light.png"> Загрузка файлов через сеть Tor</h3>
 
-        <p>When Orbot is operating in proxy mode, browsing the internet using Privacy Browser will be routed through the proxy, but file downloads will not.
-            This is because Privacy Browser uses Android’s builtin download manager to download files, which doesn’t have a proxy option.
-            Users who want to download files via Orbot need to enable its VPN mode.  There is currently no way to download files through I2P.</p>
+        <p>Когда Orbot работает в режиме прокси, навигация по интернету с помощью Privacy Browser будет проходить через прокси, а загрузка файлов - нет.
+            Это связано с тем, что Privacy Browser использует встроенный менеджер загрузок Android, в котором отсутствует опция проксирования.
+            Пользователи, которые хотят загружать файлы через Orbot, должны включить режим VPN. В настоящее время нет возможности загружать файлы через I2P.</p>
 
         <img class="center" src="../shared_images/vpn_mode.png">
     </body>

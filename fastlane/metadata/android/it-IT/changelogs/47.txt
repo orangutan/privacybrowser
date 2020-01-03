@@ -1,0 +1,18 @@
+• Aggiunto il supporto per proxy personalizzati, inclusi i SOCKS proxies, e inclusa la possibilità di utilizzare I2P.
+• Accorciato il nome dell'app nel launcher.
+• Rimozione di Privacy Browser dalla lista delle app recenti quando viene chiuso con il pulsante "indietro".
+• Mantenimento delle impostazioni temporanee mentre si sfoglia la cronologia.
+• Possibilità di utilizzare qualsiasi dimensione dei caratteri.
+• Aggiunta un'opzione per salvare i siti web come archivi MHT.
+• Aggiunta un'opzione per aprire i file locali.
+• Aggiunta la voce apri in background nel menù contestuale.
+• Aggiunta un'opzione per aprire i preferiti in una nuova scheda.
+• Possibilità di disabilitare manualmente il timeout dello schermo quando si guardano i video in modalità a schermo intero.
+• Disabilitato l'HSTS.
+• Aggiornamento della funzione di visualizzazione della sorgente per utilizzare le intestazioni Sec-Fetch.
+• Modifica della target API a 29 (Android 10).
+• Traduzione in lingua Francese da parte di Kévin LE FLOHIC.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
+• Aggiornamento della traduzione in Russo.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León.
+• Aggiornamento della traduzione Tedesco fornita da Bernhard G. Keller.

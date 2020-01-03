@@ -196,7 +196,7 @@
     <string name="previous">Önceki</string>
     <string name="next">Sonraki</string>
 
-    <!-- Save Webpage as Image. -->
+    <!-- Save Webpage. -->
     <string name="save_image">Resmi kaydet</string>
     <string name="webpage_png">Websayfası.png</string>
     <string name="saving_image">Resim kaydediliyor…</string>

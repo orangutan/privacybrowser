@@ -1,0 +1,18 @@
+• Añadir soporte para proxis personalizados, incluyendo proxis SOCKS, e incluir una entrada para I2P.
+• Acortar el nombre de la app en el lanzador.
+• Eliminar Navegador Privado de la lista de apps recientes al cerrarlo mediante el botón de Atrás.
+• Conservar la configuración sobre la marcha mientras se navega por el historial.
+• Permitir cualquier tamaño de fuente.
+• Añadir una opción para guardar páginas web como archivos MHT.
+• Añadir una opción para abrir archivos locales.
+• Añadir el abrir en segundo plano entradas de menú contextual.
+• Añadir una opción para abrir favoritos en una nueva pestaña.
+• Deshabilitar manualmente el tiempo de espera de la pantalla al reproducir vídeos en el modo de pantalla completa.
+• Deshabilitar HSTS.
+• Actualizar la Fuente de Vista para utilizar los encabezados Sec-Fetch.
+• Subir la API de destino a 29 (Android 10).
+• Traducción al francés por Kévin LE FLOHIC.
+• Actualizada la traducción al español proporcionada por Jose A. León.
+• Actualizada la traducción al alemán por Bernhard G. Keller.
+• Actualizada la traducción al italiano proporcionada por Francesco Buratti.
+• Actualizada la traducción al ruso.

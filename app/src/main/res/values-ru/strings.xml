@@ -125,6 +125,7 @@
     <string name="forward">Вперед</string>
     <string name="history">История</string>
         <string name="clear_history">Очистить историю</string>
+    <string name="open">Открыть</string>
     <string name="downloads">Загрузки</string>
     <string name="settings">Настройки</string>
     <string name="import_export">Импорт/Экспорт</string>
@@ -171,6 +172,7 @@
         <string name="print">Печать</string>
             <string name="privacy_browser_web_page">Privacy Browser веб-страница</string>
         <string name="save">Сохранить</string>
+            <string name="save_as_archive">Сохранить как архив</string>
             <string name="save_as_image">Сохранить как изображение</string>
         <string name="add_to_home_screen">Добавить на главный экран</string>
         <string name="view_source">Просмотр исходного кода</string>
@@ -197,8 +199,10 @@
     <string name="previous">Предыдущий</string>
     <string name="next">Следующий</string>
 
-    <!-- Save Webpage as Image. -->
+    <!-- Save Webpage. -->
+    <string name="save_archive">Сохранить архив</string>
     <string name="save_image">Сохранить изображение</string>
+    <string name="webpage_mht">Webpage.mht</string>
     <string name="webpage_png">Webpage.png</string>
     <string name="saving_image">Сохранение изображения…</string>
     <string name="image_saved">Изображение сохранено.</string>
