@@ -2970,7 +2970,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         // Get a handle for the open dialog.
                         Dialog openDialog = openDialogFragment.getDialog();
 
-                        // Remove the incorrect lint warning below tha tth edialog might be null.
+                        // Remove the incorrect lint warning below that the dialog might be null.
                         assert openDialog != null;
 
                         // Get a handle for the file name edit text.
@@ -3598,7 +3598,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         waitingForProxyDialogFragment.dismiss();
                     }
 
-                    // Load any URLs that are waiting for the proxy.
+                    // Reload existing URLs and load any URLs that are waiting for the proxy.
                     for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
                         // Get the WebView tab fragment.
                         WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
@@ -3615,12 +3615,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                             String waitingForProxyUrlString = nestedScrollWebView.getWaitingForProxyUrlString();
 
                             // Load the pending URL if it exists.
-                            if (!waitingForProxyUrlString.isEmpty()) {
+                            if (!waitingForProxyUrlString.isEmpty()) {  // A URL is waiting to be loaded.
                                 // Load the URL.
                                 loadUrl(nestedScrollWebView, waitingForProxyUrlString);
 
                                 // Reset the waiting for proxy URL string.
                                 nestedScrollWebView.resetWaitingForProxyUrlString();
+                            } else {  // No URL is waiting to be loaded.
+                                // Reload the existing URL.
+                                nestedScrollWebView.reload();
                             }
                         }
                     }
