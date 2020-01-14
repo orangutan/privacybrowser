@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017-2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -37,7 +37,7 @@
         android:layout_width="match_parent"
         android:orientation="vertical" >
 
-        <!-- The app bar layout theme has to be defined here because the activity uses a `NoActionBar` theme. -->
+        <!-- The app bar layout theme may not need to be specified here.  But more testing on all APIs needs to be done before it can be removed. -->
         <com.google.android.material.appbar.AppBarLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
