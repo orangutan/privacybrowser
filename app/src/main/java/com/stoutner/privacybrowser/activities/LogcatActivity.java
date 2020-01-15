@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2019-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -34,6 +34,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -41,7 +42,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;  // The AndroidX toolbar must be used until the minimum API is >= 21.
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
@@ -335,8 +336,9 @@ public class LogcatActivity extends AppCompatActivity implements SaveLogcatDialo
                 // Remove the lint warning below that the save dialog might be null.
                 assert saveDialog != null;
 
-                // Get a handle for the file name edit text.
+                // Get a handle for the dialog views.
                 EditText fileNameEditText = saveDialog.findViewById(R.id.file_name_edittext);
+                TextView fileExistsWarningTextView = saveDialog.findViewById(R.id.file_exists_warning_textview);
 
                 // Instantiate the file name helper.
                 FileNameHelper fileNameHelper = new FileNameHelper();
@@ -351,6 +353,12 @@ public class LogcatActivity extends AppCompatActivity implements SaveLogcatDialo
 
                     // Set the file name path as the text of the file name edit text.
                     fileNameEditText.setText(fileNamePath);
+
+                    // Move the cursor to the end of the file name edit text.
+                    fileNameEditText.setSelection(fileNamePath.length());
+
+                    // Hide the file exists warning.
+                    fileExistsWarningTextView.setVisibility(View.GONE);
                 }
             }
         }

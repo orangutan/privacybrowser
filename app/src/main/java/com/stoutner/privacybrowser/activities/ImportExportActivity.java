@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -151,6 +151,8 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
         RadioButton exportRadioButton = findViewById(R.id.export_radiobutton);
         LinearLayout fileNameLinearLayout = findViewById(R.id.file_name_linearlayout);
         EditText fileNameEditText = findViewById(R.id.file_name_edittext);
+        TextView fileDoesNotExistTextView = findViewById(R.id.file_does_not_exist_textview);
+        TextView fileExistsWarningTextView = findViewById(R.id.file_exists_warning_textview);
         TextView openKeychainImportInstructionsTextView = findViewById(R.id.openkeychain_import_instructions_textview);
         Button importExportButton = findViewById(R.id.import_export_button);
         TextView storagePermissionTextView = findViewById(R.id.import_export_storage_permission_textview);
@@ -169,28 +171,36 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
         kitKatPasswordEncryptionTextView.setVisibility(View.GONE);
         openKeychainRequiredTextView.setVisibility(View.GONE);
         fileNameLinearLayout.setVisibility(View.GONE);
+        fileDoesNotExistTextView.setVisibility(View.GONE);
+        fileExistsWarningTextView.setVisibility(View.GONE);
         openKeychainImportInstructionsTextView.setVisibility(View.GONE);
         importExportButton.setVisibility(View.GONE);
 
         // Create strings for the default file paths.
         String defaultFilePath;
         String defaultPasswordEncryptionFilePath;
+        String defaultPgpFilePath;
 
         // Set the default file paths according to the storage permission status.
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
             // Set the default file paths to use the external public directory.
             defaultFilePath = Environment.getExternalStorageDirectory() + "/" + getString(R.string.settings_pbs);
             defaultPasswordEncryptionFilePath = defaultFilePath + ".aes";
+            defaultPgpFilePath = defaultFilePath + ".pgp";
+
+            // Hide the storage permission text view.
+            storagePermissionTextView.setVisibility(View.GONE);
         } else {  // The storage permission has not been granted.
             // Set the default file paths to use the external private directory.
             defaultFilePath = getApplicationContext().getExternalFilesDir(null) + "/" + getString(R.string.settings_pbs);
             defaultPasswordEncryptionFilePath = defaultFilePath + ".aes";
+            defaultPgpFilePath = defaultFilePath + ".pgp";
         }
 
         // Set the default file path.
         fileNameEditText.setText(defaultFilePath);
 
-        // Display the encryption information when the spinner changes.
+        // Update the UI when the spinner changes.
         encryptionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -217,9 +227,6 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
 
                         // Reset the default file path.
                         fileNameEditText.setText(defaultFilePath);
-
-                        // Enable the import/export button if a file name exists.
-                        importExportButton.setEnabled(!fileNameEditText.getText().toString().isEmpty());
                         break;
 
                     case PASSWORD_ENCRYPTION:
@@ -253,9 +260,6 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
 
                             // Update the default file path.
                             fileNameEditText.setText(defaultPasswordEncryptionFilePath);
-
-                            // Enable the import/export button if a password exists.
-                            importExportButton.setEnabled(!encryptionPasswordEditText.getText().toString().isEmpty());
                         }
                         break;
 
@@ -266,8 +270,8 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
 
                         // Updated items based on the installation status of OpenKeychain.
                         if (openKeychainInstalled) {  // OpenKeychain is installed.
-                            // Remove the default file path.
-                            fileNameEditText.setText("");
+                            // Update the default file path.
+                            fileNameEditText.setText(defaultPgpFilePath);
 
                             // Show the file location card.
                             fileLocationCardView.setVisibility(View.VISIBLE);
@@ -279,16 +283,10 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
 
                                 // Set the text of the import button to be `Decrypt`.
                                 importExportButton.setText(R.string.decrypt);
-
-                                // Disable the import/export button.  The user needs to select a file to import first.
-                                importExportButton.setEnabled(false);
                             } else if (exportRadioButton.isChecked()) {
                                 // Hide the file name linear layout and the OpenKeychain import instructions.
                                 fileNameLinearLayout.setVisibility(View.GONE);
                                 openKeychainImportInstructionsTextView.setVisibility(View.GONE);
-
-                                // Enable the import/export button.
-                                importExportButton.setEnabled(true);
                             }
                         } else {  // OpenKeychain is not installed.
                             // Show the OpenPGP required layout item.
@@ -321,12 +319,24 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
 
             @Override
             public void afterTextChanged(Editable s) {
-                // Enable the import/export button if a file name and password exists.
-                importExportButton.setEnabled(!fileNameEditText.getText().toString().isEmpty() && !encryptionPasswordEditText.getText().toString().isEmpty());
+                // Get the current file name.
+                String fileNameString = fileNameEditText.getText().toString();
+
+                // Convert the file name string to a file.
+                File file = new File(fileNameString);
+
+                // Update the import/export button.
+                if (importRadioButton.isChecked()) {  // The import radio button is checked.
+                    // Enable the import button if the file and the password exists.
+                    importExportButton.setEnabled(file.exists() && !encryptionPasswordEditText.getText().toString().isEmpty());
+                } else if (exportRadioButton.isChecked()) {  // The export radio button is checked.
+                    // Enable the export button if the file string and the password exists.
+                    importExportButton.setEnabled(!fileNameString.isEmpty() && !encryptionPasswordEditText.getText().toString().isEmpty());
+                }
             }
         });
 
-        // Update the status of the import/export button when the file name EditText changes.
+        // Update the UI when the file name EditText changes.
         fileNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -340,39 +350,144 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
 
             @Override
             public void afterTextChanged(Editable s) {
-                // Adjust the export button according to the encryption spinner position.
+                // Get the current file name.
+                String fileNameString = fileNameEditText.getText().toString();
+
+                // Convert the file name string to a file.
+                File file = new File(fileNameString);
+
+                // Adjust the UI according to the encryption spinner position.
                 switch (encryptionSpinner.getSelectedItemPosition()) {
                     case NO_ENCRYPTION:
-                        // Enable the import/export button if a file name exists.
-                        importExportButton.setEnabled(!fileNameEditText.getText().toString().isEmpty());
+                        // Determine if import or export is checked.
+                        if (exportRadioButton.isChecked()) {  // The export radio button is checked.
+                            // Hide the file does not exist text view.
+                            fileDoesNotExistTextView.setVisibility(View.GONE);
+
+                            // Display a warning if the file already exists.
+                            if (file.exists()) {
+                                fileExistsWarningTextView.setVisibility(View.VISIBLE);
+                            } else {
+                                fileExistsWarningTextView.setVisibility(View.GONE);
+                            }
+
+                            // Enable the export button if the file name is populated.
+                            importExportButton.setEnabled(!fileNameString.isEmpty());
+                        } else if (importRadioButton.isChecked()) {  // The import radio button is checked.
+                            // Hide the file exists warning text view.
+                            fileExistsWarningTextView.setVisibility(View.GONE);
+
+                            // Check if the file exists.
+                            if (file.exists()) {  // The file exists.
+                                // Hide the notification that the file does not exist.
+                                fileDoesNotExistTextView.setVisibility(View.GONE);
+
+                                // Enable the import button.
+                                importExportButton.setEnabled(true);
+                            } else {  // The file does not exist.
+                                // Show a notification that the file does not exist.
+                                fileDoesNotExistTextView.setVisibility(View.VISIBLE);
+
+                                // Disable the import button.
+                                importExportButton.setEnabled(false);
+                            }
+                        } else {  // Neither radio button is checked.
+                            // Hide the file notification text views.
+                            fileExistsWarningTextView.setVisibility(View.GONE);
+                            fileDoesNotExistTextView.setVisibility(View.GONE);
+                        }
                         break;
 
                     case PASSWORD_ENCRYPTION:
-                        // Enable the import/export button if a file name and password exists.
-                        importExportButton.setEnabled(!fileNameEditText.getText().toString().isEmpty() && !encryptionPasswordEditText.getText().toString().isEmpty());
+                        // Determine if import or export is checked.
+                        if (exportRadioButton.isChecked()) {  // The export radio button is checked.
+                            // Hide the notification that the file does not exist.
+                            fileDoesNotExistTextView.setVisibility(View.GONE);
+
+                            // Display a warning if the file already exists.
+                            if (file.exists()) {
+                                fileExistsWarningTextView.setVisibility(View.VISIBLE);
+                            } else {
+                                fileExistsWarningTextView.setVisibility(View.GONE);
+                            }
+
+                            // Enable the export button if the file name and the password are populated.
+                            importExportButton.setEnabled(!fileNameString.isEmpty() && !encryptionPasswordEditText.getText().toString().isEmpty());
+                        } else if (importRadioButton.isChecked()) {  // The import radio button is checked.
+                            // Hide the file exists warning text view.
+                            fileExistsWarningTextView.setVisibility(View.GONE);
+
+                            // Check if the file exists.
+                            if (file.exists()) {  // The file exists.
+                                // Hide the notification that the file does not exist.
+                                fileDoesNotExistTextView.setVisibility(View.GONE);
+
+                                // Enable the import button if the password is populated.
+                                importExportButton.setEnabled(!encryptionPasswordEditText.getText().toString().isEmpty());
+                            } else {  // The file does not exist.
+                                // Show a notification that the file does not exist.
+                                fileDoesNotExistTextView.setVisibility(View.VISIBLE);
+
+                                // Disable the import button.
+                                importExportButton.setEnabled(false);
+                            }
+                        } else {  // Neither radio button is checked.
+                            // Hide the file notification text views.
+                            fileExistsWarningTextView.setVisibility(View.GONE);
+                            fileDoesNotExistTextView.setVisibility(View.GONE);
+                        }
                         break;
 
                     case OPENPGP_ENCRYPTION:
-                        // Enable the import/export button if OpenKeychain is installed and a file name exists.
-                        importExportButton.setEnabled(openKeychainInstalled && !fileNameEditText.getText().toString().isEmpty());
+                        // Hide the file exists warning text view.
+                        fileExistsWarningTextView.setVisibility(View.GONE);
+
+                        if (importRadioButton.isChecked()) {  // The import radio button is checked.
+                            if (file.exists()) {  // The file exists.
+                                // Hide the notification that the file does not exist.
+                                fileDoesNotExistTextView.setVisibility(View.GONE);
+
+                                // Enable the import button if OpenKeychain is installed.
+                                importExportButton.setEnabled(openKeychainInstalled);
+                            } else {  // The file does not exist.
+                                // Show the notification that the file does not exist.
+                                fileDoesNotExistTextView.setVisibility(View.VISIBLE);
+
+                                // Disable the import button.
+                                importExportButton.setEnabled(false);
+                            }
+                        } else if (exportRadioButton.isChecked()){  // The export radio button is checked.
+                            // Hide the notification that the file does not exist.
+                            fileDoesNotExistTextView.setVisibility(View.GONE);
+
+                            // Enable the export button.
+                            importExportButton.setEnabled(true);
+                        } else {  // Neither radio button is checked.
+                            // Hide the notification that the file does not exist.
+                            fileDoesNotExistTextView.setVisibility(View.GONE);
+                        }
                         break;
                 }
             }
         });
-
-        // Hide the storage permissions text view on API < 23 as permissions on older devices are automatically granted.
-        if (Build.VERSION.SDK_INT < 23) {
-            storagePermissionTextView.setVisibility(View.GONE);
-        }
     }
 
     public void onClickRadioButton(View view) {
         // Get handles for the views.
         Spinner encryptionSpinner = findViewById(R.id.encryption_spinner);
         LinearLayout fileNameLinearLayout = findViewById(R.id.file_name_linearlayout);
+        EditText passwordEncryptionEditText = findViewById(R.id.password_encryption_edittext);
         EditText fileNameEditText = findViewById(R.id.file_name_edittext);
+        TextView fileDoesNotExistTextView = findViewById(R.id.file_does_not_exist_textview);
+        TextView fileExistsWarningTextView = findViewById(R.id.file_exists_warning_textview);
         TextView openKeychainImportInstructionTextView = findViewById(R.id.openkeychain_import_instructions_textview);
         Button importExportButton = findViewById(R.id.import_export_button);
+
+        // Get the current file name.
+        String fileNameString = fileNameEditText.getText().toString();
+
+        // Convert the file name string to a file.
+        File file = new File(fileNameString);
 
         // Check to see if import or export was selected.
         switch (view.getId()) {
@@ -384,9 +499,6 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
 
                     // Set the text on the import/export button to be `Decrypt`.
                     importExportButton.setText(R.string.decrypt);
-
-                    // Enable the decrypt button if there is a file name.
-                    importExportButton.setEnabled(!fileNameEditText.getText().toString().isEmpty());
                 } else {  // OpenPGP encryption not selected.
                     // Hide the OpenKeychain import instructions.
                     openKeychainImportInstructionTextView.setVisibility(View.GONE);
@@ -395,9 +507,33 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
                     importExportButton.setText(R.string.import_button);
                 }
 
+                // Hide the file exists warning text view.
+                fileExistsWarningTextView.setVisibility(View.GONE);
+
                 // Display the file name views.
                 fileNameLinearLayout.setVisibility(View.VISIBLE);
                 importExportButton.setVisibility(View.VISIBLE);
+
+                // Check to see if the file exists.
+                if (file.exists()) {  // The file exists.
+                    // Hide the notification that the file does not exist.
+                    fileDoesNotExistTextView.setVisibility(View.GONE);
+
+                    // Check to see if password encryption is selected.
+                    if (encryptionSpinner.getSelectedItemPosition() == PASSWORD_ENCRYPTION) {  // Password encryption is selected.
+                        // Enable the import button if the encryption password is populated.
+                        importExportButton.setEnabled(!passwordEncryptionEditText.getText().toString().isEmpty());
+                    } else {  // Password encryption is not selected.
+                        // Enable the import/decrypt button.
+                        importExportButton.setEnabled(true);
+                    }
+                } else {  // The file does not exist.
+                    // Show the notification that the file does not exist.
+                    fileDoesNotExistTextView.setVisibility(View.VISIBLE);
+
+                    // Disable the import/decrypt button.
+                    importExportButton.setEnabled(false);
+                }
                 break;
 
             case R.id.export_radiobutton:
@@ -414,19 +550,41 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
                 if (encryptionSpinner.getSelectedItemPosition() == OPENPGP_ENCRYPTION) {  // OpenPGP encryption is selected.
                     // Hide the file name views.
                     fileNameLinearLayout.setVisibility(View.GONE);
+                    fileDoesNotExistTextView.setVisibility(View.GONE);
+                    fileExistsWarningTextView.setVisibility(View.GONE);
 
                     // Enable the export button.
                     importExportButton.setEnabled(true);
                 } else {  // OpenPGP encryption is not selected.
-                    // Show the file name views.
+                    // Show the file name view.
                     fileNameLinearLayout.setVisibility(View.VISIBLE);
+
+                    // Hide the notification that the file name does not exist.
+                    fileDoesNotExistTextView.setVisibility(View.GONE);
+
+                    // Display a warning if the file already exists.
+                    if (file.exists()) {
+                        fileExistsWarningTextView.setVisibility(View.VISIBLE);
+                    } else {
+                        fileExistsWarningTextView.setVisibility(View.GONE);
+                    }
+
+                    // Check the encryption type.
+                    if (encryptionSpinner.getSelectedItemPosition() == NO_ENCRYPTION) {  // No encryption is selected.
+                        // Enable the export button if the file name is populated.
+                        importExportButton.setEnabled(!fileNameString.isEmpty());
+                    } else {  // Password encryption is selected.
+                        // Enable the export button if the file name and the password are populated.
+                        importExportButton.setEnabled(!fileNameString.isEmpty() && !passwordEncryptionEditText.getText().toString().isEmpty());
+                    }
                 }
                 break;
         }
     }
 
     public void browse(View view) {
-        // Get a handle for the import radiobutton.
+        // Get a handle for the views.
+        Spinner encryptionSpinner = findViewById(R.id.encryption_spinner);
         RadioButton importRadioButton = findViewById(R.id.import_radiobutton);
 
         // Check to see if import or export is selected.
@@ -454,8 +612,12 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
             // Set the intent MIME type to include all files so that everything is visible.
             exportBrowseIntent.setType("*/*");
 
-            // Set the initial export file name.
-            exportBrowseIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.settings_pbs));
+            // Set the initial export file name according to the encryption type.
+            if (encryptionSpinner.getSelectedItemPosition() == NO_ENCRYPTION) {  // No encryption is selected.
+                exportBrowseIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.settings_pbs));
+            } else {  // Password encryption is selected.
+                exportBrowseIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.settings_pbs) + ".aes");
+            }
 
             // Set the initial directory if the minimum API >= 26.
             if (Build.VERSION.SDK_INT >= 26) {
@@ -567,8 +729,9 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
             case (BROWSE_RESULT_CODE):
                 // Don't do anything if the user pressed back from the file picker.
                 if (resultCode == Activity.RESULT_OK) {
-                    // Get a handle for the file name edit text.
+                    // Get a handle for the views.
                     EditText fileNameEditText = findViewById(R.id.file_name_edittext);
+                    TextView fileExistsWarningTextView = findViewById(R.id.file_exists_warning_textview);
 
                     // Instantiate the file name helper.
                     FileNameHelper fileNameHelper = new FileNameHelper();
@@ -583,6 +746,9 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
 
                         // Set the file name path as the text of the file name edit text.
                         fileNameEditText.setText(fileNamePath);
+
+                        // Hide the file exists warning text view, because the file picker will have just created a file if export was selected.
+                        fileExistsWarningTextView.setVisibility(View.GONE);
                     }
                 }
                 break;

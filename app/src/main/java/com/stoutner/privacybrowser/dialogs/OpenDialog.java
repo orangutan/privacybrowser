@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2019-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -41,13 +41,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.stoutner.privacybrowser.R;
-import com.stoutner.privacybrowser.activities.MainWebViewActivity;
-
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.PreferenceManager;
+
+import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.activities.MainWebViewActivity;
+
+import java.io.File;
 
 public class OpenDialog extends DialogFragment {
     // Define the open listener.
@@ -137,26 +139,12 @@ public class OpenDialog extends DialogFragment {
         // Get handles for the layout items.
         EditText fileNameEditText = alertDialog.findViewById(R.id.file_name_edittext);
         Button browseButton = alertDialog.findViewById(R.id.browse_button);
+        TextView fileDoesNotExistTextView = alertDialog.findViewById(R.id.file_does_not_exist_textview);
         TextView storagePermissionTextView = alertDialog.findViewById(R.id.storage_permission_textview);
         Button openButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
         // Create a string for the default file path.
         String defaultFilePath;
-
-        // Set the default file path according to the storage permission state.
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
-            // Set the default file path to use the external public directory.
-            defaultFilePath = Environment.getExternalStorageDirectory() + "/";
-        } else {  // The storage permission has not been granted.
-            // Set the default file path to use the external private directory.
-            defaultFilePath = context.getExternalFilesDir(null) + "/";
-        }
-
-        // Display the default file path.
-        fileNameEditText.setText(defaultFilePath);
-
-        // Move the cursor to the end of the default file path.
-        fileNameEditText.setSelection(defaultFilePath.length());
 
         // Update the status of the open button when the file name changes.
         fileNameEditText.addTextChangedListener(new TextWatcher() {
@@ -172,10 +160,46 @@ public class OpenDialog extends DialogFragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                // Enable the open button if a file name exists.
-                openButton.setEnabled(!fileNameEditText.getText().toString().isEmpty());
+                // Get the current file name.
+                String fileNameString = fileNameEditText.getText().toString();
+
+                // Convert the file name string to a file.
+                File file = new File(fileNameString);
+
+                // Check to see if the file exists.
+                if (file.exists()) {  // The file exists.
+                    // Hide the notification that the file does not exist.
+                    fileDoesNotExistTextView.setVisibility(View.GONE);
+
+                    // Enable the open button.
+                    openButton.setEnabled(true);
+                } else {  // The file does not exist.
+                    // Show the notification that the file does not exist.
+                    fileDoesNotExistTextView.setVisibility(View.VISIBLE);
+
+                    // Disable the open button.
+                    openButton.setEnabled(false);
+                }
             }
         });
+
+        // Set the default file path according to the storage permission state.
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
+            // Set the default file path to use the external public directory.
+            defaultFilePath = Environment.getExternalStorageDirectory() + "/";
+
+            // Hide the storage permission text view.
+            storagePermissionTextView.setVisibility(View.GONE);
+        } else {  // The storage permission has not been granted.
+            // Set the default file path to use the external private directory.
+            defaultFilePath = context.getExternalFilesDir(null) + "/";
+        }
+
+        // Display the default file path.
+        fileNameEditText.setText(defaultFilePath);
+
+        // Move the cursor to the end of the default file path.
+        fileNameEditText.setSelection(defaultFilePath.length());
 
         // Handle clicks on the browse button.
         browseButton.setOnClickListener((View view) -> {
@@ -193,11 +217,6 @@ public class OpenDialog extends DialogFragment {
             // Start the file picker.  This must be started under `activity` to that the request code is returned correctly.
             activity.startActivityForResult(browseIntent, MainWebViewActivity.BROWSE_OPEN_REQUEST_CODE);
         });
-
-        // Hide the storage permission text view on API < 23 as permissions on older devices are automatically granted.
-        if (Build.VERSION.SDK_INT < 23 || (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)) {
-            storagePermissionTextView.setVisibility(View.GONE);
-        }
 
         // Return the alert dialog.
         return alertDialog;

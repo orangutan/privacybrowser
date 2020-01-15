@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -158,7 +158,6 @@ public class ViewSslCertificateDialog extends DialogFragment {
 
             // `onCreateDialog` requires the return of an `AlertDialog`.
             return alertDialog;
-
         } else {  // Display the SSL certificate information
             // Set the title.
             dialogBuilder.setTitle(R.string.ssl_certificate);

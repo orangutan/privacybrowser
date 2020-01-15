@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -366,6 +366,8 @@
         <item>OpenPGP</item>
     </string-array>
     <string name="kitkat_password_encryption_message">Password encryption does not work on Android KitKat.</string>
+    <string name="file_does_not_exist">The file does not exist.</string>
+    <string name="file_exists_warning">The file already exists.  If you proceed it will be overwritten.</string>
     <string name="openkeychain_required">OpenPGP encryption requires that OpenKeychain be installed.</string>
     <string name="openkeychain_import_instructions">The unencrypted file will have to be imported in a separate step after it is decrypted.</string>
     <string name="settings_pbs">Settings.pbs</string>

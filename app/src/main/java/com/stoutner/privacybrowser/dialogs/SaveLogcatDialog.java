@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -47,6 +47,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment is required or an error is produced on API <=22.  It is also required for the browse button to work correctly.
 
 import com.stoutner.privacybrowser.R;
+
+import java.io.File;
 
 public class SaveLogcatDialog extends DialogFragment {
     // Define the save logcat listener.
@@ -135,29 +137,9 @@ public class SaveLogcatDialog extends DialogFragment {
         // Get handles for the layout items.
         EditText fileNameEditText = alertDialog.findViewById(R.id.file_name_edittext);
         Button browseButton = alertDialog.findViewById(R.id.browse_button);
+        TextView fileExistsWarningTextView = alertDialog.findViewById(R.id.file_exists_warning_textview);
         TextView storagePermissionTextView = alertDialog.findViewById(R.id.storage_permission_textview);
         Button saveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-
-        // Create a string for the default file path.
-        String defaultFilePath;
-
-        // Get a handle for the context.
-        Context context = getContext();
-
-        // Remove the incorrect lint warning below that context might be null.
-        assert context != null;
-
-        // Set the default file path according to the storage permission state.
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
-            // Set the default file path to use the external public directory.
-            defaultFilePath = Environment.getExternalStorageDirectory() + "/" + getString(R.string.privacy_browser_logcat_txt);
-        } else {  // The storage permission has not been granted.
-            // Set the default file path to use the external private directory.
-            defaultFilePath = context.getExternalFilesDir(null) + "/" + getString(R.string.privacy_browser_logcat_txt);
-        }
-
-        // Display the default file path.
-        fileNameEditText.setText(defaultFilePath);
 
         // Update the status of the save button when the file name changes.
         fileNameEditText.addTextChangedListener(new TextWatcher() {
@@ -173,10 +155,49 @@ public class SaveLogcatDialog extends DialogFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                // Enable the save button if a file name exists.
-                saveButton.setEnabled(!fileNameEditText.getText().toString().isEmpty());
+                // Get the current file name.
+                String fileNameString = fileNameEditText.getText().toString();
+
+                // Convert the file name string to a file.
+                File file = new File(fileNameString);
+
+                // Check to see if the file exists.
+                if (file.exists()) {
+                    // Show the file exists warning.
+                    fileExistsWarningTextView.setVisibility(View.VISIBLE);
+                } else {
+                    // Hide the file exists warning.
+                    fileExistsWarningTextView.setVisibility(View.GONE);
+                }
+
+                // Enable the save button if the file name is populated.
+                saveButton.setEnabled(!fileNameString.isEmpty());
             }
         });
+
+        // Create a string for the default file path.
+        String defaultFilePath;
+
+        // Get a handle for the context.
+        Context context = getContext();
+
+        // Remove the incorrect lint warning below that context might be null.
+        assert context != null;
+
+        // Set the default file path according to the storage permission state.
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
+            // Set the default file path to use the external public directory.
+            defaultFilePath = Environment.getExternalStorageDirectory() + "/" + getString(R.string.privacy_browser_logcat_txt);
+
+            // Hide the storage permission text view.
+            storagePermissionTextView.setVisibility(View.GONE);
+        } else {  // The storage permission has not been granted.
+            // Set the default file path to use the external private directory.
+            defaultFilePath = context.getExternalFilesDir(null) + "/" + getString(R.string.privacy_browser_logcat_txt);
+        }
+
+        // Display the default file path.
+        fileNameEditText.setText(defaultFilePath);
 
         // Handle clicks on the browse button.
         browseButton.setOnClickListener((View view) -> {
@@ -200,11 +221,6 @@ public class SaveLogcatDialog extends DialogFragment {
             // Launch the file picker.  There is only one `startActivityForResult()`, so the request code is simply set to 0, but it must be run under `activity` so the request code is correct.
             activity.startActivityForResult(browseIntent, 0);
         });
-
-        // Hide the storage permission text view on API < 23 as permissions on older devices are automatically granted.
-        if (Build.VERSION.SDK_INT < 23) {
-            storagePermissionTextView.setVisibility(View.GONE);
-        }
 
         // Return the alert dialog.
         return alertDialog;

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2019-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -48,6 +48,8 @@ import androidx.preference.PreferenceManager;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
+
+import java.io.File;
 
 public class SaveWebpageDialog extends DialogFragment {
     // Define the save webpage listener.
@@ -187,8 +189,43 @@ public class SaveWebpageDialog extends DialogFragment {
         // Get handles for the layout items.
         EditText fileNameEditText = alertDialog.findViewById(R.id.file_name_edittext);
         Button browseButton = alertDialog.findViewById(R.id.browse_button);
+        TextView fileExistsWarningTextView = alertDialog.findViewById(R.id.file_exists_warning_textview);
         TextView storagePermissionTextView = alertDialog.findViewById(R.id.storage_permission_textview);
         Button saveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+
+        // Update the status of the save button when the file name changes.
+        fileNameEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing.
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Do nothing.
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Get the current file name.
+                String fileNameString = fileNameEditText.getText().toString();
+
+                // Convert the file name string to a file.
+                File file = new File(fileNameString);
+
+                // Check to see if the file exists.
+                if (file.exists()) {
+                    // Show the file exists warning.
+                    fileExistsWarningTextView.setVisibility(View.VISIBLE);
+                } else {
+                    // Hide the file exists warning.
+                    fileExistsWarningTextView.setVisibility(View.GONE);
+                }
+
+                // Enable the save button if the file name is populated.
+                saveButton.setEnabled(!fileNameString.isEmpty());
+            }
+        });
 
         // Create a default file name string.
         String defaultFileName = "";
@@ -211,6 +248,9 @@ public class SaveWebpageDialog extends DialogFragment {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
             // Set the default file path to use the external public directory.
             defaultFilePath = Environment.getExternalStorageDirectory() + "/" + defaultFileName;
+
+            // Hide the storage permission text view.
+            storagePermissionTextView.setVisibility(View.GONE);
         } else {  // The storage permission has not been granted.
             // Set the default file path to use the external private directory.
             defaultFilePath = context.getExternalFilesDir(null) + "/" + defaultFileName;
@@ -221,25 +261,6 @@ public class SaveWebpageDialog extends DialogFragment {
 
         // Move the cursor to the end of the default file path.
         fileNameEditText.setSelection(defaultFilePath.length());
-
-        // Update the status of the save button when the file name changes.
-        fileNameEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Do nothing.
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Do nothing.
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                // Enable the save button if a file name exists.
-                saveButton.setEnabled(!fileNameEditText.getText().toString().isEmpty());
-            }
-        });
 
         // Handle clicks on the browse button.
         browseButton.setOnClickListener((View view) -> {
@@ -271,11 +292,6 @@ public class SaveWebpageDialog extends DialogFragment {
             // Start the file picker.  This must be started under `activity` so that the request code is returned correctly.
             activity.startActivityForResult(browseIntent, MainWebViewActivity.BROWSE_SAVE_WEBPAGE_REQUEST_CODE);
         });
-
-        // Hide the storage permission text view on API < 23 as permissions on older devices are automatically granted.
-        if (Build.VERSION.SDK_INT < 23 || (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)) {
-            storagePermissionTextView.setVisibility(View.GONE);
-        }
 
         // Return the alert dialog.
         return alertDialog;

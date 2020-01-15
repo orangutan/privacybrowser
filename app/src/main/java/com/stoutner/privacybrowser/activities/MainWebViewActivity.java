@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2015-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * Download cookie code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
  *
@@ -2940,6 +2940,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                         // Get a handle for the file name edit text.
                         EditText fileNameEditText = saveWebpageDialog.findViewById(R.id.file_name_edittext);
+                        TextView fileExistsWarningTextView = saveWebpageDialog.findViewById(R.id.file_exists_warning_textview);
 
                         // Instantiate the file name helper.
                         FileNameHelper fileNameHelper = new FileNameHelper();
@@ -2954,6 +2955,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                             // Move the cursor to the end of the file name edit text.
                             fileNameEditText.setSelection(fileNamePath.length());
+
+                            // Hide the file exists warning.
+                            fileExistsWarningTextView.setVisibility(View.GONE);
                         }
                     }
                 }

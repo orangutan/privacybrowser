@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2019-2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -60,6 +60,18 @@
                 android:text="@string/browse" />
         </LinearLayout>
 
+        <!-- File does not exist warning. -->
+        <TextView
+            android:id="@+id/file_does_not_exist_textview"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="5dp"
+            android:text="@string/file_does_not_exist"
+            android:textColor="?attr/redText"
+            android:textAlignment="center" />
+
+        <!-- Storage permission explanation. -->
         <TextView
             android:id="@+id/storage_permission_textview"
             android:layout_height="wrap_content"
