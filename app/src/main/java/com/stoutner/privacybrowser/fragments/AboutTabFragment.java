@@ -126,6 +126,7 @@ public class AboutTabFragment extends Fragment {
             TextView webViewProviderTextView = tabLayout.findViewById(R.id.webview_provider);
             TextView webViewVersionTextView = tabLayout.findViewById(R.id.webview_version);
             TextView orbotTextView = tabLayout.findViewById(R.id.orbot);
+            TextView i2pTextView = tabLayout.findViewById(R.id.i2p);
             TextView openKeychainTextView = tabLayout.findViewById(R.id.open_keychain);
             TextView easyListTextView = tabLayout.findViewById(R.id.easylist);
             TextView easyPrivacyTextView = tabLayout.findViewById(R.id.easyprivacy);
@@ -190,6 +191,15 @@ public class AboutTabFragment extends Fragment {
                 orbot = context.getPackageManager().getPackageInfo("org.torproject.android", 0).versionName;
             } catch (PackageManager.NameNotFoundException exception) {  // Orbot is not installed.
                 orbot = "";
+            }
+
+            // Get the I2P version name if I2P is installed.
+            String i2p;
+            try {
+                // Store the version name.
+                i2p = context.getPackageManager().getPackageInfo("net.i2p.android.router", 0).versionName;
+            } catch (PackageManager.NameNotFoundException exception) {  // I2P is not installed.
+                i2p = "";
             }
 
             // Get the OpenKeychain version name if it is installed.
@@ -317,6 +327,16 @@ public class AboutTabFragment extends Fragment {
                 orbotTextView.setText(orbotStringBuilder);
             } else {  // Orbot is not installed.
                 orbotTextView.setVisibility(View.GONE);
+            }
+
+            // Only populate the I2P text view if it is installed.
+            if (!i2p.isEmpty()) {
+                String i2pLabel = getString(R.string.i2p)  + "  ";
+                SpannableStringBuilder i2pStringBuilder = new SpannableStringBuilder(i2pLabel + i2p);
+                i2pStringBuilder.setSpan(blueColorSpan, i2pLabel.length(), i2pStringBuilder.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                i2pTextView.setText(i2pStringBuilder);
+            } else {  // I2P is not installed.
+                i2pTextView.setVisibility(View.GONE);
             }
 
             // Only populate the OpenKeychain text view if it is installed.

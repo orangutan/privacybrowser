@@ -52,7 +52,7 @@ public class CreateBookmarkDialog extends DialogFragment {
     // The create bookmark listener is initialized in `onAttach()` and used in `onCreateDialog()`.
     private CreateBookmarkListener createBookmarkListener;
 
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         // Run the default commands.
         super.onAttach(context);
 
@@ -176,40 +176,42 @@ public class CreateBookmarkDialog extends DialogFragment {
         // Set the current `WebView` title as the text for `create_bookmark_name_edittext`.
         createBookmarkNameEditText.setText(title);
 
-        // Allow the `enter` key on the keyboard to create the bookmark from `create_bookmark_name_edittext`.
-        createBookmarkNameEditText.setOnKeyListener((View view, int keyCode, KeyEvent event) -> {
-            // If the event is a key-down on the `enter` key, select the `PositiveButton` `Create`.
-            if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)) {
-                // Trigger `createBookmarkListener` and return the `DialogFragment` to the parent activity.
+        // Allow the `enter` key on the keyboard to create the bookmark from the create bookmark name edittext`.
+        createBookmarkNameEditText.setOnKeyListener((View view, int keyCode, KeyEvent keyEvent) -> {
+            // If the event is a key-down on the `enter` key, select the create button.
+            if ((keyCode == KeyEvent.KEYCODE_ENTER) && (keyEvent.getAction() == KeyEvent.ACTION_DOWN)) {
+                // Trigger the create bookmark listener and return the dialog fragment and the favorite icon bitmap to the parent activity.
                 createBookmarkListener.onCreateBookmark(this, favoriteIconBitmap);
 
-                // Manually dismiss the `AlertDialog`.
+                // Manually dismiss the alert dialog.
                 alertDialog.dismiss();
 
                 // Consume the event.
                 return true;
-            } else {  // If any other key was pressed, do not consume the event.
+            } else {  // Some other key was pressed.
+                // Do not consume the event.
                 return false;
             }
         });
 
-        // Set the formattedUrlString as the initial text of `create_bookmark_url_edittext`.
+        // Set the formatted URL string as the initial text of the create bookmark URL edit text.
         EditText createBookmarkUrlEditText = alertDialog.findViewById(R.id.create_bookmark_url_edittext);
         createBookmarkUrlEditText.setText(url);
 
-        // Allow the `enter` key on the keyboard to create the bookmark from `create_bookmark_url_edittext`.
-        createBookmarkUrlEditText.setOnKeyListener((View v, int keyCode, KeyEvent event) -> {
-            // If the event is a key-down on the "enter" key, select the PositiveButton "Create".
-            if ((keyCode == KeyEvent.KEYCODE_ENTER) && (event.getAction() == KeyEvent.ACTION_DOWN)) {
-                // Trigger `createBookmarkListener` and return the DialogFragment to the parent activity.
+        // Allow the enter key on the keyboard to create the bookmark from create bookmark URL edit text.
+        createBookmarkUrlEditText.setOnKeyListener((View v, int keyCode, KeyEvent keyEvent) -> {
+            // If the event is a key-down on the `enter` key, select the create button.
+            if ((keyCode == KeyEvent.KEYCODE_ENTER) && (keyEvent.getAction() == KeyEvent.ACTION_DOWN)) {
+                // Trigger the create bookmark listener and return the dialog fragment and the favorite icon bitmap to the parent activity.
                 createBookmarkListener.onCreateBookmark(this, favoriteIconBitmap);
 
-                // Manually dismiss the `AlertDialog`.
+                // Manually dismiss the alert dialog.
                 alertDialog.dismiss();
 
                 // Consume the event.
                 return true;
-            } else { // If any other key was pressed, do not consume the event.
+            } else { // Some other key was pressed.
+                // Do not consume the event.
                 return false;
             }
         });

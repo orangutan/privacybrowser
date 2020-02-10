@@ -35,6 +35,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;  // The AndroidX toolbar must be used until the minimum API is >= 21.
@@ -197,7 +198,7 @@ public class ViewSourceActivity extends AppCompatActivity {
         }
 
         // Get the source using an AsyncTask if the URL begins with `http`.
-        if (currentUrl.startsWith("http")) {
+        if ((currentUrl != null) && currentUrl.startsWith("http")) {
             new GetSource(this, userAgent).execute(currentUrl);
         }
     }
@@ -212,7 +213,7 @@ public class ViewSourceActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem menuItem) {
         // Get a handle for the about alert dialog.
         DialogFragment aboutDialogFragment = new AboutViewSourceDialog();
 

@@ -1,0 +1,18 @@
+• Ajout de la prise en charge des proxys personnalisés, y compris les proxys SOCKS, et inclut une entrée pour I2P.
+• Raccourcissement du nom de l'application dans le lanceur.
+• Suppression de Privacy Browser de la liste des applications récentes lors de la fermeture via le bouton de retour.
+• Conservation des paramètres temporaires pendant la navigation dans l'historique.
+• Autorisation de n'importe quelle taille de police.
+• Ajout d'une option pour enregistrer les sites Web en tant que archives MHT.
+• Ajout d'une option pour ouvrir des fichiers locaux.
+• Ajout d'Ouvrir en arrière-plan dans le menu contextuel.
+• Ajout d'une option pour ouvrir des signets dans un nouvel onglet.
+• Manuellement désactiver l'extinction de l'écran lors de la lecture de vidéos en mode plein écran.
+• Désactivation d'HSTS.
+• Mise à jour de Voir Source pour utiliser les en-têtes Sec-Fetch.
+• Passage de l'API cible à 29 (Android 10).
+• Traduction française par Kévin LE FLOHIC.
+• MAJ traduction en Allemand effectuée par Bernhard G. Keller.
+• MAJ traduction en Italien effectuée par Francesco Buratti.
+• MAJ traduction en Russe.
+• MAJ traduction en Espagnol effectuée par Jose A. León.

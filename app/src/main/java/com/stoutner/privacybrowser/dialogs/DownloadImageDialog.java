@@ -49,7 +49,7 @@ public class DownloadImageDialog extends DialogFragment {
 
     // Check to make sure tha the parent activity implements the listener.
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         // Run the default commands.
         super.onAttach(context);
 

@@ -23,6 +23,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 
@@ -38,7 +39,7 @@ public class ImportExportDatabaseHelper {
     public static final String EXPORT_SUCCESSFUL = "Export Successful";
     public static final String IMPORT_SUCCESSFUL = "Import Successful";
 
-    private static final int SCHEMA_VERSION = 8;
+    private static final int SCHEMA_VERSION = 9;
     private static final String PREFERENCES_TABLE = "preferences";
 
     // The preferences constants.
@@ -63,12 +64,10 @@ public class ImportExportDatabaseHelper {
     private static final String GOOGLE_ANALYTICS = "google_analytics";
     private static final String FACEBOOK_CLICK_IDS = "facebook_click_ids";
     private static final String TWITTER_AMP_REDIRECTS = "twitter_amp_redirects";
-    private static final String PROXY_THROUGH_ORBOT = "proxy_through_orbot";
-    private static final String TOR_HOMEPAGE = "tor_homepage";
-    private static final String TOR_SEARCH = "tor_search";
-    private static final String TOR_SEARCH_CUSTOM_URL = "tor_search_custom_url";
     private static final String SEARCH = "search";
     private static final String SEARCH_CUSTOM_URL = "search_custom_url";
+    private static final String PROXY = "proxy";
+    private static final String PROXY_CUSTOM_URL = "proxy_custom_url";
     private static final String FULL_SCREEN_BROWSING_MODE = "full_screen_browsing_mode";
     private static final String HIDE_APP_BAR = "hide_app_bar";
     private static final String CLEAR_EVERYTHING = "clear_everything";
@@ -219,12 +218,10 @@ public class ImportExportDatabaseHelper {
                     GOOGLE_ANALYTICS + " BOOLEAN, " +
                     FACEBOOK_CLICK_IDS + " BOOLEAN, " +
                     TWITTER_AMP_REDIRECTS + " BOOLEAN, " +
-                    PROXY_THROUGH_ORBOT + " BOOLEAN, " +
-                    TOR_HOMEPAGE + " TEXT, " +
-                    TOR_SEARCH + " TEXT, " +
-                    TOR_SEARCH_CUSTOM_URL + " TEXT, " +
                     SEARCH + " TEXT, " +
                     SEARCH_CUSTOM_URL + " TEXT, " +
+                    PROXY + " TEXT, " +
+                    PROXY_CUSTOM_URL + " TEXT, " +
                     FULL_SCREEN_BROWSING_MODE + " BOOLEAN, " +
                     HIDE_APP_BAR + " BOOLEAN, " +
                     CLEAR_EVERYTHING + " BOOLEAN, " +
@@ -272,12 +269,10 @@ public class ImportExportDatabaseHelper {
             preferencesContentValues.put(GOOGLE_ANALYTICS, sharedPreferences.getBoolean(GOOGLE_ANALYTICS, true));
             preferencesContentValues.put(FACEBOOK_CLICK_IDS, sharedPreferences.getBoolean(FACEBOOK_CLICK_IDS, true));
             preferencesContentValues.put(TWITTER_AMP_REDIRECTS, sharedPreferences.getBoolean(TWITTER_AMP_REDIRECTS, true));
-            preferencesContentValues.put(PROXY_THROUGH_ORBOT, sharedPreferences.getBoolean(PROXY_THROUGH_ORBOT, false));
-            preferencesContentValues.put(TOR_HOMEPAGE, sharedPreferences.getString(TOR_HOMEPAGE, context.getString(R.string.tor_homepage_default_value)));
-            preferencesContentValues.put(TOR_SEARCH, sharedPreferences.getString(TOR_SEARCH, context.getString(R.string.tor_search_default_value)));
-            preferencesContentValues.put(TOR_SEARCH_CUSTOM_URL, sharedPreferences.getString(TOR_SEARCH_CUSTOM_URL, context.getString(R.string.tor_search_custom_url_default_value)));
             preferencesContentValues.put(SEARCH, sharedPreferences.getString(SEARCH, context.getString(R.string.search_default_value)));
             preferencesContentValues.put(SEARCH_CUSTOM_URL, sharedPreferences.getString(SEARCH_CUSTOM_URL, context.getString(R.string.search_custom_url_default_value)));
+            preferencesContentValues.put(PROXY, sharedPreferences.getString(PROXY, context.getString(R.string.proxy_default_value)));
+            preferencesContentValues.put(PROXY_CUSTOM_URL, sharedPreferences.getString(PROXY_CUSTOM_URL, context.getString(R.string.proxy_custom_url_default_value)));
             preferencesContentValues.put(FULL_SCREEN_BROWSING_MODE, sharedPreferences.getBoolean(FULL_SCREEN_BROWSING_MODE, false));
             preferencesContentValues.put(HIDE_APP_BAR, sharedPreferences.getBoolean(HIDE_APP_BAR, true));
             preferencesContentValues.put(CLEAR_EVERYTHING, sharedPreferences.getBoolean(CLEAR_EVERYTHING, true));
@@ -402,14 +397,17 @@ public class ImportExportDatabaseHelper {
                         // Get the current value in `default_font_size`.
                         String fontSize = importDatabasePreferenceCursor.getString(importDatabasePreferenceCursor.getColumnIndex("default_font_size"));
 
+                        // SQL escape the font size.
+                        fontSize = DatabaseUtils.sqlEscapeString(fontSize);
+
                         // Close the cursor.
                         importDatabasePreferenceCursor.close();
 
-                        // Create a new column named `font_size`.
+                        // Create the new font size column.
                         importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + FONT_SIZE + " TEXT");
 
                         // Place the font size string in the new column.
-                        importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + FONT_SIZE + " = " + fontSize);
+                        importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + FONT_SIZE + " = '" + fontSize + "'");
 
                     // Upgrade from schema version 3.
                     case 3:
@@ -519,6 +517,23 @@ public class ImportExportDatabaseHelper {
                             importDatabase.execSQL("UPDATE " + DomainsDatabaseHelper.DOMAINS_TABLE + " SET " + DomainsDatabaseHelper.ULTRALIST + " = " + 0);
                             importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + ULTRALIST + " = " + 0);
                         }
+
+                    // Upgrade from schema version 8.
+                    case 8:
+                        // Add the new proxy columns to the preferences table.
+                        importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + PROXY + " TEXT");
+                        importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + PROXY_CUSTOM_URL + " TEXT");
+
+                        // Get the current proxy values.
+                        String proxy = sharedPreferences.getString(PROXY, context.getString(R.string.proxy_default_value));
+                        String proxyCustomUrl = sharedPreferences.getString(PROXY_CUSTOM_URL, context.getString(R.string.proxy_custom_url_default_value));
+
+                        // SQL escape the proxy custom URL string.
+                        proxyCustomUrl = DatabaseUtils.sqlEscapeString(proxyCustomUrl);
+
+                        // Populate the table with the current proxy values.
+                        importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + PROXY + " = '" + proxy + "'");
+                        importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + PROXY_CUSTOM_URL + " = '" + proxyCustomUrl + "'");
                 }
             }
 
@@ -654,12 +669,10 @@ public class ImportExportDatabaseHelper {
                     .putBoolean(GOOGLE_ANALYTICS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(GOOGLE_ANALYTICS)) == 1)
                     .putBoolean(FACEBOOK_CLICK_IDS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(FACEBOOK_CLICK_IDS)) == 1)
                     .putBoolean(TWITTER_AMP_REDIRECTS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(TWITTER_AMP_REDIRECTS)) == 1)
-                    .putBoolean(PROXY_THROUGH_ORBOT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(PROXY_THROUGH_ORBOT)) == 1)
-                    .putString(TOR_HOMEPAGE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(TOR_HOMEPAGE)))
-                    .putString(TOR_SEARCH, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(TOR_SEARCH)))
-                    .putString(TOR_SEARCH_CUSTOM_URL, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(TOR_SEARCH_CUSTOM_URL)))
                     .putString(SEARCH, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(SEARCH)))
                     .putString(SEARCH_CUSTOM_URL, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(SEARCH_CUSTOM_URL)))
+                    .putString(PROXY, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(PROXY)))
+                    .putString(PROXY_CUSTOM_URL, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(PROXY_CUSTOM_URL)))
                     .putBoolean(FULL_SCREEN_BROWSING_MODE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(FULL_SCREEN_BROWSING_MODE)) == 1)
                     .putBoolean(HIDE_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(HIDE_APP_BAR)) == 1)
                     .putBoolean(CLEAR_EVERYTHING, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_EVERYTHING)) == 1)

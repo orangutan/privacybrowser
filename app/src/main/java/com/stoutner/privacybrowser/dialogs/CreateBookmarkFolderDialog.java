@@ -34,6 +34,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -56,7 +57,7 @@ public class CreateBookmarkFolderDialog extends DialogFragment {
     // `createBookmarkFolderListener` is used in `onAttach()` and `onCreateDialog`.
     private CreateBookmarkFolderListener createBookmarkFolderListener;
 
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         // Get a handle for `createBookmarkFolderListener` from the launching context.
@@ -150,13 +151,19 @@ public class CreateBookmarkFolderDialog extends DialogFragment {
         // Create an alert dialog from the `AlertDialog.Builder`.
         final AlertDialog alertDialog = dialogBuilder.create();
 
-        // Remove the warning below that `getWindow()` might be null.
-        assert alertDialog.getWindow() != null;
+        // Get the alert dialog window.
+        Window dialogWindow = alertDialog.getWindow();
+
+        // Remove the incorrect lint warning below that the dialog window might be null.
+        assert dialogWindow != null;
 
         // Disable screenshots if not allowed.
         if (!allowScreenshots) {
             alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         }
+
+        // Display the keyboard.
+        dialogWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
         // The alert dialog must be shown before items in the alert dialog can be modified.
         alertDialog.show();
@@ -197,14 +204,16 @@ public class CreateBookmarkFolderDialog extends DialogFragment {
             }
         });
 
-        // Allow the enter key on the keyboard to create the folder from `create_folder_name_edittext`.
-        folderNameEditText.setOnKeyListener((View v, int keyCode, KeyEvent event) -> {
-            // If the event is a key-down on the `enter` key, select the `PositiveButton` `Create`.
-            if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER) && createButton.isEnabled()) {  // The enter key was pressed and the create button is enabled.
-                // Trigger `createBookmarkFolderListener` and return the `DialogFragment` to the parent activity.
+        // Set the enter key on the keyboard to create the folder from the edit text.
+        folderNameEditText.setOnKeyListener((View view, int keyCode, KeyEvent keyEvent) -> {
+            // If the key event is a key-down on the `enter` key create the bookmark folder.
+            if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER) && createButton.isEnabled()) {  // The enter key was pressed and the create button is enabled.
+                // Trigger the create bookmark folder listener and return the dialog fragment to the parent activity.
                 createBookmarkFolderListener.onCreateBookmarkFolder(this, favoriteIconBitmap);
-                // Manually dismiss the `AlertDialog`.
+
+                // Manually dismiss the alert dialog.
                 alertDialog.dismiss();
+
                 // Consume the event.
                 return true;
             } else {  // If any other key was pressed, or if the create button is currently disabled, do not consume the event.

@@ -21,6 +21,7 @@ package com.stoutner.privacybrowser.adapters;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -35,7 +36,7 @@ public class AboutPagerAdapter extends FragmentPagerAdapter {
 
     public AboutPagerAdapter(FragmentManager fragmentManager, Context context, String[] blocklistVersions) {
         // Run the default commands.
-        super(fragmentManager);
+        super(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 
         // Store the context in a class variable.
         this.context = context;
@@ -55,25 +56,25 @@ public class AboutPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int tab) {
         switch (tab) {
             case 0:
-                return context.getResources().getString(R.string.version);
+                return context.getString(R.string.version);
 
             case 1:
-                return context.getResources().getString(R.string.permissions);
+                return context.getString(R.string.permissions);
 
             case 2:
-                return context.getResources().getString(R.string.privacy_policy);
+                return context.getString(R.string.privacy_policy);
 
             case 3:
-                return context.getResources().getString(R.string.changelog);
+                return context.getString(R.string.changelog);
 
             case 4:
-                return context.getResources().getString(R.string.licenses);
+                return context.getString(R.string.licenses);
 
             case 5:
-                return context.getResources().getString(R.string.contributors);
+                return context.getString(R.string.contributors);
 
             case 6:
-                return context.getResources().getString(R.string.links);
+                return context.getString(R.string.links);
 
             default:
                 return "";
@@ -81,6 +82,7 @@ public class AboutPagerAdapter extends FragmentPagerAdapter {
     }
 
     @Override
+    @NonNull
     // Setup each tab.
     public Fragment getItem(int tabNumber) {
         return AboutTabFragment.createTab(tabNumber, blocklistVersions);

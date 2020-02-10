@@ -26,15 +26,12 @@ import android.view.WindowManager;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;  // The AndroidX toolbar must be used until the minimum API is >= 21.
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
-import com.stoutner.privacybrowser.fragments.GuideTabFragment;
+import com.stoutner.privacybrowser.adapters.GuidePagerAdapter;
 import com.stoutner.privacybrowser.R;
 
 public class GuideActivity extends AppCompatActivity {
@@ -81,69 +78,11 @@ public class GuideActivity extends AppCompatActivity {
         //  Setup the ViewPager.
         ViewPager aboutViewPager = findViewById(R.id.guide_viewpager);
         assert aboutViewPager != null; // This assert removes the incorrect warning in Android Studio on the following line that aboutViewPager might be null.
-        aboutViewPager.setAdapter(new guidePagerAdapter(getSupportFragmentManager()));
+        aboutViewPager.setAdapter(new GuidePagerAdapter(getSupportFragmentManager(), getApplicationContext()));
 
         // Setup the TabLayout and connect it to the ViewPager.
         TabLayout aboutTabLayout = findViewById(R.id.guide_tablayout);
         assert aboutTabLayout != null; // This assert removes the incorrect warning in Android Studio on the following line that aboutTabLayout might be null.
         aboutTabLayout.setupWithViewPager(aboutViewPager);
-    }
-
-    private class guidePagerAdapter extends FragmentPagerAdapter {
-        private guidePagerAdapter(FragmentManager fragmentManager) {
-            // Run the default commands.
-            super(fragmentManager);
-        }
-
-        @Override
-        // Get the count of the number of tabs.
-        public int getCount() {
-            return 10;
-        }
-
-        @Override
-        // Get the name of each tab.  Tab numbers start at 0.
-        public CharSequence getPageTitle(int tab) {
-            switch (tab) {
-                case 0:
-                    return getString(R.string.overview);
-
-                case 1:
-                    return getString(R.string.javascript);
-
-                case 2:
-                    return getString(R.string.local_storage);
-
-                case 3:
-                    return getString(R.string.user_agent);
-
-                case 4:
-                    return getString(R.string.requests);
-
-                case 5:
-                    return getString(R.string.domain_settings);
-
-                case 6:
-                    return getString(R.string.ssl_certificates);
-
-                case 7:
-                    return getString(R.string.tor);
-
-                case 8:
-                    return getString(R.string.tracking_ids);
-
-                case 9:
-                    return getString(R.string.bookmarks);
-
-                default:
-                    return "";
-            }
-        }
-
-        @Override
-        // Setup each tab.
-        public Fragment getItem(int tab) {
-            return GuideTabFragment.createTab(tab);
-        }
     }
 }

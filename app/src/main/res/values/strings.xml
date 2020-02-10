@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -57,6 +57,7 @@
     <string name="new_tab">New tab</string>
     <string name="loading">Loading…</string>
     <string name="error">Error:</string>
+    <string name="apply">Apply</string>
 
     <!-- Loading Blocklists. -->
     <string name="loading_easylist">Loading EasyList</string>
@@ -131,6 +132,7 @@
     <string name="forward">Forward</string>
     <string name="history">History</string>
         <string name="clear_history">Clear History</string>
+    <string name="open">Open</string>
     <string name="downloads">Downloads</string>
     <string name="settings">Settings</string>
     <string name="import_export">Import/Export</string>
@@ -168,23 +170,17 @@
             <string name="user_agent_internet_explorer_on_windows">Internet Explorer on Windows</string>
             <string name="user_agent_safari_on_macos">Safari on macOS</string>
             <string name="user_agent_custom">Custom</string>
-        <string name="font_size">Font Size</string>
-            <string name="twenty_five_percent">25%</string>
-            <string name="fifty_percent">50%</string>
-            <string name="seventy_five_percent">75%</string>
-            <string name="one_hundred_percent">100%</string>
-            <string name="one_hundred_twenty_five_percent">125%</string>
-            <string name="one_hundred_fifty_percent">150%</string>
-            <string name="one_hundred_seventy_five_percent">175%</string>
-            <string name="two_hundred_percent">200%</string>
         <string name="swipe_to_refresh_options_menu">Swipe to Refresh</string>
         <string name="wide_viewport">Wide Viewport</string>
         <string name="display_images">Display Images</string>
         <string name="options_night_mode">Night Mode</string>
+        <string name="font_size">Font Size</string>
         <string name="find_on_page">Find on Page</string>
         <string name="print">Print</string>
             <string name="privacy_browser_web_page">Privacy Browser Web Page</string>
-        <string name="save_as_image">Save as Image</string>
+        <string name="save">Save</string>
+            <string name="save_as_archive">Save as Archive</string>
+            <string name="save_as_image">Save as Image</string>
         <string name="add_to_home_screen">Add to Home Screen</string>
         <string name="view_source">View Source</string>
     <string name="share">Share</string>
@@ -211,8 +207,11 @@
     <string name="previous">Previous</string>
     <string name="next">Next</string>
 
-    <!-- Save Webpage as Image. -->
+    <!-- Save Webpage. -->
+    <string name="save_webpage" translatable="false">Save Webpage</string>  <!-- This string is used to tag the save dialog.  It is never displayed to the user. -->
+    <string name="save_archive">Save Archive</string>
     <string name="save_image">Save Image</string>
+    <string name="webpage_mht">Webpage.mht</string>
     <string name="webpage_png">Webpage.png</string>
     <string name="saving_image">Saving image…</string>
     <string name="image_saved">Image saved.</string>
@@ -254,7 +253,6 @@
     <string name="edit_folder">Edit Folder</string>
     <string name="move_to_folder">Move to Folder</string>
     <string name="move">Move</string>
-    <string name="save">Save</string>
 
     <!-- Bookmarks Contextual App Bar. -->
     <string name="selected">Selected:</string>  <!--This is a plural adjective.-->
@@ -328,6 +326,10 @@
     <string name="domain_name">Domain name</string>
     <string name="domain_deleted">Domain deleted</string>
     <string name="domain_name_instructions">*. may be prepended to a domain to include all subdomains (eg. *.stoutner.com)</string>
+    <string-array name="font_size_array">
+        <item>System default</item>
+        <item>Custom font size</item>
+    </string-array>
     <string-array name="swipe_to_refresh_array">
         <item>System default</item>
         <item>Swipe to refresh enabled</item>
@@ -364,13 +366,15 @@
         <item>OpenPGP</item>
     </string-array>
     <string name="kitkat_password_encryption_message">Password encryption does not work on Android KitKat.</string>
+    <string name="file_does_not_exist">The file does not exist.</string>
+    <string name="file_exists_warning">The file already exists.  If you proceed it will be overwritten.</string>
     <string name="openkeychain_required">OpenPGP encryption requires that OpenKeychain be installed.</string>
     <string name="openkeychain_import_instructions">The unencrypted file will have to be imported in a separate step after it is decrypted.</string>
     <string name="settings_pbs">Settings.pbs</string>
     <string name="file_location">File Location</string>
     <string name="browse">Browse</string>
     <string name="export">Export</string>
-    <string name="import_button">Import</string>  <!-- `import` is a reserved word and cannot be used as the name -->
+    <string name="import_button">Import</string>  <!-- `import` is a reserved word and cannot be used as the name. -->
     <string name="decrypt">Decrypt</string>
     <string name="export_successful">Export successful.</string>
     <string name="export_failed">Export failed:</string>
@@ -381,7 +385,7 @@
     <string name="cannot_use_location">This location cannot be used because the storage permission has not been granted.</string>
 
     <!-- Logcat. -->
-    <string name="copy">Copy</string>
+    <string name="copy_string">Copy</string>  <!-- `copy` is a reserved word and should not be used as the name. -->
     <string name="logcat_copied">Logcat copied.</string>
     <string name="clear">Clear</string>
     <string name="save_logcat">Save logcat</string>
@@ -393,6 +397,7 @@
     <string name="overview">Overview</string>
     <string name="local_storage">Local Storage</string>
     <string name="ssl_certificates">SSL Certificates</string>
+    <string name="proxies">Proxies</string>
     <string name="tracking_ids">Tracking IDs</string>
 
     <!-- Download Location -->
@@ -400,9 +405,16 @@
     <string name="download_location_message">Privacy Browser needs the storage permission to use the public download directory. If it is denied, the app’s download directory will be used instead.</string>
     <string name="ok">OK</string>
 
-    <!-- Orbot. -->
-    <string name="orbot_proxy_not_installed">Orbot proxy will not work unless Orbot is installed.</string>
-    <string name="waiting_for_orbot">Waiting for Orbot to connect...</string>  <!-- The WebView in API 19 does not like the ellipse character. -->
+    <!-- Proxy. -->
+    <string name="proxy_not_installed_dialog" translatable="false">Proxy not installed dialog</string>  <!-- This string is used to tag the proxy not installed dialog.  It is never displayed to the user. -->
+    <string name="waiting_for_proxy_dialog" translatable="false">Waiting for proxy dialog</string>  <!-- This string is used to tag the waiting for proxy dialog.  It is never displayed to the user. -->
+    <string name="orbot_not_installed_title">Orbot Not Installed</string>
+    <string name="orbot_not_installed_message">Proxying through Orbot will not work unless the Orbot app is installed.</string>
+    <string name="i2p_not_installed_title">I2P Not Installed</string>
+    <string name="i2p_not_installed_message">Proxying through I2P will not work unless the I2P app is installed.</string>
+    <string name="waiting_for_orbot">Waiting for Orbot to connect.</string>
+    <string name="custom_proxy_invalid">The custom proxy URL is invalid.</string>
+    <string name="socks_proxies_do_not_work_on_kitkat">SOCKS proxies do not work on Android KitKat.</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">About Privacy Browser</string>
@@ -423,6 +435,7 @@
     <string name="webview_provider">WebView Provider:</string>
     <string name="webview_version">WebView Version:</string>
     <string name="orbot">Orbot:</string>
+    <string name="i2p">I2P:</string>
     <string name="openkeychain">OpenKeychain:</string>
     <string name="easylist_label">EasyList:</string>
     <string name="easyprivacy_label">EasyPrivacy:</string>
@@ -507,14 +520,14 @@
         <string-array name="user_agent_data" translatable="false">  <!-- The data used to populate the actual user agents.  They should not be translated because they are referenced in code.-->
             <item>PrivacyBrowser/1.0</item>
             <item>WebView default user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
-            <item>Mozilla/5.0 (Android 9; Mobile; rv:68.0) Gecko/68.0 Firefox/68.0</item>
-            <item>Mozilla/5.0 (Linux; Android 9; Pixel 2 XL) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.143 Mobile Safari/537.36</item>
-            <item>Mozilla/5.0 (iPhone; CPU iPhone OS 12_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Mobile/15E148 Safari/604.1</item>
-            <item>Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/60.0</item>
-            <item>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36</item>
-            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101 Firefox/68.0</item>
-            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36</item>
-            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.18362</item>
+            <item>Mozilla/5.0 (Android 10; Mobile; rv:68.0) Gecko/68.0 Firefox/68.0</item>
+            <item>Mozilla/5.0 (Linux; Android 10; Pixel 2 XL) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.93 Mobile Safari/537.36</item>
+            <item>Mozilla/5.0 (iPhone; CPU iPhone OS 13_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Mobile/15E148 Safari/604.1</item>
+            <item>Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0</item>
+            <item>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36</item>
+            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0</item>
+            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36</item>
+            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.18363</item>
             <item>Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko</item>
             <item>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15</item>
             <item>Custom user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
@@ -549,24 +562,6 @@
         <string name="facebook_click_ids_summary">Remove “?fbclid=”, “&amp;fbclid=”, “?fbadid=”, and “&amp;fbadid=” and anything after them from URLs.</string>
         <string name="twitter_amp_redirects">Twitter AMP redirects</string>
         <string name="twitter_amp_redirects_summary">Remove “?amp=1” and anything after it from URLs.</string>
-    <string name="tor">Tor</string>
-        <string name="proxy_through_orbot">Proxy through Orbot</string>
-        <string name="proxy_through_orbot_summary">Proxy all web traffic through Orbot on localhost:8118.</string>
-        <string name="tor_homepage">Tor homepage</string>
-        <string name="tor_search">Tor search</string>
-        <string-array name="tor_search_entries">
-            <item>Searx</item>
-            <item>DuckDuckGo - JavaScript disabled</item>
-            <item>DuckDuckGo - JavaScript enabled</item>
-            <item>Custom</item>
-        </string-array>
-        <string-array name="tor_search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
-            <item>http://ulrn6sryqaifefld.onion/?q=</item>
-            <item>https://3g2upl4pq6kufc4m.onion/html/?q=</item>
-            <item>https://3g2upl4pq6kufc4m.onion/?q=</item>
-            <item>Custom URL</item><!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
-        </string-array>
-        <string name="tor_search_custom_url">Tor search custom URL</string>
     <string name="search">Search</string>
         <string-array name="search_entries">
             <item>Startpage</item>
@@ -581,7 +576,7 @@
             <item>Yahoo - JavaScript enabled</item>
             <item>Custom</item>
         </string-array>
-        <string-array name="search_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
+        <string-array name="search_entry_values" translatable="false">  <!-- None of the items in this string array should be translated. -->
             <item>https://www.startpage.com/do/search?query=</item>
             <item>https://searx.me/?q=</item>
             <item>https://duckduckgo.com/html/?q=</item>
@@ -596,6 +591,29 @@
         </string-array>
         <string name="search_custom_url">Search custom URL</string>
         <string name="custom_url">Custom URL</string>
+    <string name="proxy">Proxy</string>
+        <string name="proxy_none">None</string>
+        <string name="proxy_tor">Tor</string>
+        <string name="proxy_i2p">I2P</string>
+        <string name="proxy_custom">Custom</string>
+        <string-array name="proxy_entries">
+            <item>None</item>
+            <item>Tor</item>
+            <item>I2P</item>
+            <item>Custom</item>
+        </string-array>
+        <string-array name="proxy_entry_values" translatable="false">  <!-- None of the items in this string array should be translated. They are referenced in the code and are never displayed on the screen.-->
+            <item>None</item>
+            <item>Tor</item>
+            <item>I2P</item>
+            <item>Custom</item>
+        </string-array>
+        <string name="no_proxy_enabled">None - connect directly to the internet.</string>
+        <string name="tor_enabled">Tor - connect through socks://localhost:9050.</string>
+        <string name="tor_enabled_kitkat">Tor - connect through http://localhost:8118.</string>
+        <string name="i2p_enabled">I2P - connect through http://localhost:4444.</string>
+        <string name="custom_proxy">Custom proxy</string>
+        <string name="proxy_custom_url">Proxy custom URL</string>
     <string name="full_screen">Full Screen</string>
         <string name="full_screen_browsing_mode">Full screen browsing mode</string>
         <string name="full_screen_browsing_mode_summary">Double-tap to toggle full screen browsing mode.</string>
@@ -615,48 +633,6 @@
     <string name="general">General</string>
         <string name="homepage">Homepage</string>
         <string name="font_size_preference">Font size</string>
-        <string-array name="font_size_entries">
-            <item>25%</item>
-            <item>50%</item>
-            <item>75%</item>
-            <item>100%</item>
-            <item>125%</item>
-            <item>150%</item>
-            <item>175%</item>
-            <item>200%</item>
-        </string-array>
-        <string-array name="font_size_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
-            <item>25</item>
-            <item>50</item>
-            <item>75</item>
-            <item>100</item>
-            <item>125</item>
-            <item>150</item>
-            <item>175</item>
-            <item>200</item>
-        </string-array>
-            <string-array name="domain_settings_font_size_entries">
-                <item>System default</item>
-                <item>25%</item>
-                <item>50%</item>
-                <item>75%</item>
-                <item>100%</item>
-                <item>125%</item>
-                <item>150%</item>
-                <item>175%</item>
-                <item>200%</item>
-            </string-array>
-            <string-array name="domain_settings_font_size_entry_values" translatable="false">  <!-- None of the items in this `string-array` should be translated. -->
-                <item>0</item>
-                <item>25</item>
-                <item>50</item>
-                <item>75</item>
-                <item>100</item>
-                <item>125</item>
-                <item>150</item>
-                <item>175</item>
-                <item>200</item>
-            </string-array>
         <string name="open_intents_in_new_tab">Open intents in new tab</string>
         <string name="open_intents_in_new_tab_summary">Intents are links sent from other apps.</string>
         <string name="swipe_to_refresh">Swipe to refresh</string>
@@ -679,11 +655,10 @@
     <!-- Non-translatable preference default values. -->
     <string name="user_agent_default_value" translatable="false">Privacy Browser</string>
     <string name="custom_user_agent_default_value" translatable="false">PrivacyBrowser/1.0</string>
-    <string name="tor_homepage_default_value" translatable="false">https://3g2upl4pq6kufc4m.onion/</string>
-    <string name="tor_search_default_value" translatable="false">https://3g2upl4pq6kufc4m.onion/html?q=</string>
-    <string name="tor_search_custom_url_default_value" translatable="false" />
     <string name="search_default_value" translatable="false">https://www.startpage.com/do/search?query=</string>
     <string name="search_custom_url_default_value" translatable="false" />
+    <string name="proxy_default_value" translatable="false">None</string>
+    <string name="proxy_custom_url_default_value" translatable="false">http://localhost:8118</string>
     <string name="homepage_default_value" translatable="false">https://www.startpage.com/</string>
     <string name="font_size_default_value" translatable="false">100</string>
 

@@ -46,10 +46,10 @@ public class ViewRequestDialog extends DialogFragment {
         void onNext(int id);
     }
 
-    // `viewRequestListener` is used in `onAttach()` and `onCreateDialog()`.
+    // The view request listener is used in `onAttach()` and `onCreateDialog()`.
     private ViewRequestListener viewRequestListener;
 
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         // Run the default commands.
         super.onAttach(context);
 

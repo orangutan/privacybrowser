@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -18,16 +18,18 @@
  */
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 29
+    buildToolsVersion '29.0.2'
 
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 28
-        versionCode 46
-        versionName "3.2"
+        targetSdkVersion 29
+        versionCode 47
+        versionName "3.3"
     }
 
     buildTypes {
@@ -64,6 +66,10 @@ android {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
@@ -72,14 +78,25 @@ dependencies {
     implementation 'androidx.arch.core:core-runtime:2.1.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.0.0'
+    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
+    implementation "androidx.core:core-ktx:1.1.0"
     implementation 'androidx.drawerlayout:drawerlayout:1.0.0'
+    implementation 'androidx.preference:preference:1.1.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
     implementation 'androidx.viewpager:viewpager:1.0.0'
+    implementation 'androidx.webkit:webkit:1.1.0'
+
+    // Include the Kotlin standard libraries
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.61"
 
     // Include the Google material library.
     implementation 'com.google.android.material:material:1.0.0'
 
     // Only compile Firebase ads for the free flavor.
+<<<<<<< HEAD
     freeImplementation 'com.google.firebase:firebase-ads:18.2.0'
 }
+=======
+    freeImplementation 'com.google.firebase:firebase-ads:18.3.0'
+}
+>>>>>>> upstream/master

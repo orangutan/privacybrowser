@@ -50,6 +50,7 @@
     <string name="new_tab">Новая вкладка</string>
     <string name="loading">Загрузка…</string>
     <string name="error">Ошибка:</string>
+    <string name="apply">Применить</string>
 
     <!-- Loading Blocklists. -->
     <string name="loading_easylist">Загрузка EasyList</string>
@@ -124,6 +125,7 @@
     <string name="forward">Вперед</string>
     <string name="history">История</string>
         <string name="clear_history">Очистить историю</string>
+    <string name="open">Открыть</string>
     <string name="downloads">Загрузки</string>
     <string name="settings">Настройки</string>
     <string name="import_export">Импорт/Экспорт</string>
@@ -161,23 +163,17 @@
             <string name="user_agent_internet_explorer_on_windows">Internet Explorer на Windows</string>
             <string name="user_agent_safari_on_macos">Safari на macOS</string>
             <string name="user_agent_custom">Настраиваемый</string>
-        <string name="font_size">Размер шрифта</string>
-            <string name="twenty_five_percent">25%</string>
-            <string name="fifty_percent">50%</string>
-            <string name="seventy_five_percent">75%</string>
-            <string name="one_hundred_percent">100%</string>
-            <string name="one_hundred_twenty_five_percent">125%</string>
-            <string name="one_hundred_fifty_percent">150%</string>
-            <string name="one_hundred_seventy_five_percent">175%</string>
-            <string name="two_hundred_percent">200%</string>
         <string name="swipe_to_refresh_options_menu">Потянуть для обновления</string>
         <string name="wide_viewport">Широкий вид просмотра</string>
         <string name="display_images">Показывать изображения</string>
         <string name="options_night_mode">Ночной режим</string>
+        <string name="font_size">Размер шрифта</string>
         <string name="find_on_page">Найти на странице</string>
         <string name="print">Печать</string>
             <string name="privacy_browser_web_page">Privacy Browser веб-страница</string>
-        <string name="save_as_image">Сохранить как изображение</string>
+        <string name="save">Сохранить</string>
+            <string name="save_as_archive">Сохранить как архив</string>
+            <string name="save_as_image">Сохранить как изображение</string>
         <string name="add_to_home_screen">Добавить на главный экран</string>
         <string name="view_source">Просмотр исходного кода</string>
     <string name="share">Поделиться</string>
@@ -189,6 +185,7 @@
 
     <!-- Context Menus. -->
     <string name="open_in_new_tab">Открыть в новой вкладке</string>
+    <string name="open_in_background">Открыть в фоне</string>
     <string name="open_image_in_new_tab">Открыть изображение в новой вкладке</string>
     <string name="copy_url">Копировать URL</string>
     <string name="download_url">Загрузить URL</string>
@@ -202,8 +199,10 @@
     <string name="previous">Предыдущий</string>
     <string name="next">Следующий</string>
 
-    <!-- Save Webpage as Image. -->
+    <!-- Save Webpage. -->
+    <string name="save_archive">Сохранить архив</string>
     <string name="save_image">Сохранить изображение</string>
+    <string name="webpage_mht">Webpage.mht</string>
     <string name="webpage_png">Webpage.png</string>
     <string name="saving_image">Сохранение изображения…</string>
     <string name="image_saved">Изображение сохранено.</string>
@@ -245,7 +244,6 @@
     <string name="edit_folder">Изменить папку</string>
     <string name="move_to_folder">Переместить в папку</string>
     <string name="move">Переместить</string>
-    <string name="save">Сохранить</string>
 
     <!-- Bookmarks Contextual App Bar. -->
     <string name="selected">выбраны:</string>  <!--This is a plural adjective.-->
@@ -319,6 +317,10 @@
     <string name="domain_name">Имя домена</string>
     <string name="domain_deleted">Домен удален</string>
     <string name="domain_name_instructions">добавьте *. для включения всех поддоменов (напр. *.stoutner.com)</string>
+    <string-array name="font_size_array">
+        <item>Настройки по умолчанию</item>
+        <item>Пользовательский размер шрифта</item>
+    </string-array>
     <string-array name="swipe_to_refresh_array">
         <item>Настройки по умолчанию</item>
         <item>Потянуть для обновления - включено</item>
@@ -361,7 +363,7 @@
     <string name="file_location">Расположение файла</string>
     <string name="browse">Обзор</string>
     <string name="export">Экспорт</string>
-    <string name="import_button">Импорт</string>  <!-- `import` is a reserved word and cannot be used as the name -->
+    <string name="import_button">Импорт</string>  <!-- `import` is a reserved word and cannot be used as the name. -->
     <string name="decrypt">Расшифровать</string>
     <string name="export_successful">Экспорт выполнен.</string>
     <string name="export_failed">Сбой при экспорте:</string>
@@ -372,7 +374,7 @@
     <string name="cannot_use_location">Это расположение использовано быть не может, поскольку разрешение на хранение предоставлено не было.</string>
 
     <!-- Logcat. -->
-    <string name="copy">Копировать</string>
+    <string name="copy_string">Копировать</string>  <!-- `copy` is a reserved word and should not be used as the name. -->
     <string name="logcat_copied">Logcat скопирован.</string>
     <string name="clear">Очистить</string>
     <string name="save_logcat">Сохранить logcat</string>
@@ -384,6 +386,7 @@
     <string name="overview">Обзор</string>
     <string name="local_storage">Локальное хранилище</string>
     <string name="ssl_certificates">Сертификаты SSL</string>
+    <string name="proxies">Прокси</string>
     <string name="tracking_ids">Идентификаторы отслеживания</string>
 
     <!-- Download Location -->
@@ -392,9 +395,14 @@
         Если разрешение получено не будет, то для загрузок будет использоваться папка приложения</string>
     <string name="ok">OK</string>
 
-    <!-- Orbot. -->
-    <string name="orbot_proxy_not_installed">Проксирование Orbot работает только с установленным Orbot.</string>
-    <string name="waiting_for_orbot">Ожидание Orbot для подключения...</string>  <!-- The WebView in API 19 does not like the ellipse character. -->
+    <!-- Proxy. -->
+    <string name="orbot_not_installed_title">Orbot не установлен</string>
+    <string name="orbot_not_installed_message">Прокси через Orbot работать не будет, если приложение Orbot не установлено.</string>
+    <string name="i2p_not_installed_title">I2P не установлен</string>
+    <string name="i2p_not_installed_message">Прокси через I2P работать не будет, если приложение I2P не установлено.</string>
+    <string name="waiting_for_orbot">Ожидание подключения Orbot.</string>
+    <string name="custom_proxy_invalid">URL пользовательского прокси недействителен.</string>
+    <string name="socks_proxies_do_not_work_on_kitkat">SOCKS-прокси не работает на Android KitKat.</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">О Privacy Browser</string>
@@ -415,6 +423,7 @@
     <string name="webview_provider">Провайдер WebView:</string>
     <string name="webview_version">Версия WebView:</string>
     <string name="orbot">Orbot:</string>
+    <string name="i2p">I2P:</string>
     <string name="openkeychain">OpenKeychain:</string>
     <string name="easylist_label">EasyList:</string>
     <string name="easyprivacy_label">EasyPrivacy:</string>
@@ -510,18 +519,6 @@
         <string name="facebook_click_ids_summary">Удалять из URL “?fbclid=”, “&amp;fbclid=”, “?fbadid=”, и “&amp;fbadid=” и все что будет после.</string>
         <string name="twitter_amp_redirects">AMP-перенаправления в Twitter</string>
         <string name="twitter_amp_redirects_summary">Удалять из URL “?amp=1” и все что будет после.</string>
-    <string name="tor">Tor</string>
-        <string name="proxy_through_orbot">Прокси через Orbot</string>
-        <string name="proxy_through_orbot_summary">Проксировать весь веб-трафик через Orbot на localhost:8118.</string>
-        <string name="tor_homepage">Домашняя страница Tor</string>
-        <string name="tor_search">Поиск Tor</string>
-        <string-array name="tor_search_entries">
-            <item>Searx</item>
-            <item>DuckDuckGo - JavaScript выключен</item>
-            <item>DuckDuckGo - JavaScript включен</item>
-            <item>Настраиваемый</item>
-        </string-array>
-        <string name="tor_search_custom_url">Настраиваемый URL поиска Tor</string>
     <string name="search">Поиск</string>
         <string-array name="search_entries">
             <item>Startpage</item>
@@ -538,6 +535,23 @@
         </string-array>
         <string name="search_custom_url">Настраиваемый URL поиска</string>
         <string name="custom_url">Настраиваемый URL</string>
+    <string name="proxy">Прокси</string>
+        <string name="proxy_none">Нет</string>
+        <string name="proxy_tor">Tor</string>
+        <string name="proxy_i2p">I2P</string>
+        <string name="proxy_custom">Пользовательский</string>
+        <string-array name="proxy_entries">
+            <item>Нет</item>
+            <item>Tor</item>
+            <item>I2P</item>
+            <item>Пользовательский</item>
+        </string-array>
+        <string name="no_proxy_enabled">Нет - подключиться к интернету напрямую.</string>
+        <string name="tor_enabled">Tor - connect through socks://localhost:9050.</string>
+        <string name="tor_enabled_kitkat">Tor - подключиться через http://localhost:8118.</string>
+        <string name="i2p_enabled">I2P - подключиться через http://localhost:4444.</string>
+        <string name="custom_proxy">Пользовательский прокси</string>
+        <string name="proxy_custom_url">URL пользовательского прокси</string>
     <string name="full_screen">Во весь экран</string>
         <string name="full_screen_browsing_mode">Полноэкранный режим просмотра</string>
         <string name="full_screen_browsing_mode_summary">Двойное касание переключает режим просмотра.</string>
@@ -556,27 +570,6 @@
     <string name="general">Общее</string>
         <string name="homepage">Домашняя страница</string>
         <string name="font_size_preference">Размер шрифта</string>
-        <string-array name="font_size_entries">
-            <item>25%</item>
-            <item>50%</item>
-            <item>75%</item>
-            <item>100%</item>
-            <item>125%</item>
-            <item>150%</item>
-            <item>175%</item>
-            <item>200%</item>
-        </string-array>
-            <string-array name="domain_settings_font_size_entries">
-                <item>Настройки по умолчанию</item>
-                <item>25%</item>
-                <item>50%</item>
-                <item>75%</item>
-                <item>100%</item>
-                <item>125%</item>
-                <item>150%</item>
-                <item>175%</item>
-                <item>200%</item>
-            </string-array>
         <string name="open_intents_in_new_tab">Открывать цели в новой вкладке</string>
         <string name="open_intents_in_new_tab_summary">Цели - это ссылки, отправленные из других приложений.</string>
         <string name="swipe_to_refresh">Потянуть для обновления</string>

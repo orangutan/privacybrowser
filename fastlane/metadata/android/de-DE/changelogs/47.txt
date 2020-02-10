@@ -1,0 +1,18 @@
+• Unterstützung benutzerdefinierter Proxies wie SOCKS-Proxies, und I2Phinzugefügt.
+• App-Name im Launcher gekürzt.
+• Privacy Browser wird aus der Liste der zuletzt ausgeführten Apps gelöscht, wenn er mittels Zurück-Button geschlossen wird.
+• Einstellungen werden beim Navigieren im Verlauf nicht mehr zurückgesetzt.
+• Beliebige Schriftgröße möglich.
+• Speichern von Webseiten als MHT-Archive möglich.
+• Möglichkeit, lokale Dateien zu öffnen.
+• Möglichkeit, Webseiten über das Kontext-Menü im Hintergrund zu öffnen.
+• Möglichkeit hinzugefügt, Lesezeichen in neuen Tabs zu öffne.
+• Manuelles Deaktivieren des Bildschirm-Timeouts beim Abspielen von Fullscreen-Videos möglich.
+• HSTS deaktiviert.
+• Quelltext-Anzeige nutzt nun Sec-Fetch-Header.
+• Ziel-API auf 29 (Android 10) angehoben.
+• Französische Übersetzung durch Kévin LE FLOHIC.
+• Aktualisierte deutsche Übersetzung von Bernhard G. Keller.
+• Aktualisierte italienische Übersetzung von Francesco Buratti.
+• Aktualisierte russische Übersetzung.
+• Aktualisierte spanische Übersetzung von Jose A. León.

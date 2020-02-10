@@ -1,0 +1,18 @@
+• Add support for custom proxies, including SOCKS proxies, and include an entry for I2P.
+• Shorten the app name in the launcher.
+• Remove Privacy Browser from the recent app list when closing via the back button.
+• Preserve on-the-fly settings while navigating history.
+• Allow any font size.
+• Add an option to save websites as MHT archives.
+• Add an option to open local files.
+• Add open in background context menu entries.
+• Add an option to open bookmarks in a new tab.
+• Manually disable the screen timeout when playing videos in full screen mode.
+• Disable HSTS.
+• Update View Source to use the Sec-Fetch headers.
+• Bump the target API to 29 (Android 10).
+• French translation by Kévin LE FLOHIC.
+• Almanca çevirisi güncellendi. (Çevirmen Bernhard G. Keller.)
+• İtalyan çevirisi güncellendi. (Çevirmen Francesco Buratti.)
+• Rusça çevirisi güncellendi.
+• İspanyol çevirisi güncellendi. (Çevirmen Jose A. León.)

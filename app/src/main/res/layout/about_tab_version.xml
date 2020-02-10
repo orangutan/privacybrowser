@@ -172,6 +172,12 @@
                 android:textIsSelectable="true" />
 
             <TextView
+                android:id="@+id/i2p"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textIsSelectable="true" />
+
+            <TextView
                 android:id="@+id/open_keychain"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"

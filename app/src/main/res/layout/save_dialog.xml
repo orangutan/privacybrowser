@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2019-2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -31,19 +31,19 @@
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp" >
 
-        <!-- Align the EditText and the select file button horizontally. -->
+        <!-- Align the edit text and the select file button horizontally. -->
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:orientation="horizontal" >
 
-            <!-- The `TextInputLayout` makes the `android:hint` float above the `EditText`. -->
+            <!-- The text input layout makes the `android:hint` float above the edit text. -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_height="wrap_content"
                 android:layout_width="0dp"
                 android:layout_weight="1" >
 
-                <!-- `android:inputType="textUri" disables spell check and places an `/` on the main keyboard. -->
+                <!-- `android:inputType="textUri"` disables spell check and places an `/` on the main keyboard. -->
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/file_name_edittext"
                     android:layout_height="wrap_content"
@@ -60,10 +60,22 @@
                 android:text="@string/browse" />
         </LinearLayout>
 
+        <!-- File already exists warning. -->
+        <TextView
+            android:id="@+id/file_exists_warning_textview"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="5dp"
+            android:text="@string/file_exists_warning"
+            android:textColor="?attr/redText"
+            android:textAlignment="center" />
+
+        <!-- Storage permission explanation. -->
         <TextView
             android:id="@+id/storage_permission_textview"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="@string/storage_permission_explanation"
             android:textColor="?android:textColorPrimary"

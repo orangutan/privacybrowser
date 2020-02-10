@@ -52,6 +52,7 @@
     <string name="new_tab">Nueva pestaña</string>
     <string name="loading">Cargando…</string>
     <string name="error">Error:</string>
+    <string name="apply">Apply</string>
 
     <!-- Loading Blocklists. -->
     <string name="loading_easylist">Cargando EasyList</string>
@@ -127,6 +128,7 @@
     <string name="forward">Adelante</string>
     <string name="history">Historial</string>
         <string name="clear_history">Borrar historial</string>
+    <string name="open">Abrir</string>
     <string name="downloads">Descargas</string>
     <string name="settings">Configuración</string>
     <string name="import_export">Importar/Exportar</string>
@@ -164,24 +166,18 @@
             <string name="user_agent_internet_explorer_on_windows">Internet Explorer en Windows</string>
             <string name="user_agent_safari_on_macos">Safari en macOS</string>
             <string name="user_agent_custom">Personalizado</string>
-        <string name="font_size">Tamaño de fuente</string>
-            <string name="twenty_five_percent">25%</string>
-            <string name="fifty_percent">50%</string>
-            <string name="seventy_five_percent">75%</string>
-            <string name="one_hundred_percent">100%</string>
-            <string name="one_hundred_twenty_five_percent">125%</string>
-            <string name="one_hundred_fifty_percent">150%</string>
-            <string name="one_hundred_seventy_five_percent">175%</string>
-            <string name="two_hundred_percent">200%</string>
         <string name="swipe_to_refresh_options_menu">Deslizar para actualizar</string>
         <string name="wide_viewport">Vista amplia</string>
         <string name="display_images">Mostrar imágenes</string>
+        <string name="options_night_mode">Modo noche</string>
+        <string name="font_size">Tamaño de fuente</string>
+        <string name="find_on_page">Buscar en página</string>
         <string name="print">Imprimir</string>
             <string name="privacy_browser_web_page">Página web de Navegador Privado</string>
-        <string name="save_as_image">Guardar como imagen</string>
+        <string name="save">Guardar</string>
+            <string name="save_as_archive">Guardar como archivo</string>
+            <string name="save_as_image">Guardar como imagen</string>
         <string name="add_to_home_screen">Añadir a la ventana de inicio</string>
-        <string name="options_night_mode">Modo noche</string>
-    <string name="find_on_page">Buscar en página</string>
         <string name="view_source">Ver la fuente</string>
     <string name="share">Compartir</string>
         <string name="share_url">Compartir URL</string>
@@ -192,6 +188,7 @@
 
     <!-- Context Menus. -->
     <string name="open_in_new_tab">Abrir en nueva pestaña</string>
+    <string name="open_in_background">Abrir en segundo plano</string>
     <string name="open_image_in_new_tab">Abrir imagen en nueva pestaña</string>
     <string name="copy_url">Copiar URL</string>
     <string name="download_url">Descargar URL</string>
@@ -205,8 +202,10 @@
     <string name="previous">Anterior</string>
     <string name="next">Siguiente</string>
 
-    <!-- Save Webpage as Image. -->
+    <!-- Save Webpage. -->
+    <string name="save_archive">Guardar archivo</string>
     <string name="save_image">Guardar imagen</string>
+    <string name="webpage_mht">PaginaWeb.mht</string>
     <string name="webpage_png">PaginaWeb.png</string>
     <string name="saving_image">Guardando imagen…</string>
     <string name="image_saved">Imagen guardada.</string>
@@ -249,7 +248,6 @@
     <string name="edit_folder">Editar carpeta</string>
     <string name="move_to_folder">Mover a carpeta</string>
     <string name="move">Mover</string>
-    <string name="save">Guardar</string>
 
     <!-- Bookmarks Contextual App Bar. -->
     <string name="selected">Seleccionados:</string>  <!--This is a plural adjective.-->
@@ -323,6 +321,10 @@
     <string name="domain_name">Nombre de dominio</string>
     <string name="domain_deleted">Dominio borrado</string>
     <string name="domain_name_instructions">*. puede ser añadido a un dominio para incluir todos los subdominios (p.ej. *.stoutner.com)</string>
+    <string-array name="font_size_array">
+        <item>Por defecto del sistema</item>
+        <item>Tamaño de letra personalizado</item>
+    </string-array>
     <string-array name="swipe_to_refresh_array">
         <item>Por defecto del sistema</item>
         <item>Deslizar para actualizar habilitado</item>
@@ -365,7 +367,7 @@
     <string name="file_location">Ubicación del archivo</string>
     <string name="browse">Navegar</string>
     <string name="export">Exportar</string>
-    <string name="import_button">Importar</string>  <!-- `import` is a reserved word and cannot be used as the name -->
+    <string name="import_button">Importar</string>  <!-- `import` is a reserved word and cannot be used as the name. -->
     <string name="decrypt">Descifrar</string>
     <string name="export_successful">Exportación exitosa.</string>
     <string name="export_failed">Exportación fallida:</string>
@@ -378,7 +380,7 @@
     <string name="cannot_use_location">Esta ubicación no se puede utilizar porque no se ha concedido el permiso de almacenamiento.</string>
 
     <!-- Logcat. -->
-    <string name="copy">Copiar</string>
+    <string name="copy_string">Copiar</string>  <!-- `copy` is a reserved word and should not be used as the name. -->
     <string name="logcat_copied">Logcat copiado.</string>
     <string name="clear">Borrar</string>
     <string name="save_logcat">Guardar logcat</string>
@@ -390,6 +392,7 @@
     <string name="overview">Visión general</string>
     <string name="local_storage">Almacenamiento local</string>
     <string name="ssl_certificates">Certificados SSL</string>
+    <string name="proxies">Proxis</string>
     <string name="tracking_ids">Rastreo de IDs</string>
 
     <!-- Download Location -->
@@ -398,9 +401,14 @@
         Si se deniega, se utilizará el directorio de descarga de la aplicación.</string>
     <string name="ok">OK</string>
 
-    <!-- Orbot. -->
-    <string name="orbot_proxy_not_installed">Enviar a través de Orbot no funcionará a menos que se instale Orbot.</string>
-    <string name="waiting_for_orbot">Esperando a Orbot para conectar...</string>  <!-- The WebView in API 19 does not like the ellipse character. -->
+    <!-- Proxy. -->
+    <string name="orbot_not_installed_title">Orbot No Instalado</string>
+    <string name="orbot_not_installed_message">El proxy a través de Orbot no funcionará a menos que la aplicación Orbot esté instalada.</string>
+    <string name="i2p_not_installed_title">I2P No Instalado</string>
+    <string name="i2p_not_installed_message">El proxy a través de I2P no funcionará a menos que la aplicación I2P esté instalada.</string>
+    <string name="waiting_for_orbot">Esperando a que Orbot se conecte.</string>
+    <string name="custom_proxy_invalid">La URL del proxy personalizado no es válida.</string>
+    <string name="socks_proxies_do_not_work_on_kitkat">SOCKS proxies do not work on Android KitKat.</string>
 
     <!-- About Activity. -->
     <string name="about_privacy_browser">Acerca de Navegador Privado</string>
@@ -421,6 +429,7 @@
     <string name="webview_provider">Proveedor de WebView:</string>
     <string name="webview_version">Versión de WebView:</string>
     <string name="orbot">Orbot:</string>
+    <string name="i2p">I2P:</string>
     <string name="openkeychain">OpenKeychain:</string>
     <string name="easylist_label">EasyList:</string>
     <string name="easyprivacy_label">EasyPrivacy:</string>
@@ -516,18 +525,6 @@
         <string name="facebook_click_ids_summary">Eliminar “?fbclid=”, “&amp;fbclid=”, “?fbadid=”, “&amp;fbadid=” y cualquier cosa tras ello de las URLs.</string>
         <string name="twitter_amp_redirects">Redirecciones de Twitter AMP</string>
         <string name="twitter_amp_redirects_summary">Eliminar “?amp=1” y cualquier cosa después de esto de las URLs.</string>
-    <string name="tor">Tor</string>
-        <string name="proxy_through_orbot">Enviar a través de Orbot</string>
-        <string name="proxy_through_orbot_summary">Enviar todo el tráfico web a través de Orbot en localhost:8118.</string>
-        <string name="tor_homepage">Página de inicio de Tor</string>
-        <string name="tor_search">Búsqueda en Tor</string>
-        <string-array name="tor_search_entries">
-            <item>Searx</item>
-            <item>DuckDuckGo - Javascript deshabilitado</item>
-            <item>DuckDuckGo - Javascript habilitado</item>
-            <item>Personalizado</item>
-        </string-array>
-        <string name="tor_search_custom_url">URL personalizada de búsqueda en Tor</string>
     <string name="search">Búsqueda</string>
         <string-array name="search_entries">
             <item>Startpage</item>
@@ -542,8 +539,25 @@
             <item>Yahoo - Javascript habilitado</item>
             <item>Personalizado</item>
         </string-array>
+        <string name="no_proxy_enabled">Ninguno - conectar directamente a Internet.</string>
+        <string name="tor_enabled">Tor - conectar a través de socks://localhost:9050.</string>
+        <string name="tor_enabled_kitkat">Tor - conectar a través de http://localhost:8118.</string>
+        <string name="i2p_enabled">I2P - conectar a través de http://localhost:4444.</string>
         <string name="search_custom_url">URL personalizado de búsqueda</string>
         <string name="custom_url">URL personalizado</string>
+        <string name="proxy_custom_url">URL personalizada del proxy</string>
+    <string name="proxy">Proxy</string>
+        <string name="proxy_none">Ninguno</string>
+        <string name="proxy_tor">Tor</string>
+        <string name="proxy_i2p">I2P</string>
+        <string name="proxy_custom">Personalizado</string>
+        <string-array name="proxy_entries">
+            <item>Ninguno</item>
+            <item>Tor</item>
+            <item>I2P</item>
+            <item>Personalizado</item>
+        </string-array>
+        <string name="custom_proxy">Proxy personalizado</string>
     <string name="full_screen">Pantalla completa</string>
         <string name="full_screen_browsing_mode">Navegación de pantalla completa</string>
         <string name="full_screen_browsing_mode_summary">Doble toque para alternar a modo de navegación de pantalla completa.</string>
@@ -563,27 +577,6 @@
     <string name="general">General</string>
         <string name="homepage">Página de inicio</string>
         <string name="font_size_preference">Tamaño de fuente</string>
-        <string-array name="font_size_entries">
-            <item>25%</item>
-            <item>50%</item>
-            <item>75%</item>
-            <item>100%</item>
-            <item>125%</item>
-            <item>150%</item>
-            <item>175%</item>
-            <item>200%</item>
-        </string-array>
-            <string-array name="domain_settings_font_size_entries">
-                <item>Por defecto del sistema</item>
-                <item>25%</item>
-                <item>50%</item>
-                <item>75%</item>
-                <item>100%</item>
-                <item>125%</item>
-                <item>150%</item>
-                <item>175%</item>
-                <item>200%</item>
-            </string-array>
         <string name="open_intents_in_new_tab">Abrir contenido en nueva pestaña</string>
         <string name="open_intents_in_new_tab_summary">Los contenidos son enlaces enviados desde otras apps.</string>
         <string name="swipe_to_refresh">Deslizar para actualizar</string>

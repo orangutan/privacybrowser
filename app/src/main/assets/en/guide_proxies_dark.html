@@ -1,0 +1,85 @@
+<!--
+  Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+
+  This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
+
+  Privacy Browser is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Privacy Browser is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+
+        <link rel="stylesheet" href="../css/dark_theme.css">
+    </head>
+
+    <body>
+        <h3><img class="title" src="../shared_images/vpn_key_blue_dark.png"> Proxies and Their Limits</h3>
+
+        <p>There are two general categories of bad actors that want to infringe on the privacy of the web:
+            malicious governments with access to ISPs (Internet Service Providers) and mega corporations that run social and advertising networks.
+            Proxies like TOR (The Onion Router) and I2P (the Invisible Internet Project) are useful in protecting privacy from malicious governments (which spy on traffic in transit)
+            but not from mega corporations (which embed malicious code on web servers).</p>
+
+
+        <h3><img class="title" src="../shared_images/language_blue_dark.png"> Malicious Governments</h3>
+
+        <p>Malicious governments often spy on their citizens to punish dissent or human rights activity.
+            They commonly either operate the local ISPs or they can force them to disclose information showing every IP address that is visited by each user.
+            Layered proxies are designed to defeat this infringement of privacy by encrypting the traffic from a user’s device and routing it through multiple servers on the internet
+            before sending it on to the final destination.
+            This means that no individual ISP, server, or website, can know both the <a href="https://ipleak.net">IP address of the user’s device</a> and the IP address of the final web server.
+            Malicious governments and the ISPs they control cannot tell which web servers a user is accessing, although they can tell that the user is using a layered proxy service.
+            In some parts of the world, using proxies could be construed as an evidence of illegal behavior (“If you didn’t have anything to hide you wouldn’t be encrypting your traffic”)
+            and users could be punished because governments assume they are doing something that is prohibited. Thus, proxies can be helpful, but they aren’t a panacea.</p>
+
+
+        <h3><img class="title" src="../shared_images/language_blue_dark.png"> Mega Corporations</h3>
+
+        <p>When a user connects to a web server, the web server can see the user’s IP address.
+            Although it isn’t a perfect science, IP addresses can be turned into physical addresses with a <a href="https://www.whatismyip.com/">fair amount of accuracy</a>.
+            Small web servers typically rely on IP addresses to identify the location of the users visiting their site. Proxies are a good solution to mask the user’s location from these servers.
+            But large mega corporations that own social media and advertising networks use a whole profile of information that is designed to track users across devices and IP addresses.
+            These profiles employ a variety of techniques to identify users, including JavaScript, cookies, tracking IDs, and <a href="https://panopticlick.eff.org/">browser fingerprinting</a>.
+            Because the vast majority of the websites on the internet either load an ad from one of the major networks or embed social media icons with their associated JavaScript,
+            these corporations have built profiles for almost every online user and can track their internet activity across unrelated sites.</p>
+
+        <p>They track every site that is visited, everything that is purchased, every credit card that is used to make a purchase, every address that items are shipped to,
+            and the GPS metadata of every picture that is uploaded to the internet.
+            They build a profile of a user’s age, gender, marital status, address, political affiliations, religious affiliations, family circumstances, number of pets,
+            and everything else they can get their hands on.
+            They even buy up databases of credit card transactions at local stores, so they can track the off-line purchasing patterns of the users in their profiles.
+            Because they already have much more accurate address information about a user than an IP address discloses, proxies provides no real privacy protection against mega corporations.</p>
+
+        <p>The single best privacy protection against mega corporations is to browse the web with JavaScript disabled, followed by blocking ad networks, disabling cookies and DOM storage,
+            and using a browser that is difficult to fingerprint.</p>
+
+
+        <h3><img class="title" src="../shared_images/open_in_browser_blue_dark.png"> Using Proxies</h3>
+
+        <p>Despite their limitations, proxies can be useful in some circumstances.
+            <a href="https://play.google.com/store/apps/details?id=org.torproject.android">Tor</a> and <a href="https://f-droid.org/en/packages/net.i2p.android.router/">I2P</a>
+            have Android apps that make it easy to use their proxy networks. When proxying is turned on in Privacy Browser, the app bar will have a light blue background instead of the default light grey.
+            Because traffic is being routed through several proxy nodes, using a layered proxy is often much slower than connecting directly to the internet.</p>
+
+        <img class="center" src="images/tor.png">
+
+        <h3><img class="title" src="../shared_images/file_download_blue_dark.png"> Downloading Files Via Tor</h3>
+
+        <p>When Orbot is operating in proxy mode, browsing the internet using Privacy Browser will be routed through the proxy, but file downloads will not.
+            This is because Privacy Browser uses Android’s builtin download manager to download files, which doesn’t have a proxy option.
+            Users who want to download files via Orbot need to enable its VPN mode.  There is currently no way to download files through I2P.</p>
+
+        <img class="center" src="../shared_images/vpn_mode.png">
+    </body>
+</html>

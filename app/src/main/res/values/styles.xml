@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -18,7 +18,8 @@
   You should have received a copy of the GNU General Public License
   along with Privacy Browser.  If not, see <http://www.gnu.org/licenses/>. -->
 
-<resources>
+<resources
+    xmlns:tools="http://schemas.android.com/tools">
     <!-- Light theme styles. -->
 
     <!-- `android:windowTranslucentStatus` makes the system status bar translucent.  When it is specified the root layout should include `android:fitsSystemWindows="true"`. -->
@@ -31,11 +32,11 @@
         <item name="appBarTheme">@style/PrivacyBrowserAppBarLight</item>
         <item name="colorAccent">@color/blue_700</item>
         <item name="dialogTabLayoutTheme">@style/PrivacyBrowserTabLayoutDialogLight</item>
+        <item name="findOnPageIconTintColor">@color/blue_800</item>
         <item name="mainStatusBarBackground">@color/gray_500</item>
         <item name="navigationHeaderBackground">@color/blue_700</item>
         <item name="navigationHeaderTextColor">@color/white</item>
         <item name="navigationIconTintColor">@color/blue_800</item>
-        <item name="findOnPageIconTintColor">@color/blue_800</item>
         <item name="progressTintColor">@color/blue_700</item>
         <item name="redText">@color/red_a700</item>
         <item name="sslHeader">@color/blue_700</item>
@@ -48,15 +49,17 @@
     <!-- `windowActionModeOverlay` makes the contextual app bar cover the support app bar. -->
     <style name="PrivacyBrowserLight.SecondaryActivity" >
         <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowTranslucentStatus">false</item>
         <item name="colorPrimaryDark">@color/blue_700</item>
+        <item name="android:statusBarColor" tools:targetApi="21">@color/blue_900</item>
         <item name="android:textColorHighlight">@color/blue_200</item>
         <item name="android:actionModeBackground">@color/blue_700</item>
         <item name="spinnerHeaderTextColor">@color/white</item>
         <item name="spinnerBackground">@color/blue_750</item>
         <item name="spinnerTextColorSelector">@color/spinner_color_selector_light</item>
         <item name="appbarSpinnerTextColorSelector">@color/appbar_spinner_color_selector_light</item>
-        <item name="buttonTextColorSelector">@color/button_text_color_selector_light</item>
         <item name="buttonBackgroundColorSelector">@color/button_background_color_selector_light</item>
+        <item name="buttonTextColorSelector">@color/button_text_color_selector_light</item>
         <item name="listSelectorDrawable">@drawable/list_selector_light</item>
         <item name="aboutTitle">@color/blue_900</item>
         <item name="aboutText">@color/blue_700</item>
@@ -131,10 +134,10 @@
         <item name="android:windowTranslucentStatus">true</item>
         <item name="appBarTheme">@style/PrivacyBrowserAppBarDark</item>
         <item name="colorAccent">@color/blue_600</item>
+        <item name="findOnPageIconTintColor">@color/blue_600</item>
         <item name="mainStatusBarBackground">@color/black</item>
         <item name="navigationHeaderBackground">@color/blue_800</item>
         <item name="navigationHeaderTextColor">@color/gray_300</item>
-        <item name="findOnPageIconTintColor">@color/blue_600</item>
         <item name="navigationIconTintColor">@color/blue_600</item>
         <item name="progressTintColor">@color/blue_600</item>
         <item name="redText">@color/red_900</item>
@@ -148,7 +151,9 @@
     <!-- `windowActionModeOverlay` makes the contextual app bar cover the support app bar.  `colorPrimaryDark` goes behind the status bar, which is then darkened by the overlay.-->
     <style name="PrivacyBrowserDark.SecondaryActivity" >
         <item name="windowActionModeOverlay">true</item>
-        <item name="colorPrimaryDark">@color/blue_900</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="colorPrimaryDark">@color/blue_800</item>
+        <item name="android:statusBarColor" tools:targetApi="21">@color/blue_900</item>
         <item name="android:actionModeBackground">@color/blue_800</item>
         <item name="spinnerHeaderTextColor">@color/gray_300</item>
         <item name="spinnerBackground">@color/blue_830</item>
@@ -165,8 +170,8 @@
         <item name="addIcon">@drawable/add_dark</item>
         <item name="addBookmarkIcon">@drawable/create_bookmark_dark</item>
         <item name="addFolderIcon">@drawable/create_folder_dark</item>
-        <item name="copyIcon">@drawable/copy_dark</item>
         <item name="clearIcon">@drawable/clear_dark</item>
+        <item name="copyIcon">@drawable/copy_dark</item>
         <item name="selectAllIcon">@drawable/select_all_dark</item>
         <item name="editIcon">@drawable/edit_dark</item>
         <item name="moveToFolderIcon">@drawable/move_to_folder_dark</item>
@@ -196,7 +201,7 @@
 
     <!-- Configure the About and Guide `TabLayouts`. -->
     <style name="PrivacyBrowserTabLayoutDark" parent="Widget.Design.TabLayout" >
-        <item name="tabBackground">@color/blue_900</item>
+        <item name="tabBackground">@color/blue_800</item>
         <item name="android:textColorSecondary">@color/blue_300</item>
         <item name="tabIndicatorColor">@color/gray_300</item>
     </style>

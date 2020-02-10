@@ -41,6 +41,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;  // The AndroidX toolbar must be used until the minimum API is >= 21.
@@ -560,7 +561,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         // Store the current `DomainSettingsFragment` state in `outState`.
         if (findViewById(R.id.domain_settings_scrollview) != null) {  // `DomainSettingsFragment` is displayed.
             // Save any changes that have been made to the domain settings.
@@ -645,8 +646,13 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
             undoDeleteSnackbar.dismiss();
         }
 
-        // Get the new domain name String from the dialog fragment.
+        // Remove the incorrect lint warning below that the dialog might be null.
+        assert dialogFragment.getDialog() != null;
+
+        // Get a handle for the domain name edit text.
         EditText domainNameEditText = dialogFragment.getDialog().findViewById(R.id.domain_name_edittext);
+
+        // Get the domain name string.
         String domainNameString = domainNameEditText.getText().toString();
 
         // Create the domain and store the database ID in `currentDomainDatabaseId`.
@@ -693,6 +699,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         Spinner userAgentSpinner = view.findViewById(R.id.user_agent_spinner);
         EditText customUserAgentEditText = view.findViewById(R.id.custom_user_agent_edittext);
         Spinner fontSizeSpinner = view.findViewById(R.id.font_size_spinner);
+        EditText customFontSizeEditText = view.findViewById(R.id.custom_font_size_edittext);
         Spinner swipeToRefreshSpinner = view.findViewById(R.id.swipe_to_refresh_spinner);
         Spinner nightModeSpinner = view.findViewById(R.id.night_mode_spinner);
         Spinner wideViewportSpinner = view.findViewById(R.id.wide_viewport_spinner);
@@ -716,8 +723,8 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         boolean ultraList = ultraListSwitch.isChecked();
         boolean ultraPrivacy = ultraPrivacySwitch.isChecked();
         boolean blockAllThirdPartyRequests = blockAllThirdPartyRequestsSwitch.isChecked();
-        int userAgentPosition = userAgentSpinner.getSelectedItemPosition();
-        int fontSizePosition = fontSizeSpinner.getSelectedItemPosition();
+        int userAgentSwitchPosition = userAgentSpinner.getSelectedItemPosition();
+        int fontSizeSwitchPosition = fontSizeSpinner.getSelectedItemPosition();
         int swipeToRefreshInt = swipeToRefreshSpinner.getSelectedItemPosition();
         int nightModeInt = nightModeSpinner.getSelectedItemPosition();
         int wideViewportInt = wideViewportSpinner.getSelectedItemPosition();
@@ -729,7 +736,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
         String userAgentName;
 
         // Set the user agent name.
-        switch (userAgentPosition) {
+        switch (userAgentSwitchPosition) {
             case MainWebViewActivity.DOMAINS_SYSTEM_DEFAULT_USER_AGENT:
                 // Set the user agent name to be `System default user agent`.
                 userAgentName = resources.getString(R.string.system_default_user_agent);
@@ -745,11 +752,17 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
                 String[] userAgentNameArray = resources.getStringArray(R.array.user_agent_names);
 
                 // Set the user agent name from the array.  The domain spinner has one more entry than the name array, so the position must be decremented.
-                userAgentName = userAgentNameArray[userAgentPosition - 1];
+                userAgentName = userAgentNameArray[userAgentSwitchPosition - 1];
         }
 
-        // Get the font size integer.
-        int fontSizeInt = Integer.parseInt(resources.getStringArray(R.array.domain_settings_font_size_entry_values)[fontSizePosition]);
+        // Initialize the font size integer.  `0` indicates the system default font size.
+        int fontSizeInt = 0;
+
+        // Use a custom font size if it is selected.
+        if (fontSizeSwitchPosition == 1) {  // A custom font size is specified.
+            // Get the custom font size from the edit text.
+            fontSizeInt = Integer.parseInt(customFontSizeEditText.getText().toString());
+        }
 
         // Save the domain settings.
         domainsDatabaseHelper.updateDomain(DomainsActivity.currentDomainDatabaseId, domainNameString, javaScript, firstPartyCookies, thirdPartyCookies, domStorage, formData, easyList, easyPrivacy,

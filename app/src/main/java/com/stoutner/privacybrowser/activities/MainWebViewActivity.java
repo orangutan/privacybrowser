@@ -1,5 +1,5 @@
 /*
- * Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2015-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * Download cookie code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
  *
@@ -129,13 +129,17 @@ import com.stoutner.privacybrowser.dialogs.DownloadImageDialog;
 import com.stoutner.privacybrowser.dialogs.DownloadLocationPermissionDialog;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkFolderDialog;
+import com.stoutner.privacybrowser.dialogs.FontSizeDialog;
 import com.stoutner.privacybrowser.dialogs.HttpAuthenticationDialog;
+import com.stoutner.privacybrowser.dialogs.OpenDialog;
+import com.stoutner.privacybrowser.dialogs.ProxyNotInstalledDialog;
 import com.stoutner.privacybrowser.dialogs.PinnedMismatchDialog;
-import com.stoutner.privacybrowser.dialogs.SaveWebpageImageDialog;
+import com.stoutner.privacybrowser.dialogs.SaveWebpageDialog;
 import com.stoutner.privacybrowser.dialogs.SslCertificateErrorDialog;
 import com.stoutner.privacybrowser.dialogs.StoragePermissionDialog;
 import com.stoutner.privacybrowser.dialogs.UrlHistoryDialog;
 import com.stoutner.privacybrowser.dialogs.ViewSslCertificateDialog;
+import com.stoutner.privacybrowser.dialogs.WaitingForProxyDialog;
 import com.stoutner.privacybrowser.fragments.WebViewTabFragment;
 import com.stoutner.privacybrowser.helpers.AdHelper;
 import com.stoutner.privacybrowser.helpers.BlocklistHelper;
@@ -143,7 +147,7 @@ import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 import com.stoutner.privacybrowser.helpers.CheckPinnedMismatchHelper;
 import com.stoutner.privacybrowser.helpers.DomainsDatabaseHelper;
 import com.stoutner.privacybrowser.helpers.FileNameHelper;
-import com.stoutner.privacybrowser.helpers.OrbotProxyHelper;
+import com.stoutner.privacybrowser.helpers.ProxyHelper;
 import com.stoutner.privacybrowser.views.NestedScrollWebView;
 
 import java.io.ByteArrayInputStream;
@@ -161,16 +165,18 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 // AppCompatActivity from android.support.v7.app.AppCompatActivity must be used to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
         DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, DownloadLocationPermissionDialog.DownloadLocationPermissionDialogListener, EditBookmarkDialog.EditBookmarkListener,
-        EditBookmarkFolderDialog.EditBookmarkFolderListener, NavigationView.OnNavigationItemSelectedListener, PinnedMismatchDialog.PinnedMismatchListener, PopulateBlocklists.PopulateBlocklistsListener, SaveWebpageImageDialog.SaveWebpageImageListener,
-        StoragePermissionDialog.StoragePermissionDialogListener, UrlHistoryDialog.NavigateHistoryListener, WebViewTabFragment.NewTabListener {
+        EditBookmarkFolderDialog.EditBookmarkFolderListener, FontSizeDialog.UpdateFontSizeListener, NavigationView.OnNavigationItemSelectedListener, OpenDialog.OpenListener,
+        PinnedMismatchDialog.PinnedMismatchListener, PopulateBlocklists.PopulateBlocklistsListener, SaveWebpageDialog.SaveWebpageListener, StoragePermissionDialog.StoragePermissionDialogListener,
+        UrlHistoryDialog.NavigateHistoryListener, WebViewTabFragment.NewTabListener {
 
-    // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxyThroughOrbot()`.
-    public static String orbotStatus;
+    // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxy()`.
+    public static String orbotStatus = "unknown";
 
     // The WebView pager adapter is accessed from `HttpAuthenticationDialog`, `PinnedMismatchDialog`, and `SslCertificateErrorDialog`.  It is also used in `onCreate()`, `onResume()`, and `addTab()`.
     public static WebViewPagerAdapter webViewPagerAdapter;
@@ -194,19 +200,28 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public final static int DOMAINS_WEBVIEW_DEFAULT_USER_AGENT = 2;
     public final static int DOMAINS_CUSTOM_USER_AGENT = 13;
 
-    // Start activity for result request codes.
-    private final int FILE_UPLOAD_REQUEST_CODE = 0;
-    public final static int BROWSE_SAVE_WEBPAGE_IMAGE_REQUEST_CODE = 1;
+    // Start activity for result request codes.  The public static entries are accessed from `OpenDialog()` and `SaveWebpageDialog()`.
+    public static final int BROWSE_OPEN_REQUEST_CODE = 0;
+    public static final int BROWSE_SAVE_WEBPAGE_REQUEST_CODE = 1;
+    private final int BROWSE_FILE_UPLOAD_REQUEST_CODE = 2;
 
+
+    // The permission result request codes are used in `onCreateContextMenu()`, `onCloseDownloadLocationPermissionDialog()`, `onRequestPermissionResult()`, `onSaveWebpage()`,
+    // `onCloseStoragePermissionDialog()`, and `initializeWebView()`.
+    private final int PERMISSION_DOWNLOAD_FILE_REQUEST_CODE = 0;
+    private final int PERMISSION_DOWNLOAD_IMAGE_REQUEST_CODE = 1;
+    private final int PERMISSION_OPEN_REQUEST_CODE = 2;
+    private final int PERMISSION_SAVE_WEBPAGE_ARCHIVE_REQUEST_CODE = 3;
+    private final int PERMISSION_SAVE_WEBPAGE_IMAGE_REQUEST_CODE = 4;
 
     // The current WebView is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`,
-    // `findNextOnPage()`, `closeFindOnPage()`, `loadUrlFromTextBox()`, `onSslMismatchBack()`, `applyProxyThroughOrbot()`, and `applyDomainSettings()`.
+    // `findNextOnPage()`, `closeFindOnPage()`, `loadUrlFromTextBox()`, `onSslMismatchBack()`, `applyProxy()`, and `applyDomainSettings()`.
     private NestedScrollWebView currentWebView;
 
     // `customHeader` is used in `onCreate()`, `onOptionsItemSelected()`, `onCreateContextMenu()`, and `loadUrl()`.
     private final Map<String, String> customHeaders = new HashMap<>();
 
-    // The search URL is set in `applyProxyThroughOrbot()` and used in `onCreate()`, `onNewIntent()`, `loadURLFromTextBox()`, and `initializeWebView()`.
+    // The search URL is set in `applyAppSettings()` and used in `onNewIntent()`, `loadUrlFromTextBox()`, `initializeApp()`, and `initializeWebView()`.
     private String searchURL;
 
     // The options menu is set in `onCreateOptionsMenu()` and used in `onOptionsItemSelected()`, `updatePrivacyIcons()`, and `initializeWebView()`.
@@ -223,8 +238,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `webViewDefaultUserAgent` is used in `onCreate()` and `onPrepareOptionsMenu()`.
     private String webViewDefaultUserAgent;
 
-    // `proxyThroughOrbot` is used in `onRestart()`, `onOptionsItemSelected()`, `applyAppSettings()`, and `applyProxyThroughOrbot()`.
-    private boolean proxyThroughOrbot;
+    // The proxy mode is used in `onRestart()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `applyAppSettings()`, and `applyProxy()`.
+    // It will be updated in `applyAppSettings()`, but it needs to be initialized here or the first run of `onPrepareOptionsMenu()` crashes.
+    private String proxyMode = ProxyHelper.NONE;
 
     // The incognito mode is set in `applyAppSettings()` and used in `initializeWebView()`.
     private boolean incognitoModeEnabled;
@@ -254,8 +270,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `orbotStatusBroadcastReceiver` is used in `onCreate()` and `onDestroy()`.
     private BroadcastReceiver orbotStatusBroadcastReceiver;
 
-    // `waitingForOrbot` is used in `onCreate()`, `onResume()`, and `applyProxyThroughOrbot()`.
-    private boolean waitingForOrbot;
+    // The waiting for proxy boolean is used in `onResume()`, `initializeApp()` and `applyProxy()`.
+    private boolean waitingForProxy = false;
 
     // The action bar drawer toggle is initialized in `onCreate()` and used in `onResume()`.
     private ActionBarDrawerToggle actionBarDrawerToggle;
@@ -306,14 +322,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // `downloadImageUrl` is used in `onCreateContextMenu()` and `onRequestPermissionResult()`.
     private String downloadImageUrl;
 
-    // The save website image file path string is used in `onSaveWebpageImage()` and `onRequestPermissionResult()`
-    private String saveWebsiteImageFilePath;
-
-    // The permission result request codes are used in `onCreateContextMenu()`, `onCloseDownloadLocationPermissionDialog()`, `onRequestPermissionResult()`, `onSaveWebpageImage()`,
-    // `onCloseStoragePermissionDialog()`, and `initializeWebView()`.
-    private final int DOWNLOAD_FILE_REQUEST_CODE = 1;
-    private final int DOWNLOAD_IMAGE_REQUEST_CODE = 2;
-    private final int SAVE_WEBPAGE_IMAGE_REQUEST_CODE = 3;
+    // The file path strings are used in `onSaveWebpageImage()` and `onRequestPermissionResult()`
+    private String openFilePath;
+    private String saveWebpageFilePath;
 
     @Override
     // Remove the warning about needing to override `performClick()` when using an `OnTouchListener` with `WebView`.
@@ -441,7 +452,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     addNewTab(url, true);
                 } else {  // Load the URL in the current tab.
                     // Make it so.
-                    loadUrl(url);
+                    loadUrl(currentWebView, url);
                 }
 
                 // Get a handle for the drawer layout.
@@ -464,18 +475,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public void onRestart() {
         // Run the default commands.
         super.onRestart();
-
-        // Make sure Orbot is running if Privacy Browser is proxying through Orbot.
-        if (proxyThroughOrbot) {
-            // Request Orbot to start.  If Orbot is already running no hard will be caused by this request.
-            Intent orbotIntent = new Intent("org.torproject.android.intent.action.START");
-
-            // Send the intent to the Orbot package.
-            orbotIntent.setPackage("org.torproject.android");
-
-            // Make it so.
-            sendBroadcast(orbotIntent);
-        }
 
         // Apply the app settings if returning from the Settings activity.
         if (reapplyAppSettingsOnRestart) {
@@ -518,7 +517,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Load the URL on restart (used when loading a bookmark).
         if (loadUrlOnRestart) {
             // Load the specified URL.
-            loadUrl(urlToLoadOnRestart);
+            loadUrl(currentWebView, urlToLoadOnRestart);
 
             // Reset the load on restart tracker.
             loadUrlOnRestart = false;
@@ -549,6 +548,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Run the default commands.
         super.onResume();
 
+        // Resume any WebViews.
         for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
             // Get the WebView tab fragment.
             WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
@@ -569,16 +569,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
         }
 
-        // Display a message to the user if waiting for Orbot.
-        if (waitingForOrbot && !orbotStatus.equals("ON")) {
-            // Disable the wide view port so that the waiting for Orbot text is displayed correctly.
-            currentWebView.getSettings().setUseWideViewPort(false);
-
-            // Load a waiting page.  `null` specifies no encoding, which defaults to ASCII.
-            currentWebView.loadData("<html><body><br/><center><h1>" + getString(R.string.waiting_for_orbot) + "</h1></center></body></html>", "text/html", null);
+        // Reapply the proxy settings if the system is using a proxy.  This redisplays the appropriate alert dialog.
+        if (!proxyMode.equals(ProxyHelper.NONE)) {
+            applyProxy(false);
         }
 
-        if (displayingFullScreenVideo || inFullScreenBrowsingMode) {
+        // Reapply any system UI flags and the ad in the free flavor.
+        if (displayingFullScreenVideo || inFullScreenBrowsingMode) {  // The system is displaying a website or a video in full screen mode.
             // Get a handle for the root frame layouts.
             FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
 
@@ -593,7 +590,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
              */
             rootFrameLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        } else if (BuildConfig.FLAVOR.contentEquals("free")) {  // Resume the adView for the free flavor.
+        } else if (BuildConfig.FLAVOR.contentEquals("free")) {  // The system in not in full screen mode.
             // Resume the ad.
             AdHelper.resumeAd(findViewById(R.id.adview));
         }
@@ -633,7 +630,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void onDestroy() {
-        // Unregister the Orbot status broadcast receiver.
+        // Unregister the orbot status broadcast receiver.
         this.unregisterReceiver(orbotStatusBroadcastReceiver);
 
         // Close the bookmarks cursor and database.
@@ -734,12 +731,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         MenuItem ultraListMenuItem = menu.findItem(R.id.ultralist);
         MenuItem ultraPrivacyMenuItem = menu.findItem(R.id.ultraprivacy);
         MenuItem blockAllThirdPartyRequestsMenuItem = menu.findItem(R.id.block_all_third_party_requests);
+        MenuItem proxyMenuItem = menu.findItem(R.id.proxy);
+        MenuItem userAgentMenuItem = menu.findItem(R.id.user_agent);
         MenuItem fontSizeMenuItem = menu.findItem(R.id.font_size);
         MenuItem swipeToRefreshMenuItem = menu.findItem(R.id.swipe_to_refresh);
         MenuItem wideViewportMenuItem = menu.findItem(R.id.wide_viewport);
         MenuItem displayImagesMenuItem = menu.findItem(R.id.display_images);
         MenuItem nightModeMenuItem = menu.findItem(R.id.night_mode);
-        MenuItem proxyThroughOrbotMenuItem = menu.findItem(R.id.proxy_through_orbot);
 
         // Get a handle for the cookie manager.
         CookieManager cookieManager = CookieManager.getInstance();
@@ -801,9 +799,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             domStorageMenuItem.setEnabled(currentWebView.getSettings().getJavaScriptEnabled());
         }
 
-        // Set the status of the menu item checkboxes.
+        // Set the checked status of the first party cookies menu item.
         firstPartyCookiesMenuItem.setChecked(cookieManager.acceptCookie());
-        proxyThroughOrbotMenuItem.setChecked(proxyThroughOrbot);
 
         // Enable Clear Cookies if there are any.
         clearCookiesMenuItem.setEnabled(cookieManager.hasCookies());
@@ -815,14 +812,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         File localStorageDirectory = new File (privateDataDirectoryString + "/app_webview/Local Storage/");
         int localStorageDirectoryNumberOfFiles = 0;
         if (localStorageDirectory.exists()) {
-            localStorageDirectoryNumberOfFiles = localStorageDirectory.list().length;
+            // `Objects.requireNonNull` removes a lint warning that `localStorageDirectory.list` might produce a null pointed exception if it is dereferenced.
+            localStorageDirectoryNumberOfFiles = Objects.requireNonNull(localStorageDirectory.list()).length;
         }
 
         // Get a count of the number of files in the IndexedDB directory.
         File indexedDBDirectory = new File (privateDataDirectoryString + "/app_webview/IndexedDB");
         int indexedDBDirectoryNumberOfFiles = 0;
         if (indexedDBDirectory.exists()) {
-            indexedDBDirectoryNumberOfFiles = indexedDBDirectory.list().length;
+            // `Objects.requireNonNull` removes a lint warning that `indexedDBDirectory.list` might produce a null pointed exception if it is dereferenced.
+            indexedDBDirectoryNumberOfFiles = Objects.requireNonNull(indexedDBDirectory.list()).length;
         }
 
         // Enable Clear DOM Storage if there is any.
@@ -843,91 +842,124 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Disable Fanboy's Social Blocking List menu item if Fanboy's Annoyance List is checked.
         fanboysSocialBlockingListMenuItem.setEnabled(!fanboysAnnoyanceListMenuItem.isChecked());
 
+        // Set the proxy title and check the applied proxy.
+        switch (proxyMode) {
+            case ProxyHelper.NONE:
+                // Set the proxy title.
+                proxyMenuItem.setTitle(getString(R.string.proxy) + " - " + getString(R.string.proxy_none));
+
+                // Check the proxy None radio button.
+                menu.findItem(R.id.proxy_none).setChecked(true);
+                break;
+
+            case ProxyHelper.TOR:
+                // Set the proxy title.
+                proxyMenuItem.setTitle(getString(R.string.proxy) + " - " + getString(R.string.proxy_tor));
+
+                // Check the proxy Tor radio button.
+                menu.findItem(R.id.proxy_tor).setChecked(true);
+                break;
+
+            case ProxyHelper.I2P:
+                // Set the proxy title.
+                proxyMenuItem.setTitle(getString(R.string.proxy) + " - " + getString(R.string.proxy_i2p));
+
+                // Check the proxy I2P radio button.
+                menu.findItem(R.id.proxy_i2p).setChecked(true);
+                break;
+
+            case ProxyHelper.CUSTOM:
+                // Set the proxy title.
+                proxyMenuItem.setTitle(getString(R.string.proxy) + " - " + getString(R.string.proxy_custom));
+
+                // Check the proxy Custom radio button.
+                menu.findItem(R.id.proxy_custom).setChecked(true);
+                break;
+        }
+
         // Select the current user agent menu item.  A switch statement cannot be used because the user agents are not compile time constants.
         if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[0])) {  // Privacy Browser.
+            // Update the user agent menu item title.
+            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_privacy_browser));
+
+            // Select the Privacy Browser radio box.
             menu.findItem(R.id.user_agent_privacy_browser).setChecked(true);
         } else if (currentUserAgent.equals(webViewDefaultUserAgent)) {  // WebView Default.
+            // Update the user agent menu item title.
+            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_webview_default));
+
+            // Select the WebView Default radio box.
             menu.findItem(R.id.user_agent_webview_default).setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[2])) {  // Firefox on Android.
+            // Update the user agent menu item title.
+            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_firefox_on_android));
+
+            // Select the Firefox on Android radio box.
             menu.findItem(R.id.user_agent_firefox_on_android).setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[3])) {  // Chrome on Android.
+            // Update the user agent menu item title.
+            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_chrome_on_android));
+
+            // Select the Chrome on Android radio box.
             menu.findItem(R.id.user_agent_chrome_on_android).setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[4])) {  // Safari on iOS.
+            // Update the user agent menu item title.
+            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_safari_on_ios));
+
+            // Select the Safari on iOS radio box.
             menu.findItem(R.id.user_agent_safari_on_ios).setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[5])) {  // Firefox on Linux.
+            // Update the user agent menu item title.
+            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_firefox_on_linux));
+
+            // Select the Firefox on Linux radio box.
             menu.findItem(R.id.user_agent_firefox_on_linux).setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[6])) {  // Chromium on Linux.
+            // Update the user agent menu item title.
+            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_chromium_on_linux));
+
+            // Select the Chromium on Linux radio box.
             menu.findItem(R.id.user_agent_chromium_on_linux).setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[7])) {  // Firefox on Windows.
+            // Update the user agent menu item title.
+            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_firefox_on_windows));
+
+            // Select the Firefox on Windows radio box.
             menu.findItem(R.id.user_agent_firefox_on_windows).setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[8])) {  // Chrome on Windows.
+            // Update the user agent menu item title.
+            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_chrome_on_windows));
+
+            // Select the Chrome on Windows radio box.
             menu.findItem(R.id.user_agent_chrome_on_windows).setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[9])) {  // Edge on Windows.
+            // Update the user agent menu item title.
+            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_edge_on_windows));
+
+            // Select the Edge on Windows radio box.
             menu.findItem(R.id.user_agent_edge_on_windows).setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[10])) {  // Internet Explorer on Windows.
+            // Update the user agent menu item title.
+            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_internet_explorer_on_windows));
+
+            // Select the Internet on Windows radio box.
             menu.findItem(R.id.user_agent_internet_explorer_on_windows).setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[11])) {  // Safari on macOS.
+            // Update the user agent menu item title.
+            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_safari_on_macos));
+
+            // Select the Safari on macOS radio box.
             menu.findItem(R.id.user_agent_safari_on_macos).setChecked(true);
         } else {  // Custom user agent.
+            // Update the user agent menu item title.
+            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_custom));
+
+            // Select the Custom radio box.
             menu.findItem(R.id.user_agent_custom).setChecked(true);
         }
 
-        // Instantiate the font size title and the selected font size menu item.
-        String fontSizeTitle;
-        MenuItem selectedFontSizeMenuItem;
-
-        // Prepare the font size title and current size menu item.
-        //noinspection DuplicateBranchesInSwitch
-        switch (fontSize) {
-            case 25:
-                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.twenty_five_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_twenty_five_percent);
-                break;
-
-            case 50:
-                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.fifty_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_fifty_percent);
-                break;
-
-            case 75:
-                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.seventy_five_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_seventy_five_percent);
-                break;
-
-            case 100:
-                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.one_hundred_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_one_hundred_percent);
-                break;
-
-            case 125:
-                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.one_hundred_twenty_five_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_one_hundred_twenty_five_percent);
-                break;
-
-            case 150:
-                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.one_hundred_fifty_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_one_hundred_fifty_percent);
-                break;
-
-            case 175:
-                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.one_hundred_seventy_five_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_one_hundred_seventy_five_percent);
-                break;
-
-            case 200:
-                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.two_hundred_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_two_hundred_percent);
-                break;
-
-            default:
-                fontSizeTitle = getString(R.string.font_size) + " - " + getString(R.string.one_hundred_percent);
-                selectedFontSizeMenuItem = menu.findItem(R.id.font_size_one_hundred_percent);
-                break;
-        }
-
-        // Set the font size title and select the current size menu item.
-        fontSizeMenuItem.setTitle(fontSizeTitle);
-        selectedFontSizeMenuItem.setChecked(true);
+        // Set the font size title.
+        fontSizeMenuItem.setTitle(getString(R.string.font_size) + " - " + fontSize + "%");
 
         // Run all the other default commands.
         super.onPrepareOptionsMenu(menu);
@@ -1376,6 +1408,46 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Consume the event.
                 return true;
 
+            case R.id.proxy_none:
+                // Update the proxy mode.
+                proxyMode = ProxyHelper.NONE;
+
+                // Apply the proxy mode.
+                applyProxy(true);
+
+                // Consume the event.
+                return true;
+
+            case R.id.proxy_tor:
+                // Update the proxy mode.
+                proxyMode = ProxyHelper.TOR;
+
+                // Apply the proxy mode.
+                applyProxy(true);
+
+                // Consume the event.
+                return true;
+
+            case R.id.proxy_i2p:
+                // Update the proxy mode.
+                proxyMode = ProxyHelper.I2P;
+
+                // Apply the proxy mode.
+                applyProxy(true);
+
+                // Consume the event.
+                return true;
+
+            case R.id.proxy_custom:
+                // Update the proxy mode.
+                proxyMode = ProxyHelper.CUSTOM;
+
+                // Apply the proxy mode.
+                applyProxy(true);
+
+                // Consume the event.
+                return true;
+
             case R.id.user_agent_privacy_browser:
                 // Update the user agent.
                 currentWebView.getSettings().setUserAgentString(getResources().getStringArray(R.array.user_agent_data)[0]);
@@ -1506,58 +1578,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Consume the event.
                 return true;
 
-            case R.id.font_size_twenty_five_percent:
-                // Set the font size.
-                currentWebView.getSettings().setTextZoom(25);
+            case R.id.font_size:
+                // Instantiate the font size dialog.
+                DialogFragment fontSizeDialogFragment = FontSizeDialog.displayDialog(currentWebView.getSettings().getTextZoom());
 
-                // Consume the event.
-                return true;
-
-            case R.id.font_size_fifty_percent:
-                // Set the font size.
-                currentWebView.getSettings().setTextZoom(50);
-
-                // Consume the event.
-                return true;
-
-            case R.id.font_size_seventy_five_percent:
-                // Set the font size.
-                currentWebView.getSettings().setTextZoom(75);
-
-                // Consume the event.
-                return true;
-
-            case R.id.font_size_one_hundred_percent:
-                // Set the font size.
-                currentWebView.getSettings().setTextZoom(100);
-
-                // Consume the event.
-                return true;
-
-            case R.id.font_size_one_hundred_twenty_five_percent:
-                // Set the font size.
-                currentWebView.getSettings().setTextZoom(125);
-
-                // Consume the event.
-                return true;
-
-            case R.id.font_size_one_hundred_fifty_percent:
-                // Set the font size.
-                currentWebView.getSettings().setTextZoom(150);
-
-                // Consume the event.
-                return true;
-
-            case R.id.font_size_one_hundred_seventy_five_percent:
-                // Set the font size.
-                currentWebView.getSettings().setTextZoom(175);
-
-                // Consume the event.
-                return true;
-
-            case R.id.font_size_two_hundred_percent:
-                // Set the font size.
-                currentWebView.getSettings().setTextZoom(200);
+                // Show the font size dialog.
+                fontSizeDialogFragment.show(getSupportFragmentManager(), getString(R.string.font_size));
 
                 // Consume the event.
                 return true;
@@ -1678,12 +1704,22 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Consume the event.
                 return true;
 
+            case R.id.save_as_archive:
+                // Instantiate the save webpage archive dialog.
+                DialogFragment saveWebpageArchiveDialogFragment = SaveWebpageDialog.saveWebpage(StoragePermissionDialog.SAVE_ARCHIVE);
+
+                // Show the save webpage archive dialog.
+                saveWebpageArchiveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_webpage));
+
+                // Consume the event.
+                return true;
+
             case R.id.save_as_image:
                 // Instantiate the save webpage image dialog.
-                DialogFragment saveWebpageImageDialogFragment = new SaveWebpageImageDialog();
+                DialogFragment saveWebpageImageDialogFragment = SaveWebpageDialog.saveWebpage(StoragePermissionDialog.SAVE_IMAGE);
 
                 // Show the save webpage image dialog.
-                saveWebpageImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_as_image));
+                saveWebpageImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_webpage));
 
                 // Consume the event.
                 return true;
@@ -1742,16 +1778,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Consume the event.
                 return true;
 
-            case R.id.proxy_through_orbot:
-                // Toggle the proxy through Orbot variable.
-                proxyThroughOrbot = !proxyThroughOrbot;
-
-                // Apply the proxy through Orbot settings.
-                applyProxyThroughOrbot(true);
-
-                // Consume the event.
-                return true;
-
             case R.id.refresh:
                 if (menuItem.getTitle().equals(getString(R.string.refresh))) {  // The refresh button was pushed.
                     // Reload the current WebView.
@@ -1797,14 +1823,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 break;
 
             case R.id.home:
-                // Select the homepage based on the proxy through Orbot status.
-                if (proxyThroughOrbot) {
-                    // Load the Tor homepage.
-                    loadUrl(sharedPreferences.getString("tor_homepage", getString(R.string.tor_homepage_default_value)));
-                } else {
-                    // Load the normal homepage.
-                    loadUrl(sharedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
-                }
+                // Load the homepage.
+                loadUrl(currentWebView, sharedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
                 break;
 
             case R.id.back:
@@ -1845,6 +1865,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Show the URL history dialog.
                 urlHistoryDialogFragment.show(getSupportFragmentManager(), getString(R.string.history));
+                break;
+
+            case R.id.open:
+                // Instantiate the open file dialog.
+                DialogFragment openDialogFragment = new OpenDialog();
+
+                // Show the open file dialog.
+                openDialogFragment.show(getSupportFragmentManager(), getString(R.string.open));
                 break;
 
             case R.id.requests:
@@ -2103,7 +2131,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 downloadLocationPermissionDialogFragment.show(fragmentManager, getString(R.string.download_location));
                             } else {  // Show the permission request directly.
                                 // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
-                                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_FILE_REQUEST_CODE);
+                                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_DOWNLOAD_FILE_REQUEST_CODE);
                             }
                         } else {  // The storage permission has already been granted.
                             // Get a handle for the download file alert dialog.
@@ -2183,7 +2211,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Add a View Image entry.
                 menu.add(R.string.view_image).setOnMenuItemClickListener(item -> {
                     // Load the image in the current tab.
-                    loadUrl(imageUrl);
+                    loadUrl(currentWebView, imageUrl);
 
                     // Consume the event.
                     return true;
@@ -2209,7 +2237,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 downloadLocationPermissionDialogFragment.show(fragmentManager, getString(R.string.download_location));
                             } else {  // Show the permission request directly.
                                 // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
-                                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_IMAGE_REQUEST_CODE);
+                                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_DOWNLOAD_IMAGE_REQUEST_CODE);
                             }
                         } else {  // The storage permission has already been granted.
                             // Get a handle for the download image alert dialog.
@@ -2308,7 +2336,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Add a View Image entry.
                 menu.add(R.string.view_image).setOnMenuItemClickListener((MenuItem item) -> {
                    // View the image in the current tab.
-                   loadUrl(imageUrl);
+                   loadUrl(currentWebView, imageUrl);
 
                    // Consume the event.
                    return true;
@@ -2334,7 +2362,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                                 downloadLocationPermissionDialogFragment.show(fragmentManager, getString(R.string.download_location));
                             } else {  // Show the permission request directly.
                                 // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
-                                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_IMAGE_REQUEST_CODE);
+                                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_DOWNLOAD_IMAGE_REQUEST_CODE);
                             }
                         } else {  // The storage permission has already been granted.
                             // Get a handle for the download image alert dialog.
@@ -2628,66 +2656,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         switch (downloadType) {
             case DownloadLocationPermissionDialog.DOWNLOAD_FILE:
                 // Request the WRITE_EXTERNAL_STORAGE permission with a file request code.
-                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_FILE_REQUEST_CODE);
+                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_DOWNLOAD_FILE_REQUEST_CODE);
                 break;
 
             case DownloadLocationPermissionDialog.DOWNLOAD_IMAGE:
                 // Request the WRITE_EXTERNAL_STORAGE permission with an image request code.
-                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_IMAGE_REQUEST_CODE);
-                break;
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        // Get a handle for the fragment manager.
-        FragmentManager fragmentManager = getSupportFragmentManager();
-
-        switch (requestCode) {
-            case DOWNLOAD_FILE_REQUEST_CODE:
-                // Show the download file alert dialog.  When the dialog closes, the correct command will be used based on the permission status.
-                DialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(downloadUrl, downloadContentDisposition, downloadContentLength);
-
-                // On API 23, displaying the fragment must be delayed or the app will crash.
-                if (Build.VERSION.SDK_INT == 23) {
-                    new Handler().postDelayed(() -> downloadFileDialogFragment.show(fragmentManager, getString(R.string.download)), 500);
-                } else {
-                    downloadFileDialogFragment.show(fragmentManager, getString(R.string.download));
-                }
-
-                // Reset the download variables.
-                downloadUrl = "";
-                downloadContentDisposition = "";
-                downloadContentLength = 0;
-                break;
-
-            case DOWNLOAD_IMAGE_REQUEST_CODE:
-                // Show the download image alert dialog.  When the dialog closes, the correct command will be used based on the permission status.
-                DialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(downloadImageUrl);
-
-                // On API 23, displaying the fragment must be delayed or the app will crash.
-                if (Build.VERSION.SDK_INT == 23) {
-                    new Handler().postDelayed(() -> downloadImageDialogFragment.show(fragmentManager, getString(R.string.download)), 500);
-                } else {
-                    downloadImageDialogFragment.show(fragmentManager, getString(R.string.download));
-                }
-
-                // Reset the image URL variable.
-                downloadImageUrl = "";
-                break;
-
-            case SAVE_WEBPAGE_IMAGE_REQUEST_CODE:
-                // Check to see if the storage permission was granted.  If the dialog was canceled the grant result will be empty.
-                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
-                    // Save the webpage image.
-                    new SaveWebpageImage(this, currentWebView).execute(saveWebsiteImageFilePath);
-                } else {  // The storage permission was not granted.
-                    // Display an error snackbar.
-                    Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
-                }
-
-                // Reset the save website image file path.
-                saveWebsiteImageFilePath = "";
+                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_DOWNLOAD_IMAGE_REQUEST_CODE);
                 break;
         }
     }
@@ -2936,47 +2910,89 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // Process the results of a file browse.
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent returnedIntent) {
         // Run the default commands.
-        super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, returnedIntent);
 
         // Run the commands that correlate to the specified request code.
         switch (requestCode) {
-            case FILE_UPLOAD_REQUEST_CODE:
+            case BROWSE_FILE_UPLOAD_REQUEST_CODE:
                 // File uploads only work on API >= 21.
                 if (Build.VERSION.SDK_INT >= 21) {
                     // Pass the file to the WebView.
-                    fileChooserCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));
+                    fileChooserCallback.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, returnedIntent));
                 }
                 break;
 
-            case BROWSE_SAVE_WEBPAGE_IMAGE_REQUEST_CODE:
+            case BROWSE_SAVE_WEBPAGE_REQUEST_CODE:
                 // Don't do anything if the user pressed back from the file picker.
                 if (resultCode == Activity.RESULT_OK) {
                     // Get a handle for the save dialog fragment.
-                    DialogFragment saveWebpageImageDialogFragment= (DialogFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.save_as_image));
+                    DialogFragment saveWebpageDialogFragment = (DialogFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.save_webpage));
 
                     // Only update the file name if the dialog still exists.
-                    if (saveWebpageImageDialogFragment != null) {
-                        // Get a handle for the save webpage image dialog.
-                        Dialog saveWebpageImageDialog = saveWebpageImageDialogFragment.getDialog();
+                    if (saveWebpageDialogFragment != null) {
+                        // Get a handle for the save webpage dialog.
+                        Dialog saveWebpageDialog = saveWebpageDialogFragment.getDialog();
 
                         // Remove the incorrect lint warning below that the dialog might be null.
-                        assert saveWebpageImageDialog != null;
+                        assert saveWebpageDialog != null;
 
                         // Get a handle for the file name edit text.
-                        EditText fileNameEditText = saveWebpageImageDialog.findViewById(R.id.file_name_edittext);
+                        EditText fileNameEditText = saveWebpageDialog.findViewById(R.id.file_name_edittext);
+                        TextView fileExistsWarningTextView = saveWebpageDialog.findViewById(R.id.file_exists_warning_textview);
 
                         // Instantiate the file name helper.
                         FileNameHelper fileNameHelper = new FileNameHelper();
 
                         // Get the file path if it isn't null.
-                        if (data.getData() != null) {
+                        if (returnedIntent.getData() != null) {
                             // Convert the file name URI to a file name path.
-                            String fileNamePath = fileNameHelper.convertUriToFileNamePath(data.getData());
+                            String fileNamePath = fileNameHelper.convertUriToFileNamePath(returnedIntent.getData());
 
                             // Set the file name path as the text of the file name edit text.
                             fileNameEditText.setText(fileNamePath);
+
+                            // Move the cursor to the end of the file name edit text.
+                            fileNameEditText.setSelection(fileNamePath.length());
+
+                            // Hide the file exists warning.
+                            fileExistsWarningTextView.setVisibility(View.GONE);
+                        }
+                    }
+                }
+                break;
+
+            case BROWSE_OPEN_REQUEST_CODE:
+                // Don't do anything if the user pressed back from the file picker.
+                if (resultCode == Activity.RESULT_OK) {
+                    // Get a handle for the open dialog fragment.
+                    DialogFragment openDialogFragment = (DialogFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.open));
+
+                    // Only update the file name if the dialog still exists.
+                    if (openDialogFragment != null) {
+                        // Get a handle for the open dialog.
+                        Dialog openDialog = openDialogFragment.getDialog();
+
+                        // Remove the incorrect lint warning below that the dialog might be null.
+                        assert openDialog != null;
+
+                        // Get a handle for the file name edit text.
+                        EditText fileNameEditText = openDialog.findViewById(R.id.file_name_edittext);
+
+                        // Instantiate the file name helper.
+                        FileNameHelper fileNameHelper = new FileNameHelper();
+
+                        // Get the file path if it isn't null.
+                        if (returnedIntent.getData() != null) {
+                            // Convert the file name URI to a file name path.
+                            String fileNamePath = fileNameHelper.convertUriToFileNamePath(returnedIntent.getData());
+
+                            // Set the file name path as the text of the file name edit text.
+                            fileNameEditText.setText(fileNamePath);
+
+                            // Move the cursor to the end of the file name edit text.
+                            fileNameEditText.setSelection(fileNamePath.length());
                         }
                     }
                 }
@@ -3051,18 +3067,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         urlEditText.clearFocus();
 
         // Make it so.
-        loadUrl(url);
+        loadUrl(currentWebView, url);
     }
 
-    private void loadUrl(String url) {
+    private void loadUrl(NestedScrollWebView nestedScrollWebView, String url) {
         // Sanitize the URL.
         url = sanitizeUrl(url);
 
         // Apply the domain settings.
-        applyDomainSettings(currentWebView, url, true, false);
+        applyDomainSettings(nestedScrollWebView, url, true, false);
 
         // Load the URL.
-        currentWebView.loadUrl(url, customHeaders);
+        nestedScrollWebView.loadUrl(url, customHeaders);
     }
 
     public void findPreviousOnPage(View view) {
@@ -3106,7 +3122,32 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onSaveWebpageImage(DialogFragment dialogFragment) {
+    public void onApplyNewFontSize(DialogFragment dialogFragment) {
+        // Get the dialog.
+        Dialog dialog = dialogFragment.getDialog();
+
+        // Remove the incorrect lint warning below tha the dialog might be null.
+        assert dialog != null;
+
+        // Get a handle for the font size edit text.
+        EditText fontSizeEditText = dialog.findViewById(R.id.font_size_edittext);
+
+        // Initialize the new font size variable with the current font size.
+        int newFontSize = currentWebView.getSettings().getTextZoom();
+
+        // Get the font size from the edit text.
+        try {
+            newFontSize = Integer.valueOf(fontSizeEditText.getText().toString());
+        } catch (Exception exception) {
+            // If the edit text does not contain a valid font size do nothing.
+        }
+
+        // Apply the new font size.
+        currentWebView.getSettings().setTextZoom(newFontSize);
+    }
+
+    @Override
+    public void onOpen(DialogFragment dialogFragment) {
         // Get the dialog.
         Dialog dialog = dialogFragment.getDialog();
 
@@ -3117,14 +3158,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         EditText fileNameEditText = dialog.findViewById(R.id.file_name_edittext);
 
         // Get the file path string.
-        saveWebsiteImageFilePath = fileNameEditText.getText().toString();
+        openFilePath = fileNameEditText.getText().toString();
 
         // Check to see if the storage permission is needed.
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
-            // Save the webpage image.
-            new SaveWebpageImage(this, currentWebView).execute(saveWebsiteImageFilePath);
+            // Open the file.
+            currentWebView.loadUrl("file://" + openFilePath);
         } else {  // The storage permission has not been granted.
-            // Get the external private directory `File`.
+            // Get the external private directory file.
             File externalPrivateDirectoryFile = getExternalFilesDir(null);
 
             // Remove the incorrect lint error below that the file might be null.
@@ -3134,29 +3175,202 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             String externalPrivateDirectory = externalPrivateDirectoryFile.toString();
 
             // Check to see if the file path is in the external private directory.
-            if (saveWebsiteImageFilePath.startsWith(externalPrivateDirectory)) {  // The file path is in the external private directory.
-                // Save the webpage image.
-                new SaveWebpageImage(this, currentWebView).execute(saveWebsiteImageFilePath);
+            if (openFilePath.startsWith(externalPrivateDirectory)) {  // the file path is in the external private directory.
+                // Open the file.
+                currentWebView.loadUrl("file://" + openFilePath);
             } else {  // The file path is in a public directory.
                 // Check if the user has previously denied the storage permission.
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
                     // Instantiate the storage permission alert dialog.
-                    DialogFragment storagePermissionDialogFragment = new StoragePermissionDialog();
+                    DialogFragment storagePermissionDialogFragment = StoragePermissionDialog.displayDialog(StoragePermissionDialog.OPEN);
 
-                    // Show the storage permission alert dialog.  The permission will be requested when the dialog is closed.
+                    // Show the storage permission alert dialog.  The permission will be requested the the dialog is closed.
                     storagePermissionDialogFragment.show(getSupportFragmentManager(), getString(R.string.storage_permission));
                 } else {  // Show the permission request directly.
-                    // Request the write external storage permission.  The webpage image will be saved when it finishes.
-                    ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, SAVE_WEBPAGE_IMAGE_REQUEST_CODE);
+                    // Request the write external storage permission.  The file will be opened when it finishes.
+                    ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_OPEN_REQUEST_CODE);
                 }
             }
         }
     }
 
     @Override
-    public void onCloseStoragePermissionDialog() {
-        // Request the write external storage permission.  The webpage image will be saved when it finishes.
-        ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, SAVE_WEBPAGE_IMAGE_REQUEST_CODE);
+    public void onSaveWebpage(int saveType, DialogFragment dialogFragment) {
+        // Get the dialog.
+        Dialog dialog = dialogFragment.getDialog();
+
+        // Remove the incorrect lint warning below that the dialog might be null.
+        assert dialog != null;
+
+        // Get a handle for the file name edit text.
+        EditText fileNameEditText = dialog.findViewById(R.id.file_name_edittext);
+
+        // Get the file path string.
+        saveWebpageFilePath = fileNameEditText.getText().toString();
+
+        // Check to see if the storage permission is needed.
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
+            //Save the webpage according to the save type.
+            switch (saveType) {
+                case StoragePermissionDialog.SAVE_ARCHIVE:
+                    // Save the webpage archive.
+                    currentWebView.saveWebArchive(saveWebpageFilePath);
+                    break;
+
+                case StoragePermissionDialog.SAVE_IMAGE:
+                    // Save the webpage image.
+                    new SaveWebpageImage(this, currentWebView).execute(saveWebpageFilePath);
+                    break;
+            }
+        } else {  // The storage permission has not been granted.
+            // Get the external private directory file.
+            File externalPrivateDirectoryFile = getExternalFilesDir(null);
+
+            // Remove the incorrect lint error below that the file might be null.
+            assert externalPrivateDirectoryFile != null;
+
+            // Get the external private directory string.
+            String externalPrivateDirectory = externalPrivateDirectoryFile.toString();
+
+            // Check to see if the file path is in the external private directory.
+            if (saveWebpageFilePath.startsWith(externalPrivateDirectory)) {  // The file path is in the external private directory.
+                // Save the webpage according to the save type.
+                switch (saveType) {
+                    case StoragePermissionDialog.SAVE_ARCHIVE:
+                        // Save the webpage archive.
+                        currentWebView.saveWebArchive(saveWebpageFilePath);
+                        break;
+
+                    case StoragePermissionDialog.SAVE_IMAGE:
+                        // Save the webpage image.
+                        new SaveWebpageImage(this, currentWebView).execute(saveWebpageFilePath);
+                        break;
+                }
+            } else {  // The file path is in a public directory.
+                // Check if the user has previously denied the storage permission.
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
+                    // Instantiate the storage permission alert dialog.
+                    DialogFragment storagePermissionDialogFragment = StoragePermissionDialog.displayDialog(saveType);
+
+                    // Show the storage permission alert dialog.  The permission will be requested when the dialog is closed.
+                    storagePermissionDialogFragment.show(getSupportFragmentManager(), getString(R.string.storage_permission));
+                } else {  // Show the permission request directly.
+                    switch (saveType) {
+                        case StoragePermissionDialog.SAVE_ARCHIVE:
+                            // Request the write external storage permission.  The webpage archive will be saved when it finishes.
+                            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_SAVE_WEBPAGE_ARCHIVE_REQUEST_CODE);
+                            break;
+
+                        case StoragePermissionDialog.SAVE_IMAGE:
+                            // Request the write external storage permission.  The webpage image will be saved when it finishes.
+                            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_SAVE_WEBPAGE_IMAGE_REQUEST_CODE);
+                            break;
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onCloseStoragePermissionDialog(int requestType) {
+        switch (requestType) {
+            case StoragePermissionDialog.OPEN:
+                // Request the write external storage permission.  The file will be opened when it finishes.
+                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_OPEN_REQUEST_CODE);
+                break;
+
+            case StoragePermissionDialog.SAVE_ARCHIVE:
+                // Request the write external storage permission.  The webpage archive will be saved when it finishes.
+                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_SAVE_WEBPAGE_ARCHIVE_REQUEST_CODE);
+                break;
+
+            case StoragePermissionDialog.SAVE_IMAGE:
+                // Request the write external storage permission.  The webpage image will be saved when it finishes.
+                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_SAVE_WEBPAGE_IMAGE_REQUEST_CODE);
+                break;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        // Get a handle for the fragment manager.
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        switch (requestCode) {
+            case PERMISSION_DOWNLOAD_FILE_REQUEST_CODE:
+                // Show the download file alert dialog.  When the dialog closes, the correct command will be used based on the permission status.
+                DialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(downloadUrl, downloadContentDisposition, downloadContentLength);
+
+                // On API 23, displaying the fragment must be delayed or the app will crash.
+                if (Build.VERSION.SDK_INT == 23) {
+                    new Handler().postDelayed(() -> downloadFileDialogFragment.show(fragmentManager, getString(R.string.download)), 500);
+                } else {
+                    downloadFileDialogFragment.show(fragmentManager, getString(R.string.download));
+                }
+
+                // Reset the download variables.
+                downloadUrl = "";
+                downloadContentDisposition = "";
+                downloadContentLength = 0;
+                break;
+
+            case PERMISSION_DOWNLOAD_IMAGE_REQUEST_CODE:
+                // Show the download image alert dialog.  When the dialog closes, the correct command will be used based on the permission status.
+                DialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(downloadImageUrl);
+
+                // On API 23, displaying the fragment must be delayed or the app will crash.
+                if (Build.VERSION.SDK_INT == 23) {
+                    new Handler().postDelayed(() -> downloadImageDialogFragment.show(fragmentManager, getString(R.string.download)), 500);
+                } else {
+                    downloadImageDialogFragment.show(fragmentManager, getString(R.string.download));
+                }
+
+                // Reset the image URL variable.
+                downloadImageUrl = "";
+                break;
+
+            case PERMISSION_OPEN_REQUEST_CODE:
+                // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
+                    // Load the file.
+                    currentWebView.loadUrl("file://" + openFilePath);
+                } else {  // The storage permission was not granted.
+                    // Display an error snackbar.
+                    Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
+                }
+
+                // Reset the open file path.
+                openFilePath = "";
+                break;
+
+            case PERMISSION_SAVE_WEBPAGE_ARCHIVE_REQUEST_CODE:
+                // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
+                    // Save the webpage archive.
+                    currentWebView.saveWebArchive(saveWebpageFilePath);
+                } else {  // The storage permission was not granted.
+                    // Display an error snackbar.
+                    Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
+                }
+
+                // Reset the save webpage file path.
+                saveWebpageFilePath = "";
+                break;
+
+            case PERMISSION_SAVE_WEBPAGE_IMAGE_REQUEST_CODE:
+                // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
+                    // Save the webpage image.
+                    new SaveWebpageImage(this, currentWebView).execute(saveWebpageFilePath);
+                } else {  // The storage permission was not granted.
+                    // Display an error snackbar.
+                    Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
+                }
+
+                // Reset the save webpage file path.
+                saveWebpageFilePath = "";
+                break;
+        }
     }
 
     private void applyAppSettings() {
@@ -3174,10 +3388,20 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         sanitizeGoogleAnalytics = sharedPreferences.getBoolean("google_analytics", true);
         sanitizeFacebookClickIds = sharedPreferences.getBoolean("facebook_click_ids", true);
         sanitizeTwitterAmpRedirects = sharedPreferences.getBoolean("twitter_amp_redirects", true);
-        proxyThroughOrbot = sharedPreferences.getBoolean("proxy_through_orbot", false);
+        proxyMode = sharedPreferences.getString("proxy", getString(R.string.proxy_default_value));
         fullScreenBrowsingModeEnabled = sharedPreferences.getBoolean("full_screen_browsing_mode", false);
         hideAppBar = sharedPreferences.getBoolean("hide_app_bar", true);
         scrollAppBar = sharedPreferences.getBoolean("scroll_app_bar", true);
+
+        // Get the search string.
+        String searchString = sharedPreferences.getString("search", getString(R.string.search_default_value));
+
+        // Set the search string.
+        if (searchString.equals("Custom URL")) {  // A custom search string is used.
+            searchURL = sharedPreferences.getString("search_custom_url", getString(R.string.search_custom_url_default_value));
+        } else {  // A custom search string is not used.
+            searchURL = searchString;
+        }
 
         // Get handles for the views that need to be modified.
         FrameLayout rootFrameLayout = findViewById(R.id.root_framelayout);
@@ -3191,8 +3415,8 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Remove the incorrect lint warning below that the action bar might be null.
         assert actionBar != null;
 
-        // Apply the proxy through Orbot settings.
-        applyProxyThroughOrbot(false);
+        // Apply the proxy.
+        applyProxy(false);
 
         // Set Do Not Track status.
         if (doNotTrackEnabled) {
@@ -3358,61 +3582,60 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             }
         });
 
-        // Initialize the Orbot status and the waiting for Orbot trackers.
-        orbotStatus = "unknown";
-        waitingForOrbot = false;
-
-        // Create an Orbot status `BroadcastReceiver`.
+        // Create an Orbot status broadcast receiver.
         orbotStatusBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 // Store the content of the status message in `orbotStatus`.
                 orbotStatus = intent.getStringExtra("org.torproject.android.intent.extra.STATUS");
 
-                // If Privacy Browser is waiting on Orbot, load the website now that Orbot is connected.
-                if (orbotStatus.equals("ON") && waitingForOrbot) {
-                    // Reset the waiting for Orbot status.
-                    waitingForOrbot = false;
+                // If Privacy Browser is waiting on the proxy, load the website now that Orbot is connected.
+                if ((orbotStatus != null) && orbotStatus.equals("ON") && waitingForProxy) {
+                    // Reset the waiting for proxy status.
+                    waitingForProxy = false;
 
-                    // Get the intent that started the app.
-                    Intent launchingIntent = getIntent();
+                    // Get a handle for the waiting for proxy dialog.
+                    DialogFragment waitingForProxyDialogFragment = (DialogFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.waiting_for_proxy_dialog));
 
-                    // Get the information from the intent.
-                    String launchingIntentAction = launchingIntent.getAction();
-                    Uri launchingIntentUriData = launchingIntent.getData();
+                    // Dismiss the waiting for proxy dialog if it is displayed.
+                    if (waitingForProxyDialogFragment != null) {
+                        waitingForProxyDialogFragment.dismiss();
+                    }
 
-                    // If the intent action is a web search, perform the search.
-                    if ((launchingIntentAction != null) && launchingIntentAction.equals(Intent.ACTION_WEB_SEARCH)) {
-                        // Create an encoded URL string.
-                        String encodedUrlString;
+                    // Reload existing URLs and load any URLs that are waiting for the proxy.
+                    for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
+                        // Get the WebView tab fragment.
+                        WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
 
-                        // Sanitize the search input and convert it to a search.
-                        try {
-                            encodedUrlString = URLEncoder.encode(launchingIntent.getStringExtra(SearchManager.QUERY), "UTF-8");
-                        } catch (UnsupportedEncodingException exception) {
-                            encodedUrlString = "";
-                        }
+                        // Get the fragment view.
+                        View fragmentView = webViewTabFragment.getView();
 
-                        // Load the completed search URL.
-                        loadUrl(searchURL + encodedUrlString);
-                    } else if (launchingIntentUriData != null){  // Check to see if the intent contains a new URL.
-                        // Load the URL from the intent.
-                        loadUrl(launchingIntentUriData.toString());
-                    } else {  // The is no URL in the intent.
-                        // Select the homepage based on the proxy through Orbot status.
-                        if (proxyThroughOrbot) {
-                            // Load the Tor homepage.
-                            loadUrl(sharedPreferences.getString("tor_homepage", getString(R.string.tor_homepage_default_value)));
-                        } else {
-                            // Load the normal homepage.
-                            loadUrl(sharedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
+                        // Only process the WebViews if they exist.
+                        if (fragmentView != null) {
+                            // Get the nested scroll WebView from the tab fragment.
+                            NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+
+                            // Get the waiting for proxy URL string.
+                            String waitingForProxyUrlString = nestedScrollWebView.getWaitingForProxyUrlString();
+
+                            // Load the pending URL if it exists.
+                            if (!waitingForProxyUrlString.isEmpty()) {  // A URL is waiting to be loaded.
+                                // Load the URL.
+                                loadUrl(nestedScrollWebView, waitingForProxyUrlString);
+
+                                // Reset the waiting for proxy URL string.
+                                nestedScrollWebView.resetWaitingForProxyUrlString();
+                            } else {  // No URL is waiting to be loaded.
+                                // Reload the existing URL.
+                                nestedScrollWebView.reload();
+                            }
                         }
                     }
                 }
             }
         };
 
-        // Register `orbotStatusBroadcastReceiver` on `this` context.
+        // Register the Orbot status broadcast receiver on `this` context.
         this.registerReceiver(orbotStatusBroadcastReceiver, new IntentFilter("org.torproject.android.intent.action.STATUS"));
 
         // Get handles for views that need to be modified.
@@ -3430,12 +3653,12 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Listen for touches on the navigation menu.
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Get handles for the navigation menu and the back and forward menu items.  The menu is zero-based.
+        // Get handles for the navigation menu and the back and forward menu items.  The menu is 0 based.
         Menu navigationMenu = navigationView.getMenu();
         MenuItem navigationBackMenuItem = navigationMenu.getItem(2);
         MenuItem navigationForwardMenuItem = navigationMenu.getItem(3);
         MenuItem navigationHistoryMenuItem = navigationMenu.getItem(4);
-        MenuItem navigationRequestsMenuItem = navigationMenu.getItem(5);
+        MenuItem navigationRequestsMenuItem = navigationMenu.getItem(6);
 
         // Update the web view pager every time a tab is modified.
         webViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -3644,7 +3867,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 loadBookmarksFolder();
             } else {  // The selected bookmark is not a folder.
                 // Load the bookmark URL.
-                loadUrl(bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL)));
+                loadUrl(currentWebView, bookmarkCursor.getString(bookmarkCursor.getColumnIndex(BookmarksDatabaseHelper.BOOKMARK_URL)));
 
                 // Close the bookmarks drawer.
                 drawerLayout.closeDrawer(GravityCompat.END);
@@ -3697,7 +3920,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         drawerHeaderPaddingTop = statusBarPixelSize + (int) (4 * screenDensity);
         drawerHeaderPaddingBottom = (int) (8 * screenDensity);
 
-        // The drawer listener is used to update the navigation menu.`
+        // The drawer listener is used to update the navigation menu.
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
@@ -4043,10 +4266,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 }
 
                 // Apply the font size.
-                if (fontSize == 0) {  // Apply the default font size.
-                    nestedScrollWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
-                } else {  // Apply the specified font size.
-                    nestedScrollWebView.getSettings().setTextZoom(fontSize);
+                try {  // Try the specified font size to see if it is valid.
+                    if (fontSize == 0) {  // Apply the default font size.
+                            // Try to set the font size from the value in the app settings.
+                            nestedScrollWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
+                    } else {  // Apply the font size from domain settings.
+                        nestedScrollWebView.getSettings().setTextZoom(fontSize);
+                    }
+                } catch (Exception exception) {  // The specified font size is invalid
+                    // Set the font size to be 100%
+                    nestedScrollWebView.getSettings().setTextZoom(100);
                 }
 
                 // Set the user agent.
@@ -4182,9 +4411,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     nestedScrollWebView.getSettings().setJavaScriptEnabled(defaultJavaScriptEnabled);
                 }
 
-                // Apply the default settings.
+                // Apply the default first-party cookie setting.
                 cookieManager.setAcceptCookie(nestedScrollWebView.getAcceptFirstPartyCookies());
-                nestedScrollWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
+
+                // Apply the default font size setting.
+                try {
+                    // Try to set the font size from the value in the app settings.
+                    nestedScrollWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
+                } catch (Exception exception) {
+                    // If the app settings value is invalid, set the font size to 100%.
+                    nestedScrollWebView.getSettings().setTextZoom(100);
+                }
 
                 // Apply the form data setting if the API < 26.
                 if (Build.VERSION.SDK_INT < 26) {
@@ -4256,92 +4493,129 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         return !nestedScrollWebView.getSettings().getUserAgentString().equals(initialUserAgent);
     }
 
-    private void applyProxyThroughOrbot(boolean reloadWebsite) {
+    private void applyProxy(boolean reloadWebViews) {
         // Get a handle for the shared preferences.
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Get the search and theme preferences.
-        String torSearchString = sharedPreferences.getString("tor_search", getString(R.string.tor_search_default_value));
-        String torSearchCustomUrlString = sharedPreferences.getString("tor_search_custom_url", getString(R.string.tor_search_custom_url_default_value));
-        String searchString = sharedPreferences.getString("search", getString(R.string.search_default_value));
-        String searchCustomUrlString = sharedPreferences.getString("search_custom_url", getString(R.string.search_custom_url_default_value));
+        // Get the theme preferences.
         boolean darkTheme = sharedPreferences.getBoolean("dark_theme", false);
 
         // Get a handle for the app bar layout.
         AppBarLayout appBarLayout = findViewById(R.id.appbar_layout);
 
-        // Set the homepage, search, and proxy options.
-        if (proxyThroughOrbot) {  // Set the Tor options.
-            // Set the search URL.
-            if (torSearchString.equals("Custom URL")) {  // Get the custom URL string.
-                searchURL = torSearchCustomUrlString;
-            } else {  // Use the string from the pre-built list.
-                searchURL = torSearchString;
-            }
+        // Set the proxy according to the mode.  `this` refers to the current activity where an alert dialog might be displayed.
+        ProxyHelper.setProxy(getApplicationContext(), appBarLayout, proxyMode);
 
-            // Set the proxy.  `this` refers to the current activity where an `AlertDialog` might be displayed.
-            OrbotProxyHelper.setProxy(getApplicationContext(), this, "localhost", "8118");
+        // Reset the waiting for proxy tracker.
+        waitingForProxy = false;
 
-            // Set the app bar background to indicate proxying through Orbot is enabled.
-            if (darkTheme) {
-                appBarLayout.setBackgroundResource(R.color.dark_blue_30);
-            } else {
-                appBarLayout.setBackgroundResource(R.color.blue_50);
-            }
+        // Update the user interface and reload the WebViews if requested.
+        switch (proxyMode) {
+            case ProxyHelper.NONE:
+                // Set the default app bar layout background.
+                if (darkTheme) {
+                    appBarLayout.setBackgroundResource(R.color.gray_900);
+                } else {
+                    appBarLayout.setBackgroundResource(R.color.gray_100);
+                }
+                break;
 
-            // Check to see if Orbot is ready.
-            if (!orbotStatus.equals("ON")) {  // Orbot is not ready.
-                // Set `waitingForOrbot`.
-                waitingForOrbot = true;
+            case ProxyHelper.TOR:
+                // Set the app bar background to indicate proxying through Orbot is enabled.
+                if (darkTheme) {
+                    appBarLayout.setBackgroundResource(R.color.dark_blue_30);
+                } else {
+                    appBarLayout.setBackgroundResource(R.color.blue_50);
+                }
 
-                // Disable the wide view port so that the waiting for Orbot text is displayed correctly.
-                currentWebView.getSettings().setUseWideViewPort(false);
+                // Check to see if Orbot is installed.
+                try {
+                    // Get the package manager.
+                    PackageManager packageManager = getPackageManager();
 
-                // Load a waiting page.  `null` specifies no encoding, which defaults to ASCII.
-                currentWebView.loadData("<html><body><br/><center><h1>" + getString(R.string.waiting_for_orbot) + "</h1></center></body></html>", "text/html", null);
-            } else if (reloadWebsite) {  // Orbot is ready and the website should be reloaded.
-                // Reload the website.
-                currentWebView.reload();
-            }
-        } else {  // Set the non-Tor options.
-            // Set the search URL.
-            if (searchString.equals("Custom URL")) {  // Get the custom URL string.
-                searchURL = searchCustomUrlString;
-            } else {  // Use the string from the pre-built list.
-                searchURL = searchString;
-            }
+                    // Check to see if Orbot is in the list.  This will throw an error and drop to the catch section if it isn't installed.
+                    packageManager.getPackageInfo("org.torproject.android", 0);
 
-            // Reset the proxy to default.  The host is `""` and the port is `"0"`.
-            OrbotProxyHelper.setProxy(getApplicationContext(), this, "", "0");
+                    // Check to see if the proxy is ready.
+                    if (!orbotStatus.equals("ON")) {  // Orbot is not ready.
+                        // Set the waiting for proxy status.
+                        waitingForProxy = true;
 
-            // Set the default app bar layout background.
-            if (darkTheme) {
-                appBarLayout.setBackgroundResource(R.color.gray_900);
-            } else {
-                appBarLayout.setBackgroundResource(R.color.gray_100);
-            }
+                        // Show the waiting for proxy dialog if it isn't already displayed.
+                        if (getSupportFragmentManager().findFragmentByTag(getString(R.string.waiting_for_proxy_dialog)) == null) {
+                            // Get a handle for the waiting for proxy alert dialog.
+                            DialogFragment waitingForProxyDialogFragment = new WaitingForProxyDialog();
 
-            // Reset `waitingForOrbot.
-            waitingForOrbot = false;
-
-            // Reload the WebViews if requested.
-            if (reloadWebsite) {
-                // Reload the WebViews.
-                for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
-                    // Get the WebView tab fragment.
-                    WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
-
-                    // Get the fragment view.
-                    View fragmentView = webViewTabFragment.getView();
-
-                    // Only reload the WebViews if they exist.
-                    if (fragmentView != null) {
-                        // Get the nested scroll WebView from the tab fragment.
-                        NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
-
-                        // Reload the WebView.
-                        nestedScrollWebView.reload();
+                            // Display the waiting for proxy alert dialog.
+                            waitingForProxyDialogFragment.show(getSupportFragmentManager(), getString(R.string.waiting_for_proxy_dialog));
+                        }
                     }
+                } catch (PackageManager.NameNotFoundException exception) {  // Orbot is not installed.
+                    // Show the Orbot not installed dialog if it is not already displayed.
+                    if (getSupportFragmentManager().findFragmentByTag(getString(R.string.proxy_not_installed_dialog)) == null) {
+                        // Get a handle for the Orbot not installed alert dialog.
+                        DialogFragment orbotNotInstalledDialogFragment = ProxyNotInstalledDialog.displayDialog(proxyMode);
+
+                        // Display the Orbot not installed alert dialog.
+                        orbotNotInstalledDialogFragment.show(getSupportFragmentManager(), getString(R.string.proxy_not_installed_dialog));
+                    }
+                }
+                break;
+
+            case ProxyHelper.I2P:
+                // Set the app bar background to indicate proxying through Orbot is enabled.
+                if (darkTheme) {
+                    appBarLayout.setBackgroundResource(R.color.dark_blue_30);
+                } else {
+                    appBarLayout.setBackgroundResource(R.color.blue_50);
+                }
+
+                // Check to see if I2P is installed.
+                try {
+                    // Get the package manager.
+                    PackageManager packageManager = getPackageManager();
+
+                    // Check to see if I2P is in the list.  This will throw an error and drop to the catch section if it isn't installed.
+                    packageManager.getPackageInfo("org.torproject.android", 0);
+                } catch (PackageManager.NameNotFoundException exception) {  // I2P is not installed.
+                    // Sow the I2P not installed dialog if it is not already displayed.
+                    if (getSupportFragmentManager().findFragmentByTag(getString(R.string.proxy_not_installed_dialog)) == null) {
+                        // Get a handle for the waiting for proxy alert dialog.
+                        DialogFragment i2pNotInstalledDialogFragment = ProxyNotInstalledDialog.displayDialog(proxyMode);
+
+                        // Display the I2P not installed alert dialog.
+                        i2pNotInstalledDialogFragment.show(getSupportFragmentManager(), getString(R.string.proxy_not_installed_dialog));
+                    }
+                }
+                break;
+
+            case ProxyHelper.CUSTOM:
+                // Set the app bar background to indicate proxying through Orbot is enabled.
+                if (darkTheme) {
+                    appBarLayout.setBackgroundResource(R.color.dark_blue_30);
+                } else {
+                    appBarLayout.setBackgroundResource(R.color.blue_50);
+                }
+                break;
+        }
+
+        // Reload the WebViews if requested and not waiting for the proxy.
+        if (reloadWebViews && !waitingForProxy) {
+            // Reload the WebViews.
+            for (int i = 0; i < webViewPagerAdapter.getCount(); i++) {
+                // Get the WebView tab fragment.
+                WebViewTabFragment webViewTabFragment = webViewPagerAdapter.getPageFragment(i);
+
+                // Get the fragment view.
+                View fragmentView = webViewTabFragment.getView();
+
+                // Only reload the WebViews if they exist.
+                if (fragmentView != null) {
+                    // Get the nested scroll WebView from the tab fragment.
+                    NestedScrollWebView nestedScrollWebView = fragmentView.findViewById(R.id.nestedscroll_webview);
+
+                    // Reload the WebView.
+                    nestedScrollWebView.reload();
                 }
             }
         }
@@ -4437,12 +4711,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             String urlString = urlEditText.getText().toString();
 
             // Highlight the URL according to the protocol.
-            if (urlString.startsWith("file://")) {  // This is a file URL.
-                // De-emphasize only the protocol.
-                urlEditText.getText().setSpan(initialGrayColorSpan, 0, 7, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            } else if (urlString.startsWith("content://")) {
-                // De-emphasize only the protocol.
-                urlEditText.getText().setSpan(initialGrayColorSpan, 0, 10, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            if (urlString.startsWith("file://") || urlString.startsWith("content://")) {  // This is a file or content URL.
+                // De-emphasize everything before the file name.
+                urlEditText.getText().setSpan(initialGrayColorSpan, 0, urlString.lastIndexOf("/") + 1,Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             } else {  // This is a web URL.
                 // Get the index of the `/` immediately after the domain name.
                 int endOfDomainName = urlString.indexOf("/", (urlString.indexOf("//") + 2));
@@ -5180,7 +5451,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                         downloadLocationPermissionDialogFragment.show(getSupportFragmentManager(), getString(R.string.download_location));
                     } else {  // Show the permission request directly.
                         // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
-                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, DOWNLOAD_FILE_REQUEST_CODE);
+                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_DOWNLOAD_FILE_REQUEST_CODE);
                     }
                 } else {  // The storage permission has already been granted.
                     // Get a handle for the download file alert dialog.
@@ -5477,7 +5748,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     Intent fileChooserIntent = fileChooserParams.createIntent();
 
                     // Open the file chooser.
-                    startActivityForResult(fileChooserIntent, FILE_UPLOAD_REQUEST_CODE);
+                    startActivityForResult(fileChooserIntent, BROWSE_FILE_UPLOAD_REQUEST_CODE);
                 }
                 return true;
             }
@@ -5593,7 +5864,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 Menu navigationMenu = navigationView.getMenu();
 
                 // Get a handle for the navigation requests menu item.  The menu is 0 based.
-                MenuItem navigationRequestsMenuItem = navigationMenu.getItem(5);
+                MenuItem navigationRequestsMenuItem = navigationMenu.getItem(6);
 
                 // Create an empty web resource response to be used if the resource request is blocked.
                 WebResourceResponse emptyWebResourceResponse = new WebResourceResponse("text/plain", "utf8", new ByteArrayInputStream("".getBytes()));
@@ -5973,50 +6244,47 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Hide the keyboard.
                 inputMethodManager.hideSoftInputFromWindow(nestedScrollWebView.getWindowToken(), 0);
 
-                // Check to see if Privacy Browser is waiting on Orbot.
-                if (!waitingForOrbot) {  // Process the URL.
-                    // Get the current page position.
-                    int currentPagePosition = webViewPagerAdapter.getPositionForId(nestedScrollWebView.getWebViewFragmentId());
+                // Get the current page position.
+                int currentPagePosition = webViewPagerAdapter.getPositionForId(nestedScrollWebView.getWebViewFragmentId());
 
-                    // Update the URL text bar if the page is currently selected.
-                    if (tabLayout.getSelectedTabPosition() == currentPagePosition) {
-                        // Clear the focus from the URL edit text.
-                        urlEditText.clearFocus();
+                // Update the URL text bar if the page is currently selected.
+                if (tabLayout.getSelectedTabPosition() == currentPagePosition) {
+                    // Clear the focus from the URL edit text.
+                    urlEditText.clearFocus();
 
-                        // Display the formatted URL text.
-                        urlEditText.setText(url);
+                    // Display the formatted URL text.
+                    urlEditText.setText(url);
 
-                        // Apply text highlighting to `urlTextBox`.
-                        highlightUrlText();
-                    }
+                    // Apply text highlighting to `urlTextBox`.
+                    highlightUrlText();
+                }
 
-                    // Reset the list of host IP addresses.
-                    nestedScrollWebView.clearCurrentIpAddresses();
+                // Reset the list of host IP addresses.
+                nestedScrollWebView.clearCurrentIpAddresses();
 
-                    // Get a URI for the current URL.
-                    Uri currentUri = Uri.parse(url);
+                // Get a URI for the current URL.
+                Uri currentUri = Uri.parse(url);
 
-                    // Get the IP addresses for the host.
-                    new GetHostIpAddresses(activity, getSupportFragmentManager(), nestedScrollWebView).execute(currentUri.getHost());
+                // Get the IP addresses for the host.
+                new GetHostIpAddresses(activity, getSupportFragmentManager(), nestedScrollWebView).execute(currentUri.getHost());
 
-                    // Replace Refresh with Stop if the options menu has been created.  (The first WebView typically begins loading before the menu items are instantiated.)
-                    if (optionsMenu != null) {
-                        // Get a handle for the refresh menu item.
-                        MenuItem refreshMenuItem = optionsMenu.findItem(R.id.refresh);
+                // Replace Refresh with Stop if the options menu has been created.  (The first WebView typically begins loading before the menu items are instantiated.)
+                if (optionsMenu != null) {
+                    // Get a handle for the refresh menu item.
+                    MenuItem refreshMenuItem = optionsMenu.findItem(R.id.refresh);
 
-                        // Set the title.
-                        refreshMenuItem.setTitle(R.string.stop);
+                    // Set the title.
+                    refreshMenuItem.setTitle(R.string.stop);
 
-                        // Get the app bar and theme preferences.
-                        boolean displayAdditionalAppBarIcons = sharedPreferences.getBoolean("display_additional_app_bar_icons", false);
+                    // Get the app bar and theme preferences.
+                    boolean displayAdditionalAppBarIcons = sharedPreferences.getBoolean("display_additional_app_bar_icons", false);
 
-                        // If the icon is displayed in the AppBar, set it according to the theme.
-                        if (displayAdditionalAppBarIcons) {
-                            if (darkTheme) {
-                                refreshMenuItem.setIcon(R.drawable.close_dark);
-                            } else {
-                                refreshMenuItem.setIcon(R.drawable.close_light);
-                            }
+                    // If the icon is displayed in the AppBar, set it according to the theme.
+                    if (displayAdditionalAppBarIcons) {
+                        if (darkTheme) {
+                            refreshMenuItem.setIcon(R.drawable.close_dark);
+                        } else {
+                            refreshMenuItem.setIcon(R.drawable.close_light);
                         }
                     }
                 }
@@ -6076,82 +6344,79 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     }
                 }
 
-                // Update the URL text box and apply domain settings if not waiting on Orbot.
-                if (!waitingForOrbot) {
-                    // Get the current page position.
-                    int currentPagePosition = webViewPagerAdapter.getPositionForId(nestedScrollWebView.getWebViewFragmentId());
+                // Get the current page position.
+                int currentPagePosition = webViewPagerAdapter.getPositionForId(nestedScrollWebView.getWebViewFragmentId());
 
-                    // Check the current website information against any pinned domain information if the current IP addresses have been loaded.
-                    if ((nestedScrollWebView.hasPinnedSslCertificate() || nestedScrollWebView.hasPinnedIpAddresses()) && nestedScrollWebView.hasCurrentIpAddresses() &&
-                            !nestedScrollWebView.ignorePinnedDomainInformation()) {
-                        CheckPinnedMismatchHelper.checkPinnedMismatch(getSupportFragmentManager(), nestedScrollWebView);
-                    }
+                // Check the current website information against any pinned domain information if the current IP addresses have been loaded.
+                if ((nestedScrollWebView.hasPinnedSslCertificate() || nestedScrollWebView.hasPinnedIpAddresses()) && nestedScrollWebView.hasCurrentIpAddresses() &&
+                        !nestedScrollWebView.ignorePinnedDomainInformation()) {
+                    CheckPinnedMismatchHelper.checkPinnedMismatch(getSupportFragmentManager(), nestedScrollWebView);
+                }
 
-                    // Get the current URL from the nested scroll WebView.  This is more accurate than using the URL passed into the method, which is sometimes not the final one.
-                    String currentUrl = nestedScrollWebView.getUrl();
+                // Get the current URL from the nested scroll WebView.  This is more accurate than using the URL passed into the method, which is sometimes not the final one.
+                String currentUrl = nestedScrollWebView.getUrl();
 
-                    // Get the current tab.
-                    TabLayout.Tab tab = tabLayout.getTabAt(currentPagePosition);
+                // Get the current tab.
+                TabLayout.Tab tab = tabLayout.getTabAt(currentPagePosition);
 
-                    // Update the URL text bar if the page is currently selected and the user is not currently typing in the URL edit text.
-                    // Crash records show that, in some crazy way, it is possible for the current URL to be blank at this point.
-                    // Probably some sort of race condition when Privacy Browser is being resumed.
-                    if ((tabLayout.getSelectedTabPosition() == currentPagePosition) && !urlEditText.hasFocus() && (currentUrl != null)) {
-                        // Check to see if the URL is `about:blank`.
-                        if (currentUrl.equals("about:blank")) {  // The WebView is blank.
-                            // Display the hint in the URL edit text.
-                            urlEditText.setText("");
+                // Update the URL text bar if the page is currently selected and the user is not currently typing in the URL edit text.
+                // Crash records show that, in some crazy way, it is possible for the current URL to be blank at this point.
+                // Probably some sort of race condition when Privacy Browser is being resumed.
+                if ((tabLayout.getSelectedTabPosition() == currentPagePosition) && !urlEditText.hasFocus() && (currentUrl != null)) {
+                    // Check to see if the URL is `about:blank`.
+                    if (currentUrl.equals("about:blank")) {  // The WebView is blank.
+                        // Display the hint in the URL edit text.
+                        urlEditText.setText("");
 
-                            // Request focus for the URL text box.
-                            urlEditText.requestFocus();
+                        // Request focus for the URL text box.
+                        urlEditText.requestFocus();
 
-                            // Display the keyboard.
-                            inputMethodManager.showSoftInput(urlEditText, 0);
+                        // Display the keyboard.
+                        inputMethodManager.showSoftInput(urlEditText, 0);
 
-                            // Apply the domain settings.  This clears any settings from the previous domain.
-                            applyDomainSettings(nestedScrollWebView, "", true, false);
+                        // Apply the domain settings.  This clears any settings from the previous domain.
+                        applyDomainSettings(nestedScrollWebView, "", true, false);
 
-                            // Only populate the title text view if the tab has been fully created.
-                            if (tab != null) {
-                                // Get the custom view from the tab.
-                                View tabView = tab.getCustomView();
+                        // Only populate the title text view if the tab has been fully created.
+                        if (tab != null) {
+                            // Get the custom view from the tab.
+                            View tabView = tab.getCustomView();
 
-                                // Remove the incorrect warning below that the current tab view might be null.
-                                assert tabView != null;
+                            // Remove the incorrect warning below that the current tab view might be null.
+                            assert tabView != null;
 
-                                // Get the title text view from the tab.
-                                TextView tabTitleTextView = tabView.findViewById(R.id.title_textview);
+                            // Get the title text view from the tab.
+                            TextView tabTitleTextView = tabView.findViewById(R.id.title_textview);
 
-                                // Set the title as the tab text.
-                                tabTitleTextView.setText(R.string.new_tab);
-                            }
-                        } else {  // The WebView has loaded a webpage.
-                            // Update the URL edit text if it is not currently being edited.
-                            if (!urlEditText.hasFocus()) {
-                                // Sanitize the current URL.  This removes unwanted URL elements that were added by redirects, so that they won't be included if the URL is shared.
-                                String sanitizedUrl = sanitizeUrl(currentUrl);
+                            // Set the title as the tab text.
+                            tabTitleTextView.setText(R.string.new_tab);
+                        }
+                    } else {  // The WebView has loaded a webpage.
+                        // Update the URL edit text if it is not currently being edited.
+                        if (!urlEditText.hasFocus()) {
+                            // Sanitize the current URL.  This removes unwanted URL elements that were added by redirects, so that they won't be included if the URL is shared.
+                            String sanitizedUrl = sanitizeUrl(currentUrl);
 
-                                // Display the final URL.  Getting the URL from the WebView instead of using the one provided by `onPageFinished()` makes websites like YouTube function correctly.
-                                urlEditText.setText(sanitizedUrl);
+                            // Display the final URL.  Getting the URL from the WebView instead of using the one provided by `onPageFinished()` makes websites like YouTube function correctly.
+                            urlEditText.setText(sanitizedUrl);
 
-                                // Apply text highlighting to the URL.
-                                highlightUrlText();
-                            }
+                            // Apply text highlighting to the URL.
+                            highlightUrlText();
+                        }
 
-                            // Only populate the title text view if the tab has been fully created.
-                            if (tab != null) {
-                                // Get the custom view from the tab.
-                                View tabView = tab.getCustomView();
+                        // Only populate the title text view if the tab has been fully created.
+                        if (tab != null) {
+                            // Get the custom view from the tab.
+                            View tabView = tab.getCustomView();
 
-                                // Remove the incorrect warning below that the current tab view might be null.
-                                assert tabView != null;
+                            // Remove the incorrect warning below that the current tab view might be null.
+                            assert tabView != null;
 
-                                // Get the title text view from the tab.
-                                TextView tabTitleTextView = tabView.findViewById(R.id.title_textview);
+                            // Get the title text view from the tab.
+                            TextView tabTitleTextView = tabView.findViewById(R.id.title_textview);
 
-                                // Set the title as the tab text.  Sometimes `onReceivedTitle()` is not called, especially when navigating history.
-                                tabTitleTextView.setText(nestedScrollWebView.getTitle());
-                            }
+                            // Set the title as the tab text.  Sometimes `onReceivedTitle()` is not called, especially when navigating history.
+                            tabTitleTextView.setText(nestedScrollWebView.getTitle());
                         }
                     }
                 }
@@ -6212,42 +6477,43 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             // Apply the app settings from the shared preferences.
             applyAppSettings();
 
-            // Load the website if not waiting for Orbot to connect.
-            if (!waitingForOrbot) {
-                // Get the intent that started the app.
-                Intent launchingIntent = getIntent();
+            // Initialize the URL to load string.
+            String urlToLoadString;
 
-                // Get the information from the intent.
-                String launchingIntentAction = launchingIntent.getAction();
-                Uri launchingIntentUriData = launchingIntent.getData();
+            // Get the intent that started the app.
+            Intent launchingIntent = getIntent();
 
-                // If the intent action is a web search, perform the search.
-                if ((launchingIntentAction != null) && launchingIntentAction.equals(Intent.ACTION_WEB_SEARCH)) {
-                    // Create an encoded URL string.
-                    String encodedUrlString;
+            // Get the information from the intent.
+            String launchingIntentAction = launchingIntent.getAction();
+            Uri launchingIntentUriData = launchingIntent.getData();
 
-                    // Sanitize the search input and convert it to a search.
-                    try {
-                        encodedUrlString = URLEncoder.encode(launchingIntent.getStringExtra(SearchManager.QUERY), "UTF-8");
-                    } catch (UnsupportedEncodingException exception) {
-                        encodedUrlString = "";
-                    }
+            // Parse the launching intent URL.
+            if ((launchingIntentAction != null) && launchingIntentAction.equals(Intent.ACTION_WEB_SEARCH)) {  // The intent contains a search string.
+                // Create an encoded URL string.
+                String encodedUrlString;
 
-                    // Load the completed search URL.
-                    loadUrl(searchURL + encodedUrlString);
-                } else if (launchingIntentUriData != null){  // Check to see if the intent contains a new URL.
-                    // Load the URL from the intent.
-                    loadUrl(launchingIntentUriData.toString());
-                } else {  // The is no URL in the intent.
-                    // Select the homepage based on the proxy through Orbot status.
-                    if (proxyThroughOrbot) {
-                        // Load the Tor homepage.
-                        loadUrl(sharedPreferences.getString("tor_homepage", getString(R.string.tor_homepage_default_value)));
-                    } else {
-                        // Load the normal homepage.
-                        loadUrl(sharedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
-                    }
+                // Sanitize the search input and convert it to a search.
+                try {
+                    encodedUrlString = URLEncoder.encode(launchingIntent.getStringExtra(SearchManager.QUERY), "UTF-8");
+                } catch (UnsupportedEncodingException exception) {
+                    encodedUrlString = "";
                 }
+
+                // Store the web search as the URL to load.
+                urlToLoadString = searchURL + encodedUrlString;
+            } else if (launchingIntentUriData != null){  // The intent contains a URL.
+                // Store the URL.
+                urlToLoadString = launchingIntentUriData.toString();
+            } else {  // The is no URL in the intent.
+                // Store the homepage to be loaded.
+                urlToLoadString = sharedPreferences.getString("homepage", getString(R.string.homepage_default_value));
+            }
+
+            // Load the website if not waiting for the proxy.
+            if (waitingForProxy) {  // Store the URL to be loaded in the Nested Scroll WebView.
+                nestedScrollWebView.setWaitingForProxyUrlString(urlToLoadString);
+            } else {  // Load the URL.
+                loadUrl(nestedScrollWebView, urlToLoadString);
             }
         } else {  // This is not the first tab.
             // Apply the domain settings.

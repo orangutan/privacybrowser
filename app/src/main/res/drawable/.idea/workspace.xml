@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="300aa3b2-5467-4b77-b970-a3e70210d389" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../../assets/shared_images/open_in_browser_dark.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../assets/shared_images/open_in_browser_light.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../java/com/stoutner/privacybrowser/dialogs/ProxyNotInstalledDialog.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../java/com/stoutner/privacybrowser/dialogs/WaitingForProxyDialog.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/proxy_disabled_dark.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/proxy_disabled_light.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/proxy_enabled_dark.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/proxy_enabled_light.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/proxy_ghosted_dark.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/proxy_ghosted_light.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../layout/waiting_for_proxy_dialog.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../.idea/assetWizardSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../.idea/assetWizardSettings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../.idea/dictionaries/soren.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../.idea/dictionaries/soren.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../assets/de/about_licenses_dark.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../assets/de/about_licenses_dark.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../assets/de/about_licenses_light.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../assets/de/about_licenses_light.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../assets/en/about_licenses_dark.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../assets/en/about_licenses_dark.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../assets/en/about_licenses_light.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../assets/en/about_licenses_light.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../assets/es/about_licenses_dark.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../assets/es/about_licenses_dark.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../assets/es/about_licenses_light.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../assets/es/about_licenses_light.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../assets/fr/about_licenses_dark.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../assets/fr/about_licenses_dark.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../assets/fr/about_licenses_light.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../assets/fr/about_licenses_light.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../assets/it/about_licenses_dark.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../assets/it/about_licenses_dark.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../assets/it/about_licenses_light.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../assets/it/about_licenses_light.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../assets/ru/about_licenses_dark.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../assets/ru/about_licenses_dark.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../assets/ru/about_licenses_light.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../assets/ru/about_licenses_light.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../assets/tr/about_licenses_dark.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../assets/tr/about_licenses_dark.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../assets/tr/about_licenses_light.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../assets/tr/about_licenses_light.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/stoutner/privacybrowser/activities/GuideActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/stoutner/privacybrowser/activities/GuideActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/stoutner/privacybrowser/activities/MainWebViewActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/stoutner/privacybrowser/activities/MainWebViewActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/stoutner/privacybrowser/activities/ViewSourceActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/stoutner/privacybrowser/activities/ViewSourceActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/stoutner/privacybrowser/dialogs/AboutViewSourceDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/stoutner/privacybrowser/dialogs/AboutViewSourceDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/stoutner/privacybrowser/dialogs/CreateHomeScreenShortcutDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/stoutner/privacybrowser/dialogs/CreateHomeScreenShortcutDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/stoutner/privacybrowser/dialogs/ViewSslCertificateDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/stoutner/privacybrowser/dialogs/ViewSslCertificateDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/stoutner/privacybrowser/fragments/AboutTabFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/stoutner/privacybrowser/fragments/AboutTabFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/stoutner/privacybrowser/fragments/SettingsFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/stoutner/privacybrowser/fragments/SettingsFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/stoutner/privacybrowser/helpers/ImportExportDatabaseHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/stoutner/privacybrowser/helpers/ImportExportDatabaseHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/stoutner/privacybrowser/helpers/OrbotProxyHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/stoutner/privacybrowser/helpers/ProxyHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app_bar_disabled_dark.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app_bar_disabled_dark.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app_bar_disabled_light.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app_bar_disabled_light.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app_bar_enabled_dark.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app_bar_enabled_dark.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app_bar_enabled_light.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app_bar_enabled_light.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app_bar_ghosted_dark.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app_bar_ghosted_dark.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app_bar_ghosted_light.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app_bar_ghosted_light.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/about_tab_version.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/about_tab_version.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/unencrypted_website.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/unencrypted_website_dialog.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/view_ssl_certificate.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/view_ssl_certificate_dialog.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../menu/webview_options_menu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../menu/webview_options_menu.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../values-de/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../values-de/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../values-es/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../values-es/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../values-fr/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../values-fr/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../values-it/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../values-it/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../values-ru/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../values-ru/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../values-tr/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../values-tr/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../xml/preferences.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../xml/preferences.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../build.gradle" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../../../.." />
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="1213" />
+    <option name="y" value="595" />
+    <option name="width" value="2289" />
+    <option name="height" value="1457" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane" />
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="android.sdk.path" value="$USER_HOME$/Android/Sdk" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Lightning-Browser" />
+    <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration name="&lt;template&gt;" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" default="true" selected="false">
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+    </configuration>
+    <configuration default="true" type="Applet">
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="TestNG">
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="300aa3b2-5467-4b77-b970-a3e70210d389" name="Default Changelist" comment="" />
+      <created>1576705464689</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1576705464689</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="0" width="3668" height="2068" extended-state="6" />
+    <layout>
+      <window_info active="true" content_ui="combo" id="Project" visible="true" weight="0.3297402" />
+      <window_info id="Structure" side_tool="true" />
+      <window_info id="Image Layers" />
+      <window_info id="Designer" />
+      <window_info id="Resources Explorer" />
+      <window_info id="Capture Tool" />
+      <window_info id="Favorites" side_tool="true" />
+      <window_info id="Captures" order="0" weight="0.25" />
+      <window_info anchor="bottom" id="Version Control" />
+      <window_info anchor="bottom" id="TODO" />
+      <window_info anchor="bottom" id="Terminal" />
+      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info anchor="right" id="Capture Analysis" />
+      <window_info anchor="right" id="Theme Preview" />
+      <window_info anchor="right" id="Palette&#9;" />
+    </layout>
+  </component>
+</project>
