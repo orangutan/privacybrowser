@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -36,8 +36,9 @@ import com.stoutner.privacybrowser.R;
 public class StoragePermissionDialog extends DialogFragment {
     // Define the save type constants.
     public static final int OPEN = 0;
-    public static final int SAVE_ARCHIVE = 1;
-    public static final int SAVE_IMAGE = 2;
+    public static final int SAVE = 1;
+    public static final int SAVE_AS_ARCHIVE = 2;
+    public static final int SAVE_AS_IMAGE = 3;
 
     // The listener is used in `onAttach()` and `onCreateDialog()`.
     private StoragePermissionDialogListener storagePermissionDialogListener;

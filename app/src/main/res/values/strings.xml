@@ -179,6 +179,7 @@
         <string name="print">Print</string>
             <string name="privacy_browser_web_page">Privacy Browser Web Page</string>
         <string name="save">Save</string>
+            <string name="save_url">Save URL</string>
             <string name="save_as_archive">Save as Archive</string>
             <string name="save_as_image">Save as Image</string>
         <string name="add_to_home_screen">Add to Home Screen</string>
@@ -208,13 +209,17 @@
     <string name="next">Next</string>
 
     <!-- Save Webpage. -->
-    <string name="save_webpage" translatable="false">Save Webpage</string>  <!-- This string is used to tag the save dialog.  It is never displayed to the user. -->
+    <string name="save_dialog" translatable="false">Save Dialog</string>  <!-- This string is used to tag the save dialog.  It is never displayed to the user. -->
     <string name="save_archive">Save Archive</string>
     <string name="save_image">Save Image</string>
     <string name="webpage_mht">Webpage.mht</string>
     <string name="webpage_png">Webpage.png</string>
+    <string name="file">File</string>
+    <string name="saving_file">Saving file…</string>
     <string name="saving_image">Saving image…</string>
+    <string name="file_saved">File saved.</string>
     <string name="image_saved">Image saved.</string>
+    <string name="error_saving_file">Error saving file:</string>
     <string name="error_saving_image">Error saving image:</string>
 
     <!-- View Source. -->

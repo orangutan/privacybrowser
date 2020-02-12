@@ -107,7 +107,7 @@ public class SaveLogcatDialog extends DialogFragment {
         }
 
         // Set the view.  The parent view is null because it will be assigned by the alert dialog.
-        dialogBuilder.setView(activity.getLayoutInflater().inflate(R.layout.save_dialog, null));
+        dialogBuilder.setView(activity.getLayoutInflater().inflate(R.layout.save_logcat_dialog, null));
 
         // Set the cancel button listener.
         dialogBuilder.setNegativeButton(R.string.cancel, (DialogInterface dialog, int which) -> {

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2020 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2019 Kévin LE FLOHIC <kevinliste@framalistes.org>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2019-2020 Kévin LE FLOHIC <kevinliste@framalistes.org>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -361,6 +361,8 @@
         <item>OpenPGP</item>
     </string-array>
     <string name="kitkat_password_encryption_message">Le chiffrement par mot de passe ne fonctionne pas sous Android KitKat.</string>
+    <string name="file_does_not_exist">Le fichier n\'existe pas.</string>
+    <string name="file_exists_warning">Le fichier existe déjà. Si vous continuez, il sera écrasé.</string>
     <string name="openkeychain_required">Le chiffrement OpenPGP nécessite l\'installation d\'OpenKeychain.</string>
     <string name="openkeychain_import_instructions">Le fichier non-chiffré devra être importé dans un deuxième temps, après son déchiffrement.</string>
     <string name="settings_pbs">Settings.pbs</string>
@@ -374,7 +376,7 @@
     <string name="import_failed">L\'import a échoué :</string>
     <string name="storage_permission">Permission de stockage</string>
     <string name="storage_permission_message">Privacy Browser nécessite les droits d\'accès au stockage pour accéder aux dossiers publics.
- Si cela est refusé, les dossiers internes à l\'application peut néanmoins être utilisé.</string>
+        Si cela est refusé, les dossiers internes à l\'application peut néanmoins être utilisé.</string>
     <string name="storage_permission_explanation">Accéder à des fichiers dans des dossiers publics nécessite des droits de lecture/écriture.
         Autrement, seuls les dossiers internes à l\'application ne pourront être utilisés.</string>
     <string name="cannot_use_location">Ce dossier ne peut pas être utilisé car les droits d\'accès au stockage n\'ont pas été autorisés.</string>

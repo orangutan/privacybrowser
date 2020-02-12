@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2019 Bernhard G. Keller.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2019-2020 Bernhard G. Keller.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   Translation 2018 Stefan Erhardt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
@@ -364,6 +364,8 @@
         <item>OpenPGP</item>
     </string-array>
     <string name="kitkat_password_encryption_message">Passwort-Verschlüsselung ist mit Android KitKat nicht möglich.</string>
+    <string name="file_does_not_exist">Die Datei existiert nicht.</string>
+    <string name="file_exists_warning">Die Datei existiert bereits. Wenn Sie fortfahren, wird sie überschrieben.</string>
     <string name="openkeychain_required">Für die OpenPGP-Verschlüsselung muss OpenKeychain installiert sein.</string>
     <string name="openkeychain_import_instructions">Die unverschlüsselte Datei muss in einem weiteren Schritt importiert werden, nachdem sie entschlüsselt wurde.</string>
     <string name="settings_pbs">Einstellungen.pbs</string>

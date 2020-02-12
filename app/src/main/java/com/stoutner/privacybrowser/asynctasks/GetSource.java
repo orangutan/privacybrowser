@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -365,10 +365,10 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
 
             // Only process the cookies if they are not null.
             if (cookiesString != null) {
-                // Set the `Cookie` header property.
+                // Add the cookies to the header property.
                 httpUrlConnection.setRequestProperty("Cookie", cookiesString);
 
-                // Add the `Cookie` header to the string builder and format the text.
+                // Add the cookie header to the string builder and format the text.
                 requestHeadersBuilder.append(System.getProperty("line.separator"));
                 if (Build.VERSION.SDK_INT >= 21) {  // Newer versions of Android are so smart.
                     requestHeadersBuilder.append("Cookie", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -457,17 +457,17 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 byte[] conversionBufferByteArray = new byte[1024];
 
-                // Instantiate the variable to track the buffer length.
+                // Define the buffer length variable.
                 int bufferLength;
 
                 try {
-                    // Attempt to read data from the input stream and store it in the conversion buffer byte array.  Also store the amount of data transferred in the buffer length variable.
+                    // Attempt to read data from the input stream and store it in the conversion buffer byte array.  Also store the amount of data read in the buffer length variable.
                     while ((bufferLength = inputStream.read(conversionBufferByteArray)) > 0) {  // Proceed while the amount of data stored in the buffer is > 0.
                         // Write the contents of the conversion buffer to the byte array output stream.
                         byteArrayOutputStream.write(conversionBufferByteArray, 0, bufferLength);
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (IOException exception) {
+                    // Do nothing.
                 }
 
                 // Close the input stream.
@@ -476,11 +476,11 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
                 // Populate the response body string with the contents of the byte array output stream.
                 responseBodyBuilder.append(byteArrayOutputStream.toString());
             } finally {
-                // Disconnect `httpUrlConnection`.
+                // Disconnect HTTP URL connection.
                 httpUrlConnection.disconnect();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
 
         // Return the response body string as the result.

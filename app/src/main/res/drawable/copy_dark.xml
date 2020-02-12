@@ -1,4 +1,4 @@
-<!-- `copy_dark.xml` comes from the Android Material icon set, where it is called `file_copy`.  It is released under the Apache License 2.0. -->
+<!-- This file comes from the Android Material icon set, where it is called `file_copy`.  It is released under the Apache License 2.0. -->
 
 <!-- `tools:ignore="VectorRaster"` removes the lint warning about `android:autoMirrored="true"` not applying to API < 21. -->
 <vector

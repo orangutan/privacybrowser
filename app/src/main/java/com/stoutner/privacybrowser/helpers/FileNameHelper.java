@@ -1,5 +1,5 @@
 /*
- * Copyright © 2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2019-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -38,7 +38,7 @@ public class FileNameHelper {
                 String fileNameContentPath = rawFileNamePath.substring(0, rawFileNamePath.indexOf(":"));
                 String fileNameFinalPath = rawFileNamePath.substring(rawFileNamePath.indexOf(":") + 1);
 
-                // Check to see if the current file name final patch is a complete, valid path
+                // Check to see if the current file name final patch is a complete, valid path.
                 if (fileNameFinalPath.startsWith("/storage/emulated/")) {  // The existing file name final path is a complete, valid path.
                     // Use the provided file name path as is.
                     fileNamePath = fileNameFinalPath;

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2017-2019 Jose A. León Becerra.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017-2020 Jose A. León Becerra.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -361,6 +361,8 @@
         <item>OpenPGP</item>
     </string-array>
     <string name="kitkat_password_encryption_message">El cifrado de contraseñas no funciona en Android KitKat.</string>
+    <string name="file_does_not_exist">El archivo no existe.</string>
+    <string name="file_exists_warning">El archivo ya existe. Si procede, se sobrescribirá.</string>
     <string name="openkeychain_required">El cifrado OpenPGP requiere que esté instalado OpenKeychain.</string>
     <string name="openkeychain_import_instructions">El archivo sin cifrar tendrá que ser importado en un paso separado después de ser descifrado.</string>
     <string name="settings_pbs">Configuración.pbs</string>
