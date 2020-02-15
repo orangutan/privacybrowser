@@ -20,6 +20,7 @@
 package com.stoutner.privacybrowser.asynctasks;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -37,6 +38,7 @@ import android.widget.TextView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.helpers.ProxyHelper;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,19 +46,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
+import java.net.Proxy;
 import java.net.URL;
 import java.util.Locale;
 
 // This must run asynchronously because it involves a network request.  `String` declares the parameters.  `Void` does not declare progress units.  `SpannableStringBuilder[]` contains the results.
 public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]> {
-    // Declare a weak reference to the calling activity.
+    // Define weak references to the calling context and activity.
+    private WeakReference<Context> contextWeakReference;
     private WeakReference<Activity> activityWeakReference;
 
     // Store the user agent.
     private String userAgent;
 
-    public GetSource(Activity activity, String userAgent) {
-        // Populate the weak reference to the calling activity.
+    public GetSource(Context context, Activity activity, String userAgent) {
+        // Populate the weak references to the calling context and activity.
+        contextWeakReference = new WeakReference<>(context);
         activityWeakReference = new WeakReference<>(activity);
 
         // Store the user agent.
@@ -66,16 +71,16 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
     // `onPreExecute()` operates on the UI thread.
     @Override
     protected void onPreExecute() {
-        // Get a handle for the activity.
-        Activity viewSourceActivity = activityWeakReference.get();
+        // Get a handle for the calling activity.
+        Activity activity = activityWeakReference.get();
 
         // Abort if the activity is gone.
-        if ((viewSourceActivity == null) || viewSourceActivity.isFinishing()) {
+        if ((activity == null) || activity.isFinishing()) {
             return;
         }
 
         // Get a handle for the progress bar.
-        ProgressBar progressBar = viewSourceActivity.findViewById(R.id.progress_bar);
+        ProgressBar progressBar = activity.findViewById(R.id.progress_bar);
 
         // Make the progress bar visible.
         progressBar.setVisibility(View.VISIBLE);
@@ -92,7 +97,8 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
         SpannableStringBuilder responseHeadersBuilder = new SpannableStringBuilder();
         SpannableStringBuilder responseBodyBuilder = new SpannableStringBuilder();
 
-        // Get a handle for the activity.
+        // Get a handle for the context and activity.
+        Context context = contextWeakReference.get();
         Activity activity = activityWeakReference.get();
 
         // Abort if the activity is gone.
@@ -105,8 +111,14 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
             // Get the current URL from the main activity.
             URL url = new URL(formattedUrlString[0]);
 
+            // Instantiate the proxy helper.
+            ProxyHelper proxyHelper = new ProxyHelper();
+
+            // Get the current proxy.
+            Proxy proxy = proxyHelper.getCurrentProxy(context);
+
             // Open a connection to the URL.  No data is actually sent at this point.
-            HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection();
+            HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection(proxy);
 
             // Define the variables necessary to build the request headers.
             requestHeadersBuilder = new SpannableStringBuilder();

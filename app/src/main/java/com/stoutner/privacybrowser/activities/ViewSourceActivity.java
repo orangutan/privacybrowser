@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -161,7 +161,7 @@ public class ViewSourceActivity extends AppCompatActivity {
 
                 // Get new source data for the current URL if it beings with `http`.
                 if (url.startsWith("http")) {
-                    new GetSource(this, userAgent).execute(url);
+                    new GetSource(this, this, userAgent).execute(url);
                 }
 
                 // Consume the key press.
@@ -182,7 +182,7 @@ public class ViewSourceActivity extends AppCompatActivity {
 
             // Get new source data for the URL if it begins with `http`.
             if (url.startsWith("http")) {
-                new GetSource(this, userAgent).execute(url);
+                new GetSource(this, this, userAgent).execute(url);
             } else {
                 // Stop the refresh animation.
                 swipeRefreshLayout.setRefreshing(false);
@@ -199,7 +199,7 @@ public class ViewSourceActivity extends AppCompatActivity {
 
         // Get the source using an AsyncTask if the URL begins with `http`.
         if ((currentUrl != null) && currentUrl.startsWith("http")) {
-            new GetSource(this, userAgent).execute(currentUrl);
+            new GetSource(this, this, userAgent).execute(currentUrl);
         }
     }
 

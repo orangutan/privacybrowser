@@ -202,9 +202,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public final static int DOMAINS_CUSTOM_USER_AGENT = 13;
 
     // Start activity for result request codes.  The public static entries are accessed from `OpenDialog()` and `SaveWebpageDialog()`.
-    public static final int BROWSE_OPEN_REQUEST_CODE = 0;
-    public static final int BROWSE_SAVE_WEBPAGE_REQUEST_CODE = 1;
+    public final static int BROWSE_OPEN_REQUEST_CODE = 0;
+    public final static int BROWSE_SAVE_WEBPAGE_REQUEST_CODE = 1;
     private final int BROWSE_FILE_UPLOAD_REQUEST_CODE = 2;
+
+    // The proxy mode is public static so it can be accessed from `ProxyHelper()`.
+    // It is also used in `onRestart()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `applyAppSettings()`, and `applyProxy()`.
+    // It will be updated in `applyAppSettings()`, but it needs to be initialized here or the first run of `onPrepareOptionsMenu()` crashes.
+    public static String proxyMode = ProxyHelper.NONE;
 
 
     // The permission result request codes are used in `onCreateContextMenu()`, `onCloseDownloadLocationPermissionDialog()`, `onRequestPermissionResult()`, `onSaveWebpage()`,
@@ -239,10 +244,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // `webViewDefaultUserAgent` is used in `onCreate()` and `onPrepareOptionsMenu()`.
     private String webViewDefaultUserAgent;
-
-    // The proxy mode is used in `onRestart()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `applyAppSettings()`, and `applyProxy()`.
-    // It will be updated in `applyAppSettings()`, but it needs to be initialized here or the first run of `onPrepareOptionsMenu()` crashes.
-    private String proxyMode = ProxyHelper.NONE;
 
     // The incognito mode is set in `applyAppSettings()` and used in `initializeWebView()`.
     private boolean incognitoModeEnabled;
@@ -3166,7 +3167,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             switch (saveType) {
                 case StoragePermissionDialog.SAVE:
                     // Save the URL.
-                    new SaveUrl(this, saveWebpageFilePath, currentWebView.getSettings().getUserAgentString(), currentWebView.getAcceptFirstPartyCookies()).execute(saveWebpageUrl);
+                    new SaveUrl(this, this, saveWebpageFilePath, currentWebView.getSettings().getUserAgentString(), currentWebView.getAcceptFirstPartyCookies()).execute(saveWebpageUrl);
                     break;
 
                 case StoragePermissionDialog.SAVE_AS_ARCHIVE:
@@ -3195,7 +3196,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 switch (saveType) {
                     case StoragePermissionDialog.SAVE:
                         // Save the URL.
-                        new SaveUrl(this, saveWebpageFilePath, currentWebView.getSettings().getUserAgentString(), currentWebView.getAcceptFirstPartyCookies()).execute(saveWebpageUrl);
+                        new SaveUrl(this, this, saveWebpageFilePath, currentWebView.getSettings().getUserAgentString(), currentWebView.getAcceptFirstPartyCookies()).execute(saveWebpageUrl);
                         break;
 
                     case StoragePermissionDialog.SAVE_AS_ARCHIVE:
@@ -3346,7 +3347,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
                 if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
                     // Save the raw URL.
-                    new SaveUrl(this, saveWebpageFilePath, currentWebView.getSettings().getUserAgentString(), currentWebView.getAcceptFirstPartyCookies()).execute(saveWebpageUrl);
+                    new SaveUrl(this, this, saveWebpageFilePath, currentWebView.getSettings().getUserAgentString(), currentWebView.getAcceptFirstPartyCookies()).execute(saveWebpageUrl);
                 } else {  // The storage permission was not granted.
                     // Display an error snackbar.
                     Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();

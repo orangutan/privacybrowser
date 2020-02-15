@@ -20,11 +20,13 @@
 package com.stoutner.privacybrowser.asynctasks;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.webkit.CookieManager;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.helpers.ProxyHelper;
 import com.stoutner.privacybrowser.views.NoSwipeViewPager;
 
 import java.io.BufferedInputStream;
@@ -35,10 +37,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
+import java.net.Proxy;
 import java.net.URL;
 
 public class SaveUrl extends AsyncTask<String, Void, String> {
-    // Define a weak reference to the calling activity.
+    // Define a weak references for the calling context and activities.
+    private WeakReference<Context> contextWeakReference;
     private WeakReference<Activity> activityWeakReference;
 
     // Define a success string constant.
@@ -51,8 +55,9 @@ public class SaveUrl extends AsyncTask<String, Void, String> {
     private Snackbar savingFileSnackbar;
 
     // The public constructor.
-    public SaveUrl(Activity activity, String filePathString, String userAgent, boolean cookiesEnabled) {
-        // Populate the weak reference to the calling activity.
+    public SaveUrl(Context context, Activity activity, String filePathString, String userAgent, boolean cookiesEnabled) {
+        // Populate weak references to the calling context and activity.
+        contextWeakReference = new WeakReference<>(context);
         activityWeakReference = new WeakReference<>(activity);
 
         // Store the class variables.
@@ -84,7 +89,8 @@ public class SaveUrl extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... urlToSave) {
-        // Get a handle for the activity.
+        // Get a handle for the context and activity.
+        Context context = contextWeakReference.get();
         Activity activity = activityWeakReference.get();
 
         // Abort if the activity is gone.
@@ -100,8 +106,14 @@ public class SaveUrl extends AsyncTask<String, Void, String> {
             // Get the URL from the main activity.
             URL url = new URL(urlToSave[0]);
 
+            // Instantiate the proxy helper.
+            ProxyHelper proxyHelper = new ProxyHelper();
+
+            // Get the current proxy.
+            Proxy proxy = proxyHelper.getCurrentProxy(context);
+
             // Open a connection to the URL.  No data is actually sent at this point.
-            HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection();
+            HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection(proxy);
 
             // Add the user agent to the header property.
             httpUrlConnection.setRequestProperty("User-Agent", userAgent);
