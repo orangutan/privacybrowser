@@ -44,9 +44,7 @@
     <string name="form_data_deleted">Dati dei Moduli eliminati</string>
     <string name="open_navigation_drawer">Apri il menu di navigazione</string>
     <string name="close_navigation_drawer">Chiudi il menu di navigazione</string>
-    <string name="no_title">Nessun titolo</string>
     <string name="unrecognized_url">URL non riconosciuta:</string>
-    <string name="open_with">Apri con</string>
     <string name="add_tab">Aggiungi Scheda</string>
     <string name="close_tab">Chiudi Scheda</string>
     <string name="new_tab">Nuova Scheda</string>
@@ -61,16 +59,6 @@
     <string name="loading_fanboys_social_blocking_list">Caricamento Fanboy’s Social Blocking List</string>
     <string name="loading_ultralist">Caricamento UltraList</string>
     <string name="loading_ultraprivacy">Caricamento UltraPrivacy</string>
-
-    <!-- Save As. -->
-    <string name="save_as">Salva come</string>
-    <string name="save_image_as">Salva l\'immagine come</string>
-    <string name="file_name">Nome File</string>
-    <string name="image_name">Nome Immagine</string>
-    <string name="unknown_size">Dimensione sconosciuta</string>
-    <string name="download">Scarica</string>
-    <string name="cannot_download_file">Il file non può essere scaricato perché non ha un URL HTTP o HTTPS</string>
-    <string name="cannot_download_image">L\'immagine non può essere scaricata perché non ha un URL HTTP o HTTPS</string>
 
     <!-- Custom App Bar. -->
     <string name="favorite_icon">FavIcon</string>
@@ -191,22 +179,23 @@
     <string name="open_in_background">Apri in Background</string>
     <string name="open_image_in_new_tab">Apri l\'immagine in una nuova scheda</string>
     <string name="copy_url">Copia URL</string>
-    <string name="download_url">Scarica URL</string>
     <string name="email_address">Indirizzo Email</string>
     <string name="copy_email_address">Copia Indirizzo Email</string>
     <string name="write_email">Scrivi Email</string>
     <string name="view_image">Apri Immagine</string>
-    <string name="download_image">Scarica Immagine</string>
 
     <!-- Find on Page. -->
     <string name="previous">Precedente</string>
     <string name="next">Successivo</string>
 
     <!-- Save Webpage. -->
+    <string name="file_name">Nome File</string>
     <string name="save_archive">Salva Archivio</string>
     <string name="save_image">Salva Immagine</string>
     <string name="webpage_mht">PaginaWeb.mht</string>
     <string name="webpage_png">PaginaWeb.png</string>
+    <string name="unknown_size">Dimensione sconosciuta</string>
+    <string name="ok">OK</string>
     <string name="saving_image">Salvataggio immagine…</string>
     <string name="image_saved">Immagine salvata.</string>
     <string name="error_saving_image">Errore nel salvare l\'immagine:</string>
@@ -216,7 +205,6 @@
     <string name="response_message">Messaggio di Risposta</string>
     <string name="response_headers">Risposta Intestazioni</string>
     <string name="response_body">Testo della Risposta</string>
-    <string name="error_body">Testo Errore</string>
     <string name="about_view_source">Informazioni sulla visualizzazione della sorgente</string>
     <string name="about_view_source_message">Dal momento che la WebView di Android non fornisce indicazioni sulla sorgente è stata effettuata una richiesta separata utilizzando i system tools in modo da
         ottenere le informazioni mostrate. Potrebbero esserci alcune differenze tra questi dati e quelli utilizzati da WebView.
@@ -395,12 +383,6 @@
     <string name="ssl_certificates">Certificati SSL</string>
     <string name="proxies">Proxy</string>
     <string name="tracking_ids">Tracciamento utenti</string>
-
-    <!-- Download Location -->
-    <string name="download_location">Cartella di Download</string>
-    <string name="download_location_message">Privacy Browser necessita del permesso di accesso alla memoria di storage per utilizzare la cartella pubblica di download.
-        Nel caso in cui il permesso sia negato sarà utilizzata la cartella di download dell\'applicazione.</string>
-    <string name="ok">OK</string>
 
     <!-- Proxy. -->
     <string name="orbot_not_installed_title">Orbot Non Installato</string>
@@ -587,8 +569,6 @@
         <string name="display_additional_app_bar_icons">Mostra icone addizionali nella barra dell\'applicazione</string>
         <string name="display_additional_app_bar_icons_summary">Mostra nella barra dell\'applicazione le icone per l\'aggiornamento di WebView e, se lo spazio è sufficiente,
             per l\'attivazione dei cookie e del DOM storage.</string>
-        <string name="download_with_external_app">Scarica con un\'applicazione esterna</string>
-        <string name="download_with_external_app_summary">Il download manager di Android potrebbe non funzionare correttamente su alcuni dispositivi.</string>
         <string name="dark_theme">Tema Dark</string>
         <string name="dark_theme_summary">La modifica del tema provocherà il riavvio di Privacy Browser.</string>
         <string name="night_mode">Modalità Notte</string>

@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/PrivacyBrowser.iml" filepath="$PROJECT_DIR$/PrivacyBrowser.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PrivacyBrowser.iml" filepath="$PROJECT_DIR$/PrivacyBrowser.iml" group="PrivacyBrowser" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="PrivacyBrowser/app" />
     </modules>
   </component>
 </project>

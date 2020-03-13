@@ -292,12 +292,6 @@
             android:defaultValue="false" />
 
         <SwitchPreference
-            android:key="download_with_external_app"
-            android:title="@string/download_with_external_app"
-            android:summary="@string/download_with_external_app_summary"
-            android:defaultValue="false" />
-
-        <SwitchPreference
             android:key="dark_theme"
             android:title="@string/dark_theme"
             android:summary="@string/dark_theme_summary"

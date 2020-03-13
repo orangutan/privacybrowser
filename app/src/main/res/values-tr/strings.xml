@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -42,9 +42,7 @@
     <string name="form_data_deleted">Form Verisi silindi</string>
     <string name="open_navigation_drawer">Gezinti Menüsünü aç</string>
     <string name="close_navigation_drawer">Gezinti Menüsünü kapa</string>
-    <string name="no_title">Başlıksız</string>
     <string name="unrecognized_url">Onaylanmamış URL:</string>
-    <string name="open_with">Bununla aç</string>
     <string name="add_tab">Sekme ekle</string>
     <string name="close_tab">Sekmeyi kapa</string>
     <string name="new_tab">Yeni sekme</string>
@@ -58,16 +56,6 @@
     <string name="loading_fanboys_social_blocking_list">Fanboy’s Social Blocking List yükleniyor</string>
     <string name="loading_ultralist">UltraList yükleniyor</string>
     <string name="loading_ultraprivacy">UltraPrivacy yükleniyor</string>
-
-    <!-- Save As. -->
-    <string name="save_as">Farklı kaydet</string>
-    <string name="save_image_as">Resmi farklı kaydet</string>
-    <string name="file_name">Dosya adı</string>
-    <string name="image_name">Resim adı</string>
-    <string name="unknown_size">Bilinmeyen boyut</string>
-    <string name="download">İndir</string>
-    <string name="cannot_download_file">HTTP veya HTTPS kaynak tanımlayıcısı içermediği için bu dosya indirilemiyor.</string>
-    <string name="cannot_download_image">HTTP veya HTTPS kaynak tanımlayıcısı içermediği için bu resim indirilemiyor.</string>
 
     <!-- Custom App Bar. -->
     <string name="favorite_icon">Site Simgesi</string>
@@ -185,20 +173,21 @@
     <string name="open_in_new_tab">Yeni sekmede aç</string>
     <string name="open_image_in_new_tab">Resmi Yeni Sekmede Aç</string>
     <string name="copy_url">URL\'yi kopyala</string>
-    <string name="download_url">URL\'yi indir</string>
     <string name="email_address">E-posta adresi</string>
     <string name="copy_email_address">E-posta adresini kopyala</string>
     <string name="write_email">E-posta yaz</string>
     <string name="view_image">Resmi görüntüle</string>
-    <string name="download_image">Resmi indir</string>
 
     <!-- Find on Page. -->
     <string name="previous">Önceki</string>
     <string name="next">Sonraki</string>
 
     <!-- Save Webpage. -->
+    <string name="file_name">Dosya adı</string>
     <string name="save_image">Resmi kaydet</string>
     <string name="webpage_png">Websayfası.png</string>
+    <string name="unknown_size">Bilinmeyen boyut</string>
+    <string name="ok">OK</string>
     <string name="saving_image">Resim kaydediliyor…</string>
     <string name="image_saved">Resim kaydedildi</string>
     <string name="error_saving_image">Resim kaydı başarısız:</string>
@@ -208,7 +197,6 @@
     <string name="response_message">Yanıt Mesajı</string>
     <string name="response_headers">Yanıt Başlıkları</string>
     <string name="response_body">Yanıt Metni</string>
-    <string name="error_body">Hata Metni</string>
     <string name="about_view_source">Kaynağı Görüntüle Hakkında</string>
     <string name="about_view_source_message">Android WebView kaynak bilgisini gösteremediğinden, bu etkinlikte gösterilen bilgiyi toplamak için sistem araçları kullanılarak ayrı bir istek yapıldı.
         Elde edilen veri ile ana etkinlikteki WebView\'ın kullandığı veri arasında farklılıklar olabilir. Bu sorun, 4.x serisinde Privacy WebView sürümüyle ortadan kalkacaktır.</string>
@@ -382,12 +370,6 @@
     <string name="ssl_certificates">SSL Sertifikaları</string>
     <string name="tracking_ids">İzleme Kimlikleri</string>
 
-    <!-- Download Location -->
-    <string name="download_location">İndirme Konumu</string>
-    <string name="download_location_message">Privacy Browser\'ın genel indirme dizinini kullanması için depolama alanı izni gerekmektedir.
-        Eğer reddedilirse, onun yerine uygulamanın indirme dizini kullanılacaktır.</string>
-    <string name="ok">OK</string>
-
     <!-- Orbot. -->
     <string name="waiting_for_orbot">Orbot\'un bağlanması bekleniyor.</string>
 
@@ -549,8 +531,6 @@
         <string name="scroll_app_bar_summary">WebView aşağı kaydırıldığında, ekranın üst kısmından uygulama çubuğunu kaydırır.</string>
         <string name="display_additional_app_bar_icons">Ek uygulama çubuğu simgelerini göster</string>
         <string name="display_additional_app_bar_icons_summary">WebView\'ı yenilemek, yer varsa çerezleri ve DOM depolamayı değiştirmek için simgeleri uygulama çubuğunda gösterir.</string>
-        <string name="download_with_external_app">Harici uygulamayla indir</string>
-        <string name="download_with_external_app_summary">Android indirme yönetecisi bazı cihazlarda iyi çalışmayabilir.</string>
         <string name="dark_theme">Koyu tema</string>
         <string name="dark_theme_summary">Temayı değiştirmek Privacy Browser\'ı yeniden başlatır.</string>
         <string name="night_mode">Gece modu</string>

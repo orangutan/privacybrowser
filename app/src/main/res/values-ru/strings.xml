@@ -42,9 +42,7 @@
     <string name="form_data_deleted">Данные формы удалены</string>
     <string name="open_navigation_drawer">Открыть панель навигации</string>
     <string name="close_navigation_drawer">Закрыть панель навигации</string>
-    <string name="no_title">Без названия</string>
     <string name="unrecognized_url">Нераспознанный URL:</string>
-    <string name="open_with">Открыть в</string>
     <string name="add_tab">Добавить вкладку</string>
     <string name="close_tab">Закрыть вкладку</string>
     <string name="new_tab">Новая вкладка</string>
@@ -59,16 +57,6 @@
     <string name="loading_fanboys_social_blocking_list">Загрузка Fanboy’s Social Blocking List</string>
     <string name="loading_ultralist">Загрузка UltraList</string>
     <string name="loading_ultraprivacy">Загрузка UltraPrivacy</string>
-
-    <!-- Save As. -->
-    <string name="save_as">Сохранить как</string>
-    <string name="save_image_as">Сохранить изображение как</string>
-    <string name="file_name">Имя файла</string>
-    <string name="image_name">Название изображения</string>
-    <string name="unknown_size">неизвестный размер</string>
-    <string name="download">Скачать</string>
-    <string name="cannot_download_file">Невозможно загрузить этот файл, поскольку он не содержит идентификатор ресурса HTTP или HTTPS.</string>
-    <string name="cannot_download_image">Невозможно загрузить это изображение, поскольку оно не содержит идентификатор ресурса HTTP или HTTPS.</string>
 
     <!-- Custom App Bar. -->
     <string name="favorite_icon">Значок сайта</string>
@@ -188,22 +176,23 @@
     <string name="open_in_background">Открыть в фоне</string>
     <string name="open_image_in_new_tab">Открыть изображение в новой вкладке</string>
     <string name="copy_url">Копировать URL</string>
-    <string name="download_url">Загрузить URL</string>
     <string name="email_address">Адрес email</string>
     <string name="copy_email_address">Копировать адрес email</string>
     <string name="write_email">Написать email</string>
     <string name="view_image">Просмотр изображения</string>
-    <string name="download_image">Скачать изображение</string>
 
     <!-- Find on Page. -->
     <string name="previous">Предыдущий</string>
     <string name="next">Следующий</string>
 
     <!-- Save Webpage. -->
+    <string name="file_name">Имя файла</string>
     <string name="save_archive">Сохранить архив</string>
     <string name="save_image">Сохранить изображение</string>
     <string name="webpage_mht">Webpage.mht</string>
     <string name="webpage_png">Webpage.png</string>
+    <string name="unknown_size">неизвестный размер</string>
+    <string name="ok">OK</string>
     <string name="saving_image">Сохранение изображения…</string>
     <string name="image_saved">Изображение сохранено.</string>
     <string name="error_saving_image">Ошибка сохранения изображения:</string>
@@ -213,7 +202,6 @@
     <string name="response_message">Ответное сообщение</string>
     <string name="response_headers">Заголовки ответа</string>
     <string name="response_body">Тело ответа</string>
-    <string name="error_body">Тело ошибки</string>
     <string name="about_view_source">О просмотре исходного кода</string>
     <string name="about_view_source_message">Поскольку Android WebView не предоставляет исходные данные, для сбора информации, отображаемой в этом действии,
         был сделан отдельный запрос с помощью системных средств. Между этими данными и теми, которые используются в WebView, могут быть некоторые отличия.
@@ -390,12 +378,6 @@
     <string name="ssl_certificates">Сертификаты SSL</string>
     <string name="proxies">Прокси</string>
     <string name="tracking_ids">Идентификаторы отслеживания</string>
-
-    <!-- Download Location -->
-    <string name="download_location">Папка загрузок</string>
-    <string name="download_location_message">Privacy Browser необходимо разрешение на доступ к хранилищу для использования общей папки загрузок.
-        Если разрешение получено не будет, то для загрузок будет использоваться папка приложения</string>
-    <string name="ok">OK</string>
 
     <!-- Proxy. -->
     <string name="orbot_not_installed_title">Orbot не установлен</string>
@@ -580,8 +562,6 @@
         <string name="scroll_app_bar_summary">Прокручивает панель приложения вверху экрана при прокрутке WebView вниз.</string>
         <string name="display_additional_app_bar_icons">Отображать дополнительные значки на панели приложения</string>
         <string name="display_additional_app_bar_icons_summary">Отображать значки на панели приложения для обновления WebView и, при наличии места, для переключения файлов cookie и хранилища DOM</string>
-        <string name="download_with_external_app">Загрузка с помощью внешнего приложения</string>
-        <string name="download_with_external_app_summary">Менеджер загрузок Android не работает на некоторых устройствах.</string>
         <string name="dark_theme">Темная тема</string>
         <string name="dark_theme_summary">Изменение темы перезапускает Privacy Browser.</string>
         <string name="night_mode">Ночной режим</string>

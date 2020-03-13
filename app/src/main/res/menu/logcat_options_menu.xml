@@ -25,7 +25,7 @@
     <!-- `android:iconTint` can be used once the minimum API >= 26 instead of including a separate drawable for each theme. -->
     <item
         android:id="@+id/copy"
-        android:title="@string/copy"
+        android:title="@string/copy_string"
         android:orderInCategory="10"
         android:icon="?attr/copyIcon"
         app:showAsAction="always" />

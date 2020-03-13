@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -39,7 +39,7 @@ public class ImportExportDatabaseHelper {
     public static final String EXPORT_SUCCESSFUL = "Export Successful";
     public static final String IMPORT_SUCCESSFUL = "Import Successful";
 
-    private static final int SCHEMA_VERSION = 9;
+    private static final int SCHEMA_VERSION = 10;
     private static final String PREFERENCES_TABLE = "preferences";
 
     // The preferences constants.
@@ -81,7 +81,6 @@ public class ImportExportDatabaseHelper {
     private static final String SWIPE_TO_REFRESH = "swipe_to_refresh";
     private static final String SCROLL_APP_BAR = "scroll_app_bar";
     private static final String DISPLAY_ADDITIONAL_APP_BAR_ICONS = "display_additional_app_bar_icons";
-    private static final String DOWNLOAD_WITH_EXTERNAL_APP = "download_with_external_app";
     private static final String DARK_THEME = "dark_theme";
     private static final String NIGHT_MODE = "night_mode";
     private static final String WIDE_VIEWPORT = "wide_viewport";
@@ -235,7 +234,6 @@ public class ImportExportDatabaseHelper {
                     SWIPE_TO_REFRESH + " BOOLEAN, " +
                     SCROLL_APP_BAR + " BOOLEAN, " +
                     DISPLAY_ADDITIONAL_APP_BAR_ICONS + " BOOLEAN, " +
-                    DOWNLOAD_WITH_EXTERNAL_APP + " BOOLEAN, " +
                     DARK_THEME + " BOOLEAN, " +
                     NIGHT_MODE + " BOOLEAN, " +
                     WIDE_VIEWPORT + " BOOLEAN, " +
@@ -286,7 +284,6 @@ public class ImportExportDatabaseHelper {
             preferencesContentValues.put(SWIPE_TO_REFRESH, sharedPreferences.getBoolean(SWIPE_TO_REFRESH, true));
             preferencesContentValues.put(SCROLL_APP_BAR, sharedPreferences.getBoolean(SCROLL_APP_BAR, true));
             preferencesContentValues.put(DISPLAY_ADDITIONAL_APP_BAR_ICONS, sharedPreferences.getBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, false));
-            preferencesContentValues.put(DOWNLOAD_WITH_EXTERNAL_APP, sharedPreferences.getBoolean(DOWNLOAD_WITH_EXTERNAL_APP, false));
             preferencesContentValues.put(DARK_THEME, sharedPreferences.getBoolean(DARK_THEME, false));
             preferencesContentValues.put(NIGHT_MODE, sharedPreferences.getBoolean(NIGHT_MODE, false));
             preferencesContentValues.put(WIDE_VIEWPORT, sharedPreferences.getBoolean(WIDE_VIEWPORT, true));
@@ -369,18 +366,7 @@ public class ImportExportDatabaseHelper {
                 switch (importDatabaseVersion){
                     // Upgrade from schema version 1.
                     case 1:
-                        // Add the download with external app column to the preferences table.
-                        importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + DOWNLOAD_WITH_EXTERNAL_APP + " BOOLEAN");
-
-                        // Get the current setting for downloading with an external app.
-                        boolean downloadWithExternalApp = sharedPreferences.getBoolean(DOWNLOAD_WITH_EXTERNAL_APP, false);
-
-                        // Set the download with external app preference to the current value.
-                        if (downloadWithExternalApp) {
-                            importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + DOWNLOAD_WITH_EXTERNAL_APP + " = " + 1);
-                        } else {
-                            importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + DOWNLOAD_WITH_EXTERNAL_APP + " = " + 0);
-                        }
+                        // Previously this upgrade added `download_with_external_app` to the Preferences table.  But that is now removed in schema version 10.
 
                     // Upgrade from schema version 2.
                     case 2:
@@ -534,6 +520,10 @@ public class ImportExportDatabaseHelper {
                         // Populate the table with the current proxy values.
                         importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + PROXY + " = '" + proxy + "'");
                         importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + PROXY_CUSTOM_URL + " = '" + proxyCustomUrl + "'");
+
+                    // Upgrade from schema version 9.
+                    case 9:
+                        // `download_with_external_app` was removed the the Preferences table in schema version 10, but there is no need to make any modifications to the database.
                 }
             }
 
@@ -687,7 +677,6 @@ public class ImportExportDatabaseHelper {
                     .putBoolean(SWIPE_TO_REFRESH, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(SWIPE_TO_REFRESH)) == 1)
                     .putBoolean(SCROLL_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(SCROLL_APP_BAR)) == 1)
                     .putBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DISPLAY_ADDITIONAL_APP_BAR_ICONS)) == 1)
-                    .putBoolean(DOWNLOAD_WITH_EXTERNAL_APP, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DOWNLOAD_WITH_EXTERNAL_APP)) == 1)
                     .putBoolean(DARK_THEME, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DARK_THEME)) == 1)
                     .putBoolean(NIGHT_MODE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(NIGHT_MODE)) == 1)
                     .putBoolean(WIDE_VIEWPORT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(WIDE_VIEWPORT)) == 1)

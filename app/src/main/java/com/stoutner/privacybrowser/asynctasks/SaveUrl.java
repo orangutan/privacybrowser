@@ -21,6 +21,8 @@ package com.stoutner.privacybrowser.asynctasks;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.webkit.CookieManager;
 
@@ -39,9 +41,10 @@ import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
+import java.text.NumberFormat;
 
-public class SaveUrl extends AsyncTask<String, Void, String> {
-    // Define a weak references for the calling context and activities.
+public class SaveUrl extends AsyncTask<String, Long, String> {
+    // Define a weak references for the calling context and activity.
     private WeakReference<Context> contextWeakReference;
     private WeakReference<Activity> activityWeakReference;
 
@@ -81,7 +84,7 @@ public class SaveUrl extends AsyncTask<String, Void, String> {
         NoSwipeViewPager noSwipeViewPager = activity.findViewById(R.id.webviewpager);
 
         // Create a saving file snackbar.
-        savingFileSnackbar = Snackbar.make(noSwipeViewPager, R.string.saving_file, Snackbar.LENGTH_INDEFINITE);
+        savingFileSnackbar = Snackbar.make(noSwipeViewPager, activity.getString(R.string.saving_file) + ":  " + filePathString, Snackbar.LENGTH_INDEFINITE);
 
         // Display the saving file snackbar.
         savingFileSnackbar.show();
@@ -103,7 +106,7 @@ public class SaveUrl extends AsyncTask<String, Void, String> {
 
         // Because everything relating to requesting data from a webserver can throw errors, the entire section must catch `IOExceptions`.
         try {
-            // Get the URL from the main activity.
+            // Get the URL from the calling activity.
             URL url = new URL(urlToSave[0]);
 
             // Instantiate the proxy helper.
@@ -132,8 +135,20 @@ public class SaveUrl extends AsyncTask<String, Void, String> {
 
             // The actual network request is in a `try` bracket so that `disconnect()` is run in the `finally` section even if an error is encountered in the main block.
             try {
-                // Get the response code, which causes the connection to the server to be made.
-                httpUrlConnection.getResponseCode();
+                // Get the content length header, which causes the connection to the server to be made.
+                String contentLengthString = httpUrlConnection.getHeaderField("Content-Length");
+
+                // Define the file size long.
+                long fileSize;
+
+                // Make sure the content length isn't null.
+                if (contentLengthString != null) {  // The content length isn't null.
+                    // Convert the content length to an long.
+                    fileSize = Long.parseLong(contentLengthString);
+                } else {  // The content length is null.
+                    // Set the file size to be `-1`.
+                    fileSize = -1;
+                }
 
                 // Get the response body stream.
                 InputStream inputStream = new BufferedInputStream(httpUrlConnection.getInputStream());
@@ -157,6 +172,9 @@ public class SaveUrl extends AsyncTask<String, Void, String> {
                 // Initialize the conversion buffer byte array.
                 byte[] conversionBufferByteArray = new byte[1024];
 
+                // Initialize the downloaded kilobytes counter.
+                long downloadedKilobytesCounter = 0;
+
                 // Define the buffer length variable.
                 int bufferLength;
 
@@ -164,6 +182,23 @@ public class SaveUrl extends AsyncTask<String, Void, String> {
                 while ((bufferLength = inputStream.read(conversionBufferByteArray)) > 0) {  // Proceed while the amount of data stored in the buffer in > 0.
                     // Write the contents of the conversion buffer to the output stream.
                     outputStream.write(conversionBufferByteArray, 0, bufferLength);
+
+                    // Increment the downloaded kilobytes counter.
+                    downloadedKilobytesCounter++;
+
+                    // Update the file download progress snackbar.
+                    if (fileSize == -1) {  // The file size is unknown.
+                        // Convert the downloaded kilobytes counter to a negative number
+                        long downloadedKilobytes = 0 - downloadedKilobytesCounter;
+
+                        publishProgress(downloadedKilobytes);
+                    } else {  // The file size is known.
+                        // Calculate the download percentage.
+                        long downloadPercentage = (downloadedKilobytesCounter * 1024 * 100) / fileSize;
+
+                        // Update the download percentage.
+                        publishProgress(downloadPercentage);
+                    }
                 }
 
                 // Close the input stream.
@@ -171,6 +206,15 @@ public class SaveUrl extends AsyncTask<String, Void, String> {
 
                 // Close the output stream.
                 outputStream.close();
+
+                // Define a media scanner intent, which adds items like pictures to Android's recent file list.
+                Intent mediaScannerIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+
+                // Add the URI to the media scanner intent.
+                mediaScannerIntent.setData(Uri.fromFile(file));
+
+                // Make it so.
+                activity.sendBroadcast(mediaScannerIntent);
             } finally {
                 // Disconnect the HTTP URL connection.
                 httpUrlConnection.disconnect();
@@ -182,6 +226,33 @@ public class SaveUrl extends AsyncTask<String, Void, String> {
 
         // Return the save disposition string.
         return saveDisposition;
+    }
+
+    // `onProgressUpdate()` operates on the UI thread.
+    @Override
+    protected void onProgressUpdate(Long... downloadPercentage) {
+        // Get a handle for the activity.
+        Activity activity = activityWeakReference.get();
+
+        // Abort if the activity is gone.
+        if ((activity == null) || activity.isFinishing()) {
+            return;
+        }
+
+        // Check to see if a download percentage has been calculated.
+        if (downloadPercentage[0] < 0) {  // There is no download percentage.  The negative number represents the raw downloaded kilobytes.
+            // Calculate the number of bytes downloaded.
+            long numberOfBytesDownloaded = (0 - downloadPercentage[0]) * 1024;
+
+            // Format the number of bytes downloaded.
+            String formattedNumberOfBytesDownloaded = NumberFormat.getInstance().format(numberOfBytesDownloaded);
+
+            // Update the snackbar.
+            savingFileSnackbar.setText(activity.getString(R.string.saving_file) + ":  " + formattedNumberOfBytesDownloaded + " " + activity.getString(R.string.bytes) + " - " + filePathString);
+        } else {  // There is a download percentage.
+            // Update the snackbar.
+            savingFileSnackbar.setText(activity.getString(R.string.saving_file) + ":  " + downloadPercentage[0] + "% - " + filePathString);
+        }
     }
 
     // `onPostExecute()` operates on the UI thread.

@@ -48,9 +48,7 @@
     <string name="form_data_deleted">Formulardaten gelöscht</string>
     <string name="open_navigation_drawer">Navigationspanel öffnen</string>
     <string name="close_navigation_drawer">Navigationspanel schließen</string>
-    <string name="no_title">Kein Titel</string>
     <string name="unrecognized_url">Unbekannte URL:</string>
-    <string name="open_with">Öffnen mit</string>
     <string name="add_tab">Tab hinzufügen</string>
     <string name="close_tab">Tab schließen</string>
     <string name="new_tab">Neuer Tab</string>
@@ -65,16 +63,6 @@
     <string name="loading_fanboys_social_blocking_list">Fanboy’s Social Blocking Filterliste</string>
     <string name="loading_ultralist">Lade UltraList</string>
     <string name="loading_ultraprivacy">Lade UltraPrivacy</string>
-
-    <!-- Save As. -->
-    <string name="save_as">Speichern Unter</string>
-    <string name="save_image_as">Bild Speichern Unter</string>
-    <string name="file_name">Dateiname</string>
-    <string name="image_name">Name des Bildes</string>
-    <string name="unknown_size">Unbekannte Größe</string>
-    <string name="download">Download</string>
-    <string name="cannot_download_file">Diese Datei kann nicht heruntergeladen werden, da sie keine HTTP oder HTTPS URI besitzt.</string>
-    <string name="cannot_download_image">Dieses Bild kann nicht heruntergeladen werden, da es keine HTTP oder HTTPS URI besitzt.</string>
 
     <!-- Custom App Bar. -->
     <string name="favorite_icon">Website-Icon</string>
@@ -195,22 +183,23 @@
     <string name="open_in_background">Im Hintergrund öffnen</string>
     <string name="open_image_in_new_tab">Grafik in neuem Tab öffnen</string>
     <string name="copy_url">URL kopieren</string>
-    <string name="download_url">Download URL</string>
     <string name="email_address">E-Mail-Adresse</string>
     <string name="copy_email_address">E-Mail-Adresse kopieren</string>
     <string name="write_email">E-Mail senden</string>
     <string name="view_image">Bild anzeigen</string>
-    <string name="download_image">Bild herunterladen</string>
 
     <!-- Find on Page. -->
     <string name="previous">Vorheriges</string>
     <string name="next">Nächstes</string>
 
     <!-- Save Webpage. -->
+    <string name="file_name">Dateiname</string>
     <string name="save_archive">Archiv speichern</string>
     <string name="save_image">Grafik speichern</string>
     <string name="webpage_mht">Webseite.mht</string>
     <string name="webpage_png">Webseite.png</string>
+    <string name="unknown_size">Unbekannte Größe</string>
+    <string name="ok">OK</string>
     <string name="saving_image">Speichere Grafik…</string>
     <string name="image_saved">Grafik gespeichert.</string>
     <string name="error_saving_image">Fehler beim Speichern der Grafik:</string>
@@ -220,7 +209,6 @@
     <string name="response_message">Status-Code</string>
     <string name="response_headers">Antwortkopfzeilen</string>
     <string name="response_body">Antwortinhalt</string>
-    <string name="error_body">Fehler</string>
     <string name="about_view_source">Über Quelltext</string>
     <string name="about_view_source_message">Weil Androids WebView keine Quelltext-Informationen zur Verfügung stellt, muss eine separate a separate Serveranfrage mit system tools gestellt werden,
         die hier dargestellten Daten erhält. Deshalb können Unterschiede zwischen diesen Daten und der mit WebView dargestellten Webseite auftreten.
@@ -398,11 +386,6 @@
     <string name="ssl_certificates">SSL-Zertifikate</string>
     <string name="proxies">Proxies</string>
     <string name="tracking_ids">Verolgungs-IDs</string>
-
-    <!-- Download Location -->
-    <string name="download_location">Download-Zielordner</string>
-    <string name="download_location_message">Privacy Browser benötigt die Berechtigung zur Speicherung im öffentlichen Download-Ordner. Anderenfalls wird der Download-Ordner der App verwendet.</string>
-    <string name="ok">OK</string>
 
     <!-- Proxy. -->
     <string name="orbot_not_installed_title">Orbot ist nicht installiert</string>
@@ -590,8 +573,6 @@
         <string name="display_additional_app_bar_icons">Weitere Icons in der Titelleiste</string>
         <string name="display_additional_app_bar_icons_summary">Zeigt in der App-Leiste die Icons zum Neu-Laden der Webseite und - sofern Platz vorhanden ist -
             zum Umschalten von Cookies und DOM Storage.</string>
-        <string name="download_with_external_app">Mit externer App herunterladen</string>
-        <string name="download_with_external_app_summary">Android’s Download-Manager funktioniert auf manchen Geräten nicht zufriedenstellend.</string>
         <string name="dark_theme">Dunkles Thema</string>
         <string name="dark_theme_summary">Wechseln des Themas startet Privacy Browser neu.</string>
         <string name="night_mode">Nacht-Modus</string>

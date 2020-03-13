@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -100,7 +100,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Preference swipeToRefreshPreference = findPreference("swipe_to_refresh");
         Preference scrollAppBarPreference = findPreference("scroll_app_bar");
         Preference displayAdditionalAppBarIconsPreference = findPreference("display_additional_app_bar_icons");
-        Preference downloadWithExternalAppPreference = findPreference("download_with_external_app");
         Preference darkThemePreference = findPreference("dark_theme");
         Preference nightModePreference = findPreference("night_mode");
         Preference wideViewportPreference = findPreference("wide_viewport");
@@ -144,7 +143,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         assert swipeToRefreshPreference != null;
         assert scrollAppBarPreference != null;
         assert displayAdditionalAppBarIconsPreference != null;
-        assert downloadWithExternalAppPreference != null;
         assert darkThemePreference != null;
         assert nightModePreference != null;
         assert wideViewportPreference != null;
@@ -784,21 +782,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_dark);
             } else {
                 displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_light);
-            }
-        }
-
-        // Set the download with external app preference icon.
-        if (savedPreferences.getBoolean("download_with_external_app", false)) {
-            if (darkTheme) {
-                downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_dark);
-            } else {
-                downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_light);
-            }
-        } else {
-            if (darkTheme) {
-                downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_dark);
-            } else {
-                downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_light);
             }
         }
 
@@ -1681,23 +1664,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_dark);
                         } else {
                             displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_light);
-                        }
-                    }
-                    break;
-
-                case "download_with_external_app":
-                    // Update the icon.
-                    if (sharedPreferences.getBoolean("download_with_external_app", false)) {
-                        if (darkTheme) {
-                            downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_dark);
-                        } else {
-                            downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_light);
-                        }
-                    } else {
-                        if (darkTheme) {
-                            downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_dark);
-                        } else {
-                            downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_light);
                         }
                     }
                     break;

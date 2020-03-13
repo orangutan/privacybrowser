@@ -45,9 +45,7 @@
     <string name="form_data_deleted">Données de formulaires supprimées</string>
     <string name="open_navigation_drawer">Ouvrir le panneau de navigation</string>
     <string name="close_navigation_drawer">Fermer le panneau de navigation</string>
-    <string name="no_title">Sans titre</string>
     <string name="unrecognized_url">URL inconnue:</string>
-    <string name="open_with">Ouvrir avec</string>
     <string name="add_tab">Ajouter un onglet</string>
     <string name="close_tab">Fermer l\'onglet</string>
     <string name="new_tab">Nouvel onglet</string>
@@ -62,16 +60,6 @@
     <string name="loading_fanboys_social_blocking_list">Chargement Fanboy’s Social Blocking List</string>
     <string name="loading_ultralist">Chargement UltraList</string>
     <string name="loading_ultraprivacy">Chargement UltraPrivacy</string>
-
-    <!-- Save As. -->
-    <string name="save_as">Sauvergarder sous</string>
-    <string name="save_image_as">Sauvergarder l\'image sous</string>
-    <string name="file_name">Nom du fichier</string>
-    <string name="image_name">Nom de l\'image</string>
-    <string name="unknown_size">taille inconnue</string>
-    <string name="download">Télécharger</string>
-    <string name="cannot_download_file">Ce fichier ne peut être téléchargé car il n\'a pas d\'URI du type HTTP ou HTTPS.</string>
-    <string name="cannot_download_image">Cette image ne peut être téléchargée car elle n\'a pas d\'URI du type HTTP ou HTTPS.</string>
 
     <!-- Custom App Bar. -->
     <string name="favorite_icon">Icône de Favoris</string>
@@ -192,22 +180,23 @@
     <string name="open_in_background">Ouvrir en arrière-plan</string>
     <string name="open_image_in_new_tab">Ouvrir l\'image dans un nouvel onglet</string>
     <string name="copy_url">Copier l\'URL</string>
-    <string name="download_url">Télécharger la cible</string>
     <string name="email_address">Addresse e-mail</string>
     <string name="copy_email_address">Copier l\'adresse e-mail</string>
     <string name="write_email">Ecrire un e-mail</string>
     <string name="view_image">Voir l\'image</string>
-    <string name="download_image">Télécharger l\'image</string>
 
     <!-- Find on Page. -->
     <string name="previous">Précédent</string>
     <string name="next">Suivant</string>
 
     <!-- Save Webpage. -->
+    <string name="file_name">Nom du fichier</string>
     <string name="save_archive">Enregistrer l\'archive</string>
     <string name="save_image">Sauvegarder en tant qu\'image</string>
     <string name="webpage_mht">PageWeb.mht</string>
     <string name="webpage_png">PageWeb.png</string>
+    <string name="unknown_size">taille inconnue</string>
+    <string name="ok">OK</string>
     <string name="saving_image">Sauvegarde en cours…</string>
     <string name="image_saved">Image sauvegardée.</string>
     <string name="error_saving_image">Erreur durant la sauvegarde :</string>
@@ -217,7 +206,6 @@
     <string name="response_message">Message de la réponse</string>
     <string name="response_headers">En-tête de la réponse</string>
     <string name="response_body">Corps de la réponse</string>
-    <string name="error_body">Erreur dans le corps de réponse</string>
     <string name="about_view_source">A propos View Source</string>
     <string name="about_view_source_message">Puisqu\'Android Webview ne permet pas de révêler l\'information source,
         une requête séparée a été effectuée en utilisant les outils sytèmes afin d\'afficher ce qui est présenté à l\'écran
@@ -396,12 +384,6 @@
     <string name="ssl_certificates">Certificats SSL</string>
     <string name="proxies">Proxies</string>
     <string name="tracking_ids">ID de suivi</string>
-
-    <!-- Download Location -->
-    <string name="download_location">Dossier de téléchargement</string>
-    <string name="download_location_message">Privacy Browser nécessite les droits d\'accès au stockage pour accéder aux dossiers publics.
-        Si cela est refusé, les dossiers internes à l\'application peut néanmoins être utilisé.</string>
-    <string name="ok">OK</string>
 
     <!-- Proxy. -->
     <string name="orbot_not_installed_title">Orbot non installé</string>
@@ -589,8 +571,6 @@
         <string name="display_additional_app_bar_icons">Icônes supplémentaires dans la barre d\'applications</string>
         <string name="display_additional_app_bar_icons_summary">Affichez des icônes dans la barre d\'applications pour actualiser WebView et, le cas échéant,
             pour activer/désactiver les cookies et le stockage DOM.</string>
-        <string name="download_with_external_app">Téléchargement externe</string>
-        <string name="download_with_external_app_summary">Le gestionnaire de téléchargement Android ne fonctionne pas bien sur certains appareils.</string>
         <string name="dark_theme">Thème sombre</string>
         <string name="dark_theme_summary">Le changement de thème redémarre Privacy Browser.</string>
         <string name="night_mode">Mode nuit</string>

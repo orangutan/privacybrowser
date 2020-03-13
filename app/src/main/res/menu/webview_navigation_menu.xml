@@ -24,7 +24,7 @@
     <item
         android:id="@+id/clear_and_exit"
         android:title="@string/clear_and_exit"
-        android:icon="@drawable/open_with_external_app_enabled_light"
+        android:icon="@drawable/clear_and_exit"
         android:orderInCategory="10" />
 
     <!-- If a group has an id, a line is drawn above it in the navigation view. -->
@@ -75,7 +75,7 @@
         <item
             android:id="@+id/downloads"
             android:title="@string/downloads"
-            android:icon="@drawable/downloads_light"
+            android:icon="@drawable/downloads"
             android:orderInCategory="80" />
     </group>
 

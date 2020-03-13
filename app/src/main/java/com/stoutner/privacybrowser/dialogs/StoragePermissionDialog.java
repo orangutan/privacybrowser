@@ -36,7 +36,7 @@ import com.stoutner.privacybrowser.R;
 public class StoragePermissionDialog extends DialogFragment {
     // Define the save type constants.
     public static final int OPEN = 0;
-    public static final int SAVE = 1;
+    public static final int SAVE_URL = 1;
     public static final int SAVE_AS_ARCHIVE = 2;
     public static final int SAVE_AS_IMAGE = 3;
 

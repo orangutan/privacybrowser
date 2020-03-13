@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -49,10 +50,11 @@ import androidx.preference.PreferenceManager;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
+import com.stoutner.privacybrowser.asynctasks.GetUrlSize;
 
 import java.io.File;
 
-public class SaveWebpageDialog extends DialogFragment {
+public class SaveDialog extends DialogFragment {
     // Define the save webpage listener.
     private SaveWebpageListener saveWebpageListener;
 
@@ -60,6 +62,9 @@ public class SaveWebpageDialog extends DialogFragment {
     public interface SaveWebpageListener {
         void onSaveWebpage(int saveType, DialogFragment dialogFragment);
     }
+
+    // Define the get URL size AsyncTask.  This allows previous instances of the task to be cancelled if a new one is run.
+    private AsyncTask getUrlSize;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -70,16 +75,18 @@ public class SaveWebpageDialog extends DialogFragment {
         saveWebpageListener = (SaveWebpageListener) context;
     }
 
-    public static SaveWebpageDialog saveUrl(int saveType, String url) {
+    public static SaveDialog saveUrl(int saveType, String url, String userAgent, boolean cookiesEnabled) {
         // Create an arguments bundle.
         Bundle argumentsBundle = new Bundle();
 
         // Store the arguments in the bundle.
         argumentsBundle.putInt("save_type", saveType);
         argumentsBundle.putString("url", url);
+        argumentsBundle.putString("user_agent", userAgent);
+        argumentsBundle.putBoolean("cookies_enabled", cookiesEnabled);
 
         // Create a new instance of the save webpage dialog.
-        SaveWebpageDialog saveWebpageDialog = new SaveWebpageDialog();
+        SaveDialog saveWebpageDialog = new SaveDialog();
 
         // Add the arguments bundle to the new dialog.
         saveWebpageDialog.setArguments(argumentsBundle);
@@ -102,6 +109,8 @@ public class SaveWebpageDialog extends DialogFragment {
         // Get the arguments from the bundle.
         int saveType = arguments.getInt("save_type");
         String url = arguments.getString("url");
+        String userAgent = arguments.getString("user_agent");
+        boolean cookiesEnabled = arguments.getBoolean("cookies_enabled");
 
         // Get a handle for the activity and the context.
         Activity activity = getActivity();
@@ -128,7 +137,7 @@ public class SaveWebpageDialog extends DialogFragment {
 
             // Set the icon according to the save type.
             switch (saveType) {
-                case StoragePermissionDialog.SAVE:
+                case StoragePermissionDialog.SAVE_URL:
                     dialogBuilder.setIcon(R.drawable.copy_enabled_dark);
                     break;
 
@@ -146,7 +155,7 @@ public class SaveWebpageDialog extends DialogFragment {
 
             // Set the icon according to the save type.
             switch (saveType) {
-                case StoragePermissionDialog.SAVE:
+                case StoragePermissionDialog.SAVE_URL:
                     dialogBuilder.setIcon(R.drawable.copy_enabled_light);
                     break;
 
@@ -162,7 +171,7 @@ public class SaveWebpageDialog extends DialogFragment {
 
         // Set the title according to the type.
         switch (saveType) {
-            case StoragePermissionDialog.SAVE:
+            case StoragePermissionDialog.SAVE_URL:
                 dialogBuilder.setTitle(R.string.save);
                 break;
 
@@ -176,7 +185,7 @@ public class SaveWebpageDialog extends DialogFragment {
         }
 
         // Set the view.  The parent view is null because it will be assigned by the alert dialog.
-        dialogBuilder.setView(activity.getLayoutInflater().inflate(R.layout.save_webpage_dialog, null));
+        dialogBuilder.setView(activity.getLayoutInflater().inflate(R.layout.save_dialog, null));
 
         // Set the cancel button listener.  Using `null` as the listener closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.cancel, null);
@@ -205,6 +214,7 @@ public class SaveWebpageDialog extends DialogFragment {
         EditText urlEditText = alertDialog.findViewById(R.id.url_edittext);
         EditText fileNameEditText = alertDialog.findViewById(R.id.file_name_edittext);
         Button browseButton = alertDialog.findViewById(R.id.browse_button);
+        TextView fileSizeTextView = alertDialog.findViewById(R.id.file_size_textview);
         TextView fileExistsWarningTextView = alertDialog.findViewById(R.id.file_exists_warning_textview);
         TextView storagePermissionTextView = alertDialog.findViewById(R.id.storage_permission_textview);
         Button saveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
@@ -223,8 +233,22 @@ public class SaveWebpageDialog extends DialogFragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                // Cancel the get URL size AsyncTask if it is running.
+                if ((getUrlSize != null)) {
+                    getUrlSize.cancel(true);
+                }
+
+                // Get the current URL to save.
+                String urlToSave = urlEditText.getText().toString();
+
+                // Wipe the file size text view.
+                fileSizeTextView.setText("");
+
+                // Get the file size for the current URL.
+                getUrlSize = new GetUrlSize(context, alertDialog, userAgent, cookiesEnabled).execute(urlToSave);
+
                 // Enable the save button if the URL and file name are populated.
-                saveButton.setEnabled(!urlEditText.getText().toString().isEmpty() && !fileNameEditText.getText().toString().isEmpty());
+                saveButton.setEnabled(!urlToSave.isEmpty() && !fileNameEditText.getText().toString().isEmpty());
             }
         });
 
@@ -267,7 +291,7 @@ public class SaveWebpageDialog extends DialogFragment {
 
         // Set the file name according to the type.
         switch (saveType) {
-            case StoragePermissionDialog.SAVE:
+            case StoragePermissionDialog.SAVE_URL:
                 // Convert the URL to a URI.
                 Uri uri = Uri.parse(url);
 

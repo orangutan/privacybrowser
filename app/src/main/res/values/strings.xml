@@ -49,9 +49,7 @@
     <string name="form_data_deleted">Form Data deleted</string>
     <string name="open_navigation_drawer">Open Navigation Drawer</string>
     <string name="close_navigation_drawer">Close Navigation Drawer</string>
-    <string name="no_title">No title</string>
     <string name="unrecognized_url">Unrecognized URL:</string>
-    <string name="open_with">Open with</string>
     <string name="add_tab">Add tab</string>
     <string name="close_tab">Close Tab</string>
     <string name="new_tab">New tab</string>
@@ -68,14 +66,6 @@
     <string name="loading_ultraprivacy">Loading UltraPrivacy</string>
 
     <!-- Save As. -->
-    <string name="save_as">Save As</string>
-    <string name="save_image_as">Save Image As</string>
-    <string name="file_name">File name</string>
-    <string name="image_name">Image name</string>
-    <string name="unknown_size">unknown size</string>
-    <string name="download">Download</string>
-    <string name="cannot_download_file">This file cannot be downloaded because it does not have an HTTP or HTTPS URI.</string>
-    <string name="cannot_download_image">This image cannot be downloaded because it does not have an HTTP or HTTPS URI.</string>
 
     <!-- Custom App Bar. -->
     <string name="favorite_icon">Favorite Icon</string>
@@ -196,12 +186,10 @@
     <string name="open_in_background">Open in Background</string>
     <string name="open_image_in_new_tab">Open Image in New Tab</string>
     <string name="copy_url">Copy URL</string>
-    <string name="download_url">Download URL</string>
     <string name="email_address">Email Address</string>
     <string name="copy_email_address">Copy Email Address</string>
     <string name="write_email">Write Email</string>
     <string name="view_image">View Image</string>
-    <string name="download_image">Download Image</string>
 
     <!-- Find on Page. -->
     <string name="zero_of_zero" translatable="false">0/0</string>
@@ -210,12 +198,17 @@
 
     <!-- Save Webpage. -->
     <string name="save_dialog" translatable="false">Save Dialog</string>  <!-- This string is used to tag the save dialog.  It is never displayed to the user. -->
+    <string name="file_name">File name</string>
     <string name="save_archive">Save Archive</string>
     <string name="save_image">Save Image</string>
     <string name="webpage_mht">Webpage.mht</string>
     <string name="webpage_png">Webpage.png</string>
     <string name="file">File</string>
-    <string name="saving_file">Saving file…</string>
+    <string name="bytes">bytes</string>
+    <string name="unknown_size">unknown size</string>
+    <string name="bad_url">bad URL</string>
+    <string name="ok">OK</string>
+    <string name="saving_file">Saving file</string>
     <string name="saving_image">Saving image…</string>
     <string name="file_saved">File saved.</string>
     <string name="image_saved">Image saved.</string>
@@ -227,7 +220,6 @@
     <string name="response_message">Response Message</string>
     <string name="response_headers">Response Headers</string>
     <string name="response_body">Response Body</string>
-    <string name="error_body">Error Body</string>
     <string name="about_view_source">About View Source</string>
     <string name="about_view_source_message">Because Android’s WebView does not expose the source information,
         a separate request was made using system tools to gather the information displayed in this activity.
@@ -404,11 +396,6 @@
     <string name="ssl_certificates">SSL Certificates</string>
     <string name="proxies">Proxies</string>
     <string name="tracking_ids">Tracking IDs</string>
-
-    <!-- Download Location -->
-    <string name="download_location">Download Location</string>
-    <string name="download_location_message">Privacy Browser needs the storage permission to use the public download directory. If it is denied, the app’s download directory will be used instead.</string>
-    <string name="ok">OK</string>
 
     <!-- Proxy. -->
     <string name="proxy_not_installed_dialog" translatable="false">Proxy not installed dialog</string>  <!-- This string is used to tag the proxy not installed dialog.  It is never displayed to the user. -->
@@ -646,8 +633,6 @@
         <string name="scroll_app_bar_summary">Scroll the app bar off the top of the screen when the WebView scrolls down.</string>
         <string name="display_additional_app_bar_icons">Display additional app bar icons</string>
         <string name="display_additional_app_bar_icons_summary">Display icons in the app bar for refreshing the WebView and, if there is room, for toggling cookies and DOM storage.</string>
-        <string name="download_with_external_app">Download with external app</string>
-        <string name="download_with_external_app_summary">Android’s download manager doesn’t work well on some devices.</string>
         <string name="dark_theme">Dark theme</string>
         <string name="dark_theme_summary">Changing the theme will restart Privacy Browser.</string>
         <string name="night_mode">Night mode</string>

@@ -44,9 +44,7 @@
     <string name="form_data_deleted">Datos de formulario borrado</string>
     <string name="open_navigation_drawer">Abrir la caja de navegación</string>
     <string name="close_navigation_drawer">Cerrar la caja de navegación</string>
-    <string name="no_title">Sin título</string>
     <string name="unrecognized_url">URL no reconocida:</string>
-    <string name="open_with">Abrir con</string>
     <string name="add_tab">Añadir pestaña</string>
     <string name="close_tab">Cerrar pestaña</string>
     <string name="new_tab">Nueva pestaña</string>
@@ -61,16 +59,6 @@
     <string name="loading_fanboys_social_blocking_list">Cargando la lista de bloqueo social de Fanboy</string>
     <string name="loading_ultralist">Cargando UltraList</string>
     <string name="loading_ultraprivacy">Cargando Ultra Privacidad</string>
-
-    <!-- Save As. -->
-    <string name="save_as">Guardar como</string>
-    <string name="save_image_as">Guardar imagen como</string>
-    <string name="file_name">Nombre de archivo</string>
-    <string name="image_name">Nombre de imagen</string>
-    <string name="unknown_size">Tamaño desconocido</string>
-    <string name="download">Descargar</string>
-    <string name="cannot_download_file">Este archivo no puede descargarse porque no tiene un URI HTTP o HTTPS.</string>
-    <string name="cannot_download_image">Esta imagen no puede descargarse porque no tiene un URI HTTP o HTTPS.</string>
 
     <!-- Custom App Bar. -->
     <string name="favorite_icon">Icono favorito</string>
@@ -191,22 +179,23 @@
     <string name="open_in_background">Abrir en segundo plano</string>
     <string name="open_image_in_new_tab">Abrir imagen en nueva pestaña</string>
     <string name="copy_url">Copiar URL</string>
-    <string name="download_url">Descargar URL</string>
     <string name="email_address">Correo electrónico</string>
     <string name="copy_email_address">Copiar correo electrónico</string>
     <string name="write_email">Escribir correo electrónico</string>
     <string name="view_image">Ver imagen</string>
-    <string name="download_image">Descargar imagen</string>
 
     <!-- Find on Page. -->
     <string name="previous">Anterior</string>
     <string name="next">Siguiente</string>
 
     <!-- Save Webpage. -->
+    <string name="file_name">Nombre de archivo</string>
     <string name="save_archive">Guardar archivo</string>
     <string name="save_image">Guardar imagen</string>
     <string name="webpage_mht">PaginaWeb.mht</string>
     <string name="webpage_png">PaginaWeb.png</string>
+    <string name="unknown_size">Tamaño desconocido</string>
+    <string name="ok">OK</string>
     <string name="saving_image">Guardando imagen…</string>
     <string name="image_saved">Imagen guardada.</string>
     <string name="error_saving_image">Error guardando imagen:</string>
@@ -216,7 +205,6 @@
     <string name="response_message">Mensaje de respuesta</string>
     <string name="response_headers">Cabeceras de respuesta</string>
     <string name="response_body">Cuerpo de respuesta</string>
-    <string name="error_body">Cuerpo del error</string>
     <string name="about_view_source">Acerca de ver la fuente</string>
     <string name="about_view_source_message">Debido a que WebView de Android no expone la información fuente,
         se hizo una solicitud por separado utilizando las herramientas del sistema para recopilar la información mostrada en esta actividad.
@@ -396,12 +384,6 @@
     <string name="ssl_certificates">Certificados SSL</string>
     <string name="proxies">Proxis</string>
     <string name="tracking_ids">Rastreo de IDs</string>
-
-    <!-- Download Location -->
-    <string name="download_location">Lugar de descarga</string>
-    <string name="download_location_message">Navegador Privado necesita el permiso de almacenamiento para utilizar el directorio de descarga público.
-        Si se deniega, se utilizará el directorio de descarga de la aplicación.</string>
-    <string name="ok">OK</string>
 
     <!-- Proxy. -->
     <string name="orbot_not_installed_title">Orbot No Instalado</string>
@@ -587,8 +569,6 @@
         <string name="scroll_app_bar_summary">Desplazar la barra de aplicaciones desde la parte superior de la pantalla cuando el WebView se desplaza hacia abajo.</string>
         <string name="display_additional_app_bar_icons">Mostrar iconos adicionales en la barra de aplicación</string>
         <string name="display_additional_app_bar_icons_summary">Mostrar iconos en la barra de aplicaciones para refrescar el WebView y, si hay espacio, para alternar entre cookies y almacenamiento DOM.</string>
-        <string name="download_with_external_app">Descargar con app externa</string>
-        <string name="download_with_external_app_summary">El gestor de descargas de Android no funciona bien en algunos dispositivos.</string>
         <string name="dark_theme">Tema oscuro</string>
         <string name="dark_theme_summary">Cambiar el tema reiniciará Navegador Privado.</string>
         <string name="night_mode">Modo noche</string>
