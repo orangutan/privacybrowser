@@ -163,6 +163,7 @@
         <string name="print">Imprimir</string>
             <string name="privacy_browser_web_page">Página web de Navegador Privado</string>
         <string name="save">Guardar</string>
+            <string name="save_url">Guardar URL</string>
             <string name="save_as_archive">Guardar como archivo</string>
             <string name="save_as_image">Guardar como imagen</string>
         <string name="add_to_home_screen">Añadir a la ventana de inicio</string>
@@ -194,10 +195,16 @@
     <string name="save_image">Guardar imagen</string>
     <string name="webpage_mht">PaginaWeb.mht</string>
     <string name="webpage_png">PaginaWeb.png</string>
+    <string name="file">Archivo</string>
+    <string name="bytes">bytes</string>
     <string name="unknown_size">Tamaño desconocido</string>
+    <string name="invalid_url">URL inválida</string>
     <string name="ok">OK</string>
+    <string name="saving_file">Guardando archivo:</string>
     <string name="saving_image">Guardando imagen…</string>
+    <string name="file_saved">Archivo guardado:</string>
     <string name="image_saved">Imagen guardada.</string>
+    <string name="error_saving_file">Error guardando archivo:</string>
     <string name="error_saving_image">Error guardando imagen:</string>
 
     <!-- View Source. -->

@@ -160,6 +160,7 @@
         <string name="print">Печать</string>
             <string name="privacy_browser_web_page">Privacy Browser веб-страница</string>
         <string name="save">Сохранить</string>
+            <string name="save_url">Сохранить URL</string>
             <string name="save_as_archive">Сохранить как архив</string>
             <string name="save_as_image">Сохранить как изображение</string>
         <string name="add_to_home_screen">Добавить на главный экран</string>
@@ -191,10 +192,16 @@
     <string name="save_image">Сохранить изображение</string>
     <string name="webpage_mht">Webpage.mht</string>
     <string name="webpage_png">Webpage.png</string>
+    <string name="file">Файл</string>
+    <string name="bytes">байтов</string>
     <string name="unknown_size">неизвестный размер</string>
+    <string name="invalid_url">неправильный URL</string>
     <string name="ok">OK</string>
+    <string name="saving_file">Сохранение файла:</string>
     <string name="saving_image">Сохранение изображения…</string>
+    <string name="file_saved">Файл сохранен:</string>
     <string name="image_saved">Изображение сохранено.</string>
+    <string name="error_saving_file">Ошибка сохранения файла:</string>
     <string name="error_saving_image">Ошибка сохранения изображения:</string>
 
     <!-- View Source. -->

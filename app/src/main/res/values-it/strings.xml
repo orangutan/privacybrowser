@@ -163,6 +163,7 @@
         <string name="print">Stampa</string>
             <string name="privacy_browser_web_page">Pagina web di Privacy Browser</string>
         <string name="save">Salva</string>
+            <string name="save_url">Salva URL</string>
             <string name="save_as_archive">Salva come Archivio</string>
             <string name="save_as_image">Salva come Immagine</string>
         <string name="add_to_home_screen">Aggiungi collegamento</string>
@@ -194,10 +195,16 @@
     <string name="save_image">Salva Immagine</string>
     <string name="webpage_mht">PaginaWeb.mht</string>
     <string name="webpage_png">PaginaWeb.png</string>
+    <string name="file">File</string>
+    <string name="bytes">byte</string>
     <string name="unknown_size">Dimensione sconosciuta</string>
+    <string name="invalid_url">URL non valida</string>
     <string name="ok">OK</string>
+    <string name="saving_file">Salvataggio file:</string>
     <string name="saving_image">Salvataggio immagine…</string>
+    <string name="file_saved">File salvato:</string>
     <string name="image_saved">Immagine salvata.</string>
+    <string name="error_saving_file">Errore salvataggio file:</string>
     <string name="error_saving_image">Errore nel salvare l\'immagine:</string>
 
     <!-- View Source. -->

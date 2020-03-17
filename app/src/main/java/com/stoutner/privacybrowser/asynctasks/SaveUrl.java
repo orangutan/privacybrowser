@@ -20,11 +20,16 @@
 package com.stoutner.privacybrowser.asynctasks;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.view.View;
 import android.webkit.CookieManager;
+
+import androidx.core.content.FileProvider;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.stoutner.privacybrowser.R;
@@ -84,7 +89,7 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
         NoSwipeViewPager noSwipeViewPager = activity.findViewById(R.id.webviewpager);
 
         // Create a saving file snackbar.
-        savingFileSnackbar = Snackbar.make(noSwipeViewPager, activity.getString(R.string.saving_file) + ":  " + filePathString, Snackbar.LENGTH_INDEFINITE);
+        savingFileSnackbar = Snackbar.make(noSwipeViewPager, activity.getString(R.string.saving_file) + "  0% - " + filePathString, Snackbar.LENGTH_INDEFINITE);
 
         // Display the saving file snackbar.
         savingFileSnackbar.show();
@@ -92,7 +97,7 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
 
     @Override
     protected String doInBackground(String... urlToSave) {
-        // Get a handle for the context and activity.
+        // Get handles for the context and activity.
         Context context = contextWeakReference.get();
         Activity activity = activityWeakReference.get();
 
@@ -248,17 +253,18 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
             String formattedNumberOfBytesDownloaded = NumberFormat.getInstance().format(numberOfBytesDownloaded);
 
             // Update the snackbar.
-            savingFileSnackbar.setText(activity.getString(R.string.saving_file) + ":  " + formattedNumberOfBytesDownloaded + " " + activity.getString(R.string.bytes) + " - " + filePathString);
+            savingFileSnackbar.setText(activity.getString(R.string.saving_file) + "  " + formattedNumberOfBytesDownloaded + " " + activity.getString(R.string.bytes) + " - " + filePathString);
         } else {  // There is a download percentage.
             // Update the snackbar.
-            savingFileSnackbar.setText(activity.getString(R.string.saving_file) + ":  " + downloadPercentage[0] + "% - " + filePathString);
+            savingFileSnackbar.setText(activity.getString(R.string.saving_file) + "  " + downloadPercentage[0] + "% - " + filePathString);
         }
     }
 
     // `onPostExecute()` operates on the UI thread.
     @Override
     protected void onPostExecute(String saveDisposition) {
-        // Get a handle for the activity.
+        // Get handles for the context and activity.
+        Context context = contextWeakReference.get();
         Activity activity = activityWeakReference.get();
 
         // Abort if the activity is gone.
@@ -274,8 +280,39 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
 
         // Display a save disposition snackbar.
         if (saveDisposition.equals(SUCCESS)) {
-            Snackbar.make(noSwipeViewPager, R.string.file_saved, Snackbar.LENGTH_SHORT).show();
+            // Create a file saved snackbar.
+            Snackbar fileSavedSnackbar = Snackbar.make(noSwipeViewPager, activity.getString(R.string.file_saved) + "  " + filePathString, Snackbar.LENGTH_LONG);
+
+            // Add an open action if the file is not an APK on API >= 26 (that scenario requires the REQUEST_INSTALL_PACKAGES permission).
+            if (!(Build.VERSION.SDK_INT >= 26 && filePathString.endsWith(".apk"))) {
+                fileSavedSnackbar.setAction(R.string.open, (View v) -> {
+                    // Get a file for the file path string.
+                    File file = new File(filePathString);
+
+                    // Create an open intent with `ACTION_VIEW`.
+                    Intent openIntent = new Intent(Intent.ACTION_VIEW);
+
+                    // Set the URI but not the MIME type.  This should open all available apps.
+                    openIntent.setData(FileProvider.getUriForFile(context, activity.getString(R.string.file_provider), file));
+
+                    // Allow the app to read the file URI.
+                    openIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                    // Try the intent.
+                    try {
+                        // Show the chooser.
+                        activity.startActivity(openIntent);
+                    } catch (ActivityNotFoundException exception) {  // There are no apps available to open the URL.
+                        // Show a snackbar with the error.
+                        Snackbar.make(noSwipeViewPager, activity.getString(R.string.error) + "  " + exception, Snackbar.LENGTH_INDEFINITE).show();
+                    }
+                });
+            }
+
+            // Show the file saved snackbar.
+            fileSavedSnackbar.show();
         } else {
+            // Display the file saving error.
             Snackbar.make(noSwipeViewPager, activity.getString(R.string.error_saving_file) + "  " + saveDisposition, Snackbar.LENGTH_INDEFINITE).show();
         }
     }

@@ -206,11 +206,11 @@
     <string name="file">File</string>
     <string name="bytes">bytes</string>
     <string name="unknown_size">unknown size</string>
-    <string name="bad_url">bad URL</string>
+    <string name="invalid_url">invalid URL</string>
     <string name="ok">OK</string>
-    <string name="saving_file">Saving file</string>
+    <string name="saving_file">Saving file:</string>
     <string name="saving_image">Saving image…</string>
-    <string name="file_saved">File saved.</string>
+    <string name="file_saved">File saved:</string>
     <string name="image_saved">Image saved.</string>
     <string name="error_saving_file">Error saving file:</string>
     <string name="error_saving_image">Error saving image:</string>

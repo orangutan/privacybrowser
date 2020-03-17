@@ -124,7 +124,7 @@ public class GetUrlSize extends AsyncTask<String, Void, String> {
                 // Check the response code.
                 if (responseCode >= 400) {  // The response code is an error message.
                     // Set the formatted file size to indicate a bad URL.
-                    formattedFileSize = context.getString(R.string.bad_url);
+                    formattedFileSize = context.getString(R.string.invalid_url);
                 } else {  // The response code is not an error message.
                     // Get the content length header.
                     String contentLengthString = httpURLConnection.getHeaderField("Content-Length");
@@ -147,7 +147,7 @@ public class GetUrlSize extends AsyncTask<String, Void, String> {
             }
         } catch (IOException exception) {
             // Set the formatted file size to indicate a bad URL.
-            formattedFileSize = context.getString(R.string.bad_url);
+            formattedFileSize = context.getString(R.string.invalid_url);
         }
 
         // Return the formatted file size string.

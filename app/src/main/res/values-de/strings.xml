@@ -167,6 +167,7 @@
         <string name="print">Drucken</string>
             <string name="privacy_browser_web_page">Privacy Browser-Website</string>
         <string name="save">Speichern</string>
+            <string name="save_url">URL speichern</string>
             <string name="save_as_archive">Als Archiv speichern</string>
             <string name="save_as_image">Als Grafik speichern</string>
         <string name="view_source">Quelltext anzeigen</string>
@@ -198,10 +199,16 @@
     <string name="save_image">Grafik speichern</string>
     <string name="webpage_mht">Webseite.mht</string>
     <string name="webpage_png">Webseite.png</string>
+    <string name="file">Datei</string>
+    <string name="bytes">Bytes</string>
     <string name="unknown_size">Unbekannte Größe</string>
+    <string name="invalid_url">Ungültige URL</string>
     <string name="ok">OK</string>
+    <string name="saving_file">Speichere Datei:</string>
     <string name="saving_image">Speichere Grafik…</string>
+    <string name="file_saved">Datei gespeichert:</string>
     <string name="image_saved">Grafik gespeichert.</string>
+    <string name="error_saving_file">Fehler beim Speichern der Datei:</string>
     <string name="error_saving_image">Fehler beim Speichern der Grafik:</string>
 
     <!-- View Source. -->

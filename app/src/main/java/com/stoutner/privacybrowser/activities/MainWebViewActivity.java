@@ -3117,63 +3117,66 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_OPEN_REQUEST_CODE:
-                // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
-                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
-                    // Load the file.
-                    currentWebView.loadUrl("file://" + openFilePath);
-                } else {  // The storage permission was not granted.
-                    // Display an error snackbar.
-                    Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
-                }
+        //Only process the results if they exist (this method is triggered when a dialog is presented the first time for an app, but no grant results are included).
+        if (grantResults.length > 0) {
+            switch (requestCode) {
+                case PERMISSION_OPEN_REQUEST_CODE:
+                    // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {  // The storage permission was granted.
+                        // Load the file.
+                        currentWebView.loadUrl("file://" + openFilePath);
+                    } else {  // The storage permission was not granted.
+                        // Display an error snackbar.
+                        Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
+                    }
 
-                // Reset the open file path.
-                openFilePath = "";
-                break;
+                    // Reset the open file path.
+                    openFilePath = "";
+                    break;
 
-            case PERMISSION_SAVE_URL_REQUEST_CODE:
-                // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
-                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
-                    // Save the raw URL.
-                    new SaveUrl(this, this, saveWebpageFilePath, currentWebView.getSettings().getUserAgentString(), currentWebView.getAcceptFirstPartyCookies()).execute(saveWebpageUrl);
-                } else {  // The storage permission was not granted.
-                    // Display an error snackbar.
-                    Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
-                }
+                case PERMISSION_SAVE_URL_REQUEST_CODE:
+                    // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {  // The storage permission was granted.
+                        // Save the raw URL.
+                        new SaveUrl(this, this, saveWebpageFilePath, currentWebView.getSettings().getUserAgentString(), currentWebView.getAcceptFirstPartyCookies()).execute(saveWebpageUrl);
+                    } else {  // The storage permission was not granted.
+                        // Display an error snackbar.
+                        Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
+                    }
 
-                // Reset the save strings.
-                saveWebpageUrl = "";
-                saveWebpageFilePath = "";
-                break;
+                    // Reset the save strings.
+                    saveWebpageUrl = "";
+                    saveWebpageFilePath = "";
+                    break;
 
-            case PERMISSION_SAVE_AS_ARCHIVE_REQUEST_CODE:
-                // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
-                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
-                    // Save the webpage archive.
-                    currentWebView.saveWebArchive(saveWebpageFilePath);
-                } else {  // The storage permission was not granted.
-                    // Display an error snackbar.
-                    Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
-                }
+                case PERMISSION_SAVE_AS_ARCHIVE_REQUEST_CODE:
+                    // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {  // The storage permission was granted.
+                        // Save the webpage archive.
+                        currentWebView.saveWebArchive(saveWebpageFilePath);
+                    } else {  // The storage permission was not granted.
+                        // Display an error snackbar.
+                        Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
+                    }
 
-                // Reset the save webpage file path.
-                saveWebpageFilePath = "";
-                break;
+                    // Reset the save webpage file path.
+                    saveWebpageFilePath = "";
+                    break;
 
-            case PERMISSION_SAVE_AS_IMAGE_REQUEST_CODE:
-                // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
-                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
-                    // Save the webpage image.
-                    new SaveWebpageImage(this, currentWebView).execute(saveWebpageFilePath);
-                } else {  // The storage permission was not granted.
-                    // Display an error snackbar.
-                    Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
-                }
+                case PERMISSION_SAVE_AS_IMAGE_REQUEST_CODE:
+                    // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {  // The storage permission was granted.
+                        // Save the webpage image.
+                        new SaveWebpageImage(this, currentWebView).execute(saveWebpageFilePath);
+                    } else {  // The storage permission was not granted.
+                        // Display an error snackbar.
+                        Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
+                    }
 
-                // Reset the save webpage file path.
-                saveWebpageFilePath = "";
-                break;
+                    // Reset the save webpage file path.
+                    saveWebpageFilePath = "";
+                    break;
+            }
         }
     }
 
@@ -4610,7 +4613,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void openWithApp(String url) {
-        // Create the open with intent with `ACTION_VIEW`.
+        // Create an open with app intent with `ACTION_VIEW`.
         Intent openWithAppIntent = new Intent(Intent.ACTION_VIEW);
 
         // Set the URI but not the MIME type.  This should open all available apps.
@@ -4619,17 +4622,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Flag the intent to open in a new task.
         openWithAppIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
+        // Try the intent.
         try {
             // Show the chooser.
             startActivity(openWithAppIntent);
-        } catch (ActivityNotFoundException exception) {
+        } catch (ActivityNotFoundException exception) {  // There are no apps available to open the URL.
             // Show a snackbar with the error.
             Snackbar.make(currentWebView, getString(R.string.error) + "  " + exception, Snackbar.LENGTH_INDEFINITE).show();
         }
     }
 
     private void openWithBrowser(String url) {
-        // Create the open with intent with `ACTION_VIEW`.
+        // Create an open with browser intent with `ACTION_VIEW`.
         Intent openWithBrowserIntent = new Intent(Intent.ACTION_VIEW);
 
         // Set the URI and the MIME type.  `"text/html"` should load browser options.
@@ -4638,10 +4642,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Flag the intent to open in a new task.
         openWithBrowserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
+        // Try the intent.
         try {
             // Show the chooser.
             startActivity(openWithBrowserIntent);
-        } catch (ActivityNotFoundException exception) {
+        } catch (ActivityNotFoundException exception) {  // There are no browsers available to open the URL.
             // Show a snackbar with the error.
             Snackbar.make(currentWebView, getString(R.string.error) + "  " + exception, Snackbar.LENGTH_INDEFINITE).show();
         }
