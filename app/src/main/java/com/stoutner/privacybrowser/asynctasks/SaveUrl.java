@@ -21,6 +21,7 @@ package com.stoutner.privacybrowser.asynctasks;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -28,6 +29,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.view.View;
 import android.webkit.CookieManager;
+import android.webkit.MimeTypeMap;
 
 import androidx.core.content.FileProvider;
 
@@ -188,18 +190,18 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
                     // Write the contents of the conversion buffer to the output stream.
                     outputStream.write(conversionBufferByteArray, 0, bufferLength);
 
-                    // Increment the downloaded kilobytes counter.
-                    downloadedKilobytesCounter++;
-
                     // Update the file download progress snackbar.
                     if (fileSize == -1) {  // The file size is unknown.
-                        // Convert the downloaded kilobytes counter to a negative number
-                        long downloadedKilobytes = 0 - downloadedKilobytesCounter;
+                        // Negatively update the downloaded kilobytes counter.
+                        downloadedKilobytesCounter = downloadedKilobytesCounter - bufferLength;
 
-                        publishProgress(downloadedKilobytes);
+                        publishProgress(downloadedKilobytesCounter);
                     } else {  // The file size is known.
+                        // Update the downloaded kilobytes counter.
+                        downloadedKilobytesCounter = downloadedKilobytesCounter + bufferLength;
+
                         // Calculate the download percentage.
-                        long downloadPercentage = (downloadedKilobytesCounter * 1024 * 100) / fileSize;
+                        long downloadPercentage = (downloadedKilobytesCounter * 100) / fileSize;
 
                         // Update the download percentage.
                         publishProgress(downloadPercentage);
@@ -246,8 +248,8 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
 
         // Check to see if a download percentage has been calculated.
         if (downloadPercentage[0] < 0) {  // There is no download percentage.  The negative number represents the raw downloaded kilobytes.
-            // Calculate the number of bytes downloaded.
-            long numberOfBytesDownloaded = (0 - downloadPercentage[0]) * 1024;
+            // Calculate the number of bytes downloaded.  When the `downloadPercentage` is negative, it is actually the raw number of kilobytes downloaded.
+            long numberOfBytesDownloaded = 0 - downloadPercentage[0];
 
             // Format the number of bytes downloaded.
             String formattedNumberOfBytesDownloaded = NumberFormat.getInstance().format(numberOfBytesDownloaded);
@@ -289,11 +291,28 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
                     // Get a file for the file path string.
                     File file = new File(filePathString);
 
+                    // Define a file URI variable
+                    Uri fileUri;
+
+                    // Get the URI for the file according to the Android version.
+                    if (Build.VERSION.SDK_INT >= 24) {  // Use a file provider.
+                        fileUri = FileProvider.getUriForFile(context, activity.getString(R.string.file_provider), file);
+                    } else {  // Get the raw file path URI.
+                        fileUri = Uri.fromFile(file);
+                    }
+
+                    // Get a handle for the content resolver.
+                    ContentResolver contentResolver = context.getContentResolver();
+
                     // Create an open intent with `ACTION_VIEW`.
                     Intent openIntent = new Intent(Intent.ACTION_VIEW);
 
-                    // Set the URI but not the MIME type.  This should open all available apps.
-                    openIntent.setData(FileProvider.getUriForFile(context, activity.getString(R.string.file_provider), file));
+                    // Set the URI and the MIME type.
+                    if (filePathString.endsWith("apk") || filePathString.endsWith("APK")) {  // Force detection of APKs.
+                        openIntent.setDataAndType(fileUri, MimeTypeMap.getSingleton().getMimeTypeFromExtension("apk"));
+                    } else {  // Autodetect the MIME type.
+                        openIntent.setDataAndType(fileUri, contentResolver.getType(fileUri));
+                    }
 
                     // Allow the app to read the file URI.
                     openIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
