@@ -126,8 +126,8 @@
 
     <!-- MainWebViewActivity Options Menu. -->
     <string name="javascript">JavaScript</string>
-    <string name="add_domain_settings">Aggiungi dominio</string>
-    <string name="edit_domain_settings">Modifica dominio</string>
+    <string name="refresh">Aggiorna</string>
+    <string name="stop">Stop</string>
     <string name="first_party_cookies">Cookies proprietari</string>
     <string name="third_party_cookies">Cookies di terze parti</string>
     <string name="dom_storage">DOM storage</string>
@@ -172,8 +172,8 @@
         <string name="share_url">Condividi URL</string>
         <string name="open_with_app">Apri con App</string>
         <string name="open_with_browser">Apri con il Browser</string>
-    <string name="refresh">Aggiorna</string>
-    <string name="stop">Stop</string>
+    <string name="add_domain_settings">Aggiungi dominio</string>
+    <string name="edit_domain_settings">Modifica dominio</string>
 
     <!-- Context Menus. -->
     <string name="open_in_new_tab">Apri in una nuova Scheda</string>

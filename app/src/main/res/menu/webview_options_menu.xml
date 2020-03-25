@@ -32,8 +32,8 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/add_or_edit_domain"
-        android:title="@string/add_domain_settings"
+        android:id="@+id/refresh"
+        android:title="@string/refresh"
         android:orderInCategory="200"
         app:showAsAction="never" />
 
@@ -397,8 +397,8 @@
     </item>
 
     <item
-        android:id="@+id/refresh"
-        android:title="@string/refresh"
+        android:id="@+id/add_or_edit_domain"
+        android:title="@string/add_domain_settings"
         android:orderInCategory="1300"
         app:showAsAction="never" />
 

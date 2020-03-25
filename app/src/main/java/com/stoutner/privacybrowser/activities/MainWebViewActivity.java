@@ -991,109 +991,13 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Consume the event.
                 return true;
 
-            case R.id.add_or_edit_domain:
-                if (currentWebView.getDomainSettingsApplied()) {  // Edit the current domain settings.
-                    // Reapply the domain settings on returning to `MainWebViewActivity`.
-                    reapplyDomainSettingsOnRestart = true;
-
-                    // Create an intent to launch the domains activity.
-                    Intent domainsIntent = new Intent(this, DomainsActivity.class);
-
-                    // Add the extra information to the intent.
-                    domainsIntent.putExtra("load_domain", currentWebView.getDomainSettingsDatabaseId());
-                    domainsIntent.putExtra("close_on_back", true);
-                    domainsIntent.putExtra("current_url", currentWebView.getUrl());
-
-                    // Get the current certificate.
-                    SslCertificate sslCertificate = currentWebView.getCertificate();
-
-                    // Check to see if the SSL certificate is populated.
-                    if (sslCertificate != null) {
-                        // Extract the certificate to strings.
-                        String issuedToCName = sslCertificate.getIssuedTo().getCName();
-                        String issuedToOName = sslCertificate.getIssuedTo().getOName();
-                        String issuedToUName = sslCertificate.getIssuedTo().getUName();
-                        String issuedByCName = sslCertificate.getIssuedBy().getCName();
-                        String issuedByOName = sslCertificate.getIssuedBy().getOName();
-                        String issuedByUName = sslCertificate.getIssuedBy().getUName();
-                        long startDateLong = sslCertificate.getValidNotBeforeDate().getTime();
-                        long endDateLong = sslCertificate.getValidNotAfterDate().getTime();
-
-                        // Add the certificate to the intent.
-                        domainsIntent.putExtra("ssl_issued_to_cname", issuedToCName);
-                        domainsIntent.putExtra("ssl_issued_to_oname", issuedToOName);
-                        domainsIntent.putExtra("ssl_issued_to_uname", issuedToUName);
-                        domainsIntent.putExtra("ssl_issued_by_cname", issuedByCName);
-                        domainsIntent.putExtra("ssl_issued_by_oname", issuedByOName);
-                        domainsIntent.putExtra("ssl_issued_by_uname", issuedByUName);
-                        domainsIntent.putExtra("ssl_start_date", startDateLong);
-                        domainsIntent.putExtra("ssl_end_date", endDateLong);
-                    }
-
-                    // Check to see if the current IP addresses have been received.
-                    if (currentWebView.hasCurrentIpAddresses()) {
-                        // Add the current IP addresses to the intent.
-                        domainsIntent.putExtra("current_ip_addresses", currentWebView.getCurrentIpAddresses());
-                    }
-
-                    // Make it so.
-                    startActivity(domainsIntent);
-                } else {  // Add a new domain.
-                    // Apply the new domain settings on returning to `MainWebViewActivity`.
-                    reapplyDomainSettingsOnRestart = true;
-
-                    // Get the current domain
-                    Uri currentUri = Uri.parse(currentWebView.getUrl());
-                    String currentDomain = currentUri.getHost();
-
-                    // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
-                    DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
-
-                    // Create the domain and store the database ID.
-                    int newDomainDatabaseId = domainsDatabaseHelper.addDomain(currentDomain);
-
-                    // Create an intent to launch the domains activity.
-                    Intent domainsIntent = new Intent(this, DomainsActivity.class);
-
-                    // Add the extra information to the intent.
-                    domainsIntent.putExtra("load_domain", newDomainDatabaseId);
-                    domainsIntent.putExtra("close_on_back", true);
-                    domainsIntent.putExtra("current_url", currentWebView.getUrl());
-
-                    // Get the current certificate.
-                    SslCertificate sslCertificate = currentWebView.getCertificate();
-
-                    // Check to see if the SSL certificate is populated.
-                    if (sslCertificate != null) {
-                        // Extract the certificate to strings.
-                        String issuedToCName = sslCertificate.getIssuedTo().getCName();
-                        String issuedToOName = sslCertificate.getIssuedTo().getOName();
-                        String issuedToUName = sslCertificate.getIssuedTo().getUName();
-                        String issuedByCName = sslCertificate.getIssuedBy().getCName();
-                        String issuedByOName = sslCertificate.getIssuedBy().getOName();
-                        String issuedByUName = sslCertificate.getIssuedBy().getUName();
-                        long startDateLong = sslCertificate.getValidNotBeforeDate().getTime();
-                        long endDateLong = sslCertificate.getValidNotAfterDate().getTime();
-
-                        // Add the certificate to the intent.
-                        domainsIntent.putExtra("ssl_issued_to_cname", issuedToCName);
-                        domainsIntent.putExtra("ssl_issued_to_oname", issuedToOName);
-                        domainsIntent.putExtra("ssl_issued_to_uname", issuedToUName);
-                        domainsIntent.putExtra("ssl_issued_by_cname", issuedByCName);
-                        domainsIntent.putExtra("ssl_issued_by_oname", issuedByOName);
-                        domainsIntent.putExtra("ssl_issued_by_uname", issuedByUName);
-                        domainsIntent.putExtra("ssl_start_date", startDateLong);
-                        domainsIntent.putExtra("ssl_end_date", endDateLong);
-                    }
-
-                    // Check to see if the current IP addresses have been received.
-                    if (currentWebView.hasCurrentIpAddresses()) {
-                        // Add the current IP addresses to the intent.
-                        domainsIntent.putExtra("current_ip_addresses", currentWebView.getCurrentIpAddresses());
-                    }
-
-                    // Make it so.
-                    startActivity(domainsIntent);
+            case R.id.refresh:
+                if (menuItem.getTitle().equals(getString(R.string.refresh))) {  // The refresh button was pushed.
+                    // Reload the current WebView.
+                    currentWebView.reload();
+                } else {  // The stop button was pushed.
+                    // Stop the loading of the WebView.
+                    currentWebView.stopLoading();
                 }
 
                 // Consume the event.
@@ -1777,13 +1681,109 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Consume the event.
                 return true;
 
-            case R.id.refresh:
-                if (menuItem.getTitle().equals(getString(R.string.refresh))) {  // The refresh button was pushed.
-                    // Reload the current WebView.
-                    currentWebView.reload();
-                } else {  // The stop button was pushed.
-                    // Stop the loading of the WebView.
-                    currentWebView.stopLoading();
+            case R.id.add_or_edit_domain:
+                if (currentWebView.getDomainSettingsApplied()) {  // Edit the current domain settings.
+                    // Reapply the domain settings on returning to `MainWebViewActivity`.
+                    reapplyDomainSettingsOnRestart = true;
+
+                    // Create an intent to launch the domains activity.
+                    Intent domainsIntent = new Intent(this, DomainsActivity.class);
+
+                    // Add the extra information to the intent.
+                    domainsIntent.putExtra("load_domain", currentWebView.getDomainSettingsDatabaseId());
+                    domainsIntent.putExtra("close_on_back", true);
+                    domainsIntent.putExtra("current_url", currentWebView.getUrl());
+
+                    // Get the current certificate.
+                    SslCertificate sslCertificate = currentWebView.getCertificate();
+
+                    // Check to see if the SSL certificate is populated.
+                    if (sslCertificate != null) {
+                        // Extract the certificate to strings.
+                        String issuedToCName = sslCertificate.getIssuedTo().getCName();
+                        String issuedToOName = sslCertificate.getIssuedTo().getOName();
+                        String issuedToUName = sslCertificate.getIssuedTo().getUName();
+                        String issuedByCName = sslCertificate.getIssuedBy().getCName();
+                        String issuedByOName = sslCertificate.getIssuedBy().getOName();
+                        String issuedByUName = sslCertificate.getIssuedBy().getUName();
+                        long startDateLong = sslCertificate.getValidNotBeforeDate().getTime();
+                        long endDateLong = sslCertificate.getValidNotAfterDate().getTime();
+
+                        // Add the certificate to the intent.
+                        domainsIntent.putExtra("ssl_issued_to_cname", issuedToCName);
+                        domainsIntent.putExtra("ssl_issued_to_oname", issuedToOName);
+                        domainsIntent.putExtra("ssl_issued_to_uname", issuedToUName);
+                        domainsIntent.putExtra("ssl_issued_by_cname", issuedByCName);
+                        domainsIntent.putExtra("ssl_issued_by_oname", issuedByOName);
+                        domainsIntent.putExtra("ssl_issued_by_uname", issuedByUName);
+                        domainsIntent.putExtra("ssl_start_date", startDateLong);
+                        domainsIntent.putExtra("ssl_end_date", endDateLong);
+                    }
+
+                    // Check to see if the current IP addresses have been received.
+                    if (currentWebView.hasCurrentIpAddresses()) {
+                        // Add the current IP addresses to the intent.
+                        domainsIntent.putExtra("current_ip_addresses", currentWebView.getCurrentIpAddresses());
+                    }
+
+                    // Make it so.
+                    startActivity(domainsIntent);
+                } else {  // Add a new domain.
+                    // Apply the new domain settings on returning to `MainWebViewActivity`.
+                    reapplyDomainSettingsOnRestart = true;
+
+                    // Get the current domain
+                    Uri currentUri = Uri.parse(currentWebView.getUrl());
+                    String currentDomain = currentUri.getHost();
+
+                    // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
+                    DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
+
+                    // Create the domain and store the database ID.
+                    int newDomainDatabaseId = domainsDatabaseHelper.addDomain(currentDomain);
+
+                    // Create an intent to launch the domains activity.
+                    Intent domainsIntent = new Intent(this, DomainsActivity.class);
+
+                    // Add the extra information to the intent.
+                    domainsIntent.putExtra("load_domain", newDomainDatabaseId);
+                    domainsIntent.putExtra("close_on_back", true);
+                    domainsIntent.putExtra("current_url", currentWebView.getUrl());
+
+                    // Get the current certificate.
+                    SslCertificate sslCertificate = currentWebView.getCertificate();
+
+                    // Check to see if the SSL certificate is populated.
+                    if (sslCertificate != null) {
+                        // Extract the certificate to strings.
+                        String issuedToCName = sslCertificate.getIssuedTo().getCName();
+                        String issuedToOName = sslCertificate.getIssuedTo().getOName();
+                        String issuedToUName = sslCertificate.getIssuedTo().getUName();
+                        String issuedByCName = sslCertificate.getIssuedBy().getCName();
+                        String issuedByOName = sslCertificate.getIssuedBy().getOName();
+                        String issuedByUName = sslCertificate.getIssuedBy().getUName();
+                        long startDateLong = sslCertificate.getValidNotBeforeDate().getTime();
+                        long endDateLong = sslCertificate.getValidNotAfterDate().getTime();
+
+                        // Add the certificate to the intent.
+                        domainsIntent.putExtra("ssl_issued_to_cname", issuedToCName);
+                        domainsIntent.putExtra("ssl_issued_to_oname", issuedToOName);
+                        domainsIntent.putExtra("ssl_issued_to_uname", issuedToUName);
+                        domainsIntent.putExtra("ssl_issued_by_cname", issuedByCName);
+                        domainsIntent.putExtra("ssl_issued_by_oname", issuedByOName);
+                        domainsIntent.putExtra("ssl_issued_by_uname", issuedByUName);
+                        domainsIntent.putExtra("ssl_start_date", startDateLong);
+                        domainsIntent.putExtra("ssl_end_date", endDateLong);
+                    }
+
+                    // Check to see if the current IP addresses have been received.
+                    if (currentWebView.hasCurrentIpAddresses()) {
+                        // Add the current IP addresses to the intent.
+                        domainsIntent.putExtra("current_ip_addresses", currentWebView.getCurrentIpAddresses());
+                    }
+
+                    // Make it so.
+                    startActivity(domainsIntent);
                 }
 
                 // Consume the event.

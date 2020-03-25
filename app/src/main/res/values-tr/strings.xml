@@ -122,8 +122,8 @@
 
     <!-- MainWebViewActivity Options Menu. -->
     <string name="javascript">JavaScript</string>
-    <string name="add_domain_settings">Domain ayarları ekle</string>
-    <string name="edit_domain_settings">Domain ayarlarını düzenle</string>
+    <string name="refresh">Yenile</string>
+    <string name="stop">Dur</string>
     <string name="first_party_cookies">Birinci Taraf Çerezler</string>
     <string name="third_party_cookies">Üçüncü Taraf Çerezler</string>
     <string name="dom_storage">DOM Depolama</string>
@@ -166,8 +166,8 @@
         <string name="share_url">URL\'yi paylaş</string>
         <string name="open_with_app">Uygulamayla aç</string>
         <string name="open_with_browser">Tarayıcıyla aç</string>
-    <string name="refresh">Yenile</string>
-    <string name="stop">Dur</string>
+    <string name="add_domain_settings">Domain ayarları ekle</string>
+    <string name="edit_domain_settings">Domain ayarlarını düzenle</string>
 
     <!-- Context Menus. -->
     <string name="open_in_new_tab">Yeni sekmede aç</string>

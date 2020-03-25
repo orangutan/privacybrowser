@@ -126,8 +126,8 @@
 
     <!-- MainWebViewActivity Options Menu. -->
     <string name="javascript">Javascript</string>
-    <string name="add_domain_settings">Añadir dominio</string>
-    <string name="edit_domain_settings">Editar dominio</string>
+    <string name="refresh">Actualizar</string>
+    <string name="stop">Parar</string>
     <string name="first_party_cookies">Cookies de primera parte</string>
     <string name="third_party_cookies">Cookies de terceras partes</string>
     <string name="dom_storage">Almacenamiento DOM</string>
@@ -172,8 +172,8 @@
         <string name="share_url">Compartir URL</string>
         <string name="open_with_app">Abrir con App</string>
         <string name="open_with_browser">Abrir con Navegador</string>
-    <string name="refresh">Actualizar</string>
-    <string name="stop">Parar</string>
+    <string name="add_domain_settings">Añadir dominio</string>
+    <string name="edit_domain_settings">Editar dominio</string>
 
     <!-- Context Menus. -->
     <string name="open_in_new_tab">Abrir en nueva pestaña</string>
@@ -567,6 +567,14 @@
         <string name="clear_cache_summary">Borra la caché de WebView.</string>
     <string name="general">General</string>
         <string name="homepage">Página de inicio</string>
+        <string name="download_location">Lugar de descarga</string>
+        <string-array name="download_location_entries">
+            <item>Auto</item>
+            <item>Directorio de aplicaciones</item>
+            <item>Directorio público</item>
+            <item>Personalizado</item>
+        </string-array>
+        <string name="download_custom_location">Lugar personalizado de descarga</string>
         <string name="font_size_preference">Tamaño de fuente</string>
         <string name="open_intents_in_new_tab">Abrir contenido en nueva pestaña</string>
         <string name="open_intents_in_new_tab_summary">Los contenidos son enlaces enviados desde otras apps.</string>

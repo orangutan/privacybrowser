@@ -123,8 +123,8 @@
 
     <!-- MainWebViewActivity Options Menu. -->
     <string name="javascript">JavaScript</string>
-    <string name="add_domain_settings">Добавление параметров домена</string>
-    <string name="edit_domain_settings">Изменение параметров домена</string>
+    <string name="refresh">Обновить</string>
+    <string name="stop">Остановить</string>
     <string name="first_party_cookies">Первичные файлы cookie</string>
     <string name="third_party_cookies">Сторонние файлы cookie</string>
     <string name="dom_storage">DOM-хранилище</string>
@@ -169,8 +169,8 @@
         <string name="share_url">Поделиться URL</string>
         <string name="open_with_app">Открыть в приложении</string>
         <string name="open_with_browser">Открыть в браузере</string>
-    <string name="refresh">Обновить</string>
-    <string name="stop">Остановить</string>
+    <string name="add_domain_settings">Добавление параметров домена</string>
+    <string name="edit_domain_settings">Изменение параметров домена</string>
 
     <!-- Context Menus. -->
     <string name="open_in_new_tab">Открыть в новой вкладке</string>
