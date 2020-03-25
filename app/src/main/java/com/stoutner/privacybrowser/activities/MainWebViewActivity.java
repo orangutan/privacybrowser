@@ -316,6 +316,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     // Remove the warning about needing to override `performClick()` when using an `OnTouchListener` with `WebView`.
     @SuppressLint("ClickableViewAccessibility")
     protected void onCreate(Bundle savedInstanceState) {
+        // Enable the drawing of the entire webpage.  This makes it possible to save a website image.  This must be done before anything else happens with the WebView.
         if (Build.VERSION.SDK_INT >= 21) {
             WebView.enableSlowWholeDocumentDraw();
         }
@@ -999,6 +1000,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Stop the loading of the WebView.
                     currentWebView.stopLoading();
                 }
+
+                // Consume the event.
+                return true;
+
+            case R.id.bookmarks:
+                // Get a handle for the drawer layout.
+                DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
+
+                // Open the bookmarks drawer.
+                drawerLayout.openDrawer(GravityCompat.END);
 
                 // Consume the event.
                 return true;
