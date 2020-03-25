@@ -182,7 +182,7 @@
     <string name="previous">Önceki</string>
     <string name="next">Sonraki</string>
 
-    <!-- Save Webpage. -->
+    <!-- Save. -->
     <string name="file_name">Dosya adı</string>
     <string name="save_image">Resmi kaydet</string>
     <string name="webpage_png">Websayfası.png</string>
@@ -503,8 +503,8 @@
             <item>Yahoo - JavaScript etkin</item>
             <item>Özel sayfa</item>
         </string-array>
-        <string name="search_custom_url">Özel sayfa ara</string>
         <string name="custom_url">Özel sayfa</string>
+        <string name="search_custom_url">Özel sayfa ara</string>
     <string name="full_screen">Tam Ekran</string>
         <string name="full_screen_browsing_mode">Tam ekran modu</string>
         <string name="full_screen_browsing_mode_summary">Tam ekran moduna geçmek için çift dokun.</string>

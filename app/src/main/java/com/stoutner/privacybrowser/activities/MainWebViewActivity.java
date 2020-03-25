@@ -1895,6 +1895,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Launch as a new task so that Download Manager and Privacy Browser show as separate windows in the recent tasks list.
                 downloadManagerIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
+                // Make it so.
                 startActivity(downloadManagerIntent);
                 break;
 

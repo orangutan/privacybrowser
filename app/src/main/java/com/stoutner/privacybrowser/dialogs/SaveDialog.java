@@ -51,6 +51,7 @@ import androidx.preference.PreferenceManager;
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import com.stoutner.privacybrowser.asynctasks.GetUrlSize;
+import com.stoutner.privacybrowser.helpers.DownloadLocationHelper;
 
 import java.io.File;
 
@@ -319,19 +320,15 @@ public class SaveDialog extends DialogFragment {
         // Save the file name as the default file name.  This must be final to be used in the lambda below.
         final String defaultFileName = fileName;
 
-        // Create a string for the default file path.
-        String defaultFilePath;
+        // Instantiate the download location helper.
+        DownloadLocationHelper downloadLocationHelper = new DownloadLocationHelper();
 
-        // Set the default file path according to the storage permission state.
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
-            // Set the default file path to use the external public directory.
-            defaultFilePath = Environment.getExternalStorageDirectory() + "/" + defaultFileName;
+        // Get the default file path.
+        String defaultFilePath = downloadLocationHelper.getDownloadLocation(context) + "/" + defaultFileName;
 
-            // Hide the storage permission text view.
+        // Hide the storage permission text view if the permission has already been granted.
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             storagePermissionTextView.setVisibility(View.GONE);
-        } else {  // The storage permission has not been granted.
-            // Set the default file path to use the external private directory.
-            defaultFilePath = context.getExternalFilesDir(null) + "/" + defaultFileName;
         }
 
         // Populate the edit texts.

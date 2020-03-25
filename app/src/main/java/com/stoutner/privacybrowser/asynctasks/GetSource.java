@@ -491,8 +491,8 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
                 // Disconnect HTTP URL connection.
                 httpUrlConnection.disconnect();
             }
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        } catch (Exception exception) {
+            // Do nothing.
         }
 
         // Return the response body string as the result.

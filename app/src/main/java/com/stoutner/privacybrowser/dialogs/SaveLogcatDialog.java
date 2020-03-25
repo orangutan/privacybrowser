@@ -47,6 +47,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment is required or an error is produced on API <=22.  It is also required for the browse button to work correctly.
 
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.helpers.DownloadLocationHelper;
 
 import java.io.File;
 
@@ -83,11 +84,13 @@ public class SaveLogcatDialog extends DialogFragment {
         // Use an alert dialog builder to create the alert dialog.
         AlertDialog.Builder dialogBuilder;
 
-        // Get a handle for the activity.
+        // Get a handle for the activity and the context.
         Activity activity = getActivity();
+        Context context = getContext();
 
-        // Remove the incorrect lint warning below that the activity might be null.
+        // Remove the incorrect lint warnings.
         assert activity != null;
+        assert context != null;
 
         // Set the style according to the theme.
         if (darkTheme) {
@@ -175,29 +178,19 @@ public class SaveLogcatDialog extends DialogFragment {
             }
         });
 
-        // Create a string for the default file path.
-        String defaultFilePath;
+        // Instantiate the download location helper.
+        DownloadLocationHelper downloadLocationHelper = new DownloadLocationHelper();
 
-        // Get a handle for the context.
-        Context context = getContext();
-
-        // Remove the incorrect lint warning below that context might be null.
-        assert context != null;
-
-        // Set the default file path according to the storage permission state.
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
-            // Set the default file path to use the external public directory.
-            defaultFilePath = Environment.getExternalStorageDirectory() + "/" + getString(R.string.privacy_browser_logcat_txt);
-
-            // Hide the storage permission text view.
-            storagePermissionTextView.setVisibility(View.GONE);
-        } else {  // The storage permission has not been granted.
-            // Set the default file path to use the external private directory.
-            defaultFilePath = context.getExternalFilesDir(null) + "/" + getString(R.string.privacy_browser_logcat_txt);
-        }
+        // Get the default file path.
+        String defaultFilePath = downloadLocationHelper.getDownloadLocation(context) + "/" + getString(R.string.privacy_browser_logcat_txt);
 
         // Display the default file path.
         fileNameEditText.setText(defaultFilePath);
+
+        // Hide the storage permission text view if the permission has already been granted.
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            storagePermissionTextView.setVisibility(View.GONE);
+        }
 
         // Handle clicks on the browse button.
         browseButton.setOnClickListener((View view) -> {

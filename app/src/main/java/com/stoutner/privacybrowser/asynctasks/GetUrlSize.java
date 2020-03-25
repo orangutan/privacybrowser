@@ -28,7 +28,6 @@ import android.widget.TextView;
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.helpers.ProxyHelper;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
@@ -81,10 +80,10 @@ public class GetUrlSize extends AsyncTask<String, Void, String> {
             Proxy proxy = proxyHelper.getCurrentProxy(context);
 
             // Open a connection to the URL.  No data is actually sent at this point.
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection(proxy);
+            HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection(proxy);
 
             // Add the user agent to the header property.
-            httpURLConnection.setRequestProperty("User-Agent", userAgent);
+            httpUrlConnection.setRequestProperty("User-Agent", userAgent);
 
             // Add the cookies if they are enabled.
             if (cookiesEnabled) {
@@ -94,7 +93,7 @@ public class GetUrlSize extends AsyncTask<String, Void, String> {
                 // Only add the cookies if they are not null.
                 if (cookiesString != null) {
                     // Add the cookies to the header property.
-                    httpURLConnection.setRequestProperty("Cookie", cookiesString);
+                    httpUrlConnection.setRequestProperty("Cookie", cookiesString);
                 }
             }
 
@@ -103,19 +102,19 @@ public class GetUrlSize extends AsyncTask<String, Void, String> {
                 // Exit if the task has been cancelled.
                 if (isCancelled()) {
                     // Disconnect the HTTP URL connection.
-                    httpURLConnection.disconnect();
+                    httpUrlConnection.disconnect();
 
                     // Return the formatted file size string.
                     return formattedFileSize;
                 }
 
                 // Get the status code.
-                int responseCode = httpURLConnection.getResponseCode();
+                int responseCode = httpUrlConnection.getResponseCode();
 
                 // Exit if the task has been cancelled.
                 if (isCancelled()) {
                     // Disconnect the HTTP URL connection.
-                    httpURLConnection.disconnect();
+                    httpUrlConnection.disconnect();
 
                     // Return the formatted file size string.
                     return formattedFileSize;
@@ -127,7 +126,7 @@ public class GetUrlSize extends AsyncTask<String, Void, String> {
                     formattedFileSize = context.getString(R.string.invalid_url);
                 } else {  // The response code is not an error message.
                     // Get the content length header.
-                    String contentLengthString = httpURLConnection.getHeaderField("Content-Length");
+                    String contentLengthString = httpUrlConnection.getHeaderField("Content-Length");
 
                     // Define the file size long.
                     long fileSize;
@@ -143,9 +142,9 @@ public class GetUrlSize extends AsyncTask<String, Void, String> {
                 }
             } finally {
                 // Disconnect the HTTP URL connection.
-                httpURLConnection.disconnect();
+                httpUrlConnection.disconnect();
             }
-        } catch (IOException exception) {
+        } catch (Exception exception) {
             // Set the formatted file size to indicate a bad URL.
             formattedFileSize = context.getString(R.string.invalid_url);
         }

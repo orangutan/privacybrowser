@@ -75,7 +75,7 @@
         <item
             android:id="@+id/downloads"
             android:title="@string/downloads"
-            android:icon="@drawable/downloads"
+            android:icon="@drawable/downloads_enabled_light"
             android:orderInCategory="80" />
     </group>
 

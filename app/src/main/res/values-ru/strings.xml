@@ -186,7 +186,7 @@
     <string name="previous">Предыдущий</string>
     <string name="next">Следующий</string>
 
-    <!-- Save Webpage. -->
+    <!-- Save. -->
     <string name="file_name">Имя файла</string>
     <string name="save_archive">Сохранить архив</string>
     <string name="save_image">Сохранить изображение</string>
@@ -524,8 +524,8 @@
             <item>Yahoo - JavaScript включен</item>
             <item>Настраиваемый</item>
         </string-array>
-        <string name="search_custom_url">Настраиваемый URL поиска</string>
         <string name="custom_url">Настраиваемый URL</string>
+        <string name="search_custom_url">Настраиваемый URL поиска</string>
     <string name="proxy">Прокси</string>
         <string name="proxy_none">Нет</string>
         <string name="proxy_tor">Tor</string>

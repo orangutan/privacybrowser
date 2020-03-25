@@ -189,7 +189,7 @@
     <string name="previous">Précédent</string>
     <string name="next">Suivant</string>
 
-    <!-- Save Webpage. -->
+    <!-- Save. -->
     <string name="file_name">Nom du fichier</string>
     <string name="save_archive">Enregistrer l\'archive</string>
     <string name="save_image">Sauvegarder en tant qu\'image</string>
@@ -523,8 +523,8 @@
             <item>Yahoo - JavaScript activé</item>
             <item>Personnalisée</item>
         </string-array>
-        <string name="search_custom_url">URL de recherche personnalisée</string>
         <string name="custom_url">URL personnalisée</string>
+        <string name="search_custom_url">URL de recherche personnalisée</string>
     <string name="proxy">Proxy</string>
         <string name="proxy_none">Aucun</string>
         <string name="proxy_tor">Tor</string>

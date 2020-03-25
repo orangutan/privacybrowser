@@ -189,7 +189,7 @@
     <string name="previous">Anterior</string>
     <string name="next">Siguiente</string>
 
-    <!-- Save Webpage. -->
+    <!-- Save. -->
     <string name="file_name">Nombre de archivo</string>
     <string name="save_archive">Guardar archivo</string>
     <string name="save_image">Guardar imagen</string>
@@ -530,13 +530,8 @@
             <item>Yahoo - Javascript habilitado</item>
             <item>Personalizado</item>
         </string-array>
-        <string name="no_proxy_enabled">Ninguno - conectar directamente a Internet.</string>
-        <string name="tor_enabled">Tor - conectar a través de socks://localhost:9050.</string>
-        <string name="tor_enabled_kitkat">Tor - conectar a través de http://localhost:8118.</string>
-        <string name="i2p_enabled">I2P - conectar a través de http://localhost:4444.</string>
-        <string name="search_custom_url">URL personalizado de búsqueda</string>
         <string name="custom_url">URL personalizado</string>
-        <string name="proxy_custom_url">URL personalizada del proxy</string>
+        <string name="search_custom_url">URL personalizado de búsqueda</string>
     <string name="proxy">Proxy</string>
         <string name="proxy_none">Ninguno</string>
         <string name="proxy_tor">Tor</string>
@@ -548,7 +543,12 @@
             <item>I2P</item>
             <item>Personalizado</item>
         </string-array>
+        <string name="no_proxy_enabled">Ninguno - conectar directamente a Internet.</string>
+        <string name="tor_enabled">Tor - conectar a través de socks://localhost:9050.</string>
+        <string name="tor_enabled_kitkat">Tor - conectar a través de http://localhost:8118.</string>
+        <string name="i2p_enabled">I2P - conectar a través de http://localhost:4444.</string>
         <string name="custom_proxy">Proxy personalizado</string>
+    <string name="proxy_custom_url">URL personalizada del proxy</string>
     <string name="full_screen">Pantalla completa</string>
         <string name="full_screen_browsing_mode">Navegación de pantalla completa</string>
         <string name="full_screen_browsing_mode_summary">Doble toque para alternar a modo de navegación de pantalla completa.</string>

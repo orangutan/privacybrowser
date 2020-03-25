@@ -60,6 +60,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.dialogs.StoragePermissionDialog;
+import com.stoutner.privacybrowser.helpers.DownloadLocationHelper;
 import com.stoutner.privacybrowser.helpers.FileNameHelper;
 import com.stoutner.privacybrowser.helpers.ImportExportDatabaseHelper;
 
@@ -176,29 +177,23 @@ public class ImportExportActivity extends AppCompatActivity implements StoragePe
         openKeychainImportInstructionsTextView.setVisibility(View.GONE);
         importExportButton.setVisibility(View.GONE);
 
-        // Create strings for the default file paths.
-        String defaultFilePath;
-        String defaultPasswordEncryptionFilePath;
-        String defaultPgpFilePath;
+        // Instantiate the download location helper.
+        DownloadLocationHelper downloadLocationHelper = new DownloadLocationHelper();
 
-        // Set the default file paths according to the storage permission status.
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
-            // Set the default file paths to use the external public directory.
-            defaultFilePath = Environment.getExternalStorageDirectory() + "/" + getString(R.string.settings_pbs);
-            defaultPasswordEncryptionFilePath = defaultFilePath + ".aes";
-            defaultPgpFilePath = defaultFilePath + ".pgp";
+        // Get the default file path.
+        String defaultFilePath = downloadLocationHelper.getDownloadLocation(this) + "/" + getString(R.string.settings_pbs);
 
-            // Hide the storage permission text view.
-            storagePermissionTextView.setVisibility(View.GONE);
-        } else {  // The storage permission has not been granted.
-            // Set the default file paths to use the external private directory.
-            defaultFilePath = getApplicationContext().getExternalFilesDir(null) + "/" + getString(R.string.settings_pbs);
-            defaultPasswordEncryptionFilePath = defaultFilePath + ".aes";
-            defaultPgpFilePath = defaultFilePath + ".pgp";
-        }
+        // Set the other default file paths.
+        String defaultPasswordEncryptionFilePath = defaultFilePath + ".aes";
+        String defaultPgpFilePath = defaultFilePath + ".pgp";
 
         // Set the default file path.
         fileNameEditText.setText(defaultFilePath);
+
+        // Hide the storage permission text view if the permission has already been granted.
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            storagePermissionTextView.setVisibility(View.GONE);
+        }
 
         // Update the UI when the spinner changes.
         encryptionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

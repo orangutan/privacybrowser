@@ -41,7 +41,6 @@ import com.stoutner.privacybrowser.views.NoSwipeViewPager;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
@@ -214,7 +213,7 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
                 // Close the output stream.
                 outputStream.close();
 
-                // Define a media scanner intent, which adds items like pictures to Android's recent file list.
+                // Create a media scanner intent, which adds items like pictures to Android's recent file list.
                 Intent mediaScannerIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 
                 // Add the URI to the media scanner intent.
@@ -226,7 +225,7 @@ public class SaveUrl extends AsyncTask<String, Long, String> {
                 // Disconnect the HTTP URL connection.
                 httpUrlConnection.disconnect();
             }
-        } catch (IOException exception) {
+        } catch (Exception exception) {
             // Store the error in the save disposition string.
             saveDisposition = exception.toString();
         }

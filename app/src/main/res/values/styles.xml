@@ -87,10 +87,11 @@
         <item name="colorPrimary">@color/blue_700</item>
         <item name="colorPrimaryDark">@color/blue_900</item>
         <item name="colorAccent">@color/blue_700</item>
-        <item name="userAgentIcon">@drawable/user_agent_light</item>
-        <item name="searchIcon">@drawable/search_enabled_light</item>
-        <item name="homepageIcon">@drawable/home_enabled_light</item>
+        <item name="downloadIcon">@drawable/downloads_enabled_light</item>
         <item name="fontSizeIcon">@drawable/font_size_light</item>
+        <item name="homepageIcon">@drawable/home_enabled_light</item>
+        <item name="searchIcon">@drawable/search_enabled_light</item>
+        <item name="userAgentIcon">@drawable/user_agent_light</item>
     </style>
 
     <!-- `ThemeOverlay.AppCompat.ActionBar` makes the hamburger icons dark. -->
@@ -180,14 +181,15 @@
     </style>
 
     <style name="PrivacyBrowserSettingsDark" parent="Theme.AppCompat" >
+        <item name="android:textColorPrimary">@color/primary_text_color_selector_dark</item>
         <item name="colorPrimary">@color/blue_800</item>
         <item name="colorPrimaryDark">@color/blue_900</item>
-        <item name="android:textColorPrimary">@color/primary_text_color_selector_dark</item>
         <item name="colorAccent">@color/blue_600</item>
-        <item name="userAgentIcon">@drawable/user_agent_dark</item>
-        <item name="searchIcon">@drawable/search_enabled_dark</item>
-        <item name="homepageIcon">@drawable/home_enabled_dark</item>
+        <item name="downloadIcon">@drawable/downloads_enabled_dark</item>
         <item name="fontSizeIcon">@drawable/font_size_dark</item>
+        <item name="homepageIcon">@drawable/home_enabled_dark</item>
+        <item name="searchIcon">@drawable/search_enabled_dark</item>
+        <item name="userAgentIcon">@drawable/user_agent_dark</item>
     </style>
 
     <!-- `ThemeOverlay.AppCompat.Dark.ActionBar` makes the text and the icons in the AppBar white. -->

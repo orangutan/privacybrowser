@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -258,6 +258,21 @@
             android:defaultValue="@string/homepage_default_value"
             android:inputType="textUri"
             android:icon="?attr/homepageIcon" />
+
+        <ListPreference
+            android:key="download_location"
+            android:title="@string/download_location"
+            android:entries="@array/download_location_entries"
+            android:entryValues="@array/download_location_entry_values"
+            android:defaultValue="@string/download_location_default_value"
+            android:inputType="textUri"
+            android:icon="?attr/downloadIcon" />
+
+        <EditTextPreference
+            android:key="download_custom_location"
+            android:title="@string/download_custom_location"
+            android:defaultValue="@string/download_custom_location_default_value"
+            android:inputType="textUri" />
 
         <!-- `android:inputType="number"` currently doesn't work with AndroidX. -->
         <EditTextPreference
