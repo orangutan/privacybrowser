@@ -1,0 +1,13 @@
+• Remplacement du gestionnaire de téléchargement d'Android par une implémentation personnalisée.
+• Ajout d'une option pour spécifier l'emplacement de téléchargement par défaut.
+• Apprendre aux téléchargements à respecter les choix de proxy.
+• Toujours recharger les onglets lors du changement de proxy.
+• Ajout d'une option pour enregistrer une URL lambda.
+• Avertir si l'enregistrement d'un fichier écrasera un fichier existant.
+• Ajout d'une entrée de menu pour les options de favoris afin de pouvoir y accéder avec l'interface gestuelle d'Android 10.
+• Modification de l'ordre du menu d'options pour éviter la création accidentelle de paramètres de domaine.
+• Traduction française mise à jour fournie par Kévin LE FLOHIC.
+• Traduction allemand mise à jour fournie par Bernhard G. Keller.
+• Traduction italien mise à jour fournie par Francesco Buratti.
+• Traduction russe mise à jour.
+• Traduction espagnol mise à jour fournie par Jose A. León.

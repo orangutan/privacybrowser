@@ -220,38 +220,48 @@ public class SaveDialog extends DialogFragment {
         TextView storagePermissionTextView = alertDialog.findViewById(R.id.storage_permission_textview);
         Button saveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
-        // Update the status of the save button whe the URL changes.
-        urlEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                // Do nothing.
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                // Do nothing.
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                // Cancel the get URL size AsyncTask if it is running.
-                if ((getUrlSize != null)) {
-                    getUrlSize.cancel(true);
+        // Modify the layout based on the save type.
+        if (saveType == StoragePermissionDialog.SAVE_URL) {  // A URL is being saved.
+            // Update the status of the save button whe the URL changes.
+            urlEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    // Do nothing.
                 }
 
-                // Get the current URL to save.
-                String urlToSave = urlEditText.getText().toString();
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    // Do nothing.
+                }
 
-                // Wipe the file size text view.
-                fileSizeTextView.setText("");
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    // Cancel the get URL size AsyncTask if it is running.
+                    if ((getUrlSize != null)) {
+                        getUrlSize.cancel(true);
+                    }
 
-                // Get the file size for the current URL.
-                getUrlSize = new GetUrlSize(context, alertDialog, userAgent, cookiesEnabled).execute(urlToSave);
+                    // Get the current URL to save.
+                    String urlToSave = urlEditText.getText().toString();
 
-                // Enable the save button if the URL and file name are populated.
-                saveButton.setEnabled(!urlToSave.isEmpty() && !fileNameEditText.getText().toString().isEmpty());
-            }
-        });
+                    // Wipe the file size text view.
+                    fileSizeTextView.setText("");
+
+                    // Get the file size for the current URL.
+                    getUrlSize = new GetUrlSize(context, alertDialog, userAgent, cookiesEnabled).execute(urlToSave);
+
+                    // Enable the save button if the URL and file name are populated.
+                    saveButton.setEnabled(!urlToSave.isEmpty() && !fileNameEditText.getText().toString().isEmpty());
+                }
+            });
+
+            // Populate the URL edit text.
+            urlEditText.setText(url);
+        } else {  // An archive or an image is being saved.
+            // Hide the URL edit text and the file size text view.
+            urlEditText.setVisibility(View.GONE);
+            fileSizeTextView.setVisibility(View.GONE);
+        }
 
         // Update the status of the save button when the file name changes.
         fileNameEditText.addTextChangedListener(new TextWatcher() {
@@ -282,8 +292,14 @@ public class SaveDialog extends DialogFragment {
                     fileExistsWarningTextView.setVisibility(View.GONE);
                 }
 
-                // Enable the save button if the file name is populated.
-                saveButton.setEnabled(!fileNameString.isEmpty() && !urlEditText.getText().toString().isEmpty());
+                // Enable the save button based on the save type.
+                if (saveType == StoragePermissionDialog.SAVE_URL) {  // A URL is being saved.
+                    // Enable the save button if the file name and the URL is populated.
+                    saveButton.setEnabled(!fileNameString.isEmpty() && !urlEditText.getText().toString().isEmpty());
+                } else {  // An archive or an image is being saved.
+                    // Enable the save button if the file name is populated.
+                    saveButton.setEnabled(!fileNameString.isEmpty());
+                }
             }
         });
 
@@ -331,8 +347,7 @@ public class SaveDialog extends DialogFragment {
             storagePermissionTextView.setVisibility(View.GONE);
         }
 
-        // Populate the edit texts.
-        urlEditText.setText(url);
+        // Populate the file name edit text.
         fileNameEditText.setText(defaultFilePath);
 
         // Move the cursor to the end of the default file path.

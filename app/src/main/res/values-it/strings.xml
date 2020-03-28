@@ -566,6 +566,14 @@
         <string name="clear_cache_summary">Cancella solo la cache di WebView.</string>
     <string name="general">Generale</string>
         <string name="homepage">Homepage</string>
+        <string name="download_location">Posizione dei Download</string>
+        <string-array name="download_location_entries">
+            <item>Automatico</item>
+            <item>Cartella della App</item>
+            <item>Cartella Pubblica</item>
+            <item>Personalizzata</item>
+        </string-array>
+        <string name="download_custom_location">Posizione personalizzata dei Download</string>
         <string name="font_size_preference">Dimensione font</string>
         <string name="open_intents_in_new_tab">Apri gli intenti in una nuova scheda</string>
         <string name="open_intents_in_new_tab_summary">Gli intenti sono link inviati da altre app.</string>

@@ -570,6 +570,14 @@
         <string name="clear_cache_summary">Löscht den WebView-Cache.</string>
     <string name="general">Allgemein</string>
         <string name="homepage">Startseite</string>
+        <string name="download_location">Speicher-Ort für Downloads</string>
+        <string-array name="download_location_entries">
+            <item>Automatisch</item>
+            <item>App-Ordner</item>
+            <item>Öffentlicher Ordner</item>
+            <item>Benutzerdefiniert</item>
+        </string-array>
+        <string name="download_custom_location">Benutzerdefinierter Ordner für Downloads</string>
         <string name="font_size_preference">Schriftgröße</string>
         <string name="open_intents_in_new_tab">Intents in neuem Tab öffnen</string>
         <string name="open_intents_in_new_tab_summary">Intents sind Links, die von anderen Apps übergeben werden.</string>

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -44,7 +44,7 @@ public class GuidePagerAdapter extends FragmentPagerAdapter {
     @Override
     // Get the count of the number of tabs.
     public int getCount() {
-        return 10;
+        return 9;
     }
 
     @Override
@@ -77,9 +77,6 @@ public class GuidePagerAdapter extends FragmentPagerAdapter {
 
             case 8:
                 return context.getString(R.string.tracking_ids);
-
-            case 9:
-                return context.getString(R.string.bookmarks);
 
             default:
                 return "";

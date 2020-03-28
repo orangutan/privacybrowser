@@ -1,0 +1,13 @@
+• Replace Android’s download manager with a custom implementation.
+• Add an option to specify the default download location.
+• Teach downloads to respect proxies.
+• Always reload tabs when switching proxies.
+• Add an option to save a raw URL.
+• Warn if saving a file will overwrite an existing file.
+• Add a Bookmarks options menu entry so they can be accessed with Android 10’s gesture interface.
+• Change the order of the options menu to prevent accidental creation of domain settings.
+• Updated French translation provided by Kévin LE FLOHIC.
+• Almanca çevirisi güncellendi. (Çevirmen Bernhard G. Keller.)
+• İtalyan çevirisi güncellendi. (Çevirmen Francesco Buratti.)
+• Rusça çevirisi güncellendi.
+• İspanyol çevirisi güncellendi. (Çevirmen Jose A. León.)

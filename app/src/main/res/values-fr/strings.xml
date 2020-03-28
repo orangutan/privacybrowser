@@ -164,6 +164,7 @@
         <string name="print">Imprimer</string>
             <string name="privacy_browser_web_page">Site Web de Privacy Browser</string>
         <string name="save">Sauvegarder</string>
+            <string name="save_url">Enregistrer l\'URL</string>
             <string name="save_as_archive">Enregistrer en tant qu\'archive</string>
             <string name="save_as_image">Sauvergarder comme image</string>
         <string name="add_to_home_screen">Ajouter à l\'écran d\'accueil</string>
@@ -195,10 +196,16 @@
     <string name="save_image">Sauvegarder en tant qu\'image</string>
     <string name="webpage_mht">PageWeb.mht</string>
     <string name="webpage_png">PageWeb.png</string>
+    <string name="file">Fichier</string>
+    <string name="bytes">octets</string>
     <string name="unknown_size">taille inconnue</string>
+    <string name="invalid_url">URL invalide</string>
     <string name="ok">OK</string>
+    <string name="saving_file">Enregistrement du fichier:</string>
     <string name="saving_image">Sauvegarde en cours…</string>
+    <string name="file_saved">Fichier enregistré:</string>
     <string name="image_saved">Image sauvegardée.</string>
+    <string name="error_saving_file">Erreur lors de l\'enregistrement du fichier:</string>
     <string name="error_saving_image">Erreur durant la sauvegarde :</string>
 
     <!-- View Source. -->
@@ -561,6 +568,14 @@
         <string name="clear_cache_summary">Efface le cache WebView.</string>
     <string name="general">General</string>
         <string name="homepage">Page d\'accueil</string>
+        <string name="download_location">Emplacement de téléchargement</string>
+        <string-array name="download_location_entries">
+            <item>Automatique</item>
+            <item>Dossier de l\'application</item>
+            <item>Dossier publique</item>
+            <item>Personnalisé</item>
+        </string-array>
+        <string name="download_custom_location">Emplacement personnalisé de téléchargement</string>
         <string name="font_size_preference">Zoom</string>
         <string name="open_intents_in_new_tab">Intentions dans un nouvel onglet</string>
         <string name="open_intents_in_new_tab_summary">Les intentions sont des liens envoyés à partir d\'autres applications.</string>

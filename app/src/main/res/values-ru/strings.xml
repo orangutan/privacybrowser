@@ -560,6 +560,14 @@
         <string name="clear_cache_summary">Очищает кэш WebView.</string>
     <string name="general">Общее</string>
         <string name="homepage">Домашняя страница</string>
+        <string name="download_location">Место скачивания</string>
+        <string-array name="download_location_entries">
+            <item>Авто</item>
+            <item>Каталог приложения</item>
+            <item>Общий каталог</item>
+            <item>Пользовательский</item>
+        </string-array>
+        <string name="download_custom_location">Загружать в пользовательское расположение</string>
         <string name="font_size_preference">Размер шрифта</string>
         <string name="open_intents_in_new_tab">Открывать цели в новой вкладке</string>
         <string name="open_intents_in_new_tab_summary">Цели - это ссылки, отправленные из других приложений.</string>

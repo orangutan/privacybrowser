@@ -58,8 +58,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         // Remove the lint warning below that `getApplicationContext()` might produce a null pointer exception.
         assert activity != null;
 
-        // Get a handle for the context.
+        // Get a handle for the context and the resources.
         Context context = activity.getApplicationContext();
+        Resources resources = getResources();
 
         // Initialize savedPreferences.
         savedPreferences = getPreferenceScreen().getSharedPreferences();
@@ -210,8 +211,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         // Get the user agent arrays.
         ArrayAdapter<CharSequence> userAgentNamesArray = ArrayAdapter.createFromResource(context, R.array.user_agent_names, R.layout.spinner_item);
-        String[] translatedUserAgentNamesArray = getResources().getStringArray(R.array.translated_user_agent_names);
-        String[] userAgentDataArray = getResources().getStringArray(R.array.user_agent_data);
+        String[] translatedUserAgentNamesArray = resources.getStringArray(R.array.translated_user_agent_names);
+        String[] userAgentDataArray = resources.getStringArray(R.array.user_agent_data);
 
         // Get the array position of the user agent name.
         int userAgentArrayPosition = userAgentNamesArray.getPosition(userAgentName);
@@ -302,20 +303,27 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         homepagePreference.setSummary(savedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
 
 
+        // Get the download location string arrays.
+        String[] downloadLocationEntriesStringArray = resources.getStringArray(R.array.download_location_entries);
+        String[] downloadLocationEntryValuesStringArray = resources.getStringArray(R.array.download_location_entry_values);
+
         // Instantiate the download location helper.
         DownloadLocationHelper downloadLocationHelper = new DownloadLocationHelper();
 
-        // Set the download location summary text.
-        downloadLocationPreference.setSummary(downloadLocationHelper.getDownloadLocation(context));
+        // Check to see if a download custom location is selected.
+        if (downloadLocationString.equals(downloadLocationEntryValuesStringArray[3])) {  // A download custom location is selected.
+            // Set the download location summary text to be `Custom`.
+            downloadLocationPreference.setSummary(downloadLocationEntriesStringArray[3]);
+        } else {  // A custom download location is not selected.
+            // Set the download location summary text to be the download location.
+            downloadLocationPreference.setSummary(downloadLocationHelper.getDownloadLocation(context));
+
+            // Disable the download custom location preference.
+            downloadCustomLocationPreference.setEnabled(false);
+        }
 
         // Set the summary text for the download custom location (the default is `"`).
         downloadCustomLocationPreference.setSummary(savedPreferences.getString("download_custom_location", getString(R.string.download_custom_location_default_value)));
-
-        // Get the download location entry values string array.
-        String[] downloadLocationEntryValuesStringArray = context.getResources().getStringArray(R.array.download_location_entry_values);
-
-        // Only enable the download custom location preference if the download location is set to `Custom`.
-        downloadCustomLocationPreference.setEnabled(downloadLocationString.equals(downloadLocationEntryValuesStringArray[3]));
 
 
         // Set the font size as the summary text for the preference.
@@ -1649,11 +1657,20 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     // Get the new download location.
                     String newDownloadLocationString = sharedPreferences.getString("download_location", getString(R.string.download_location_default_value));
 
-                    // Update the download location summary text.
-                    downloadLocationPreference.setSummary(downloadLocationHelper.getDownloadLocation(context));
+                    // Check to see if a download custom location is selected.
+                    if (newDownloadLocationString.equals(downloadLocationEntryValuesStringArray[3])) {  // A download custom location is selected.
+                        // Set the download location summary text to be `Custom`.
+                        downloadLocationPreference.setSummary(downloadLocationEntriesStringArray[3]);
 
-                    // Update the status of the download custom location preference.
-                    downloadCustomLocationPreference.setEnabled(newDownloadLocationString.equals(downloadLocationEntryValuesStringArray[3]));
+                        // Enable the download custom location preference.
+                        downloadCustomLocationPreference.setEnabled(true);
+                    } else {  // A download custom location is not selected.
+                        // Set the download location summary text to be the download location.
+                        downloadLocationPreference.setSummary(downloadLocationHelper.getDownloadLocation(context));
+
+                        // Disable the download custom location.
+                        downloadCustomLocationPreference.setEnabled(newDownloadLocationString.equals(downloadLocationEntryValuesStringArray[3]));
+                    }
 
                     // Update the download custom location icon.
                     if (downloadCustomLocationPreference.isEnabled()) {

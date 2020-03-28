@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -75,14 +75,18 @@ public class GuideActivity extends AppCompatActivity {
         // Display the home arrow on the action bar.
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        //  Setup the ViewPager.
+        //  Get a handle for the view pager and the tab layout.
         ViewPager aboutViewPager = findViewById(R.id.guide_viewpager);
-        assert aboutViewPager != null; // This assert removes the incorrect warning in Android Studio on the following line that aboutViewPager might be null.
+        TabLayout aboutTabLayout = findViewById(R.id.guide_tablayout);
+
+        // Remove the incorrect lint warnings that the views might be null
+        assert aboutViewPager != null;
+        assert aboutTabLayout != null;
+
+        // Set the view pager adapter.
         aboutViewPager.setAdapter(new GuidePagerAdapter(getSupportFragmentManager(), getApplicationContext()));
 
-        // Setup the TabLayout and connect it to the ViewPager.
-        TabLayout aboutTabLayout = findViewById(R.id.guide_tablayout);
-        assert aboutTabLayout != null; // This assert removes the incorrect warning in Android Studio on the following line that aboutTabLayout might be null.
+        // Link the tab layout to the view pager.
         aboutTabLayout.setupWithViewPager(aboutViewPager);
     }
 }

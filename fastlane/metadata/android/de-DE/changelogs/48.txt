@@ -1,0 +1,13 @@
+• Androids Download-Manager wurde durch eine eigene Implementierung ersetzt.
+• Option einer Standard-Einstellung für den Download-Ordner hinzugefügt.
+• Auch bei Downloads werden nun Proxies berücksichtigt.
+• Beim Wechsel von Proxies werden nun immer alle Tabs neu geladen.
+• Option zum Speichern von Roh-Daten einer URL hinzugefügt.
+• Warnung, wenn eine zu speichernde Datei eine bestehende Datei überschreiben würde, hinzugefügt.
+• Eintrag im Lesezeichen-Menü hinzugefügt, damit dieser mittels Wischgesten von Android 10 erreicht werden kann.
+• Reihenfolge des Optionen-Menüs geändert, um ein versehentliches Erstellen von Domain-Einstellungen zu verhindern.
+• Aktualisierte deutsche Übersetzung von Bernhard G. Keller.
+• Aktualisierte französische Übersetzung von Kévin LE FLOHIC.
+• Aktualisierte italienische Übersetzung von Francesco Buratti.
+• Aktualisierte russische Übersetzung.
+• Aktualisierte spanische Übersetzung von Jose A. León.

@@ -28,8 +28,8 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 47
-        versionName "3.3"
+        versionCode 48
+        versionName "3.4"
 
         // The `multiDexEnabled` entry could possibly be removed once the `minSdkVersion` is >= 21.
         multiDexEnabled true
