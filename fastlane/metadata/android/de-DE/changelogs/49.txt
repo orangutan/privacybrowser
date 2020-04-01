@@ -1,0 +1,1 @@
+• Speicher-Berechtigungs-Problem auf manchen Android-10-Geräten behoben.
