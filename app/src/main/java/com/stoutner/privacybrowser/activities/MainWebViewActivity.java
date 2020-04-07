@@ -2131,48 +2131,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     return true;
                 });
 
-                // Add a Cancel entry, which by default closes the context menu.
-                menu.add(R.string.cancel);
-                break;
-
-            case WebView.HitTestResult.EMAIL_TYPE:
-                // Get the target URL.
-                linkUrl = hitTestResult.getExtra();
-
-                // Set the target URL as the title of the `ContextMenu`.
-                menu.setHeaderTitle(linkUrl);
-
-                // Add a Write Email entry.
-                menu.add(R.string.write_email).setOnMenuItemClickListener(item -> {
-                    // Use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
-                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-
-                    // Parse the url and set it as the data for the `Intent`.
-                    emailIntent.setData(Uri.parse("mailto:" + linkUrl));
-
-                    // `FLAG_ACTIVITY_NEW_TASK` opens the email program in a new task instead as part of Privacy Browser.
-                    emailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                    // Make it so.
-                    startActivity(emailIntent);
-
-                    // Consume the event.
-                    return true;
-                });
-
-                // Add a Copy Email Address entry.
-                menu.add(R.string.copy_email_address).setOnMenuItemClickListener(item -> {
-                    // Save the email address in a `ClipData`.
-                    ClipData srcEmailTypeClipData = ClipData.newPlainText(getString(R.string.email_address), linkUrl);
-
-                    // Set the `ClipData` as the clipboard's primary clip.
-                    clipboardManager.setPrimaryClip(srcEmailTypeClipData);
-
-                    // Consume the event.
-                    return true;
-                });
-
-                // Add a `Cancel` entry, which by default closes the `ContextMenu`.
+                // Add an empty Cancel entry, which by default closes the context menu.
                 menu.add(R.string.cancel);
                 break;
 
@@ -2188,6 +2147,24 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 menu.add(R.string.open_image_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
                     // Load the image in a new tab.
                     addNewTab(imageUrl, true);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add an Open with App entry.
+                menu.add(R.string.open_with_app).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Open the image URL with an external app.
+                    openWithApp(imageUrl);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add an Open with Browser entry.
+                menu.add(R.string.open_with_browser).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Open the image URL with an external browser.
+                    openWithBrowser(imageUrl);
 
                     // Consume the event.
                     return true;
@@ -2227,25 +2204,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     return true;
                 });
 
-                // Add an Open with App entry.
-                menu.add(R.string.open_with_app).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Open the image URL with an external app.
-                    openWithApp(imageUrl);
-
-                    // Consume the event.
-                    return true;
-                });
-
-                // Add an Open with Browser entry.
-                menu.add(R.string.open_with_browser).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Open the image URL with an external browser.
-                    openWithBrowser(imageUrl);
-
-                    // Consume the event.
-                    return true;
-                });
-
-                // Add a Cancel entry, which by default closes the context menu.
+                // Add an empty Cancel entry, which by default closes the context menu.
                 menu.add(R.string.cancel);
                 break;
 
@@ -2296,51 +2255,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     return true;
                 });
 
-                // Add a View Image entry.
-                menu.add(R.string.view_image).setOnMenuItemClickListener((MenuItem item) -> {
-                   // View the image in the current tab.
-                   loadUrl(currentWebView, imageUrl);
-
-                   // Consume the event.
-                   return true;
-                });
-
-                // Add a Copy URL entry.
-                menu.add(R.string.copy_url).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Save the link URL in a clip data.
-                    ClipData srcImageAnchorTypeClipData = ClipData.newPlainText(getString(R.string.url), linkUrl);
-
-                    // Set the clip data as the clipboard's primary clip.
-                    clipboardManager.setPrimaryClip(srcImageAnchorTypeClipData);
-
-                    // Consume the event.
-                    return true;
-                });
-
-                menu.add(R.string.save_image).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Instantiate the save  dialog.
-                    DialogFragment saveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_URL, imageUrl, currentWebView.getSettings().getUserAgentString(),
-                            currentWebView.getAcceptFirstPartyCookies());
-
-                    // Show the save raw dialog.  It must be named `save_dialog` so that the file picked can update the file name.
-                    saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
-
-                    // Consume the event.
-                    return true;
-                });
-
-                menu.add(R.string.save_url).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Instantiate the save dialog.
-                    DialogFragment saveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_URL, linkUrl, currentWebView.getSettings().getUserAgentString(),
-                            currentWebView.getAcceptFirstPartyCookies());
-
-                    // Show the save raw dialog.  It must be named `save_dialog` so that the file picked can update the file name.
-                    saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
-
-                    // Consume the event.
-                    return true;
-                });
-
                 // Add an Open with App entry.
                 menu.add(R.string.open_with_app).setOnMenuItemClickListener((MenuItem item) -> {
                     // Open the link URL with an external app.
@@ -2359,7 +2273,95 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     return true;
                 });
 
-                // Add a cancel entry, which by default closes the context menu.
+                // Add a View Image entry.
+                menu.add(R.string.view_image).setOnMenuItemClickListener((MenuItem item) -> {
+                   // View the image in the current tab.
+                   loadUrl(currentWebView, imageUrl);
+
+                   // Consume the event.
+                   return true;
+                });
+
+                // Add a Save Image entry.
+                menu.add(R.string.save_image).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Instantiate the save  dialog.
+                    DialogFragment saveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_URL, imageUrl, currentWebView.getSettings().getUserAgentString(),
+                            currentWebView.getAcceptFirstPartyCookies());
+
+                    // Show the save raw dialog.  It must be named `save_dialog` so that the file picked can update the file name.
+                    saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add a Copy URL entry.
+                menu.add(R.string.copy_url).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Save the link URL in a clip data.
+                    ClipData srcImageAnchorTypeClipData = ClipData.newPlainText(getString(R.string.url), linkUrl);
+
+                    // Set the clip data as the clipboard's primary clip.
+                    clipboardManager.setPrimaryClip(srcImageAnchorTypeClipData);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add a Save URL entry.
+                menu.add(R.string.save_url).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Instantiate the save dialog.
+                    DialogFragment saveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_URL, linkUrl, currentWebView.getSettings().getUserAgentString(),
+                            currentWebView.getAcceptFirstPartyCookies());
+
+                    // Show the save raw dialog.  It must be named `save_dialog` so that the file picked can update the file name.
+                    saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add an empty Cancel entry, which by default closes the context menu.
+                menu.add(R.string.cancel);
+                break;
+
+            case WebView.HitTestResult.EMAIL_TYPE:
+                // Get the target URL.
+                linkUrl = hitTestResult.getExtra();
+
+                // Set the target URL as the title of the `ContextMenu`.
+                menu.setHeaderTitle(linkUrl);
+
+                // Add a Write Email entry.
+                menu.add(R.string.write_email).setOnMenuItemClickListener(item -> {
+                    // Use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+
+                    // Parse the url and set it as the data for the `Intent`.
+                    emailIntent.setData(Uri.parse("mailto:" + linkUrl));
+
+                    // `FLAG_ACTIVITY_NEW_TASK` opens the email program in a new task instead as part of Privacy Browser.
+                    emailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                    // Make it so.
+                    startActivity(emailIntent);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add a Copy Email Address entry.
+                menu.add(R.string.copy_email_address).setOnMenuItemClickListener(item -> {
+                    // Save the email address in a `ClipData`.
+                    ClipData srcEmailTypeClipData = ClipData.newPlainText(getString(R.string.email_address), linkUrl);
+
+                    // Set the `ClipData` as the clipboard's primary clip.
+                    clipboardManager.setPrimaryClip(srcEmailTypeClipData);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add an empty Cancel entry, which by default closes the context menu.
                 menu.add(R.string.cancel);
                 break;
         }
