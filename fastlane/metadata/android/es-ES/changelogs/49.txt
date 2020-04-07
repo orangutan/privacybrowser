@@ -1,0 +1,1 @@
+• Arreglar un problema de permiso de almacenamiento en algunos dispositivos con Android 10.

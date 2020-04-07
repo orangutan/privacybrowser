@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -24,6 +24,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,6 +39,7 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
+import com.stoutner.privacybrowser.helpers.DownloadLocationHelper;
 import com.stoutner.privacybrowser.helpers.ProxyHelper;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
@@ -56,8 +58,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         // Remove the lint warning below that `getApplicationContext()` might produce a null pointer exception.
         assert activity != null;
 
-        // Get a handle for the context.
+        // Get a handle for the context and the resources.
         Context context = activity.getApplicationContext();
+        Resources resources = getResources();
 
         // Initialize savedPreferences.
         savedPreferences = getPreferenceScreen().getSharedPreferences();
@@ -95,12 +98,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Preference clearFormDataPreference = findPreference("clear_form_data");  // The clear form data preference can be removed once the minimum API >= 26.
         Preference clearCachePreference = findPreference("clear_cache");
         Preference homepagePreference = findPreference("homepage");
+        Preference downloadLocationPreference = findPreference("download_location");
+        Preference downloadCustomLocationPreference = findPreference("download_custom_location");
         Preference fontSizePreference = findPreference("font_size");
         Preference openIntentsInNewTabPreference = findPreference("open_intents_in_new_tab");
         Preference swipeToRefreshPreference = findPreference("swipe_to_refresh");
         Preference scrollAppBarPreference = findPreference("scroll_app_bar");
         Preference displayAdditionalAppBarIconsPreference = findPreference("display_additional_app_bar_icons");
-        Preference downloadWithExternalAppPreference = findPreference("download_with_external_app");
         Preference darkThemePreference = findPreference("dark_theme");
         Preference nightModePreference = findPreference("night_mode");
         Preference wideViewportPreference = findPreference("wide_viewport");
@@ -139,12 +143,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         assert clearFormDataPreference != null;
         assert clearCachePreference != null;
         assert homepagePreference != null;
+        assert downloadLocationPreference != null;
+        assert downloadCustomLocationPreference != null;
         assert fontSizePreference != null;
         assert openIntentsInNewTabPreference != null;
         assert swipeToRefreshPreference != null;
         assert scrollAppBarPreference != null;
         assert displayAdditionalAppBarIconsPreference != null;
-        assert downloadWithExternalAppPreference != null;
         assert darkThemePreference != null;
         assert nightModePreference != null;
         assert wideViewportPreference != null;
@@ -154,8 +159,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         hideAppBarPreference.setDependency("full_screen_browsing_mode");
 
         // Get strings from the preferences.
+        String userAgentName = savedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
         String searchString = savedPreferences.getString("search", getString(R.string.search_default_value));
         String proxyString = savedPreferences.getString("proxy", getString(R.string.proxy_default_value));
+        String downloadLocationString = savedPreferences.getString("download_location", getString(R.string.download_location_default_value));
 
         // Get booleans that are used in multiple places from the preferences.
         boolean javaScriptEnabled = savedPreferences.getBoolean("javascript", false);
@@ -192,19 +199,20 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         // Only enable Fanboy's social blocking list preference if Fanboy's annoyance list is disabled.
         fanboySocialBlockingListPreference.setEnabled(!fanboyAnnoyanceListEnabled);
 
+
         // Inflate a WebView to get the default user agent.
         LayoutInflater inflater = getActivity().getLayoutInflater();
+
         // `@SuppressLint("InflateParams")` removes the warning about using `null` as the `ViewGroup`, which in this case makes sense because the `bare_webview` will not be displayed.
         @SuppressLint("InflateParams") View bareWebViewLayout = inflater.inflate(R.layout.bare_webview, null, false);
+
+        // Get a handle for a bare WebView.
         WebView bareWebView = bareWebViewLayout.findViewById(R.id.bare_webview);
 
         // Get the user agent arrays.
         ArrayAdapter<CharSequence> userAgentNamesArray = ArrayAdapter.createFromResource(context, R.array.user_agent_names, R.layout.spinner_item);
-        String[] translatedUserAgentNamesArray = getResources().getStringArray(R.array.translated_user_agent_names);
-        String[] userAgentDataArray = getResources().getStringArray(R.array.user_agent_data);
-
-        // Get the current user agent name from the preference.
-        String userAgentName = savedPreferences.getString("user_agent", getString(R.string.user_agent_default_value));
+        String[] translatedUserAgentNamesArray = resources.getStringArray(R.array.translated_user_agent_names);
+        String[] userAgentDataArray = resources.getStringArray(R.array.user_agent_data);
 
         // Get the array position of the user agent name.
         int userAgentArrayPosition = userAgentNamesArray.getPosition(userAgentName);
@@ -231,9 +239,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 userAgentPreference.setSummary(translatedUserAgentNamesArray[userAgentArrayPosition] + ":\n" + userAgentDataArray[userAgentArrayPosition]);
         }
 
-        // Set the summary text for the custom user agent preference and enable it if user agent preference is set to custom.
+        // Set the summary text for the custom user agent preference.
         customUserAgentPreference.setSummary(savedPreferences.getString("custom_user_agent", getString(R.string.custom_user_agent_default_value)));
+
+        // Only enable the custom user agent preference if the user agent is set to `Custom`.
         customUserAgentPreference.setEnabled(userAgentPreference.getSummary().equals(getString(R.string.custom_user_agent)));
+
 
         // Set the search URL as the summary text for the search preference when the preference screen is loaded.
         if (searchString.equals("Custom URL")) {
@@ -244,9 +255,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             searchPreference.setSummary(searchString);
         }
 
-        // Set the summary text for `search_custom_url` (the default is `""`) and enable it if `search` is set to `Custom URL`.
+        // Set the summary text for the search custom URL (the default is `""`).
         searchCustomURLPreference.setSummary(savedPreferences.getString("search_custom_url", getString(R.string.search_custom_url_default_value)));
+
+        // Only enable the search custom URL preference if the search is set to `Custom URL`.
         searchCustomURLPreference.setEnabled(searchString.equals("Custom URL"));
+
 
         // Set the summary text for the proxy preference when the preference screen is loaded.
         switch (proxyString) {
@@ -271,11 +285,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 break;
         }
 
+        // Set the summary text for the custom proxy URL.
+        proxyCustomUrlPreference.setSummary(savedPreferences.getString("proxy_custom_url", getString(R.string.proxy_custom_url_default_value)));
+
         // Only enable the custom proxy URL if a custom proxy is selected.
         proxyCustomUrlPreference.setEnabled(proxyString.equals("Custom"));
 
-        // Set the summary text for the custom proxy URL.
-        proxyCustomUrlPreference.setSummary(savedPreferences.getString("proxy_custom_url", getString(R.string.proxy_custom_url_default_value)));
 
         // Set the status of the Clear and Exit preferences.
         clearCookiesPreference.setEnabled(!clearEverything);
@@ -283,11 +298,37 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         clearFormDataPreference.setEnabled(!clearEverything);  // The form data line can be removed once the minimum API is >= 26.
         clearCachePreference.setEnabled(!clearEverything);
 
+
         // Set the homepage URL as the summary text for the homepage preference.
         homepagePreference.setSummary(savedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
 
+
+        // Get the download location string arrays.
+        String[] downloadLocationEntriesStringArray = resources.getStringArray(R.array.download_location_entries);
+        String[] downloadLocationEntryValuesStringArray = resources.getStringArray(R.array.download_location_entry_values);
+
+        // Instantiate the download location helper.
+        DownloadLocationHelper downloadLocationHelper = new DownloadLocationHelper();
+
+        // Check to see if a download custom location is selected.
+        if (downloadLocationString.equals(downloadLocationEntryValuesStringArray[3])) {  // A download custom location is selected.
+            // Set the download location summary text to be `Custom`.
+            downloadLocationPreference.setSummary(downloadLocationEntriesStringArray[3]);
+        } else {  // A custom download location is not selected.
+            // Set the download location summary text to be the download location.
+            downloadLocationPreference.setSummary(downloadLocationHelper.getDownloadLocation(context));
+
+            // Disable the download custom location preference.
+            downloadCustomLocationPreference.setEnabled(false);
+        }
+
+        // Set the summary text for the download custom location (the default is `"`).
+        downloadCustomLocationPreference.setSummary(savedPreferences.getString("download_custom_location", getString(R.string.download_custom_location_default_value)));
+
+
         // Set the font size as the summary text for the preference.
         fontSizePreference.setSummary(savedPreferences.getString("font_size", getString(R.string.font_size_default_value)) + "%");
+
 
         // Disable the JavaScript preference if Night Mode is enabled.  JavaScript will be enabled for all web pages.
         javaScriptPreference.setEnabled(!nightMode);
@@ -727,6 +768,21 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             clearCachePreference.setIcon(R.drawable.cache_warning);
         }
 
+        // Set the download custom location icon.
+        if (downloadCustomLocationPreference.isEnabled()) {
+            if (darkTheme) {
+                downloadCustomLocationPreference.setIcon(R.drawable.downloads_enabled_dark);
+            } else {
+                downloadCustomLocationPreference.setIcon(R.drawable.downloads_enabled_light);
+            }
+        } else {
+            if (darkTheme) {
+                downloadCustomLocationPreference.setIcon(R.drawable.downloads_ghosted_dark);
+            } else {
+                downloadCustomLocationPreference.setIcon(R.drawable.downloads_ghosted_light);
+            }
+        }
+
         // Set the open intents in new tab preference icon.
         if (savedPreferences.getBoolean("open_intents_in_new_tab", true)) {
             if (darkTheme) {
@@ -784,21 +840,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_dark);
             } else {
                 displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_light);
-            }
-        }
-
-        // Set the download with external app preference icon.
-        if (savedPreferences.getBoolean("download_with_external_app", false)) {
-            if (darkTheme) {
-                downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_dark);
-            } else {
-                downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_light);
-            }
-        } else {
-            if (darkTheme) {
-                downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_dark);
-            } else {
-                downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_light);
             }
         }
 
@@ -1320,7 +1361,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     // Store the new search string.
                     String newSearchString = sharedPreferences.getString("search", getString(R.string.search_default_value));
 
-                    // Update `searchPreference` and `searchCustomURLPreference`.
+                    // Update the search and search custom URL preferences.
                     if (newSearchString.equals("Custom URL")) {  // `Custom URL` is selected.
                         // Set the summary text to `R.string.custom_url`, which is translated.
                         searchPreference.setSummary(R.string.custom_url);
@@ -1351,7 +1392,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     break;
 
                 case "search_custom_url":
-                    // Set the new custom search URL as the summary text for `search_custom_url`.  The default is `""`.
+                    // Set the new search custom URL as the summary text for the preference.
                     searchCustomURLPreference.setSummary(sharedPreferences.getString("search_custom_url", getString(R.string.search_custom_url_default_value)));
                     break;
 
@@ -1612,6 +1653,46 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     homepagePreference.setSummary(sharedPreferences.getString("homepage", getString(R.string.homepage_default_value)));
                     break;
 
+                case "download_location":
+                    // Get the new download location.
+                    String newDownloadLocationString = sharedPreferences.getString("download_location", getString(R.string.download_location_default_value));
+
+                    // Check to see if a download custom location is selected.
+                    if (newDownloadLocationString.equals(downloadLocationEntryValuesStringArray[3])) {  // A download custom location is selected.
+                        // Set the download location summary text to be `Custom`.
+                        downloadLocationPreference.setSummary(downloadLocationEntriesStringArray[3]);
+
+                        // Enable the download custom location preference.
+                        downloadCustomLocationPreference.setEnabled(true);
+                    } else {  // A download custom location is not selected.
+                        // Set the download location summary text to be the download location.
+                        downloadLocationPreference.setSummary(downloadLocationHelper.getDownloadLocation(context));
+
+                        // Disable the download custom location.
+                        downloadCustomLocationPreference.setEnabled(newDownloadLocationString.equals(downloadLocationEntryValuesStringArray[3]));
+                    }
+
+                    // Update the download custom location icon.
+                    if (downloadCustomLocationPreference.isEnabled()) {
+                        if (darkTheme) {
+                            downloadCustomLocationPreference.setIcon(R.drawable.downloads_enabled_dark);
+                        } else {
+                            downloadCustomLocationPreference.setIcon(R.drawable.downloads_enabled_light);
+                        }
+                    } else {
+                        if (darkTheme) {
+                            downloadCustomLocationPreference.setIcon(R.drawable.downloads_ghosted_dark);
+                        } else {
+                            downloadCustomLocationPreference.setIcon(R.drawable.downloads_ghosted_light);
+                        }
+                    }
+                    break;
+
+                case "download_custom_location":
+                    // Set the new download custom location as the summary text for the preference.
+                    downloadCustomLocationPreference.setSummary(sharedPreferences.getString("download_custom_location", getString(R.string.download_custom_location_default_value)));
+                    break;
+
                 case "font_size":
                     // Update the font size summary text.
                     fontSizePreference.setSummary(sharedPreferences.getString("font_size", getString(R.string.font_size_default_value)) + "%");
@@ -1681,23 +1762,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_dark);
                         } else {
                             displayAdditionalAppBarIconsPreference.setIcon(R.drawable.more_disabled_light);
-                        }
-                    }
-                    break;
-
-                case "download_with_external_app":
-                    // Update the icon.
-                    if (sharedPreferences.getBoolean("download_with_external_app", false)) {
-                        if (darkTheme) {
-                            downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_dark);
-                        } else {
-                            downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_enabled_light);
-                        }
-                    } else {
-                        if (darkTheme) {
-                            downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_dark);
-                        } else {
-                            downloadWithExternalAppPreference.setIcon(R.drawable.open_with_external_app_disabled_light);
                         }
                     }
                     break;

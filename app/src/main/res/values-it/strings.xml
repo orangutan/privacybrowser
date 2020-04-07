@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017-2020 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2017-2019 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017-2020 Francesco Buratti.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -44,9 +44,7 @@
     <string name="form_data_deleted">Dati dei Moduli eliminati</string>
     <string name="open_navigation_drawer">Apri il menu di navigazione</string>
     <string name="close_navigation_drawer">Chiudi il menu di navigazione</string>
-    <string name="no_title">Nessun titolo</string>
     <string name="unrecognized_url">URL non riconosciuta:</string>
-    <string name="open_with">Apri con</string>
     <string name="add_tab">Aggiungi Scheda</string>
     <string name="close_tab">Chiudi Scheda</string>
     <string name="new_tab">Nuova Scheda</string>
@@ -61,16 +59,6 @@
     <string name="loading_fanboys_social_blocking_list">Caricamento Fanboy’s Social Blocking List</string>
     <string name="loading_ultralist">Caricamento UltraList</string>
     <string name="loading_ultraprivacy">Caricamento UltraPrivacy</string>
-
-    <!-- Save As. -->
-    <string name="save_as">Salva come</string>
-    <string name="save_image_as">Salva l\'immagine come</string>
-    <string name="file_name">Nome File</string>
-    <string name="image_name">Nome Immagine</string>
-    <string name="unknown_size">Dimensione sconosciuta</string>
-    <string name="download">Scarica</string>
-    <string name="cannot_download_file">Il file non può essere scaricato perché non ha un URL HTTP o HTTPS</string>
-    <string name="cannot_download_image">L\'immagine non può essere scaricata perché non ha un URL HTTP o HTTPS</string>
 
     <!-- Custom App Bar. -->
     <string name="favorite_icon">FavIcon</string>
@@ -138,8 +126,8 @@
 
     <!-- MainWebViewActivity Options Menu. -->
     <string name="javascript">JavaScript</string>
-    <string name="add_domain_settings">Aggiungi dominio</string>
-    <string name="edit_domain_settings">Modifica dominio</string>
+    <string name="refresh">Aggiorna</string>
+    <string name="stop">Stop</string>
     <string name="first_party_cookies">Cookies proprietari</string>
     <string name="third_party_cookies">Cookies di terze parti</string>
     <string name="dom_storage">DOM storage</string>
@@ -175,6 +163,7 @@
         <string name="print">Stampa</string>
             <string name="privacy_browser_web_page">Pagina web di Privacy Browser</string>
         <string name="save">Salva</string>
+            <string name="save_url">Salva URL</string>
             <string name="save_as_archive">Salva come Archivio</string>
             <string name="save_as_image">Salva come Immagine</string>
         <string name="add_to_home_screen">Aggiungi collegamento</string>
@@ -183,32 +172,39 @@
         <string name="share_url">Condividi URL</string>
         <string name="open_with_app">Apri con App</string>
         <string name="open_with_browser">Apri con il Browser</string>
-    <string name="refresh">Aggiorna</string>
-    <string name="stop">Stop</string>
+    <string name="add_domain_settings">Aggiungi dominio</string>
+    <string name="edit_domain_settings">Modifica dominio</string>
 
     <!-- Context Menus. -->
     <string name="open_in_new_tab">Apri in una nuova Scheda</string>
     <string name="open_in_background">Apri in Background</string>
     <string name="open_image_in_new_tab">Apri l\'immagine in una nuova scheda</string>
     <string name="copy_url">Copia URL</string>
-    <string name="download_url">Scarica URL</string>
     <string name="email_address">Indirizzo Email</string>
     <string name="copy_email_address">Copia Indirizzo Email</string>
     <string name="write_email">Scrivi Email</string>
     <string name="view_image">Apri Immagine</string>
-    <string name="download_image">Scarica Immagine</string>
 
     <!-- Find on Page. -->
     <string name="previous">Precedente</string>
     <string name="next">Successivo</string>
 
-    <!-- Save Webpage. -->
+    <!-- Save. -->
+    <string name="file_name">Nome File</string>
     <string name="save_archive">Salva Archivio</string>
     <string name="save_image">Salva Immagine</string>
     <string name="webpage_mht">PaginaWeb.mht</string>
     <string name="webpage_png">PaginaWeb.png</string>
+    <string name="file">File</string>
+    <string name="bytes">byte</string>
+    <string name="unknown_size">Dimensione sconosciuta</string>
+    <string name="invalid_url">URL non valida</string>
+    <string name="ok">OK</string>
+    <string name="saving_file">Salvataggio file:</string>
     <string name="saving_image">Salvataggio immagine…</string>
+    <string name="file_saved">File salvato:</string>
     <string name="image_saved">Immagine salvata.</string>
+    <string name="error_saving_file">Errore salvataggio file:</string>
     <string name="error_saving_image">Errore nel salvare l\'immagine:</string>
 
     <!-- View Source. -->
@@ -216,7 +212,6 @@
     <string name="response_message">Messaggio di Risposta</string>
     <string name="response_headers">Risposta Intestazioni</string>
     <string name="response_body">Testo della Risposta</string>
-    <string name="error_body">Testo Errore</string>
     <string name="about_view_source">Informazioni sulla visualizzazione della sorgente</string>
     <string name="about_view_source_message">Dal momento che la WebView di Android non fornisce indicazioni sulla sorgente è stata effettuata una richiesta separata utilizzando i system tools in modo da
         ottenere le informazioni mostrate. Potrebbero esserci alcune differenze tra questi dati e quelli utilizzati da WebView.
@@ -360,6 +355,8 @@
         <item>OpenPGP</item>
     </string-array>
     <string name="kitkat_password_encryption_message">La cifratura delle Password non funziona su Android KitKat.</string>
+    <string name="file_does_not_exist">Il file non esiste.</string>
+    <string name="file_exists_warning">Il file è già esistente. Se si decide di procedere sarà sovrascritto.</string>
     <string name="openkeychain_required">La cifratura OpenPGP richiede l\'installazione di OpenKeychain.</string>
     <string name="openkeychain_import_instructions">Il file non cifrato deve essere importato in un secondo momento dopo che è stato decriptato.</string>
     <string name="settings_pbs">Impostazioni.pbs</string>
@@ -393,12 +390,6 @@
     <string name="ssl_certificates">Certificati SSL</string>
     <string name="proxies">Proxy</string>
     <string name="tracking_ids">Tracciamento utenti</string>
-
-    <!-- Download Location -->
-    <string name="download_location">Cartella di Download</string>
-    <string name="download_location_message">Privacy Browser necessita del permesso di accesso alla memoria di storage per utilizzare la cartella pubblica di download.
-        Nel caso in cui il permesso sia negato sarà utilizzata la cartella di download dell\'applicazione.</string>
-    <string name="ok">OK</string>
 
     <!-- Proxy. -->
     <string name="orbot_not_installed_title">Orbot Non Installato</string>
@@ -539,8 +530,8 @@
             <item>Yahoo - JavaScript abilitato</item>
             <item>Personalizzata</item>
         </string-array>
-        <string name="search_custom_url">Ricerca personalizzata</string>
         <string name="custom_url">URL Personalizzata</string>
+        <string name="search_custom_url">Ricerca personalizzata</string>
     <string name="proxy">Proxy</string>
         <string name="proxy_none">Nessuno</string>
         <string name="proxy_tor">Tor</string>
@@ -575,6 +566,14 @@
         <string name="clear_cache_summary">Cancella solo la cache di WebView.</string>
     <string name="general">Generale</string>
         <string name="homepage">Homepage</string>
+        <string name="download_location">Posizione dei Download</string>
+        <string-array name="download_location_entries">
+            <item>Automatico</item>
+            <item>Cartella della App</item>
+            <item>Cartella Pubblica</item>
+            <item>Personalizzata</item>
+        </string-array>
+        <string name="download_custom_location">Posizione personalizzata dei Download</string>
         <string name="font_size_preference">Dimensione font</string>
         <string name="open_intents_in_new_tab">Apri gli intenti in una nuova scheda</string>
         <string name="open_intents_in_new_tab_summary">Gli intenti sono link inviati da altre app.</string>
@@ -585,8 +584,6 @@
         <string name="display_additional_app_bar_icons">Mostra icone addizionali nella barra dell\'applicazione</string>
         <string name="display_additional_app_bar_icons_summary">Mostra nella barra dell\'applicazione le icone per l\'aggiornamento di WebView e, se lo spazio è sufficiente,
             per l\'attivazione dei cookie e del DOM storage.</string>
-        <string name="download_with_external_app">Scarica con un\'applicazione esterna</string>
-        <string name="download_with_external_app_summary">Il download manager di Android potrebbe non funzionare correttamente su alcuni dispositivi.</string>
         <string name="dark_theme">Tema Dark</string>
         <string name="dark_theme_summary">La modifica del tema provocherà il riavvio di Privacy Browser.</string>
         <string name="night_mode">Modalità Notte</string>

@@ -1,0 +1,13 @@
+<!-- This file comes from the Android Material icon set, where it is called `file_download`.  It is released under the Apache License 2.0. -->
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:height="24dp"
+    android:width="24dp"
+    android:viewportHeight="24.0"
+    android:viewportWidth="24.0" >
+
+    <!-- The hard coded color must be used until API >= 21.  Then `@color` may be used. -->
+    <path
+        android:fillColor="#FFB7B7B7"
+        android:pathData="M19,9h-4V3H9v6H5l7,7 7,-7zM5,18v2h14v-2H5z" />
+</vector>

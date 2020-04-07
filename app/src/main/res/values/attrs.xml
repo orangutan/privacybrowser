@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2017-2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -60,6 +60,7 @@
     <attr name="clearIcon" format="reference" />
     <attr name="copyIcon" format="reference" />
     <attr name="deleteIcon" format="reference" />
+    <attr name="downloadIcon" format="reference" />
     <attr name="editIcon" format="reference" />
     <attr name="fontSizeIcon" format="reference" />
     <attr name="homepageIcon" format="reference" />

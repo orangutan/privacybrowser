@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2018-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -39,7 +39,7 @@ public class ImportExportDatabaseHelper {
     public static final String EXPORT_SUCCESSFUL = "Export Successful";
     public static final String IMPORT_SUCCESSFUL = "Import Successful";
 
-    private static final int SCHEMA_VERSION = 9;
+    private static final int SCHEMA_VERSION = 10;
     private static final String PREFERENCES_TABLE = "preferences";
 
     // The preferences constants.
@@ -76,12 +76,13 @@ public class ImportExportDatabaseHelper {
     private static final String CLEAR_FORM_DATA = "clear_form_data";
     private static final String CLEAR_CACHE = "clear_cache";
     private static final String HOMEPAGE = "homepage";
+    private static final String DOWNLOAD_LOCATION = "download_location";
+    private static final String DOWNLOAD_CUSTOM_LOCATION = "download_custom_location";
     private static final String FONT_SIZE = "font_size";
     private static final String OPEN_INTENTS_IN_NEW_TAB = "open_intents_in_new_tab";
     private static final String SWIPE_TO_REFRESH = "swipe_to_refresh";
     private static final String SCROLL_APP_BAR = "scroll_app_bar";
     private static final String DISPLAY_ADDITIONAL_APP_BAR_ICONS = "display_additional_app_bar_icons";
-    private static final String DOWNLOAD_WITH_EXTERNAL_APP = "download_with_external_app";
     private static final String DARK_THEME = "dark_theme";
     private static final String NIGHT_MODE = "night_mode";
     private static final String WIDE_VIEWPORT = "wide_viewport";
@@ -230,12 +231,13 @@ public class ImportExportDatabaseHelper {
                     CLEAR_FORM_DATA + " BOOLEAN, " +
                     CLEAR_CACHE + " BOOLEAN, " +
                     HOMEPAGE + " TEXT, " +
+                    DOWNLOAD_LOCATION + " TEXT, " +
+                    DOWNLOAD_CUSTOM_LOCATION + " TEXT, " +
                     FONT_SIZE + " TEXT, " +
                     OPEN_INTENTS_IN_NEW_TAB + " BOOLEAN, " +
                     SWIPE_TO_REFRESH + " BOOLEAN, " +
                     SCROLL_APP_BAR + " BOOLEAN, " +
                     DISPLAY_ADDITIONAL_APP_BAR_ICONS + " BOOLEAN, " +
-                    DOWNLOAD_WITH_EXTERNAL_APP + " BOOLEAN, " +
                     DARK_THEME + " BOOLEAN, " +
                     NIGHT_MODE + " BOOLEAN, " +
                     WIDE_VIEWPORT + " BOOLEAN, " +
@@ -281,12 +283,13 @@ public class ImportExportDatabaseHelper {
             preferencesContentValues.put(CLEAR_FORM_DATA, sharedPreferences.getBoolean(CLEAR_FORM_DATA, true));  // Clear form data can be removed once the minimum API >= 26.
             preferencesContentValues.put(CLEAR_CACHE, sharedPreferences.getBoolean(CLEAR_CACHE, true));
             preferencesContentValues.put(HOMEPAGE, sharedPreferences.getString(HOMEPAGE, context.getString(R.string.homepage_default_value)));
+            preferencesContentValues.put(DOWNLOAD_LOCATION, sharedPreferences.getString(DOWNLOAD_LOCATION, context.getString(R.string.download_location_default_value)));
+            preferencesContentValues.put(DOWNLOAD_CUSTOM_LOCATION, sharedPreferences.getString(DOWNLOAD_CUSTOM_LOCATION, context.getString(R.string.download_custom_location_default_value)));
             preferencesContentValues.put(FONT_SIZE, sharedPreferences.getString(FONT_SIZE, context.getString(R.string.font_size_default_value)));
             preferencesContentValues.put(OPEN_INTENTS_IN_NEW_TAB, sharedPreferences.getBoolean(OPEN_INTENTS_IN_NEW_TAB, true));
             preferencesContentValues.put(SWIPE_TO_REFRESH, sharedPreferences.getBoolean(SWIPE_TO_REFRESH, true));
             preferencesContentValues.put(SCROLL_APP_BAR, sharedPreferences.getBoolean(SCROLL_APP_BAR, true));
             preferencesContentValues.put(DISPLAY_ADDITIONAL_APP_BAR_ICONS, sharedPreferences.getBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, false));
-            preferencesContentValues.put(DOWNLOAD_WITH_EXTERNAL_APP, sharedPreferences.getBoolean(DOWNLOAD_WITH_EXTERNAL_APP, false));
             preferencesContentValues.put(DARK_THEME, sharedPreferences.getBoolean(DARK_THEME, false));
             preferencesContentValues.put(NIGHT_MODE, sharedPreferences.getBoolean(NIGHT_MODE, false));
             preferencesContentValues.put(WIDE_VIEWPORT, sharedPreferences.getBoolean(WIDE_VIEWPORT, true));
@@ -369,18 +372,7 @@ public class ImportExportDatabaseHelper {
                 switch (importDatabaseVersion){
                     // Upgrade from schema version 1.
                     case 1:
-                        // Add the download with external app column to the preferences table.
-                        importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + DOWNLOAD_WITH_EXTERNAL_APP + " BOOLEAN");
-
-                        // Get the current setting for downloading with an external app.
-                        boolean downloadWithExternalApp = sharedPreferences.getBoolean(DOWNLOAD_WITH_EXTERNAL_APP, false);
-
-                        // Set the download with external app preference to the current value.
-                        if (downloadWithExternalApp) {
-                            importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + DOWNLOAD_WITH_EXTERNAL_APP + " = " + 1);
-                        } else {
-                            importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + DOWNLOAD_WITH_EXTERNAL_APP + " = " + 0);
-                        }
+                        // Previously this upgrade added `download_with_external_app` to the Preferences table.  But that is now removed in schema version 10.
 
                     // Upgrade from schema version 2.
                     case 2:
@@ -406,7 +398,7 @@ public class ImportExportDatabaseHelper {
                         // Create the new font size column.
                         importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + FONT_SIZE + " TEXT");
 
-                        // Place the font size string in the new column.
+                        // Populate the preferences table with the current font size value.
                         importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + FONT_SIZE + " = '" + fontSize + "'");
 
                     // Upgrade from schema version 3.
@@ -425,7 +417,7 @@ public class ImportExportDatabaseHelper {
                         boolean hideAppBar = sharedPreferences.getBoolean(HIDE_APP_BAR, true);
                         boolean scrollAppBar = sharedPreferences.getBoolean(SCROLL_APP_BAR, true);
 
-                        // Populate the database with the current values.
+                        // Populate the preferences table with the current app bar values.
                         if (hideAppBar) {
                             importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + HIDE_APP_BAR + " = " + 1);
                         } else {
@@ -446,7 +438,7 @@ public class ImportExportDatabaseHelper {
                         // Get the current open intents in new tab preference.
                         boolean openIntentsInNewTab = sharedPreferences.getBoolean(OPEN_INTENTS_IN_NEW_TAB, true);
 
-                        // Populate the database with the current value.
+                        // Populate the preferences table with the current open intents value.
                         if (openIntentsInNewTab) {
                             importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + OPEN_INTENTS_IN_NEW_TAB + " = " + 1);
                         } else {
@@ -470,28 +462,28 @@ public class ImportExportDatabaseHelper {
                         boolean twitterAmpRedirects = sharedPreferences.getBoolean(TWITTER_AMP_REDIRECTS, true);
                         boolean wideViewport = sharedPreferences.getBoolean(WIDE_VIEWPORT, true);
 
-                        // Populate the database with the current Google Analytics value.
+                        // Populate the preferences with the current Google Analytics value.
                         if (googleAnalytics) {
                             importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + GOOGLE_ANALYTICS + " = " + 1);
                         } else {
                             importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + GOOGLE_ANALYTICS + " = " + 0);
                         }
 
-                        // Populate the database with the current Facebook Click IDs value.
+                        // Populate the preferences with the current Facebook Click IDs value.
                         if (facebookClickIds) {
                             importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + FACEBOOK_CLICK_IDS + " = " + 1);
                         } else {
                             importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + FACEBOOK_CLICK_IDS + " = " + 0);
                         }
 
-                        // Populate the database with the current Twitter AMP redirects value.
+                        // Populate the preferences table with the current Twitter AMP redirects value.
                         if (twitterAmpRedirects) {
                             importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + TWITTER_AMP_REDIRECTS + " = " + 1);
                         } else {
                             importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + TWITTER_AMP_REDIRECTS + " = " + 0);
                         }
 
-                        // Populate the database with the current wide viewport value.
+                        // Populate the preferences table with the current wide viewport value.
                         if (wideViewport) {
                             importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + WIDE_VIEWPORT + " = " + 1);
                         } else {
@@ -509,7 +501,7 @@ public class ImportExportDatabaseHelper {
                         // Get the current preference values.
                         boolean ultraList = sharedPreferences.getBoolean(ULTRALIST, true);
 
-                        // Populate the tables with the current UltraList value.
+                        // Populate the preferences tables with the current UltraList value.
                         if (ultraList) {
                             importDatabase.execSQL("UPDATE " + DomainsDatabaseHelper.DOMAINS_TABLE + " SET " + DomainsDatabaseHelper.ULTRALIST + " = " + 1);
                             importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + ULTRALIST + " = " + 1);
@@ -531,9 +523,23 @@ public class ImportExportDatabaseHelper {
                         // SQL escape the proxy custom URL string.
                         proxyCustomUrl = DatabaseUtils.sqlEscapeString(proxyCustomUrl);
 
-                        // Populate the table with the current proxy values.
+                        // Populate the preferences table with the current proxy values.
                         importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + PROXY + " = '" + proxy + "'");
                         importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + PROXY_CUSTOM_URL + " = '" + proxyCustomUrl + "'");
+
+                    // Upgrade from schema version 9.
+                    case 9:
+                        // Add the download location columns to the preferences table.
+                        importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + DOWNLOAD_LOCATION + " TEXT");
+                        importDatabase.execSQL("ALTER TABLE " + PREFERENCES_TABLE + " ADD COLUMN " + DOWNLOAD_CUSTOM_LOCATION + " TEXT");
+
+                        // Get the current download location values.
+                        String downloadLocation = sharedPreferences.getString(DOWNLOAD_LOCATION, context.getString(R.string.download_location_default_value));
+                        String downloadCustomLocation = sharedPreferences.getString(DOWNLOAD_CUSTOM_LOCATION, context.getString(R.string.download_custom_location_default_value));
+
+                        // Populate the preferences table with the current download location values.
+                        importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + DOWNLOAD_LOCATION + " = '" + downloadLocation + "'");
+                        importDatabase.execSQL("UPDATE " + PREFERENCES_TABLE + " SET " + DOWNLOAD_CUSTOM_LOCATION + " = '" + downloadCustomLocation + "'");
                 }
             }
 
@@ -682,12 +688,13 @@ public class ImportExportDatabaseHelper {
                     .putBoolean(CLEAR_FORM_DATA, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_FORM_DATA)) == 1)
                     .putBoolean(CLEAR_CACHE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(CLEAR_CACHE)) == 1)
                     .putString(HOMEPAGE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(HOMEPAGE)))
+                    .putString(DOWNLOAD_LOCATION, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(DOWNLOAD_LOCATION)))
+                    .putString(DOWNLOAD_CUSTOM_LOCATION, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(DOWNLOAD_CUSTOM_LOCATION)))
                     .putString(FONT_SIZE, importPreferencesCursor.getString(importPreferencesCursor.getColumnIndex(FONT_SIZE)))
                     .putBoolean(OPEN_INTENTS_IN_NEW_TAB, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(OPEN_INTENTS_IN_NEW_TAB)) == 1)
                     .putBoolean(SWIPE_TO_REFRESH, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(SWIPE_TO_REFRESH)) == 1)
                     .putBoolean(SCROLL_APP_BAR, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(SCROLL_APP_BAR)) == 1)
                     .putBoolean(DISPLAY_ADDITIONAL_APP_BAR_ICONS, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DISPLAY_ADDITIONAL_APP_BAR_ICONS)) == 1)
-                    .putBoolean(DOWNLOAD_WITH_EXTERNAL_APP, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DOWNLOAD_WITH_EXTERNAL_APP)) == 1)
                     .putBoolean(DARK_THEME, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(DARK_THEME)) == 1)
                     .putBoolean(NIGHT_MODE, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(NIGHT_MODE)) == 1)
                     .putBoolean(WIDE_VIEWPORT, importPreferencesCursor.getInt(importPreferencesCursor.getColumnIndex(WIDE_VIEWPORT)) == 1)

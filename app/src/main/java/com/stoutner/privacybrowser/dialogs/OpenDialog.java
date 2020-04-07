@@ -48,6 +48,7 @@ import androidx.preference.PreferenceManager;
 
 import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.activities.MainWebViewActivity;
+import com.stoutner.privacybrowser.helpers.DownloadLocationHelper;
 
 import java.io.File;
 
@@ -143,9 +144,6 @@ public class OpenDialog extends DialogFragment {
         TextView storagePermissionTextView = alertDialog.findViewById(R.id.storage_permission_textview);
         Button openButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
-        // Create a string for the default file path.
-        String defaultFilePath;
-
         // Update the status of the open button when the file name changes.
         fileNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -183,23 +181,22 @@ public class OpenDialog extends DialogFragment {
             }
         });
 
-        // Set the default file path according to the storage permission state.
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
-            // Set the default file path to use the external public directory.
-            defaultFilePath = Environment.getExternalStorageDirectory() + "/";
+        // Instantiate the download location helper.
+        DownloadLocationHelper downloadLocationHelper = new DownloadLocationHelper();
 
-            // Hide the storage permission text view.
-            storagePermissionTextView.setVisibility(View.GONE);
-        } else {  // The storage permission has not been granted.
-            // Set the default file path to use the external private directory.
-            defaultFilePath = context.getExternalFilesDir(null) + "/";
-        }
+        // Get the default file path.
+        String defaultFilePath = downloadLocationHelper.getDownloadLocation(context) + "/";
 
         // Display the default file path.
         fileNameEditText.setText(defaultFilePath);
 
         // Move the cursor to the end of the default file path.
         fileNameEditText.setSelection(defaultFilePath.length());
+
+        // Hide the storage permission text view if the permission has already been granted.
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            storagePermissionTextView.setVisibility(View.GONE);
+        }
 
         // Handle clicks on the browse button.
         browseButton.setOnClickListener((View view) -> {

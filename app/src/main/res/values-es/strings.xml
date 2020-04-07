@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2017-2019 Jose A. León Becerra.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2017-2020 Jose A. León Becerra.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -44,9 +44,7 @@
     <string name="form_data_deleted">Datos de formulario borrado</string>
     <string name="open_navigation_drawer">Abrir la caja de navegación</string>
     <string name="close_navigation_drawer">Cerrar la caja de navegación</string>
-    <string name="no_title">Sin título</string>
     <string name="unrecognized_url">URL no reconocida:</string>
-    <string name="open_with">Abrir con</string>
     <string name="add_tab">Añadir pestaña</string>
     <string name="close_tab">Cerrar pestaña</string>
     <string name="new_tab">Nueva pestaña</string>
@@ -61,16 +59,6 @@
     <string name="loading_fanboys_social_blocking_list">Cargando la lista de bloqueo social de Fanboy</string>
     <string name="loading_ultralist">Cargando UltraList</string>
     <string name="loading_ultraprivacy">Cargando Ultra Privacidad</string>
-
-    <!-- Save As. -->
-    <string name="save_as">Guardar como</string>
-    <string name="save_image_as">Guardar imagen como</string>
-    <string name="file_name">Nombre de archivo</string>
-    <string name="image_name">Nombre de imagen</string>
-    <string name="unknown_size">Tamaño desconocido</string>
-    <string name="download">Descargar</string>
-    <string name="cannot_download_file">Este archivo no puede descargarse porque no tiene un URI HTTP o HTTPS.</string>
-    <string name="cannot_download_image">Esta imagen no puede descargarse porque no tiene un URI HTTP o HTTPS.</string>
 
     <!-- Custom App Bar. -->
     <string name="favorite_icon">Icono favorito</string>
@@ -138,8 +126,8 @@
 
     <!-- MainWebViewActivity Options Menu. -->
     <string name="javascript">Javascript</string>
-    <string name="add_domain_settings">Añadir dominio</string>
-    <string name="edit_domain_settings">Editar dominio</string>
+    <string name="refresh">Actualizar</string>
+    <string name="stop">Parar</string>
     <string name="first_party_cookies">Cookies de primera parte</string>
     <string name="third_party_cookies">Cookies de terceras partes</string>
     <string name="dom_storage">Almacenamiento DOM</string>
@@ -175,6 +163,7 @@
         <string name="print">Imprimir</string>
             <string name="privacy_browser_web_page">Página web de Navegador Privado</string>
         <string name="save">Guardar</string>
+            <string name="save_url">Guardar URL</string>
             <string name="save_as_archive">Guardar como archivo</string>
             <string name="save_as_image">Guardar como imagen</string>
         <string name="add_to_home_screen">Añadir a la ventana de inicio</string>
@@ -183,32 +172,39 @@
         <string name="share_url">Compartir URL</string>
         <string name="open_with_app">Abrir con App</string>
         <string name="open_with_browser">Abrir con Navegador</string>
-    <string name="refresh">Actualizar</string>
-    <string name="stop">Parar</string>
+    <string name="add_domain_settings">Añadir dominio</string>
+    <string name="edit_domain_settings">Editar dominio</string>
 
     <!-- Context Menus. -->
     <string name="open_in_new_tab">Abrir en nueva pestaña</string>
     <string name="open_in_background">Abrir en segundo plano</string>
     <string name="open_image_in_new_tab">Abrir imagen en nueva pestaña</string>
     <string name="copy_url">Copiar URL</string>
-    <string name="download_url">Descargar URL</string>
     <string name="email_address">Correo electrónico</string>
     <string name="copy_email_address">Copiar correo electrónico</string>
     <string name="write_email">Escribir correo electrónico</string>
     <string name="view_image">Ver imagen</string>
-    <string name="download_image">Descargar imagen</string>
 
     <!-- Find on Page. -->
     <string name="previous">Anterior</string>
     <string name="next">Siguiente</string>
 
-    <!-- Save Webpage. -->
+    <!-- Save. -->
+    <string name="file_name">Nombre de archivo</string>
     <string name="save_archive">Guardar archivo</string>
     <string name="save_image">Guardar imagen</string>
     <string name="webpage_mht">PaginaWeb.mht</string>
     <string name="webpage_png">PaginaWeb.png</string>
+    <string name="file">Archivo</string>
+    <string name="bytes">bytes</string>
+    <string name="unknown_size">Tamaño desconocido</string>
+    <string name="invalid_url">URL inválida</string>
+    <string name="ok">OK</string>
+    <string name="saving_file">Guardando archivo:</string>
     <string name="saving_image">Guardando imagen…</string>
+    <string name="file_saved">Archivo guardado:</string>
     <string name="image_saved">Imagen guardada.</string>
+    <string name="error_saving_file">Error guardando archivo:</string>
     <string name="error_saving_image">Error guardando imagen:</string>
 
     <!-- View Source. -->
@@ -216,7 +212,6 @@
     <string name="response_message">Mensaje de respuesta</string>
     <string name="response_headers">Cabeceras de respuesta</string>
     <string name="response_body">Cuerpo de respuesta</string>
-    <string name="error_body">Cuerpo del error</string>
     <string name="about_view_source">Acerca de ver la fuente</string>
     <string name="about_view_source_message">Debido a que WebView de Android no expone la información fuente,
         se hizo una solicitud por separado utilizando las herramientas del sistema para recopilar la información mostrada en esta actividad.
@@ -361,6 +356,8 @@
         <item>OpenPGP</item>
     </string-array>
     <string name="kitkat_password_encryption_message">El cifrado de contraseñas no funciona en Android KitKat.</string>
+    <string name="file_does_not_exist">El archivo no existe.</string>
+    <string name="file_exists_warning">El archivo ya existe. Si procede, se sobrescribirá.</string>
     <string name="openkeychain_required">El cifrado OpenPGP requiere que esté instalado OpenKeychain.</string>
     <string name="openkeychain_import_instructions">El archivo sin cifrar tendrá que ser importado en un paso separado después de ser descifrado.</string>
     <string name="settings_pbs">Configuración.pbs</string>
@@ -394,12 +391,6 @@
     <string name="ssl_certificates">Certificados SSL</string>
     <string name="proxies">Proxis</string>
     <string name="tracking_ids">Rastreo de IDs</string>
-
-    <!-- Download Location -->
-    <string name="download_location">Lugar de descarga</string>
-    <string name="download_location_message">Navegador Privado necesita el permiso de almacenamiento para utilizar el directorio de descarga público.
-        Si se deniega, se utilizará el directorio de descarga de la aplicación.</string>
-    <string name="ok">OK</string>
 
     <!-- Proxy. -->
     <string name="orbot_not_installed_title">Orbot No Instalado</string>
@@ -539,13 +530,8 @@
             <item>Yahoo - Javascript habilitado</item>
             <item>Personalizado</item>
         </string-array>
-        <string name="no_proxy_enabled">Ninguno - conectar directamente a Internet.</string>
-        <string name="tor_enabled">Tor - conectar a través de socks://localhost:9050.</string>
-        <string name="tor_enabled_kitkat">Tor - conectar a través de http://localhost:8118.</string>
-        <string name="i2p_enabled">I2P - conectar a través de http://localhost:4444.</string>
-        <string name="search_custom_url">URL personalizado de búsqueda</string>
         <string name="custom_url">URL personalizado</string>
-        <string name="proxy_custom_url">URL personalizada del proxy</string>
+        <string name="search_custom_url">URL personalizado de búsqueda</string>
     <string name="proxy">Proxy</string>
         <string name="proxy_none">Ninguno</string>
         <string name="proxy_tor">Tor</string>
@@ -557,7 +543,12 @@
             <item>I2P</item>
             <item>Personalizado</item>
         </string-array>
+        <string name="no_proxy_enabled">Ninguno - conectar directamente a Internet.</string>
+        <string name="tor_enabled">Tor - conectar a través de socks://localhost:9050.</string>
+        <string name="tor_enabled_kitkat">Tor - conectar a través de http://localhost:8118.</string>
+        <string name="i2p_enabled">I2P - conectar a través de http://localhost:4444.</string>
         <string name="custom_proxy">Proxy personalizado</string>
+    <string name="proxy_custom_url">URL personalizada del proxy</string>
     <string name="full_screen">Pantalla completa</string>
         <string name="full_screen_browsing_mode">Navegación de pantalla completa</string>
         <string name="full_screen_browsing_mode_summary">Doble toque para alternar a modo de navegación de pantalla completa.</string>
@@ -576,6 +567,14 @@
         <string name="clear_cache_summary">Borra la caché de WebView.</string>
     <string name="general">General</string>
         <string name="homepage">Página de inicio</string>
+        <string name="download_location">Lugar de descarga</string>
+        <string-array name="download_location_entries">
+            <item>Auto</item>
+            <item>Directorio de aplicaciones</item>
+            <item>Directorio público</item>
+            <item>Personalizado</item>
+        </string-array>
+        <string name="download_custom_location">Lugar personalizado de descarga</string>
         <string name="font_size_preference">Tamaño de fuente</string>
         <string name="open_intents_in_new_tab">Abrir contenido en nueva pestaña</string>
         <string name="open_intents_in_new_tab_summary">Los contenidos son enlaces enviados desde otras apps.</string>
@@ -585,8 +584,6 @@
         <string name="scroll_app_bar_summary">Desplazar la barra de aplicaciones desde la parte superior de la pantalla cuando el WebView se desplaza hacia abajo.</string>
         <string name="display_additional_app_bar_icons">Mostrar iconos adicionales en la barra de aplicación</string>
         <string name="display_additional_app_bar_icons_summary">Mostrar iconos en la barra de aplicaciones para refrescar el WebView y, si hay espacio, para alternar entre cookies y almacenamiento DOM.</string>
-        <string name="download_with_external_app">Descargar con app externa</string>
-        <string name="download_with_external_app_summary">El gestor de descargas de Android no funciona bien en algunos dispositivos.</string>
         <string name="dark_theme">Tema oscuro</string>
         <string name="dark_theme_summary">Cambiar el tema reiniciará Navegador Privado.</string>
         <string name="night_mode">Modo noche</string>

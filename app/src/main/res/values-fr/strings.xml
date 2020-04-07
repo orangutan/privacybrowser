@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2020 Soren Stoutner <soren@stoutner.com>.
 
-  Translation 2019 Kévin LE FLOHIC <kevinliste@framalistes.org>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
+  Translation 2019-2020 Kévin LE FLOHIC <kevinliste@framalistes.org>.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -45,9 +45,7 @@
     <string name="form_data_deleted">Données de formulaires supprimées</string>
     <string name="open_navigation_drawer">Ouvrir le panneau de navigation</string>
     <string name="close_navigation_drawer">Fermer le panneau de navigation</string>
-    <string name="no_title">Sans titre</string>
     <string name="unrecognized_url">URL inconnue:</string>
-    <string name="open_with">Ouvrir avec</string>
     <string name="add_tab">Ajouter un onglet</string>
     <string name="close_tab">Fermer l\'onglet</string>
     <string name="new_tab">Nouvel onglet</string>
@@ -62,16 +60,6 @@
     <string name="loading_fanboys_social_blocking_list">Chargement Fanboy’s Social Blocking List</string>
     <string name="loading_ultralist">Chargement UltraList</string>
     <string name="loading_ultraprivacy">Chargement UltraPrivacy</string>
-
-    <!-- Save As. -->
-    <string name="save_as">Sauvergarder sous</string>
-    <string name="save_image_as">Sauvergarder l\'image sous</string>
-    <string name="file_name">Nom du fichier</string>
-    <string name="image_name">Nom de l\'image</string>
-    <string name="unknown_size">taille inconnue</string>
-    <string name="download">Télécharger</string>
-    <string name="cannot_download_file">Ce fichier ne peut être téléchargé car il n\'a pas d\'URI du type HTTP ou HTTPS.</string>
-    <string name="cannot_download_image">Cette image ne peut être téléchargée car elle n\'a pas d\'URI du type HTTP ou HTTPS.</string>
 
     <!-- Custom App Bar. -->
     <string name="favorite_icon">Icône de Favoris</string>
@@ -139,8 +127,8 @@
 
     <!-- MainWebViewActivity Options Menu. -->
     <string name="javascript">JavaScript</string>
-    <string name="add_domain_settings">Paramétrer le domaine</string>
-    <string name="edit_domain_settings">Editer le domaine</string>
+    <string name="refresh">Rafraîchir</string>
+    <string name="stop">Stop</string>
     <string name="first_party_cookies">Cookies internes</string>
     <string name="third_party_cookies">Cookies tiers</string>
     <string name="dom_storage">Stockage DOM</string>
@@ -176,6 +164,7 @@
         <string name="print">Imprimer</string>
             <string name="privacy_browser_web_page">Site Web de Privacy Browser</string>
         <string name="save">Sauvegarder</string>
+            <string name="save_url">Enregistrer l\'URL</string>
             <string name="save_as_archive">Enregistrer en tant qu\'archive</string>
             <string name="save_as_image">Sauvergarder comme image</string>
         <string name="add_to_home_screen">Ajouter à l\'écran d\'accueil</string>
@@ -184,32 +173,39 @@
         <string name="share_url">Partager URL</string>
         <string name="open_with_app">Ouvrir avec une application</string>
         <string name="open_with_browser">Ouvrir dans le navigateur</string>
-    <string name="refresh">Rafraîchir</string>
-    <string name="stop">Stop</string>
+    <string name="add_domain_settings">Paramétrer le domaine</string>
+    <string name="edit_domain_settings">Editer le domaine</string>
 
     <!-- Context Menus. -->
     <string name="open_in_new_tab">Ouvrir dans un nouvel onglet</string>
     <string name="open_in_background">Ouvrir en arrière-plan</string>
     <string name="open_image_in_new_tab">Ouvrir l\'image dans un nouvel onglet</string>
     <string name="copy_url">Copier l\'URL</string>
-    <string name="download_url">Télécharger la cible</string>
     <string name="email_address">Addresse e-mail</string>
     <string name="copy_email_address">Copier l\'adresse e-mail</string>
     <string name="write_email">Ecrire un e-mail</string>
     <string name="view_image">Voir l\'image</string>
-    <string name="download_image">Télécharger l\'image</string>
 
     <!-- Find on Page. -->
     <string name="previous">Précédent</string>
     <string name="next">Suivant</string>
 
-    <!-- Save Webpage. -->
+    <!-- Save. -->
+    <string name="file_name">Nom du fichier</string>
     <string name="save_archive">Enregistrer l\'archive</string>
     <string name="save_image">Sauvegarder en tant qu\'image</string>
     <string name="webpage_mht">PageWeb.mht</string>
     <string name="webpage_png">PageWeb.png</string>
+    <string name="file">Fichier</string>
+    <string name="bytes">octets</string>
+    <string name="unknown_size">taille inconnue</string>
+    <string name="invalid_url">URL invalide</string>
+    <string name="ok">OK</string>
+    <string name="saving_file">Enregistrement du fichier:</string>
     <string name="saving_image">Sauvegarde en cours…</string>
+    <string name="file_saved">Fichier enregistré:</string>
     <string name="image_saved">Image sauvegardée.</string>
+    <string name="error_saving_file">Erreur lors de l\'enregistrement du fichier:</string>
     <string name="error_saving_image">Erreur durant la sauvegarde :</string>
 
     <!-- View Source. -->
@@ -217,7 +213,6 @@
     <string name="response_message">Message de la réponse</string>
     <string name="response_headers">En-tête de la réponse</string>
     <string name="response_body">Corps de la réponse</string>
-    <string name="error_body">Erreur dans le corps de réponse</string>
     <string name="about_view_source">A propos View Source</string>
     <string name="about_view_source_message">Puisqu\'Android Webview ne permet pas de révêler l\'information source,
         une requête séparée a été effectuée en utilisant les outils sytèmes afin d\'afficher ce qui est présenté à l\'écran
@@ -361,6 +356,8 @@
         <item>OpenPGP</item>
     </string-array>
     <string name="kitkat_password_encryption_message">Le chiffrement par mot de passe ne fonctionne pas sous Android KitKat.</string>
+    <string name="file_does_not_exist">Le fichier n\'existe pas.</string>
+    <string name="file_exists_warning">Le fichier existe déjà. Si vous continuez, il sera écrasé.</string>
     <string name="openkeychain_required">Le chiffrement OpenPGP nécessite l\'installation d\'OpenKeychain.</string>
     <string name="openkeychain_import_instructions">Le fichier non-chiffré devra être importé dans un deuxième temps, après son déchiffrement.</string>
     <string name="settings_pbs">Settings.pbs</string>
@@ -374,7 +371,7 @@
     <string name="import_failed">L\'import a échoué :</string>
     <string name="storage_permission">Permission de stockage</string>
     <string name="storage_permission_message">Privacy Browser nécessite les droits d\'accès au stockage pour accéder aux dossiers publics.
- Si cela est refusé, les dossiers internes à l\'application peut néanmoins être utilisé.</string>
+        Si cela est refusé, les dossiers internes à l\'application peut néanmoins être utilisé.</string>
     <string name="storage_permission_explanation">Accéder à des fichiers dans des dossiers publics nécessite des droits de lecture/écriture.
         Autrement, seuls les dossiers internes à l\'application ne pourront être utilisés.</string>
     <string name="cannot_use_location">Ce dossier ne peut pas être utilisé car les droits d\'accès au stockage n\'ont pas été autorisés.</string>
@@ -394,12 +391,6 @@
     <string name="ssl_certificates">Certificats SSL</string>
     <string name="proxies">Proxies</string>
     <string name="tracking_ids">ID de suivi</string>
-
-    <!-- Download Location -->
-    <string name="download_location">Dossier de téléchargement</string>
-    <string name="download_location_message">Privacy Browser nécessite les droits d\'accès au stockage pour accéder aux dossiers publics.
-        Si cela est refusé, les dossiers internes à l\'application peut néanmoins être utilisé.</string>
-    <string name="ok">OK</string>
 
     <!-- Proxy. -->
     <string name="orbot_not_installed_title">Orbot non installé</string>
@@ -539,8 +530,8 @@
             <item>Yahoo - JavaScript activé</item>
             <item>Personnalisée</item>
         </string-array>
-        <string name="search_custom_url">URL de recherche personnalisée</string>
         <string name="custom_url">URL personnalisée</string>
+        <string name="search_custom_url">URL de recherche personnalisée</string>
     <string name="proxy">Proxy</string>
         <string name="proxy_none">Aucun</string>
         <string name="proxy_tor">Tor</string>
@@ -577,6 +568,14 @@
         <string name="clear_cache_summary">Efface le cache WebView.</string>
     <string name="general">General</string>
         <string name="homepage">Page d\'accueil</string>
+        <string name="download_location">Emplacement de téléchargement</string>
+        <string-array name="download_location_entries">
+            <item>Automatique</item>
+            <item>Dossier de l\'application</item>
+            <item>Dossier publique</item>
+            <item>Personnalisé</item>
+        </string-array>
+        <string name="download_custom_location">Emplacement personnalisé de téléchargement</string>
         <string name="font_size_preference">Zoom</string>
         <string name="open_intents_in_new_tab">Intentions dans un nouvel onglet</string>
         <string name="open_intents_in_new_tab_summary">Les intentions sont des liens envoyés à partir d\'autres applications.</string>
@@ -587,8 +586,6 @@
         <string name="display_additional_app_bar_icons">Icônes supplémentaires dans la barre d\'applications</string>
         <string name="display_additional_app_bar_icons_summary">Affichez des icônes dans la barre d\'applications pour actualiser WebView et, le cas échéant,
             pour activer/désactiver les cookies et le stockage DOM.</string>
-        <string name="download_with_external_app">Téléchargement externe</string>
-        <string name="download_with_external_app_summary">Le gestionnaire de téléchargement Android ne fonctionne pas bien sur certains appareils.</string>
         <string name="dark_theme">Thème sombre</string>
         <string name="dark_theme_summary">Le changement de thème redémarre Privacy Browser.</string>
         <string name="night_mode">Mode nuit</string>

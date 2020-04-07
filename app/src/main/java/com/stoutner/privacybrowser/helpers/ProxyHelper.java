@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -23,12 +23,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Proxy;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Parcelable;
 import android.util.ArrayMap;
-import android.util.Log;
 import android.view.View;
 
 import androidx.preference.PreferenceManager;
@@ -44,6 +42,9 @@ import com.stoutner.privacybrowser.activities.MainWebViewActivity;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.SocketAddress;
 import java.util.concurrent.Executor;
 
 public class ProxyHelper {
@@ -210,7 +211,7 @@ public class ProxyHelper {
                                     Method onReceiveMethod = receiverClass.getDeclaredMethod("onReceive", Context.class, Intent.class);
 
                                     // Create a proxy change intent.
-                                    Intent proxyChangeIntent = new Intent(Proxy.PROXY_CHANGE_ACTION);
+                                    Intent proxyChangeIntent = new Intent(android.net.Proxy.PROXY_CHANGE_ACTION);
 
                                     if (Build.VERSION.SDK_INT >= 21) {
                                         // Get a proxy info class.
@@ -234,9 +235,82 @@ public class ProxyHelper {
                         }
                     }
                 } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException | NoSuchMethodException | InvocationTargetException exception) {
-                    Log.d("enableProxyThroughOrbot", "Exception: " + exception);
+                    // Do nothing.
                 }
             }
         }
+    }
+
+    public Proxy getCurrentProxy(Context context) {
+        // Define a proxy variable.
+        Proxy proxy;
+
+        // Set the proxy according to the current proxy mode
+        switch (MainWebViewActivity.proxyMode) {
+            case (ProxyHelper.TOR):
+                if (Build.VERSION.SDK_INT >= 21) {
+                    // Set the socket address to be localhost port 9050.
+                    SocketAddress torSocketAddress = new InetSocketAddress("localhost", 9050);
+
+                    // Set a SOCKS proxy.
+                    proxy = new Proxy(Proxy.Type.SOCKS, torSocketAddress);
+                } else {
+                    // Set the socket address to be localhost port 8118.
+                    SocketAddress oldTorSocketAddress = new InetSocketAddress("localhost", 8118);
+
+                    // Set an HTTP proxy.
+                    proxy = new Proxy(Proxy.Type.HTTP, oldTorSocketAddress);
+                }
+                break;
+
+            case (ProxyHelper.I2P):
+                // Set the socket address to be localhost port 4444.
+                SocketAddress i2pSocketAddress = new InetSocketAddress("localhost", 4444);
+
+                // Set an HTTP proxy.
+                proxy = new Proxy(Proxy.Type.HTTP, i2pSocketAddress);
+                break;
+
+            case (ProxyHelper.CUSTOM):
+                // Get the shared preferences.
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+                // Get the custom proxy URL string.
+                String customProxyUrlString = sharedPreferences.getString("proxy_custom_url", context.getString(R.string.proxy_custom_url_default_value));
+
+                // Parse the custom proxy URL.
+                try {
+                    // Convert the custom proxy URL string to a URI.
+                    Uri customProxyUri = Uri.parse(customProxyUrlString);
+
+                    // Set the socket address.
+                    SocketAddress customSocketAddress = new InetSocketAddress(customProxyUri.getHost(), customProxyUri.getPort());
+
+                    // Get the custom proxy scheme.
+                    String customProxyScheme = customProxyUri.getScheme();
+
+                    // Set the proxy according to the scheme.
+                    if ((customProxyScheme != null) && customProxyScheme.startsWith("socks")) {  // A SOCKS proxy is specified.
+                        // Set a SOCKS proxy.
+                        proxy = new Proxy(Proxy.Type.SOCKS, customSocketAddress);
+                    } else {  // A SOCKS proxy is not specified.
+                        // Set an HTTP proxy.
+                        proxy = new Proxy(Proxy.Type.HTTP, customSocketAddress);
+                    }
+                } catch (Exception exception) {  // The custom proxy cannot be parsed.
+                    // Disable the proxy.
+                    proxy = Proxy.NO_PROXY;
+                }
+                break;
+
+            default:  // No proxy is in use.
+                // Set a direct proxy.
+                proxy = Proxy.NO_PROXY;
+                break;
+
+        }
+
+        // Return the proxy.
+        return proxy;
     }
 }

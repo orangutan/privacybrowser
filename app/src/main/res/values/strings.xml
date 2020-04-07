@@ -49,9 +49,7 @@
     <string name="form_data_deleted">Form Data deleted</string>
     <string name="open_navigation_drawer">Open Navigation Drawer</string>
     <string name="close_navigation_drawer">Close Navigation Drawer</string>
-    <string name="no_title">No title</string>
     <string name="unrecognized_url">Unrecognized URL:</string>
-    <string name="open_with">Open with</string>
     <string name="add_tab">Add tab</string>
     <string name="close_tab">Close Tab</string>
     <string name="new_tab">New tab</string>
@@ -66,16 +64,6 @@
     <string name="loading_fanboys_social_blocking_list">Loading Fanboy’s Social Blocking List</string>
     <string name="loading_ultralist">Loading UltraList</string>
     <string name="loading_ultraprivacy">Loading UltraPrivacy</string>
-
-    <!-- Save As. -->
-    <string name="save_as">Save As</string>
-    <string name="save_image_as">Save Image As</string>
-    <string name="file_name">File name</string>
-    <string name="image_name">Image name</string>
-    <string name="unknown_size">unknown size</string>
-    <string name="download">Download</string>
-    <string name="cannot_download_file">This file cannot be downloaded because it does not have an HTTP or HTTPS URI.</string>
-    <string name="cannot_download_image">This image cannot be downloaded because it does not have an HTTP or HTTPS URI.</string>
 
     <!-- Custom App Bar. -->
     <string name="favorite_icon">Favorite Icon</string>
@@ -142,8 +130,8 @@
 
     <!-- MainWebViewActivity Options Menu. -->
     <string name="javascript">JavaScript</string>
-    <string name="add_domain_settings">Add Domain Settings</string>
-    <string name="edit_domain_settings">Edit Domain Settings</string>
+    <string name="refresh">Refresh</string>
+    <string name="stop">Stop</string>
     <string name="first_party_cookies">First-Party Cookies</string>
     <string name="third_party_cookies">Third-Party Cookies</string>
     <string name="dom_storage">DOM Storage</string>
@@ -179,6 +167,7 @@
         <string name="print">Print</string>
             <string name="privacy_browser_web_page">Privacy Browser Web Page</string>
         <string name="save">Save</string>
+            <string name="save_url">Save URL</string>
             <string name="save_as_archive">Save as Archive</string>
             <string name="save_as_image">Save as Image</string>
         <string name="add_to_home_screen">Add to Home Screen</string>
@@ -187,34 +176,41 @@
         <string name="share_url">Share URL</string>
         <string name="open_with_app">Open with App</string>
         <string name="open_with_browser">Open with Browser</string>
-    <string name="refresh">Refresh</string>
-    <string name="stop">Stop</string>
+    <string name="add_domain_settings">Add Domain Settings</string>
+    <string name="edit_domain_settings">Edit Domain Settings</string>
 
     <!-- Context Menus. -->
     <string name="open_in_new_tab">Open in New Tab</string>
     <string name="open_in_background">Open in Background</string>
     <string name="open_image_in_new_tab">Open Image in New Tab</string>
     <string name="copy_url">Copy URL</string>
-    <string name="download_url">Download URL</string>
     <string name="email_address">Email Address</string>
     <string name="copy_email_address">Copy Email Address</string>
     <string name="write_email">Write Email</string>
     <string name="view_image">View Image</string>
-    <string name="download_image">Download Image</string>
 
     <!-- Find on Page. -->
     <string name="zero_of_zero" translatable="false">0/0</string>
     <string name="previous">Previous</string>
     <string name="next">Next</string>
 
-    <!-- Save Webpage. -->
-    <string name="save_webpage" translatable="false">Save Webpage</string>  <!-- This string is used to tag the save dialog.  It is never displayed to the user. -->
+    <!-- Save. -->
+    <string name="save_dialog" translatable="false">Save Dialog</string>  <!-- This string is used to tag the save dialog.  It is never displayed to the user. -->
+    <string name="file_name">File name</string>
     <string name="save_archive">Save Archive</string>
     <string name="save_image">Save Image</string>
     <string name="webpage_mht">Webpage.mht</string>
     <string name="webpage_png">Webpage.png</string>
+    <string name="file">File</string>
+    <string name="bytes">bytes</string>
+    <string name="unknown_size">unknown size</string>
+    <string name="invalid_url">invalid URL</string>
+    <string name="ok">OK</string>
+    <string name="saving_file">Saving file:</string>
     <string name="saving_image">Saving image…</string>
+    <string name="file_saved">File saved:</string>
     <string name="image_saved">Image saved.</string>
+    <string name="error_saving_file">Error saving file:</string>
     <string name="error_saving_image">Error saving image:</string>
 
     <!-- View Source. -->
@@ -222,7 +218,6 @@
     <string name="response_message">Response Message</string>
     <string name="response_headers">Response Headers</string>
     <string name="response_body">Response Body</string>
-    <string name="error_body">Error Body</string>
     <string name="about_view_source">About View Source</string>
     <string name="about_view_source_message">Because Android’s WebView does not expose the source information,
         a separate request was made using system tools to gather the information displayed in this activity.
@@ -400,11 +395,6 @@
     <string name="proxies">Proxies</string>
     <string name="tracking_ids">Tracking IDs</string>
 
-    <!-- Download Location -->
-    <string name="download_location">Download Location</string>
-    <string name="download_location_message">Privacy Browser needs the storage permission to use the public download directory. If it is denied, the app’s download directory will be used instead.</string>
-    <string name="ok">OK</string>
-
     <!-- Proxy. -->
     <string name="proxy_not_installed_dialog" translatable="false">Proxy not installed dialog</string>  <!-- This string is used to tag the proxy not installed dialog.  It is never displayed to the user. -->
     <string name="waiting_for_proxy_dialog" translatable="false">Waiting for proxy dialog</string>  <!-- This string is used to tag the waiting for proxy dialog.  It is never displayed to the user. -->
@@ -521,12 +511,12 @@
             <item>PrivacyBrowser/1.0</item>
             <item>WebView default user agent</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
             <item>Mozilla/5.0 (Android 10; Mobile; rv:68.0) Gecko/68.0 Firefox/68.0</item>
-            <item>Mozilla/5.0 (Linux; Android 10; Pixel 2 XL) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.93 Mobile Safari/537.36</item>
+            <item>Mozilla/5.0 (Linux; Android 10; Pixel 2 XL) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Mobile Safari/537.36</item>
             <item>Mozilla/5.0 (iPhone; CPU iPhone OS 13_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Mobile/15E148 Safari/604.1</item>
             <item>Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0</item>
-            <item>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36</item>
-            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0</item>
-            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36</item>
+            <item>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36</item>
+            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:74.0) Gecko/20100101 Firefox/74.0</item>
+            <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36</item>
             <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.18363</item>
             <item>Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko</item>
             <item>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15</item>
@@ -589,8 +579,8 @@
             <item>https://search.yahoo.com/mobile/s?p=</item>
             <item>Custom URL</item>  <!-- This item must not be translated into other languages because it is referenced in code.  It is never displayed on the screen. -->
         </string-array>
-        <string name="search_custom_url">Search custom URL</string>
         <string name="custom_url">Custom URL</string>
+        <string name="search_custom_url">Search custom URL</string>
     <string name="proxy">Proxy</string>
         <string name="proxy_none">None</string>
         <string name="proxy_tor">Tor</string>
@@ -632,6 +622,20 @@
         <string name="clear_cache_summary">Clears WebView’s cache.</string>
     <string name="general">General</string>
         <string name="homepage">Homepage</string>
+        <string name="download_location">Download location</string>
+        <string-array name="download_location_entries">
+            <item>Auto</item>
+            <item>App directory</item>
+            <item>Public directory</item>
+            <item>Custom</item>
+        </string-array>
+        <string-array name="download_location_entry_values" translatable="false">  <!-- None of the items in this string array should be translated. -->
+            <item>Auto</item>
+            <item>App</item>
+            <item>Public</item>
+            <item>Custom</item>
+        </string-array>
+        <string name="download_custom_location">Download custom location</string>
         <string name="font_size_preference">Font size</string>
         <string name="open_intents_in_new_tab">Open intents in new tab</string>
         <string name="open_intents_in_new_tab_summary">Intents are links sent from other apps.</string>
@@ -641,8 +645,6 @@
         <string name="scroll_app_bar_summary">Scroll the app bar off the top of the screen when the WebView scrolls down.</string>
         <string name="display_additional_app_bar_icons">Display additional app bar icons</string>
         <string name="display_additional_app_bar_icons_summary">Display icons in the app bar for refreshing the WebView and, if there is room, for toggling cookies and DOM storage.</string>
-        <string name="download_with_external_app">Download with external app</string>
-        <string name="download_with_external_app_summary">Android’s download manager doesn’t work well on some devices.</string>
         <string name="dark_theme">Dark theme</string>
         <string name="dark_theme_summary">Changing the theme will restart Privacy Browser.</string>
         <string name="night_mode">Night mode</string>
@@ -660,6 +662,8 @@
     <string name="proxy_default_value" translatable="false">None</string>
     <string name="proxy_custom_url_default_value" translatable="false">http://localhost:8118</string>
     <string name="homepage_default_value" translatable="false">https://www.startpage.com/</string>
+    <string name="download_location_default_value" translatable="false">Auto</string>
+    <string name="download_custom_location_default_value" translatable="false" />
     <string name="font_size_default_value" translatable="false">100</string>
 
     <!-- Ad Control. There are no ads in the standard flavor, but these strings must exist because they are referenced in the code. -->

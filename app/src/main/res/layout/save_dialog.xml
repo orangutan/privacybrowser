@@ -31,11 +31,34 @@
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp" >
 
+        <!-- The text input layout makes the `android:hint` float above the edit text. -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
+
+            <!-- `android:inputType="TextUri"` disables spell check and places an `/` on the main keyboard. -->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/url_edittext"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:hint="@string/url"
+                android:inputType="textMultiLine|textUri" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- File size. -->
+        <TextView
+            android:id="@+id/file_size_textview"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginEnd="3dp"
+            android:layout_gravity="end" />
+
         <!-- Align the edit text and the select file button horizontally. -->
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp">
 
             <!-- The text input layout makes the `android:hint` float above the edit text. -->
             <com.google.android.material.textfield.TextInputLayout

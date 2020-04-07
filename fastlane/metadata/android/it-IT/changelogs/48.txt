@@ -1,0 +1,13 @@
+• Sostituzione del download manager di Android con una modalità personalizzata.
+• Aggiunta di un'opzione per specificare la posizione di default dei download.
+• Implementazione di una modalità per cui i download rispettino i proxy.
+• Implementazione di una modalità per cui le schedere siano sempre ricaricate quando si cambia proxy.
+• Aggiunta di un'opzione per salvare le URL grezze.
+• Avvertimento quando il salvataggio di un file sovrascriverà un file esistente.
+• Aggiunta di una voce nel menù delle opzioni dei Segnalibri in modo che siano accessibili attraverso l'interfaccia gestuale di Android 10.
+• Modifica dell'ordine del menù delle opzioni per evitare la creazione accidentale di impostazioni dei domini.
+• Aggiornamento della traduzione Italiana fornita da Francesco Buratti.
+• Aggiornamento della traduzione Francese fornita da Kévin LE FLOHIC.
+• Aggiornamento della traduzione in Russo.
+• Aggiornamento della traduzione Spagnola fornita da Jose A. León.
+• Aggiornamento della traduzione Tedesco fornita da Bernhard G. Keller.

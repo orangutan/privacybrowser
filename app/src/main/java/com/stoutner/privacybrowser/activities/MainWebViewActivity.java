@@ -48,7 +48,6 @@ import android.net.http.SslCertificate;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
@@ -104,7 +103,6 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
@@ -119,14 +117,12 @@ import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.adapters.WebViewPagerAdapter;
 import com.stoutner.privacybrowser.asynctasks.GetHostIpAddresses;
 import com.stoutner.privacybrowser.asynctasks.PopulateBlocklists;
+import com.stoutner.privacybrowser.asynctasks.SaveUrl;
 import com.stoutner.privacybrowser.asynctasks.SaveWebpageImage;
 import com.stoutner.privacybrowser.dialogs.AdConsentDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.CreateBookmarkFolderDialog;
 import com.stoutner.privacybrowser.dialogs.CreateHomeScreenShortcutDialog;
-import com.stoutner.privacybrowser.dialogs.DownloadFileDialog;
-import com.stoutner.privacybrowser.dialogs.DownloadImageDialog;
-import com.stoutner.privacybrowser.dialogs.DownloadLocationPermissionDialog;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkDialog;
 import com.stoutner.privacybrowser.dialogs.EditBookmarkFolderDialog;
 import com.stoutner.privacybrowser.dialogs.FontSizeDialog;
@@ -134,7 +130,7 @@ import com.stoutner.privacybrowser.dialogs.HttpAuthenticationDialog;
 import com.stoutner.privacybrowser.dialogs.OpenDialog;
 import com.stoutner.privacybrowser.dialogs.ProxyNotInstalledDialog;
 import com.stoutner.privacybrowser.dialogs.PinnedMismatchDialog;
-import com.stoutner.privacybrowser.dialogs.SaveWebpageDialog;
+import com.stoutner.privacybrowser.dialogs.SaveDialog;
 import com.stoutner.privacybrowser.dialogs.SslCertificateErrorDialog;
 import com.stoutner.privacybrowser.dialogs.StoragePermissionDialog;
 import com.stoutner.privacybrowser.dialogs.UrlHistoryDialog;
@@ -168,12 +164,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-// AppCompatActivity from android.support.v7.app.AppCompatActivity must be used to have access to the SupportActionBar until the minimum API is >= 21.
 public class MainWebViewActivity extends AppCompatActivity implements CreateBookmarkDialog.CreateBookmarkListener, CreateBookmarkFolderDialog.CreateBookmarkFolderListener,
-        DownloadFileDialog.DownloadFileListener, DownloadImageDialog.DownloadImageListener, DownloadLocationPermissionDialog.DownloadLocationPermissionDialogListener, EditBookmarkDialog.EditBookmarkListener,
-        EditBookmarkFolderDialog.EditBookmarkFolderListener, FontSizeDialog.UpdateFontSizeListener, NavigationView.OnNavigationItemSelectedListener, OpenDialog.OpenListener,
-        PinnedMismatchDialog.PinnedMismatchListener, PopulateBlocklists.PopulateBlocklistsListener, SaveWebpageDialog.SaveWebpageListener, StoragePermissionDialog.StoragePermissionDialogListener,
-        UrlHistoryDialog.NavigateHistoryListener, WebViewTabFragment.NewTabListener {
+        EditBookmarkDialog.EditBookmarkListener, EditBookmarkFolderDialog.EditBookmarkFolderListener, FontSizeDialog.UpdateFontSizeListener, NavigationView.OnNavigationItemSelectedListener,
+        OpenDialog.OpenListener, PinnedMismatchDialog.PinnedMismatchListener, PopulateBlocklists.PopulateBlocklistsListener, SaveDialog.SaveWebpageListener,
+        StoragePermissionDialog.StoragePermissionDialogListener, UrlHistoryDialog.NavigateHistoryListener, WebViewTabFragment.NewTabListener {
 
     // `orbotStatus` is public static so it can be accessed from `OrbotProxyHelper`.  It is also used in `onCreate()`, `onResume()`, and `applyProxy()`.
     public static String orbotStatus = "unknown";
@@ -201,18 +195,21 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     public final static int DOMAINS_CUSTOM_USER_AGENT = 13;
 
     // Start activity for result request codes.  The public static entries are accessed from `OpenDialog()` and `SaveWebpageDialog()`.
-    public static final int BROWSE_OPEN_REQUEST_CODE = 0;
-    public static final int BROWSE_SAVE_WEBPAGE_REQUEST_CODE = 1;
+    public final static int BROWSE_OPEN_REQUEST_CODE = 0;
+    public final static int BROWSE_SAVE_WEBPAGE_REQUEST_CODE = 1;
     private final int BROWSE_FILE_UPLOAD_REQUEST_CODE = 2;
 
+    // The proxy mode is public static so it can be accessed from `ProxyHelper()`.
+    // It is also used in `onRestart()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `applyAppSettings()`, and `applyProxy()`.
+    // It will be updated in `applyAppSettings()`, but it needs to be initialized here or the first run of `onPrepareOptionsMenu()` crashes.
+    public static String proxyMode = ProxyHelper.NONE;
 
-    // The permission result request codes are used in `onCreateContextMenu()`, `onCloseDownloadLocationPermissionDialog()`, `onRequestPermissionResult()`, `onSaveWebpage()`,
-    // `onCloseStoragePermissionDialog()`, and `initializeWebView()`.
-    private final int PERMISSION_DOWNLOAD_FILE_REQUEST_CODE = 0;
-    private final int PERMISSION_DOWNLOAD_IMAGE_REQUEST_CODE = 1;
-    private final int PERMISSION_OPEN_REQUEST_CODE = 2;
-    private final int PERMISSION_SAVE_WEBPAGE_ARCHIVE_REQUEST_CODE = 3;
-    private final int PERMISSION_SAVE_WEBPAGE_IMAGE_REQUEST_CODE = 4;
+
+    // The permission result request codes are used in `onCreateContextMenu()`, `onRequestPermissionResult()`, `onSaveWebpage()`, `onCloseStoragePermissionDialog()`, and `initializeWebView()`.
+    private final int PERMISSION_OPEN_REQUEST_CODE = 0;
+    private final int PERMISSION_SAVE_URL_REQUEST_CODE = 1;
+    private final int PERMISSION_SAVE_AS_ARCHIVE_REQUEST_CODE = 2;
+    private final int PERMISSION_SAVE_AS_IMAGE_REQUEST_CODE = 3;
 
     // The current WebView is used in `onCreate()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `onNavigationItemSelected()`, `onRestart()`, `onCreateContextMenu()`, `findPreviousOnPage()`,
     // `findNextOnPage()`, `closeFindOnPage()`, `loadUrlFromTextBox()`, `onSslMismatchBack()`, `applyProxy()`, and `applyDomainSettings()`.
@@ -237,10 +234,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
     // `webViewDefaultUserAgent` is used in `onCreate()` and `onPrepareOptionsMenu()`.
     private String webViewDefaultUserAgent;
-
-    // The proxy mode is used in `onRestart()`, `onPrepareOptionsMenu()`, `onOptionsItemSelected()`, `applyAppSettings()`, and `applyProxy()`.
-    // It will be updated in `applyAppSettings()`, but it needs to be initialized here or the first run of `onPrepareOptionsMenu()` crashes.
-    private String proxyMode = ProxyHelper.NONE;
 
     // The incognito mode is set in `applyAppSettings()` and used in `initializeWebView()`.
     private boolean incognitoModeEnabled;
@@ -314,22 +307,16 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     private boolean sanitizeFacebookClickIds;
     private boolean sanitizeTwitterAmpRedirects;
 
-    // The download strings are used in `onCreate()`, `onRequestPermissionResult()` and `initializeWebView()`.
-    private String downloadUrl;
-    private String downloadContentDisposition;
-    private long downloadContentLength;
-
-    // `downloadImageUrl` is used in `onCreateContextMenu()` and `onRequestPermissionResult()`.
-    private String downloadImageUrl;
-
-    // The file path strings are used in `onSaveWebpageImage()` and `onRequestPermissionResult()`
+    // The file path strings are used in `onSaveWebpage()` and `onRequestPermissionResult()`
     private String openFilePath;
+    private String saveWebpageUrl;
     private String saveWebpageFilePath;
 
     @Override
     // Remove the warning about needing to override `performClick()` when using an `OnTouchListener` with `WebView`.
     @SuppressLint("ClickableViewAccessibility")
     protected void onCreate(Bundle savedInstanceState) {
+        // Enable the drawing of the entire webpage.  This makes it possible to save a website image.  This must be done before anything else happens with the WebView.
         if (Build.VERSION.SDK_INT >= 21) {
             WebView.enableSlowWholeDocumentDraw();
         }
@@ -880,79 +867,79 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Select the current user agent menu item.  A switch statement cannot be used because the user agents are not compile time constants.
         if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[0])) {  // Privacy Browser.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_privacy_browser));
+            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_privacy_browser));
 
             // Select the Privacy Browser radio box.
             menu.findItem(R.id.user_agent_privacy_browser).setChecked(true);
         } else if (currentUserAgent.equals(webViewDefaultUserAgent)) {  // WebView Default.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_webview_default));
+            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_webview_default));
 
             // Select the WebView Default radio box.
             menu.findItem(R.id.user_agent_webview_default).setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[2])) {  // Firefox on Android.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_firefox_on_android));
+            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_firefox_on_android));
 
             // Select the Firefox on Android radio box.
             menu.findItem(R.id.user_agent_firefox_on_android).setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[3])) {  // Chrome on Android.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_chrome_on_android));
+            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_chrome_on_android));
 
             // Select the Chrome on Android radio box.
             menu.findItem(R.id.user_agent_chrome_on_android).setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[4])) {  // Safari on iOS.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_safari_on_ios));
+            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_safari_on_ios));
 
             // Select the Safari on iOS radio box.
             menu.findItem(R.id.user_agent_safari_on_ios).setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[5])) {  // Firefox on Linux.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_firefox_on_linux));
+            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_firefox_on_linux));
 
             // Select the Firefox on Linux radio box.
             menu.findItem(R.id.user_agent_firefox_on_linux).setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[6])) {  // Chromium on Linux.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_chromium_on_linux));
+            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_chromium_on_linux));
 
             // Select the Chromium on Linux radio box.
             menu.findItem(R.id.user_agent_chromium_on_linux).setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[7])) {  // Firefox on Windows.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_firefox_on_windows));
+            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_firefox_on_windows));
 
             // Select the Firefox on Windows radio box.
             menu.findItem(R.id.user_agent_firefox_on_windows).setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[8])) {  // Chrome on Windows.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_chrome_on_windows));
+            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_chrome_on_windows));
 
             // Select the Chrome on Windows radio box.
             menu.findItem(R.id.user_agent_chrome_on_windows).setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[9])) {  // Edge on Windows.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_edge_on_windows));
+            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_edge_on_windows));
 
             // Select the Edge on Windows radio box.
             menu.findItem(R.id.user_agent_edge_on_windows).setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[10])) {  // Internet Explorer on Windows.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_internet_explorer_on_windows));
+            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_internet_explorer_on_windows));
 
             // Select the Internet on Windows radio box.
             menu.findItem(R.id.user_agent_internet_explorer_on_windows).setChecked(true);
         } else if (currentUserAgent.equals(getResources().getStringArray(R.array.user_agent_data)[11])) {  // Safari on macOS.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_safari_on_macos));
+            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_safari_on_macos));
 
             // Select the Safari on macOS radio box.
             menu.findItem(R.id.user_agent_safari_on_macos).setChecked(true);
         } else {  // Custom user agent.
             // Update the user agent menu item title.
-            userAgentMenuItem.setTitle(getString(R.string.user_agent) + " - " + getString(R.string.user_agent_custom));
+            userAgentMenuItem.setTitle(getString(R.string.options_user_agent) + " - " + getString(R.string.user_agent_custom));
 
             // Select the Custom radio box.
             menu.findItem(R.id.user_agent_custom).setChecked(true);
@@ -1005,110 +992,24 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Consume the event.
                 return true;
 
-            case R.id.add_or_edit_domain:
-                if (currentWebView.getDomainSettingsApplied()) {  // Edit the current domain settings.
-                    // Reapply the domain settings on returning to `MainWebViewActivity`.
-                    reapplyDomainSettingsOnRestart = true;
-
-                    // Create an intent to launch the domains activity.
-                    Intent domainsIntent = new Intent(this, DomainsActivity.class);
-
-                    // Add the extra information to the intent.
-                    domainsIntent.putExtra("load_domain", currentWebView.getDomainSettingsDatabaseId());
-                    domainsIntent.putExtra("close_on_back", true);
-                    domainsIntent.putExtra("current_url", currentWebView.getUrl());
-
-                    // Get the current certificate.
-                    SslCertificate sslCertificate = currentWebView.getCertificate();
-
-                    // Check to see if the SSL certificate is populated.
-                    if (sslCertificate != null) {
-                        // Extract the certificate to strings.
-                        String issuedToCName = sslCertificate.getIssuedTo().getCName();
-                        String issuedToOName = sslCertificate.getIssuedTo().getOName();
-                        String issuedToUName = sslCertificate.getIssuedTo().getUName();
-                        String issuedByCName = sslCertificate.getIssuedBy().getCName();
-                        String issuedByOName = sslCertificate.getIssuedBy().getOName();
-                        String issuedByUName = sslCertificate.getIssuedBy().getUName();
-                        long startDateLong = sslCertificate.getValidNotBeforeDate().getTime();
-                        long endDateLong = sslCertificate.getValidNotAfterDate().getTime();
-
-                        // Add the certificate to the intent.
-                        domainsIntent.putExtra("ssl_issued_to_cname", issuedToCName);
-                        domainsIntent.putExtra("ssl_issued_to_oname", issuedToOName);
-                        domainsIntent.putExtra("ssl_issued_to_uname", issuedToUName);
-                        domainsIntent.putExtra("ssl_issued_by_cname", issuedByCName);
-                        domainsIntent.putExtra("ssl_issued_by_oname", issuedByOName);
-                        domainsIntent.putExtra("ssl_issued_by_uname", issuedByUName);
-                        domainsIntent.putExtra("ssl_start_date", startDateLong);
-                        domainsIntent.putExtra("ssl_end_date", endDateLong);
-                    }
-
-                    // Check to see if the current IP addresses have been received.
-                    if (currentWebView.hasCurrentIpAddresses()) {
-                        // Add the current IP addresses to the intent.
-                        domainsIntent.putExtra("current_ip_addresses", currentWebView.getCurrentIpAddresses());
-                    }
-
-                    // Make it so.
-                    startActivity(domainsIntent);
-                } else {  // Add a new domain.
-                    // Apply the new domain settings on returning to `MainWebViewActivity`.
-                    reapplyDomainSettingsOnRestart = true;
-
-                    // Get the current domain
-                    Uri currentUri = Uri.parse(currentWebView.getUrl());
-                    String currentDomain = currentUri.getHost();
-
-                    // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
-                    DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
-
-                    // Create the domain and store the database ID.
-                    int newDomainDatabaseId = domainsDatabaseHelper.addDomain(currentDomain);
-
-                    // Create an intent to launch the domains activity.
-                    Intent domainsIntent = new Intent(this, DomainsActivity.class);
-
-                    // Add the extra information to the intent.
-                    domainsIntent.putExtra("load_domain", newDomainDatabaseId);
-                    domainsIntent.putExtra("close_on_back", true);
-                    domainsIntent.putExtra("current_url", currentWebView.getUrl());
-
-                    // Get the current certificate.
-                    SslCertificate sslCertificate = currentWebView.getCertificate();
-
-                    // Check to see if the SSL certificate is populated.
-                    if (sslCertificate != null) {
-                        // Extract the certificate to strings.
-                        String issuedToCName = sslCertificate.getIssuedTo().getCName();
-                        String issuedToOName = sslCertificate.getIssuedTo().getOName();
-                        String issuedToUName = sslCertificate.getIssuedTo().getUName();
-                        String issuedByCName = sslCertificate.getIssuedBy().getCName();
-                        String issuedByOName = sslCertificate.getIssuedBy().getOName();
-                        String issuedByUName = sslCertificate.getIssuedBy().getUName();
-                        long startDateLong = sslCertificate.getValidNotBeforeDate().getTime();
-                        long endDateLong = sslCertificate.getValidNotAfterDate().getTime();
-
-                        // Add the certificate to the intent.
-                        domainsIntent.putExtra("ssl_issued_to_cname", issuedToCName);
-                        domainsIntent.putExtra("ssl_issued_to_oname", issuedToOName);
-                        domainsIntent.putExtra("ssl_issued_to_uname", issuedToUName);
-                        domainsIntent.putExtra("ssl_issued_by_cname", issuedByCName);
-                        domainsIntent.putExtra("ssl_issued_by_oname", issuedByOName);
-                        domainsIntent.putExtra("ssl_issued_by_uname", issuedByUName);
-                        domainsIntent.putExtra("ssl_start_date", startDateLong);
-                        domainsIntent.putExtra("ssl_end_date", endDateLong);
-                    }
-
-                    // Check to see if the current IP addresses have been received.
-                    if (currentWebView.hasCurrentIpAddresses()) {
-                        // Add the current IP addresses to the intent.
-                        domainsIntent.putExtra("current_ip_addresses", currentWebView.getCurrentIpAddresses());
-                    }
-
-                    // Make it so.
-                    startActivity(domainsIntent);
+            case R.id.refresh:
+                if (menuItem.getTitle().equals(getString(R.string.refresh))) {  // The refresh button was pushed.
+                    // Reload the current WebView.
+                    currentWebView.reload();
+                } else {  // The stop button was pushed.
+                    // Stop the loading of the WebView.
+                    currentWebView.stopLoading();
                 }
+
+                // Consume the event.
+                return true;
+
+            case R.id.bookmarks:
+                // Get a handle for the drawer layout.
+                DrawerLayout drawerLayout = findViewById(R.id.drawerlayout);
+
+                // Open the bookmarks drawer.
+                drawerLayout.openDrawer(GravityCompat.END);
 
                 // Consume the event.
                 return true;
@@ -1704,22 +1605,35 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Consume the event.
                 return true;
 
+            case R.id.save_url:
+                // Instantiate the save dialog.
+                DialogFragment saveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_URL, currentWebView.getCurrentUrl(), currentWebView.getSettings().getUserAgentString(),
+                        currentWebView.getAcceptFirstPartyCookies());
+
+                // Show the save dialog.  It must be named `save_dialog` so that the file picked can update the file name.
+                saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
+
+                // Consume the event.
+                return true;
+
             case R.id.save_as_archive:
                 // Instantiate the save webpage archive dialog.
-                DialogFragment saveWebpageArchiveDialogFragment = SaveWebpageDialog.saveWebpage(StoragePermissionDialog.SAVE_ARCHIVE);
+                DialogFragment saveWebpageArchiveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_AS_ARCHIVE, currentWebView.getCurrentUrl(), currentWebView.getSettings().getUserAgentString(),
+                        currentWebView.getAcceptFirstPartyCookies());
 
-                // Show the save webpage archive dialog.
-                saveWebpageArchiveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_webpage));
+                // Show the save webpage archive dialog.  It must be named `save_dialog` so that the file picked can update the file name.
+                saveWebpageArchiveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
 
                 // Consume the event.
                 return true;
 
             case R.id.save_as_image:
-                // Instantiate the save webpage image dialog.
-                DialogFragment saveWebpageImageDialogFragment = SaveWebpageDialog.saveWebpage(StoragePermissionDialog.SAVE_IMAGE);
+                // Instantiate the save webpage image dialog.  It must be named `save_webpage` so that the file picked can update the file name.
+                DialogFragment saveWebpageImageDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_AS_IMAGE, currentWebView.getCurrentUrl(), currentWebView.getSettings().getUserAgentString(),
+                        currentWebView.getAcceptFirstPartyCookies());
 
-                // Show the save webpage image dialog.
-                saveWebpageImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_webpage));
+                // Show the save webpage image dialog.  It must be named `save_dialog` so that the file picked can update the file name.
+                saveWebpageImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
 
                 // Consume the event.
                 return true;
@@ -1778,13 +1692,109 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Consume the event.
                 return true;
 
-            case R.id.refresh:
-                if (menuItem.getTitle().equals(getString(R.string.refresh))) {  // The refresh button was pushed.
-                    // Reload the current WebView.
-                    currentWebView.reload();
-                } else {  // The stop button was pushed.
-                    // Stop the loading of the WebView.
-                    currentWebView.stopLoading();
+            case R.id.add_or_edit_domain:
+                if (currentWebView.getDomainSettingsApplied()) {  // Edit the current domain settings.
+                    // Reapply the domain settings on returning to `MainWebViewActivity`.
+                    reapplyDomainSettingsOnRestart = true;
+
+                    // Create an intent to launch the domains activity.
+                    Intent domainsIntent = new Intent(this, DomainsActivity.class);
+
+                    // Add the extra information to the intent.
+                    domainsIntent.putExtra("load_domain", currentWebView.getDomainSettingsDatabaseId());
+                    domainsIntent.putExtra("close_on_back", true);
+                    domainsIntent.putExtra("current_url", currentWebView.getUrl());
+
+                    // Get the current certificate.
+                    SslCertificate sslCertificate = currentWebView.getCertificate();
+
+                    // Check to see if the SSL certificate is populated.
+                    if (sslCertificate != null) {
+                        // Extract the certificate to strings.
+                        String issuedToCName = sslCertificate.getIssuedTo().getCName();
+                        String issuedToOName = sslCertificate.getIssuedTo().getOName();
+                        String issuedToUName = sslCertificate.getIssuedTo().getUName();
+                        String issuedByCName = sslCertificate.getIssuedBy().getCName();
+                        String issuedByOName = sslCertificate.getIssuedBy().getOName();
+                        String issuedByUName = sslCertificate.getIssuedBy().getUName();
+                        long startDateLong = sslCertificate.getValidNotBeforeDate().getTime();
+                        long endDateLong = sslCertificate.getValidNotAfterDate().getTime();
+
+                        // Add the certificate to the intent.
+                        domainsIntent.putExtra("ssl_issued_to_cname", issuedToCName);
+                        domainsIntent.putExtra("ssl_issued_to_oname", issuedToOName);
+                        domainsIntent.putExtra("ssl_issued_to_uname", issuedToUName);
+                        domainsIntent.putExtra("ssl_issued_by_cname", issuedByCName);
+                        domainsIntent.putExtra("ssl_issued_by_oname", issuedByOName);
+                        domainsIntent.putExtra("ssl_issued_by_uname", issuedByUName);
+                        domainsIntent.putExtra("ssl_start_date", startDateLong);
+                        domainsIntent.putExtra("ssl_end_date", endDateLong);
+                    }
+
+                    // Check to see if the current IP addresses have been received.
+                    if (currentWebView.hasCurrentIpAddresses()) {
+                        // Add the current IP addresses to the intent.
+                        domainsIntent.putExtra("current_ip_addresses", currentWebView.getCurrentIpAddresses());
+                    }
+
+                    // Make it so.
+                    startActivity(domainsIntent);
+                } else {  // Add a new domain.
+                    // Apply the new domain settings on returning to `MainWebViewActivity`.
+                    reapplyDomainSettingsOnRestart = true;
+
+                    // Get the current domain
+                    Uri currentUri = Uri.parse(currentWebView.getUrl());
+                    String currentDomain = currentUri.getHost();
+
+                    // Initialize the database handler.  The `0` specifies the database version, but that is ignored and set instead using a constant in `DomainsDatabaseHelper`.
+                    DomainsDatabaseHelper domainsDatabaseHelper = new DomainsDatabaseHelper(this, null, null, 0);
+
+                    // Create the domain and store the database ID.
+                    int newDomainDatabaseId = domainsDatabaseHelper.addDomain(currentDomain);
+
+                    // Create an intent to launch the domains activity.
+                    Intent domainsIntent = new Intent(this, DomainsActivity.class);
+
+                    // Add the extra information to the intent.
+                    domainsIntent.putExtra("load_domain", newDomainDatabaseId);
+                    domainsIntent.putExtra("close_on_back", true);
+                    domainsIntent.putExtra("current_url", currentWebView.getUrl());
+
+                    // Get the current certificate.
+                    SslCertificate sslCertificate = currentWebView.getCertificate();
+
+                    // Check to see if the SSL certificate is populated.
+                    if (sslCertificate != null) {
+                        // Extract the certificate to strings.
+                        String issuedToCName = sslCertificate.getIssuedTo().getCName();
+                        String issuedToOName = sslCertificate.getIssuedTo().getOName();
+                        String issuedToUName = sslCertificate.getIssuedTo().getUName();
+                        String issuedByCName = sslCertificate.getIssuedBy().getCName();
+                        String issuedByOName = sslCertificate.getIssuedBy().getOName();
+                        String issuedByUName = sslCertificate.getIssuedBy().getUName();
+                        long startDateLong = sslCertificate.getValidNotBeforeDate().getTime();
+                        long endDateLong = sslCertificate.getValidNotAfterDate().getTime();
+
+                        // Add the certificate to the intent.
+                        domainsIntent.putExtra("ssl_issued_to_cname", issuedToCName);
+                        domainsIntent.putExtra("ssl_issued_to_oname", issuedToOName);
+                        domainsIntent.putExtra("ssl_issued_to_uname", issuedToUName);
+                        domainsIntent.putExtra("ssl_issued_by_cname", issuedByCName);
+                        domainsIntent.putExtra("ssl_issued_by_oname", issuedByOName);
+                        domainsIntent.putExtra("ssl_issued_by_uname", issuedByUName);
+                        domainsIntent.putExtra("ssl_start_date", startDateLong);
+                        domainsIntent.putExtra("ssl_end_date", endDateLong);
+                    }
+
+                    // Check to see if the current IP addresses have been received.
+                    if (currentWebView.hasCurrentIpAddresses()) {
+                        // Add the current IP addresses to the intent.
+                        domainsIntent.putExtra("current_ip_addresses", currentWebView.getCurrentIpAddresses());
+                    }
+
+                    // Make it so.
+                    startActivity(domainsIntent);
                 }
 
                 // Consume the event.
@@ -1896,6 +1906,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Launch as a new task so that Download Manager and Privacy Browser show as separate windows in the recent tasks list.
                 downloadManagerIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
+                // Make it so.
                 startActivity(downloadManagerIntent);
                 break;
 
@@ -2047,8 +2058,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Get handles for the system managers.
         final ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // Remove the lint errors below that the clipboard manager might be null.
         assert clipboardManager != null;
@@ -2109,38 +2118,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     return true;
                 });
 
-                // Add a Download URL entry.
-                menu.add(R.string.download_url).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Check if the download should be processed by an external app.
-                    if (sharedPreferences.getBoolean("download_with_external_app", false)) {  // Download with an external app.
-                        openUrlWithExternalApp(linkUrl);
-                    } else {  // Download with Android's download manager.
-                        // Check to see if the storage permission has already been granted.
-                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {  // The storage permission needs to be requested.
-                            // Store the variables for future use by `onRequestPermissionsResult()`.
-                            downloadUrl = linkUrl;
-                            downloadContentDisposition = "none";
-                            downloadContentLength = -1;
+                // Add a Save URL entry.
+                menu.add(R.string.save_url).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Instantiate the save dialog.
+                    DialogFragment saveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_URL, linkUrl, currentWebView.getSettings().getUserAgentString(),
+                            currentWebView.getAcceptFirstPartyCookies());
 
-                            // Show a dialog if the user has previously denied the permission.
-                            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
-                                // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_FILE.
-                                DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_FILE);
-
-                                // Show the download location permission alert dialog.  The permission will be requested when the the dialog is closed.
-                                downloadLocationPermissionDialogFragment.show(fragmentManager, getString(R.string.download_location));
-                            } else {  // Show the permission request directly.
-                                // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
-                                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_DOWNLOAD_FILE_REQUEST_CODE);
-                            }
-                        } else {  // The storage permission has already been granted.
-                            // Get a handle for the download file alert dialog.
-                            DialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(linkUrl, "none", -1);
-
-                            // Show the download file alert dialog.
-                            downloadFileDialogFragment.show(fragmentManager, getString(R.string.download));
-                        }
-                    }
+                    // Show the save dialog.  It must be named `save_dialog` so that the file picker can update the file name.
+                    saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
 
                     // Consume the event.
                     return true;
@@ -2217,36 +2202,14 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     return true;
                 });
 
-                // Add a Download Image entry.
-                menu.add(R.string.download_image).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Check if the download should be processed by an external app.
-                    if (sharedPreferences.getBoolean("download_with_external_app", false)) {  // Download with an external app.
-                        openUrlWithExternalApp(imageUrl);
-                    } else {  // Download with Android's download manager.
-                        // Check to see if the storage permission has already been granted.
-                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {  // The storage permission needs to be requested.
-                            // Store the image URL for use by `onRequestPermissionResult()`.
-                            downloadImageUrl = imageUrl;
+                // Add a Save Image entry.
+                menu.add(R.string.save_image).setOnMenuItemClickListener((MenuItem item) -> {
+                   // Instantiate the save dialog.
+                   DialogFragment saveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_URL, imageUrl, currentWebView.getSettings().getUserAgentString(),
+                           currentWebView.getAcceptFirstPartyCookies());
 
-                            // Show a dialog if the user has previously denied the permission.
-                            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
-                                // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_IMAGE.
-                                DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_IMAGE);
-
-                                // Show the download location permission alert dialog.  The permission will be requested when the dialog is closed.
-                                downloadLocationPermissionDialogFragment.show(fragmentManager, getString(R.string.download_location));
-                            } else {  // Show the permission request directly.
-                                // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
-                                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_DOWNLOAD_IMAGE_REQUEST_CODE);
-                            }
-                        } else {  // The storage permission has already been granted.
-                            // Get a handle for the download image alert dialog.
-                            DialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
-
-                            // Show the download image alert dialog.
-                            downloadImageDialogFragment.show(fragmentManager, getString(R.string.download));
-                        }
-                    }
+                   // Show the save dialog.  It must be named `save_dialog` so that the file picked can update the file name.
+                    saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
 
                     // Consume the event.
                     return true;
@@ -2342,41 +2305,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                    return true;
                 });
 
-                // Add a Download Image entry.
-                menu.add(R.string.download_image).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Check if the download should be processed by an external app.
-                    if (sharedPreferences.getBoolean("download_with_external_app", false)) {  // Download with an external app.
-                        openUrlWithExternalApp(imageUrl);
-                    } else {  // Download with Android's download manager.
-                        // Check to see if the storage permission has already been granted.
-                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {  // The storage permission needs to be requested.
-                            // Store the image URL for use by `onRequestPermissionResult()`.
-                            downloadImageUrl = imageUrl;
-
-                            // Show a dialog if the user has previously denied the permission.
-                            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
-                                // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_IMAGE.
-                                DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_IMAGE);
-
-                                // Show the download location permission alert dialog.  The permission will be requested when the dialog is closed.
-                                downloadLocationPermissionDialogFragment.show(fragmentManager, getString(R.string.download_location));
-                            } else {  // Show the permission request directly.
-                                // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
-                                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_DOWNLOAD_IMAGE_REQUEST_CODE);
-                            }
-                        } else {  // The storage permission has already been granted.
-                            // Get a handle for the download image alert dialog.
-                            DialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(imageUrl);
-
-                            // Show the download image alert dialog.
-                            downloadImageDialogFragment.show(fragmentManager, getString(R.string.download));
-                        }
-                    }
-
-                    // Consume the event.
-                    return true;
-                });
-
                 // Add a Copy URL entry.
                 menu.add(R.string.copy_url).setOnMenuItemClickListener((MenuItem item) -> {
                     // Save the link URL in a clip data.
@@ -2384,6 +2312,30 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                     // Set the clip data as the clipboard's primary clip.
                     clipboardManager.setPrimaryClip(srcImageAnchorTypeClipData);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                menu.add(R.string.save_image).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Instantiate the save  dialog.
+                    DialogFragment saveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_URL, imageUrl, currentWebView.getSettings().getUserAgentString(),
+                            currentWebView.getAcceptFirstPartyCookies());
+
+                    // Show the save raw dialog.  It must be named `save_dialog` so that the file picked can update the file name.
+                    saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
+
+                    // Consume the event.
+                    return true;
+                });
+
+                menu.add(R.string.save_url).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Instantiate the save dialog.
+                    DialogFragment saveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_URL, linkUrl, currentWebView.getSettings().getUserAgentString(),
+                            currentWebView.getAcceptFirstPartyCookies());
+
+                    // Show the save raw dialog.  It must be named `save_dialog` so that the file picked can update the file name.
+                    saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
 
                     // Consume the event.
                     return true;
@@ -2651,143 +2603,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
     }
 
-    @Override
-    public void onCloseDownloadLocationPermissionDialog(int downloadType) {
-        switch (downloadType) {
-            case DownloadLocationPermissionDialog.DOWNLOAD_FILE:
-                // Request the WRITE_EXTERNAL_STORAGE permission with a file request code.
-                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_DOWNLOAD_FILE_REQUEST_CODE);
-                break;
-
-            case DownloadLocationPermissionDialog.DOWNLOAD_IMAGE:
-                // Request the WRITE_EXTERNAL_STORAGE permission with an image request code.
-                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_DOWNLOAD_IMAGE_REQUEST_CODE);
-                break;
-        }
-    }
-
-    @Override
-    public void onDownloadImage(DialogFragment dialogFragment, String imageUrl) {
-        // Download the image if it has an HTTP or HTTPS URI.
-        if (imageUrl.startsWith("http")) {
-            // Get a handle for the system `DOWNLOAD_SERVICE`.
-            DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-
-            // Parse `imageUrl`.
-            DownloadManager.Request downloadRequest = new DownloadManager.Request(Uri.parse(imageUrl));
-
-            // Get a handle for the cookie manager.
-            CookieManager cookieManager = CookieManager.getInstance();
-
-            // Pass cookies to download manager if cookies are enabled.  This is required to download images from websites that require a login.
-            // Code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
-            if (cookieManager.acceptCookie()) {
-                // Get the cookies for `imageUrl`.
-                String cookies = cookieManager.getCookie(imageUrl);
-
-                // Add the cookies to `downloadRequest`.  In the HTTP request header, cookies are named `Cookie`.
-                downloadRequest.addRequestHeader("Cookie", cookies);
-            }
-
-            // Get the dialog.
-            Dialog dialog = dialogFragment.getDialog();
-
-            // Remove the incorrect lint warning below that the dialog might be null.
-            assert dialog != null;
-
-            // Get the file name from the dialog fragment.
-            EditText downloadImageNameEditText = dialog.findViewById(R.id.download_image_name);
-            String imageName = downloadImageNameEditText.getText().toString();
-
-            // Specify the download location.
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // External write permission granted.
-                // Download to the public download directory.
-                downloadRequest.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, imageName);
-            } else {  // External write permission denied.
-                // Download to the app's external download directory.
-                downloadRequest.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, imageName);
-            }
-
-            // Allow `MediaScanner` to index the download if it is a media file.
-            downloadRequest.allowScanningByMediaScanner();
-
-            // Add the URL as the description for the download.
-            downloadRequest.setDescription(imageUrl);
-
-            // Show the download notification after the download is completed.
-            downloadRequest.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-
-            // Remove the lint warning below that `downloadManager` might be `null`.
-            assert downloadManager != null;
-
-            // Initiate the download.
-            downloadManager.enqueue(downloadRequest);
-        } else {  // The image is not an HTTP or HTTPS URI.
-            Snackbar.make(currentWebView, R.string.cannot_download_image, Snackbar.LENGTH_INDEFINITE).show();
-        }
-    }
-
-    @Override
-    public void onDownloadFile(DialogFragment dialogFragment, String downloadUrl) {
-        // Download the file if it has an HTTP or HTTPS URI.
-        if (downloadUrl.startsWith("http")) {
-            // Get a handle for the system `DOWNLOAD_SERVICE`.
-            DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-
-            // Parse `downloadUrl`.
-            DownloadManager.Request downloadRequest = new DownloadManager.Request(Uri.parse(downloadUrl));
-
-            // Get a handle for the cookie manager.
-            CookieManager cookieManager = CookieManager.getInstance();
-
-            // Pass cookies to download manager if cookies are enabled.  This is required to download files from websites that require a login.
-            // Code contributed 2017 Hendrik Knackstedt.  Copyright assigned to Soren Stoutner <soren@stoutner.com>.
-            if (cookieManager.acceptCookie()) {
-                // Get the cookies for `downloadUrl`.
-                String cookies = cookieManager.getCookie(downloadUrl);
-
-                // Add the cookies to `downloadRequest`.  In the HTTP request header, cookies are named `Cookie`.
-                downloadRequest.addRequestHeader("Cookie", cookies);
-            }
-
-            // Get the dialog.
-            Dialog dialog = dialogFragment.getDialog();
-
-            // Remove the incorrect lint warning below that the dialog might be null.
-            assert dialog != null;
-
-            // Get the file name from the dialog.
-            EditText downloadFileNameEditText = dialog.findViewById(R.id.download_file_name);
-            String fileName = downloadFileNameEditText.getText().toString();
-
-            // Specify the download location.
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // External write permission granted.
-                // Download to the public download directory.
-                downloadRequest.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
-            } else {  // External write permission denied.
-                // Download to the app's external download directory.
-                downloadRequest.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, fileName);
-            }
-
-            // Allow `MediaScanner` to index the download if it is a media file.
-            downloadRequest.allowScanningByMediaScanner();
-
-            // Add the URL as the description for the download.
-            downloadRequest.setDescription(downloadUrl);
-
-            // Show the download notification after the download is completed.
-            downloadRequest.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-
-            // Remove the lint warning below that `downloadManager` might be `null`.
-            assert downloadManager != null;
-
-            // Initiate the download.
-            downloadManager.enqueue(downloadRequest);
-        } else {  // The download is not an HTTP or HTTPS URI.
-            Snackbar.make(currentWebView, R.string.cannot_download_file, Snackbar.LENGTH_INDEFINITE).show();
-        }
-    }
-
     // Override `onBackPressed` to handle the navigation drawer and and the WebViews.
     @Override
     public void onBackPressed() {
@@ -2928,7 +2743,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Don't do anything if the user pressed back from the file picker.
                 if (resultCode == Activity.RESULT_OK) {
                     // Get a handle for the save dialog fragment.
-                    DialogFragment saveWebpageDialogFragment = (DialogFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.save_webpage));
+                    DialogFragment saveWebpageDialogFragment = (DialogFragment) getSupportFragmentManager().findFragmentByTag(getString(R.string.save_dialog));
 
                     // Only update the file name if the dialog still exists.
                     if (saveWebpageDialogFragment != null) {
@@ -3137,7 +2952,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Get the font size from the edit text.
         try {
-            newFontSize = Integer.valueOf(fontSizeEditText.getText().toString());
+            newFontSize = Integer.parseInt(fontSizeEditText.getText().toString());
         } catch (Exception exception) {
             // If the edit text does not contain a valid font size do nothing.
         }
@@ -3202,22 +3017,29 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Remove the incorrect lint warning below that the dialog might be null.
         assert dialog != null;
 
-        // Get a handle for the file name edit text.
+        // Get a handle for the edit texts.
+        EditText urlEditText = dialog.findViewById(R.id.url_edittext);
         EditText fileNameEditText = dialog.findViewById(R.id.file_name_edittext);
 
-        // Get the file path string.
+        // Get the strings from the edit texts.
+        saveWebpageUrl = urlEditText.getText().toString();
         saveWebpageFilePath = fileNameEditText.getText().toString();
 
         // Check to see if the storage permission is needed.
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {  // The storage permission has been granted.
             //Save the webpage according to the save type.
             switch (saveType) {
-                case StoragePermissionDialog.SAVE_ARCHIVE:
+                case StoragePermissionDialog.SAVE_URL:
+                    // Save the URL.
+                    new SaveUrl(this, this, saveWebpageFilePath, currentWebView.getSettings().getUserAgentString(), currentWebView.getAcceptFirstPartyCookies()).execute(saveWebpageUrl);
+                    break;
+
+                case StoragePermissionDialog.SAVE_AS_ARCHIVE:
                     // Save the webpage archive.
                     currentWebView.saveWebArchive(saveWebpageFilePath);
                     break;
 
-                case StoragePermissionDialog.SAVE_IMAGE:
+                case StoragePermissionDialog.SAVE_AS_IMAGE:
                     // Save the webpage image.
                     new SaveWebpageImage(this, currentWebView).execute(saveWebpageFilePath);
                     break;
@@ -3236,12 +3058,17 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
             if (saveWebpageFilePath.startsWith(externalPrivateDirectory)) {  // The file path is in the external private directory.
                 // Save the webpage according to the save type.
                 switch (saveType) {
-                    case StoragePermissionDialog.SAVE_ARCHIVE:
+                    case StoragePermissionDialog.SAVE_URL:
+                        // Save the URL.
+                        new SaveUrl(this, this, saveWebpageFilePath, currentWebView.getSettings().getUserAgentString(), currentWebView.getAcceptFirstPartyCookies()).execute(saveWebpageUrl);
+                        break;
+
+                    case StoragePermissionDialog.SAVE_AS_ARCHIVE:
                         // Save the webpage archive.
                         currentWebView.saveWebArchive(saveWebpageFilePath);
                         break;
 
-                    case StoragePermissionDialog.SAVE_IMAGE:
+                    case StoragePermissionDialog.SAVE_AS_IMAGE:
                         // Save the webpage image.
                         new SaveWebpageImage(this, currentWebView).execute(saveWebpageFilePath);
                         break;
@@ -3256,14 +3083,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     storagePermissionDialogFragment.show(getSupportFragmentManager(), getString(R.string.storage_permission));
                 } else {  // Show the permission request directly.
                     switch (saveType) {
-                        case StoragePermissionDialog.SAVE_ARCHIVE:
+                        case StoragePermissionDialog.SAVE_URL:
+                            // Request the write external storage permission.  The URL will be saved when it finishes.
+                            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_SAVE_URL_REQUEST_CODE);
+
+                        case StoragePermissionDialog.SAVE_AS_ARCHIVE:
                             // Request the write external storage permission.  The webpage archive will be saved when it finishes.
-                            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_SAVE_WEBPAGE_ARCHIVE_REQUEST_CODE);
+                            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_SAVE_AS_ARCHIVE_REQUEST_CODE);
                             break;
 
-                        case StoragePermissionDialog.SAVE_IMAGE:
+                        case StoragePermissionDialog.SAVE_AS_IMAGE:
                             // Request the write external storage permission.  The webpage image will be saved when it finishes.
-                            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_SAVE_WEBPAGE_IMAGE_REQUEST_CODE);
+                            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_SAVE_AS_IMAGE_REQUEST_CODE);
                             break;
                     }
                 }
@@ -3279,97 +3110,85 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_OPEN_REQUEST_CODE);
                 break;
 
-            case StoragePermissionDialog.SAVE_ARCHIVE:
-                // Request the write external storage permission.  The webpage archive will be saved when it finishes.
-                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_SAVE_WEBPAGE_ARCHIVE_REQUEST_CODE);
+            case StoragePermissionDialog.SAVE_URL:
+                // Request the write external storage permission.  The URL will be saved when it finishes.
+                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_SAVE_URL_REQUEST_CODE);
                 break;
 
-            case StoragePermissionDialog.SAVE_IMAGE:
+            case StoragePermissionDialog.SAVE_AS_ARCHIVE:
+                // Request the write external storage permission.  The webpage archive will be saved when it finishes.
+                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_SAVE_AS_ARCHIVE_REQUEST_CODE);
+                break;
+
+            case StoragePermissionDialog.SAVE_AS_IMAGE:
                 // Request the write external storage permission.  The webpage image will be saved when it finishes.
-                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_SAVE_WEBPAGE_IMAGE_REQUEST_CODE);
+                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_SAVE_AS_IMAGE_REQUEST_CODE);
                 break;
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        // Get a handle for the fragment manager.
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        //Only process the results if they exist (this method is triggered when a dialog is presented the first time for an app, but no grant results are included).
+        if (grantResults.length > 0) {
+            switch (requestCode) {
+                case PERMISSION_OPEN_REQUEST_CODE:
+                    // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {  // The storage permission was granted.
+                        // Load the file.
+                        currentWebView.loadUrl("file://" + openFilePath);
+                    } else {  // The storage permission was not granted.
+                        // Display an error snackbar.
+                        Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
+                    }
 
-        switch (requestCode) {
-            case PERMISSION_DOWNLOAD_FILE_REQUEST_CODE:
-                // Show the download file alert dialog.  When the dialog closes, the correct command will be used based on the permission status.
-                DialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(downloadUrl, downloadContentDisposition, downloadContentLength);
+                    // Reset the open file path.
+                    openFilePath = "";
+                    break;
 
-                // On API 23, displaying the fragment must be delayed or the app will crash.
-                if (Build.VERSION.SDK_INT == 23) {
-                    new Handler().postDelayed(() -> downloadFileDialogFragment.show(fragmentManager, getString(R.string.download)), 500);
-                } else {
-                    downloadFileDialogFragment.show(fragmentManager, getString(R.string.download));
-                }
+                case PERMISSION_SAVE_URL_REQUEST_CODE:
+                    // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {  // The storage permission was granted.
+                        // Save the raw URL.
+                        new SaveUrl(this, this, saveWebpageFilePath, currentWebView.getSettings().getUserAgentString(), currentWebView.getAcceptFirstPartyCookies()).execute(saveWebpageUrl);
+                    } else {  // The storage permission was not granted.
+                        // Display an error snackbar.
+                        Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
+                    }
 
-                // Reset the download variables.
-                downloadUrl = "";
-                downloadContentDisposition = "";
-                downloadContentLength = 0;
-                break;
+                    // Reset the save strings.
+                    saveWebpageUrl = "";
+                    saveWebpageFilePath = "";
+                    break;
 
-            case PERMISSION_DOWNLOAD_IMAGE_REQUEST_CODE:
-                // Show the download image alert dialog.  When the dialog closes, the correct command will be used based on the permission status.
-                DialogFragment downloadImageDialogFragment = DownloadImageDialog.imageUrl(downloadImageUrl);
+                case PERMISSION_SAVE_AS_ARCHIVE_REQUEST_CODE:
+                    // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {  // The storage permission was granted.
+                        // Save the webpage archive.
+                        currentWebView.saveWebArchive(saveWebpageFilePath);
+                    } else {  // The storage permission was not granted.
+                        // Display an error snackbar.
+                        Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
+                    }
 
-                // On API 23, displaying the fragment must be delayed or the app will crash.
-                if (Build.VERSION.SDK_INT == 23) {
-                    new Handler().postDelayed(() -> downloadImageDialogFragment.show(fragmentManager, getString(R.string.download)), 500);
-                } else {
-                    downloadImageDialogFragment.show(fragmentManager, getString(R.string.download));
-                }
+                    // Reset the save webpage file path.
+                    saveWebpageFilePath = "";
+                    break;
 
-                // Reset the image URL variable.
-                downloadImageUrl = "";
-                break;
+                case PERMISSION_SAVE_AS_IMAGE_REQUEST_CODE:
+                    // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {  // The storage permission was granted.
+                        // Save the webpage image.
+                        new SaveWebpageImage(this, currentWebView).execute(saveWebpageFilePath);
+                    } else {  // The storage permission was not granted.
+                        // Display an error snackbar.
+                        Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
+                    }
 
-            case PERMISSION_OPEN_REQUEST_CODE:
-                // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
-                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
-                    // Load the file.
-                    currentWebView.loadUrl("file://" + openFilePath);
-                } else {  // The storage permission was not granted.
-                    // Display an error snackbar.
-                    Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
-                }
-
-                // Reset the open file path.
-                openFilePath = "";
-                break;
-
-            case PERMISSION_SAVE_WEBPAGE_ARCHIVE_REQUEST_CODE:
-                // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
-                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
-                    // Save the webpage archive.
-                    currentWebView.saveWebArchive(saveWebpageFilePath);
-                } else {  // The storage permission was not granted.
-                    // Display an error snackbar.
-                    Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
-                }
-
-                // Reset the save webpage file path.
-                saveWebpageFilePath = "";
-                break;
-
-            case PERMISSION_SAVE_WEBPAGE_IMAGE_REQUEST_CODE:
-                // Check to see if the storage permission was granted.  If the dialog was canceled the grant results will be empty.
-                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {  // The storage permission was granted.
-                    // Save the webpage image.
-                    new SaveWebpageImage(this, currentWebView).execute(saveWebpageFilePath);
-                } else {  // The storage permission was not granted.
-                    // Display an error snackbar.
-                    Snackbar.make(currentWebView, getString(R.string.cannot_use_location), Snackbar.LENGTH_LONG).show();
-                }
-
-                // Reset the save webpage file path.
-                saveWebpageFilePath = "";
-                break;
+                    // Reset the save webpage file path.
+                    saveWebpageFilePath = "";
+                    break;
+            }
         }
     }
 
@@ -4269,7 +4088,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 try {  // Try the specified font size to see if it is valid.
                     if (fontSize == 0) {  // Apply the default font size.
                             // Try to set the font size from the value in the app settings.
-                            nestedScrollWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
+                            nestedScrollWebView.getSettings().setTextZoom(Integer.parseInt(defaultFontSizeString));
                     } else {  // Apply the font size from domain settings.
                         nestedScrollWebView.getSettings().setTextZoom(fontSize);
                     }
@@ -4417,7 +4236,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 // Apply the default font size setting.
                 try {
                     // Try to set the font size from the value in the app settings.
-                    nestedScrollWebView.getSettings().setTextZoom(Integer.valueOf(defaultFontSizeString));
+                    nestedScrollWebView.getSettings().setTextZoom(Integer.parseInt(defaultFontSizeString));
                 } catch (Exception exception) {
                     // If the app settings value is invalid, set the font size to 100%.
                     nestedScrollWebView.getSettings().setTextZoom(100);
@@ -4687,20 +4506,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         }
     }
 
-    private void openUrlWithExternalApp(String url) {
-        // Create a download intent.  Not specifying the action type will display the maximum number of options.
-        Intent downloadIntent = new Intent();
-
-        // Set the URI and the MIME type.  Specifying `text/html` displays a good number of options.
-        downloadIntent.setDataAndType(Uri.parse(url), "text/html");
-
-        // Flag the intent to open in a new task.
-        downloadIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        // Show the chooser.
-        startActivity(Intent.createChooser(downloadIntent, getString(R.string.open_with)));
-    }
-
     private void highlightUrlText() {
         // Get a handle for the URL edit text.
         EditText urlEditText = findViewById(R.id.url_edittext);
@@ -4820,7 +4625,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     private void openWithApp(String url) {
-        // Create the open with intent with `ACTION_VIEW`.
+        // Create an open with app intent with `ACTION_VIEW`.
         Intent openWithAppIntent = new Intent(Intent.ACTION_VIEW);
 
         // Set the URI but not the MIME type.  This should open all available apps.
@@ -4829,17 +4634,18 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Flag the intent to open in a new task.
         openWithAppIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
+        // Try the intent.
         try {
             // Show the chooser.
             startActivity(openWithAppIntent);
-        } catch (ActivityNotFoundException exception) {
+        } catch (ActivityNotFoundException exception) {  // There are no apps available to open the URL.
             // Show a snackbar with the error.
             Snackbar.make(currentWebView, getString(R.string.error) + "  " + exception, Snackbar.LENGTH_INDEFINITE).show();
         }
     }
 
     private void openWithBrowser(String url) {
-        // Create the open with intent with `ACTION_VIEW`.
+        // Create an open with browser intent with `ACTION_VIEW`.
         Intent openWithBrowserIntent = new Intent(Intent.ACTION_VIEW);
 
         // Set the URI and the MIME type.  `"text/html"` should load browser options.
@@ -4848,10 +4654,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
         // Flag the intent to open in a new task.
         openWithBrowserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
+        // Try the intent.
         try {
             // Show the chooser.
             startActivity(openWithBrowserIntent);
-        } catch (ActivityNotFoundException exception) {
+        } catch (ActivityNotFoundException exception) {  // There are no browsers available to open the URL.
             // Show a snackbar with the error.
             Snackbar.make(currentWebView, getString(R.string.error) + "  " + exception, Snackbar.LENGTH_INDEFINITE).show();
         }
@@ -5419,48 +5226,11 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Allow the downloading of files.
         nestedScrollWebView.setDownloadListener((String downloadUrl, String userAgent, String contentDisposition, String mimetype, long contentLength) -> {
-            // Check if the download should be processed by an external app.
-            if (sharedPreferences.getBoolean("download_with_external_app", false)) {  // Download with an external app.
-                // Create a download intent.  Not specifying the action type will display the maximum number of options.
-                Intent downloadIntent = new Intent();
+            // Instantiate the save dialog.
+            DialogFragment saveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_URL, downloadUrl, userAgent, nestedScrollWebView.getAcceptFirstPartyCookies());
 
-                // Set the URI and the MIME type.  Specifying `text/html` displays a good number of options.
-                downloadIntent.setDataAndType(Uri.parse(downloadUrl), "text/html");
-
-                // Flag the intent to open in a new task.
-                downloadIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                // Show the chooser.
-                startActivity(Intent.createChooser(downloadIntent, getString(R.string.open_with)));
-            } else {  // Download with Android's download manager.
-                // Check to see if the WRITE_EXTERNAL_STORAGE permission has already been granted.
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {  // The storage permission has not been granted.
-                    // The WRITE_EXTERNAL_STORAGE permission needs to be requested.
-
-                    // Store the variables for future use by `onRequestPermissionsResult()`.
-                    this.downloadUrl = downloadUrl;
-                    downloadContentDisposition = contentDisposition;
-                    downloadContentLength = contentLength;
-
-                    // Show a dialog if the user has previously denied the permission.
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {  // Show a dialog explaining the request first.
-                        // Instantiate the download location permission alert dialog and set the download type to DOWNLOAD_FILE.
-                        DialogFragment downloadLocationPermissionDialogFragment = DownloadLocationPermissionDialog.downloadType(DownloadLocationPermissionDialog.DOWNLOAD_FILE);
-
-                        // Show the download location permission alert dialog.  The permission will be requested when the the dialog is closed.
-                        downloadLocationPermissionDialogFragment.show(getSupportFragmentManager(), getString(R.string.download_location));
-                    } else {  // Show the permission request directly.
-                        // Request the permission.  The download dialog will be launched by `onRequestPermissionResult()`.
-                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_DOWNLOAD_FILE_REQUEST_CODE);
-                    }
-                } else {  // The storage permission has already been granted.
-                    // Get a handle for the download file alert dialog.
-                    DialogFragment downloadFileDialogFragment = DownloadFileDialog.fromUrl(downloadUrl, contentDisposition, contentLength);
-
-                    // Show the download file alert dialog.
-                    downloadFileDialogFragment.show(getSupportFragmentManager(), getString(R.string.download));
-                }
-            }
+            // Show the save dialog.  It must be named `save_dialog` so that the file picker can update the file name.
+            saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
         });
 
         // Update the find on page count.

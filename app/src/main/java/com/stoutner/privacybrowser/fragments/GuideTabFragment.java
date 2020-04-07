@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -121,10 +121,6 @@ public class GuideTabFragment extends Fragment {
                 case 8:
                     tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_tracking_ids_dark.html");
                     break;
-
-                case 9:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_bookmarks_dark.html");
-                    break;
             }
         } else {  // The light theme is applied.
             // Tab numbers start at 0.
@@ -164,9 +160,6 @@ public class GuideTabFragment extends Fragment {
                 case 8:
                     tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_tracking_ids_light.html");
                     break;
-
-                case 9:
-                    tabWebView.loadUrl("file:///android_asset/" + getString(R.string.android_asset_path) + "/guide_bookmarks_light.html");
             }
         }
 

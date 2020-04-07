@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -20,6 +20,7 @@
 package com.stoutner.privacybrowser.asynctasks;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -37,6 +38,7 @@ import android.widget.TextView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.helpers.ProxyHelper;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,19 +46,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
+import java.net.Proxy;
 import java.net.URL;
 import java.util.Locale;
 
 // This must run asynchronously because it involves a network request.  `String` declares the parameters.  `Void` does not declare progress units.  `SpannableStringBuilder[]` contains the results.
 public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]> {
-    // Declare a weak reference to the calling activity.
+    // Define weak references to the calling context and activity.
+    private WeakReference<Context> contextWeakReference;
     private WeakReference<Activity> activityWeakReference;
 
     // Store the user agent.
     private String userAgent;
 
-    public GetSource(Activity activity, String userAgent) {
-        // Populate the weak reference to the calling activity.
+    public GetSource(Context context, Activity activity, String userAgent) {
+        // Populate the weak references to the calling context and activity.
+        contextWeakReference = new WeakReference<>(context);
         activityWeakReference = new WeakReference<>(activity);
 
         // Store the user agent.
@@ -66,16 +71,16 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
     // `onPreExecute()` operates on the UI thread.
     @Override
     protected void onPreExecute() {
-        // Get a handle for the activity.
-        Activity viewSourceActivity = activityWeakReference.get();
+        // Get a handle for the calling activity.
+        Activity activity = activityWeakReference.get();
 
         // Abort if the activity is gone.
-        if ((viewSourceActivity == null) || viewSourceActivity.isFinishing()) {
+        if ((activity == null) || activity.isFinishing()) {
             return;
         }
 
         // Get a handle for the progress bar.
-        ProgressBar progressBar = viewSourceActivity.findViewById(R.id.progress_bar);
+        ProgressBar progressBar = activity.findViewById(R.id.progress_bar);
 
         // Make the progress bar visible.
         progressBar.setVisibility(View.VISIBLE);
@@ -92,7 +97,8 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
         SpannableStringBuilder responseHeadersBuilder = new SpannableStringBuilder();
         SpannableStringBuilder responseBodyBuilder = new SpannableStringBuilder();
 
-        // Get a handle for the activity.
+        // Get a handle for the context and activity.
+        Context context = contextWeakReference.get();
         Activity activity = activityWeakReference.get();
 
         // Abort if the activity is gone.
@@ -105,8 +111,14 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
             // Get the current URL from the main activity.
             URL url = new URL(formattedUrlString[0]);
 
+            // Instantiate the proxy helper.
+            ProxyHelper proxyHelper = new ProxyHelper();
+
+            // Get the current proxy.
+            Proxy proxy = proxyHelper.getCurrentProxy(context);
+
             // Open a connection to the URL.  No data is actually sent at this point.
-            HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection();
+            HttpURLConnection httpUrlConnection = (HttpURLConnection) url.openConnection(proxy);
 
             // Define the variables necessary to build the request headers.
             requestHeadersBuilder = new SpannableStringBuilder();
@@ -365,10 +377,10 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
 
             // Only process the cookies if they are not null.
             if (cookiesString != null) {
-                // Set the `Cookie` header property.
+                // Add the cookies to the header property.
                 httpUrlConnection.setRequestProperty("Cookie", cookiesString);
 
-                // Add the `Cookie` header to the string builder and format the text.
+                // Add the cookie header to the string builder and format the text.
                 requestHeadersBuilder.append(System.getProperty("line.separator"));
                 if (Build.VERSION.SDK_INT >= 21) {  // Newer versions of Android are so smart.
                     requestHeadersBuilder.append("Cookie", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -457,17 +469,17 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 byte[] conversionBufferByteArray = new byte[1024];
 
-                // Instantiate the variable to track the buffer length.
+                // Define the buffer length variable.
                 int bufferLength;
 
                 try {
-                    // Attempt to read data from the input stream and store it in the conversion buffer byte array.  Also store the amount of data transferred in the buffer length variable.
+                    // Attempt to read data from the input stream and store it in the conversion buffer byte array.  Also store the amount of data read in the buffer length variable.
                     while ((bufferLength = inputStream.read(conversionBufferByteArray)) > 0) {  // Proceed while the amount of data stored in the buffer is > 0.
                         // Write the contents of the conversion buffer to the byte array output stream.
                         byteArrayOutputStream.write(conversionBufferByteArray, 0, bufferLength);
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (IOException exception) {
+                    // Do nothing.
                 }
 
                 // Close the input stream.
@@ -476,11 +488,11 @@ public class GetSource extends AsyncTask<String, Void, SpannableStringBuilder[]>
                 // Populate the response body string with the contents of the byte array output stream.
                 responseBodyBuilder.append(byteArrayOutputStream.toString());
             } finally {
-                // Disconnect `httpUrlConnection`.
+                // Disconnect HTTP URL connection.
                 httpUrlConnection.disconnect();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            // Do nothing.
         }
 
         // Return the response body string as the result.

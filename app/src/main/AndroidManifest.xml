@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  Copyright © 2015-2019 Soren Stoutner <soren@stoutner.com>.
+  Copyright © 2015-2020 Soren Stoutner <soren@stoutner.com>.
 
   This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
 
@@ -42,7 +42,8 @@
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 
 
-    <!-- For API >= 23, app data is automatically backed up to Google cloud servers unless `android:allowBackup="false"` and `android:fullBackupContent="false"` is set. -->
+    <!-- For API >= 23, app data is automatically backed up to Google cloud servers unless `android:allowBackup="false"` and `android:fullBackupContent="false"` is set.
+        `android:requestLegacyExternalStorage="true"` makes Android 10 storage permissions work like previous versions of Android.  It is a temporary workaround.  <https://redmine.stoutner.com/issues/546> -->
     <application
         android:label="@string/privacy_browser"
         android:icon="@mipmap/privacy_browser"
@@ -51,6 +52,7 @@
         android:fullBackupContent="false"
         android:supportsRtl="true"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:requestLegacyExternalStorage="true"
         tools:ignore="UnusedAttribute" >
 
         <!-- If `android:name="android.webkit.WebView.MetricsOptOut"` is not `true` then `WebViews` will upload metrics to Google.  <https://developer.android.com/reference/android/webkit/WebView.html> -->
