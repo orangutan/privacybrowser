@@ -29,7 +29,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -76,14 +75,16 @@ public class SaveDialog extends DialogFragment {
         saveWebpageListener = (SaveWebpageListener) context;
     }
 
-    public static SaveDialog saveUrl(int saveType, String url, String userAgent, boolean cookiesEnabled) {
+    public static SaveDialog saveUrl(int saveType, String urlString, String fileSizeString, String contentDispositionFileNameString, String userAgentString, boolean cookiesEnabled) {
         // Create an arguments bundle.
         Bundle argumentsBundle = new Bundle();
 
         // Store the arguments in the bundle.
         argumentsBundle.putInt("save_type", saveType);
-        argumentsBundle.putString("url", url);
-        argumentsBundle.putString("user_agent", userAgent);
+        argumentsBundle.putString("url_string", urlString);
+        argumentsBundle.putString("file_size_string", fileSizeString);
+        argumentsBundle.putString("content_disposition_file_name_string", contentDispositionFileNameString);
+        argumentsBundle.putString("user_agent_string", userAgentString);
         argumentsBundle.putBoolean("cookies_enabled", cookiesEnabled);
 
         // Create a new instance of the save webpage dialog.
@@ -109,8 +110,10 @@ public class SaveDialog extends DialogFragment {
 
         // Get the arguments from the bundle.
         int saveType = arguments.getInt("save_type");
-        String url = arguments.getString("url");
-        String userAgent = arguments.getString("user_agent");
+        String urlString = arguments.getString("url_string");
+        String fileSizeString = arguments.getString("file_size_string");
+        String contentDispositionFileNameString = arguments.getString("content_disposition_file_name_string");
+        String userAgentString = arguments.getString("user_agent_string");
         boolean cookiesEnabled = arguments.getBoolean("cookies_enabled");
 
         // Get a handle for the activity and the context.
@@ -220,9 +223,51 @@ public class SaveDialog extends DialogFragment {
         TextView storagePermissionTextView = alertDialog.findViewById(R.id.storage_permission_textview);
         Button saveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
+        // Set the file size text view.
+        fileSizeTextView.setText(fileSizeString);
+
+        // Create a file name string.
+        String fileName = "";
+
+        // Set the file name according to the type.
+        switch (saveType) {
+            case StoragePermissionDialog.SAVE_URL:
+                // Use the file name from the content disposition.
+                fileName = contentDispositionFileNameString;
+                break;
+
+            case StoragePermissionDialog.SAVE_AS_ARCHIVE:
+                // Use an archive name ending in `.mht`.
+                fileName = getString(R.string.webpage_mht);
+                break;
+
+            case StoragePermissionDialog.SAVE_AS_IMAGE:
+                // Use a file name ending in `.png`.
+                fileName = getString(R.string.webpage_png);
+                break;
+        }
+
+        // Save the file name as the default file name.  This must be final to be used in the lambda below.
+        final String defaultFileName = fileName;
+
+        // Instantiate the download location helper.
+        DownloadLocationHelper downloadLocationHelper = new DownloadLocationHelper();
+
+        // Get the default file path.
+        String defaultFilePath = downloadLocationHelper.getDownloadLocation(context) + "/" + defaultFileName;
+
+        // Populate the file name edit text.  This must be done before the text change listener is created below so that the file size isn't requested again.
+        fileNameEditText.setText(defaultFilePath);
+
+        // Move the cursor to the end of the default file path.
+        fileNameEditText.setSelection(defaultFilePath.length());
+
         // Modify the layout based on the save type.
         if (saveType == StoragePermissionDialog.SAVE_URL) {  // A URL is being saved.
-            // Update the status of the save button whe the URL changes.
+            // Populate the URL edit text.
+            urlEditText.setText(urlString);
+
+            // Update the file size and the status of the save button when the URL changes.
             urlEditText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -248,15 +293,12 @@ public class SaveDialog extends DialogFragment {
                     fileSizeTextView.setText("");
 
                     // Get the file size for the current URL.
-                    getUrlSize = new GetUrlSize(context, alertDialog, userAgent, cookiesEnabled).execute(urlToSave);
+                    getUrlSize = new GetUrlSize(context, alertDialog, userAgentString, cookiesEnabled).execute(urlToSave);
 
                     // Enable the save button if the URL and file name are populated.
                     saveButton.setEnabled(!urlToSave.isEmpty() && !fileNameEditText.getText().toString().isEmpty());
                 }
             });
-
-            // Populate the URL edit text.
-            urlEditText.setText(url);
         } else {  // An archive or an image is being saved.
             // Hide the URL edit text and the file size text view.
             urlEditText.setVisibility(View.GONE);
@@ -303,56 +345,6 @@ public class SaveDialog extends DialogFragment {
             }
         });
 
-        // Create a file name string.
-        String fileName = "";
-
-        // Set the file name according to the type.
-        switch (saveType) {
-            case StoragePermissionDialog.SAVE_URL:
-                // Convert the URL to a URI.
-                Uri uri = Uri.parse(url);
-
-                // Get the last path segment.
-                String lastPathSegment = uri.getLastPathSegment();
-
-                // Use a default file name if the last path segment is null.
-                if (lastPathSegment == null) {
-                    lastPathSegment = getString(R.string.file);
-                }
-
-                // Use the last path segment as the file name.
-                fileName = lastPathSegment;
-                break;
-
-            case StoragePermissionDialog.SAVE_AS_ARCHIVE:
-                fileName = getString(R.string.webpage_mht);
-                break;
-
-            case StoragePermissionDialog.SAVE_AS_IMAGE:
-                fileName = getString(R.string.webpage_png);
-                break;
-        }
-
-        // Save the file name as the default file name.  This must be final to be used in the lambda below.
-        final String defaultFileName = fileName;
-
-        // Instantiate the download location helper.
-        DownloadLocationHelper downloadLocationHelper = new DownloadLocationHelper();
-
-        // Get the default file path.
-        String defaultFilePath = downloadLocationHelper.getDownloadLocation(context) + "/" + defaultFileName;
-
-        // Hide the storage permission text view if the permission has already been granted.
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            storagePermissionTextView.setVisibility(View.GONE);
-        }
-
-        // Populate the file name edit text.
-        fileNameEditText.setText(defaultFilePath);
-
-        // Move the cursor to the end of the default file path.
-        fileNameEditText.setSelection(defaultFilePath.length());
-
         // Handle clicks on the browse button.
         browseButton.setOnClickListener((View view) -> {
             // Create the file picker intent.
@@ -375,6 +367,11 @@ public class SaveDialog extends DialogFragment {
             // Start the file picker.  This must be started under `activity` so that the request code is returned correctly.
             activity.startActivityForResult(browseIntent, MainWebViewActivity.BROWSE_SAVE_WEBPAGE_REQUEST_CODE);
         });
+
+        // Hide the storage permission text view if the permission has already been granted.
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            storagePermissionTextView.setVisibility(View.GONE);
+        }
 
         // Return the alert dialog.
         return alertDialog;

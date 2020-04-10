@@ -35,7 +35,7 @@ import java.net.URL;
 import java.text.NumberFormat;
 
 public class GetUrlSize extends AsyncTask<String, Void, String> {
-    // Define a weak reference for the calling context and fragment.
+    // Define weak references for the calling context and alert dialog.
     private WeakReference<Context> contextWeakReference;
     private WeakReference<AlertDialog> alertDialogWeakReference;
 
@@ -45,7 +45,7 @@ public class GetUrlSize extends AsyncTask<String, Void, String> {
 
     // The public constructor.
     public GetUrlSize(Context context, AlertDialog alertDialog, String userAgent, boolean cookiesEnabled) {
-        // Populate the week references to the calling activity and fragment.
+        // Populate the week references for the context and alert dialog.
         contextWeakReference = new WeakReference<>(context);
         alertDialogWeakReference = new WeakReference<>(alertDialog);
 
@@ -68,7 +68,7 @@ public class GetUrlSize extends AsyncTask<String, Void, String> {
         // Initialize the formatted file size string.
         String formattedFileSize = context.getString(R.string.unknown_size);
 
-        // Because everything relating to requesting data from a webserver can throw errors, the entire section much catch `IOExceptions`.
+        // Because everything relating to requesting data from a webserver can throw errors, the entire section must catch exceptions.
         try {
             // Get the URL from the calling fragment.
             URL url = new URL(urlToSave[0]);
@@ -87,7 +87,7 @@ public class GetUrlSize extends AsyncTask<String, Void, String> {
 
             // Add the cookies if they are enabled.
             if (cookiesEnabled) {
-                // Ge the cookies for the current domain.
+                // Get the cookies for the current domain.
                 String cookiesString = CookieManager.getInstance().getCookie(url.toString());
 
                 // Only add the cookies if they are not null.
@@ -108,7 +108,7 @@ public class GetUrlSize extends AsyncTask<String, Void, String> {
                     return formattedFileSize;
                 }
 
-                // Get the status code.
+                // Get the status code.  This initiates a network connection.
                 int responseCode = httpUrlConnection.getResponseCode();
 
                 // Exit if the task has been cancelled.
@@ -128,13 +128,10 @@ public class GetUrlSize extends AsyncTask<String, Void, String> {
                     // Get the content length header.
                     String contentLengthString = httpUrlConnection.getHeaderField("Content-Length");
 
-                    // Define the file size long.
-                    long fileSize;
-
-                    // Make sure the content length isn't null.
-                    if (contentLengthString != null) {  // The content length isn't null.
-                        // Convert the content length to a long.
-                        fileSize = Long.parseLong(contentLengthString);
+                    // Only process the content length string if it isn't null.
+                    if (contentLengthString != null) {
+                        // Convert the content length string to a long.
+                        long fileSize = Long.parseLong(contentLengthString);
 
                         // Format the file size.
                         formattedFileSize = NumberFormat.getInstance().format(fileSize) + " " + context.getString(R.string.bytes);
@@ -156,7 +153,7 @@ public class GetUrlSize extends AsyncTask<String, Void, String> {
     // `onPostExecute()` operates on the UI thread.
     @Override
     protected void onPostExecute(String fileSize) {
-        // Get a handle for the context and alert dialog.
+        // Get a handle for the alert dialog.
         AlertDialog alertDialog = alertDialogWeakReference.get();
 
         // Abort if the alert dialog is gone.

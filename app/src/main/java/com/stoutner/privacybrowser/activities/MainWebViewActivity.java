@@ -117,6 +117,7 @@ import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.adapters.WebViewPagerAdapter;
 import com.stoutner.privacybrowser.asynctasks.GetHostIpAddresses;
 import com.stoutner.privacybrowser.asynctasks.PopulateBlocklists;
+import com.stoutner.privacybrowser.asynctasks.PrepareSaveDialog;
 import com.stoutner.privacybrowser.asynctasks.SaveUrl;
 import com.stoutner.privacybrowser.asynctasks.SaveWebpageImage;
 import com.stoutner.privacybrowser.dialogs.AdConsentDialog;
@@ -155,6 +156,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -1606,34 +1608,25 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 return true;
 
             case R.id.save_url:
-                // Instantiate the save dialog.
-                DialogFragment saveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_URL, currentWebView.getCurrentUrl(), currentWebView.getSettings().getUserAgentString(),
-                        currentWebView.getAcceptFirstPartyCookies());
-
-                // Show the save dialog.  It must be named `save_dialog` so that the file picked can update the file name.
-                saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
+                // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
+                new PrepareSaveDialog(this, this, getSupportFragmentManager(), StoragePermissionDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
+                        currentWebView.getAcceptFirstPartyCookies()).execute(currentWebView.getCurrentUrl());
 
                 // Consume the event.
                 return true;
 
             case R.id.save_as_archive:
-                // Instantiate the save webpage archive dialog.
-                DialogFragment saveWebpageArchiveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_AS_ARCHIVE, currentWebView.getCurrentUrl(), currentWebView.getSettings().getUserAgentString(),
-                        currentWebView.getAcceptFirstPartyCookies());
-
-                // Show the save webpage archive dialog.  It must be named `save_dialog` so that the file picked can update the file name.
-                saveWebpageArchiveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
+                // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
+                new PrepareSaveDialog(this, this, getSupportFragmentManager(), StoragePermissionDialog.SAVE_AS_ARCHIVE, currentWebView.getSettings().getUserAgentString(),
+                        currentWebView.getAcceptFirstPartyCookies()).execute(currentWebView.getCurrentUrl());
 
                 // Consume the event.
                 return true;
 
             case R.id.save_as_image:
-                // Instantiate the save webpage image dialog.  It must be named `save_webpage` so that the file picked can update the file name.
-                DialogFragment saveWebpageImageDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_AS_IMAGE, currentWebView.getCurrentUrl(), currentWebView.getSettings().getUserAgentString(),
-                        currentWebView.getAcceptFirstPartyCookies());
-
-                // Show the save webpage image dialog.  It must be named `save_dialog` so that the file picked can update the file name.
-                saveWebpageImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
+                // Prepare the save dialog.  The dialog will be displayed once the file size adn the content disposition have been acquired.
+                new PrepareSaveDialog(this, this, getSupportFragmentManager(), StoragePermissionDialog.SAVE_AS_IMAGE, currentWebView.getSettings().getUserAgentString(),
+                        currentWebView.getAcceptFirstPartyCookies()).execute(currentWebView.getCurrentUrl());
 
                 // Consume the event.
                 return true;
@@ -2120,12 +2113,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Add a Save URL entry.
                 menu.add(R.string.save_url).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Instantiate the save dialog.
-                    DialogFragment saveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_URL, linkUrl, currentWebView.getSettings().getUserAgentString(),
-                            currentWebView.getAcceptFirstPartyCookies());
-
-                    // Show the save dialog.  It must be named `save_dialog` so that the file picker can update the file name.
-                    saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
+                    // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
+                    new PrepareSaveDialog(this, this, getSupportFragmentManager(), StoragePermissionDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
+                            currentWebView.getAcceptFirstPartyCookies()).execute(linkUrl);
 
                     // Consume the event.
                     return true;
@@ -2181,12 +2171,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Add a Save Image entry.
                 menu.add(R.string.save_image).setOnMenuItemClickListener((MenuItem item) -> {
-                   // Instantiate the save dialog.
-                   DialogFragment saveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_URL, imageUrl, currentWebView.getSettings().getUserAgentString(),
-                           currentWebView.getAcceptFirstPartyCookies());
-
-                   // Show the save dialog.  It must be named `save_dialog` so that the file picked can update the file name.
-                    saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
+                   // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
+                    new PrepareSaveDialog(this, this, getSupportFragmentManager(), StoragePermissionDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
+                            currentWebView.getAcceptFirstPartyCookies()).execute(imageUrl);
 
                     // Consume the event.
                     return true;
@@ -2284,12 +2271,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Add a Save Image entry.
                 menu.add(R.string.save_image).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Instantiate the save  dialog.
-                    DialogFragment saveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_URL, imageUrl, currentWebView.getSettings().getUserAgentString(),
-                            currentWebView.getAcceptFirstPartyCookies());
-
-                    // Show the save raw dialog.  It must be named `save_dialog` so that the file picked can update the file name.
-                    saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
+                    // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
+                    new PrepareSaveDialog(this, this, getSupportFragmentManager(), StoragePermissionDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
+                            currentWebView.getAcceptFirstPartyCookies()).execute(imageUrl);
 
                     // Consume the event.
                     return true;
@@ -2309,12 +2293,9 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Add a Save URL entry.
                 menu.add(R.string.save_url).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Instantiate the save dialog.
-                    DialogFragment saveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_URL, linkUrl, currentWebView.getSettings().getUserAgentString(),
-                            currentWebView.getAcceptFirstPartyCookies());
-
-                    // Show the save raw dialog.  It must be named `save_dialog` so that the file picked can update the file name.
-                    saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
+                    // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
+                    new PrepareSaveDialog(this, this, getSupportFragmentManager(), StoragePermissionDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
+                            currentWebView.getAcceptFirstPartyCookies()).execute(linkUrl);
 
                     // Consume the event.
                     return true;
@@ -5228,8 +5209,24 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Allow the downloading of files.
         nestedScrollWebView.setDownloadListener((String downloadUrl, String userAgent, String contentDisposition, String mimetype, long contentLength) -> {
+            // Define a formatted file size string.
+            String formattedFileSizeString;
+
+            // Process the content length if it contains data.
+            if (contentLength > 0) {  // The content length is greater than 0.
+                // Format the content length as a string.
+                formattedFileSizeString = NumberFormat.getInstance().format(contentLength) + " " + getString(R.string.bytes);
+            } else {  // The content length is not greater than 0.
+                // Set the formatted file size string to be `unknown size`.
+                formattedFileSizeString = getString(R.string.unknown_size);
+            }
+
+            // Get the file name from the content disposition.
+            String fileNameString = PrepareSaveDialog.getFileNameFromContentDisposition(this, contentDisposition, downloadUrl);
+
             // Instantiate the save dialog.
-            DialogFragment saveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_URL, downloadUrl, userAgent, nestedScrollWebView.getAcceptFirstPartyCookies());
+            DialogFragment saveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_URL, downloadUrl, formattedFileSizeString, fileNameString, userAgent,
+                    nestedScrollWebView.getAcceptFirstPartyCookies());
 
             // Show the save dialog.  It must be named `save_dialog` so that the file picker can update the file name.
             saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
