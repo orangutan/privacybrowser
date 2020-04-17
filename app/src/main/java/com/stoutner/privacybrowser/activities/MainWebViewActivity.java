@@ -2393,7 +2393,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onCreateBookmarkFolder(DialogFragment dialogFragment, Bitmap favoriteIconBitmap) {
+    public void onCreateBookmarkFolder(DialogFragment dialogFragment, @NonNull Bitmap favoriteIconBitmap) {
         // Get a handle for the bookmarks list view.
         ListView bookmarksListView = findViewById(R.id.bookmarks_drawer_listview);
 
@@ -5513,11 +5513,29 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Store the file path callback.
                     fileChooserCallback = filePathCallback;
 
-                    // Create an intent to open a chooser based ont the file chooser parameters.
+                    // Create an intent to open a chooser based on the file chooser parameters.
                     Intent fileChooserIntent = fileChooserParams.createIntent();
 
-                    // Open the file chooser.
-                    startActivityForResult(fileChooserIntent, BROWSE_FILE_UPLOAD_REQUEST_CODE);
+                    // Get a handle for the package manager.
+                    PackageManager packageManager = getPackageManager();
+
+                    // Check to see if the file chooser intent resolves to an installed package.
+                    if (fileChooserIntent.resolveActivity(packageManager) != null) {  // The file chooser intent is fine.
+                        // Start the file chooser intent.
+                        startActivityForResult(fileChooserIntent, BROWSE_FILE_UPLOAD_REQUEST_CODE);
+                    } else {  // The file chooser intent will cause a crash.
+                        // Create a generic intent to open a chooser.
+                        Intent genericFileChooserIntent = new Intent(Intent.ACTION_GET_CONTENT);
+
+                        // Request an openable file.
+                        genericFileChooserIntent.addCategory(Intent.CATEGORY_OPENABLE);
+
+                        // Set the file type to everything.
+                        genericFileChooserIntent.setType("*/*");
+
+                        // Start the generic file chooser intent.
+                        startActivityForResult(genericFileChooserIntent, BROWSE_FILE_UPLOAD_REQUEST_CODE);
+                    }
                 }
                 return true;
             }

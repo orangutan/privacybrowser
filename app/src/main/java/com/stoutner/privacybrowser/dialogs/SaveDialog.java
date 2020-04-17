@@ -226,45 +226,9 @@ public class SaveDialog extends DialogFragment {
         // Set the file size text view.
         fileSizeTextView.setText(fileSizeString);
 
-        // Create a file name string.
-        String fileName = "";
-
-        // Set the file name according to the type.
-        switch (saveType) {
-            case StoragePermissionDialog.SAVE_URL:
-                // Use the file name from the content disposition.
-                fileName = contentDispositionFileNameString;
-                break;
-
-            case StoragePermissionDialog.SAVE_AS_ARCHIVE:
-                // Use an archive name ending in `.mht`.
-                fileName = getString(R.string.webpage_mht);
-                break;
-
-            case StoragePermissionDialog.SAVE_AS_IMAGE:
-                // Use a file name ending in `.png`.
-                fileName = getString(R.string.webpage_png);
-                break;
-        }
-
-        // Save the file name as the default file name.  This must be final to be used in the lambda below.
-        final String defaultFileName = fileName;
-
-        // Instantiate the download location helper.
-        DownloadLocationHelper downloadLocationHelper = new DownloadLocationHelper();
-
-        // Get the default file path.
-        String defaultFilePath = downloadLocationHelper.getDownloadLocation(context) + "/" + defaultFileName;
-
-        // Populate the file name edit text.  This must be done before the text change listener is created below so that the file size isn't requested again.
-        fileNameEditText.setText(defaultFilePath);
-
-        // Move the cursor to the end of the default file path.
-        fileNameEditText.setSelection(defaultFilePath.length());
-
         // Modify the layout based on the save type.
         if (saveType == StoragePermissionDialog.SAVE_URL) {  // A URL is being saved.
-            // Populate the URL edit text.
+            // Populate the URL edit text.  This must be done before the text change listener is created below so that the file size isn't requested again.
             urlEditText.setText(urlString);
 
             // Update the file size and the status of the save button when the URL changes.
@@ -344,6 +308,42 @@ public class SaveDialog extends DialogFragment {
                 }
             }
         });
+
+        // Create a file name string.
+        String fileName = "";
+
+        // Set the file name according to the type.
+        switch (saveType) {
+            case StoragePermissionDialog.SAVE_URL:
+                // Use the file name from the content disposition.
+                fileName = contentDispositionFileNameString;
+                break;
+
+            case StoragePermissionDialog.SAVE_AS_ARCHIVE:
+                // Use an archive name ending in `.mht`.
+                fileName = getString(R.string.webpage_mht);
+                break;
+
+            case StoragePermissionDialog.SAVE_AS_IMAGE:
+                // Use a file name ending in `.png`.
+                fileName = getString(R.string.webpage_png);
+                break;
+        }
+
+        // Save the file name as the default file name.  This must be final to be used in the lambda below.
+        final String defaultFileName = fileName;
+
+        // Instantiate the download location helper.
+        DownloadLocationHelper downloadLocationHelper = new DownloadLocationHelper();
+
+        // Get the default file path.
+        String defaultFilePath = downloadLocationHelper.getDownloadLocation(context) + "/" + defaultFileName;
+
+        // Populate the file name edit text.
+        fileNameEditText.setText(defaultFilePath);
+
+        // Move the cursor to the end of the default file path.
+        fileNameEditText.setSelection(defaultFilePath.length());
 
         // Handle clicks on the browse button.
         browseButton.setOnClickListener((View view) -> {

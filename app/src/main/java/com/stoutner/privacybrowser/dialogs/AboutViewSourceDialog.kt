@@ -23,12 +23,13 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.view.WindowManager
+
 import androidx.fragment.app.DialogFragment
 import androidx.preference.PreferenceManager
 
 import com.stoutner.privacybrowser.R
 
-class AboutViewSourceDialog : DialogFragment() {
+class AboutViewSourceDialog: DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Get a handle for the shared preferences.
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)

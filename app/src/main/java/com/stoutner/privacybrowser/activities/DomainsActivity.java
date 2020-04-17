@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2017-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -209,6 +209,9 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
 
         // Configure the add domain floating action button.
         addDomainFAB.setOnClickListener((View view) -> {
+            // Remove the incorrect warning below that the current URL might be null.
+            assert currentUrl != null;
+
             // Create an add domain dialog.
             DialogFragment addDomainDialog = AddDomainDialog.addDomain(currentUrl);
 
@@ -640,7 +643,7 @@ public class DomainsActivity extends AppCompatActivity implements AddDomainDialo
     }
 
     @Override
-    public void onAddDomain(DialogFragment dialogFragment) {
+    public void onAddDomain(@NonNull DialogFragment dialogFragment) {
         // Dismiss the undo delete snackbar if it is currently displayed.
         if ((undoDeleteSnackbar != null) && undoDeleteSnackbar.isShown()) {
             undoDeleteSnackbar.dismiss();

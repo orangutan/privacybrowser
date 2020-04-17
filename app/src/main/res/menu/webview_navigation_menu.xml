@@ -86,7 +86,7 @@
         <item
             android:id="@+id/domains"
             android:title="@string/domains"
-            android:icon="@drawable/domains"
+            android:icon="@drawable/domains_light"
             android:orderInCategory="90" />
 
         <item
