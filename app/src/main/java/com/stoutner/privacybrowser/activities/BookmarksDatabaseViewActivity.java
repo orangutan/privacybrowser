@@ -51,6 +51,7 @@ import android.widget.ResourceCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;  // The AndroidX toolbar must be used until the minimum API is >= 21.
@@ -72,7 +73,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         EditBookmarkFolderDatabaseViewDialog.EditBookmarkFolderDatabaseViewListener {
     // Instantiate the constants.
     private static final int ALL_FOLDERS_DATABASE_ID = -2;
-    private static final int HOME_FOLDER_DATABASE_ID = -1;
+    public static final int HOME_FOLDER_DATABASE_ID = -1;
 
     // `bookmarksDatabaseHelper` is used in `onCreate()`, `updateBookmarksListView()`, `selectAllBookmarksInFolder()`, and `onDestroy()`.
     private BookmarksDatabaseHelper bookmarksDatabaseHelper;
@@ -753,7 +754,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
     }
 
     @Override
-    public void onSaveBookmark(DialogFragment dialogFragment, int selectedBookmarkDatabaseId, Bitmap favoriteIconBitmap) {
+    public void onSaveBookmark(DialogFragment dialogFragment, int selectedBookmarkDatabaseId, @NonNull Bitmap favoriteIconBitmap) {
         // Get the dialog from the dialog fragment.
         Dialog dialog = dialogFragment.getDialog();
 
@@ -777,7 +778,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         String parentFolderNameString;
 
         // Set the parent folder name.
-        if (folderDatabaseId == EditBookmarkDatabaseViewDialog.HOME_FOLDER_DATABASE_ID) {  // The home folder is selected.  Use `""`.
+        if (folderDatabaseId == HOME_FOLDER_DATABASE_ID) {  // The home folder is selected.  Use `""`.
             parentFolderNameString = "";
         } else {  // Get the parent folder name from the database.
             parentFolderNameString = bookmarksDatabaseHelper.getFolderName(folderDatabaseId);
@@ -829,7 +830,7 @@ public class BookmarksDatabaseViewActivity extends AppCompatActivity implements 
         String parentFolderNameString;
 
         // Set the parent folder name.
-        if (parentFolderDatabaseId == EditBookmarkFolderDatabaseViewDialog.HOME_FOLDER_DATABASE_ID) {  // The home folder is selected.  Use `""`.
+        if (parentFolderDatabaseId == HOME_FOLDER_DATABASE_ID) {  // The home folder is selected.  Use `""`.
             parentFolderNameString = "";
         } else {  // Get the parent folder name from the database.
             parentFolderNameString = bookmarksDatabaseHelper.getFolderName(parentFolderDatabaseId);

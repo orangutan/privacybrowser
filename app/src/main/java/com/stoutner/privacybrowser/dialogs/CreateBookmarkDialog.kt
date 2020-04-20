@@ -94,7 +94,7 @@ class CreateBookmarkDialog: DialogFragment() {
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Get the arguments.
-        val arguments = arguments!!
+        val arguments = requireArguments()
 
         // Get the contents of the arguments.
         val urlString = arguments.getString("url_string")
@@ -128,7 +128,7 @@ class CreateBookmarkDialog: DialogFragment() {
         dialogBuilder.setIcon(favoriteIconDrawable)
 
         // Set the view.  The parent view is `null` because it will be assigned by the alert dialog.
-        dialogBuilder.setView(activity!!.layoutInflater.inflate(R.layout.create_bookmark_dialog, null))
+        dialogBuilder.setView(requireActivity().layoutInflater.inflate(R.layout.create_bookmark_dialog, null))
 
         // Set a listener on the cancel button.  Using `null` as the listener closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.cancel, null)
@@ -151,8 +151,8 @@ class CreateBookmarkDialog: DialogFragment() {
         alertDialog.show()
 
         // Get a handle for the edit texts.
-        val createBookmarkNameEditText: EditText = alertDialog.findViewById(R.id.create_bookmark_name_edittext)
-        val createBookmarkUrlEditText: EditText = alertDialog.findViewById(R.id.create_bookmark_url_edittext)
+        val createBookmarkNameEditText = alertDialog.findViewById<EditText>(R.id.create_bookmark_name_edittext)
+        val createBookmarkUrlEditText = alertDialog.findViewById<EditText>(R.id.create_bookmark_url_edittext)
 
         // Set the initial texts for the edit texts.
         createBookmarkNameEditText.setText(titleString)

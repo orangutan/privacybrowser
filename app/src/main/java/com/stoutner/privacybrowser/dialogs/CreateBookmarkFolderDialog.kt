@@ -93,7 +93,7 @@ class CreateBookmarkFolderDialog: DialogFragment() {
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Get the arguments.
-        val arguments = arguments!!
+        val arguments = requireArguments()
 
         // Get the favorite icon byte array.
         val favoriteIconByteArray = arguments.getByteArray("favorite_icon_byte_array")!!
@@ -119,7 +119,7 @@ class CreateBookmarkFolderDialog: DialogFragment() {
         dialogBuilder.setTitle(R.string.create_folder)
 
         // Set the view.  The parent view is null because it will be assigned by the alert dialog.
-        dialogBuilder.setView(activity!!.layoutInflater.inflate(R.layout.create_bookmark_folder_dialog, null))
+        dialogBuilder.setView(requireActivity().layoutInflater.inflate(R.layout.create_bookmark_folder_dialog, null))
 
         // Set a listener on the cancel button.  Using `null` as the listener closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.cancel, null)
@@ -145,8 +145,8 @@ class CreateBookmarkFolderDialog: DialogFragment() {
         alertDialog.show()
 
         // Get handles for the views in the dialog.
-        val webPageIconImageView: ImageView = alertDialog.findViewById(R.id.create_folder_web_page_icon)
-        val folderNameEditText: EditText = alertDialog.findViewById(R.id.create_folder_name_edittext)
+        val webPageIconImageView = alertDialog.findViewById<ImageView>(R.id.create_folder_web_page_icon)
+        val folderNameEditText = alertDialog.findViewById<EditText>(R.id.create_folder_name_edittext)
         val createButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
 
         // Display the current favorite icon.

@@ -92,7 +92,7 @@ class CreateHomeScreenShortcutDialog: DialogFragment() {
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Get the arguments.
-        val arguments = arguments!!
+        val arguments = requireArguments()
 
         // Get the strings from the arguments.
         val initialShortcutName = arguments.getString("shortcut_name")
@@ -113,9 +113,9 @@ class CreateHomeScreenShortcutDialog: DialogFragment() {
 
         // Use an alert dialog builder to create the dialog and set the style according to the theme.
         val dialogBuilder = if (darkTheme) {
-            AlertDialog.Builder(activity!!, R.style.PrivacyBrowserAlertDialogDark)
+            AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialogDark)
         } else {
-            AlertDialog.Builder(activity!!, R.style.PrivacyBrowserAlertDialogLight)
+            AlertDialog.Builder(requireContext(), R.style.PrivacyBrowserAlertDialogLight)
         }
 
         // Create a drawable version of the favorite icon.
@@ -126,7 +126,7 @@ class CreateHomeScreenShortcutDialog: DialogFragment() {
         dialogBuilder.setIcon(favoriteIconDrawable)
 
         // Set the view.  The parent view is null because it will be assigned by the alert dialog.
-        dialogBuilder.setView(activity!!.layoutInflater.inflate(R.layout.create_home_screen_shortcut_dialog, null))
+        dialogBuilder.setView(requireActivity().layoutInflater.inflate(R.layout.create_home_screen_shortcut_dialog, null))
 
         // Set a listener on the close button.  Using null closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.cancel, null)
@@ -240,9 +240,6 @@ class CreateHomeScreenShortcutDialog: DialogFragment() {
     }
 
     private fun createHomeScreenShortcut(favoriteIconBitmap: Bitmap) {
-        // Get a handle for the context.
-        val context = context!!
-
         // Get the strings from the edit texts.
         val shortcutName = shortcutNameEditText.text.toString()
         val urlString = urlEditText.text.toString()
@@ -263,7 +260,7 @@ class CreateHomeScreenShortcutDialog: DialogFragment() {
         shortcutIntent.data = Uri.parse(urlString)
 
         // Create a shortcut info builder.  The shortcut name becomes the shortcut ID.
-        val shortcutInfoBuilder = ShortcutInfoCompat.Builder(context, shortcutName)
+        val shortcutInfoBuilder = ShortcutInfoCompat.Builder(requireContext(), shortcutName)
 
         // Add the required fields to the shortcut info builder.
         shortcutInfoBuilder.setIcon(favoriteIcon)
@@ -271,6 +268,6 @@ class CreateHomeScreenShortcutDialog: DialogFragment() {
         shortcutInfoBuilder.setShortLabel(shortcutName)
 
         // Add the shortcut to the home screen.  `ShortcutManagerCompat` can be switched to `ShortcutManager` once the minimum API >= 26.
-        ShortcutManagerCompat.requestPinShortcut(context, shortcutInfoBuilder.build(), null)
+        ShortcutManagerCompat.requestPinShortcut(requireContext(), shortcutInfoBuilder.build(), null)
     }
 }

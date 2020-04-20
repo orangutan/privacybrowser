@@ -82,7 +82,7 @@ class AddDomainDialog: DialogFragment() {
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Get the arguments.
-        val arguments = arguments!!
+        val arguments = requireArguments()
 
         // Get the URL from the bundle.
         val urlString = arguments.getString("url_string")
@@ -116,7 +116,7 @@ class AddDomainDialog: DialogFragment() {
         dialogBuilder.setTitle(R.string.add_domain)
 
         // Set the view.  The parent view is `null` because it will be assigned by the alert dialog.
-        dialogBuilder.setView(activity!!.layoutInflater.inflate(R.layout.add_domain_dialog, null))
+        dialogBuilder.setView(requireActivity().layoutInflater.inflate(R.layout.add_domain_dialog, null))
 
         // Set a listener on the cancel button.  Using `null` as the listener closes the dialog without doing anything else.
         dialogBuilder.setNegativeButton(R.string.cancel, null)
@@ -142,8 +142,8 @@ class AddDomainDialog: DialogFragment() {
         val domainsDatabaseHelper = DomainsDatabaseHelper(context, null, null, 0)
 
         // Get handles for the views in the alert dialog.
-        val addDomainEditText: EditText = alertDialog.findViewById(R.id.domain_name_edittext)
-        val domainNameAlreadyExistsTextView: TextView = alertDialog.findViewById(R.id.domain_name_already_exists_textview)
+        val addDomainEditText = alertDialog.findViewById<EditText>(R.id.domain_name_edittext)
+        val domainNameAlreadyExistsTextView = alertDialog.findViewById<TextView>(R.id.domain_name_already_exists_textview)
         val addButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
 
         //  Update the status of the warning text and the add button when the domain name changes.
