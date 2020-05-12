@@ -568,7 +568,7 @@
         </string-array>
         <string-array name="search_entry_values" translatable="false">  <!-- None of the items in this string array should be translated. -->
             <item>https://www.startpage.com/do/search?query=</item>
-            <item>https://searx.me/?q=</item>
+            <item>https://searx.dev/?q=</item>
             <item>https://duckduckgo.com/html/?q=</item>
             <item>https://duckduckgo.com/?q=</item>
             <item>https://lite.qwant.com/?q=</item>

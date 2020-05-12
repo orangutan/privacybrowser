@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Soren Stoutner <soren@stoutner.com>.
+ * Copyright © 2016-2020 Soren Stoutner <soren@stoutner.com>.
  *
  * This file is part of Privacy Browser <https://www.stoutner.com/privacy-browser>.
  *
@@ -21,6 +21,7 @@ package com.stoutner.privacybrowser.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -47,6 +48,7 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;  // The AndroidX toolbar must be used until the minimum API is >= 21.
@@ -161,6 +163,9 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
         // Get the favorite icon byte array.
         favoriteIconByteArray = launchingIntent.getByteArrayExtra("favorite_icon_byte_array");
+
+        // Remove the incorrect lint warning that the favorite icon byte array might be null.
+        assert favoriteIconByteArray != null;
 
         // Convert the favorite icon byte array to a bitmap.
         Bitmap favoriteIconBitmap = BitmapFactory.decodeByteArray(favoriteIconByteArray, 0, favoriteIconByteArray.length);
@@ -468,7 +473,7 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
                         // Update the list view.
                         bookmarksCursorAdapter.changeCursor(bookmarksCursor);
 
-                        // Show a Snackbar with the number of deleted bookmarks.
+                        // Create a Snackbar with the number of deleted bookmarks.
                         bookmarksDeletedSnackbar = Snackbar.make(findViewById(R.id.bookmarks_coordinatorlayout), getString(R.string.bookmarks_deleted) + "  " + selectedBookmarksIdsLongArray.length,
                                 Snackbar.LENGTH_LONG)
                                 .setAction(R.string.undo, view -> {
@@ -572,6 +577,10 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
         // Set the create new bookmark FAB to display the `AlertDialog`.
         createBookmarkFab.setOnClickListener(view -> {
+            // Remove the incorrect lint warning below.
+            assert currentUrl != null;
+            assert currentTitle != null;
+
             // Instantiate the create bookmark dialog.
             DialogFragment createBookmarkDialog = CreateBookmarkDialog.createBookmark(currentUrl, currentTitle, favoriteIconBitmap);
 
@@ -667,9 +676,15 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
     @Override
     public void onCreateBookmark(DialogFragment dialogFragment, Bitmap favoriteIconBitmap) {
+        // Get the alert dialog from the fragment.
+        Dialog dialog = dialogFragment.getDialog();
+
+        // Remove the incorrect lint warning below that the dialog might be null.
+        assert dialog != null;
+
         // Get the views from the dialog fragment.
-        EditText createBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.create_bookmark_name_edittext);
-        EditText createBookmarkUrlEditText = dialogFragment.getDialog().findViewById(R.id.create_bookmark_url_edittext);
+        EditText createBookmarkNameEditText = dialog.findViewById(R.id.create_bookmark_name_edittext);
+        EditText createBookmarkUrlEditText = dialog.findViewById(R.id.create_bookmark_url_edittext);
 
         // Extract the strings from the edit texts.
         String bookmarkNameString = createBookmarkNameEditText.getText().toString();
@@ -701,11 +716,17 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
     }
 
     @Override
-    public void onCreateBookmarkFolder(DialogFragment dialogFragment, Bitmap favoriteIconBitmap) {
+    public void onCreateBookmarkFolder(DialogFragment dialogFragment, @NonNull Bitmap favoriteIconBitmap) {
+        // Get the dialog from the dialog fragment.
+        Dialog dialog = dialogFragment.getDialog();
+
+        // Remove the incorrect lint warning below that the dialog might be null.
+        assert dialog != null;
+
         // Get handles for the views in the dialog fragment.
-        EditText createFolderNameEditText = dialogFragment.getDialog().findViewById(R.id.create_folder_name_edittext);
-        RadioButton defaultFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon_radiobutton);
-        ImageView folderIconImageView = dialogFragment.getDialog().findViewById(R.id.create_folder_default_icon);
+        EditText createFolderNameEditText = dialog.findViewById(R.id.create_folder_name_edittext);
+        RadioButton defaultFolderIconRadioButton = dialog.findViewById(R.id.create_folder_default_icon_radiobutton);
+        ImageView folderIconImageView = dialog.findViewById(R.id.create_folder_default_icon);
 
         // Get new folder name string.
         String folderNameString = createFolderNameEditText.getText().toString();
@@ -758,10 +779,16 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
     @Override
     public void onSaveBookmark(DialogFragment dialogFragment, int selectedBookmarkDatabaseId, Bitmap favoriteIconBitmap) {
+        // Get the dialog from the dialog fragment.
+        Dialog dialog = dialogFragment.getDialog();
+
+        // Remove the incorrect lint warning below that the dialog might be null.
+        assert dialog != null;
+
         // Get handles for the views from `dialogFragment`.
-        EditText editBookmarkNameEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_name_edittext);
-        EditText editBookmarkUrlEditText = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_url_edittext);
-        RadioButton currentBookmarkIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_bookmark_current_icon_radiobutton);
+        EditText editBookmarkNameEditText = dialog.findViewById(R.id.edit_bookmark_name_edittext);
+        EditText editBookmarkUrlEditText = dialog.findViewById(R.id.edit_bookmark_url_edittext);
+        RadioButton currentBookmarkIconRadioButton = dialog.findViewById(R.id.edit_bookmark_current_icon_radiobutton);
 
         // Store the bookmark strings.
         String bookmarkNameString = editBookmarkNameEditText.getText().toString();
@@ -796,11 +823,17 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
     @Override
     public void onSaveBookmarkFolder(DialogFragment dialogFragment, int selectedFolderDatabaseId, Bitmap favoriteIconBitmap) {
+        // Get the dialog from the dialog fragment.
+        Dialog dialog = dialogFragment.getDialog();
+
+        // Remove the incorrect lint warning below that the dialog might be null.
+        assert dialog != null;
+
         // Get handles for the views from `dialogFragment`.
-        RadioButton currentFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_current_icon_radiobutton);
-        RadioButton defaultFolderIconRadioButton = dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_radiobutton);
-        ImageView defaultFolderIconImageView = dialogFragment.getDialog().findViewById(R.id.edit_folder_default_icon_imageview);
-        EditText editFolderNameEditText = dialogFragment.getDialog().findViewById(R.id.edit_folder_name_edittext);
+        RadioButton currentFolderIconRadioButton = dialog.findViewById(R.id.edit_folder_current_icon_radiobutton);
+        RadioButton defaultFolderIconRadioButton = dialog.findViewById(R.id.edit_folder_default_icon_radiobutton);
+        ImageView defaultFolderIconImageView = dialog.findViewById(R.id.edit_folder_default_icon_imageview);
+        EditText editFolderNameEditText = dialog.findViewById(R.id.edit_folder_name_edittext);
 
         // Get the new folder name.
         String newFolderNameString = editFolderNameEditText.getText().toString();
@@ -883,8 +916,14 @@ public class BookmarksActivity extends AppCompatActivity implements CreateBookma
 
     @Override
     public void onMoveToFolder(DialogFragment dialogFragment) {
-        // Get a handle for the `ListView` from `dialogFragment`.
-        ListView folderListView = dialogFragment.getDialog().findViewById(R.id.move_to_folder_listview);
+        // Get the dialog from the dialog fragment.
+        Dialog dialog = dialogFragment.getDialog();
+
+        // Remove the incorrect lint warning below that the dialog might be null.
+        assert dialog != null;
+
+        // Get a handle for the list view from the dialog.
+        ListView folderListView = dialog.findViewById(R.id.move_to_folder_listview);
 
         // Store a long array of the selected folders.
         long[] newFolderLongArray = folderListView.getCheckedItemIds();

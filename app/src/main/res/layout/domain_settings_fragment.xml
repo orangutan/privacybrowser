@@ -52,7 +52,7 @@
                     android:layout_marginEnd="10dp"
                     android:layout_marginBottom="12dp"
                     android:layout_gravity="bottom"
-                    android:src="@drawable/domains"
+                    android:src="@drawable/domains_light"
                     android:tint="?attr/domainSettingsIconTintColor"
                     tools:ignore="contentDescription" />
 

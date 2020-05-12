@@ -117,6 +117,7 @@ import com.stoutner.privacybrowser.R;
 import com.stoutner.privacybrowser.adapters.WebViewPagerAdapter;
 import com.stoutner.privacybrowser.asynctasks.GetHostIpAddresses;
 import com.stoutner.privacybrowser.asynctasks.PopulateBlocklists;
+import com.stoutner.privacybrowser.asynctasks.PrepareSaveDialog;
 import com.stoutner.privacybrowser.asynctasks.SaveUrl;
 import com.stoutner.privacybrowser.asynctasks.SaveWebpageImage;
 import com.stoutner.privacybrowser.dialogs.AdConsentDialog;
@@ -155,6 +156,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -1606,34 +1608,25 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 return true;
 
             case R.id.save_url:
-                // Instantiate the save dialog.
-                DialogFragment saveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_URL, currentWebView.getCurrentUrl(), currentWebView.getSettings().getUserAgentString(),
-                        currentWebView.getAcceptFirstPartyCookies());
-
-                // Show the save dialog.  It must be named `save_dialog` so that the file picked can update the file name.
-                saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
+                // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
+                new PrepareSaveDialog(this, this, getSupportFragmentManager(), StoragePermissionDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
+                        currentWebView.getAcceptFirstPartyCookies()).execute(currentWebView.getCurrentUrl());
 
                 // Consume the event.
                 return true;
 
             case R.id.save_as_archive:
-                // Instantiate the save webpage archive dialog.
-                DialogFragment saveWebpageArchiveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_AS_ARCHIVE, currentWebView.getCurrentUrl(), currentWebView.getSettings().getUserAgentString(),
-                        currentWebView.getAcceptFirstPartyCookies());
-
-                // Show the save webpage archive dialog.  It must be named `save_dialog` so that the file picked can update the file name.
-                saveWebpageArchiveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
+                // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
+                new PrepareSaveDialog(this, this, getSupportFragmentManager(), StoragePermissionDialog.SAVE_AS_ARCHIVE, currentWebView.getSettings().getUserAgentString(),
+                        currentWebView.getAcceptFirstPartyCookies()).execute(currentWebView.getCurrentUrl());
 
                 // Consume the event.
                 return true;
 
             case R.id.save_as_image:
-                // Instantiate the save webpage image dialog.  It must be named `save_webpage` so that the file picked can update the file name.
-                DialogFragment saveWebpageImageDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_AS_IMAGE, currentWebView.getCurrentUrl(), currentWebView.getSettings().getUserAgentString(),
-                        currentWebView.getAcceptFirstPartyCookies());
-
-                // Show the save webpage image dialog.  It must be named `save_dialog` so that the file picked can update the file name.
-                saveWebpageImageDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
+                // Prepare the save dialog.  The dialog will be displayed once the file size adn the content disposition have been acquired.
+                new PrepareSaveDialog(this, this, getSupportFragmentManager(), StoragePermissionDialog.SAVE_AS_IMAGE, currentWebView.getSettings().getUserAgentString(),
+                        currentWebView.getAcceptFirstPartyCookies()).execute(currentWebView.getCurrentUrl());
 
                 // Consume the event.
                 return true;
@@ -2120,59 +2113,15 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
                 // Add a Save URL entry.
                 menu.add(R.string.save_url).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Instantiate the save dialog.
-                    DialogFragment saveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_URL, linkUrl, currentWebView.getSettings().getUserAgentString(),
-                            currentWebView.getAcceptFirstPartyCookies());
-
-                    // Show the save dialog.  It must be named `save_dialog` so that the file picker can update the file name.
-                    saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
+                    // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
+                    new PrepareSaveDialog(this, this, getSupportFragmentManager(), StoragePermissionDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
+                            currentWebView.getAcceptFirstPartyCookies()).execute(linkUrl);
 
                     // Consume the event.
                     return true;
                 });
 
-                // Add a Cancel entry, which by default closes the context menu.
-                menu.add(R.string.cancel);
-                break;
-
-            case WebView.HitTestResult.EMAIL_TYPE:
-                // Get the target URL.
-                linkUrl = hitTestResult.getExtra();
-
-                // Set the target URL as the title of the `ContextMenu`.
-                menu.setHeaderTitle(linkUrl);
-
-                // Add a Write Email entry.
-                menu.add(R.string.write_email).setOnMenuItemClickListener(item -> {
-                    // Use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
-                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-
-                    // Parse the url and set it as the data for the `Intent`.
-                    emailIntent.setData(Uri.parse("mailto:" + linkUrl));
-
-                    // `FLAG_ACTIVITY_NEW_TASK` opens the email program in a new task instead as part of Privacy Browser.
-                    emailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                    // Make it so.
-                    startActivity(emailIntent);
-
-                    // Consume the event.
-                    return true;
-                });
-
-                // Add a Copy Email Address entry.
-                menu.add(R.string.copy_email_address).setOnMenuItemClickListener(item -> {
-                    // Save the email address in a `ClipData`.
-                    ClipData srcEmailTypeClipData = ClipData.newPlainText(getString(R.string.email_address), linkUrl);
-
-                    // Set the `ClipData` as the clipboard's primary clip.
-                    clipboardManager.setPrimaryClip(srcEmailTypeClipData);
-
-                    // Consume the event.
-                    return true;
-                });
-
-                // Add a `Cancel` entry, which by default closes the `ContextMenu`.
+                // Add an empty Cancel entry, which by default closes the context menu.
                 menu.add(R.string.cancel);
                 break;
 
@@ -2188,40 +2137,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                 menu.add(R.string.open_image_in_new_tab).setOnMenuItemClickListener((MenuItem item) -> {
                     // Load the image in a new tab.
                     addNewTab(imageUrl, true);
-
-                    // Consume the event.
-                    return true;
-                });
-
-                // Add a View Image entry.
-                menu.add(R.string.view_image).setOnMenuItemClickListener(item -> {
-                    // Load the image in the current tab.
-                    loadUrl(currentWebView, imageUrl);
-
-                    // Consume the event.
-                    return true;
-                });
-
-                // Add a Save Image entry.
-                menu.add(R.string.save_image).setOnMenuItemClickListener((MenuItem item) -> {
-                   // Instantiate the save dialog.
-                   DialogFragment saveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_URL, imageUrl, currentWebView.getSettings().getUserAgentString(),
-                           currentWebView.getAcceptFirstPartyCookies());
-
-                   // Show the save dialog.  It must be named `save_dialog` so that the file picked can update the file name.
-                    saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
-
-                    // Consume the event.
-                    return true;
-                });
-
-                // Add a Copy URL entry.
-                menu.add(R.string.copy_url).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Save the image URL in a clip data.
-                    ClipData imageTypeClipData = ClipData.newPlainText(getString(R.string.url), imageUrl);
-
-                    // Set the clip data as the clipboard's primary clip.
-                    clipboardManager.setPrimaryClip(imageTypeClipData);
 
                     // Consume the event.
                     return true;
@@ -2245,7 +2160,38 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     return true;
                 });
 
-                // Add a Cancel entry, which by default closes the context menu.
+                // Add a View Image entry.
+                menu.add(R.string.view_image).setOnMenuItemClickListener(item -> {
+                    // Load the image in the current tab.
+                    loadUrl(currentWebView, imageUrl);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add a Save Image entry.
+                menu.add(R.string.save_image).setOnMenuItemClickListener((MenuItem item) -> {
+                   // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
+                    new PrepareSaveDialog(this, this, getSupportFragmentManager(), StoragePermissionDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
+                            currentWebView.getAcceptFirstPartyCookies()).execute(imageUrl);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add a Copy URL entry.
+                menu.add(R.string.copy_url).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Save the image URL in a clip data.
+                    ClipData imageTypeClipData = ClipData.newPlainText(getString(R.string.url), imageUrl);
+
+                    // Set the clip data as the clipboard's primary clip.
+                    clipboardManager.setPrimaryClip(imageTypeClipData);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add an empty Cancel entry, which by default closes the context menu.
                 menu.add(R.string.cancel);
                 break;
 
@@ -2296,51 +2242,6 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     return true;
                 });
 
-                // Add a View Image entry.
-                menu.add(R.string.view_image).setOnMenuItemClickListener((MenuItem item) -> {
-                   // View the image in the current tab.
-                   loadUrl(currentWebView, imageUrl);
-
-                   // Consume the event.
-                   return true;
-                });
-
-                // Add a Copy URL entry.
-                menu.add(R.string.copy_url).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Save the link URL in a clip data.
-                    ClipData srcImageAnchorTypeClipData = ClipData.newPlainText(getString(R.string.url), linkUrl);
-
-                    // Set the clip data as the clipboard's primary clip.
-                    clipboardManager.setPrimaryClip(srcImageAnchorTypeClipData);
-
-                    // Consume the event.
-                    return true;
-                });
-
-                menu.add(R.string.save_image).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Instantiate the save  dialog.
-                    DialogFragment saveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_URL, imageUrl, currentWebView.getSettings().getUserAgentString(),
-                            currentWebView.getAcceptFirstPartyCookies());
-
-                    // Show the save raw dialog.  It must be named `save_dialog` so that the file picked can update the file name.
-                    saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
-
-                    // Consume the event.
-                    return true;
-                });
-
-                menu.add(R.string.save_url).setOnMenuItemClickListener((MenuItem item) -> {
-                    // Instantiate the save dialog.
-                    DialogFragment saveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_URL, linkUrl, currentWebView.getSettings().getUserAgentString(),
-                            currentWebView.getAcceptFirstPartyCookies());
-
-                    // Show the save raw dialog.  It must be named `save_dialog` so that the file picked can update the file name.
-                    saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
-
-                    // Consume the event.
-                    return true;
-                });
-
                 // Add an Open with App entry.
                 menu.add(R.string.open_with_app).setOnMenuItemClickListener((MenuItem item) -> {
                     // Open the link URL with an external app.
@@ -2359,7 +2260,89 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     return true;
                 });
 
-                // Add a cancel entry, which by default closes the context menu.
+                // Add a View Image entry.
+                menu.add(R.string.view_image).setOnMenuItemClickListener((MenuItem item) -> {
+                   // View the image in the current tab.
+                   loadUrl(currentWebView, imageUrl);
+
+                   // Consume the event.
+                   return true;
+                });
+
+                // Add a Save Image entry.
+                menu.add(R.string.save_image).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
+                    new PrepareSaveDialog(this, this, getSupportFragmentManager(), StoragePermissionDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
+                            currentWebView.getAcceptFirstPartyCookies()).execute(imageUrl);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add a Copy URL entry.
+                menu.add(R.string.copy_url).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Save the link URL in a clip data.
+                    ClipData srcImageAnchorTypeClipData = ClipData.newPlainText(getString(R.string.url), linkUrl);
+
+                    // Set the clip data as the clipboard's primary clip.
+                    clipboardManager.setPrimaryClip(srcImageAnchorTypeClipData);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add a Save URL entry.
+                menu.add(R.string.save_url).setOnMenuItemClickListener((MenuItem item) -> {
+                    // Prepare the save dialog.  The dialog will be displayed once the file size and the content disposition have been acquired.
+                    new PrepareSaveDialog(this, this, getSupportFragmentManager(), StoragePermissionDialog.SAVE_URL, currentWebView.getSettings().getUserAgentString(),
+                            currentWebView.getAcceptFirstPartyCookies()).execute(linkUrl);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add an empty Cancel entry, which by default closes the context menu.
+                menu.add(R.string.cancel);
+                break;
+
+            case WebView.HitTestResult.EMAIL_TYPE:
+                // Get the target URL.
+                linkUrl = hitTestResult.getExtra();
+
+                // Set the target URL as the title of the `ContextMenu`.
+                menu.setHeaderTitle(linkUrl);
+
+                // Add a Write Email entry.
+                menu.add(R.string.write_email).setOnMenuItemClickListener(item -> {
+                    // Use `ACTION_SENDTO` instead of `ACTION_SEND` so that only email programs are launched.
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+
+                    // Parse the url and set it as the data for the `Intent`.
+                    emailIntent.setData(Uri.parse("mailto:" + linkUrl));
+
+                    // `FLAG_ACTIVITY_NEW_TASK` opens the email program in a new task instead as part of Privacy Browser.
+                    emailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                    // Make it so.
+                    startActivity(emailIntent);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add a Copy Email Address entry.
+                menu.add(R.string.copy_email_address).setOnMenuItemClickListener(item -> {
+                    // Save the email address in a `ClipData`.
+                    ClipData srcEmailTypeClipData = ClipData.newPlainText(getString(R.string.email_address), linkUrl);
+
+                    // Set the `ClipData` as the clipboard's primary clip.
+                    clipboardManager.setPrimaryClip(srcEmailTypeClipData);
+
+                    // Consume the event.
+                    return true;
+                });
+
+                // Add an empty Cancel entry, which by default closes the context menu.
                 menu.add(R.string.cancel);
                 break;
         }
@@ -2410,7 +2393,7 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
     }
 
     @Override
-    public void onCreateBookmarkFolder(DialogFragment dialogFragment, Bitmap favoriteIconBitmap) {
+    public void onCreateBookmarkFolder(DialogFragment dialogFragment, @NonNull Bitmap favoriteIconBitmap) {
         // Get a handle for the bookmarks list view.
         ListView bookmarksListView = findViewById(R.id.bookmarks_drawer_listview);
 
@@ -5226,8 +5209,24 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
 
         // Allow the downloading of files.
         nestedScrollWebView.setDownloadListener((String downloadUrl, String userAgent, String contentDisposition, String mimetype, long contentLength) -> {
+            // Define a formatted file size string.
+            String formattedFileSizeString;
+
+            // Process the content length if it contains data.
+            if (contentLength > 0) {  // The content length is greater than 0.
+                // Format the content length as a string.
+                formattedFileSizeString = NumberFormat.getInstance().format(contentLength) + " " + getString(R.string.bytes);
+            } else {  // The content length is not greater than 0.
+                // Set the formatted file size string to be `unknown size`.
+                formattedFileSizeString = getString(R.string.unknown_size);
+            }
+
+            // Get the file name from the content disposition.
+            String fileNameString = PrepareSaveDialog.getFileNameFromContentDisposition(this, contentDisposition, downloadUrl);
+
             // Instantiate the save dialog.
-            DialogFragment saveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_URL, downloadUrl, userAgent, nestedScrollWebView.getAcceptFirstPartyCookies());
+            DialogFragment saveDialogFragment = SaveDialog.saveUrl(StoragePermissionDialog.SAVE_URL, downloadUrl, formattedFileSizeString, fileNameString, userAgent,
+                    nestedScrollWebView.getAcceptFirstPartyCookies());
 
             // Show the save dialog.  It must be named `save_dialog` so that the file picker can update the file name.
             saveDialogFragment.show(getSupportFragmentManager(), getString(R.string.save_dialog));
@@ -5514,11 +5513,29 @@ public class MainWebViewActivity extends AppCompatActivity implements CreateBook
                     // Store the file path callback.
                     fileChooserCallback = filePathCallback;
 
-                    // Create an intent to open a chooser based ont the file chooser parameters.
+                    // Create an intent to open a chooser based on the file chooser parameters.
                     Intent fileChooserIntent = fileChooserParams.createIntent();
 
-                    // Open the file chooser.
-                    startActivityForResult(fileChooserIntent, BROWSE_FILE_UPLOAD_REQUEST_CODE);
+                    // Get a handle for the package manager.
+                    PackageManager packageManager = getPackageManager();
+
+                    // Check to see if the file chooser intent resolves to an installed package.
+                    if (fileChooserIntent.resolveActivity(packageManager) != null) {  // The file chooser intent is fine.
+                        // Start the file chooser intent.
+                        startActivityForResult(fileChooserIntent, BROWSE_FILE_UPLOAD_REQUEST_CODE);
+                    } else {  // The file chooser intent will cause a crash.
+                        // Create a generic intent to open a chooser.
+                        Intent genericFileChooserIntent = new Intent(Intent.ACTION_GET_CONTENT);
+
+                        // Request an openable file.
+                        genericFileChooserIntent.addCategory(Intent.CATEGORY_OPENABLE);
+
+                        // Set the file type to everything.
+                        genericFileChooserIntent.setType("*/*");
+
+                        // Start the generic file chooser intent.
+                        startActivityForResult(genericFileChooserIntent, BROWSE_FILE_UPLOAD_REQUEST_CODE);
+                    }
                 }
                 return true;
             }

@@ -1,1 +1,1 @@
-• Fix a storage permission issue on some Android 10 devices.
+• Résoudre un problème d'autorisation de stockage sur certains appareils Android 10.

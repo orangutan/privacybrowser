@@ -245,29 +245,29 @@ public class ProxyHelper {
         // Define a proxy variable.
         Proxy proxy;
 
-        // Set the proxy according to the current proxy mode
+        // Get the proxy according to the current proxy mode.
         switch (MainWebViewActivity.proxyMode) {
             case (ProxyHelper.TOR):
                 if (Build.VERSION.SDK_INT >= 21) {
-                    // Set the socket address to be localhost port 9050.
+                    // Use localhost port 9050 as the socket address.
                     SocketAddress torSocketAddress = new InetSocketAddress("localhost", 9050);
 
-                    // Set a SOCKS proxy.
+                    // Create a SOCKS proxy.
                     proxy = new Proxy(Proxy.Type.SOCKS, torSocketAddress);
                 } else {
-                    // Set the socket address to be localhost port 8118.
+                    // Use localhost port 8118 as the socket address.
                     SocketAddress oldTorSocketAddress = new InetSocketAddress("localhost", 8118);
 
-                    // Set an HTTP proxy.
+                    // Create an HTTP proxy.
                     proxy = new Proxy(Proxy.Type.HTTP, oldTorSocketAddress);
                 }
                 break;
 
             case (ProxyHelper.I2P):
-                // Set the socket address to be localhost port 4444.
+                // Use localhost port 4444 as the socket address.
                 SocketAddress i2pSocketAddress = new InetSocketAddress("localhost", 4444);
 
-                // Set an HTTP proxy.
+                // Create an HTTP proxy.
                 proxy = new Proxy(Proxy.Type.HTTP, i2pSocketAddress);
                 break;
 
@@ -283,18 +283,18 @@ public class ProxyHelper {
                     // Convert the custom proxy URL string to a URI.
                     Uri customProxyUri = Uri.parse(customProxyUrlString);
 
-                    // Set the socket address.
+                    // Get the custom socket address.
                     SocketAddress customSocketAddress = new InetSocketAddress(customProxyUri.getHost(), customProxyUri.getPort());
 
                     // Get the custom proxy scheme.
                     String customProxyScheme = customProxyUri.getScheme();
 
-                    // Set the proxy according to the scheme.
+                    // Create a proxy according to the scheme.
                     if ((customProxyScheme != null) && customProxyScheme.startsWith("socks")) {  // A SOCKS proxy is specified.
-                        // Set a SOCKS proxy.
+                        // Create a SOCKS proxy.
                         proxy = new Proxy(Proxy.Type.SOCKS, customSocketAddress);
                     } else {  // A SOCKS proxy is not specified.
-                        // Set an HTTP proxy.
+                        // Create an HTTP proxy.
                         proxy = new Proxy(Proxy.Type.HTTP, customSocketAddress);
                     }
                 } catch (Exception exception) {  // The custom proxy cannot be parsed.
@@ -304,10 +304,9 @@ public class ProxyHelper {
                 break;
 
             default:  // No proxy is in use.
-                // Set a direct proxy.
+                // Create a direct proxy.
                 proxy = Proxy.NO_PROXY;
                 break;
-
         }
 
         // Return the proxy.

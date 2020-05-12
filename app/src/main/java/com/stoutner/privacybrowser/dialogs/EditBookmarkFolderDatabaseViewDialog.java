@@ -54,14 +54,12 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;  // The AndroidX dialog fragment must be used or an error is produced on API <=22.
 
 import com.stoutner.privacybrowser.R;
+import com.stoutner.privacybrowser.activities.BookmarksDatabaseViewActivity;
 import com.stoutner.privacybrowser.helpers.BookmarksDatabaseHelper;
 
 import java.io.ByteArrayOutputStream;
 
 public class EditBookmarkFolderDatabaseViewDialog extends DialogFragment {
-    // Define the home folder database ID constant.
-    public static final int HOME_FOLDER_DATABASE_ID = -1;
-
     // Define the edit bookmark folder database view listener.
     private EditBookmarkFolderDatabaseViewListener editBookmarkFolderDatabaseViewListener;
 
@@ -224,7 +222,7 @@ public class EditBookmarkFolderDatabaseViewDialog extends DialogFragment {
         // Setup a matrix cursor for "Home Folder".
         String[] matrixCursorColumnNames = {BookmarksDatabaseHelper._ID, BookmarksDatabaseHelper.BOOKMARK_NAME};
         MatrixCursor matrixCursor = new MatrixCursor(matrixCursorColumnNames);
-        matrixCursor.addRow(new Object[]{HOME_FOLDER_DATABASE_ID, getString(R.string.home_folder)});
+        matrixCursor.addRow(new Object[]{BookmarksDatabaseViewActivity.HOME_FOLDER_DATABASE_ID, getString(R.string.home_folder)});
 
         // Add all subfolders of the current folder to the list of folders not to display.
         String exceptFolders = getStringOfSubfolders(currentFolderName, bookmarksDatabaseHelper);
